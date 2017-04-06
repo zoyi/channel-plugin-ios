@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|  
   s.name              = 'CHPlugin'
-  s.version           = '0.1.7'
+  s.version           = '0.1.13'
   s.summary           = 'Channel plugin for iOS'
   s.homepage          = 'http://www.channel.io'
 
   s.author            = { 'Zoyi' => 'eng@zoyi.co' }
-  s.license           = { :type => 'Apache-2.0', :file => 'LICENSE' }
+  s.license           = { :type => 'SDK', :file => 'LICENSE' }
 
   s.platform          = :ios
   s.source            = { :git => 'https://github.com/zoyi/channel-plugin-ios.git', :tag => s.version }
