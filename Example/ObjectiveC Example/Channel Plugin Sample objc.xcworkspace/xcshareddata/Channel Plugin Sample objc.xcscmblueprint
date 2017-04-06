@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "7ABDE76924A2CB6363D6837F4AA291F941EC115A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "87DE4CBE4067CDF89A6C20888730276E8ABE4243" : 9223372036854775807,
+    "7ABDE76924A2CB6363D6837F4AA291F941EC115A" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D8B12B3F-AB16-43DA-B88C-F7CA841F017A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "87DE4CBE4067CDF89A6C20888730276E8ABE4243" : "ch-plugin-one\/",
+    "7ABDE76924A2CB6363D6837F4AA291F941EC115A" : "channel-plugin-ios\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Channel Plugin Sample objc",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Example\/ObjectiveC Example\/Channel Plugin Sample objc.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/zoyi\/channel-plugin-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7ABDE76924A2CB6363D6837F4AA291F941EC115A"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/zoyi\/ch-plugin-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "87DE4CBE4067CDF89A6C20888730276E8ABE4243"
+    }
+  ]
+}

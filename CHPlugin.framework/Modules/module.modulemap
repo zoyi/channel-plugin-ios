@@ -1,0 +1,10 @@
+framework module CHPlugin {
+  umbrella header "CHPlugin.h"
+
+  export *
+  module * { export * }
+}
+
+module CHPlugin.Swift {
+    header "CHPlugin-Swift.h"
+}

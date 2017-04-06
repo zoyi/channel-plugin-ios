@@ -1,0 +1,137 @@
+[
+  {
+    "name": "United States",
+    "dial": "1",
+    "code": "US"
+  },
+  {
+    "name": "Canada",
+    "dial": "1",
+    "code": "CA"
+  },
+  {
+    "name": "Russia",
+    "dial": "7",
+    "code": "RU"
+  },
+  {
+    "name": "South Africa",
+    "dial": "7",
+    "code": "ZA"
+  },
+  {
+    "name": "France",
+    "dial": "33",
+    "code": "FR"
+  },
+  {
+    "name": "Italy",
+    "dial": "39",
+    "code": "IT"
+  },
+  {
+    "name": "United Kingdom",
+    "dial": "44",
+    "code": "GB"
+  },
+  {
+    "name": "Germany",
+    "dial": "49",
+    "code": "DE"
+  },
+  {
+    "name": "Mexico",
+    "dial": "52",
+    "code": "MX"
+  },
+  {
+    "name": "Argentine",
+    "dial": "54",
+    "code": "AR"
+  },
+  {
+    "name": "Brazil",
+    "dial": "55",
+    "code": "BR"
+  },
+  {
+    "name": "Malaysia",
+    "dial": "60",
+    "code": "MY"
+  },
+  {
+    "name": "Australia",
+    "dial": "61",
+    "code": "AU"
+  },
+  {
+    "name": "Indonesia",
+    "dial": "62",
+    "code": "ID"
+  },
+  {
+    "name": "Philippines",
+    "dial": "63",
+    "code": "PH"
+  },
+  {
+    "name": "Singapore",
+    "dial": "65",
+    "code": "SG"
+  },
+  {
+    "name": "Thailand",
+    "dial": "66",
+    "code": "TH"
+  },
+  {
+    "name": "Japan",
+    "dial": "81",
+    "code": "JP"
+  },
+  {
+    "name": "Korea",
+    "dial": "82",
+    "code": "KR"
+  },
+  {
+    "name": "Vietnam",
+    "dial": "84",
+    "code": "VN"
+  },
+  {
+    "name": "China",
+    "dial": "86",
+    "code": "CN"
+  },
+  {
+    "name": "Turkey",
+    "dial": "90",
+    "code": "TR"
+  },
+  {
+    "name": "India",
+    "dial": "91",
+    "code": "IN"
+  },
+  {
+    "name": "Hong Kong",
+    "dial": "852",
+    "code": "HK"
+  },
+  {
+    "name": "Macau",
+    "dial": "853",
+    "code": "MO"
+  },
+  {
+    "name": "Taiwan",
+    "dial": "886",
+    "code": "TW"
+  },
+  {
+    "name": "Saudi Arabia",
+    "dial": "966",
+    "code": "SA"
+  }
+]
