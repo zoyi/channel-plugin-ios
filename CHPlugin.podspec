@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|  
   s.name              = 'CHPlugin'
-  s.version           = '0.1.14'
+  s.version           = '0.1.15'
   s.summary           = 'Channel plugin for iOS'
   s.homepage          = 'http://www.channel.io'
 
