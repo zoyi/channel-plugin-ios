@@ -321,6 +321,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isVisible;)
 @end
 
 
+@interface ChannelPlugin (SWIFT_EXTENSION(CHPlugin))
+@end
+
+
 SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 @interface Checkin : NSObject
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
