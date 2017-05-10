@@ -135,7 +135,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @import AVFoundation;
 @import Foundation;
 @import QuartzCore;
-@import CoreGraphics;
 @import ObjectiveC;
 @import UIKit;
 #endif
@@ -160,23 +159,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 
 @interface CALayer (SWIFT_EXTENSION(CHPlugin))
-@property (nonatomic) CGPoint origin;
-@property (nonatomic) CGFloat x;
-@property (nonatomic) CGFloat y;
-@property (nonatomic) CGPoint center;
-@property (nonatomic) CGFloat centerX;
-@property (nonatomic) CGFloat centerY;
-@property (nonatomic) CGSize size;
-@property (nonatomic) CGFloat width;
-@property (nonatomic) CGFloat height;
-@property (nonatomic) CGFloat top;
-@property (nonatomic) CGFloat right;
-@property (nonatomic) CGFloat bottom;
-@property (nonatomic) CGFloat left;
-@property (nonatomic) CGFloat top2;
-@property (nonatomic) CGFloat right2;
-@property (nonatomic) CGFloat bottom2;
-@property (nonatomic) CGFloat left2;
 @end
 
 @class NSAttributedString;
@@ -393,16 +375,6 @@ SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 
 
 @interface UIScrollView (SWIFT_EXTENSION(CHPlugin))
-@property (nonatomic) CGFloat contentWidth;
-@property (nonatomic) CGFloat contentHeight;
-@property (nonatomic, readonly) CGFloat contentTop;
-@property (nonatomic, readonly) CGFloat contentLeft;
-@property (nonatomic) CGFloat contentBottom;
-@property (nonatomic) CGFloat contentRight;
-@property (nonatomic) CGFloat viewportTop;
-@property (nonatomic) CGFloat viewportLeft;
-@property (nonatomic) CGFloat viewportBottom;
-@property (nonatomic) CGFloat viewportRight;
 @end
 
 
@@ -435,24 +407,6 @@ SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 
 
 @interface UIView (SWIFT_EXTENSION(CHPlugin))
-@property (nonatomic) CGPoint origin;
-@property (nonatomic) CGFloat x;
-@property (nonatomic) CGFloat y;
-@property (nonatomic) CGFloat centerX;
-@property (nonatomic) CGFloat centerY;
-@property (nonatomic) CGSize size;
-@property (nonatomic) CGFloat width;
-@property (nonatomic) CGFloat height;
-@property (nonatomic) CGFloat top;
-@property (nonatomic) CGFloat right;
-@property (nonatomic) CGFloat bottom;
-@property (nonatomic) CGFloat left;
-@property (nonatomic) CGFloat top2;
-@property (nonatomic) CGFloat right2;
-@property (nonatomic) CGFloat bottom2;
-@property (nonatomic) CGFloat left2;
-- (CGSize)sizeToFit:(CGFloat)width :(CGFloat)height;
-- (CGSize)sizeToFit:(CGSize)constrainedSize;
 @end
 
 
@@ -461,17 +415,6 @@ SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 
 
 @interface UIViewController (SWIFT_EXTENSION(CHPlugin))
-@property (nonatomic, readonly) CGRect bounds;
-@property (nonatomic, readonly) CGPoint center;
-@property (nonatomic, readonly) CGFloat centerX;
-@property (nonatomic, readonly) CGFloat centerY;
-@property (nonatomic, readonly) CGSize size;
-@property (nonatomic, readonly) CGFloat width;
-@property (nonatomic, readonly) CGFloat height;
-@property (nonatomic, readonly) CGFloat top;
-@property (nonatomic, readonly) CGFloat right;
-@property (nonatomic, readonly) CGFloat bottom;
-@property (nonatomic, readonly) CGFloat left;
 @end
 
 
