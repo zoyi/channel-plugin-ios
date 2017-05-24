@@ -11,7 +11,7 @@
 * Migrated to Swift 3.1
 * WebSocket connect/disconnect when app state changes 
 
-### v0.1.18
+### v0.2.0
 #### Improvement
 * Redesinged profile view (top left of chat list)
 * Added Error toast 
