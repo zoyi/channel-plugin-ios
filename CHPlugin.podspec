@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|  
   s.name              = 'CHPlugin'
-  s.version           = '0.2.0'
+  s.version           = '0.2.1'
   s.summary           = 'Channel plugin for iOS'
   s.homepage          = 'http://www.channel.io'
 
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '8.0'
   s.ios.vendored_frameworks = 'CHPlugin.framework'
 
-  s.dependency 'SlackTextViewController'
+  s.dependency 'CHSlackTextViewController'
   s.dependency 'MGSwipeTableCell'
   s.dependency 'M13ProgressSuite'
   s.dependency 'MWPhotoBrowser'
