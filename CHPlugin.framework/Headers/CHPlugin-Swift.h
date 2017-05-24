@@ -136,6 +136,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @import Foundation;
 @import QuartzCore;
 @import ObjectiveC;
+@import CRToast;
 @import UIKit;
 #endif
 
@@ -168,6 +169,10 @@ SWIFT_CLASS("_TtC8CHPlugin18CHAttributedString")
 @property (nonatomic) NSError * _Nullable error;
 @property (nonatomic, readonly, strong) NSAttributedString * _Nonnull string;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+@interface CRToastManager (SWIFT_EXTENSION(CHPlugin))
 @end
 
 
@@ -227,7 +232,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL hideLauncherButton;)
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isVisible;)
 + (BOOL)isVisible SWIFT_WARN_UNUSED_RESULT;
 + (void)setIsVisible:(BOOL)value;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 /// Initalize channel plugin.
 /// This method has to be called prior to any other methods
 /// provided by channel plugin
@@ -284,6 +288,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isVisible;)
 /// \param userInfo a Dictionary contains push information
 ///
 + (void)handlePushNotification:(NSDictionary * _Nonnull)userInfo;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -359,6 +364,10 @@ SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 
 
 @interface UIColor (SWIFT_EXTENSION(CHPlugin))
+@end
+
+
+@interface UIImage (SWIFT_EXTENSION(CHPlugin))
 @end
 
 
