@@ -6,3 +6,4 @@ github "zoyi/DACircularProgress" ~> 2.3.2
 github "jdg/MBProgressHUD" ~> 0.9
 github "zoyi/SDWebImage" ~> 4.0.0
 github "SVProgressHUD/SVProgressHUD"
+github "cruffenach/CRToast"

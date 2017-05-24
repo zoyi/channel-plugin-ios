@@ -23,6 +23,7 @@ end
 Install Channel plugin Framework through CocoaPods.
 
 ```
+pod repo update
 pod install
 ```
 
