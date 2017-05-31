@@ -29,7 +29,7 @@
 * Fixed user default key conflict
 * Fixed launcher display bug
 
-### 0.2.3
+### 0.2.4
 * Refactored Profile Edit Fields
 * Added phoneNumberKit 
-* Fixed UI issues
+* Fixed UI/UX issues
