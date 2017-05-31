@@ -28,3 +28,8 @@
 ### 0.2.2
 * Fixed user default key conflict
 * Fixed launcher display bug
+
+### 0.2.3
+* Refactored Profile Edit Fields
+* Added phoneNumberKit 
+* Fixed UI issues

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|  
   s.name              = 'CHPlugin'
-  s.version           = '0.2.2'
+  s.version           = '0.2.3'
   s.summary           = 'Channel plugin for iOS'
   s.homepage          = 'http://www.channel.io'
 
@@ -20,4 +20,5 @@ Pod::Spec.new do |s|
   s.dependency 'MWPhotoBrowser'
   s.dependency 'SVProgressHUD'
   s.dependency 'CRToast'
+  s.dependency 'PhoneNumberKit'
 end 
