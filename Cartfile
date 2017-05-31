@@ -1,4 +1,4 @@
-github "slackhq/SlackTextViewController" ~> 1.9.5
+github "zoyi/SlackTextViewController" ~> 1.10.1
 github "MortimerGoro/MGSwipeTableCell" ~> 1.5.6
 github "Marxon13/M13ProgressSuite" ~> 1.2.9
 github "zoyi/MWPhotoBrowser" ~> 2.1.3

@@ -24,3 +24,7 @@
 
 ### 0.2.1
 * Changed SlackTextViewController to CHSlackTextViewController to avoid conflict
+
+### 0.2.2
+* Fixed user default key conflict
+* Fixed launcher display bug
