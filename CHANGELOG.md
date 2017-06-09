@@ -33,3 +33,7 @@
 * Refactored Profile Edit Fields
 * Added phoneNumberKit 
 * Fixed UI/UX issues
+
+### 0.2.5
+* Fixed credential errors when app become active
+* Adjusted redux states
