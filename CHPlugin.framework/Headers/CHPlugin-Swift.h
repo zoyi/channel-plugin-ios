@@ -355,6 +355,10 @@ SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 @end
 
 
+@interface UIButton (SWIFT_EXTENSION(CHPlugin))
+@end
+
+
 @interface UICollectionView (SWIFT_EXTENSION(CHPlugin))
 @end
 
@@ -380,6 +384,10 @@ SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 
 
 @interface UILayoutGuide (SWIFT_EXTENSION(CHPlugin))
+@end
+
+
+@interface UINavigationController (SWIFT_EXTENSION(CHPlugin))
 @end
 
 
