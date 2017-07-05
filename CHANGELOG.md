@@ -37,3 +37,14 @@
 ### 0.2.5
 * Fixed credential errors when app become active
 * Adjusted redux states
+
+### 1.0.0
+#### Features
+* Veil can now update name/phone number 
+* Introduced review process after finish conversation
+
+#### Bug fixes
+* Fixed UI / layout issues
+* Validated when show(:) method is called
+* Displayed new messages in user chat view properly
+
