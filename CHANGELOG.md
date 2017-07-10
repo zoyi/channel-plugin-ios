@@ -48,3 +48,8 @@
 * Validated when show(:) method is called
 * Displayed new messages in user chat view properly
 
+### 1.0.1
+* Added sound for in app push notification
+* Added clear button in user info editing field
+* Updated new chat banner UI
+* Fixed layout bugs

@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../ch-plugin-one/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "520840991.901727"
+            timestampString = "521357267.17523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "548"
-            endingLineNumber = "548"
+            startingLineNumber = "538"
+            endingLineNumber = "538"
             landmarkName = "didPressLeftButton(_:)"
             landmarkType = "7">
             <Locations>
@@ -186,11 +186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../ch-plugin-one/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "520840991.901727"
+            timestampString = "521357267.17523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "722"
-            endingLineNumber = "722"
+            startingLineNumber = "712"
+            endingLineNumber = "712"
             landmarkName = "tableView(_:cellForRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../ch-plugin-one/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "520840991.901727"
+            timestampString = "521357267.17523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "980"
-            endingLineNumber = "980"
+            startingLineNumber = "970"
+            endingLineNumber = "970"
             landmarkName = "UserChatViewController"
             landmarkType = "4">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../ch-plugin-one/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "520840991.901727"
+            timestampString = "521357267.17523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "977"
-            endingLineNumber = "977"
+            startingLineNumber = "967"
+            endingLineNumber = "967"
             landmarkName = "documentInteractionControllerViewControllerForPreview(_:)"
             landmarkType = "7">
          </BreakpointContent>
