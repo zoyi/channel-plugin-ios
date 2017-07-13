@@ -53,3 +53,7 @@
 * Added clear button in user info editing field
 * Updated new chat banner UI
 * Fixed layout bugs
+
+### 1.0.2
+* Fixed deleted user chats handling 
+* Fixed avatar background color issue

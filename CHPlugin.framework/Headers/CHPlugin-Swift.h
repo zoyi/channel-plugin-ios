@@ -254,7 +254,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isVisible;)
 + (void)checkIn:(Checkin * _Nullable)checkinObj completion:(void (^ _Nullable)(enum ChannelCheckinCompletionStatus))completion;
 /// Check out from channel
 /// Call this method when user terminate session or logout
-+ (void)checkOut;
++ (void)checkOutWithReinit:(BOOL)reinit;
 /// Show channel launcher view on application
 /// location of the view can be customized in Channel Desk
 /// \param animated if true, the view is being added to the window using an animation
