@@ -57,3 +57,9 @@
 ### 1.0.2
 * Fixed deleted user chats handling 
 * Fixed avatar background color issue
+
+### 1.0.3
+* Added in-app push notification sound
+* Added sound option
+* Saved closed user chat option state 
+* Fixed minor bugs
