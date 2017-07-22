@@ -63,3 +63,6 @@
 * Added sound option
 * Saved closed user chat option state 
 * Fixed minor bugs
+
+### 1.0.4
+* Fixed duplicate `show:` method 
