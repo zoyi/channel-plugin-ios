@@ -66,3 +66,7 @@
 
 ### 1.0.4
 * Fixed duplicate `show:` method 
+
+### 1.0.5
+* Updated UIState in redux correctly
+* Reversed photo indexes
