@@ -70,3 +70,18 @@
 ### 1.0.5
 * Updated UIState in redux correctly
 * Reversed photo indexes
+
+### 1.1.0
+#### Updated
+* Updated socket io v2
+* If incoming push is same chat as current chat, It won't push new chat but update
+* Removed unused 'isVisible' property
+
+#### Bug fixes 
+* Fixed html unescaped for welcome message
+* Fixed link color 
+* Fixed off by one error for new message label
+* Fixed badge count issues when launched app with push notification
+* Fixed name/phone number dialog layout and localizations 
+* Fixed background layout for phone number picker view
+* Fixed font size for in-app chat notification 

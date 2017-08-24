@@ -8,3 +8,4 @@ github "zoyi/SDWebImage" ~> 4.0.0
 github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit"
+github "nuclearace/Starscream"

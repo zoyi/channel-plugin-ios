@@ -229,9 +229,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL debugMode;)
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL hideLauncherButton;)
 + (BOOL)hideLauncherButton SWIFT_WARN_UNUSED_RESULT;
 + (void)setHideLauncherButton:(BOOL)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isVisible;)
-+ (BOOL)isVisible SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIsVisible:(BOOL)value;
 /// Initalize channel plugin.
 /// This method has to be called prior to any other methods
 /// provided by channel plugin
