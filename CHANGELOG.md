@@ -74,6 +74,7 @@
 ### 1.1.0
 #### Updated
 * Updated socket io v2
+* Added StarstreamSocketIO framework to support socket v2
 * If incoming push is same chat as current chat, It won't push new chat but update
 * Removed unused 'isVisible' property
 
