@@ -86,3 +86,6 @@
 * Fixed name/phone number dialog layout and localizations 
 * Fixed background layout for phone number picker view
 * Fixed font size for in-app chat notification 
+
+### 1.1.1
+* Fixed message height calculation
