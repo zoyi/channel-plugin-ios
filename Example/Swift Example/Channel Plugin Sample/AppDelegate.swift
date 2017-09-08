@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     registerForRemoteNotification()
     
     ChannelPlugin.debugMode = true
-    ChannelPlugin.initialize(pluginKey: "faa73a7c-4158-4a38-9a7a-793a969fd5bc")
+    ChannelPlugin.initialize(pluginId: "faa73a7c-4158-4a38-9a7a-793a969fd5bc")
     
     return true
   }
@@ -54,10 +54,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
       let center  = UNUserNotificationCenter.current()
       center.delegate = self
       center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
-        if error == nil{
-          UIApplication.shared.registerForRemoteNotifications()
-        }
+
       }
+      UIApplication.shared.registerForRemoteNotifications()
     }
     else {
       UIApplication.shared.registerUserNotificationSettings(

@@ -6,5 +6,5 @@ target 'Channel Plugin Sample objc' do
   use_frameworks!
 
   # Pods for Channel Plugin Sample objc
-  pod 'CHPlugin'
+  pod 'CHPlugin', :path => '../../'
 end

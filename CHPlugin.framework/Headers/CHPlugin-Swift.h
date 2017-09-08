@@ -175,20 +175,13 @@ SWIFT_CLASS("_TtC8CHPlugin18CHAttributedString")
 @interface CRToastManager (SWIFT_EXTENSION(CHPlugin))
 @end
 
-
-SWIFT_PROTOCOL("_TtP8CHPlugin20ChannelBadgeDelegate_")
-@protocol ChannelBadgeDelegate
-/// notify badge count when changed
-- (void)badgeDidChangedWithCount:(NSInteger)count;
-@end
-
 /// Checkin result state
 /// <ul>
 ///   <li>
 ///     success: Checkin success
 ///   </li>
 ///   <li>
-///     notInitialized: PluginKey is not initialized
+///     notInitialized: pluginId is not initialized
 ///   </li>
 ///   <li>
 ///     networkTimeout: Network request timeout
@@ -206,35 +199,45 @@ SWIFT_PROTOCOL("_TtP8CHPlugin20ChannelBadgeDelegate_")
 ///     checkinError: any other errors
 ///   </li>
 /// </ul>
-typedef SWIFT_ENUM(NSInteger, ChannelCheckinCompletionStatus) {
-  ChannelCheckinCompletionStatusSuccess = 0,
-  ChannelCheckinCompletionStatusNotInitialized = 1,
-  ChannelCheckinCompletionStatusNetworkTimeout = 2,
-  ChannelCheckinCompletionStatusDuplicated = 3,
-  ChannelCheckinCompletionStatusNotAvailableVersion = 4,
-  ChannelCheckinCompletionStatusServiceUnderConstruction = 5,
-  ChannelCheckinCompletionStatusCheckinError = 6,
+typedef SWIFT_ENUM(NSInteger, ChannelCheckInCompletionStatus) {
+  ChannelCheckInCompletionStatusSuccess = 0,
+  ChannelCheckInCompletionStatusNotInitialized = 1,
+  ChannelCheckInCompletionStatusNetworkTimeout = 2,
+  ChannelCheckInCompletionStatusDuplicated = 3,
+  ChannelCheckInCompletionStatusNotAvailableVersion = 4,
+  ChannelCheckInCompletionStatusServiceUnderConstruction = 5,
+  ChannelCheckInCompletionStatusCheckinError = 6,
 };
 
-@class Checkin;
+
+SWIFT_PROTOCOL("_TtP8CHPlugin15ChannelDelegate_")
+@protocol ChannelDelegate
+/// notify badge count when changed
+- (void)badgeDidChangedWithCount:(NSInteger)count;
+@end
+
+@class CheckIn;
 
 SWIFT_CLASS("_TtC8CHPlugin13ChannelPlugin")
 @interface ChannelPlugin : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, weak) id <ChannelBadgeDelegate> _Nullable badgeDelegate;)
-+ (id <ChannelBadgeDelegate> _Nullable)badgeDelegate SWIFT_WARN_UNUSED_RESULT;
-+ (void)setBadgeDelegate:(id <ChannelBadgeDelegate> _Nullable)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, weak) id <ChannelDelegate> _Nullable delegate;)
++ (id <ChannelDelegate> _Nullable)delegate SWIFT_WARN_UNUSED_RESULT;
++ (void)setDelegate:(id <ChannelDelegate> _Nullable)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL debugMode;)
 + (BOOL)debugMode SWIFT_WARN_UNUSED_RESULT;
 + (void)setDebugMode:(BOOL)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL hideLauncherButton;)
 + (BOOL)hideLauncherButton SWIFT_WARN_UNUSED_RESULT;
 + (void)setHideLauncherButton:(BOOL)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL enabledTrackDefaultEvent;)
++ (BOOL)enabledTrackDefaultEvent SWIFT_WARN_UNUSED_RESULT;
++ (void)setEnabledTrackDefaultEvent:(BOOL)value;
 /// Initalize channel plugin.
 /// This method has to be called prior to any other methods
 /// provided by channel plugin
-/// \param pluginKey plugin key from Channel io
+/// \param pluginId plugin key from Channel io
 ///
-+ (void)initializeWithPluginKey:(NSString * _Nonnull)pluginKey;
++ (void)initializeWithPluginId:(NSString * _Nonnull)pluginId;
 /// Register a push token.
 /// This method has to be called within
 /// <code>application:didRegisterForRemoteNotificationsWithDeviceToken:</code>
@@ -248,10 +251,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL hideLauncherButton;)
 ///
 /// \param completion Completion callback block
 ///
-+ (void)checkIn:(Checkin * _Nullable)checkinObj completion:(void (^ _Nullable)(enum ChannelCheckinCompletionStatus))completion;
++ (void)checkIn:(CheckIn * _Nullable)checkinObj completion:(void (^ _Nullable)(enum ChannelCheckInCompletionStatus))completion;
 /// Check out from channel
 /// Call this method when user terminate session or logout
-+ (void)checkOutWithReinit:(BOOL)reinit;
++ (void)checkOut;
 /// Show channel launcher view on application
 /// location of the view can be customized in Channel Desk
 /// \param animated if true, the view is being added to the window using an animation
@@ -276,7 +279,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL hideLauncherButton;)
 /// by inspecting userInfo
 /// \param userInfo a Dictionary contains push information
 ///
-+ (BOOL)isChannelNotification:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
++ (BOOL)isChannelPushNotification:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+/// Track a event
+/// \param name Event name
+///
+/// \param userInfo a Dictionary contains information about event
+///
++ (void)trackWithName:(NSString * _Nonnull)name properties:(NSDictionary<NSString *, id> * _Nullable)properties;
 /// Handle push notification for channel
 /// This method has to be called within <code>userNotificationCenter:response:completionHandler:</code>
 /// for <em>iOS 10 and above</em>, and <code>application:userInfo:completionHandler:</code>
@@ -293,14 +302,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL hideLauncherButton;)
 @end
 
 
-SWIFT_CLASS("_TtC8CHPlugin7Checkin")
-@interface Checkin : NSObject
+SWIFT_CLASS("_TtC8CHPlugin7CheckIn")
+@interface CheckIn : NSObject
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-- (Checkin * _Nonnull)withName:(NSString * _Nonnull)name;
-- (Checkin * _Nonnull)withUserId:(NSString * _Nonnull)userId;
-- (Checkin * _Nonnull)withAvatarUrl:(NSString * _Nonnull)avatarUrl;
-- (Checkin * _Nonnull)withMobileNumber:(NSString * _Nonnull)mobileNumber;
-- (Checkin * _Nonnull)withMetaKey:(NSString * _Nonnull)metaKey metaValue:(id _Nonnull)metaValue;
+- (CheckIn * _Nonnull)withName:(NSString * _Nonnull)name;
+- (CheckIn * _Nonnull)withUserId:(NSString * _Nonnull)userId;
+- (CheckIn * _Nonnull)withAvatarUrl:(NSString * _Nonnull)avatarUrl;
+- (CheckIn * _Nonnull)withMobileNumber:(NSString * _Nonnull)mobileNumber;
+- (CheckIn * _Nonnull)withMetaKey:(NSString * _Nonnull)metaKey metaValue:(id _Nonnull)metaValue;
 @end
 
 
@@ -365,6 +374,10 @@ SWIFT_CLASS("_TtC8CHPlugin7Checkin")
 
 
 @interface UIColor (SWIFT_EXTENSION(CHPlugin))
+@end
+
+
+@interface UIDevice (SWIFT_EXTENSION(CHPlugin))
 @end
 
 

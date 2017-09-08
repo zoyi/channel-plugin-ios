@@ -16,14 +16,13 @@
 
 @implementation AppDelegate
 
-#define ChannelAPIKey @"faa73a7c-4158-4a38-9a7a-793a969fd5bc"
+#define ChannelPluginId @"faa73a7c-4158-4a38-9a7a-793a969fd5bc"
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   [self registerForRemoteNotification];
   
   [ChannelPlugin setDebugMode:YES];
-  [ChannelPlugin initializeWithPluginKey:ChannelAPIKey];
-  
+  [ChannelPlugin initializeWithPluginId:ChannelPluginId];
   return YES;
 }
 

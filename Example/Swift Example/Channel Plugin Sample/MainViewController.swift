@@ -49,7 +49,7 @@ class MainViewController : UIViewController {
       return
     }
     
-    let checkin = Checkin()
+    let checkin = CheckIn()
     checkin.with(name: self.userName)
       .with(userId: self.userId)
       .with(mobileNumber: self.phoneNumber)

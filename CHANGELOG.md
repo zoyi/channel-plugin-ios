@@ -89,3 +89,8 @@
 
 ### 1.1.1
 * Fixed message height calculation
+
+### 2.0.0
+* BREAKING CHANGE: Renamed some properties and methods 
+* Introduced new method `track` to send event to channel
+* Fixed minor bugs

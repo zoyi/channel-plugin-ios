@@ -44,7 +44,7 @@
     return;
   }
   
-  Checkin *checkin = [[Checkin alloc] init];
+  CheckIn *checkin = [[CheckIn alloc] init];
   [checkin withName:@""];
   [checkin withUserId:self.userId];
   [checkin withMobileNumber:@""];

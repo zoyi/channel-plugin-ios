@@ -3,7 +3,7 @@
 
 [![Platform](https://img.shields.io/badge/platform-iOS-orange.svg)](https://cocoapods.org/pods/CHPlugin)
 [![Languages](https://img.shields.io/badge/language-Objective--C%20%7C%20Swift-orange.svg)](https://github.com/zoyi/channel-plugin-ios)
-[![CocoaPods](https://img.shields.io/badge/pod-v1.0.2-green.svg)](https://cocoapods.org/pods/CHPlugin)
+[![CocoaPods](https://img.shields.io/cocoapods/v/CHPlugin.svg)](https://cocoapods.org/pods/CHPlugin) 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/zoyi/channel-plugin-ios/blob/master/LICENSE)
 
