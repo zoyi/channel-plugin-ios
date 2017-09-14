@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|  
   s.name              = 'CHPlugin'
-  s.version           = '2.0.1'
+  s.version           = '2.0.2'
   s.summary           = 'Channel plugin for iOS'
   s.homepage          = 'http://www.channel.io'
 
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.platform          = :ios
   s.source            = { :git => 'https://github.com/zoyi/channel-plugin-ios.git', :tag => s.version }
 	
-	s.requires_arc = true
+  s.requires_arc = true
   s.ios.deployment_target = '8.0'
   s.ios.vendored_frameworks = 'CHPlugin.framework'
 

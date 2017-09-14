@@ -7,6 +7,11 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/zoyi/channel-plugin-ios/blob/master/LICENSE)
 
+## Prerequisite
+
+* iOS 8 or above 
+* Swift 3.2 or above 
+
 ## Documentation
 
 https://developers.channel.io/docs

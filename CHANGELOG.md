@@ -97,3 +97,8 @@
 
 ### 2.0.1 
 * Updated Framework version string
+
+### 2.0.2
+* iOS 11 migration 
+* Changed name `trackCheckIn` -> `enabledTrackDefaultEvent`
+* enabled `bitcode` feature 
