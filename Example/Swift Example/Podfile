@@ -6,5 +6,5 @@ target 'Channel Plugin Sample' do
   use_frameworks!
 
   # Pods for Channel Plugin Sample
-  pod 'CHPlugin', :path => "../../" 
+  pod 'CHPlugin', :git => 'https://github.com/zoyi/channel-plugin-ios.git', :branch => 'swift-3.1' 
 end

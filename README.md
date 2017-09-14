@@ -10,7 +10,6 @@
 ## Prerequisite
 
 * iOS 8 or above 
-* Swift 3.2 or above 
 
 ## Documentation
 
@@ -26,6 +25,13 @@ target YOUR_PROJECT_TARGET do
 end
 ```
 
+For Swift 3.1 
+```
+target YOUR_PROJECT_TARGET do
+  pod 'CHPlugin', :git => 'https://github.com/zoyi/channel-plugin-ios', :branch => 'swift-3.1'
+end
+```
+
 Install Channel plugin Framework through CocoaPods.
 
 ```
@@ -37,7 +43,7 @@ Now you can see Channel plugin framework by inspecting YOUR_PROJECT.xcworkspace.
 
 ## Install Channel plugin Framework from Carthage(iOS 8+)
 
-1. Add `github "zoyi/channel-plugin-ios"` to your `Cartfile`.
+1. Add `github "zoyi/channel-plugin-ios"` to your `Cartfile`. If you are using xcode 8 (swift 3.1 or less), add `github "zoyi/channel-plugin-ios" "swift-3.1"
 2. Run `carthage update --platform iOS --no-use-binaries`.
 3. Go to your Xcode project's "General" settings. Open `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Checkouts/channel-plugin-ios` in Finder and drag `CHPlugin.framework` to the "Embedded Binaries" section in Xcode along with other dependencies. Make sure `Copy items if needed` is selected and click `Finish`.
 
