@@ -9,7 +9,7 @@
 
 ## Documentation
 
-https://help.channel.io
+https://developers.channel.io/docs
 
 ## Install Channel plugin Framework from CocoaPods(iOS 8+)
 
