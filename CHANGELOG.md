@@ -1,5 +1,8 @@
 # Change Log
 ----
+### 2.0.3
+* Downgraded PhoneNumberKit to 1.4 (compatibility issue)
+
 ### 2.0.2
 * iOS 11 migration
 * Changed name `trackCheckIn` -> `enabledTrackDefaultEvent`
