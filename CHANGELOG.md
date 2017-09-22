@@ -1,5 +1,8 @@
 # Change Log
 ----
+### 2.0.4
+* Fixed minor bugs
+
 ### 2.0.3
 * Downgraded PhoneNumberKit to 1.4 (compatibility issue)
 
