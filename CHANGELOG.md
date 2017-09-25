@@ -1,5 +1,9 @@
 # Change Log
 ----
+### 2.0.5
+* Fixed minor bugs
+* PhoneNumberKit to 2.0 (Swift 4.0)
+
 ### 2.0.4
 * Fixed minor bugs
 
