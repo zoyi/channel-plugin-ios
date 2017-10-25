@@ -2,7 +2,8 @@
 ----
 ### 2.1.0
 #### Updated
-* Added `didClickOn:` delegate method 
+* Added `shouldHandleChatLink:` delegate method 
+* Increased deployment target to 9.0
 
 #### Bug fixes
 * Fixed channel open properly after duplicated checkin 
