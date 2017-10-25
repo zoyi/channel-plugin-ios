@@ -1,5 +1,13 @@
 # Change Log
 ----
+### 2.1.0
+#### Updated
+* Added `didClickOn:` delegate method 
+
+#### Bug fixes
+* Fixed channel open properly after duplicated checkin 
+* Fixed minor bugs 
+
 ### 2.0.5
 * Fixed minor bugs
 * PhoneNumberKit to 2.0 (Swift 4.0)

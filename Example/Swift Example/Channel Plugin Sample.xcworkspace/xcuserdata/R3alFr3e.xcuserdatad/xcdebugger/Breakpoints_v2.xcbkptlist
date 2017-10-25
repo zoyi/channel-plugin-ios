@@ -6,70 +6,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "527056568.939321"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "325"
-            endingLineNumber = "325"
-            landmarkName = "fetchMessages()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "527056568.939624"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "441"
-            endingLineNumber = "441"
-            landmarkName = "newState(state:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CHPlugin.UserChatViewController.newState(state: CHPlugin.AppState) -&gt; ()"
-                  moduleName = "CHPlugin"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/R3alFr3e/Developments/ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
-                  timestampString = "527055471.895246"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "441"
-                  endingLineNumber = "441"
-                  offsetFromSymbolStart = "60948">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "implicit closure #3 : @autoclosure () throws -&gt; Swift.String in CHPlugin.UserChatViewController.newState(state: CHPlugin.AppState) -&gt; ()"
-                  moduleName = "CHPlugin"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/R3alFr3e/Developments/ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
-                  timestampString = "527055471.897211"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "441"
-                  endingLineNumber = "441"
-                  offsetFromSymbolStart = "12">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -122,13 +58,45 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "527056568.939866"
+            timestampString = "530612772.165074"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "604"
             endingLineNumber = "604"
             landmarkName = "didPressRightButton(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "CHPlugin.UserChatViewController.didPressRightButton(Swift.Optional&lt;Any&gt;) -&gt; ()"
+                  moduleName = "CHPlugin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/R3alFr3e/Developments/ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
+                  timestampString = "530612773.132133"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "604"
+                  endingLineNumber = "604"
+                  offsetFromSymbolStart = "7724">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "function signature specialization &lt;Arg[0] = Owned To Guaranteed and Exploded, Arg[1] = Owned To Guaranteed, Arg[2] = Owned To Guaranteed and Exploded&gt; of closure #1 (Swift.String) -&gt; () in CHPlugin.UserChatViewController.didPressRightButton(Swift.Optional&lt;Any&gt;) -&gt; ()"
+                  moduleName = "CHPlugin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/R3alFr3e/Developments/ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
+                  timestampString = "530612773.134132"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "604"
+                  endingLineNumber = "604"
+                  offsetFromSymbolStart = "52">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -138,12 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../ch-plugin-ios/CHPlugin/Source/UserChatViewController.swift"
-            timestampString = "527056568.940075"
+            timestampString = "530612772.165135"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "436"
-            endingLineNumber = "436"
-            landmarkName = "newState(state:)"
+            startingLineNumber = "990"
+            endingLineNumber = "990"
+            landmarkName = "didWebPageTapped(message:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -247,8 +247,11 @@ typedef SWIFT_ENUM(NSInteger, ChannelCheckInCompletionStatus) {
 
 SWIFT_PROTOCOL("_TtP8CHPlugin15ChannelDelegate_")
 @protocol ChannelDelegate
+@optional
 /// notify badge count when changed
-- (void)badgeDidChangedWithCount:(NSInteger)count;
+- (void)badgeDidChangeWithCount:(NSInteger)count;
+/// notifiy if a link is clicked
+- (BOOL)shouldHandleChatLinkWithUrl:(NSURL * _Nonnull)url SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class CheckIn;

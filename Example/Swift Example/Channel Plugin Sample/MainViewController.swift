@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import CHPlugin
 
-class MainViewController : UIViewController {
+class MainViewController : UIViewController, ChannelDelegate {
   @IBOutlet var loginTypeLabel: UILabel!
   @IBOutlet var descLabel: UILabel!
   
@@ -21,7 +21,7 @@ class MainViewController : UIViewController {
   var phoneNumber: String = ""
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    ChannelPlugin.delegate = self
     self.loginTypeLabel.text = self.isUser
       ? "Checked in (user)" : "Checked in (veil)"
     self.descLabel.text = "Check out when navigates back"
@@ -42,6 +42,10 @@ class MainViewController : UIViewController {
     if self.isMovingFromParentViewController {
       ChannelPlugin.checkOut()
     }
+  }
+  
+  func shouldHandleChatLink(url: URL) -> Bool {
+    return false
   }
   
   func loginAsUser() {
