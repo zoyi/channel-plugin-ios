@@ -1,0 +1,210 @@
+//
+//  LocalMessageFactory.swift
+//  CHPlugin
+//
+//  Created by Haeun Chung on 23/02/2017.
+//  Copyright © 2017 ZOYI. All rights reserved.
+//
+
+enum MessageType {
+  case Default
+  case ChannelClosed
+  case BusinessHourQuestion
+  case BusinessHourAnswer
+  case WelcomeMessage
+  case DateDivider
+  case UserInfoDialog
+  case NewAlertMessage
+  case UserMessage
+  case SatisfactionFeedback
+  case SatisfactionCompleted
+  case Log
+  case WebPage
+  case Image
+  case File
+}
+
+struct LocalMessageFactory {
+  
+  static func generate(type: MessageType,
+                      messages: [CHMessage] = [],
+                      userChat: CHUserChat? = nil,
+                      text: String? = nil) -> [CHMessage] {
+    
+    switch type {
+    case .ChannelClosed:
+      if let msg = getClosingMessage() {
+        return messages + [msg]
+      }
+      return messages
+    case .BusinessHourQuestion:
+      let msg = getBusinessHourQuestion(userChat:userChat)
+      return messages + [msg]
+    case .BusinessHourAnswer:
+      if let msg = getBusinessHourAnswer(userChat:userChat) {
+        return messages + [msg]
+      }
+      return messages
+    case .DateDivider:
+      let msgs = insertDateDividers(messages: messages)
+      return msgs
+    case .NewAlertMessage:
+      let msgs = insertNewMessage(messages: messages, userChat: userChat!)
+      return msgs
+    case .UserMessage:
+      let msg = getUserMessage(msg: text ?? "", userChat: userChat)
+      return messages + [msg]
+    case .UserInfoDialog:
+      let msgs = insertUserInfoDialog(messages: messages, userChat: userChat!)
+      return msgs
+    case .WelcomeMessage:
+      if let msg = getWelcomeMessage() {
+        return [msg] + messages
+      }
+      return messages
+    case .SatisfactionFeedback:
+      let msg = feedBack()
+      return [msg] + messages
+    case .SatisfactionCompleted:
+      let msg = feedbackCompleted()
+      return [msg] + messages
+    default:
+      return messages
+    }
+    
+  }
+  
+  //TODO: gather and organize constant strings into one file
+  private static func getClosingMessage(chatId: String = "dummy") -> CHMessage? {
+    return CHMessage(chatId: chatId,
+                   message: mainStore.state.scriptsState.getOutOfWorkMessage(),
+                   type: .ChannelClosed,
+                   id: "close_dummy")
+  }
+  
+  private static func getBusinessHourQuestion(userChat: CHUserChat?) -> CHMessage {
+    return CHMessage(chatId: userChat?.id ?? "dummy",
+                   message: CHAssets.localized("ch.out_of_work.user_answer"),
+                   type: .BusinessHourQuestion,
+                   entity: mainStore.state.guest,
+                   id: "bhq_dummy")
+  }
+  
+  private static func getBusinessHourAnswer(userChat:CHUserChat?) -> CHMessage? {
+    // TODO: consider to cut coupling between state channel
+    return CHMessage(chatId: userChat?.id ?? "dummy",
+                   message: mainStore.state.channel.workingTimeString,
+                   type: .BusinessHourAnswer,
+                   id: "bha_dummy")
+  }
+  
+  private static func insertDateDividers(messages: [CHMessage]) -> [CHMessage] {
+    var indexes: [(Int, String)] = []
+    var newMessages = messages
+    var lastDateMsg: CHMessage? = nil
+    var chatId = ""
+    
+    for index in (0..<messages.count).reversed() {
+      let msg = messages[index]
+      if index == messages.count - 1 {
+        indexes.append((index, msg.readableDate))
+        lastDateMsg = msg
+        chatId = msg.chatId
+      } else if lastDateMsg?.isSameDate(previous: msg) == false {
+        indexes.append((index, msg.readableDate))
+        lastDateMsg = msg
+      }
+    }
+  
+    for element in indexes {
+      let date = messages[element.0]
+        .createdAt
+        .add(components: [Calendar.Component.nanosecond: -100])
+      let msg = CHMessage(chatId:chatId,
+                        message:element.1,
+                        type: .DateDivider,
+                        createdAt: date,
+                        id: element.1)
+      newMessages.insert(msg, at: element.0 + 1)
+    }
+    
+    return newMessages
+  }
+  
+  private static func getWelcomeMessage() -> CHMessage? {
+    // TODO: consider to cut coupling between main store states
+    let guest = mainStore.state.guest
+    let msg = mainStore.state.scriptsState.getWelcomeMessage(guest: guest)
+    return CHMessage(chatId: "dummy",
+                   message: msg,
+                   type: .WelcomeMessage,
+                   id: "dummy")
+  }
+  
+  //insert new message model into proper position
+  private static func insertNewMessage(messages: [CHMessage],
+                                       userChat: CHUserChat) -> [CHMessage] {
+    guard let session = userChat.session else { return messages }
+    guard let lastReadAt = session.lastReadAt else { return messages }
+    
+    var newMessages = messages
+    
+    var position = -1
+    for (index, message) in messages.enumerated() {
+      if message.createdAt <= lastReadAt {
+        break
+      }
+      
+      position = index
+    }
+    
+    if position >= 0 {
+      let date = messages[position]
+        .createdAt
+        .add(components: [Calendar.Component.nanosecond: -100])
+      let msg = CHMessage(chatId: userChat.id,
+                        message: CHAssets.localized("ch.unread_divider"),
+                        type: .NewAlertMessage,
+                        createdAt: date,
+                        id: "new_dummy")
+      newMessages.insert(msg, at: position)
+    }
+
+    return newMessages
+  }
+
+  private static func insertUserInfoDialog(messages: [CHMessage],
+                                           userChat: CHUserChat) -> [CHMessage] {
+    let dialogType : DialogType =
+      mainStore.state.guest.ghost
+        ? .UserName : .PhoneNumber
+    let msg = CHMessage(chatId:userChat.id,
+                      message: "",
+                      type: .UserInfoDialog,
+                      dialogType: dialogType)
+    return messages + [msg]
+  }
+  
+  private static func getUserMessage(msg: String, userChat: CHUserChat?) -> CHMessage {
+    return CHMessage(chatId:userChat?.id ?? "dummy", message:msg, type: .UserMessage)
+  }
+  
+  private static func feedBack() -> CHMessage {
+    let date = Calendar.current.date(byAdding: .second, value: 100, to: Date())
+    return CHMessage(
+      chatId: "feedback_dummy",
+      message: "",
+      type: .SatisfactionFeedback,
+      createdAt: date)
+  }
+  
+  private static func feedbackCompleted() -> CHMessage {
+    let date = Calendar.current.date(byAdding: .second, value: 100, to: Date())
+    return CHMessage(
+      chatId: "completed_dummy",
+      message: "",
+      type: .SatisfactionCompleted,
+      createdAt: date)
+  }
+}
+

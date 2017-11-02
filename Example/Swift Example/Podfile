@@ -6,5 +6,5 @@ target 'Channel Plugin Sample' do
   use_frameworks!
 
   # Pods for Channel Plugin Sample
-  pod 'CHPlugin', :path => '../../'
+  pod 'CHPlugin', :path => '../../../ch-plugin-one'
 end
