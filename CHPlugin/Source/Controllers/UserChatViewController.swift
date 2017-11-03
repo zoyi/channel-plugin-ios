@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Dwifft
+import CHDwifft
 import ReSwift
 import RxSwift
 import DKImagePickerController
@@ -178,10 +178,10 @@ final class UserChatViewController: BaseSLKTextViewController {
   fileprivate func initDwifft() {
     self.tableView.reloadData()
     //self.tableView.scrollToBottom(false)
-
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
       tableView: self.tableView, initialRows: self.messages
     )
+    self.diffCalculator?.forceOffAnimationEnabled = true
     self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
     self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
   }

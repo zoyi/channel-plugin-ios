@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CHPlugin'
-  s.version          = '2.2.0'
+  s.version          = '2.2.2'
   s.summary          = 'Channel plugin for iOS'
 
 # This description is used to generate tags and improve search results.
@@ -41,7 +41,7 @@ Pod::Spec.new do |s|
   s.dependency 'RxSwift'
   s.dependency 'ObjectMapper'
   s.dependency 'NVActivityIndicatorView'
-  s.dependency 'Dwifft'
+  s.dependency 'CHDwifft'
   s.dependency 'DKImagePickerController'
   s.dependency 'Alamofire'
   s.dependency 'CGFloatLiteral'

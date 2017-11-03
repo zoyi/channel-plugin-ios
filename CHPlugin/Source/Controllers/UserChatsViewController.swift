@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Dwifft
+import CHDwifft
 import ReSwift
 import RxSwift
 import SnapKit

@@ -18,7 +18,7 @@ target 'CHPlugin' do
   pod 'Alamofire', '~> 4.0'
   pod 'CGFloatLiteral'
   pod 'DKImagePickerController'
-  pod 'Dwifft'
+  pod 'CHDwifft'
   pod 'ManualLayout'
   pod 'NVActivityIndicatorView'
   pod 'ObjectMapper'

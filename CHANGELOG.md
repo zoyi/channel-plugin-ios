@@ -1,5 +1,10 @@
 # Change Log
 ----
+### 2.2.2
+* Dwifft to CHDwifft (forceRemoveAnimation)
+* Fixed animation issue
+* iPhone X layout supports
+
 ### 2.2.0
 * Detached all in-project dependecies 
 * Swift 4 migration 
