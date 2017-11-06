@@ -6,7 +6,7 @@ target 'CHPlugin' do
   use_frameworks!
 
   # Pods for CHPlugin
-  pod 'MWPhotoBrowser'
+  pod 'CHPhotoBrowser'
   pod 'CHSlackTextViewController'
   pod 'MGSwipeTableCell'
   pod 'M13ProgressSuite'

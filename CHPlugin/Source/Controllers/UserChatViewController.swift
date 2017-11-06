@@ -11,7 +11,7 @@ import CHDwifft
 import ReSwift
 import RxSwift
 import DKImagePickerController
-import MWPhotoBrowser
+import CHPhotoBrowser
 import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire
@@ -941,6 +941,7 @@ extension UserChatViewController {
     if let index = self.photoUrls.index(of: imgUrl ?? "") {
       let navigationController = self.navigationController as! MainNavigationController
       navigationController.useDefault = true
+      self.dismissKeyboard(true)
       self.photoBrowser?.setCurrentPhotoIndex(UInt(index))
       _ = self.navigationController?.pushViewController(self.photoBrowser!, animated: true)
     }
