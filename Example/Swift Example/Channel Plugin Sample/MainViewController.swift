@@ -45,7 +45,7 @@ class MainViewController : UIViewController, ChannelDelegate {
   }
   
   func shouldHandleChatLink(url: URL) -> Bool {
-    return false
+    return true
   }
   
   func loginAsUser() {
