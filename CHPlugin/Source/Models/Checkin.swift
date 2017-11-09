@@ -19,31 +19,31 @@ public class CheckIn : NSObject {
   }
   
   @discardableResult
-  public func with(name: String) -> CheckIn {
+  @objc public func with(name: String) -> CheckIn {
     self.name = name
     return self
   }
   
   @discardableResult
-  public func with(userId: String) -> CheckIn {
+  @objc public func with(userId: String) -> CheckIn {
     self.userId = userId
     return self
   }
   
   @discardableResult
-  public func with(avatarUrl: String) -> CheckIn {
+  @objc public func with(avatarUrl: String) -> CheckIn {
     self.avatarUrl = avatarUrl
     return self
   }
   
   @discardableResult
-  public func with(mobileNumber: String) -> CheckIn {
+  @objc public func with(mobileNumber: String) -> CheckIn {
     self.mobileNumber = mobileNumber
     return self
   }
   
   @discardableResult
-  public func with(metaKey:String, metaValue:Any) -> CheckIn {
+  @objc public func with(metaKey:String, metaValue:Any) -> CheckIn {
     self.meta[metaKey] = metaValue
     return self
   }

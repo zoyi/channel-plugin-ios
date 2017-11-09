@@ -49,9 +49,9 @@
   [checkin withUserId:self.userId];
   [checkin withMobileNumber:@""];
   
-  [ChannelPlugin checkIn:checkin completion:^(ChannelCheckinCompletionStatus state) {
+  [ChannelPlugin checkIn:checkin completion:^(enum ChannelCheckInCompletionStatus state) {
     switch (state) {
-      case ChannelCheckinCompletionStatusSuccess:
+      case ChannelCheckInCompletionStatusSuccess:
         break;
       default:
         self.loginLabel.text = @"Login failed due to invalid parameters";
@@ -61,8 +61,8 @@
 }
   
 - (void)loginAsVeil {
-  [ChannelPlugin checkIn:nil completion:^(ChannelCheckinCompletionStatus state) {
-    //completion block
+  [ChannelPlugin checkIn:nil completion:^(enum ChannelCheckInCompletionStatus state) {
+    
   }];
 }
 

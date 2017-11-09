@@ -68,11 +68,11 @@ public final class ChannelPlugin : NSObject {
   ]
   
   //set debug mode of channel
-  public static var debugMode = false
+  @objc public static var debugMode = false
   //set launcher show automatically when checkin succeed
-  public static var hideLauncherButton = false
+  @objc public static var hideLauncherButton = false
   //set default checkin tracking
-  public static var enabledTrackDefaultEvent = true
+  @objc public static var enabledTrackDefaultEvent = true
   
   // MARK: StoreSubscriber
 
@@ -114,7 +114,7 @@ public final class ChannelPlugin : NSObject {
    *
    *   - parameter pluginId: plugin key from Channel io
    */
-  public class func initialize(pluginId: String) {
+  @objc public class func initialize(pluginId: String) {
     ChannelPlugin.initWebsocket()
     ChannelPlugin.pluginId = pluginId
     ChannelPlugin.subscriber = CHPluginSubscriber()
@@ -133,7 +133,7 @@ public final class ChannelPlugin : NSObject {
    *
    *   - parameter token: a Data that represents device token
    */
-  public class func register(deviceToken: Data) {
+  @objc public class func register(deviceToken: Data) {
     let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
     self.pushToken = token
   }
@@ -147,7 +147,7 @@ public final class ChannelPlugin : NSObject {
    *     - completion: Completion callback block
    *
    */
-  public class func checkIn(_ checkinObj: CheckIn? = nil,
+  @objc public class func checkIn(_ checkinObj: CheckIn? = nil,
             completion: ((ChannelCheckInCompletionStatus) -> Void)? = nil) {
     if ChannelPlugin.pluginId == nil || ChannelPlugin.pluginId == "" {
       mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
@@ -201,7 +201,7 @@ public final class ChannelPlugin : NSObject {
    *   Check out from channel
    *   Call this method when user terminate session or logout
    */
-  public class func checkOut() {
+  @objc public class func checkOut() {
     ChannelPlugin.hideLauncher(animated: false)
     ChannelPlugin.hide(animated: false)
     ChannelPlugin.hideNotification()
@@ -224,7 +224,7 @@ public final class ChannelPlugin : NSObject {
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  public class func showLauncher(animated: Bool) {
+  @objc public class func showLauncher(animated: Bool) {
     guard let topController = CHUtils.getTopController() else {
       return
     }
@@ -269,7 +269,7 @@ public final class ChannelPlugin : NSObject {
    *
    *  - parameter animated: if true, the view is being added to the window using an animation
    */
-  public class func hideLauncher(animated: Bool) {
+  @objc public class func hideLauncher(animated: Bool) {
     guard (ChannelPlugin.launchView != nil) else { return }
     
     ChannelPlugin.launchView?.remove(animated: animated)
@@ -281,7 +281,7 @@ public final class ChannelPlugin : NSObject {
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  public class func show(animated: Bool) {
+  @objc public class func show(animated: Bool) {
     guard let topController = CHUtils.getTopController() else {
       return
     }
@@ -309,7 +309,7 @@ public final class ChannelPlugin : NSObject {
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  public class func hide(animated: Bool) {
+  @objc public class func hide(animated: Bool) {
     guard ChannelPlugin.baseNavigation != nil else { return }
     ChannelPlugin.delegate?.willHideChatList?()
     ChannelPlugin.baseNavigation?.dismiss(
@@ -327,7 +327,7 @@ public final class ChannelPlugin : NSObject {
    *
    *   - parameter userInfo: a Dictionary contains push information
    */
-  public class func isChannelPushNotification(_ userInfo:[AnyHashable: Any]) -> Bool {
+  @objc public class func isChannelPushNotification(_ userInfo:[AnyHashable: Any]) -> Bool {
     guard let provider = userInfo["provider"] else { return false }
     let isCorrectProvider = provider as! String == CHConstants.channelio
     
@@ -357,7 +357,7 @@ public final class ChannelPlugin : NSObject {
    *   - parameter name: Event name
    *   - parameter userInfo: a Dictionary contains information about event
    */
-  public class func track(name: String, properties: [String: Any]? = nil) {
+  @objc public class func track(name: String, properties: [String: Any]? = nil) {
     let version = Bundle(for: ChannelPlugin.self)
       .infoDictionary?["CFBundleShortVersionString"] as! String
     
@@ -380,7 +380,7 @@ public final class ChannelPlugin : NSObject {
    *
    *   - parameter userInfo: a Dictionary contains push information
    */
-  public class func handlePushNotification(_ userInfo:[AnyHashable : Any]) {
+  @objc public class func handlePushNotification(_ userInfo:[AnyHashable : Any]) {
     if !ChannelPlugin.isChannelPushNotification(userInfo) {
       return
     }
