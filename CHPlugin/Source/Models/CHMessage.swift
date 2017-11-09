@@ -196,8 +196,8 @@ extension CHMessage {
       
       var data: Data?
       if let imageAsset = self.file?.asset {
-        imageAsset.fetchImageDataForAsset(true, completeBlock: { (rawData, info) in
-          data = rawData
+        imageAsset.fetchOriginalImage(true, completeBlock: { (image, info) in
+          data = UIImageJPEGRepresentation(image!, 1.0)
         })
       } else {
         data = self.file?.rawData
