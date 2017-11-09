@@ -44,6 +44,14 @@ class MainViewController : UIViewController, ChannelDelegate {
     }
   }
   
+  func willShowChatList() {
+    print("will show")
+  }
+  
+  func willHideChatList() {
+    print("will hide")
+  }
+  
   func shouldHandleChatLink(url: URL) -> Bool {
     return true
   }

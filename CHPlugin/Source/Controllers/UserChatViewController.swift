@@ -120,7 +120,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
     if let userChatId = self.userChatId {
-      self.loaded = false
+      //self.loaded = false
       WsService.sharedService.leave(chatId: userChatId)
     }
   }

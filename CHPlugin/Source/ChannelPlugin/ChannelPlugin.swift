@@ -38,6 +38,8 @@ public protocol ChannelDelegate: class {
   @objc optional func badgeDidChange(count: Int) -> Void
   /// notifiy if a link is clicked
   @objc optional func shouldHandleChatLink(url: URL) -> Bool
+  @objc optional func willShowChatList() -> Void
+  @objc optional func willHideChatList() -> Void
 }
 
 @objc
@@ -226,7 +228,6 @@ public final class ChannelPlugin : NSObject {
     guard let topController = CHUtils.getTopController() else {
       return
     }
-    
     ChannelPlugin.showLauncher(on: topController.view, animated: animated)
   }
   
@@ -270,6 +271,7 @@ public final class ChannelPlugin : NSObject {
    */
   public class func hideLauncher(animated: Bool) {
     guard (ChannelPlugin.launchView != nil) else { return }
+    
     ChannelPlugin.launchView?.remove(animated: animated)
     ChannelPlugin.launchView = nil
   }
@@ -294,6 +296,7 @@ public final class ChannelPlugin : NSObject {
       return
     }
     
+    ChannelPlugin.delegate?.willShowChatList?()
     mainStore.dispatch(ChannelIsShown())
 
     let controller = MainNavigationController(rootViewController: UserChatsViewController())
@@ -308,7 +311,7 @@ public final class ChannelPlugin : NSObject {
    */
   public class func hide(animated: Bool) {
     guard ChannelPlugin.baseNavigation != nil else { return }
-    
+    ChannelPlugin.delegate?.willHideChatList?()
     ChannelPlugin.baseNavigation?.dismiss(
       animated: animated, completion: {
       mainStore.dispatch(ChannelIsHidden())

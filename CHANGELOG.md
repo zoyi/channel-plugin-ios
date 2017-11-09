@@ -2,6 +2,8 @@
 
 ### 2.2.3
 * Rolled back to deployment target 8.0
+* Added willShow/willHideChatList delegate methods
+* Fixed minor bugs
 
 ### 2.2.2
 * Dwifft to CHDwifft (forceRemoveAnimation)
