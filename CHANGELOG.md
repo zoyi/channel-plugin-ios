@@ -1,6 +1,7 @@
 # Change Log
 
-### 2.2.3
+### 2.2.4
+* SwiftyJSON 4.0 migration 
 * Rolled back to deployment target 8.0
 * Added willShow/willHideChatList delegate methods
 * Fixed minor bugs

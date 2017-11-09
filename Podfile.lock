@@ -2,7 +2,7 @@ PODS:
   - Alamofire (4.5.1)
   - CGFloatLiteral (0.4.0)
   - CHDwifft (0.7.2)
-  - CHPhotoBrowser (2.1.6):
+  - CHPhotoBrowser (2.1.7):
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
     - SDWebImage (!= 3.7.2, ~> 3.7)
@@ -46,7 +46,7 @@ PODS:
   - StarscreamSocketIO (8.0.7)
   - SVProgressHUD (2.2.2)
   - SwiftDate (4.4.2)
-  - SwiftyJSON (3.1.4)
+  - SwiftyJSON (4.0.0)
   - Then (2.2.1)
   - UIColor_Hex_Swift (3.0.2)
 
@@ -82,7 +82,7 @@ SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   CGFloatLiteral: 2ab558b74124b584dd023a35b7e41795a61d8140
   CHDwifft: a4d6f7afff101fb4947410939123393960d28425
-  CHPhotoBrowser: 3e668263b7563cb071eebee514d38aad139ab4dc
+  CHPhotoBrowser: 17306a0d094336ef3b1759f84b8da5b3975a9b8a
   CHSlackTextViewController: c2130f85d7a6f62820423b63c8d03bb08aa7fb8e
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
@@ -105,7 +105,7 @@ SPEC CHECKSUMS:
   StarscreamSocketIO: 00b54e4208481ca5cef089545353aaf126bae16d
   SVProgressHUD: 59b2d3dabacbd051576d21d32293ca7228dc18b0
   SwiftDate: 131cf2f09b390f0a07f0099e36005ffe2fbf4c7e
-  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   Then: 665607ef49c6c3f66c722cd02b7b53745a622f49
   UIColor_Hex_Swift: 95f718452092a3efc8a827dffd2c04d3237be02d
 
