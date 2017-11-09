@@ -11,7 +11,7 @@ import CHDwifft
 import ReSwift
 import RxSwift
 import DKImagePickerController
-import MWPhotoBrowser
+import CHPhotoBrowser
 import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire
@@ -105,6 +105,10 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+
+    let navigationController = self.navigationController as! MainNavigationController
+    navigationController.useDefault = false
+    
     mainStore.subscribe(self)
     if let userChatId = self.userChatId {
       self.state = .ChatJoining
@@ -935,6 +939,9 @@ extension UserChatViewController {
     self.photoBrowser = MWPhotoBrowser(delegate: self)
     
     if let index = self.photoUrls.index(of: imgUrl ?? "") {
+      let navigationController = self.navigationController as! MainNavigationController
+      navigationController.useDefault = true
+      self.dismissKeyboard(true)
       self.photoBrowser?.setCurrentPhotoIndex(UInt(index))
       _ = self.navigationController?.pushViewController(self.photoBrowser!, animated: true)
     }
@@ -1008,11 +1015,13 @@ extension UserChatViewController : UIDocumentInteractionControllerDelegate {
 }
 
 extension UserChatViewController : CHNavigationDelegate {
-  func willPopViewController() {
+  func willPopViewController(willShow: UIViewController) {
     if self.userChatId != nil {
       self.requestReadAll()
     }
-    mainStore.dispatch(RemoveMessages(payload: self.userChatId))
+    if !willShow.isKind(of: UserChatViewController.self) {
+      mainStore.dispatch(RemoveMessages(payload: self.userChatId))
+    }
   }
 }
 

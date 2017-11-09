@@ -10,7 +10,7 @@ import UIKit
 import ReSwift
 
 protocol CHNavigationDelegate {
-  func willPopViewController()
+  func willPopViewController(willShow controller:UIViewController)
   //func willPushViewController()
 }
 
@@ -19,7 +19,18 @@ class MainNavigationController: BaseNavigationController {
   // MARK: Properties
   var chDelegate: CHNavigationDelegate? = nil
   var statusBarStyle = UIStatusBarStyle.default
-
+  
+  var useDefault = false {
+    didSet {
+      if useDefault {
+        self.navigationBar.barTintColor = nil
+        self.navigationBar.titleTextAttributes =  [NSAttributedStringKey.foregroundColor: UIColor.white]
+        self.navigationBar.isTranslucent = false
+        self.setNeedsStatusBarAppearanceUpdate()
+      }
+    }
+  }
+  
   // MARK: View Life Cycle
 
   override func viewDidLoad() {
@@ -43,30 +54,29 @@ class MainNavigationController: BaseNavigationController {
   }
 }
 
-
 // MARK: - StoreSubscriber
 
 extension MainNavigationController: StoreSubscriber {
-
   func newState(state: AppState) {
-    // Bar Color
-    self.navigationBar.barTintColor = UIColor(state.plugin.color)
-    self.navigationBar.tintColor = state.plugin.textUIColor
-
-    // Title
-    if self.title == nil || self.title == "" {
-      self.navigationBar.topItem?.title = state.channel.name
+    if !self.useDefault {
+      // Bar Color
+      self.navigationBar.barTintColor = UIColor(state.plugin.color)
+      self.navigationBar.tintColor = state.plugin.textUIColor
+      
+      // Title
+      if self.title == nil || self.title == "" {
+        self.navigationBar.topItem?.title = state.channel.name
+      }
+      
+      // Title Color
+      let titleColor = state.plugin.textColor == "white" ? UIColor.white : UIColor.black
+      self.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: titleColor]
+      
+      // Status bar color
+      self.statusBarStyle = state.plugin.textColor == "white" ? .lightContent : .default
+      self.setNeedsStatusBarAppearanceUpdate()
     }
-    
-    // Title Color
-    let titleColor = state.plugin.textColor == "white" ? UIColor.white : UIColor.black
-    self.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: titleColor]
-
-    // Status bar color
-    self.statusBarStyle = state.plugin.textColor == "white" ? .lightContent : .default
-    self.setNeedsStatusBarAppearanceUpdate()
   }
-
 }
 
 extension MainNavigationController : UINavigationControllerDelegate {
@@ -76,7 +86,7 @@ extension MainNavigationController : UINavigationControllerDelegate {
     if let coordinator = navigationController.topViewController?.transitionCoordinator {
       coordinator.notifyWhenInteractionEnds({ (context) in
         if !context.isCancelled {
-          self.chDelegate?.willPopViewController()
+          self.chDelegate?.willPopViewController(willShow: viewController)
         }
       })
     }
