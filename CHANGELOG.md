@@ -1,5 +1,8 @@
 # Change Log
-----
+
+### 2.2.3
+* Rolled back to deployment target 8.0
+
 ### 2.2.2
 * Dwifft to CHDwifft (forceRemoveAnimation)
 * Fixed animation issue

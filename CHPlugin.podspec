@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CHPlugin'
-  s.version          = '2.2.2'
+  s.version          = '2.2.3'
   s.summary          = 'Channel plugin for iOS'
 
 # This description is used to generate tags and improve search results.
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'SDK', :file => 'LICENSE' }
   s.author           = { 'ZOYI' => 'eng@zoyi.co' }
   s.source           = { :git => 'https://github.com/zoyi/channel-plugin-ios.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '8.0'
 
   s.source_files = 'CHPlugin/Source/**/*'
   s.resources = 'CHPlugin/Assets/*'
