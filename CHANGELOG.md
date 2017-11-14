@@ -1,5 +1,9 @@
 # Change Log
 
+### 2.3.0
+#### Update
+* Added live typing indicator 
+
 ### 2.2.4
 * SwiftyJSON 4.0 migration 
 * Rolled back to deployment target 8.0

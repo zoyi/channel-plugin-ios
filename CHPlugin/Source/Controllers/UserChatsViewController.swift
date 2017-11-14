@@ -84,7 +84,7 @@ class UserChatsViewController: BaseViewController {
       .subscribe(onNext: { [weak self] _ in
         self?.nextSeq = nil
         self?.fetchUserChats()
-        WsService.sharedService.connect()
+        WsService.shared.connect()
       }).disposed(by: self.disposeBag)
 
     self.plusButton.signalForClick()

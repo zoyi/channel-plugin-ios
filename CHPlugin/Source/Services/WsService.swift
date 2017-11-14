@@ -44,6 +44,7 @@ enum CHSocketResponse : String {
   case disconnect = "disconnect"
   case push = "push"
   case error = "error"
+  case typing = "typing"
   
   var value: String {
     return self.rawValue
@@ -90,9 +91,11 @@ struct WsServiceType: OptionSet {
 
 class WsService {
   //MARK: Share Singleton Instance
-  static let sharedService = WsService()
+  static let shared = WsService()
   let eventSubject = PublishSubject<String>()
   let readySubject = PublishSubject<String>()
+  let typingSubject = PublishSubject<CHTypingEntity>()
+  let messageOnCreateSubject = PublishSubject<CHMessage>()
   
   //MARK: Private properties
   fileprivate var socket: SocketIOClient!
@@ -105,7 +108,10 @@ class WsService {
   //move these properties into state
   fileprivate var currentChatId: String?
   fileprivate var currentChat: CHUserChat?
-  fileprivate var heartbeatTimer: Foundation.Timer?
+  fileprivate var heartbeatTimer: Timer?
+  
+  private var stopTypingThrottleFnc: ((CHUserChat?) -> Void)?
+  private var startTypingThrottleFnc: ((CHUserChat?) -> Void)?
   
   init() {
     if let staging = CHUtils.getCurrentStage() {
@@ -119,6 +125,16 @@ class WsService {
         // error
       }
     }
+    
+    self.stopTypingThrottleFnc = throttle(
+      delay: 1.0,
+      queue: DispatchQueue.global(qos: .background),
+      action: self.stopTyping)
+    
+    self.startTypingThrottleFnc = throttle(
+      delay: 1.0,
+      queue: DispatchQueue.global(qos: .background),
+      action: self.startTyping)
   }
   
   //MARK: Signals 
@@ -132,6 +148,13 @@ class WsService {
     return self.readySubject
   }
   
+  func typing() -> PublishSubject<CHTypingEntity> {
+    return self.typingSubject
+  }
+  
+  func mOnCreate() -> PublishSubject<CHMessage> {
+    return self.messageOnCreateSubject
+  }
   //MARK: Socket functionalities
   
   func connect() {
@@ -190,6 +213,40 @@ class WsService {
     }
   }
   
+  func sendTyping(chat: CHUserChat?, isStop: Bool) {
+    guard let socket = self.socket, socket.status == .connected else { return }
+    guard let chat = chat else { return }
+    
+    if isStop {
+      self.stopTypingThrottleFnc?(chat)
+    } else {
+      self.startTypingThrottleFnc?(chat)
+    }
+  }
+  
+  func startTyping(chat: CHUserChat?) {
+    guard let socket = self.socket, socket.status == .connected else { return }
+    guard let chat = chat else { return }
+    socket.emit("typing", CHTypingEntity(
+      action: "start",
+      chatId: chat.id,
+      chatType: "UserChat")
+    )
+  }
+  
+  func stopTyping(chat: CHUserChat?) {
+    guard let socket = self.socket, socket.status == .connected else { return }
+    guard let chat = chat else { return }
+    
+    let entity = CHTypingEntity(
+      action: "stop",
+      chatId: chat.id,
+      chatType: "UserChat")
+    
+    socket.emit("typing", entity)
+    self.typingSubject.onNext(entity)
+  }
+  
   @objc func heartbeat() {
     dlog("heartbeat")
     if self.socket != nil {
@@ -218,6 +275,7 @@ fileprivate extension WsService {
     self.onJoined()
     self.onLeaved()
     self.onPush()
+    self.onTyping()
     self.onAuthenticated()
     self.onUnauthorized()
     self.onReconnectAttempt()
@@ -274,6 +332,7 @@ fileprivate extension WsService {
       case WsServiceType.Message:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
+        self?.messageOnCreateSubject.onNext(message)
         mainStore.dispatch(CreateMessage(payload: message))
         break
       default:
@@ -395,11 +454,19 @@ fileprivate extension WsService {
     }
   }
   
+  fileprivate func onTyping() {
+    self.socket.on(CHSocketResponse.typing.value) {  [weak self] (data, ack) in
+      guard let entity = data.get(index: 0) else { return }
+      guard let json = JSON(rawValue: entity) else { return }
+      guard let typing = Mapper<CHTypingEntity>().map(JSONObject: json.object) else { return }
+      self?.typingSubject.onNext(typing)
+    }
+  }
+  
   fileprivate func onPush() {
     self.socket.on(CHSocketResponse.push.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.push.value)
       //dlog("socket pushed: \(data)")
-      
       guard let entity = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: entity) else { return }
       guard let push = Mapper<CHPush>().map(JSONObject: json.object) else { return }
@@ -412,7 +479,6 @@ fileprivate extension WsService {
     }
   }
 
-  
   fileprivate func onAuthenticated() {
     self.socket.on(CHSocketResponse.authenticated.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.authenticated.value)
@@ -423,11 +489,13 @@ fileprivate extension WsService {
       }
       
       if let s = self {
-        self?.heartbeatTimer = Foundation.Timer.scheduledTimer(
-          timeInterval: 30,
-          target: s,
-          selector: #selector(WsService.heartbeat),
-          userInfo: nil, repeats: true)
+        dispatch {
+          self?.heartbeatTimer = Foundation.Timer.scheduledTimer(
+            timeInterval: 30,
+            target: s,
+            selector: #selector(WsService.heartbeat),
+            userInfo: nil, repeats: true)
+        }
       }
     }
   }

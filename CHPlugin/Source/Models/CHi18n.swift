@@ -18,8 +18,7 @@ struct CHi18n {
     guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
     let start = str.startIndex
     let end = str.index(str.startIndex, offsetBy: 2)
-    let range = start..<end
-    let locale = str.substring(with: range)
+    let locale = String(str[start..<end])
     if locale == "en" {
       return en
     } else if locale == "ja" {

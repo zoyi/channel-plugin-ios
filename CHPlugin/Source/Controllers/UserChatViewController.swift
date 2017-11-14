@@ -47,10 +47,10 @@ final class UserChatViewController: BaseSLKTextViewController {
   var isFetching = false
   var isRequstingReadAll = false
   var photoUrls = [String]()
-  var newMessageView = ChatBannerView().then {
-    $0.isHidden = true
-  }
   
+  var typingManagers = [CHManager]()
+  var timeStorage = [String: Timer]()
+
   var diffCalculator: SingleSectionTableViewDiffCalculator<CHMessage>?
   var messages = [CHMessage]() {
     didSet {
@@ -58,14 +58,18 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
   }
   
+  var createdFeedback = false
+  var createdFeedbackComplete = false
+  
   var disposeBag = DisposeBag()
   var photoBrowser : MWPhotoBrowser? = nil
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
+  var newMessageView = ChatBannerView().then {
+    $0.isHidden = true
+  }
   
-  var createdFeedback = false
-  var createdFeedbackComplete = false
   
   var newChatSubject = PublishSubject<Any?>()
   var profileSubject = PublishSubject<Any?>()
@@ -89,9 +93,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     chNavigation.chDelegate = self
     
     self.initSLKTextView()
-    self.initInputViews()
     self.initTableView()
+    self.initInputViews()
     self.initViews()
+    self.initLiveTyping()
     
     self.shouldShowGuide = (mainStore.state.guest.ghost == true ||
       mainStore.state.guest.mobileNumber == nil) &&
@@ -112,16 +117,19 @@ final class UserChatViewController: BaseSLKTextViewController {
     mainStore.subscribe(self)
     if let userChatId = self.userChatId {
       self.state = .ChatJoining
-      WsService.sharedService.join(chatId: userChatId)
+      WsService.shared.join(chatId: userChatId)
     }
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
+    
+    self.sendTyping(isStop: true)
+    
     if let userChatId = self.userChatId {
       //self.loaded = false
-      WsService.sharedService.leave(chatId: userChatId)
+      WsService.shared.leave(chatId: userChatId)
     }
   }
 
@@ -171,6 +179,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: SatisfactionFeedbackCell.self)
     self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
+    self.tableView.register(cellType: TypingIndicatorCell.self)
     
     self.tableView.clipsToBounds = true
     self.tableView.separatorStyle = .none
@@ -183,7 +192,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.reloadData()
     //self.tableView.scrollToBottom(false)
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
-      tableView: self.tableView, initialRows: self.messages
+      tableView: self.tableView,
+      initialRows: self.messages,
+      sectionIndex: 1
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
     self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
@@ -213,7 +224,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-        WsService.sharedService.connect()
+        WsService.shared.connect()
         self?.resetUserChat()
         self?.fetchMessages()
       }).disposed(by: self.disposeBag)
@@ -445,7 +456,6 @@ extension UserChatViewController: StoreSubscriber {
       self.nextSeq = ""
 
       CHUserChat.get(userChatId: self.userChatId ?? "")
-
         .subscribe(onNext: { [weak self] (response) in
           mainStore.dispatch(GetUserChat(payload: response))
           self?.fetchMessages()
@@ -468,9 +478,6 @@ extension UserChatViewController: StoreSubscriber {
     }
     
     self.requestReadAll()
-    //let diff = UIScreen.main.bounds.height - self.tableView.contentSize.height - 80
-    //self.tableView.contentInset.top = diff > 0 ? diff : 10.f
-    //self.tableView.contentInset.bottom = 10.f
   }
 
   func configureInputField(_ userChat: CHUserChat?) {
@@ -681,11 +688,12 @@ extension UserChatViewController {
   private func sendMessage(userChatId: String, text: String) {
     let me = mainStore.state.guest
     var message = CHMessage(chatId: userChatId, guest: me, message: text)
-    self.scrollToBottom(false)
+    
     mainStore.dispatch(CreateMessage(payload: message))
     self.scrollToBottom(false)
     
     message.send().subscribe(onNext: { [weak self] (updated) in
+      self?.sendTyping(isStop: true)
       mainStore.dispatch(CreateMessage(payload: updated))
       self?.showUserInfoGuideIfNeeded()
     }, onError: { (error) in
@@ -702,7 +710,7 @@ extension UserChatViewController {
       self?.userChatId = userChat.id
       mainStore.dispatch(CreateUserChat(payload: userChat))
       mainStore.dispatch(CreateSession(payload: session))
-      WsService.sharedService.join(chatId: userChat.id)
+      WsService.shared.join(chatId: userChat.id)
       completion(userChat.id)
     }, onError: { [weak self] (error) in
       self?.errorToastView.show(animated: true)
@@ -717,12 +725,15 @@ extension UserChatViewController {
     
     self.photoBrowser?.reloadData()
   }
+  
+  override func textViewDidChange(_ textView: UITextView) {
+    self.sendTyping(isStop: textView.text == "")
+  }
 }
 
 // MARK: - UIScrollViewDelegate
 
 extension UserChatViewController {
-
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let yOffset = scrollView.contentOffset.y
     if yOffset + UIScreen.main.bounds.height > scrollView.contentHeight &&
@@ -737,20 +748,74 @@ extension UserChatViewController {
       self.newMessageView.hide(animated: false)
     }
   }
-
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - UITableView
 
 extension UserChatViewController {
-
+  override func numberOfSections(in tableView: UITableView) -> Int {
+    return 2
+  }
+  
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.messages.count
+    if section == 0 {
+      return 1
+    } else if section == 1 {
+      return self.messages.count
+    }
+    return 0
+  }
+  
+  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    if indexPath.section == 0 {
+      return 40
+    }
+    
+    let message = self.messages[indexPath.row]
+    let previousMessage: CHMessage? =
+      indexPath.row == self.messages.count - 1 ?
+        self.messages[indexPath.row] :
+        self.messages[indexPath.row + 1]
+    let viewModel = MessageCellModel(message: message, previous: previousMessage)
+    switch message.messageType {
+    case .DateDivider:
+      return 40
+    case .NewAlertMessage:
+      return 54
+    case .SatisfactionFeedback:
+      return 158 + 16
+    case .SatisfactionCompleted:
+      return 104 + 16
+    case .Log:
+      return 46
+    case .UserInfoDialog:
+      let model = DialogViewModel.model(type: message.userGuideDialogType)
+      return UserInfoDialogCell.measureHeight(fits: Constant.messageCellMaxWidth, viewModel: model)
+    default:
+      let calSize = MessageCell.measureHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return calSize
+    }
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let section = indexPath.section
+    if section == 0 {
+      return self.cellForTyping(tableView, cellForRowAt: indexPath)
+    } else {
+      return self.cellForMessage(tableView, cellForRowAt: indexPath)
+    }
+  }
+  
+  func cellForTyping(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell: TypingIndicatorCell = tableView.dequeueReusableCell(for: indexPath)
+    cell.transform = tableView.transform
+    cell.configure(typingUsers: self.typingManagers)
+    return cell
+  }
+  
+  func cellForMessage(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let message = self.messages[indexPath.row]
-
+    
     switch message.messageType {
     case .ChannelClosed:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -798,18 +863,18 @@ extension UserChatViewController {
       cell.configure(viewModel: model)
       cell.dialogView.signalForCountryCode()
         .subscribe(onNext: { [weak self] (code) in
-        self?.dismissKeyboard(true)
-
-        let pickerView = CountryCodePickerView(frame: (self?.view.frame)!)
-        pickerView.pickedCode = code
-        pickerView.showPicker(onView: (self?.navigationController?.view)!,animated: true)
+          self?.dismissKeyboard(true)
           
-        pickerView.signalForSubmit()
-          .subscribe(onNext: { (code) in
-          cell.dialogView.setCountryCodeText(code: code)
-          cell.dialogView.phoneFieldView.phoneField.becomeFirstResponder()
-        }).disposed(by: (self?.disposeBag)!)
-      }).disposed(by: self.disposeBag)
+          let pickerView = CountryCodePickerView(frame: (self?.view.frame)!)
+          pickerView.pickedCode = code
+          pickerView.showPicker(onView: (self?.navigationController?.view)!,animated: true)
+          
+          pickerView.signalForSubmit()
+            .subscribe(onNext: { (code) in
+              cell.dialogView.setCountryCodeText(code: code)
+              cell.dialogView.phoneFieldView.phoneField.becomeFirstResponder()
+            }).disposed(by: (self?.disposeBag)!)
+        }).disposed(by: self.disposeBag)
       cell.transform = self.tableView.transform
       return cell
     case .SatisfactionFeedback:
@@ -823,7 +888,7 @@ extension UserChatViewController {
                 mainStore.dispatch(GetUserChat(payload: response))
               }).disposed(by: (self?.disposeBag)!)
           }
-      }).disposed(by: self.disposeBag)
+        }).disposed(by: self.disposeBag)
       cell.transform = self.tableView.transform
       return cell
     case .SatisfactionCompleted:
@@ -855,16 +920,16 @@ extension UserChatViewController {
       
       cell.clipImageView.signalForClick()
         .subscribe { [weak self] _ in
-        self?.didImageTapped(message: message)
-      }.disposed(by: self.disposeBag)
+          self?.didImageTapped(message: message)
+        }.disposed(by: self.disposeBag)
       cell.clipWebpageView.signalForClick()
         .subscribe{ [weak self] _ in
-        self?.didWebPageTapped(message: message)
-      }.disposed(by: self.disposeBag)
+          self?.didWebPageTapped(message: message)
+        }.disposed(by: self.disposeBag)
       cell.clipFileView.signalForClick()
         .subscribe { [weak self] _ in
-        self?.didFileTapped(message: message)
-      }.disposed(by: self.disposeBag)
+          self?.didFileTapped(message: message)
+        }.disposed(by: self.disposeBag)
       
       cell.transform = self.tableView.transform
       return cell
@@ -875,7 +940,6 @@ extension UserChatViewController {
 // MARK: MWPhotoBrowser
 
 extension UserChatViewController: MWPhotoBrowserDelegate {
-  
   func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
     return UInt(self.photoUrls.count)
   }
@@ -883,45 +947,8 @@ extension UserChatViewController: MWPhotoBrowserDelegate {
   func photoBrowser(_ photoBrowser: MWPhotoBrowser!, photoAt index: UInt) -> MWPhotoProtocol! {
     return MWPhoto(url: URL(string: self.photoUrls[Int(index)]))
   }
-
 }
 
-// MARK: - UITableViewDelegate
-
-extension UserChatViewController {
-
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    let message = self.messages[indexPath.row]
-    let previousMessage: CHMessage? =
-      indexPath.row == self.messages.count - 1 ?
-        self.messages[indexPath.row] :
-        self.messages[indexPath.row + 1]
-    let viewModel = MessageCellModel(message: message, previous: previousMessage)
-    switch message.messageType {
-    case .DateDivider:
-      return 40
-    case .NewAlertMessage:
-      return 54
-    case .SatisfactionFeedback:
-      return 158 + 16
-    case .SatisfactionCompleted:
-      return 104 + 16
-    case .Log:
-      return 46
-    case .UserInfoDialog:
-      let model = DialogViewModel.model(type: message.userGuideDialogType)
-      return UserInfoDialogCell.measureHeight(fits: Constant.messageCellMaxWidth, viewModel: model)
-    default:
-      let calSize = MessageCell.measureHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-      return calSize
-    }
-  }
-
-  override func tableView(_ tableView: UITableView,
-                          didSelectRowAt indexPath: IndexPath) {
-    tableView.deselectRow(at: indexPath, animated: true)
-  }
-}
 
 // MARK: Clip handlers 
 
@@ -1004,14 +1031,12 @@ extension UserChatViewController {
 // MARK: UIDocumentInteractionControllerDelegate methods
 
 extension UserChatViewController : UIDocumentInteractionControllerDelegate {
-  
   func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
     if let controller = CHUtils.getTopController() {
       return controller
     }
     return UIViewController()
   }
-  
 }
 
 extension UserChatViewController : CHNavigationDelegate {
@@ -1020,6 +1045,7 @@ extension UserChatViewController : CHNavigationDelegate {
       self.requestReadAll()
     }
     if !willShow.isKind(of: UserChatViewController.self) {
+      self.resetTypingInfo()
       mainStore.dispatch(RemoveMessages(payload: self.userChatId))
     }
   }
@@ -1043,5 +1069,102 @@ extension UserChatViewController : SLKInputBarViewDelegate {
       self.textView.backgroundColor = UIColor.clear
       self.textView.isHidden = false
     }
+  }
+}
+
+extension UserChatViewController {
+  func initLiveTyping() {
+    WsService.shared.typingSubject
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (typingEntity) in
+        guard let s = self else { return }
+        if typingEntity.action == "stop" {
+          if let index = s.getTypingIndex(of: typingEntity) {
+            let person = s.typingManagers.remove(at: index)
+            s.removeTimer(with: person)
+          }
+        } else if typingEntity.action == "start" {
+          if s.getTypingIndex(of: typingEntity) == nil,
+            let manager = personSelector(
+              state: mainStore.state,
+              personType: typingEntity.personType ?? "",
+              personId: typingEntity.personId) as? CHManager {
+            s.typingManagers.append(manager)
+            s.addTimer(with: manager, delay: 15)
+          }
+        }
+        
+        s.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.none)
+      }).disposed(by: self.disposeBag)
+    
+    WsService.shared.mOnCreate()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (message) in
+        guard let s = self else { return }
+        
+        let typing = CHTypingEntity.transform(from: message)
+        if let index = s.getTypingIndex(of: typing) {
+          let person = s.typingManagers.remove(at: index)
+          s.removeTimer(with: person)
+          s.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.none)
+        }
+      }).disposed(by: self.disposeBag)
+  }
+
+  func sendTyping(isStop: Bool) {
+    WsService.shared.sendTyping(
+      chat: self.userChat, isStop: isStop
+    )
+  }
+  
+  func addTimer(with manager: CHManager, delay: TimeInterval) {
+    let timer = Timer.scheduledTimer(
+      timeInterval: delay,
+      target: self,
+      selector: #selector(self.expired(_:)),
+      userInfo: [manager],
+      repeats: false
+    )
+    
+    if let t = self.timeStorage[manager.key] {
+      t.invalidate()
+    }
+    
+    self.timeStorage[manager.key] = timer
+  }
+  
+  func removeTimer(with manager: CHManager?) {
+    guard let manager = manager else { return }
+    if let t = self.timeStorage.removeValue(forKey: manager.key) {
+      t.invalidate()
+    }
+  }
+  
+  func resetTypingInfo() {
+    self.timeStorage.forEach { (k, t) in
+      t.invalidate()
+    }
+    self.typingManagers = []
+    self.timeStorage = [:]
+  }
+  
+  @objc func expired(_ timer: Timer) {
+    guard let params = timer.userInfo as? [Any] else { return }
+    guard let manager = params[0] as? CHManager else { return }
+    
+    timer.invalidate()
+    if let index = self.typingManagers.index(where: { (m) in
+      return m.id == manager.id
+    }) {
+      self.typingManagers.remove(at: index)
+      self.timeStorage.removeValue(forKey: manager.key)
+      self.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.none)
+    }
+  }
+  
+  func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
+    return self.typingManagers.index(where: {
+      $0.id == typingEntity.personId
+    })
   }
 }

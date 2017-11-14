@@ -9,7 +9,10 @@
 import Foundation
 import ReSwift
 
-func personSelector(state: AppState, personType: String, personId: String) -> CHEntity? {
+func personSelector(state: AppState, personType: String?, personId: String?) -> CHEntity? {
+  guard let personType = personType else { return nil }
+  guard let personId = personId else { return nil }
+  
   if personType == "Manager" {
     return state.managersState.findBy(id: personId)
   } else if personType == "User" || personType == "Veil" {
