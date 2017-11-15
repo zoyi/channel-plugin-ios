@@ -1,5 +1,10 @@
 # Change Log
 
+### 2.2.7
+#### Bug fixes
+* Fixed scopes for objective-c
+* Fixed symbol error for iOS 8
+
 ### 2.2.4
 * SwiftyJSON 4.0 migration 
 * Rolled back to deployment target 8.0
