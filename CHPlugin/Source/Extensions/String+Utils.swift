@@ -45,8 +45,10 @@ extension String {
     return try NSAttributedString(
       data: data,
       options: [
-        .documentType: NSAttributedString.DocumentType.html,
-        .characterEncoding: String.Encoding.utf8.rawValue
+        .documentType: NSAttributedString.DocumentType.html
+        //iOS 8 symbol error
+        //https://stackoverflow.com/questions/46484650/documentreadingoptionkey-key-corrupt-after-swift4-migration
+        //.characterEncoding: String.Encoding.utf8.rawValue
       ],
       documentAttributes: nil).string
   }
