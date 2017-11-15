@@ -91,8 +91,7 @@ class CHUtils {
     guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
     let start = str.startIndex
     let end = str.index(str.startIndex, offsetBy: 2)
-    let range = start..<end
-    let locale = str.substring(with: range)
+    let locale = String(str[start..<end])
     
     return locale
   }
@@ -135,3 +134,63 @@ func dispatch (delay: Double = 0.0, execute: @escaping dispatchClosure) {
     execute()
   })
 }
+
+extension TimeInterval {
+  
+  /**
+   Checks if `since` has passed since `self`.
+   
+   - Parameter since: The duration of time that needs to have passed for this function to return `true`.
+   - Returns: `true` if `since` has passed since now.
+   */
+  func hasPassed(since: TimeInterval) -> Bool {
+    return Date().timeIntervalSinceReferenceDate - self > since
+  }
+  
+}
+/**
+ Wraps a function in a new function that will throttle the execution to once in every `delay` seconds.
+ 
+ - Parameter delay: A `TimeInterval` specifying the number of seconds that needst to pass between each execution of `action`.
+ - Parameter queue: The queue to perform the action on. Defaults to the main queue.
+ - Parameter action: A function to throttle.
+ 
+ - Returns: A new function that will only call `action` once every `delay` seconds, regardless of how often it is called.
+ */
+func throttle(delay: TimeInterval, queue: DispatchQueue = .main, action: @escaping (() -> Void)) -> () -> Void {
+  var currentWorkItem: DispatchWorkItem?
+  var lastFire: TimeInterval = 0
+  return {
+    guard currentWorkItem == nil else { return }
+    currentWorkItem = DispatchWorkItem {
+      action()
+      lastFire = Date().timeIntervalSinceReferenceDate
+      currentWorkItem = nil
+    }
+    if delay.hasPassed(since: lastFire) {
+      queue.async(execute: currentWorkItem!)
+    } else {
+      currentWorkItem = nil
+    }
+  }
+}
+
+func throttle<T>(delay: TimeInterval, queue: DispatchQueue = .main, action: @escaping ((T) -> Void)) -> (T) -> Void {
+  var currentWorkItem: DispatchWorkItem?
+  var lastFire: TimeInterval = 0
+  return { (p1: T) in
+    guard currentWorkItem == nil else { return }
+    currentWorkItem = DispatchWorkItem {
+      action(p1)
+      lastFire = Date().timeIntervalSinceReferenceDate
+      currentWorkItem = nil
+    }
+    //if time has passed, execute workitem. Otherwise, abandon work
+    if delay.hasPassed(since: lastFire) {
+      queue.async(execute: currentWorkItem!)
+    } else {
+      currentWorkItem = nil
+    }
+  }
+}
+

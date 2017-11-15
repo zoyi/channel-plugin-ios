@@ -17,6 +17,10 @@
 		14D2AA831E24AE07006FEE22 /* CHPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */; };
 		14D2AA851E24AE07006FEE22 /* CHPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 14D2AA771E24AE06006FEE22 /* CHPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		14DFAC681E4A189D00130119 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14DFAC671E4A189D00130119 /* Images.xcassets */; };
+		222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B71FBAAD37002CFA88 /* CHAnimations.swift */; };
+		222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */; };
+		22448B061FBA9C1900EDE528 /* TypingIndicatorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22448B051FBA9C1900EDE528 /* TypingIndicatorCell.swift */; };
+		22448B081FBA9D5800EDE528 /* CHMultiAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22448B071FBA9D5800EDE528 /* CHMultiAvatarView.swift */; };
 		225B05F81E4ED913001DE109 /* WsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F71E4ED913001DE109 /* WsServiceTests.swift */; };
 		225B05FA1E4ED9F5001DE109 /* ChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F91E4ED9F5001DE109 /* ChannelTests.swift */; };
 		225B05FE1E4EDA14001DE109 /* GuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05FD1E4EDA14001DE109 /* GuestTests.swift */; };
@@ -227,6 +231,10 @@
 		14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHPluginTests.swift; sourceTree = "<group>"; };
 		14D2AA841E24AE07006FEE22 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14DFAC671E4A189D00130119 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Assets/Images.xcassets; sourceTree = "<group>"; };
+		222086B71FBAAD37002CFA88 /* CHAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAnimations.swift; sourceTree = "<group>"; };
+		222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHTypingEntity.swift; sourceTree = "<group>"; };
+		22448B051FBA9C1900EDE528 /* TypingIndicatorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorCell.swift; sourceTree = "<group>"; };
+		22448B071FBA9D5800EDE528 /* CHMultiAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHMultiAvatarView.swift; sourceTree = "<group>"; };
 		225B05F71E4ED913001DE109 /* WsServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WsServiceTests.swift; sourceTree = "<group>"; };
 		225B05F91E4ED9F5001DE109 /* ChannelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelTests.swift; sourceTree = "<group>"; };
 		225B05FB1E4EDA00001DE109 /* MessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTests.swift; sourceTree = "<group>"; };
@@ -634,6 +642,7 @@
 				659792B61FA7167A00840F6A /* CustomTransform.swift */,
 				659792B71FA7167A00840F6A /* LocalMessageFactory.swift */,
 				659792B81FA7167A00840F6A /* PrefStore.swift */,
+				222086B71FBAAD37002CFA88 /* CHAnimations.swift */,
 			);
 			name = Utils;
 			path = Source/Utils;
@@ -714,6 +723,7 @@
 				659792EB1FA7167B00840F6A /* DataTransferObject.swift */,
 				659792EC1FA7167B00840F6A /* ModelType.swift */,
 				6556A29B1FA821D300B80F4E /* CHError.swift */,
+				222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */,
 			);
 			name = Models;
 			path = Source/Models;
@@ -778,7 +788,6 @@
 				6597930B1FA7167C00840F6A /* Cells */,
 				6597931B1FA7167C00840F6A /* ChatBannerView.swift */,
 				6597931C1FA7167C00840F6A /* ChatNotificationView */,
-				6597931E1FA7167C00840F6A /* ChatNotificationView.swift */,
 				6597931F1FA7167C00840F6A /* CHAvatar.swift */,
 				659793201FA7167C00840F6A /* CHMBubbleView.swift */,
 				659793211FA7167C00840F6A /* CHMFileView.swift */,
@@ -787,11 +796,9 @@
 				659793241FA7167C00840F6A /* CHPhoneField.swift */,
 				659793251FA7167C00840F6A /* CHTextField.swift */,
 				659793261FA7167C00840F6A /* CountryCodePickerView.swift */,
-				659793271FA7167C00840F6A /* DialogActionView.swift */,
 				659793281FA7167C00840F6A /* DialogView */,
 				6597932B1FA7167C00840F6A /* ErrorToastView.swift */,
 				6597932C1FA7167C00840F6A /* LauncherView */,
-				6597932F1FA7167C00840F6A /* MessageViews */,
 				659793301FA7167C00840F6A /* MultiAvatarView.swift */,
 				659793311FA7167C00840F6A /* NavigationItem.swift */,
 				659793321FA7167C00840F6A /* NewChatView.swift */,
@@ -799,6 +806,7 @@
 				659793341FA7167C00840F6A /* ProfileView */,
 				6597933A1FA7167C00840F6A /* TextActionView.swift */,
 				6597933B1FA7167C00840F6A /* UserChatsEmptyView.swift */,
+				22448B071FBA9D5800EDE528 /* CHMultiAvatarView.swift */,
 			);
 			name = Views;
 			path = Source/Views;
@@ -824,6 +832,7 @@
 				6597930F1FA7167C00840F6A /* MessageCell */,
 				659793121FA7167C00840F6A /* NewMessageDividerCell.swift */,
 				659793131FA7167C00840F6A /* SatisfactionCompleteCell.swift */,
+				22448B051FBA9C1900EDE528 /* TypingIndicatorCell.swift */,
 				659793141FA7167C00840F6A /* SatisfactionFeedbackCell.swift */,
 				659793151FA7167C00840F6A /* SwitchCell.swift */,
 				659793161FA7167C00840F6A /* TextInputCell.swift */,
@@ -854,6 +863,7 @@
 		6597931C1FA7167C00840F6A /* ChatNotificationView */ = {
 			isa = PBXGroup;
 			children = (
+				6597931E1FA7167C00840F6A /* ChatNotificationView.swift */,
 				6597931D1FA7167C00840F6A /* ChatNotificationViewModel.swift */,
 			);
 			path = ChatNotificationView;
@@ -863,6 +873,7 @@
 			isa = PBXGroup;
 			children = (
 				659793291FA7167C00840F6A /* DialogView.swift */,
+				659793271FA7167C00840F6A /* DialogActionView.swift */,
 				6597932A1FA7167C00840F6A /* DialogViewModel.swift */,
 			);
 			path = DialogView;
@@ -875,13 +886,6 @@
 				6597932E1FA7167C00840F6A /* LaunchViewModel.swift */,
 			);
 			path = LauncherView;
-			sourceTree = "<group>";
-		};
-		6597932F1FA7167C00840F6A /* MessageViews */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = MessageViews;
 			sourceTree = "<group>";
 		};
 		659793341FA7167C00840F6A /* ProfileView */ = {
@@ -1242,6 +1246,7 @@
 				6597935E1FA716CB00840F6A /* CRToast+Extensions.swift in Sources */,
 				6597935F1FA716CB00840F6A /* Date+Extensions.swift in Sources */,
 				659793601FA716CB00840F6A /* String+BoundingRect.swift in Sources */,
+				22448B081FBA9D5800EDE528 /* CHMultiAvatarView.swift in Sources */,
 				659793611FA716CB00840F6A /* String+Utils.swift in Sources */,
 				659793621FA716CB00840F6A /* UIButton+Extensions.swift in Sources */,
 				659793631FA716CB00840F6A /* UIDevice+Extenions.swift in Sources */,
@@ -1280,6 +1285,7 @@
 				659793831FA716CB00840F6A /* DataTransferObject.swift in Sources */,
 				659793841FA716CB00840F6A /* ModelType.swift in Sources */,
 				659793861FA716CB00840F6A /* EventPromise.swift in Sources */,
+				222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */,
 				659793871FA716CB00840F6A /* GuestPromise.swift in Sources */,
 				659793881FA716CB00840F6A /* PluginPromise.swift in Sources */,
 				659793891FA716CB00840F6A /* ScriptPromise.swift in Sources */,
@@ -1292,6 +1298,7 @@
 				659793901FA716CB00840F6A /* MessagesReducer.swift in Sources */,
 				659793911FA716CB00840F6A /* PluginReducer.swift in Sources */,
 				659793921FA716CB00840F6A /* PushReducer.swift in Sources */,
+				222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */,
 				659793931FA716CB00840F6A /* ScriptsReducer.swift in Sources */,
 				659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */,
 				659793951FA716CB00840F6A /* UIReducer.swift in Sources */,
@@ -1310,6 +1317,7 @@
 				659793A21FA716CB00840F6A /* AvatarView.swift in Sources */,
 				659793A31FA716CB00840F6A /* Badge.swift in Sources */,
 				659793A41FA716CB00840F6A /* BaseButton.swift in Sources */,
+				22448B061FBA9C1900EDE528 /* TypingIndicatorCell.swift in Sources */,
 				659793A51FA716CB00840F6A /* BaseTableViewCell.swift in Sources */,
 				659793A61FA716CB00840F6A /* BaseView.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,

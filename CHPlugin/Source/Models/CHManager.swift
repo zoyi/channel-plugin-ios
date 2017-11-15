@@ -20,6 +20,12 @@ struct CHManager: CHEntity {
   var color = ""
   // Manager
   var username = ""
+  
+  var key: String {
+    get {
+      return "Manager:\(self.id)"
+    }
+  }
 }
 
 extension CHManager: Mappable {

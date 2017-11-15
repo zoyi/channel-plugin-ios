@@ -213,7 +213,7 @@ public final class ChannelPlugin : NSObject {
         
       }).disposed(by: disposeBeg)
     
-    WsService.sharedService.disconnect()
+    WsService.shared.disconnect()
     mainStore.dispatch(CheckOutSuccess())
     ChannelPlugin.isCheckedIn = false
   }
@@ -460,7 +460,7 @@ public final class ChannelPlugin : NSObject {
             return
           }
           
-          WsService.sharedService.connect()
+          WsService.shared.connect()
           mainStore.dispatch(CheckInSuccess(payload: data))
           ChannelPlugin.isCheckedIn = true
           
@@ -468,7 +468,7 @@ public final class ChannelPlugin : NSObject {
             ChannelPlugin.track(name: "Checkin", properties: nil)
           }
           
-          WsService.sharedService.ready()
+          WsService.shared.ready()
             .subscribe(onNext: { _ in
               subscriber.onNext(data)
               subscriber.onCompleted()
@@ -629,13 +629,13 @@ extension ChannelPlugin {
   }
   
   @objc private class func disconnectWebsocket() {
-    WsService.sharedService.disconnect()
+    WsService.shared.disconnect()
   }
   
   @objc private class func connectWebsocket() {
     guard ChannelPlugin.isCheckedIn == true else {
       return
     }
-    WsService.sharedService.connect()
+    WsService.shared.connect()
   }
 }

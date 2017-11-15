@@ -19,6 +19,22 @@ class CHAssets {
     return UIImage(named: named, in: bundle, compatibleWith: nil)
   }
 
+  class func getData(named: String) -> Data? {
+    let bundle = Bundle(for: self)
+    if #available(iOS 9.0, *) {
+      return NSDataAsset(name: named, bundle: bundle)?.data
+    } else {
+      do {
+        guard let url = try bundle.path(forResource: "typing", ofType: "gif")?.asURL() else {
+          return nil
+        }
+        return try Data(contentsOf: url)
+      } catch {
+        return nil
+      }
+    }
+  }
+  
   class func localized(_ key: String) -> String {
     let bundle = Bundle(for: self)
     return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
