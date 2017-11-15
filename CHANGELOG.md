@@ -3,6 +3,12 @@
 ### 2.3.0
 #### Update
 * Added live typing indicator 
+* Raised min os version to 9.0
+
+### 2.2.6
+#### Bug fixes
+* Fixed scopes for objective-c
+* Fixed symbol error for iOS 8
 
 ### 2.2.4
 * SwiftyJSON 4.0 migration 

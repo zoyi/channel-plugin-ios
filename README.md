@@ -9,7 +9,7 @@
 
 ## Prerequisite
 
-* iOS 8 or above 
+* iOS 9 or above 
 
 ## Documentation
 
