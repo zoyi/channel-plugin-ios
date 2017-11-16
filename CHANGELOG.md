@@ -1,4 +1,7 @@
 # Change Log
+### 2.3.1
+#### Bug fixes 
+* Fixed potential memory leak
 
 ### 2.3.0
 #### Update

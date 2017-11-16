@@ -124,9 +124,11 @@ final class UserChatViewController: BaseSLKTextViewController {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
-    
+    if isBeingDismissed || isMovingFromParentViewController {
+      self.resetTypingInfo()
+      mainStore.dispatch(RemoveMessages(payload: self.userChatId))
+    }
     self.sendTyping(isStop: true)
-    
     if let userChatId = self.userChatId {
       //self.loaded = false
       WsService.shared.leave(chatId: userChatId)
@@ -1044,10 +1046,6 @@ extension UserChatViewController : CHNavigationDelegate {
     if self.userChatId != nil {
       self.requestReadAll()
     }
-    if !willShow.isKind(of: UserChatViewController.self) {
-      self.resetTypingInfo()
-      mainStore.dispatch(RemoveMessages(payload: self.userChatId))
-    }
   }
 }
 
@@ -1083,14 +1081,16 @@ extension UserChatViewController {
             let person = s.typingManagers.remove(at: index)
             s.removeTimer(with: person)
           }
-        } else if typingEntity.action == "start" {
-          if s.getTypingIndex(of: typingEntity) == nil,
-            let manager = personSelector(
-              state: mainStore.state,
-              personType: typingEntity.personType ?? "",
-              personId: typingEntity.personId) as? CHManager {
-            s.typingManagers.append(manager)
-            s.addTimer(with: manager, delay: 15)
+        }
+        else if typingEntity.action == "start" {
+          if let manager = personSelector(
+            state: mainStore.state,
+            personType: typingEntity.personType ?? "",
+            personId: typingEntity.personId) as? CHManager {
+              if s.getTypingIndex(of: typingEntity) == nil {
+                s.typingManagers.append(manager)
+              }
+              s.addTimer(with: manager, delay: 15)
           }
         }
         
@@ -1144,8 +1144,8 @@ extension UserChatViewController {
     self.timeStorage.forEach { (k, t) in
       t.invalidate()
     }
-    self.typingManagers = []
-    self.timeStorage = [:]
+    self.typingManagers.removeAll()
+    self.timeStorage.removeAll()
   }
   
   @objc func expired(_ timer: Timer) {
