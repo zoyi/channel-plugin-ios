@@ -21,4 +21,5 @@ struct AppState: StateType {
   var uiState: UIState
   var socketState: WSocketState
   var scriptsState: ScriptsState
+  var countryCodeState: CountryCodeState
 }

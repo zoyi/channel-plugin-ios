@@ -138,7 +138,7 @@ class DialogView : BaseView {
       
       //TODO: better way to find a html tag to attributedString...
       let attrString = NSMutableAttributedString(string: viewModel.footer)
-      let range = NSRange(location: 0, length: viewModel.footer.characters.count)
+      let range = NSRange(location: 0, length: viewModel.footer.count)
       attrString.addAttribute(NSAttributedStringKey.foregroundColor, value: Color.footerLabel, range: range)
       attrString.addAttribute(NSAttributedStringKey.font, value: Font.footerLabel, range: range)
       let boldRange = (attrString.string as NSString).range(of: CHAssets.localized("ch.term_of_service"))
@@ -370,8 +370,10 @@ extension DialogView {
     
     self.phoneFieldView.countryCodeView.signalForClick()
       .subscribe(onNext: { [weak self] (event) in
-        var code = (self?.phoneFieldView.countryLabel.text ?? "")
-        code.remove(at: code.startIndex)
+        var code = self?.phoneFieldView.countryLabel.text ?? ""
+        if code != "" {
+          code.remove(at: code.startIndex)
+        }
         self?.countryCodeSubject.onNext(code)
       }).disposed(by: self.disposeBeg)
     

@@ -1,4 +1,9 @@
 # Change Log
+
+### 2.3.2
+#### Bug fixes
+* Fixed country code json format
+
 ### 2.3.1
 #### Bug fixes 
 * Fixed potential memory leak

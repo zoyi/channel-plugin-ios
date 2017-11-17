@@ -75,11 +75,12 @@ enum RestRouter: URLRequestConvertible {
     case .GetChannelAvatar, .GetCurrentGuest,
          .GetMessages, .GetScripts,
          .GetUserChat, .GetChannelManager, .GetUserChats,
-         .CheckVersion, .GetGeoIP:
+         .CheckVersion, .GetGeoIP,
+         .GetCountryCodes:
       return .get
     case .UpdateGuest, .SetMessagesReadAll,
          .CloseUserChat, .RemoveUserChat,
-         .DoneUserChat, .GetCountryCodes:
+         .DoneUserChat:
       return .put
     case .UnregisterToken:
       return .delete
@@ -192,7 +193,10 @@ enum RestRouter: URLRequestConvertible {
          .DoneUserChat(_, let params),
          .SendEvent(let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
-    case .GetUserChat, .GetScripts, .SetMessagesReadAll:
+    case .GetUserChat,
+         .GetScripts,
+         .SetMessagesReadAll,
+         .GetCountryCodes:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

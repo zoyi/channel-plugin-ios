@@ -55,35 +55,11 @@ class CHUtils {
   }
   
   class func getCountryDialCode(countryCode: String) -> String? {
-    if let countries = CHUtils.getCountryInfo() {
-      for each in countries {
-        if each.code == countryCode {
-          return each.dial
-        }
+    for each in mainStore.state.countryCodeState.codes {
+      if each.code == countryCode {
+        return each.dial
       }
     }
-    
-    return nil
-  }
-  
-  class func getCountryInfo() -> [CHCountry]? {
-    let bundle = Bundle(for: self)
-    if let path = bundle.path(forResource: "countryInfo", ofType: "json") {
-      do {
-        let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .alwaysMapped)
-        let jsonObj = try JSON(data: data)
-        if jsonObj != JSON.null {
-          return Mapper<CHCountry>()
-            .mapArray(JSONObject: jsonObj.object)
-        } else {
-          print("Could not get json from file, make sure that file contains valid json.")
-          return nil
-        }
-      } catch _ {
-        return nil
-      }
-    }
-    
     return nil
   }
   

@@ -123,6 +123,11 @@ public final class ChannelPlugin : NSObject {
 
     // Init other frameworks
     SVProgressHUD.setDefaultStyle(.dark)
+    
+    UtilityPromise.getCountryCodes()
+      .subscribe(onNext:{ (countries) in
+        mainStore.dispatch(GetCountryCodes(payload: countries))
+      }).disposed(by: disposeBeg)
   }
 
   /**

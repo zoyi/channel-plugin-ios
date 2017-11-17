@@ -19,6 +19,9 @@
 		14DFAC681E4A189D00130119 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14DFAC671E4A189D00130119 /* Images.xcassets */; };
 		222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B71FBAAD37002CFA88 /* CHAnimations.swift */; };
 		222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */; };
+		22342CC91FBEF50800425666 /* CountryCodeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22342CC81FBEF50800425666 /* CountryCodeState.swift */; };
+		223726071FBEEF370097F22B /* CountryCodeReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223726061FBEEF370097F22B /* CountryCodeReducer.swift */; };
+		223726091FBEEFA20097F22B /* CountryCodeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223726081FBEEFA20097F22B /* CountryCodeActions.swift */; };
 		22448B061FBA9C1900EDE528 /* TypingIndicatorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22448B051FBA9C1900EDE528 /* TypingIndicatorCell.swift */; };
 		22448B081FBA9D5800EDE528 /* CHMultiAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22448B071FBA9D5800EDE528 /* CHMultiAvatarView.swift */; };
 		225B05F81E4ED913001DE109 /* WsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F71E4ED913001DE109 /* WsServiceTests.swift */; };
@@ -233,6 +236,9 @@
 		14DFAC671E4A189D00130119 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Assets/Images.xcassets; sourceTree = "<group>"; };
 		222086B71FBAAD37002CFA88 /* CHAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAnimations.swift; sourceTree = "<group>"; };
 		222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHTypingEntity.swift; sourceTree = "<group>"; };
+		22342CC81FBEF50800425666 /* CountryCodeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeState.swift; sourceTree = "<group>"; };
+		223726061FBEEF370097F22B /* CountryCodeReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeReducer.swift; sourceTree = "<group>"; };
+		223726081FBEEFA20097F22B /* CountryCodeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeActions.swift; sourceTree = "<group>"; };
 		22448B051FBA9C1900EDE528 /* TypingIndicatorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorCell.swift; sourceTree = "<group>"; };
 		22448B071FBA9D5800EDE528 /* CHMultiAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHMultiAvatarView.swift; sourceTree = "<group>"; };
 		225B05F71E4ED913001DE109 /* WsServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WsServiceTests.swift; sourceTree = "<group>"; };
@@ -689,6 +695,7 @@
 				659792D01FA7167B00840F6A /* UIState.swift */,
 				659792D11FA7167B00840F6A /* UserChatsState.swift */,
 				659792D21FA7167B00840F6A /* WSocketState.swift */,
+				22342CC81FBEF50800425666 /* CountryCodeState.swift */,
 			);
 			name = States;
 			path = Source/States;
@@ -753,6 +760,7 @@
 				659792F91FA7167B00840F6A /* UIReducer.swift */,
 				659792FA1FA7167B00840F6A /* UserChatReducer.swift */,
 				659792FB1FA7167B00840F6A /* WSocketReducer.swift */,
+				223726061FBEEF370097F22B /* CountryCodeReducer.swift */,
 			);
 			name = Reducers;
 			path = Source/Reducers;
@@ -911,6 +919,7 @@
 				659793421FA7167C00840F6A /* UIActions.swift */,
 				659793431FA7167C00840F6A /* UserChatActions.swift */,
 				659793441FA7167C00840F6A /* WSocketActions.swift */,
+				223726081FBEEFA20097F22B /* CountryCodeActions.swift */,
 			);
 			name = Actions;
 			path = Source/Actions;
@@ -1289,6 +1298,7 @@
 				659793871FA716CB00840F6A /* GuestPromise.swift in Sources */,
 				659793881FA716CB00840F6A /* PluginPromise.swift in Sources */,
 				659793891FA716CB00840F6A /* ScriptPromise.swift in Sources */,
+				223726091FBEEFA20097F22B /* CountryCodeActions.swift in Sources */,
 				6597938A1FA716CB00840F6A /* UserChatPromise.swift in Sources */,
 				6597938B1FA716CB00840F6A /* UtilityPromise.swift in Sources */,
 				6597938C1FA716CB00840F6A /* AppReducer.swift in Sources */,
@@ -1302,6 +1312,7 @@
 				659793931FA716CB00840F6A /* ScriptsReducer.swift in Sources */,
 				659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */,
 				659793951FA716CB00840F6A /* UIReducer.swift in Sources */,
+				22342CC91FBEF50800425666 /* CountryCodeState.swift in Sources */,
 				659793961FA716CB00840F6A /* UserChatReducer.swift in Sources */,
 				659793971FA716CB00840F6A /* WSocketReducer.swift in Sources */,
 				659793981FA716CB00840F6A /* MessagesSelector.swift in Sources */,
@@ -1370,6 +1381,7 @@
 				659793461FA7168700840F6A /* ManagersState.swift in Sources */,
 				659793481FA7168E00840F6A /* ScriptsState.swift in Sources */,
 				6597934A1FA7169400840F6A /* UIState.swift in Sources */,
+				223726071FBEEF370097F22B /* CountryCodeReducer.swift in Sources */,
 				659793471FA7168A00840F6A /* MessagesState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

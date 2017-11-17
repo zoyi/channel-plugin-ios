@@ -137,9 +137,6 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    
-    self.tableView.contentInset.top = 30.f
-    self.tableView.contentInset.bottom = 80.f
   }
 
   // MARK: - Helper methods

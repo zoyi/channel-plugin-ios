@@ -11,7 +11,7 @@ import SnapKit
 
 final class CountryCodePickerView : BaseView {
 
-  var countries: [CHCountry] = CHUtils.getCountryInfo()!
+  var countries: [CHCountry] = []
   let disposeBeg = DisposeBag()
   var bottomContraint: Constraint?
   var pickedCode = "" {
@@ -49,12 +49,12 @@ final class CountryCodePickerView : BaseView {
   
   override func initialize() {
     super.initialize()
-    
-    UtilityPromise.getCountryCodes()
-      .subscribe(onNext:{ [weak self] (countries) in
-        self?.countries = countries
-        self?.pickerView.reloadAllComponents()
-      }).disposed(by: self.disposeBeg)
+    self.countries = mainStore.state.countryCodeState.codes
+//    UtilityPromise.getCountryCodes()
+//      .subscribe(onNext:{ [weak self] (countries) in
+//        self?.countries = countries
+//        self?.pickerView.reloadAllComponents()
+//      }).disposed(by: self.disposeBeg)
     
     self.actionView.addSubview(self.closeButton)
     self.actionView.addSubview(self.submitButton)

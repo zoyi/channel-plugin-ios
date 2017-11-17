@@ -21,7 +21,8 @@ func appReducer(action: Action, state: AppState?) -> AppState {
     messagesState: messagesReducer(action: action, state: state?.messagesState),
     uiState: uiReducer(action: action, state: state?.uiState),
     socketState: socketReducer(action: action, state: state?.socketState),
-    scriptsState: scriptsReducer(action: action, state: state?.scriptsState)
+    scriptsState: scriptsReducer(action: action, state: state?.scriptsState),
+    countryCodeState: countryCodeReducer(action: action, state: state?.countryCodeState)
     //errorState?
   )
 }
