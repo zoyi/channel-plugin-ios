@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-final class ChatBannerView : BaseView {
+final class NewMessageBannerView : BaseView {
   
   struct Font {
     static let messageLabel = UIFont.systemFont(ofSize: 14)
@@ -33,48 +33,33 @@ final class ChatBannerView : BaseView {
     $0.showBorder = false
   }
   
-  let messageLabel = UILabel().then {
-    $0.font = Font.messageLabel
-    $0.textColor = Color.messageLabel
-    $0.numberOfLines = Constant.messageLabelNumberOfLines
-  }
-  
-  let nameLabel = UILabel().then {
+  let newMessageLabel = UILabel().then {
     $0.font = Font.nameLabel
     $0.textColor = Color.nameLabel
     $0.numberOfLines = Constant.nameLabelNumberOfLines
-  }
-  
-  let goToButton = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "chevronDown")
-    $0.contentMode = UIViewContentMode.center
+    $0.text = CHAssets.localized("New message")
   }
   
   override func initialize() {
     super.initialize()
     
-    self.backgroundColor = CHColors.iceBlue
+//    self.layer.borderColor = CHColors.paleSkyBlue.cgColor
+//    self.layer.borderWidth = 1
+    self.backgroundColor = UIColor.white
     
-    self.layer.borderColor = CHColors.paleSkyBlue.cgColor
-    self.layer.borderWidth = 1
-    
-    self.layer.cornerRadius = 5.f
+    self.layer.cornerRadius = 24.f
     self.layer.shadowColor = CHColors.dark.cgColor
-    self.layer.shadowOffset = CGSize(width: 0.f, height: 4.f)
+    self.layer.shadowOffset = CGSize(width: 0.f, height: 3.f)
     self.layer.shadowRadius = 3.f
     self.layer.shadowOpacity = 0.3
     
     self.addSubview(self.avatarView)
-    self.addSubview(self.nameLabel)
-    self.addSubview(self.messageLabel)
-    self.addSubview(self.goToButton)
+    self.addSubview(self.newMessageLabel)
   }
   
   func configure(message: CHMessage) {
     if let user = message.entity {
       self.avatarView.configure(user)
-      self.nameLabel.text = user.name
-      self.messageLabel.text = message.message
     }
   }
   
@@ -84,24 +69,13 @@ final class ChatBannerView : BaseView {
     self.avatarView.snp.remakeConstraints { (make) in
       make.centerY.equalToSuperview()
       make.leading.equalToSuperview().inset(10)
-      make.size.equalTo(CGSize(width: 32, height: 32))
+      make.size.equalTo(CGSize(width: 24, height: 24))
     }
     
-    self.nameLabel.snp.remakeConstraints { [weak self] (make) in
-      make.top.equalToSuperview().inset(10)
-      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(8)
-    }
-    
-    self.messageLabel.snp.remakeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.nameLabel.snp.bottom)!).offset(2)
-      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(8)
-    }
-    
-    self.goToButton.snp.remakeConstraints { [weak self] (make) in
-      make.leading.greaterThanOrEqualTo((self?.nameLabel.snp.trailing)!).offset(8)
-      make.leading.greaterThanOrEqualTo((self?.messageLabel.snp.trailing)!).offset(8)
-      make.trailing.equalToSuperview().inset(10)
+    self.newMessageLabel.snp.remakeConstraints { [weak self] (make) in
       make.centerY.equalToSuperview()
+      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(12)
+      make.trailing.equalToSuperview().inset(20)
     }
   }
   

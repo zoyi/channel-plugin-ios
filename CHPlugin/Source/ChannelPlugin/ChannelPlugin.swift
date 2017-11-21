@@ -34,12 +34,10 @@ func dlog(_ str: String) {
 
 @objc
 public protocol ChannelDelegate: class {
-  /// notify badge count when changed
-  @objc optional func badgeDidChange(count: Int) -> Void
-  /// notifiy if a link is clicked
-  @objc optional func shouldHandleChatLink(url: URL) -> Bool
-  @objc optional func willShowChatList() -> Void
-  @objc optional func willHideChatList() -> Void
+  @objc optional func badgeDidChange(count: Int) -> Void /* notify badge count when changed */
+  @objc optional func shouldHandleChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
+  @objc optional func willShowChatList() -> Void /* notify when chat list is about to show */
+  @objc optional func willHideChatList() -> Void /* notify when chat list is about to hide */ 
 }
 
 @objc

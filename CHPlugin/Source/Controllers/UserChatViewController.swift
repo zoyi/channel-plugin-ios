@@ -66,7 +66,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
-  var newMessageView = ChatBannerView().then {
+  var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
   
@@ -231,10 +231,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.view.addSubview(self.newMessageView)
     
     self.newMessageView.snp.makeConstraints { [weak self] (make) in
-      make.height.equalTo(54)
-      make.bottom.equalTo((self?.textInputbar.snp.top)!).offset(-5)
-      make.leading.equalToSuperview().inset(6)
-      make.trailing.equalToSuperview().inset(6)
+      make.height.equalTo(48)
+      make.centerX.equalToSuperview()
+      make.bottom.equalTo((self?.textInputbar.snp.top)!).offset(-6)
     }
     
     self.newMessageView.signalForClick()
@@ -410,7 +409,7 @@ extension UserChatViewController: StoreSubscriber {
   func newState(state: AppState) {
     let messages = messagesSelector(state: state, userChatId: self.userChatId)
 
-    self.showMessageBannerIfNeeded(current: self.messages, updated: messages)
+    self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
     
     //saved contentOffset
     let offset = self.tableView.contentOffset
@@ -424,6 +423,7 @@ extension UserChatViewController: StoreSubscriber {
     self.userChat = userChat
     
     //fixed scroll location if necessary
+    //TODO: Fixed offset not work properly, offset reset after some execution
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     
     // Nav items
@@ -509,7 +509,7 @@ extension UserChatViewController: StoreSubscriber {
     }
   }
   
-  func showMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
+  func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
     guard let lastMessage = updated.first, !isMyMessage(message: lastMessage) else {
         return
     }
@@ -568,7 +568,11 @@ extension UserChatViewController: StoreSubscriber {
   }
   
   fileprivate func scrollToBottom(_ animated: Bool) {
-    self.tableView.setContentOffset(CGPoint(x:0,y:-30), animated: animated)
+    self.tableView.scrollToRow(
+      at: IndexPath(row:0, section:0),
+      at: UITableViewScrollPosition.bottom,
+      animated: animated
+    )
   }
 }
 
@@ -1068,6 +1072,13 @@ extension UserChatViewController : SLKInputBarViewDelegate {
 }
 
 extension UserChatViewController {
+  func reloadTypingCell() {
+    let indexPath = IndexPath(row: 0, section: 0)
+    if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
+      self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
+    }
+  }
+  
   func initLiveTyping() {
     WsService.shared.typingSubject
       .observeOn(MainScheduler.instance)
@@ -1090,8 +1101,8 @@ extension UserChatViewController {
               s.addTimer(with: manager, delay: 15)
           }
         }
-        
-        s.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.none)
+        //reload row not section only if visible
+        s.reloadTypingCell()
       }).disposed(by: self.disposeBag)
     
     WsService.shared.mOnCreate()
@@ -1103,7 +1114,7 @@ extension UserChatViewController {
         if let index = s.getTypingIndex(of: typing) {
           let person = s.typingManagers.remove(at: index)
           s.removeTimer(with: person)
-          s.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.none)
+          s.reloadTypingCell()
         }
       }).disposed(by: self.disposeBag)
   }
@@ -1155,7 +1166,7 @@ extension UserChatViewController {
     }) {
       self.typingManagers.remove(at: index)
       self.timeStorage.removeValue(forKey: manager.key)
-      self.tableView.reloadSections(IndexSet(integer: 0), with: UITableViewRowAnimation.none)
+      self.reloadTypingCell()
     }
   }
   

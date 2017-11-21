@@ -162,7 +162,7 @@
 		659793B21FA716CB00840F6A /* UserChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793181FA7167C00840F6A /* UserChatCell.swift */; };
 		659793B31FA716CB00840F6A /* UserChatCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793191FA7167C00840F6A /* UserChatCellModel.swift */; };
 		659793B41FA716CB00840F6A /* UserInfoDialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597931A1FA7167C00840F6A /* UserInfoDialogCell.swift */; };
-		659793B51FA716CB00840F6A /* ChatBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597931B1FA7167C00840F6A /* ChatBannerView.swift */; };
+		659793B51FA716CB00840F6A /* NewMessageBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597931B1FA7167C00840F6A /* NewMessageBannerView.swift */; };
 		659793B61FA716CB00840F6A /* ChatNotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597931D1FA7167C00840F6A /* ChatNotificationViewModel.swift */; };
 		659793B71FA716CB00840F6A /* ChatNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597931E1FA7167C00840F6A /* ChatNotificationView.swift */; };
 		659793B81FA716CB00840F6A /* CHAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597931F1FA7167C00840F6A /* CHAvatar.swift */; };
@@ -377,7 +377,7 @@
 		659793181FA7167C00840F6A /* UserChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatCell.swift; sourceTree = "<group>"; };
 		659793191FA7167C00840F6A /* UserChatCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatCellModel.swift; sourceTree = "<group>"; };
 		6597931A1FA7167C00840F6A /* UserInfoDialogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoDialogCell.swift; sourceTree = "<group>"; };
-		6597931B1FA7167C00840F6A /* ChatBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBannerView.swift; sourceTree = "<group>"; };
+		6597931B1FA7167C00840F6A /* NewMessageBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageBannerView.swift; sourceTree = "<group>"; };
 		6597931D1FA7167C00840F6A /* ChatNotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatNotificationViewModel.swift; sourceTree = "<group>"; };
 		6597931E1FA7167C00840F6A /* ChatNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatNotificationView.swift; sourceTree = "<group>"; };
 		6597931F1FA7167C00840F6A /* CHAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAvatar.swift; sourceTree = "<group>"; };
@@ -794,7 +794,7 @@
 				659793051FA7167C00840F6A /* Badge.swift */,
 				659793061FA7167C00840F6A /* Base */,
 				6597930B1FA7167C00840F6A /* Cells */,
-				6597931B1FA7167C00840F6A /* ChatBannerView.swift */,
+				6597931B1FA7167C00840F6A /* NewMessageBannerView.swift */,
 				6597931C1FA7167C00840F6A /* ChatNotificationView */,
 				6597931F1FA7167C00840F6A /* CHAvatar.swift */,
 				659793201FA7167C00840F6A /* CHMBubbleView.swift */,
@@ -1345,7 +1345,7 @@
 				659793B21FA716CB00840F6A /* UserChatCell.swift in Sources */,
 				659793B31FA716CB00840F6A /* UserChatCellModel.swift in Sources */,
 				659793B41FA716CB00840F6A /* UserInfoDialogCell.swift in Sources */,
-				659793B51FA716CB00840F6A /* ChatBannerView.swift in Sources */,
+				659793B51FA716CB00840F6A /* NewMessageBannerView.swift in Sources */,
 				659793B61FA716CB00840F6A /* ChatNotificationViewModel.swift in Sources */,
 				659793B71FA716CB00840F6A /* ChatNotificationView.swift in Sources */,
 				659793B81FA716CB00840F6A /* CHAvatar.swift in Sources */,

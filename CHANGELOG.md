@@ -1,5 +1,9 @@
 # Change Log
 
+### 2.3.3
+#### Updated
+* Updated new message view 
+
 ### 2.3.2
 #### Bug fixes
 * Fixed country code json format
