@@ -72,10 +72,14 @@ class UserChatsViewController: BaseViewController {
     self.tableView.dataSource = self
     self.tableView.allowsMultipleSelectionDuringEditing = true
     self.tableView.tableFooterView = UIView()
+    
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHUserChat>(
       tableView: self.tableView, initialRows: self.userChats
     )
-
+    self.diffCalculator?.forceOffAnimationEnabled = true
+    self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
+    self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
+    
     self.setDefaultNavItems()
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     
@@ -123,14 +127,14 @@ class UserChatsViewController: BaseViewController {
 
   // MARK: - Helper methods
   fileprivate func setDefaultNavItems() {
-    self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
       image: CHAssets.getImage(named: "exit"),
       style: .plain,
       target: self,
       action: #selector(exitMessengerButtonTapped(sender:))
     )
-    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-      image: CHAssets.getImage(named: "more"),
+    self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+      image: CHAssets.getImage(named: "settings"),
       style: .plain,
       target: self,
       action: #selector(moreButtonTapped(sender:))

@@ -24,7 +24,7 @@ enum RestRouter: URLRequestConvertible {
   
   //case GetMessage(String, ParametersType)
   
-  case GetScripts()
+  case GetScripts(String)
   
   case GetUserChats(ParametersType)
   case CreateUserChat
@@ -100,8 +100,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/guests/me"
     case .GetChannelManager(let managerId):
       return "/app/manangers/\(managerId)"
-    case .GetScripts:
-      return "/app/scripts"
+    case .GetScripts(let pluginId):
+      return "/app/plugin/\(pluginId)/scripts"
     case .GetUserChats, .CreateUserChat:
       return "/app/user_chats"
     case .GetUserChat(let userChatId):

@@ -21,6 +21,8 @@ class CHMultiAvatarView: BaseView {
   }
   
   var persons = [CHEntity]()
+
+  //add property to reuse 
   
   override func initialize() {
     super.initialize()

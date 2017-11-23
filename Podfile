@@ -30,7 +30,7 @@ target 'CHPlugin' do
   pod 'SwiftyJSON'
   pod 'Then'
   pod 'UIColor_Hex_Swift'
-
+  pod 'CHNavBar', :path=> '../TLYShyNavBar'
   target 'CHPluginTests' do
     inherit! :search_paths
 	pod 'Nimble'

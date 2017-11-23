@@ -25,6 +25,11 @@ extension TimeRange : Mappable {
   }
 }
 
+struct SortableWorkingTime {
+  let value: String
+  let order: Int
+}
+
 struct CHChannel: CHEntity {
   // ModelType
   var id = ""
@@ -44,14 +49,14 @@ struct CHChannel: CHEntity {
   var servicePlan = ""
   var serviceBlocked = false
   var workingTimeString: String {
-    let msg = self.workingTime?.flatMap({ (key, value) -> String in
+    let workingTime = self.workingTime?.map({ (key, value) -> SortableWorkingTime in
       let fromValue = value.from
       let toValue = value.to
-
+      
       if fromValue == 0 && toValue == 0 {
-        return ""
+        return SortableWorkingTime(value: "", order: 0)
       }
-
+      
       let from = min(1439, fromValue)
       let to = min(1439, toValue)
       let fromTxt = from >= 720 ? "PM" : "AM"
@@ -60,12 +65,52 @@ struct CHChannel: CHEntity {
       let fromHour = from / 60 > 12 ? from / 60 - 12 : from / 60
       let toMin = to % 60
       let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
-
-      let result = String(format: "%@ - %d:%02d%@ ~ %d:%02d%@",
-                          CHAssets.localized("ch.out_of_work.\(key)"), fromHour, fromMin, fromTxt, toHour, toMin, toTxt)
-      return result
-    }).filter({ $0 != "" }).joined(separator: "\n") ?? "unknown"
-    return CHAssets.localized("ch.out_of_work.title") + "\n" + msg
+      
+      let timeStr = String(format: "%@ - %d:%02d%@ ~ %d:%02d%@",
+                      CHAssets.localized("ch.out_of_work.\(key)"),
+                      fromHour, fromMin, fromTxt, toHour, toMin, toTxt)
+      var order = 0
+      switch key.lowercased() {
+      case "mon": order = 1
+      case "tue": order = 2
+      case "wed": order = 3
+      case "thur": order = 4
+      case "fri": order = 5
+      case "sat": order = 6
+      case "sun": order = 7
+      default: order = 8
+      }
+      
+      return SortableWorkingTime(value: timeStr, order: order)
+    }).sorted(by: { (wt, otherWt) -> Bool in
+      return wt.order < otherWt.order
+    }).filter({ $0.value != "" }).flatMap({ (wt) -> String? in
+      return wt.value
+    }).joined(separator: "\n")
+    
+//    let workingStr = self.workingTime?.flatMap({ (key, value) -> String in
+//      let fromValue = value.from
+//      let toValue = value.to
+//
+//      if fromValue == 0 && toValue == 0 {
+//        return ""
+//      }
+//
+//      let from = min(1439, fromValue)
+//      let to = min(1439, toValue)
+//      let fromTxt = from >= 720 ? "PM" : "AM"
+//      let toTxt = to >= 720 ? "PM" : "AM"
+//      let fromMin = from % 60
+//      let fromHour = from / 60 > 12 ? from / 60 - 12 : from / 60
+//      let toMin = to % 60
+//      let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
+//
+//      let result = String(format: "%@ - %d:%02d%@ ~ %d:%02d%@",
+//                          CHAssets.localized("ch.out_of_work.\(key)"), fromHour, fromMin, fromTxt, toHour, toMin, toTxt)
+//      return result
+//    }).filter({ $0 != "" }).joined(separator: "\n") ?? "unknown"
+    
+    return  workingTime ?? "unknown"
   }
   
   func isBlocked() -> Bool {

@@ -50,11 +50,6 @@ final class CountryCodePickerView : BaseView {
   override func initialize() {
     super.initialize()
     self.countries = mainStore.state.countryCodeState.codes
-//    UtilityPromise.getCountryCodes()
-//      .subscribe(onNext:{ [weak self] (countries) in
-//        self?.countries = countries
-//        self?.pickerView.reloadAllComponents()
-//      }).disposed(by: self.disposeBeg)
     
     self.actionView.addSubview(self.closeButton)
     self.actionView.addSubview(self.submitButton)

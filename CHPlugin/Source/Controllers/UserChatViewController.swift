@@ -15,6 +15,7 @@ import CHPhotoBrowser
 import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire
+import CHNavBar
 
 enum UserChatState {
   case Idle
@@ -70,11 +71,12 @@ final class UserChatViewController: BaseSLKTextViewController {
     $0.isHidden = true
   }
   
+  var titleView : NavigationTitleView? = nil
   
   var newChatSubject = PublishSubject<Any?>()
   var profileSubject = PublishSubject<Any?>()
+  
   // MARK: View Life Cycle
-
   override func viewDidLoad() {
     self.textInputBarLRC = 5
     self.textInputBarBC = 5
@@ -83,7 +85,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.isHidden = true
     self.edgesForExtendedLayout = UIRectEdge.bottom
     self.view.backgroundColor = UIColor.white
-    
+  
     if userChatsSelector(state: mainStore.state).count != 0 {
       //disable interactive pop if only one
       self.navigationController?.interactivePopGestureRecognizer?.delegate = nil;
@@ -92,6 +94,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     let chNavigation = self.navigationController as! MainNavigationController
     chNavigation.chDelegate = self
     
+    self.initNavigationViews()
     self.initSLKTextView()
     self.initTableView()
     self.initInputViews()
@@ -107,7 +110,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       self.endLoad()
     }
   }
-
+  
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
@@ -125,9 +128,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
     if isBeingDismissed || isMovingFromParentViewController {
-      self.resetTypingInfo()
       mainStore.dispatch(RemoveMessages(payload: self.userChatId))
+      self.resetTypingInfo()
     }
+    
     self.sendTyping(isStop: true)
     if let userChatId = self.userChatId {
       //self.loaded = false
@@ -143,8 +147,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   fileprivate func initSLKTextView() {
     self.shouldScrollToBottomAfterKeyboardShows = true
     self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
-    self.rightButton.setTitle(CHAssets.localized("ch.chat.send"), for: .normal)
-    self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
+    self.rightButton.setImage(CHAssets.getImage(named: "sendActive"), for: .normal)
+    self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled"), for: .disabled)
+    self.rightButton.setTitle("", for: .normal)
     self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
     self.textView.keyboardType = .default
   }
@@ -158,12 +163,14 @@ final class UserChatViewController: BaseSLKTextViewController {
     //default textinputbar
     self.textInputbar.barDelegate = self
     self.textInputbar.contentInset.right = 0
+    self.textInputbar.autoHideRightButton = false
     self.textInputbar.signalForClick()
       .subscribe { [weak self] (_) in
       if self?.textInputbar.barState == .disabled {
         return
       }
-      
+      self?.shyNavBarManager.contract(true)
+      self?.shyNavBarManager.disable = true
       self?.presentKeyboard(self?.menuAccesoryView == nil)
     }.disposed(by: self.disposeBag)
 
@@ -180,6 +187,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
     
+    self.tableView.estimatedRowHeight = 0
+//    self.tableView.rowHeight = 0
     self.tableView.clipsToBounds = true
     self.tableView.separatorStyle = .none
     self.tableView.allowsSelection = false
@@ -216,6 +225,58 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
   }
 
+  fileprivate func initNavigationViews() {
+    let titleView = NavigationTitleView()
+    titleView.configure(data: mainStore.state.plugin)
+    titleView.signalForChange().subscribe({ [weak self] (event) in
+      self?.shyNavBarManager.toggle(true)
+    }).disposed(by: self.disposeBag)
+    
+    self.navigationItem.titleView = titleView
+    self.titleView = titleView
+    
+    //height has to be calculated before init extension view
+    //if followed use ChatStatusFollowedView
+    let viewHeight = ChatStatusDefaultView.viewHeight(fits: self.view.bounds.width, channel: mainStore.state.channel)
+    let view = ChatStatusDefaultView(frame: CGRect(x: 0, y:0, width: self.view.bounds.width, height: viewHeight))
+    view.configure(channel: mainStore.state.channel)
+    view.backgroundColor = UIColor(mainStore.state.plugin.color)
+    
+    self.shyNavBarManager.scrollView = self.tableView
+    self.shyNavBarManager.stickyNavigationBar = true
+    self.shyNavBarManager.fadeBehavior = .subviews
+    self.shyNavBarManager.extensionView = view
+    self.shyNavBarManager.delegate = self
+    self.shyNavBarManager.isInverted = true
+    self.shyNavBarManager.triggerExtensionAtTop = true
+    self.shyNavBarManager.expansionResistance = 0
+    
+    view.snp.makeConstraints { (make) in
+      make.top.equalToSuperview()
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.height.equalTo(viewHeight)
+    }
+    
+    //remove bottom border
+    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+    self.navigationController?.navigationBar.shadowImage = UIImage()
+    
+    //TODO: take this out from redux
+    let userChats = userChatsSelector(
+      state: mainStore.state,
+      showCompleted: mainStore.state.userChatsState.showCompletedChats
+    )
+    
+    self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
+    self.setNavItems(
+      userChats: userChats,
+      currentUserChat: self.userChat,
+      guest: mainStore.state.guest,
+      textColor: mainStore.state.plugin.textUIColor
+    )
+  }
+  
   fileprivate func initViews() {
     self.errorToastView.topLayoutGuide = self.topLayoutGuide
     self.errorToastView.containerView = self.view
@@ -258,21 +319,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   fileprivate func setNavItems(userChats: [CHUserChat], currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     if userChats.count == 0 {
       self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "exit"),
-        style: .plain,
-        actionHandler: { [weak self] in
-          if self?.userChatId != nil {
-            self?.requestReadAll()
-          }
-          mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-          self?.navigationController?.dismiss(animated: true, completion: {
-            mainStore.dispatch(ChannelIsHidden())
-          })
-        }
-      )
-      
-      self.navigationItem.rightBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "more"),
+        image: CHAssets.getImage(named: "settings"),
         style: .plain,
         actionHandler: { [weak self] in
           self?.profileSubject.onNext(nil)
@@ -289,14 +336,31 @@ final class UserChatViewController: BaseSLKTextViewController {
         alignLeft: alert == 0,
         textColor: tintColor,
         actionHandler: { [weak self] in
+          self?.shyNavBarManager.disable = true
           if let _ = self?.userChatId {
             self?.requestReadAll()
           }
           mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
           _ = self?.navigationController?.popViewController(animated: true)
       })
+      
       self.navigationItem.leftBarButtonItem?.tintColor = tintColor
     }
+    
+    self.navigationItem.rightBarButtonItem = NavigationItem(
+      image: CHAssets.getImage(named: "exit"),
+      style: .plain,
+      actionHandler: { [weak self] in
+        if self?.userChatId != nil {
+          self?.requestReadAll()
+        }
+        
+        mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+        self?.navigationController?.dismiss(animated: true, completion: {
+          mainStore.dispatch(ChannelIsHidden())
+        })
+      }
+    )
   }
   
   fileprivate func requestReadAll() {
@@ -415,6 +479,7 @@ extension UserChatViewController: StoreSubscriber {
     let offset = self.tableView.contentOffset
     let hasNewMessage = self.hasNewMessage(current: self.messages, updated: messages)
     
+    
     self.messages = messages
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     //feedback trigger 
@@ -427,16 +492,13 @@ extension UserChatViewController: StoreSubscriber {
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     
     // Nav items
-    let userChats = userChatsSelector(
-      state: state,
-      showCompleted: state.userChatsState.showCompletedChats
-    )
-    
-    self.setNavItems(userChats: userChats, currentUserChat: self.userChat,
-                     guest: state.guest, textColor: state.plugin.textUIColor)
+//    let userChats = userChatsSelector(
+//      state: state,
+//      showCompleted: state.userChatsState.showCompletedChats
+//    )
 
     // Title
-    self.title = state.channel.name
+    // self.title = state.channel.name
     
     // Photo - is this scalable? or doesn't need to care at this moment?
     self.photoUrls = self.messages.reversed()
@@ -485,7 +547,6 @@ extension UserChatViewController: StoreSubscriber {
     if userChat.state == "resolved" || userChat.state == "closed" {
       self.textInputbar.barState = .disabled
       self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: UIControlState())
-      self.textInputbar.autoHideRightButton = false
       self.textView.placeholder = CHAssets.localized("ch.review.complete.preview")
       self.rightButton.isEnabled = true
       self.leftButton.isEnabled = false
@@ -558,13 +619,17 @@ extension UserChatViewController: StoreSubscriber {
       !self.isMyMessage(message: lastMessage),
       offset.y > UIScreen.main.bounds.height/2,
       hasNewMessage {
-      let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
-      let viewModel = MessageCellModel(message: lastMessage, previous: previous)
-      offset.y += MessageCell.measureHeight(fits: 0, viewModel: viewModel)
-      self.tableView.setContentOffset(offset, animated: false)
+      //let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
+      //let viewModel = MessageCellModel(message: lastMessage, previous: previous)
+      //offset.y += MessageCell.measureHeight(fits: 0, viewModel: viewModel)
+      let newCellHeight = self.tableView(self.tableView, heightForRowAt: IndexPath(row:0, section: 1))
+      offset.y += newCellHeight
+      self.tableView.contentOffset = offset //ContentOffset(offset, animated: false)
     } else if hasNewMessage {
       self.scrollToBottom(false)
     }
+    
+    self.tableView.layoutIfNeeded()
   }
   
   fileprivate func scrollToBottom(_ animated: Bool) {
@@ -582,24 +647,23 @@ extension UserChatViewController {
 
   override func didPressLeftButton(_ sender: Any?) {
     super.didPressLeftButton(sender)
-
     let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
-    
+
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.camera"), style: .default) { [weak self] _ in
       self?.presentPicker(type: .camera)
     })
-    
+
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { [weak self] _ in
       self?.presentPicker(type: .photo, max: 20)
     })
-    
+
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.chat.resend.cancel"), style: .cancel) { _ in
       //nothing
     })
-    
+
     self.navigationController?.present(alertView, animated: true, completion: nil)
   }
 
@@ -739,13 +803,11 @@ extension UserChatViewController {
 extension UserChatViewController {
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let yOffset = scrollView.contentOffset.y
-    if yOffset + UIScreen.main.bounds.height > scrollView.contentHeight &&
-      !self.isFetching &&
-      !self.nextSeq.isEmpty {
+    let triggerPoint = yOffset + UIScreen.main.bounds.height * 1.5
+    if triggerPoint > scrollView.contentSize.height && !self.isFetching && !self.nextSeq.isEmpty {
       self.fetchMessages()
     }
     
-    //let triggerPoint = UIScreen.main.bounds.height
     if yOffset < 100 &&
       !self.newMessageView.isHidden {
       self.newMessageView.hide(animated: false)
@@ -803,15 +865,18 @@ extension UserChatViewController {
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
     if section == 0 {
-      return self.cellForTyping(tableView, cellForRowAt: indexPath)
+      let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
+      cell.transform = tableView.transform
+      return cell
     } else {
-      return self.cellForMessage(tableView, cellForRowAt: indexPath)
+      let cell = self.cellForMessage(tableView, cellForRowAt: indexPath)
+      cell.transform = tableView.transform
+      return cell
     }
   }
   
   func cellForTyping(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell: TypingIndicatorCell = tableView.dequeueReusableCell(for: indexPath)
-    cell.transform = tableView.transform
     cell.configure(typingUsers: self.typingManagers)
     return cell
   }
@@ -836,7 +901,6 @@ extension UserChatViewController {
         })
         
       }).disposed(by: self.disposeBag)
-      cell.transform = self.tableView.transform
       return cell
     case .BusinessHourQuestion, .BusinessHourAnswer:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -844,21 +908,17 @@ extension UserChatViewController {
         indexPath.row == 0 ? nil : self.messages[indexPath.row - 1]
       let viewModel = MessageCellModel(message: message, previous: previousMessage)
       cell.configure(viewModel)
-      cell.transform = self.tableView.transform
       return cell
     case .NewAlertMessage:
       let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.transform = self.tableView.transform
       return cell
     case .DateDivider:
       let cell: DateCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(date: message.message ?? "")
-      cell.transform = self.tableView.transform
       return cell
     case .Log:
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
-      cell.transform = self.tableView.transform
       return cell
     case .UserInfoDialog:
       let cell: UserInfoDialogCell = tableView.dequeueReusableCell(for: indexPath)
@@ -878,7 +938,6 @@ extension UserChatViewController {
               cell.dialogView.phoneFieldView.phoneField.becomeFirstResponder()
             }).disposed(by: (self?.disposeBag)!)
         }).disposed(by: self.disposeBag)
-      cell.transform = self.tableView.transform
       return cell
     case .SatisfactionFeedback:
       let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
@@ -892,7 +951,6 @@ extension UserChatViewController {
               }).disposed(by: (self?.disposeBag)!)
           }
         }).disposed(by: self.disposeBag)
-      cell.transform = self.tableView.transform
       return cell
     case .SatisfactionCompleted:
       let cell: SatisfactionCompleteCell = tableView.dequeueReusableCell(for: indexPath)
@@ -900,7 +958,6 @@ extension UserChatViewController {
       cell.configure(
         review: chat?.review,
         duration: chat?.resolutionTime)
-      cell.transform = self.tableView.transform
       return cell
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -910,7 +967,6 @@ extension UserChatViewController {
           self.messages[indexPath.row + 1]
       let viewModel = MessageCellModel(message: message, previous: previousMessage)
       cell.configure(viewModel)
-      cell.transform = self.tableView.transform
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -934,7 +990,6 @@ extension UserChatViewController {
           self?.didFileTapped(message: message)
         }.disposed(by: self.disposeBag)
       
-      cell.transform = self.tableView.transform
       return cell
     }
   }
@@ -1174,5 +1229,24 @@ extension UserChatViewController {
     return self.typingManagers.index(where: {
       $0.id == typingEntity.personId
     })
+  }
+}
+
+extension UserChatViewController : TLYShyNavBarManagerDelegate {
+  func shyNavBarManagerTransforming(_ shyNavBarManager: TLYShyNavBarManager!, progress: CGFloat) {
+    print("progress :\(progress))")
+    self.titleView?.expand(with: progress)
+  }
+  
+  func shyNavBarManagerDidBecomeFullyExpanded(_ shyNavBarManager: TLYShyNavBarManager!) {
+    if self.titleView?.isExpanded == false {
+      self.titleView?.isExpanded = true
+    }
+  }
+  
+  func shyNavBarManagerDidBecomeFullyContracted(_ shyNavBarManager: TLYShyNavBarManager!) {
+    if self.titleView?.isExpanded == true {
+      self.titleView?.isExpanded = false
+    }
   }
 }

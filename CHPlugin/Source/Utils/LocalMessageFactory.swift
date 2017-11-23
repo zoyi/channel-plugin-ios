@@ -93,7 +93,7 @@ struct LocalMessageFactory {
   private static func getBusinessHourAnswer(userChat:CHUserChat?) -> CHMessage? {
     // TODO: consider to cut coupling between state channel
     return CHMessage(chatId: userChat?.id ?? "dummy",
-                   message: mainStore.state.channel.workingTimeString,
+                   message: CHAssets.localized("ch.out_of_work.title") + "\n" + mainStore.state.channel.workingTimeString,
                    type: .BusinessHourAnswer,
                    id: "bha_dummy")
   }

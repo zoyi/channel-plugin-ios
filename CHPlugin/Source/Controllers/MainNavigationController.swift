@@ -9,7 +9,7 @@
 import UIKit
 import ReSwift
 
-protocol CHNavigationDelegate {
+protocol CHNavigationDelegate: class {
   func willPopViewController(willShow controller:UIViewController)
   //func willPushViewController()
 }
@@ -17,7 +17,7 @@ protocol CHNavigationDelegate {
 class MainNavigationController: BaseNavigationController {
 
   // MARK: Properties
-  var chDelegate: CHNavigationDelegate? = nil
+  weak var chDelegate: CHNavigationDelegate? = nil
   var statusBarStyle = UIStatusBarStyle.default
   
   var useDefault = false {

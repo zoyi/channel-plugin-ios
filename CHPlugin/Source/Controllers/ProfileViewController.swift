@@ -93,7 +93,7 @@ final class ProfileViewController: BaseViewController {
     self.headerView.frame = CGRect(
       x: 0, y: 0,
       width: self.tableView.width,
-      height: channel.phoneNumber != "" ? 142 : 114
+      height: 180
     )
     self.tableView.tableHeaderView = self.headerView
   }

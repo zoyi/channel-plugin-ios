@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CHPlugin'
-  s.version          = '2.3.3'
+  s.version          = '2.4.0'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -53,5 +53,5 @@ Pod::Spec.new do |s|
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit'
   s.dependency "StarscreamSocketIO", "~> 8.0.3"
+  s.dependency 'CHNavBar'
 end
-

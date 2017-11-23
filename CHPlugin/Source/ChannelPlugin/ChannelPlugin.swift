@@ -581,7 +581,7 @@ public final class ChannelPlugin : NSObject {
 
   private class func fetchScripts() {
     ScriptPromise
-      .get()
+      .get(pluginId: mainStore.state.plugin.id)
       .subscribe(onNext: { (scripts) in
         mainStore.dispatch(GetScripts(payload: scripts))
       }, onError:{ error in

@@ -59,6 +59,7 @@ final class MessageCell: BaseTableViewCell, Reusable {
   
   let bubbleView = CHMBubbleView()
 
+  //TODO: refactor different message cell types (image, file, web)
   let clipFileView = CHMFileView().then {
     $0.isHidden = true
   }

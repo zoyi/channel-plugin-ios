@@ -30,42 +30,31 @@ final class ProfileHeaderView : BaseView {
     $0.textAlignment = .center
   }
   
-  let phoneView = UIView().then {
-    $0.backgroundColor = CHColors.dark10
-    $0.layer.cornerRadius = 3
-    $0.clipsToBounds = true
-  }
+  let contactViews = ContactsView()
   
-  let phoneImageView = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "phone")
-    $0.contentMode = .center
-  }
-  let phoneLabel = UILabel().then {
-    $0.font = UIFont.systemFont(ofSize: 14)
-  }
   
   var channel: CHChannel? = nil
 
   override func initialize() {
     super.initialize()
     
-    _ = self.phoneView.signalForClick()
-      .subscribe(onNext: { [weak self] (_) in
-      //call
-      let phoneNumber = self?.phoneLabel.text ?? ""
-      if let url = URL(string: "tel://\(phoneNumber)") {
-        url.open()
-      }
-    })
+//    _ = self.phoneView.signalForClick()
+//      .subscribe(onNext: { [weak self] (_) in
+//      //call
+//      let phoneNumber = self?.phoneLabel.text ?? ""
+//      if let url = URL(string: "tel://\(phoneNumber)") {
+//        url.open()
+//      }
+//    })
+    
+    self.contactViews.buttonSize = 46
     
     self.channelIconView.addSubview(self.initialLabel)
     self.channelIconView.addSubview(self.channelImageView)
     self.addSubview(self.channelIconView)
-    
+    self.addSubview(self.contactViews)
     self.addSubview(self.channelNameLabel)
-    self.phoneView.addSubview(self.phoneImageView)
-    self.phoneView.addSubview(self.phoneLabel)
-    self.addSubview(self.phoneView)
+
   }
   
   override func layoutSubviews() {
@@ -86,32 +75,20 @@ final class ProfileHeaderView : BaseView {
     }
     
     self.channelNameLabel.snp.remakeConstraints { [weak self] (make) in
-      if self?.channel?.phoneNumber != "" {
-        make.bottom.equalTo((self?.phoneView.snp.top)!).offset(-10)
-      } else {
-        make.bottom.equalToSuperview().inset(24)
-      }
+//      if self?.channel?.phoneNumber != "" {
+//        make.bottom.equalTo((self?.phoneView.snp.top)!).offset(-10)
+//      } else {
+//        //make.bottom.equalToSuperview().inset(24)
+//      }
       
       make.top.equalTo((self?.channelIconView.snp.bottom)!).offset(12)
       make.centerX.equalToSuperview()
     }
     
-    self.phoneImageView.snp.remakeConstraints { (make) in
-      make.size.equalTo(CGSize(width: 12, height: 12))
-      make.leading.equalToSuperview().inset(8)
-      make.centerY.equalToSuperview()
-    }
-    
-    self.phoneLabel.snp.remakeConstraints { [weak self] (make) in
-      make.leading.equalTo((self?.phoneImageView.snp.trailing)!).offset(4)
-      make.centerY.equalToSuperview()
-      make.trailing.equalToSuperview().inset(8)
-    }
-    
-    self.phoneView.snp.remakeConstraints { (make) in
+    self.contactViews.snp.makeConstraints { [weak self] (make) in
       make.centerX.equalToSuperview()
-      make.bottom.equalToSuperview().inset(18)
-      make.height.equalTo(28)
+      make.top.equalTo((self?.channelNameLabel.snp.bottom)!).offset(16)
+      make.bottom.equalToSuperview().inset(28)
     }
   }
   
@@ -139,11 +116,23 @@ final class ProfileHeaderView : BaseView {
       plugin.textColor == "white" ?
         CHColors.white : CHColors.black
     
-    self.phoneLabel.text = channel.phoneNumber
-    self.phoneLabel.textColor =
-      plugin.textColor == "white" ?
-        CHColors.white : CHColors.black
-    self.phoneView.isHidden = channel.phoneNumber == ""
+    self.contactViews.removeAllButtons()
+    self.contactViews.addButton(image: CHAssets.getImage(named: "homepage")) {
+      
+    }
+    
+    self.contactViews.addButton(image: CHAssets.getImage(named: "phone")) {
+      
+    }
+    
+    self.contactViews.addButton(image: CHAssets.getImage(named: "facebook")) {
+      
+    }
+    
+    self.contactViews.addButton(image: CHAssets.getImage(named: "instagram")) {
+      
+    }
+    self.contactViews.layoutButtons()
     
     self.setNeedsLayout()
     self.layoutIfNeeded()

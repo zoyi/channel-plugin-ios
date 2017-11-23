@@ -13,9 +13,9 @@ import RxSwift
 import ObjectMapper
 
 struct ScriptPromise {
-  static func get() -> Observable<[CHScript]> {
+  static func get(pluginId: String) -> Observable<[CHScript]> {
     return Observable.create { subscriber in
-      Alamofire.request(RestRouter.GetScripts())
+      Alamofire.request(RestRouter.GetScripts(pluginId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
