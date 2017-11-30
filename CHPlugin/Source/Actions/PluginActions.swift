@@ -13,3 +13,7 @@ struct CheckInSuccess: Action {
 }
 
 struct CheckOutSuccess: Action {}
+
+struct UpdateChannel: Action {
+  public let payload: CHChannel
+}

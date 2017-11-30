@@ -11,7 +11,8 @@ import ReSwift
 struct ManagersState: StateType {
   var managerDictionary: [String: CHManager] = [:]
 
-  func findBy(id: String) -> CHManager? {
+  func findBy(id: String?) -> CHManager? {
+    guard let id = id else { return nil }
     return self.managerDictionary[id]
   }
 

@@ -28,10 +28,23 @@ class ContactComponentButton: BaseButton {
    
     self.action = action
     self.setImage(image, for: .normal)
+    self.setImage(image, for: .highlighted)
     
     self.signalForClick().subscribe { [weak self] (_) in
       self?.action?()
     }.disposed(by: self.disposeBag)
+  }
+  
+  func setBackgroundColorsWith(baseColor: UIColor) {
+    if baseColor == UIColor.white {
+      self.normalColor = CHColors.white15
+      self.highlightColor = CHColors.white40
+    } else {
+      self.normalColor = CHColors.dark5
+      self.highlightColor = CHColors.dark20
+    }
+    
+    self.backgroundColor = self.normalColor
   }
   
   func setBackgroundColors(normal: UIColor, highlight: UIColor) {

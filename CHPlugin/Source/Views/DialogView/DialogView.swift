@@ -141,7 +141,7 @@ class DialogView : BaseView {
       let range = NSRange(location: 0, length: viewModel.footer.count)
       attrString.addAttribute(NSAttributedStringKey.foregroundColor, value: Color.footerLabel, range: range)
       attrString.addAttribute(NSAttributedStringKey.font, value: Font.footerLabel, range: range)
-      let boldRange = (attrString.string as NSString).range(of: CHAssets.localized("ch.term_of_service"))
+      let boldRange = (attrString.string as NSString).range(of: CHAssets.localized("ch.terms_of_service").lowercased())
       attrString.addAttribute(NSAttributedStringKey.font, value: UIFont.boldSystemFont(ofSize: 11), range: boldRange)
       let paragraph = NSMutableParagraphStyle()
       paragraph.alignment = .center

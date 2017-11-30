@@ -20,6 +20,8 @@ struct CHManager: CHEntity {
   var color = ""
   // Manager
   var username = ""
+  var desc = ""
+  var online = false
   
   var key: String {
     get {
@@ -39,6 +41,7 @@ extension CHManager: Mappable {
     initial     <- map["initial"]
     color       <- map["color"]
     username    <- map["username"]
+    online      <- map["online"]
   }
 }
 

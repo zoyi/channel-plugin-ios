@@ -29,7 +29,7 @@ struct CHUserChat: ModelType {
   var followedBy: String = ""
   
   var lastMessageId: String?
-  var talkedManagerIds: [String] = []
+  var talkedManagerId: String?
   var resolutionTime: Int = 0
   
   var readableUpdatedAt: String {
@@ -49,19 +49,22 @@ struct CHUserChat: ModelType {
   }
   
   var name: String {
-    if self.managers.count > 1 {
-      return CHAssets.localized("ch.user_chat_managers").replace("%s", withString: self.managers.first!.name).replace("%d", withString: "\(self.managers.count - 1)")
-    } else if self.managers.count == 1 {
-      return self.managers.first!.name
+//    if self.managers.count > 1 {
+//      return CHAssets.localized("ch.user_chat_managers").replace("%s", withString: self.managers.first!.name).replace("%d", withString: "\(self.managers.count - 1)")
+//    } else if self.managers.count == 1 {
+//      return self.managers.first!.name
+//    }
+//
+    if let manager = self.lastTalkedManager {
+      return manager.name
     }
-    
     return self.channel?.name ?? CHAssets.localized("ch.unknown")
   }
 
   // Dependencies
   var lastMessage: CHMessage?
   var session: CHSession?
-  var managers: [CHManager] = []
+  var lastTalkedManager: CHManager?
   var channel: CHChannel?
 }
 
@@ -83,10 +86,9 @@ extension CHUserChat: Mappable {
     updatedAt        <- (map["updatedAt"], CustomDateTransform())
     followedBy       <- map["followedBy"]
     lastMessageId    <- map["lastMessageId"]
-    talkedManagerIds <- map["talkedManagerIds"]
+    talkedManagerId <- map["talkedManagerId"]
     
     resolutionTime   <- map["resolutionTime"]
-    
   }
 }
 
@@ -133,6 +135,10 @@ extension CHUserChat {
   
   func isClosed() -> Bool {
     return self.state == "closed"
+  }
+  
+  func isReady() -> Bool {
+    return self.state == "ready" || self.state == "open"
   }
 }
 

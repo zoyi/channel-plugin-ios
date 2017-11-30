@@ -12,21 +12,21 @@ protocol UserChatCellModelType {
   var title: String { get }
   var lastMessage: String? { get }
   var timestamp: String { get }
-  var avatars: [CHEntity] { get }
+  var avatar: CHEntity? { get }
   var badgeCount: Int { get }
   var isBadgeHidden: Bool { get }
   var isClosed: Bool { get }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
-
   let title: String
   let lastMessage: String?
   let timestamp: String
-  let avatars: [CHEntity]
+  let avatar: CHEntity?
   let badgeCount: Int
   let isBadgeHidden: Bool
   let isClosed: Bool
+  
   init(userChat: CHUserChat) {
     self.title = userChat.name
     if userChat.state == "resolved" {
@@ -40,7 +40,7 @@ struct UserChatCellModel: UserChatCellModelType {
     self.timestamp = userChat.state == "resolved" ?
       (userChat.resolvedAt?.readableTimestamp() ?? "") :
       userChat.readableUpdatedAt
-    self.avatars = userChat.managers
+    self.avatar = userChat.lastTalkedManager ?? mainStore.state.channel
     self.badgeCount = userChat.session?.alert ?? 0
     self.isBadgeHidden = self.badgeCount == 0
     self.isClosed = userChat.isClosed()

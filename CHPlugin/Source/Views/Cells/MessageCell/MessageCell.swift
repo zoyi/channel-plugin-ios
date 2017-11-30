@@ -45,6 +45,7 @@ final class MessageCell: BaseTableViewCell, Reusable {
   
   let avatarView = AvatarView().then {
     $0.showBorder = false
+    $0.layer.cornerRadius = 12.f
   }
   
   let usernameLabel = UILabel().then {

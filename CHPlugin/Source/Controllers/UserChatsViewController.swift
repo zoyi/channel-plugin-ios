@@ -198,16 +198,16 @@ class UserChatsViewController: BaseViewController {
   func showProfileView() {
     let controller = ProfileViewController()
     let navigation = MainNavigationController(rootViewController: controller)
-    
-    controller.signalForDelete().subscribe(onNext: { [weak self] _ in
-      self?.navigationController?.dismiss(animated: true, completion: {
-        self?.navigationController?.popToRootViewController(animated: false)
-      })
-      self?.setEditingNavItems()
-      self?.tableView.setEditing(true, animated: true)
-    }).disposed(by: self.disposeBag)
-     
-    self.navigationController?.present(navigation, animated: true, completion: nil)
+//    navigation.modalPresentationStyle = .overCurrentContext
+//    controller.signalForDelete().subscribe(onNext: { [weak self] _ in
+//      self?.navigationController?.dismiss(animated: true, completion: {
+//        self?.navigationController?.popToRootViewController(animated: false)
+//      })
+//      self?.setEditingNavItems()
+//      self?.tableView.setEditing(true, animated: true)
+//    }).disposed(by: self.disposeBag)
+
+    self.present(navigation, animated: true, completion: nil)
   }
 }
 
@@ -224,11 +224,10 @@ extension UserChatsViewController {
     if let selectedRows = self.tableView.indexPathsForSelectedRows {
       self.deleteUserChats(selectedRows: selectedRows)
         .subscribe(onNext: { [weak self] (deletedChatIds, indexPaths) in
+          mainStore.dispatch(DeleteUserChats(payload: deletedChatIds))
 
-        mainStore.dispatch(DeleteUserChats(payload: deletedChatIds))
-
-        self?.tableView.setEditing(false, animated: true)
-        self?.setDefaultNavItems()
+          self?.tableView.setEditing(false, animated: true)
+          self?.setDefaultNavItems()
       }, onError: { (error) in
         //on error??
       }).disposed(by: self.disposeBag)
@@ -283,7 +282,8 @@ extension UserChatsViewController: StoreSubscriber {
 extension UserChatsViewController: UIScrollViewDelegate {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let yOffset = scrollView.contentOffset.y
-    if self.scrollOffset < yOffset && self.scrollOffset > 0{
+    if self.scrollOffset < yOffset && self.scrollOffset > 0 &&
+      yOffset < scrollView.contentSize.height - scrollView.bounds.height {
       self.hidePlusButton()
     } else if self.scrollOffset > yOffset &&
       self.scrollOffset < scrollView.contentSize.height {
@@ -318,9 +318,12 @@ extension UserChatsViewController: UITableViewDataSource {
     let userChat = self.userChats[indexPath.row]
     let viewModel = UserChatCellModel(userChat: userChat)
     cell.configure(viewModel)
-    let button = MGSwipeButton(title: CHAssets.localized("ch.chat.delete"),
-                               backgroundColor: CHColors.warmPink,
-                               insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10))
+    let button = MGSwipeButton(
+      title: CHAssets.localized("ch.chat.delete"),
+      backgroundColor: CHColors.warmPink,
+      insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10)
+    )
+    
     button.buttonWidth = 70
     button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
     cell.rightButtons = [

@@ -39,6 +39,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   // MARK: Properties
   var state: UserChatState = .Idle
+  var channel: CHChannel = mainStore.state.channel
   var userChatId: String?
   var userChat: CHUserChat?
   var nextSeq: String = ""
@@ -99,7 +100,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initTableView()
     self.initInputViews()
     self.initViews()
-    self.initLiveTyping()
+    self.initSocketObservers()
     
     self.shouldShowGuide = (mainStore.state.guest.ghost == true ||
       mainStore.state.guest.mobileNumber == nil) &&
@@ -226,25 +227,73 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
 
   fileprivate func initNavigationViews() {
-    let titleView = NavigationTitleView()
-    titleView.configure(data: mainStore.state.plugin)
-    titleView.signalForChange().subscribe({ [weak self] (event) in
-      self?.shyNavBarManager.toggle(true)
-    }).disposed(by: self.disposeBag)
+    self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
+    //TODO: take this out from redux
+    let userChats = userChatsSelector(
+      state: mainStore.state,
+      showCompleted: mainStore.state.userChatsState.showCompletedChats
+    )
     
-    self.navigationItem.titleView = titleView
-    self.titleView = titleView
+    self.setNavItems(
+      userChats: userChats,
+      currentUserChat: self.userChat,
+      guest: mainStore.state.guest,
+      textColor: mainStore.state.plugin.textUIColor
+    )
     
-    //height has to be calculated before init extension view
-    //if followed use ChatStatusFollowedView
-    let viewHeight = ChatStatusDefaultView.viewHeight(fits: self.view.bounds.width, channel: mainStore.state.channel)
-    let view = ChatStatusDefaultView(frame: CGRect(x: 0, y:0, width: self.view.bounds.width, height: viewHeight))
-    view.configure(channel: mainStore.state.channel)
-    view.backgroundColor = UIColor(mainStore.state.plugin.color)
+    self.initNavigationTitle()
+    self.initNavigationExtension()
+  }
+  
+  func initNavigationTitle() {
+    let titleView = self.navigationItem.titleView as? NavigationTitleView ?? NavigationTitleView()
+    titleView.configure(
+      channel: mainStore.state.channel,
+      manager: self.userChat?.lastTalkedManager,
+      plugin: mainStore.state.plugin)
+
+    if self.navigationItem.titleView == nil {
+      titleView.signalForChange().subscribe({ [weak self] (event) in
+        self?.shyNavBarManager.toggle(true)
+      }).disposed(by: self.disposeBag)
+      
+      self.navigationItem.titleView = titleView
+      self.titleView = titleView
+      
+      self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+      self.navigationController?.navigationBar.shadowImage = UIImage()
+    }
+  }
+  
+  func initNavigationExtension() {
+    let view: UIView!
+    if self.userChat?.isReady() == true || self.userChat == nil {
+      let managers = mainStore.state.managersState.managerDictionary.map { (key, value) -> CHManager in
+        return value
+      }
+      view = ChatStatusViewFactory.createDefaultExtensionView(
+        fit: self.view.bounds.width,
+        userChat: self.userChat,
+        channel: mainStore.state.channel,
+        plugin: mainStore.state.plugin,
+        managers: managers)
+    } else {
+      view = ChatStatusViewFactory.createFollowedExtensionView(
+        fit: self.view.bounds.width,
+        userChat: self.userChat,
+        channel: mainStore.state.channel,
+        plugin: mainStore.state.plugin)
+    }
+    let viewHeight = view.frame.size.height
     
     self.shyNavBarManager.scrollView = self.tableView
     self.shyNavBarManager.stickyNavigationBar = true
     self.shyNavBarManager.fadeBehavior = .subviews
+    if let state = self.userChat?.state, state != "ready" &&
+      self.shyNavBarManager.extensionView == nil || !self.shyNavBarManager.isExpanded() {
+      self.shyNavBarManager.hideExtension = true
+    }
+    
     self.shyNavBarManager.extensionView = view
     self.shyNavBarManager.delegate = self
     self.shyNavBarManager.isInverted = true
@@ -257,26 +306,8 @@ final class UserChatViewController: BaseSLKTextViewController {
       make.trailing.equalToSuperview()
       make.height.equalTo(viewHeight)
     }
-    
-    //remove bottom border
-    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-    self.navigationController?.navigationBar.shadowImage = UIImage()
-    
-    //TODO: take this out from redux
-    let userChats = userChatsSelector(
-      state: mainStore.state,
-      showCompleted: mainStore.state.userChatsState.showCompletedChats
-    )
-    
-    self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-    self.setNavItems(
-      userChats: userChats,
-      currentUserChat: self.userChat,
-      guest: mainStore.state.guest,
-      textColor: mainStore.state.plugin.textUIColor
-    )
   }
-  
+
   fileprivate func initViews() {
     self.errorToastView.topLayoutGuide = self.topLayoutGuide
     self.errorToastView.containerView = self.view
@@ -333,7 +364,7 @@ final class UserChatViewController: BaseSLKTextViewController {
         image: CHAssets.getImage(named: "back")?.withRenderingMode(.alwaysTemplate),
         text: alertCount,
         fitToSize: alert != 0,
-        alignLeft: alert == 0,
+        alignment: alert == 0 ? .left : .center,
         textColor: tintColor,
         actionHandler: { [weak self] in
           self?.shyNavBarManager.disable = true
@@ -472,33 +503,29 @@ extension UserChatViewController: StoreSubscriber {
 
   func newState(state: AppState) {
     let messages = messagesSelector(state: state, userChatId: self.userChatId)
-
     self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
     
     //saved contentOffset
     let offset = self.tableView.contentOffset
     let hasNewMessage = self.hasNewMessage(current: self.messages, updated: messages)
     
-    
     self.messages = messages
+    
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
+    if let prevUserChat = self.userChat, let nextUserChat = userChat,
+      prevUserChat.isReady() && !nextUserChat.isReady() {
+      self.initNavigationViews()
+    }
+    
     //feedback trigger 
     self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
     self.configureInputField(userChat)
     self.userChat = userChat
+    self.channel = state.channel
     
     //fixed scroll location if necessary
     //TODO: Fixed offset not work properly, offset reset after some execution
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
-    
-    // Nav items
-//    let userChats = userChatsSelector(
-//      state: state,
-//      showCompleted: state.userChatsState.showCompletedChats
-//    )
-
-    // Title
-    // self.title = state.channel.name
     
     // Photo - is this scalable? or doesn't need to care at this moment?
     self.photoUrls = self.messages.reversed()
@@ -885,23 +912,20 @@ extension UserChatViewController {
     let message = self.messages[indexPath.row]
     
     switch message.messageType {
+    //deprecated
     case .ChannelClosed:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       let viewModel = MessageCellModel(message: message, previous: nil)
       cell.configure(viewModel)
       cell.bubbleView.actionView.signalForClick().subscribe({ [weak self] (event) in
         mainStore.dispatch(ClickBusinessHour(payload:self?.userChat))
-        //self?.tableView.scrollToBottom(true)
-        
         dispatch(delay: 1.0, execute: { [weak self] in
           if self?.view.superview == nil { return }
-          //guard mainStore.state.userChatsState.currentUserChatId != "" else { return }
           mainStore.dispatch(AnswerBusinessHour(payload: self?.userChat))
-          //self?.tableView.scrollToBottom(true)
         })
-        
       }).disposed(by: self.disposeBag)
       return cell
+    //deprecated
     case .BusinessHourQuestion, .BusinessHourAnswer:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       let previousMessage: CHMessage? =
@@ -1022,13 +1046,17 @@ extension UserChatViewController {
   func didImageTapped(message: CHMessage) {
     let imgUrl = message.file?.url
     self.photoBrowser = MWPhotoBrowser(delegate: self)
+    self.photoBrowser?.enableSwipeToDismiss = true
+    
+    let navigation = MainNavigationController(rootViewController: self.photoBrowser!)
+    navigation.modalPresentationStyle = .overCurrentContext
     
     if let index = self.photoUrls.index(of: imgUrl ?? "") {
-      let navigationController = self.navigationController as! MainNavigationController
-      navigationController.useDefault = true
       self.dismissKeyboard(true)
       self.photoBrowser?.setCurrentPhotoIndex(UInt(index))
-      _ = self.navigationController?.pushViewController(self.photoBrowser!, animated: true)
+      
+      self.present(navigation, animated: true, completion: nil)
+      //_ = self.navigationController?.pushViewController(self.photoBrowser!, animated: true)
     }
   }
   
@@ -1134,7 +1162,7 @@ extension UserChatViewController {
     }
   }
   
-  func initLiveTyping() {
+  func initSocketObservers() {
     WsService.shared.typingSubject
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (typingEntity) in
@@ -1234,7 +1262,6 @@ extension UserChatViewController {
 
 extension UserChatViewController : TLYShyNavBarManagerDelegate {
   func shyNavBarManagerTransforming(_ shyNavBarManager: TLYShyNavBarManager!, progress: CGFloat) {
-    print("progress :\(progress))")
     self.titleView?.expand(with: progress)
   }
   

@@ -23,27 +23,27 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false) -> [CHUserCh
     })
   }
   
-  return userChats.map({
+  return userChats.map({ (userChat) in
     return CHUserChat(
-      id: $0.id,
-      personType: $0.personType,
-      personId: $0.personId,
-      channelId: $0.channelId,
-      bindFromId: $0.bindFromId,
-      state: $0.state,
-      review: $0.review,
-      createdAt: $0.createdAt,
-      openedAt: $0.openedAt,
-      updatedAt: $0.updatedAt,
-      followedAt: $0.followedAt,
-      resolvedAt: $0.resolvedAt,
-      followedBy: $0.followedBy,
-      lastMessageId: $0.lastMessageId,
-      talkedManagerIds: $0.talkedManagerIds,
-      resolutionTime: $0.resolutionTime,
-      lastMessage: state.messagesState.findBy(id: $0.lastMessageId),
-      session: state.sessionsState.findBy(userChatId: $0.id),
-      managers: state.managersState.findBy(ids: $0.talkedManagerIds),
+      id: userChat.id,
+      personType: userChat.personType,
+      personId: userChat.personId,
+      channelId: userChat.channelId,
+      bindFromId: userChat.bindFromId,
+      state: userChat.state,
+      review: userChat.review,
+      createdAt: userChat.createdAt,
+      openedAt: userChat.openedAt,
+      updatedAt: userChat.updatedAt,
+      followedAt: userChat.followedAt,
+      resolvedAt: userChat.resolvedAt,
+      followedBy: userChat.followedBy,
+      lastMessageId: userChat.lastMessageId,
+      talkedManagerId: userChat.talkedManagerId,
+      resolutionTime: userChat.resolutionTime,
+      lastMessage: state.messagesState.findBy(id: userChat.lastMessageId),
+      session: state.sessionsState.findBy(userChatId: userChat.id),
+      lastTalkedManager: state.managersState.findBy(id: userChat.talkedManagerId),
       channel: state.channel
     )
   })
@@ -69,11 +69,11 @@ func userChatSelector(state: AppState, userChatId: String?) -> CHUserChat? {
     resolvedAt: userChat.resolvedAt,
     followedBy: userChat.followedBy,
     lastMessageId: userChat.lastMessageId,
-    talkedManagerIds: userChat.talkedManagerIds,
+    talkedManagerId: userChat.talkedManagerId,
     resolutionTime: userChat.resolutionTime,
     lastMessage: state.messagesState.findBy(id: userChat.lastMessageId),
     session: state.sessionsState.findBy(userChatId: userChat.id),
-    managers: state.managersState.findBy(ids: userChat.talkedManagerIds),
+    lastTalkedManager: state.managersState.findBy(id: userChat.talkedManagerId),
     channel: state.channel
   )
 }

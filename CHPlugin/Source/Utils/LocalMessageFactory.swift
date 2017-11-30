@@ -78,7 +78,7 @@ struct LocalMessageFactory {
   private static func getClosingMessage(chatId: String = "dummy") -> CHMessage? {
     return CHMessage(chatId: chatId,
                    message: mainStore.state.scriptsState.getOutOfWorkMessage(),
-                   type: .ChannelClosed,
+                   type: .Default,
                    id: "close_dummy")
   }
   

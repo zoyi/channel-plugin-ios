@@ -96,7 +96,7 @@ class WsService {
   let readySubject = PublishSubject<String>()
   let typingSubject = PublishSubject<CHTypingEntity>()
   let messageOnCreateSubject = PublishSubject<CHMessage>()
-  
+ 
   //MARK: Private properties
   fileprivate var socket: SocketIOClient!
   //#if DEBUG
@@ -155,6 +155,7 @@ class WsService {
   func mOnCreate() -> PublishSubject<CHMessage> {
     return self.messageOnCreateSubject
   }
+  
   //MARK: Socket functionalities
   
   func connect() {
@@ -350,22 +351,16 @@ fileprivate extension WsService {
       guard let type = WsServiceType(string: json["type"].stringValue) else { return }
       
       switch type {
+      case WsServiceType.Channel:
+        guard let channel = Mapper<CHChannel>()
+          .map(JSONObject: json["entity"].object) else { return }
+        mainStore.dispatch(UpdateChannel(payload: channel))
+  
       case WsServiceType.Session:
         guard let session = Mapper<CHSession>()
           .map(JSONObject: json["entity"].object) else { return }
         
         mainStore.dispatch(UpdateSession(payload: session))
-        
-        if mainStore.state.userChatsState.currentUserChatId == session.chatId &&
-          session.unread > 0 {
-          _ = UserChatPromise.setMessageReadAll(userChatId: session.chatId)
-            .subscribe(onNext: { (result) in
-              // TODO: 명시적으로 dispatch Update Session
-            }, onError: { (error) in
-              //TODO: error handle
-            })
-        }
-        
         break
       case WsServiceType.UserChat:
         guard let userChat = Mapper<CHUserChat>()
@@ -397,6 +392,9 @@ fileprivate extension WsService {
         mainStore.dispatch(UpdateGuest(payload: user))
         break
       case WsServiceType.Manager:
+        guard let manager = Mapper<CHManager>()
+          .map(JSONObject: json["entity"].object) else { return }
+        mainStore.dispatch(UpdateManager(payload: manager))
         break
       default:
         break

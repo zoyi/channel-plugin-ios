@@ -37,14 +37,12 @@ final class NewMessageBannerView : BaseView {
     $0.font = Font.nameLabel
     $0.textColor = Color.nameLabel
     $0.numberOfLines = Constant.nameLabelNumberOfLines
-    $0.text = CHAssets.localized("New message")
+    $0.text = CHAssets.localized("ch.chat.new_message")
   }
   
   override func initialize() {
     super.initialize()
-    
-//    self.layer.borderColor = CHColors.paleSkyBlue.cgColor
-//    self.layer.borderWidth = 1
+
     self.backgroundColor = UIColor.white
     
     self.layer.cornerRadius = 24.f

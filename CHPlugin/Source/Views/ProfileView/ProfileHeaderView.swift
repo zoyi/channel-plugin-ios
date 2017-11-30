@@ -117,21 +117,23 @@ final class ProfileHeaderView : BaseView {
         CHColors.white : CHColors.black
     
     self.contactViews.removeAllButtons()
-    self.contactViews.addButton(image: CHAssets.getImage(named: "homepage")) {
-      
+    
+    self.contactViews.addButton(
+      baseColor: plugin.textUIColor,
+      image: CHAssets.getImage(named: "homepage")) {
+        guard let url = URL(string: self.channel?.homepageUrl ?? "") else { return }
+        url.open()
     }
     
-    self.contactViews.addButton(image: CHAssets.getImage(named: "phone")) {
-      
-    }
-    
-    self.contactViews.addButton(image: CHAssets.getImage(named: "facebook")) {
-      
-    }
-    
-    self.contactViews.addButton(image: CHAssets.getImage(named: "instagram")) {
-      
-    }
+    self.contactViews.addButton(
+      baseColor: plugin.textUIColor,
+      image: CHAssets.getImage(named: "phone")) {
+        guard let phoneNumber = self.channel?.phoneNumber else { return }
+        if let url = URL(string: "tel://\(phoneNumber)") {
+          url.open()
+        }
+      }
+
     self.contactViews.layoutButtons()
     
     self.setNeedsLayout()

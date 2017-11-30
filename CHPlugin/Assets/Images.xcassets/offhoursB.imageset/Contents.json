@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "offhoursW.png",
+      "filename" : "offhoursB.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "offhoursW@2x.png",
+      "filename" : "offhoursB@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "offhoursW@3x.png",
+      "filename" : "offhoursB@3x.png",
       "scale" : "3x"
     }
   ],

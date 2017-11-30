@@ -9,6 +9,12 @@
 import Foundation
 import UIKit
 
+enum NavigationItemAlign {
+  case left
+  case right
+  case center
+}
+
 class NavigationItem: UIBarButtonItem {
   public var actionHandler: (() -> Void)?
   
@@ -16,7 +22,7 @@ class NavigationItem: UIBarButtonItem {
     image: UIImage?,
     text: String? = "",
     fitToSize: Bool = false,
-    alignLeft: Bool = false,
+    alignment: NavigationItemAlign = .center,
     textColor: UIColor? = UIColor.white,
     actionHandler: (() -> Void)?) {
     
@@ -29,8 +35,12 @@ class NavigationItem: UIBarButtonItem {
     if fitToSize {
       button.sizeToFit()
     }
-    if alignLeft {
+    if alignment == .left {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -20, bottom: 0, right: 0)
+    } else if alignment == .right {
+      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -20)
+    } else {
+      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
     }
     
     self.init(customView: button)

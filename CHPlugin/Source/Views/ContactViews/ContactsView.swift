@@ -21,11 +21,18 @@ class ContactsView : BaseView {
     super.setLayouts()
   }
   
-  func addButton(image: UIImage?, action: (() -> Void)? = nil) {
+  func addButton(baseColor: UIColor, image: UIImage?, action: (() -> Void)? = nil) {
     guard let image = image else { return }
     guard let action = action else { return }
     
-    let button = ContactComponentButton(image: image, action: action)
+    let button = ContactComponentButton(
+      image: image.withRenderingMode(.alwaysTemplate),
+      action: action)
+    
+    button.setBackgroundColorsWith(baseColor: baseColor)
+    button.tintColor = baseColor
+    button.layer.cornerRadius = self.buttonSize/2
+    
     self.buttons.append(button)
     self.addSubview(button)
 

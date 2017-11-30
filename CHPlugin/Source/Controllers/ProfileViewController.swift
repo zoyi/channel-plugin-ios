@@ -13,8 +13,9 @@ import RxSwift
 import ReSwift
 
 private enum ProfileSection: Int {
-  case userInfo
+  //case userInfo
   case action
+  case agreement
 }
 
 private enum UserInfoRow: Int {
@@ -25,14 +26,14 @@ private enum UserInfoRow: Int {
 private enum ActionRow: Int {
   case closedChats
   case soundOption
-  case deleteChat
+  //case deleteChat
 }
 
 final class ProfileViewController: BaseViewController {
   struct Constant {
     static let sectionCount = 2
     static let userInfoCount = 2
-    static let actionCount = 3
+    static let actionCount = 2
   }
   
   let tableView = UITableView()
@@ -46,8 +47,12 @@ final class ProfileViewController: BaseViewController {
   let deleteSubject = PublishSubject<Any?>()
   let disposeBag = DisposeBag()
   var userInfoModel = [String]()
-  
+
   var guest: CHGuest?
+  
+  var panGestureRecognizer: UIPanGestureRecognizer? = nil
+  var originalPosition: CGPoint?
+  var currentPositionTouched: CGPoint?
   
   var userName:String = "" {
     didSet {
@@ -89,13 +94,51 @@ final class ProfileViewController: BaseViewController {
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.footerView)
     
-    let channel = mainStore.state.channel
+    //let channel = mainStore.state.channel
+    //let height = channel.homepageUrl != "" || channel.phoneNumber != "" ? 180 : 110
     self.headerView.frame = CGRect(
       x: 0, y: 0,
       width: self.tableView.width,
       height: 180
     )
     self.tableView.tableHeaderView = self.headerView
+    
+    //self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(dismissAction(_:)))
+    //self.view.addGestureRecognizer(self.panGestureRecognizer!)
+  }
+  
+  @objc func dismissAction(_ panGesture: UIPanGestureRecognizer) {
+    let translation = panGesture.translation(in: self.navigationController?.view)
+    
+    if panGesture.state == .began {
+      originalPosition = view.center
+      currentPositionTouched = panGesture.location(in: self.navigationController?.view)
+    } else if panGesture.state == .changed {
+      self.navigationController?.view.frame.origin = CGPoint(
+        x: 0,
+        y: translation.y > 0 ? translation.y : 0
+      )
+    } else if panGesture.state == .ended {
+      let velocity = panGesture.velocity(in: view)
+      
+      if velocity.y >= 1500 || translation.y > self.view.frame.size.height * 0.2 {
+        UIView.animate(withDuration: 0.2
+          , animations: {
+            self.navigationController?.view.frame.origin = CGPoint(
+              x: 0,
+              y: self.navigationController?.view.frame.size.height ?? 0
+            )
+        }, completion: { (isCompleted) in
+          if isCompleted {
+            self.dismiss(animated: false, completion: nil)
+          }
+        })
+      } else {
+        UIView.animate(withDuration: 0.2, animations: {
+          self.navigationController?.view.center = self.originalPosition!
+        })
+      }
+    }
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -167,20 +210,22 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch section {
-    case ProfileSection.userInfo.rawValue:
-      if self.guest is CHVeil {
-        return Constant.userInfoCount
-      } else if self.guest is CHUser {
-        return self.userInfoModel.count
-      }
-      
-      return Constant.userInfoCount
+//    case ProfileSection.userInfo.rawValue:
+//      if self.guest is CHVeil {
+//        return Constant.userInfoCount
+//      } else if self.guest is CHUser {
+//        return self.userInfoModel.count
+//      }
+//
+//      return Constant.userInfoCount
     case ProfileSection.action.rawValue:
       if self.hideOptions {
         return 0
       }
       
       return Constant.actionCount
+    case ProfileSection.agreement.rawValue:
+      return 1
     default:
       return 0
     }
@@ -188,24 +233,24 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch (indexPath.section, indexPath.row) {
-    case (ProfileSection.userInfo.rawValue,_):
-      let model = self.userInfoModel[indexPath.row]
-      if model == "username" {
-        let cell = TextInputCell()
-        cell.textField.text = self.guest?.ghost == true ? "" : self.userName
-        cell.textField.isUserInteractionEnabled = false
-        cell.textField.placeholder = CHAssets.localized("ch.settings.name_placeholder")
-        cell.isEditable = self.guest is CHVeil
-        return cell
-      } else if model == "phonenumber" {
-        let cell = TextInputCell()
-        cell.textField.text = self.phoneNumber
-        cell.textField.isUserInteractionEnabled = false
-        cell.textField.placeholder = CHAssets.localized("ch.settings.phone_number_placeholder")
-        cell.isEditable = self.guest is CHVeil
-        return cell
-      }
-      return UITableViewCell()
+//    case (ProfileSection.userInfo.rawValue,_):
+//      let model = self.userInfoModel[indexPath.row]
+//      if model == "username" {
+//        let cell = TextInputCell()
+//        cell.textField.text = self.guest?.ghost == true ? "" : self.userName
+//        cell.textField.isUserInteractionEnabled = false
+//        cell.textField.placeholder = CHAssets.localized("ch.settings.name_placeholder")
+//        cell.isEditable = self.guest is CHVeil
+//        return cell
+//      } else if model == "phonenumber" {
+//        let cell = TextInputCell()
+//        cell.textField.text = self.phoneNumber
+//        cell.textField.isUserInteractionEnabled = false
+//        cell.textField.placeholder = CHAssets.localized("ch.settings.phone_number_placeholder")
+//        cell.isEditable = self.guest is CHVeil
+//        return cell
+//      }
+//      return UITableViewCell()
     case (ProfileSection.action.rawValue,
           ActionRow.closedChats.rawValue):
       let cell = SwitchCell()
@@ -217,7 +262,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         )
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
-      cell.configure(title: CHAssets.localized("ch.settings.resolved_chat"), isOn: isOn)
+      cell.configure(title: CHAssets.localized("ch.settings.show_closed_chat"), isOn: isOn)
       return cell
     case (ProfileSection.action.rawValue,
           ActionRow.soundOption.rawValue):
@@ -229,14 +274,19 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         }
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
-      cell.configure(title: CHAssets.localized("ch.settings.enable_sound_vibrate"), isOn: isOn)
+      cell.configure(title: CHAssets.localized("ch.settings.enable_chat_sound_vibrate"), isOn: isOn)
       return cell
-    case (ProfileSection.action.rawValue,
-          ActionRow.deleteChat.rawValue):
+//    case (ProfileSection.action.rawValue,
+//          ActionRow.deleteChat.rawValue):
+//      let cell = LabelCell()
+//      cell.disabled = !self.canDelete
+//      cell.isUserInteractionEnabled = self.canDelete
+//      cell.titleLabel.text = CHAssets.localized("ch.settings.close_chat")
+//      return cell
+    case (ProfileSection.agreement.rawValue, _):
       let cell = LabelCell()
       cell.disabled = !self.canDelete
-      cell.isUserInteractionEnabled = self.canDelete
-      cell.titleLabel.text = CHAssets.localized("ch.settings.close_chat")
+      cell.titleLabel.text = CHAssets.localized("ch.terms_of_service")
       return cell
     default:
       return  UITableViewCell()
@@ -245,10 +295,12 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     switch indexPath.section {
-    case ProfileSection.userInfo.rawValue:
-      return TextInputCell.height()
+//    case ProfileSection.userInfo.rawValue:
+//      return TextInputCell.height()
     case ProfileSection.action.rawValue:
       return LabelCell.height()
+    case ProfileSection.agreement.rawValue:
+      return 48
     default:
       return 40
     }
@@ -256,33 +308,36 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     switch (indexPath.section, indexPath.row) {
-    case (ProfileSection.userInfo.rawValue,
-          UserInfoRow.name.rawValue):
-      if self.guest is CHUser {
-        break
-      }
-      let controller = ProfileEditViewController(
-        type: .name, text: self.userName)
-      self.navigationController?.pushViewController(controller, animated: true)
-      break
-    case (ProfileSection.userInfo.rawValue,
-          UserInfoRow.phone.rawValue):
-      if self.guest is CHUser {
-        break
-      }
-      let controller = ProfileEditViewController(
-        type: .phone, text: self.phoneNumber)
-      self.navigationController?.pushViewController(controller, animated: true)
-      break
+//    case (ProfileSection.userInfo.rawValue,
+//          UserInfoRow.name.rawValue):
+//      if self.guest is CHUser {
+//        break
+//      }
+//      let controller = ProfileEditViewController(
+//        type: .name, text: self.userName)
+//      self.navigationController?.pushViewController(controller, animated: true)
+//      break
+//    case (ProfileSection.userInfo.rawValue,
+//          UserInfoRow.phone.rawValue):
+//      if self.guest is CHUser {
+//        break
+//      }
+//      let controller = ProfileEditViewController(
+//        type: .phone, text: self.phoneNumber)
+//      self.navigationController?.pushViewController(controller, animated: true)
+//      break
     //case (ProfileSection.action.rawValue,
     //      ActionRow.closeChat.rawValue):
       
     //  break
-    case (ProfileSection.action.rawValue,
-          ActionRow.deleteChat.rawValue):
-      if self.canDelete {
-        self.deleteSubject.onNext(nil)
-      }
+//    case (ProfileSection.action.rawValue,
+//          ActionRow.deleteChat.rawValue):
+//      if self.canDelete {
+//        self.deleteSubject.onNext(nil)
+//      }
+//      break
+    case (ProfileSection.agreement.rawValue, _):
+      self.openAgreement()
       break
     default:
       break
@@ -293,23 +348,24 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     switch section {
-    case ProfileSection.userInfo.rawValue:
-      let view = UIView()
-      let label = UILabel().then {
-        $0.font = UIFont.boldSystemFont(ofSize: 14)
-        $0.textColor = CHColors.blueyGrey
-        $0.text = CHAssets.localized("ch.settings.my_info")
-      }
-      view.addSubview(label)
+//    case ProfileSection.userInfo.rawValue:
+//      let view = UIView()
+//      let label = UILabel().then {
+//        $0.font = UIFont.boldSystemFont(ofSize: 14)
+//        $0.textColor = CHColors.blueyGrey
+//        $0.text = CHAssets.localized("ch.settings.my_info")
+//      }
+//      view.addSubview(label)
+//
+//      label.snp.makeConstraints({ (make) in
+//        make.leading.equalToSuperview().inset(16)
+//        make.trailing.equalToSuperview().inset(16)
+//        make.bottom.equalToSuperview().inset(6)
+//      })
+//
+//      return view
       
-      label.snp.makeConstraints({ (make) in
-        make.leading.equalToSuperview().inset(16)
-        make.trailing.equalToSuperview().inset(16)
-        make.bottom.equalToSuperview().inset(6)
-      })
-      
-      return view
-    default:
+    case ProfileSection.agreement.rawValue:
       let view = UIView()
       let divider = UIView().then {
         $0.backgroundColor = CHColors.stale10
@@ -324,14 +380,19 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       })
       
       return view
+    default:
+      return UIView()
     }
+
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     switch section {
-    case ProfileSection.userInfo.rawValue:
-      return 38
+//    case ProfileSection.userInfo.rawValue:
+//      return 38
     case ProfileSection.action.rawValue:
+      return 8
+    case ProfileSection.agreement.rawValue:
       return self.hideOptions ? 0 : 17
     default:
       return 0
@@ -389,5 +450,16 @@ extension ProfileViewController : StoreSubscriber {
         SVProgressHUD.dismiss()
         self?.tableView.reloadData()
       }).disposed(by: self.disposeBag)
+  }
+  
+  func openAgreement() {
+    let locale = CHUtils.getLocale() ?? "ko"
+    let url = "https://channel.io/" +
+      locale +
+      "/terms_user?channel=" +
+      (mainStore.state.channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
+    
+    guard let link = URL(string: url) else { return }
+    link.open()
   }
 }

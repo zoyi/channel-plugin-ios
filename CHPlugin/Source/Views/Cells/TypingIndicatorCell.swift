@@ -11,7 +11,10 @@ import SnapKit
 import Reusable
 
 final class TypingIndicatorCell: BaseTableViewCell, Reusable {  
-  let multiAvatarView = CHMultiAvatarView()
+  let multiAvatarView = CHMultiAvatarView(avatarSize: 22, coverMargin: 4).then {
+    $0.showBorder = false
+  }
+  
   let personCountLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 12)
     $0.textColor = CHColors.blueyGrey

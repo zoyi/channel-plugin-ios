@@ -10,14 +10,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-protocol NavigationTitleProtocol {
-  var intrinsicContentSize: CGSize { get }
-  
-  func configure(data: CHPlugin)
-  func expand(with progress: CGFloat)
-}
-
-class NavigationTitleView : BaseView, NavigationTitleProtocol {
+class NavigationTitleView : BaseView {
   let contentView = UIView()
   
   let statusImageView = UIImageView().then {
@@ -117,11 +110,48 @@ class NavigationTitleView : BaseView, NavigationTitleProtocol {
     }
   }
   
-  func configure(data: CHPlugin) {
-    self.titleLabel.text = "test name"
-    self.titleLabel.textColor = data.textUIColor
-    self.subtitleLabel.text = "subtitle name"
-    self.subtitleLabel.textColor = data.textUIColor
+  func configure(channel: CHChannel, manager: CHManager?, plugin: CHPlugin) {
+    self.titleLabel.textColor = plugin.textUIColor
+    self.subtitleLabel.textColor = plugin.textUIColor
+    
+    if let manager = manager {
+      self.configureForFollow(manager: manager)
+    } else if !channel.working {
+      self.configureForOff(channel: channel, plugin: plugin)
+    } else {
+      self.configureForReady(channel: channel, plugin: plugin)
+    }
+  }
+  
+  fileprivate func configureForOff(channel: CHChannel, plugin: CHPlugin) {
+    self.titleLabel.text = channel.name
+    self.subtitleLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.short_description")
+    self.subtitleLabel.isHidden = false
+    
+    self.statusImageView.image = plugin.textColor == "white" ?
+      CHAssets.getImage(named: "offhoursW") :
+      CHAssets.getImage(named: "offhoursB")
+    self.statusImageView.isHidden = false
+  }
+  
+  fileprivate func configureForFollow(manager: CHManager){
+    self.titleLabel.text = manager.name
+    self.statusImageView.isHidden = true
+    self.subtitleLabel.isHidden = manager.desc == ""
+    if manager.desc == "" {
+      self.titleTopContraint?.update(inset: 11)
+    }
+  }
+  
+  fileprivate func configureForReady(channel: CHChannel, plugin: CHPlugin){
+    self.titleLabel.text = channel.name
+    self.statusImageView.isHidden = false
+    self.statusImageView.image = plugin.textColor == "white" ?
+      CHAssets.getImage(named: "\(channel.expectedResponseDelay)W") :
+      CHAssets.getImage(named: "\(channel.expectedResponseDelay)B")
+    
+    self.subtitleLabel.text = CHAssets.localized("ch.chat.expect_response_delay.\(channel.expectedResponseDelay).short_description")
+    self.subtitleLabel.isHidden = false
   }
   
   func expand(with progress: CGFloat) {
@@ -132,9 +162,12 @@ class NavigationTitleView : BaseView, NavigationTitleProtocol {
       progress = 1
     }
     
+    if !self.statusImageView.isHidden {
+      self.titleTopContraint?.update(inset: 5 + progress * 6)
+    }
+    
     self.statusImageView.alpha = 1 - progress
     self.subtitleLabel.alpha = 0.6 - (progress * 0.6)
-    self.titleTopContraint?.update(inset: 5 + progress * 6)
     self.toggleImageView.transform = CGAffineTransform(rotationAngle: .pi * progress)
   }
   

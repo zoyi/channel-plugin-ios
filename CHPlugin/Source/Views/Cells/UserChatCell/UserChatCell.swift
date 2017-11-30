@@ -133,13 +133,11 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.badge.configure(viewModel.badgeCount)
     self.messageLabel.text = viewModel.lastMessage
     
-    if viewModel.avatars.count == 0 {
-      //presume channel is exist in the store 
-      //when creating userchat cell
+    if let avatar = viewModel.avatar {
+      self.multiAvatarView.configure([avatar])
+    } else {
       let channel = mainStore.state.channel
       self.multiAvatarView.configure([channel])
-    } else {
-      self.multiAvatarView.configure(viewModel.avatars)
     }
     
     self.messageLabel.textColor = viewModel.isClosed ?
