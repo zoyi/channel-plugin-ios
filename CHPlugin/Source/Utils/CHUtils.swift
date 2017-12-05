@@ -105,7 +105,7 @@ class CHUtils {
 
 typealias dispatchClosure = () -> Void
 
-func dispatch (delay: Double = 0.0, execute: @escaping dispatchClosure) {
+func dispatch(delay: Double = 0.0, execute: @escaping dispatchClosure) {
   DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay, execute: {
     execute()
   })

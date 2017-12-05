@@ -115,7 +115,7 @@
 "ch.settings.my_info" = "내 정보 및 설정";
 "ch.settings.name_placeholder" = "이름 입력";
 "ch.settings.phone_number_placeholder" = "휴대폰번호 입력";
-"ch.settings.show_closed_chat" = "리뷰 완료된 상담 보기";
+"ch.settings.show_closed_chat" = "완료된 상담 보기";
 "ch.settings.close_chat" = "대화 삭제하기";
 "ch.settings.edit.name_label" = "이름 입력하기";
 "ch.settings.edit.name_placeholder" = "성함을 입력해주세요.";
@@ -123,6 +123,7 @@
 "ch.settings.edit.phone_number_placeholder" = "휴대폰번호를 입력해주세요.";
 "ch.settings.edit.phone_number_description" = "자리를 비우셨을 때, 답변시 문자 알림에 사용됩니다.";
 "ch.settings.changing_message" = "프로파일 설정 중...";
+"ch.settings.terms" = "채널 이용약관";
 "ch.mobile_verification.cancel" = "취소";
 "ch.chat.delete" = "삭제";
 "ch.settings.close" = "닫기";
@@ -130,7 +131,7 @@
 "ch.review.require.description" = "상담 리뷰를 남겨주시면 감사하겠습니다.";
 "ch.review.like" = "만족";
 "ch.review.dislike" = "불만";
-"ch.review.complete.title" = "상담 리뷰가 완료되었습니다.";
+"ch.review.complete.title" = "상담이 완료되었습니다.";
 "ch.review.require.preview" = "상담이 완료되었습니다.\
 상담 리뷰를 남겨주세요.";
 "ch.review.complete.preview" = "상담 리뷰가 완료되었습니다.";
@@ -153,7 +154,7 @@
 "ch.chat.retry_sending_message_question" = "메시지 전송에 실패했습니다.\
 어떻게 처리할까요?";
 "ch.chat.retry_sending_message.delete" = "삭제하기";
-"ch.new_message" = "새로운 메시지";
+"ch.chat.new_message" = "새로운 메시지";
 "ch.chat.expect_response_delay.instant" = "응답시간 빠름";
 "ch.chat.expect_response_delay.instant.description" = "보통 몇 분 내에 응답합니다.";
 "ch.chat.expect_response_delay.normal.description" = "보통 30분 내에 응답합니다.";
@@ -167,3 +168,4 @@
 "ch.chat.expect_response_delay.delayed.short_description" = "응답에 몇 시간이 걸릴 수 있습니다";
 "ch.chat.expect_response_delay.out_of_working.short_description" = "지금은 채팅 운영시간이 아닙니다";
 "ch.chat.expect_response_delay.out_of_working.detail" = "운영시간 자세히 보기";
+"ch.chat.removed.title" = "삭제된 상담입니다.";

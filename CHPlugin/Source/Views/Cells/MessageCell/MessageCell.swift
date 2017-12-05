@@ -187,7 +187,7 @@ final class MessageCell: BaseTableViewCell, Reusable {
 
   private func showPicker() {
     let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
-    alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.resend"), style: .default) { [weak self] _ in
+    alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.retry_sending_message"), style: .default) { [weak self] _ in
       self?.viewModel?.message.send().subscribe(onNext: { (message) in
         mainStore.dispatch(CreateMessage(payload: message))
       }).disposed(by: (self?.disposeBag)!)

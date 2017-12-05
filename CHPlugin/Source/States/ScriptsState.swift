@@ -14,11 +14,11 @@ struct ScriptsState: StateType {
   func getWelcomeMessage(guest: CHGuest) -> String {
     if !guest.ghost {
       let defaultMessage = CHAssets.localized("ch.scripts.welcome_user.default")
-      let msg = self.findBy(key: "welcome_user")?.getTranslatedMessage() ?? defaultMessage
-      return msg.replace("${user}", withString: guest.name)
+      let msg = self.findBy(key: "welcome")?.getTranslatedMessage() ?? defaultMessage
+      return msg.replace("${name}", withString: guest.name)
     } else {
       let defaultMessage = CHAssets.localized("ch.scripts.welcome_veil.default")
-      return self.findBy(key: "welcome_veil")?.getTranslatedMessage() ?? defaultMessage
+      return self.findBy(key: "welcome_ghost")?.getTranslatedMessage() ?? defaultMessage
     }
   }
 

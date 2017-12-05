@@ -39,17 +39,6 @@ class CHMBubbleView : BaseView {
 
   //MARK: Properties
 
-  let actionView = UIView().then {
-    $0.backgroundColor = UIColor.white
-  }
-
-  let actionLabel = UILabel().then {
-    $0.numberOfLines = 1
-    $0.font = Font.actionLabel
-    $0.textColor = Color.actionLabel
-    $0.textAlignment = .center
-  }
-
   let messageView = UITextView().then {
     $0.font = Font.messageView
     $0.textAlignment = NSTextAlignment.left
@@ -72,8 +61,6 @@ class CHMBubbleView : BaseView {
     
     self.layer.cornerRadius = Constant.singleCornerRadius
     self.addSubview(self.messageView)
-    self.addSubview(self.actionView)
-    self.actionView.addSubview(self.actionLabel)
   }
 
   func configure(_ viewModel: MessageCellModelType) {
@@ -86,9 +73,6 @@ class CHMBubbleView : BaseView {
     self.messageView.linkTextAttributes = [
       NSAttributedStringKey.foregroundColor.rawValue: linkColor,
       NSAttributedStringKey.underlineStyle.rawValue: 1]
-    self.actionLabel.text = viewModel.actionText
-    self.actionView.isHidden = !viewModel.isActionable
-    self.actionLabel.isHidden = !viewModel.isActionable
 
     self.viewModel = viewModel
   }
@@ -114,36 +98,9 @@ class CHMBubbleView : BaseView {
       make.leading.equalToSuperview().inset(Metric.leftRightPadding).priority(999)
       make.top.equalToSuperview().inset(Metric.topBottomPadding)
       make.trailing.equalToSuperview().inset(Metric.leftRightPadding).priority(999)
-      if self?.actionView.isHidden == true {
-        make.bottom.equalToSuperview().inset(Metric.topBottomPadding)
-      }
+ 
+      make.bottom.equalToSuperview().inset(Metric.topBottomPadding)
     })
-
-    self.actionView.roundCorners(corners: [.bottomLeft, .bottomRight], radius: Constant.actionViewBottomRadius)
-    self.actionView.snp.remakeConstraints { [weak self] (make) in
-      make.leading.equalToSuperview().inset(3).priority(1000)
-      make.trailing.equalToSuperview().inset(3).priority(1000)
-      if self?.actionView.isHidden == true {
-        make.top.equalTo((self?.messageView.snp.bottom)!)
-        make.bottom.equalToSuperview()
-      } else {
-        make.top.equalTo((self?.messageView.snp.bottom)!).offset(Metric.actionLabelTopMargin)
-        make.bottom.equalToSuperview().inset(3)
-      }
-    }
-
-    self.actionLabel.snp.remakeConstraints { [weak self] (make) in
-      if self?.actionView.isHidden == true {
-        make.top.equalToSuperview()
-        make.bottom.equalToSuperview()
-      } else {
-        make.top.equalToSuperview().inset(Metric.actionLabelTopBottomPadding)
-        make.bottom.equalToSuperview().inset(Metric.actionLabelTopBottomPadding)
-      }
-      make.centerX.equalToSuperview()
-      make.leading.greaterThanOrEqualToSuperview().inset(10)
-      make.trailing.greaterThanOrEqualToSuperview().inset(10)
-    }
   }
 
   class func measureHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
@@ -152,11 +109,6 @@ class CHMBubbleView : BaseView {
     if let msg = viewModel.message.message {
       viewHeight += msg.height(fits: width - Metric.leftRightPadding * 2, font: Font.messageView)
       viewHeight += Metric.topBottomPadding * 2
-    }
-
-    if viewModel.isActionable {
-      viewHeight += Metric.actionLabelTopMargin + Metric.actionLabelTopBottomPadding * 2
-      viewHeight += 13 // action label font height
     }
 
     return viewHeight

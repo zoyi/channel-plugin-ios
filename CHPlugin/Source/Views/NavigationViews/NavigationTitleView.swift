@@ -56,11 +56,11 @@ class NavigationTitleView : BaseView {
   override func initialize() {
     super.initialize()
 
-    self.contentView.addSubview(self.statusImageView)
-    self.contentView.addSubview(self.titleLabel)
-    self.contentView.addSubview(self.toggleImageView)
-    self.contentView.addSubview(self.subtitleLabel)
-    self.addSubview(self.contentView)
+    self.addSubview(self.statusImageView)
+    self.addSubview(self.titleLabel)
+    self.addSubview(self.toggleImageView)
+    self.addSubview(self.subtitleLabel)
+    //self.addSubview(self.contentView)
     
     self.signalForClick()
       .subscribe { [weak self] (_) in
@@ -104,18 +104,14 @@ class NavigationTitleView : BaseView {
       make.leading.greaterThanOrEqualToSuperview().inset(5)
       make.trailing.lessThanOrEqualToSuperview().inset(5)
     }
-    
-    self.contentView.snp.makeConstraints { (make) in
-      make.edges.equalToSuperview()
-    }
   }
   
-  func configure(channel: CHChannel, manager: CHManager?, plugin: CHPlugin) {
+  func configure(channel: CHChannel, host: CHEntity?, plugin: CHPlugin) {
     self.titleLabel.textColor = plugin.textUIColor
     self.subtitleLabel.textColor = plugin.textUIColor
     
-    if let manager = manager {
-      self.configureForFollow(manager: manager)
+    if let host = host {
+      self.configureForFollow(host: host, plugin: plugin)
     } else if !channel.working {
       self.configureForOff(channel: channel, plugin: plugin)
     } else {
@@ -124,6 +120,7 @@ class NavigationTitleView : BaseView {
   }
   
   fileprivate func configureForOff(channel: CHChannel, plugin: CHPlugin) {
+    self.titleLabel.fadeTransition(0.4)
     self.titleLabel.text = channel.name
     self.subtitleLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.short_description")
     self.subtitleLabel.isHidden = false
@@ -134,16 +131,29 @@ class NavigationTitleView : BaseView {
     self.statusImageView.isHidden = false
   }
   
-  fileprivate func configureForFollow(manager: CHManager){
-    self.titleLabel.text = manager.name
-    self.statusImageView.isHidden = true
-    self.subtitleLabel.isHidden = manager.desc == ""
-    if manager.desc == "" {
-      self.titleTopContraint?.update(inset: 11)
+  fileprivate func configureForFollow(host: CHEntity, plugin: CHPlugin){
+    self.titleLabel.fadeTransition(0.4)
+    self.titleLabel.text = host.name
+    
+    if let manager = host as? CHManager, manager.online {
+      self.statusImageView.isHidden = false
+    } else {
+      self.statusImageView.isHidden = true
+    }
+    
+    self.statusImageView.image = plugin.textColor == "white" ?
+      CHAssets.getImage(named: "normalW") :
+      CHAssets.getImage(named: "normalB")
+    
+    self.subtitleLabel.isHidden = !(host is CHManager)
+    if let manager = host as? CHManager {
+      self.titleTopContraint?.update(inset: manager.desc == "" ? 11 : 5)
+      self.subtitleLabel.text = manager.desc
     }
   }
   
   fileprivate func configureForReady(channel: CHChannel, plugin: CHPlugin){
+    self.titleLabel.fadeTransition(0.4)
     self.titleLabel.text = channel.name
     self.statusImageView.isHidden = false
     self.statusImageView.image = plugin.textColor == "white" ?
@@ -162,7 +172,7 @@ class NavigationTitleView : BaseView {
       progress = 1
     }
     
-    if !self.statusImageView.isHidden {
+    if !self.subtitleLabel.isHidden && self.subtitleLabel.text != "" {
       self.titleTopContraint?.update(inset: 5 + progress * 6)
     }
     
@@ -175,8 +185,10 @@ class NavigationTitleView : BaseView {
     return self.statusChangeSubject
   }
   
-  override var intrinsicContentSize: CGSize {
-    return UILayoutFittingExpandedSize
+  override func sizeThatFits(_ size: CGSize) -> CGSize {
+    let titleWidth = self.titleLabel.text?.width(with: UIFont.boldSystemFont(ofSize: 17)) ?? 0
+    let subTitleWidth = self.subtitleLabel.text?.width(with: UIFont.systemFont(ofSize: 11)) ?? 0
+    let width = 22 + max(titleWidth, subTitleWidth) + 22 + 10
+    return CGSize(width: width, height: 44)
   }
-
 }

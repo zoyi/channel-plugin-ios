@@ -12,22 +12,22 @@ func socketReducer(action: Action, state: WSocketState?) -> WSocketState {
   var state = state
   switch action {
   case _ as SocketConnected:
-    state?.state = .Connected
+    state?.state = .connected
     return state ?? WSocketState()
   case _ as SocketReady:
-    state?.state = .Ready
+    state?.state = .ready
     return state ?? WSocketState()
   case _ as SocketDisconnected:
-    state?.state = .Disconnected
+    state?.state = .disconnected
     return state ?? WSocketState()
   case _ as SocketReconnecting:
-    state?.state = .Reconnecting
+    state?.state = .reconnecting
     return state ?? WSocketState()
   case _ as JoinedUserChat:
-    state?.state = .Joined
+    state?.state = .joined
     return state ?? WSocketState()
   case _ as LeavedUserChat:
-    state?.state = .Leaved
+    state?.state = .leaved
     return state ?? WSocketState()
   default:
     return state ?? WSocketState()

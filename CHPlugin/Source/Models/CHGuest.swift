@@ -16,9 +16,6 @@ protocol CHGuest: CHEntity {
   
   var alert: Int { get set }
   var unread: Int { get set }
-  var visitsCount: Int { get set }
-  var lastPageViewId: String { get set }
-  var pageViewsCount: Int { get set }
 }
 
 extension CHGuest {

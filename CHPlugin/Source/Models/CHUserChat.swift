@@ -27,9 +27,10 @@ struct CHUserChat: ModelType {
   var followedAt: Date?
   var resolvedAt: Date?
   var followedBy: String = ""
+  var hostId: String?
+  var hostType: String?
   
   var lastMessageId: String?
-  var talkedManagerId: String?
   var resolutionTime: Int = 0
   
   var readableUpdatedAt: String {
@@ -49,22 +50,17 @@ struct CHUserChat: ModelType {
   }
   
   var name: String {
-//    if self.managers.count > 1 {
-//      return CHAssets.localized("ch.user_chat_managers").replace("%s", withString: self.managers.first!.name).replace("%d", withString: "\(self.managers.count - 1)")
-//    } else if self.managers.count == 1 {
-//      return self.managers.first!.name
-//    }
-//
-    if let manager = self.lastTalkedManager {
-      return manager.name
+    if let host = self.lastTalkedHost {
+      return host.name
     }
+    
     return self.channel?.name ?? CHAssets.localized("ch.unknown")
   }
 
   // Dependencies
   var lastMessage: CHMessage?
   var session: CHSession?
-  var lastTalkedManager: CHManager?
+  var lastTalkedHost: CHEntity?
   var channel: CHChannel?
 }
 
@@ -86,7 +82,8 @@ extension CHUserChat: Mappable {
     updatedAt        <- (map["updatedAt"], CustomDateTransform())
     followedBy       <- map["followedBy"]
     lastMessageId    <- map["lastMessageId"]
-    talkedManagerId <- map["talkedManagerId"]
+    hostId           <- map["hostId"]
+    hostType         <- map["hostType"]
     
     resolutionTime   <- map["resolutionTime"]
   }
@@ -102,7 +99,7 @@ extension CHUserChat {
   static func getChats(
     since: Int64?=nil,
     sortOrder: String,
-    showCompleted: Bool = false) -> Observable<[String: Any]> {
+    showCompleted: Bool = false) -> Observable<[String: Any?]> {
     return UserChatPromise.getChats(
       since: since,
       limit: 30,
@@ -110,8 +107,8 @@ extension CHUserChat {
       showCompleted: showCompleted)
   }
   
-  static func create() -> Observable<ChatResponse> {
-    return UserChatPromise.createChat()
+  static func create(pluginId: String, timeStamp: Date?) -> Observable<ChatResponse>{
+    return UserChatPromise.createChat(pluginId: pluginId, timeStamp: timeStamp)
   }
   
   func remove() -> Observable<Any?> {
@@ -135,6 +132,18 @@ extension CHUserChat {
   
   func isClosed() -> Bool {
     return self.state == "closed"
+  }
+  
+  func isResolved() -> Bool {
+    return self.state == "resolved"
+  }
+  
+  func isRemoved() -> Bool {
+    return self.state == "removed"
+  }
+  
+  func isCompleted() -> Bool {
+    return self.state == "closed" || self.state == "resolved" || self.state == "removed"
   }
   
   func isReady() -> Bool {

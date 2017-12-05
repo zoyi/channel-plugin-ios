@@ -38,20 +38,36 @@ class AvatarView: NeverClearView {
 
   let avatarImageView = UIImageView().then {
     $0.clipsToBounds = true
+    $0.backgroundColor = UIColor.white
   }
   
   let onlineView = UIView().then {
     $0.isHidden = true
     $0.layer.borderWidth = 2
-    $0.layer.borderColor = UIColor(mainStore.state.plugin.color).cgColor
+    $0.layer.borderColor = UIColor.white.cgColor
     $0.backgroundColor = CHColors.shamrockGreen
   }
   
-  var showOnline : Bool = false
+  var avatarSize : CGFloat = 0
+  var showOnline : Bool = false {
+    didSet {
+      if self.showOnline {
+        self.clipsToBounds = false
+      } else {
+        self.clipsToBounds = true
+      }
+    }
+  }
   
   var showBorder : Bool {
     set {
-      self.avatarImageView.layer.borderWidth = newValue ? Metric.borderWidth : 0
+      if self.showOnline {
+        self.avatarImageView.layer.borderWidth = newValue ? Metric.borderWidth : 0
+      } else {
+        self.layer.borderWidth = newValue ? Metric.borderWidth : 0
+        self.layer.cornerRadius = newValue ? self.avatarSize / 2 : 0
+      }
+      
       self.setNeedsLayout()
       self.layoutIfNeeded()
     }
@@ -60,13 +76,21 @@ class AvatarView: NeverClearView {
     }
   }
   
+  var borderColor : UIColor? = nil {
+    didSet {
+      if self.showOnline {
+        self.avatarImageView.layer.borderColor = self.borderColor?.cgColor
+        self.onlineView.layer.borderColor = self.borderColor?.cgColor
+      } else {
+        self.layer.borderColor = self.borderColor?.cgColor
+      }
+    }
+  }
+  
   // MARK: Initializing
 
   override func initialize() {
     super.initialize()
-
-    self.avatarImageView.layer.borderWidth = Metric.borderWidth
-    self.avatarImageView.layer.borderColor = Color.border
 
     self.addSubview(self.initialLabel)
     self.addSubview(self.avatarImageView)
@@ -76,7 +100,7 @@ class AvatarView: NeverClearView {
   // MARK: Configuring
 
   func configure(_ avatar: CHEntity) {
-    if let url = avatar.avatarUrl {
+    if let url = avatar.avatarUrl, url != "" {
       if url.contains("http") {
         self.avatarImageView.sd_setImage(with: URL(string:url))
       } else {
@@ -103,11 +127,13 @@ class AvatarView: NeverClearView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-
+    
+    self.layer.cornerRadius =  !self.showOnline ? self.height / 2 : 0
+    
     self.initialLabel.sizeToFit()
     self.initialLabel.centerX = self.width / 2
     self.initialLabel.centerY = self.height / 2
-
+    
     self.avatarImageView.top = 0
     self.avatarImageView.left = 0
     self.avatarImageView.width = self.width

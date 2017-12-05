@@ -117,7 +117,7 @@
 "ch.settings.my_info" = "個人情報と設定";
 "ch.settings.name_placeholder" = "名前を入力";
 "ch.settings.phone_number_placeholder" = "電話番号入力";
-"ch.settings.show_closed_chat" = "評価済みの問合せを確認する";
+"ch.settings.show_closed_chat" = "完了した顧客問合せを表示";
 "ch.settings.close_chat" = "チャットを削除する";
 "ch.settings.edit.name_label" = "名前を入力する";
 "ch.settings.edit.name_placeholder" = "お名前を入力してください。";
@@ -125,6 +125,7 @@
 "ch.settings.edit.phone_number_placeholder" = "携帯電話番号を入力してください。";
 "ch.settings.edit.phone_number_description" = "チャットから離れている間に返事が来た場合、SMSで通知を受け取れます。";
 "ch.settings.changing_message" = "プロフィールの設定中";
+"ch.settings.terms" = "チャネル利用約款";
 "ch.mobile_verification.cancel" = "キャンセル";
 "ch.chat.delete" = "削除";
 "ch.settings.close" = "閉じる";
@@ -155,7 +156,7 @@
 "ch.chat.retry_sending_message_question" = "メッセージが送信できませんでした。\
 どう致しますか？";
 "ch.chat.retry_sending_message.delete" = "削除";
-"ch.new_message" = "新しいメッセージ";
+"ch.chat.new_message" = "新しいメッセージ";
 "ch.chat.expect_response_delay.instant" = "";
 "ch.chat.expect_response_delay.instant.description" = "通常数分内にご返信いたします";
 "ch.chat.expect_response_delay.normal.description" = "通常30分内にご返信いたします";
@@ -169,3 +170,4 @@
 "ch.chat.expect_response_delay.delayed.short_description" = "";
 "ch.chat.expect_response_delay.out_of_working.short_description" = "";
 "ch.chat.expect_response_delay.out_of_working.detail" = "営業時間を確認する";
+"ch.chat.removed.title" = "削除された評価です";

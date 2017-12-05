@@ -17,7 +17,7 @@ struct UserChatPromise {
     since:Int64?=nil,
     limit:Int,
     sortOrder:String,
-    showCompleted: Bool = false) -> Observable<[String: Any]> {
+    showCompleted: Bool = false) -> Observable<[String: Any?]> {
     return Observable.create { subscriber in
       var params = ["query": [
           "limit": limit,
@@ -40,36 +40,19 @@ struct UserChatPromise {
             let json = JSON(data)
             //next, managers, sessions, userChats, messages
             let next = json["next"].int64Value
-            guard let managers:Array<CHManager> = Mapper<CHManager>()
-              .mapArray(JSONObject: json["managers"].object) else {
-              subscriber.onError(CHErrorPool.userChatParseError)
-              break
-            }
-            
-            guard let sessions:Array<CHSession> = Mapper<CHSession>()
-              .mapArray(JSONObject: json["sessions"].object) else {
-              subscriber.onError(CHErrorPool.userChatParseError)
-              break
-            }
-            
-            guard let userChats = Mapper<CHUserChat>()
-              .mapArray(JSONObject: json["userChats"].object) else {
-              subscriber.onError(CHErrorPool.userChatParseError)
-              break
-            }
-            
-            guard let messages = Mapper<CHMessage>()
-              .mapArray(JSONObject: json["messages"].object) else {
-              subscriber.onError(CHErrorPool.userChatParseError)
-              break
-            }
+            let managers = Mapper<CHManager>().mapArray(JSONObject: json["managers"].object)
+            let sessions = Mapper<CHSession>().mapArray(JSONObject: json["sessions"].object)
+            let userChats = Mapper<CHUserChat>().mapArray(JSONObject: json["userChats"].object)
+            let messages = Mapper<CHMessage>().mapArray(JSONObject: json["messages"].object)
+            let bots = Mapper<CHBot>().mapArray(JSONObject: json["bots"].object)
             
             subscriber.onNext([
               "next":next,
               "managers": managers,
               "sessions": sessions,
               "userChats": userChats,
-              "messages": messages
+              "messages": messages,
+              "bots": bots
             ])
             subscriber.onCompleted()
           case .failure(let error):
@@ -80,9 +63,14 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func createChat() -> Observable<ChatResponse> {
+  static func createChat(pluginId: String, timeStamp: Date?) -> Observable<ChatResponse> {
     return Observable.create { subscriber in
-      Alamofire.request(RestRouter.CreateUserChat)
+      let params = ["query": [
+        "welcomedAt": timeStamp?.getMicroseconds() ?? 0
+        ]
+      ]
+      
+      Alamofire.request(RestRouter.CreateUserChat(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -90,8 +78,8 @@ struct UserChatPromise {
             let json = JSON(data)
             guard let chatResponse = Mapper<ChatResponse>()
               .map(JSONObject: json.object) else {
-              subscriber.onError(CHErrorPool.chatResponseParseError)
-              break
+                subscriber.onError(CHErrorPool.chatResponseParseError)
+                break
             }
             subscriber.onNext(chatResponse)
             subscriber.onCompleted()
@@ -100,9 +88,8 @@ struct UserChatPromise {
           }
         })
       return Disposables.create()
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }
   }
-  
   static func getChat(userChatId: String) -> Observable<ChatResponse> {
     return Observable.create { subscriber in
       Alamofire.request(RestRouter.GetUserChat(userChatId))
@@ -236,8 +223,8 @@ struct UserChatPromise {
                 break
             }
             
-            guard let bots: Array<CHUser> =
-              Mapper<CHUser>().mapArray(JSONObject: json["bots"].object) else {
+            guard let bots: Array<CHBot> =
+              Mapper<CHBot>().mapArray(JSONObject: json["bots"].object) else {
                 subscriber.onError(CHErrorPool.messageParseError)
                 break
             }

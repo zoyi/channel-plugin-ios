@@ -33,8 +33,8 @@ extension CHEvent: Mappable {
     personId        <- map["personId"]
     personType      <- map["personType"]
     name            <- map["name"]
-    properties      <- map["properties"]
-    sysProperties  <- map["sysProperties"]
+    properties      <- map["property"]
+    sysProperties   <- map["sysProperty"]
     createdAt       <- (map["createdAt"], CustomDateTransform())
     expireAt        <- (map["updatedAt"], CustomDateTransform())
   }

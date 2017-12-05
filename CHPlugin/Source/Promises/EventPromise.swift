@@ -25,11 +25,11 @@ struct EventPromise {
       params["body"]?["name"] = name as AnyObject?
       
       if let properties = properties, properties.count != 0 {
-        params["body"]?["properties"] = properties as AnyObject?
+        params["body"]?["property"] = properties as AnyObject?
       }
       
       if let sysProperties = sysProperties, sysProperties.count != 0 {
-        params["body"]?["sysProperties"] = sysProperties as AnyObject?
+        params["body"]?["sysProperty"] = sysProperties as AnyObject?
       }
       
       Alamofire.request(RestRouter.SendEvent(params as RestRouter.ParametersType))

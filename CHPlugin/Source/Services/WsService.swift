@@ -14,7 +14,7 @@ import SocketIO
 import ObjectMapper
 
 enum WSType: String {
-  case PRODUCTION = "https://ws-2.channel.io"
+  case PRODUCTION = "https://ws.channel.io"
   case ALPHA = "http://ws.exp.channel.io"
   case BETA = "http://ws.staging.channel.io"
 }

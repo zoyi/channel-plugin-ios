@@ -47,8 +47,10 @@ class UserChatsViewController: BaseViewController {
   // TODO: Reuse in UserChatViewController
   let errorToastView = ErrorToastView()
   let plusButton = NewChatView()
+  
   let loadSubject = PublishSubject<Any?>()
   var showCompleted = false
+  var didLoad = false
   
   struct Metric {
     static let statusBarHeight = 64.f
@@ -198,15 +200,6 @@ class UserChatsViewController: BaseViewController {
   func showProfileView() {
     let controller = ProfileViewController()
     let navigation = MainNavigationController(rootViewController: controller)
-//    navigation.modalPresentationStyle = .overCurrentContext
-//    controller.signalForDelete().subscribe(onNext: { [weak self] _ in
-//      self?.navigationController?.dismiss(animated: true, completion: {
-//        self?.navigationController?.popToRootViewController(animated: false)
-//      })
-//      self?.setEditingNavItems()
-//      self?.tableView.setEditing(true, animated: true)
-//    }).disposed(by: self.disposeBag)
-
     self.present(navigation, animated: true, completion: nil)
   }
 }
@@ -250,17 +243,18 @@ extension UserChatsViewController: StoreSubscriber {
     self.userChats = userChatsSelector(
       state: state,
       showCompleted: self.showCompleted)
-    
+
     self.nextSeq = state.userChatsState.nextSeq
-    self.emptyView.isHidden = (self.userChats.count > 0)
+    self.tableView.isHidden = self.userChats.count == 0 || !self.didLoad
+    self.emptyView.isHidden = self.userChats.count > 0 || !self.didLoad
 
     self.plusButton.configure(
       bgColor: state.plugin.color,
       borderColor: state.plugin.borderColor,
       tintColor: state.plugin.textColor)
    
-    if state.socketState.state == .Disconnected ||
-      state.socketState.state == .Reconnecting {
+    if state.socketState.state == .disconnected ||
+      state.socketState.state == .reconnecting {
       self.errorToastView.show(animated: true)
     } else {
       self.errorToastView.hide(animated: true)
@@ -377,24 +371,27 @@ extension UserChatsViewController {
   // TODO: Combine with fetchUserChats method?
   func fetchInitUserChats() {
     SVProgressHUD.show()
+    self.tableView.isHidden = true
+    
     CHUserChat.getChats(
       sortOrder: "DESC",
       showCompleted: self.showCompleted)
       .subscribe(onNext: { [weak self] (data) in
+        self?.didLoad = true
         mainStore.dispatch(GetUserChats(payload: data))
         if let userChats = data["userChats"] as? [CHUserChat] {
           if userChats.count == 0 {
-            self?.showNewUserChat()
+            self?.showNewUserChat(animated: false)
           }
         }
         self?.loadSubject.onNext(nil)
+        self?.loadSubject.onCompleted()
       }, onError: { [weak self] error in
-        dlog("Get UserChats error: \(error)")
         self?.errorToastView.show(animated:true)
         //mainStore.dispatch(FailedGetUserChats(error: error))
+        self?.didLoad = true
         SVProgressHUD.dismiss()
       }, onCompleted: {
-        dlog("Get UserChats complete")
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)
   }

@@ -8,9 +8,6 @@
 
 enum MessageType {
   case Default
-  case ChannelClosed
-  case BusinessHourQuestion
-  case BusinessHourAnswer
   case WelcomeMessage
   case DateDivider
   case UserInfoDialog
@@ -32,19 +29,6 @@ struct LocalMessageFactory {
                       text: String? = nil) -> [CHMessage] {
     
     switch type {
-    case .ChannelClosed:
-      if let msg = getClosingMessage() {
-        return messages + [msg]
-      }
-      return messages
-    case .BusinessHourQuestion:
-      let msg = getBusinessHourQuestion(userChat:userChat)
-      return messages + [msg]
-    case .BusinessHourAnswer:
-      if let msg = getBusinessHourAnswer(userChat:userChat) {
-        return messages + [msg]
-      }
-      return messages
     case .DateDivider:
       let msgs = insertDateDividers(messages: messages)
       return msgs
@@ -72,30 +56,6 @@ struct LocalMessageFactory {
       return messages
     }
     
-  }
-  
-  //TODO: gather and organize constant strings into one file
-  private static func getClosingMessage(chatId: String = "dummy") -> CHMessage? {
-    return CHMessage(chatId: chatId,
-                   message: mainStore.state.scriptsState.getOutOfWorkMessage(),
-                   type: .Default,
-                   id: "close_dummy")
-  }
-  
-  private static func getBusinessHourQuestion(userChat: CHUserChat?) -> CHMessage {
-    return CHMessage(chatId: userChat?.id ?? "dummy",
-                   message: CHAssets.localized("ch.out_of_work.user_answer"),
-                   type: .BusinessHourQuestion,
-                   entity: mainStore.state.guest,
-                   id: "bhq_dummy")
-  }
-  
-  private static func getBusinessHourAnswer(userChat:CHUserChat?) -> CHMessage? {
-    // TODO: consider to cut coupling between state channel
-    return CHMessage(chatId: userChat?.id ?? "dummy",
-                   message: CHAssets.localized("ch.out_of_work.title") + "\n" + mainStore.state.channel.workingTimeString,
-                   type: .BusinessHourAnswer,
-                   id: "bha_dummy")
   }
   
   private static func insertDateDividers(messages: [CHMessage]) -> [CHMessage] {

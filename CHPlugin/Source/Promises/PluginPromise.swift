@@ -146,4 +146,24 @@ struct PluginPromise {
       return Disposables.create()
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
+  
+  static func getFollowingManagers() -> Observable<[CHManager]> {
+    return Observable.create({ (subscriber) in
+      
+      Alamofire.request(RestRouter.GetFollowingManager)
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { response in
+          switch response.result{
+          case .success(let data):
+            let json = JSON(data)
+            let managers = Mapper<CHManager>()
+              .mapArray(JSONObject: json["managers"].object)
+            subscriber.onNext(managers ?? [])
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+        })
+      return Disposables.create()
+    })
+  }
 }

@@ -12,31 +12,14 @@ import SnapKit
 
 final class NewMessageBannerView : BaseView {
   
-  struct Font {
-    static let messageLabel = UIFont.systemFont(ofSize: 14)
-    static let nameLabel = UIFont.boldSystemFont(ofSize: 13)
-  }
-  
-  struct Color {
-    static let initialLabel = UIColor.white
-    static let messageLabel = CHColors.deepDark
-    static let nameLabel = CHColors.deepDark
-  }
-  
-  struct Constant {
-    static let titleLabelNumberOfLines = 1
-    static let messageLabelNumberOfLines = 1
-    static let nameLabelNumberOfLines = 1
-  }
-  
   let avatarView = AvatarView().then {
     $0.showBorder = false
   }
   
   let newMessageLabel = UILabel().then {
-    $0.font = Font.nameLabel
-    $0.textColor = Color.nameLabel
-    $0.numberOfLines = Constant.nameLabelNumberOfLines
+    $0.font = UIFont.boldSystemFont(ofSize: 13)
+    $0.textColor = CHColors.cobalt
+    $0.numberOfLines = 1
     $0.text = CHAssets.localized("ch.chat.new_message")
   }
   

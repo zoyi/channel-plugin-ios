@@ -17,6 +17,7 @@ func appReducer(action: Action, state: AppState?) -> AppState {
     userChatsState: userChatsReducer(action: action, state: state?.userChatsState),
     push: pushReducer(action: action, push: state?.push),
     managersState: managersReducer(action: action, state: state?.managersState),
+    botsState: botsReducer(action: action, state: state?.botsState),
     sessionsState: sessionsReducer(action: action, state: state?.sessionsState),
     messagesState: messagesReducer(action: action, state: state?.messagesState),
     uiState: uiReducer(action: action, state: state?.uiState),

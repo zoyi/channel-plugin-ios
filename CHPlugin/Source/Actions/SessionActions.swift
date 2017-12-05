@@ -23,3 +23,7 @@ struct DeleteSession: Action {
 struct UpdateManager: Action {
   public let payload: CHManager
 }
+
+struct UpdateFollowingManagers: Action {
+  public let payload: [CHManager]
+}

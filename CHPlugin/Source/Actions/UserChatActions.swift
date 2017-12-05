@@ -9,7 +9,7 @@
 import ReSwift
 
 struct GetUserChats: Action {
-  public let payload: [String: Any]
+  public let payload: [String: Any?]
 }
 
 //struct FailedGetUserChats: Action {

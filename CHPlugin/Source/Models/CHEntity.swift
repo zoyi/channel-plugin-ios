@@ -14,3 +14,19 @@ protocol CHEntity : ModelType {
   var initial: String { get set }
   var color: String { get set }
 }
+
+extension CHEntity {
+  var kind: String! {
+    get {
+      let str = String(describing: type(of: self))
+      let startIndex = str.index(str.startIndex, offsetBy: 2)
+      return String(str[startIndex..<str.endIndex])
+    }
+  }
+  
+  var key: String {
+    get {
+      return "\(self.name):\(self.id)"
+    }
+  }
+}

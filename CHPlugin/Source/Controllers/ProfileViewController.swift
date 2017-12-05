@@ -286,7 +286,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     case (ProfileSection.agreement.rawValue, _):
       let cell = LabelCell()
       cell.disabled = !self.canDelete
-      cell.titleLabel.text = CHAssets.localized("ch.terms_of_service")
+      cell.titleLabel.text = CHAssets.localized("ch.settings.terms")
       return cell
     default:
       return  UITableViewCell()

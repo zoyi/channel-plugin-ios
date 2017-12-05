@@ -31,16 +31,6 @@ struct UpdateUserInfoGuide: Action {
 
 struct CompleteUserInfoGuide: Action {}
 
-struct CreateChannelClosed: Action {}
-
-struct ClickBusinessHour: Action {
-  public let payload: CHUserChat?
-}
-
-struct AnswerBusinessHour: Action {
-  public let payload: CHUserChat?
-}
-
 struct InsertWelcome : Action {}
 
 struct CreateFeedback: Action {}

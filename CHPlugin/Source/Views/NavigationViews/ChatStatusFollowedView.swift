@@ -13,6 +13,8 @@ class ChatStatusFollowedView : BaseView {
   let avatarView = AvatarView().then {
     $0.showBorder = false
     $0.showOnline = true
+    $0.borderColor = UIColor(mainStore.state.plugin.color)
+    $0.alpha = 0
   }
   
   let managerDescLabel = UILabel().then {
@@ -21,7 +23,8 @@ class ChatStatusFollowedView : BaseView {
     //text color depends on plugin color
   }
   
-  var bottomContraint: Constraint? = nil
+  var descTopConstraint: Constraint? = nil
+  var descBottomContraint: Constraint? = nil
   
   override func initialize() {
     super.initialize()
@@ -41,35 +44,44 @@ class ChatStatusFollowedView : BaseView {
     }
     
     self.managerDescLabel.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.avatarView.snp.bottom)!).offset(7)
+      self?.descTopConstraint = make.top.equalTo((self?.avatarView.snp.bottom)!).offset(7).constraint
       make.centerX.equalToSuperview()
       make.leading.equalToSuperview().inset(30)
       make.trailing.equalToSuperview().inset(30)
-      self?.bottomContraint = make.bottom.equalToSuperview().inset(20).constraint
+      make.bottom.equalToSuperview().inset(20)
     }
   }
   
-  func configure(lastTalkedPerson: CHEntity?, channel: CHChannel, plugin: CHPlugin) {
+  func configure(lastTalkedHost: CHEntity?, channel: CHChannel, plugin: CHPlugin) {
     self.backgroundColor = UIColor(plugin.color)
     
-    if let person = lastTalkedPerson {
-      self.avatarView.configure(person)
-      //if manager.desc == "" {
-      //  self.bottomContraint?.deactivate()
-      //} else {
-      self.bottomContraint?.activate()
-      self.bottomContraint?.update(inset: 20)
-      //}
+    if let host = lastTalkedHost {
+      self.avatarView.configure(host)
+      self.descTopConstraint?.update(inset: 0)
     } else {
       self.avatarView.configure(channel)
-      self.bottomContraint?.deactivate()
+      self.descTopConstraint?.update(inset: 0)
     }
     
     //self.managerDescLabel.text = manager?.desc ?? ""
     self.managerDescLabel.textColor = plugin.textUIColor
+    self.animatedAvatarIfNeeded()
   }
   
-  static func viewHeight(manager: CHManager?) -> CGFloat {
-    return manager?.desc == "" ? 66 : 89
+  func animatedAvatarIfNeeded() {
+    guard self.avatarView.alpha == 0 else { return }
+    self.avatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+    
+    UIView.animate(withDuration: 0.4, delay: 0.0, options: .curveEaseOut, animations: {
+      self.avatarView.alpha = 1
+      self.avatarView.transform = CGAffineTransform.identity
+    }, completion: nil)
+  }
+  
+  static func viewHeight(host: CHEntity?) -> CGFloat {
+    if let manager = host as? CHManager, manager.desc != "" {
+      return 90
+    }
+    return 66
   }
 }

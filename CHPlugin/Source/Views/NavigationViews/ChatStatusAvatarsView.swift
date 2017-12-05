@@ -1,8 +1,8 @@
 //
-//  CHMultiAvatarView.swift
+//  ChatStatusAvatarsView.swift
 //  CHPlugin
 //
-//  Created by R3alFr3e on 11/14/17.
+//  Created by Haeun Chung on 05/12/2017.
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
@@ -10,40 +10,33 @@ import Foundation
 import UIKit
 import SnapKit
 
-class CHMultiAvatarView: BaseView {
+class ChatStatusAvatarsView: BaseView {
   let firstAvatarView = AvatarView().then {
-    $0.showBorder = false
+    $0.avatarSize = 46
+    $0.showBorder = true
     $0.showOnline = false
-    $0.avatarImageView.layer.borderColor = UIColor(mainStore.state.plugin.color).cgColor
-    $0.avatarImageView.backgroundColor = UIColor(mainStore.state.plugin.color)
+    $0.borderColor = UIColor(mainStore.state.plugin.color)
     $0.alpha = 0
   }
   let secondAvatarView = AvatarView().then {
-    $0.showBorder = false
+    $0.avatarSize = 46
+    $0.showBorder = true
     $0.showOnline = false
-    $0.avatarImageView.layer.borderColor = UIColor(mainStore.state.plugin.color).cgColor
-    $0.avatarImageView.backgroundColor = UIColor(mainStore.state.plugin.color)
+    $0.borderColor = UIColor(mainStore.state.plugin.color)
     $0.alpha = 0
   }
   let thirdAvatarView = AvatarView().then {
-    $0.showBorder = false
-    $0.showOnline = false
-    $0.avatarImageView.layer.borderColor = UIColor(mainStore.state.plugin.color).cgColor
-    $0.avatarImageView.backgroundColor = UIColor(mainStore.state.plugin.color)
+    $0.avatarSize = 46
+    $0.showBorder = true
+    $0.showOnline = false 
+    $0.borderColor = UIColor(mainStore.state.plugin.color)
     $0.alpha = 0
   }
   
   var persons = [CHEntity]()
-  var showBorder: Bool = false {
-    didSet {
-      self.firstAvatarView.showBorder = self.showBorder
-      self.secondAvatarView.showBorder = self.showBorder
-      self.thirdAvatarView.showBorder = self.showBorder
-    }
-  }
   
   var avatarSize: CGFloat = 46
-  var coverMargin: CGFloat = 0
+  var coverMargin: CGFloat = 6
   
   var firstTrailingContraint: Constraint? = nil
   var secondLeadingConstraint: Constraint? = nil
@@ -51,7 +44,7 @@ class CHMultiAvatarView: BaseView {
   var thirdLeadingConstraint: Constraint? = nil
   var widthConstraint: Constraint? = nil
   
-  //add property to reuse 
+  //add property to reuse
   init(avatarSize: CGFloat = 0, coverMargin: CGFloat = 0) {
     self.avatarSize = avatarSize
     self.coverMargin = coverMargin
@@ -107,6 +100,7 @@ class CHMultiAvatarView: BaseView {
   
   func configure(persons: [CHEntity]) {
     guard self.isIdentical(persons: persons) == false else { return }
+    self.persons = persons
     
     self.widthConstraint?.deactivate()
     if persons.count == 1 {
@@ -124,7 +118,7 @@ class CHMultiAvatarView: BaseView {
       self.secondTrailingContraint?.activate()
       self.thirdLeadingConstraint?.deactivate()
       self.layoutTwoAvatars()
-    } else if persons.count == 3 {
+    } else if persons.count >= 3 {
       self.firstAvatarView.configure(persons[0])
       self.secondAvatarView.configure(persons[1])
       self.thirdAvatarView.configure(persons[2])
@@ -133,14 +127,6 @@ class CHMultiAvatarView: BaseView {
       self.secondTrailingContraint?.deactivate()
       self.thirdLeadingConstraint?.activate()
       self.layoutThreeAvatars()
-    } else if persons.count >= 4{
-      self.firstAvatarView.configure(persons[0])
-      self.secondAvatarView.configure(persons[1])
-      self.firstTrailingContraint?.deactivate()
-      self.secondLeadingConstraint?.activate()
-      self.secondTrailingContraint?.activate()
-      self.thirdLeadingConstraint?.deactivate()
-      self.layoutTwoAvatars()
     } else {
       self.widthConstraint?.activate()
       self.firstAvatarView.alpha = 0
@@ -164,20 +150,62 @@ class CHMultiAvatarView: BaseView {
   }
   
   func layoutOneAvatar() {
-    self.firstAvatarView.alpha = 1
+    self.firstAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
     self.secondAvatarView.alpha = 0
     self.thirdAvatarView.alpha = 0
+    
+    UIView.animateKeyframes(withDuration: 0.51, delay: 0.2, options: UIViewKeyframeAnimationOptions.calculationModePaced, animations: {
+      UIView.addKeyframe(withRelativeStartTime: 0.21, relativeDuration: 0.3, animations: {
+        self.firstAvatarView.alpha = 1
+        self.firstAvatarView.transform = CGAffineTransform.identity
+      })
+    }) { (_) in
+      
+    }
   }
-
+  
   func layoutTwoAvatars() {
-    self.firstAvatarView.alpha = 1
-    self.secondAvatarView.alpha = 1
+    self.firstAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+    self.secondAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
     self.thirdAvatarView.alpha = 0
+    
+    UIView.animateKeyframes(withDuration: 0.51, delay: 0.2, options: UIViewKeyframeAnimationOptions.calculationModePaced, animations: {
+      UIView.addKeyframe(withRelativeStartTime: 0.18, relativeDuration: 0.3, animations: {
+        self.secondAvatarView.alpha = 1
+        self.secondAvatarView.transform = CGAffineTransform.identity
+      })
+      
+      UIView.addKeyframe(withRelativeStartTime: 0.21, relativeDuration: 0.3, animations: {
+        self.firstAvatarView.alpha = 1
+        self.firstAvatarView.transform = CGAffineTransform.identity
+      })
+    }) { (_) in
+      
+    }
   }
-
+  
   func layoutThreeAvatars() {
-    self.firstAvatarView.alpha = 1
-    self.secondAvatarView.alpha = 1
-    self.thirdAvatarView.alpha = 1
+    self.firstAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+    self.secondAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+    self.thirdAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+    
+    UIView.animateKeyframes(withDuration: 0.8, delay: 0.2, options: UIViewKeyframeAnimationOptions.beginFromCurrentState, animations: {
+      UIView.addKeyframe(withRelativeStartTime: 0.15, relativeDuration: 0.3, animations: {
+        self.thirdAvatarView.alpha = 1
+        self.thirdAvatarView.transform = CGAffineTransform.identity
+      })
+      
+      UIView.addKeyframe(withRelativeStartTime: 0.35, relativeDuration: 0.25, animations: {
+        self.secondAvatarView.alpha = 1
+        self.secondAvatarView.transform = CGAffineTransform.identity
+      })
+
+      UIView.addKeyframe(withRelativeStartTime: 0.59, relativeDuration: 0.21, animations: {
+        self.firstAvatarView.alpha = 1
+        self.firstAvatarView.transform = CGAffineTransform.identity
+      })
+    }) { (_) in
+      
+    }
   }
 }

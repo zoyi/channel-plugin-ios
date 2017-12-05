@@ -32,8 +32,6 @@ protocol MessageCellModelType {
   var file: CHFile? { get }
   var createdByMe: Bool { get }
   var isContinuous: Bool { get }
-  var isActionable: Bool { get }
-  var actionText: String { get }
   var messageType: MessageType { get }
   var progress: CGFloat { get }
   var isFailed: Bool { get }
@@ -56,8 +54,6 @@ struct MessageCellModel: MessageCellModelType {
   let file: CHFile?
   let createdByMe: Bool
   let isContinuous: Bool
-  let isActionable: Bool
-  let actionText: String
   let messageType: MessageType
   let progress: CGFloat
   let isFailed: Bool
@@ -87,8 +83,6 @@ struct MessageCellModel: MessageCellModelType {
     self.isContinuous = isContinuous
     
     self.messageType = message.messageType
-    self.isActionable = message.messageType == .ChannelClosed
-    self.actionText = message.messageType == .ChannelClosed ? CHAssets.localized("ch.out_of_work.confirm") : ""
     self.progress = message.progress
     self.isFailed = message.state == .Failed
   }

@@ -10,7 +10,8 @@ import ReSwift
 
 struct ManagersState: StateType {
   var managerDictionary: [String: CHManager] = [:]
-
+  var followingManagers: [CHManager] = []
+  
   func findBy(id: String?) -> CHManager? {
     guard let id = id else { return nil }
     return self.managerDictionary[id]
@@ -18,6 +19,11 @@ struct ManagersState: StateType {
 
   func findBy(ids: [String]) -> [CHManager] {
     return self.managerDictionary.filter({ ids.index(of: $0.key) != nil }).map({ $1 })
+  }
+  
+  mutating func upsertFollowing(managers: [CHManager]) -> ManagersState {
+    self.followingManagers = managers
+    return self
   }
   
   mutating func upsert(managers: [CHManager]) -> ManagersState {

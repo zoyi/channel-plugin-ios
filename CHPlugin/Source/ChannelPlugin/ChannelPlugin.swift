@@ -20,7 +20,6 @@ import SVProgressHUD
 import CRToast
 import AVFoundation
 
-
 let mainStore = Store<AppState>(
   reducer: appReducer,
   state: nil,
@@ -42,7 +41,7 @@ public protocol ChannelDelegate: class {
 
 @objc
 public final class ChannelPlugin : NSObject {
-  public static weak var delegate: ChannelDelegate? = nil
+  @objc public static weak var delegate: ChannelDelegate? = nil
   
   private static var pluginId: String?
   private static var launchView : LaunchView?
@@ -168,35 +167,42 @@ public final class ChannelPlugin : NSObject {
     
     PluginPromise.checkVersion()
       .flatMap { (event) -> Observable<Any?> in
-      return checkInChannel(checkinObj: checkinObj)
-    }.subscribe(onNext: { (event) in
-      mainStore.dispatch(UpdateCheckinState(payload: .success))
-      completion?(.success)
+        return checkInChannel(checkinObj: checkinObj)
+      }
+      .flatMap { (event) -> Observable<[CHManager]> in
+        return PluginPromise.getFollowingManagers()
+      }
+      .subscribe(onNext: { (managers) in
+        mainStore.dispatch(UpdateFollowingManagers(payload: managers))
+        mainStore.dispatch(UpdateCheckinState(payload: .success))
+        completion?(.success)
       
-      if !ChannelPlugin.hideLauncherButton &&
-        !mainStore.state.plugin.mobileHideButton {
-        ChannelPlugin.showLauncher(
-          on: topController?.view,
-          animated: true)
-      }
-      ChannelPlugin.fetchScripts()
-      ChannelPlugin.registerPushToken()
-    }, onError: { error in
-      dlog("Check in error: \(error)")
-      let code = (error as NSError).code
-      if code == -1001 {
-        mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
-        completion?(.networkTimeout)
-      } else if code == CHErrorCode.versionError.rawValue {
-        mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
-        completion?(.notAvailableVersion)
-      } else if code == CHErrorCode.serviceBlockedError.rawValue {
-        mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
-        completion?(.requirePayment)
-      } else {
-        mainStore.dispatch(UpdateCheckinState(payload: .checkinError))
-        completion?(.checkinError)
-      }
+        if !ChannelPlugin.hideLauncherButton &&
+          !mainStore.state.plugin.mobileHideButton {
+         // (!mainStore.state.channel.outOfWorkPlugin &&
+         // mainStore.state.channel.working) {
+          ChannelPlugin.showLauncher(on: topController?.view, animated: true)
+        }
+        
+        ChannelPlugin.fetchScripts()
+        ChannelPlugin.registerPushToken()
+      
+      }, onError: { error in
+        dlog("Check in error: \(error)")
+        let code = (error as NSError).code
+        if code == -1001 {
+          mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
+          completion?(.networkTimeout)
+        } else if code == CHErrorCode.versionError.rawValue {
+          mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
+          completion?(.notAvailableVersion)
+        } else if code == CHErrorCode.serviceBlockedError.rawValue {
+          mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
+          completion?(.requirePayment)
+        } else {
+          mainStore.dispatch(UpdateCheckinState(payload: .checkinError))
+          completion?(.checkinError)
+        }
     }).disposed(by: disposeBeg)
   }
   

@@ -25,22 +25,10 @@ struct CHVeil: CHGuest, CHEntity {
   //
   var alert = 0
   var unread = 0
-  var visitsCount = 0
-  var lastPageViewId = ""
-  var pageViewsCount = 0
-  
-  //Additional info
-  var locale = ""
-  var country = ""
-  var city = ""
-  var latitude: Double = 0
-  var longitude: Double = 0
 }
 
 extension CHVeil: Mappable {
-  init?(map: Map) {
-
-  }
+  init?(map: Map) { }
   
   init(id: String, name: String,
        avatarUrl: String?, initial: String,
@@ -68,9 +56,6 @@ extension CHVeil: Mappable {
     
     alert           <- map["alert"]
     unread          <- map["unread"]
-    visitsCount     <- map["visitsCount"]
-    lastPageViewId  <- map["lastPageViewId"]
-    pageViewsCount  <- map["pageViewsCount"]
   }
 }
 

@@ -16,6 +16,7 @@ struct AppState: StateType {
   var userChatsState: UserChatsState
   var push: CHPush?
   var managersState: ManagersState
+  var botsState: BotsState
   var sessionsState: SessionsState
   var messagesState: MessagesState
   var uiState: UIState

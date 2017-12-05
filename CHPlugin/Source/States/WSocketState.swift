@@ -9,15 +9,15 @@
 import ReSwift
 
 enum WebSocketState {
-  case None //initial
-  case Joined
-  case Leaved
-  case Ready
-  case Connected
-  case Disconnected
-  case Reconnecting
+  case none //initial
+  case joined
+  case leaved
+  case ready
+  case connected
+  case disconnected
+  case reconnecting
 }
 
 struct WSocketState: StateType {
-  var state: WebSocketState = .None
+  var state: WebSocketState = .none
 }

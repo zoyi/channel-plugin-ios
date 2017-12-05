@@ -17,18 +17,6 @@ import CHSlackTextViewController
 import Alamofire
 import CHNavBar
 
-enum UserChatState {
-  case Idle
-  case UserChatLoading
-  case UserChatLoaded
-  case UserChatNotLoaded
-  case ChatJoining
-  case WaitingSocket
-  case MessageLoading
-  case MessageNotLoaded
-  case ChatReady
-}
-
 final class UserChatViewController: BaseSLKTextViewController {
 
   // MARK: Constants
@@ -38,7 +26,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   // MARK: Properties
-  var state: UserChatState = .Idle
+  var state: ChatState = .idle
   var channel: CHChannel = mainStore.state.channel
   var userChatId: String?
   var userChat: CHUserChat?
@@ -48,8 +36,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   var shouldShowGuide: Bool = false
   var isFetching = false
   var isRequstingReadAll = false
-  var photoUrls = [String]()
+  var userChatOpenAt: Date? = nil
   
+  var photoUrls = [String]()
   var typingManagers = [CHManager]()
   var timeStorage = [String: Timer]()
 
@@ -65,6 +54,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   var disposeBag = DisposeBag()
   var photoBrowser : MWPhotoBrowser? = nil
+  var chatManager : ChatManager? = nil
+  
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
@@ -79,8 +70,11 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   // MARK: View Life Cycle
   override func viewDidLoad() {
+    //this has to be called before super.viewDidLoad
+    //for proper layout in SlackTextViewController
     self.textInputBarLRC = 5
     self.textInputBarBC = 5
+    self.userChatOpenAt = self.userChatId == nil ? Date() : nil
     
     super.viewDidLoad()
     self.tableView.isHidden = true
@@ -95,12 +89,12 @@ final class UserChatViewController: BaseSLKTextViewController {
     let chNavigation = self.navigationController as! MainNavigationController
     chNavigation.chDelegate = self
     
+    self.initManagers()
     self.initNavigationViews()
     self.initSLKTextView()
     self.initTableView()
     self.initInputViews()
     self.initViews()
-    self.initSocketObservers()
     
     self.shouldShowGuide = (mainStore.state.guest.ghost == true ||
       mainStore.state.guest.mobileNumber == nil) &&
@@ -120,7 +114,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     mainStore.subscribe(self)
     if let userChatId = self.userChatId {
-      self.state = .ChatJoining
+      self.state = .chatJoining
       WsService.shared.join(chatId: userChatId)
     }
   }
@@ -130,10 +124,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     mainStore.unsubscribe(self)
     if isBeingDismissed || isMovingFromParentViewController {
       mainStore.dispatch(RemoveMessages(payload: self.userChatId))
-      self.resetTypingInfo()
+      self.chatManager?.resetTypingInfo()
     }
     
-    self.sendTyping(isStop: true)
+    self.chatManager?.sendTyping(isStop: true)
     if let userChatId = self.userChatId {
       //self.loaded = false
       WsService.shared.leave(chatId: userChatId)
@@ -144,14 +138,18 @@ final class UserChatViewController: BaseSLKTextViewController {
     super.viewDidLayoutSubviews()
   }
 
+  fileprivate func initManagers() {
+    self.chatManager = ChatManager(id: self.userChatId)
+    self.chatManager?.chat = userChatSelector(
+      state: mainStore.state,
+      userChatId: self.userChatId)
+    self.chatManager?.delegate = self
+  }
+  
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
     self.shouldScrollToBottomAfterKeyboardShows = true
     self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
-    self.rightButton.setImage(CHAssets.getImage(named: "sendActive"), for: .normal)
-    self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled"), for: .disabled)
-    self.rightButton.setTitle("", for: .normal)
-    self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
     self.textView.keyboardType = .default
   }
   
@@ -171,7 +169,6 @@ final class UserChatViewController: BaseSLKTextViewController {
         return
       }
       self?.shyNavBarManager.contract(true)
-      self?.shyNavBarManager.disable = true
       self?.presentKeyboard(self?.menuAccesoryView == nil)
     }.disposed(by: self.disposeBag)
 
@@ -211,18 +208,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
 
   fileprivate func initLocalMessages() {
-    let chat = userChatSelector(
-      state: mainStore.state,
-      userChatId: self.userChatId)
-    
-    let channel = mainStore.state.channel
-    
-    if self.userChatId == nil && channel.working {
+    if self.userChatId == nil {
       mainStore.dispatch(InsertWelcome())
-    } else if self.userChatId == nil && !channel.working {
-      mainStore.dispatch(CreateChannelClosed())
-    } else if !channel.working && chat?.isActive() == true {
-      mainStore.dispatch(CreateChannelClosed())
     }
   }
 
@@ -235,7 +222,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     )
     
     self.setNavItems(
-      userChats: userChats,
+      showSetting: userChats.count == 0,
       currentUserChat: self.userChat,
       guest: mainStore.state.guest,
       textColor: mainStore.state.plugin.textUIColor
@@ -249,12 +236,22 @@ final class UserChatViewController: BaseSLKTextViewController {
     let titleView = self.navigationItem.titleView as? NavigationTitleView ?? NavigationTitleView()
     titleView.configure(
       channel: mainStore.state.channel,
-      manager: self.userChat?.lastTalkedManager,
+      host: self.userChat?.lastTalkedHost,
       plugin: mainStore.state.plugin)
-
+    
+    titleView.translatesAutoresizingMaskIntoConstraints = false
+    titleView.layoutIfNeeded()
+    titleView.sizeToFit()
+    titleView.translatesAutoresizingMaskIntoConstraints = true
+    
     if self.navigationItem.titleView == nil {
       titleView.signalForChange().subscribe({ [weak self] (event) in
-        self?.shyNavBarManager.toggle(true)
+        if self?.shyNavBarManager.isExpanded() == true {
+          self?.shyNavBarManager.contract(true)
+        } else {
+          self?.shyNavBarManager.expand(true)
+          self?.dismissKeyboard(true)
+        }
       }).disposed(by: self.disposeBag)
       
       self.navigationItem.titleView = titleView
@@ -268,15 +265,12 @@ final class UserChatViewController: BaseSLKTextViewController {
   func initNavigationExtension() {
     let view: UIView!
     if self.userChat?.isReady() == true || self.userChat == nil {
-      let managers = mainStore.state.managersState.managerDictionary.map { (key, value) -> CHManager in
-        return value
-      }
       view = ChatStatusViewFactory.createDefaultExtensionView(
         fit: self.view.bounds.width,
         userChat: self.userChat,
         channel: mainStore.state.channel,
         plugin: mainStore.state.plugin,
-        managers: managers)
+        managers: mainStore.state.managersState.followingManagers)
     } else {
       view = ChatStatusViewFactory.createFollowedExtensionView(
         fit: self.view.bounds.width,
@@ -284,13 +278,13 @@ final class UserChatViewController: BaseSLKTextViewController {
         channel: mainStore.state.channel,
         plugin: mainStore.state.plugin)
     }
-    let viewHeight = view.frame.size.height
     
     self.shyNavBarManager.scrollView = self.tableView
     self.shyNavBarManager.stickyNavigationBar = true
     self.shyNavBarManager.fadeBehavior = .subviews
     if let state = self.userChat?.state, state != "ready" &&
       self.shyNavBarManager.extensionView == nil || !self.shyNavBarManager.isExpanded() {
+      self.titleView?.isExpanded = false
       self.shyNavBarManager.hideExtension = true
     }
     
@@ -304,7 +298,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.height.equalTo(viewHeight)
     }
   }
 
@@ -315,13 +308,16 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
+        guard let s = self else { return }
         WsService.shared.connect()
-        self?.resetUserChat()
-        self?.fetchMessages()
+        s.resetUserChat().subscribe({ (event) in
+          if event.element != nil  {
+            s.fetchMessages()
+          }
+        }).disposed(by: s.disposeBag)
       }).disposed(by: self.disposeBag)
     
     self.view.addSubview(self.newMessageView)
-    
     self.newMessageView.snp.makeConstraints { [weak self] (make) in
       make.height.equalTo(48)
       make.centerX.equalToSuperview()
@@ -347,8 +343,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
   }
 
-  fileprivate func setNavItems(userChats: [CHUserChat], currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
-    if userChats.count == 0 {
+  fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
+    if showSetting {
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "settings"),
         style: .plain,
@@ -443,10 +439,9 @@ final class UserChatViewController: BaseSLKTextViewController {
       }, onError: { [weak self] error in
         // TODO: show error
         self?.isFetching = false
-        self?.state = .MessageNotLoaded
+        self?.state = .messageNotLoaded
         self?.tableView.hideIndicatorTo(.footer)
-        
-        self?.errorToastView.show(animated: true)
+        self?.showError()
         //mainStore.dispatch(FailedGetMessages(error: error))
       }, onCompleted: { [weak self] in
         self?.isFetching = false
@@ -476,7 +471,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   fileprivate func endLoad() {
     if !self.loaded {
-      self.state = .ChatReady
+      self.state = .chatReady
       self.loaded = true
       self.initLocalMessages()
       self.initDwifft()
@@ -485,16 +480,91 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
   }
   
-  fileprivate func resetUserChat() {
-    self.nextSeq = ""
-    self.createdFeedback = false
-    self.createdFeedbackComplete = false
-    
-    if let userChatId = self.userChatId {
-      mainStore.dispatch(RemoveMessages(payload: userChatId))
-    }
-  }
+  fileprivate func resetUserChat() -> Observable<String?> {
+    return Observable.create({ [weak self] (subscribe) in
+      guard let s = self else { return Disposables.create() }
+      s.nextSeq = ""
+      s.createdFeedback = false
+      s.createdFeedbackComplete = false
+      
+      if let userChatId = s.userChatId {
+        mainStore.dispatch(RemoveMessages(payload: userChatId))
+        subscribe.onNext(userChatId)
+        return Disposables.create()
+      }
 
+      s.createUserChatIfNeed(completion: { (userChatId) in
+        s.userChatId = userChatId
+        subscribe.onNext(userChatId)
+      })
+      
+      return Disposables.create()
+    })
+  }
+  
+  fileprivate func sendMessage(userChatId: String, text: String) {
+    let me = mainStore.state.guest
+    var message = CHMessage(chatId: userChatId, guest: me, message: text)
+    
+    mainStore.dispatch(CreateMessage(payload: message))
+    self.scrollToBottom(false)
+    
+    message.send().subscribe(onNext: { [weak self] (updated) in
+      self?.chatManager?.sendTyping(isStop: true)
+      mainStore.dispatch(CreateMessage(payload: updated))
+      self?.showUserInfoGuideIfNeeded()
+      }, onError: { (error) in
+        message.state = .Failed
+        mainStore.dispatch(CreateMessage(payload: message))
+    }).disposed(by: self.disposeBag)
+  }
+  
+  fileprivate func createUserChatIfNeed(
+    pluginId: String = "",
+    userOpenAt: Date? = nil,
+    completion: @escaping (String?) -> Void) {
+    if self.userChatId != nil {
+      completion(self.userChatId)
+      return;
+    }
+    
+    CHUserChat.create(
+      pluginId: mainStore.state.plugin.id,
+      timeStamp: self.userChatOpenAt)
+      .subscribe(onNext: { [weak self] (chatResponse) in
+        guard let userChat = chatResponse.userChat,
+          let session = chatResponse.session else { return }
+        self?.userChatId = userChat.id
+        self?.chatManager?.chat = userChat
+        mainStore.dispatch(CreateUserChat(payload: userChat))
+        mainStore.dispatch(CreateSession(payload: session))
+        WsService.shared.join(chatId: userChat.id)
+
+        completion(userChat.id)
+      }, onError: { [weak self] (error) in
+        self?.state = .chatNotLoaded
+        self?.showError()
+        completion(nil)
+      }).disposed(by: self.disposeBag)
+    
+//    CHUserChat.create()
+//      .subscribe(onNext: { [weak self] (chatResponse) in
+//        guard let userChat = chatResponse.userChat,
+//        let session = chatResponse.session else { return }
+//        self?.userChatId = userChat.id
+//        self?.chatManager?.chat = userChat
+//        mainStore.dispatch(CreateUserChat(payload: userChat))
+//        mainStore.dispatch(CreateSession(payload: session))
+//        WsService.shared.join(chatId: userChat.id)
+//
+//        completion(userChat.id)
+//      }, onError: { [weak self] (error) in
+//        //TODO: error handle to retry creating user chat
+//        self?.state = .chatNotLoaded
+//        self?.showError()
+//        completion(nil)
+//    }).disposed(by: self.disposeBag)
+  }
 }
 
 // MARK: - StoreSubscriber
@@ -509,88 +579,119 @@ extension UserChatViewController: StoreSubscriber {
     let offset = self.tableView.contentOffset
     let hasNewMessage = self.hasNewMessage(current: self.messages, updated: messages)
     
-    self.messages = messages
+    //message only needs to be replace if count is differe
+    if messages.count != self.messages.count {
+      self.messages = messages
+      // Photo - is this scalable? or doesn't need to care at this moment?
+      self.photoUrls = self.messages.reversed()
+        .filter({ $0.file?.isPreviewable == true })
+        .map({ (message) -> String in
+          return message.file?.url ?? ""
+        })
+      
+      self.tableView.layoutIfNeeded() //fixed contentOffset
+    }
     
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
-    if let prevUserChat = self.userChat, let nextUserChat = userChat,
+    
+    self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
+    self.updateInputFieldIfNeeded(userChat: self.userChat, nextUserChat: userChat)
+    self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
+    self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
+    self.updateChatStateIfNeeded(state: state)
+    
+    self.userChat = userChat
+    self.channel = state.channel
+    
+    self.requestReadAll()
+  }
+
+  func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
+    if let prevUserChat = self.userChat, let nextUserChat = nextUserChat,
       prevUserChat.isReady() && !nextUserChat.isReady() {
       self.initNavigationViews()
     }
     
-    //feedback trigger 
-    self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
-    self.configureInputField(userChat)
-    self.userChat = userChat
-    self.channel = state.channel
+    let userChats = userChatsSelector(
+      state: mainStore.state,
+      showCompleted: mainStore.state.userChatsState.showCompletedChats
+    )
     
-    //fixed scroll location if necessary
-    //TODO: Fixed offset not work properly, offset reset after some execution
-    self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
+    self.setNavItems(
+      showSetting: userChats.count == 0,
+      currentUserChat: self.userChat,
+      guest: state.guest,
+      textColor: state.plugin.textUIColor
+    )
+  }
+  
+  func updateChatStateIfNeeded(state: AppState) {
+    let socketState = state.socketState.state
     
-    // Photo - is this scalable? or doesn't need to care at this moment?
-    self.photoUrls = self.messages.reversed()
-      .filter({ $0.file?.isPreviewable == true })
-      .map({ (message) -> String in
-        return message.file?.url ?? ""
-      })
-    
-    //if unread count is not 0, trigger read all
-    let socketState = mainStore.state.socketState.state
-    
-    if socketState == .Joined &&
-      self.state != .ChatReady &&
-      self.state != .MessageLoading {
-      self.state = .MessageLoading
+    if socketState == .joined &&
+      self.state != .chatReady &&
+      self.state != .messageLoading {
+      self.state = .messageLoading
       self.nextSeq = ""
-
+      
       CHUserChat.get(userChatId: self.userChatId ?? "")
         .subscribe(onNext: { [weak self] (response) in
           mainStore.dispatch(GetUserChat(payload: response))
           self?.fetchMessages()
         }).disposed(by: self.disposeBag)
       
-    } else if socketState == .Disconnected || socketState == .Reconnecting {
-      self.state = .Idle
-    } else if socketState == .Connected ||
-      socketState == .Reconnecting {
-      self.state = .WaitingSocket
+    } else if socketState == .disconnected ||
+      socketState == .reconnecting ||
+      self.state == .messageNotLoaded ||
+      self.state == .chatNotLoaded {
+      self.state = .idle
+    } else if socketState == .connected ||
+      socketState == .reconnecting {
+      self.state = .waitingSocket
     }
     
-    if socketState == .Disconnected ||
-      socketState == .Reconnecting ||
-      self.state == .MessageNotLoaded ||
-      self.state == .UserChatNotLoaded {
-      self.errorToastView.show(animated: true)
+    if socketState == .disconnected ||
+      socketState == .reconnecting ||
+      self.state == .messageNotLoaded ||
+      self.state == .chatNotLoaded {
+      self.showError()
     } else {
-      self.errorToastView.hide(animated: false)
+      self.hideError()
     }
-    
-    self.requestReadAll()
   }
-
-  func configureInputField(_ userChat: CHUserChat?) {
-    guard let userChat = userChat else { return }
-    
-    if userChat.state == "resolved" || userChat.state == "closed" {
+  
+  func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
+    if nextUserChat?.isCompleted() == true {
       self.textInputbar.barState = .disabled
-      self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: UIControlState())
-      self.textView.placeholder = CHAssets.localized("ch.review.complete.preview")
+      self.rightButton.setImage(nil, for: .normal)
+      self.rightButton.setImage(nil, for: .disabled)
+      self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
+      self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
+      self.textView.placeholder = nextUserChat?.isRemoved() == true ?
+        CHAssets.localized("ch.chat.removed.title") :
+        CHAssets.localized("ch.review.complete.title")
+      
       self.rightButton.isEnabled = true
       self.leftButton.isEnabled = false
       self.textView.isEditable = false
+    } else if userChat?.isCompleted() == false || (userChat == nil && nextUserChat == nil) {
+      self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
+      self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
+      self.rightButton.tintColor = CHColors.cobalt
+      self.rightButton.setTitle("", for: .normal)
+      self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
     }
   }
   
   func showFeedbackIfNeeded(_ userChat: CHUserChat?, lastMessage: CHMessage?) {
     guard let newUserChat = userChat else { return }
-    
     //it only trigger once if previous state is following and new state is resolved
-    if newUserChat.state == "resolved" &&
+    if newUserChat.isResolved() &&
       //lastMessage?.log?.action == "resolve" &&
       !self.createdFeedback {
       self.createdFeedback = true
-      mainStore.dispatch(CreateFeedback())
-    } else if newUserChat.state == "closed" &&
+      mainStore.dispatch(CreateFeedback(), delay: 1.0)
+    } else if newUserChat.isClosed() &&
       !self.createdFeedbackComplete {
       self.createdFeedbackComplete = true
       mainStore.dispatch(CreateCompletedFeedback())
@@ -604,7 +705,7 @@ extension UserChatViewController: StoreSubscriber {
     
     let offset = self.tableView.contentOffset.y
     if hasNewMessage(current: current, updated: updated) &&
-      offset > UIScreen.main.bounds.height * 0.7 {
+      offset > UIScreen.main.bounds.height * 0.5 {
       self.newMessageView.configure(message: lastMessage)
       self.newMessageView.show(animated: true)
     }
@@ -646,17 +747,14 @@ extension UserChatViewController: StoreSubscriber {
       !self.isMyMessage(message: lastMessage),
       offset.y > UIScreen.main.bounds.height/2,
       hasNewMessage {
-      //let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
-      //let viewModel = MessageCellModel(message: lastMessage, previous: previous)
-      //offset.y += MessageCell.measureHeight(fits: 0, viewModel: viewModel)
-      let newCellHeight = self.tableView(self.tableView, heightForRowAt: IndexPath(row:0, section: 1))
-      offset.y += newCellHeight
-      self.tableView.contentOffset = offset //ContentOffset(offset, animated: false)
+      let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
+      let viewModel = MessageCellModel(message: lastMessage, previous: previous)
+      offset.y += MessageCell.measureHeight(fits: 0, viewModel: viewModel)
+
+      self.tableView.contentOffset = offset
     } else if hasNewMessage {
       self.scrollToBottom(false)
     }
-    
-    self.tableView.layoutIfNeeded()
   }
   
   fileprivate func scrollToBottom(_ animated: Bool) {
@@ -707,15 +805,20 @@ extension UserChatViewController {
         self.sendMessage(userChatId: userChatId, text: msg)
       }
     } else if self.userChat == nil {
-      self.createUserChat(completion: { [weak self] (userChatId: String) in
-        self?.userChatId = userChatId
-        self?.sendMessage(userChatId: userChatId, text: msg)
+      self.createUserChatIfNeed(completion: { [weak self] (userChatId) in
+        guard let s = self else { return }
+        if let userChatId = userChatId {
+          s.userChatId = userChatId
+          s.sendMessage(userChatId: userChatId, text: msg)
+        } else {
+          s.state = .chatNotLoaded
+        }
       })
     } else {
       mainStore.dispatch(RemoveMessages(payload: userChatId))
       self.newChatSubject.onNext(self.textView.text)
     }
-
+    self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
   }
 
@@ -745,9 +848,13 @@ extension UserChatViewController {
       if let userChatId = self?.userChatId {
         uploadImage(userChatId)
       } else {
-        self?.createUserChat(completion: { (userChatId) in
+        self?.createUserChatIfNeed(completion: { (userChatId) in
           self?.userChatId = userChatId
-          uploadImage(userChatId)
+          if let userChatId = userChatId {
+            uploadImage(userChatId)
+          } else {
+            self?.state = .chatNotLoaded
+          }
         })
       }
     }
@@ -779,38 +886,6 @@ extension UserChatViewController {
     }).disposed(by: self.disposeBag)
   }
 
-  private func sendMessage(userChatId: String, text: String) {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: userChatId, guest: me, message: text)
-    
-    mainStore.dispatch(CreateMessage(payload: message))
-    self.scrollToBottom(false)
-    
-    message.send().subscribe(onNext: { [weak self] (updated) in
-      self?.sendTyping(isStop: true)
-      mainStore.dispatch(CreateMessage(payload: updated))
-      self?.showUserInfoGuideIfNeeded()
-    }, onError: { (error) in
-      message.state = .Failed
-      mainStore.dispatch(CreateMessage(payload: message))
-    }).disposed(by: self.disposeBag)
-  }
-
-  private func createUserChat(completion: @escaping (String) -> Void) {
-    // TODO: Show loader?
-    CHUserChat.create().subscribe(onNext: { [weak self] (chatResponse) in
-      guard let userChat = chatResponse.userChat,
-        let session = chatResponse.session else { return }
-      self?.userChatId = userChat.id
-      mainStore.dispatch(CreateUserChat(payload: userChat))
-      mainStore.dispatch(CreateSession(payload: session))
-      WsService.shared.join(chatId: userChat.id)
-      completion(userChat.id)
-    }, onError: { [weak self] (error) in
-      self?.errorToastView.show(animated: true)
-    }).disposed(by: self.disposeBag)
-  }
-  
   private func updatePhotoUrls(messages: [CHMessage]) {
     self.photoUrls = messages.filter({ $0.file?.isPreviewable == true })
       .map({ (message) -> String in
@@ -821,7 +896,7 @@ extension UserChatViewController {
   }
   
   override func textViewDidChange(_ textView: UITextView) {
-    self.sendTyping(isStop: textView.text == "")
+    self.chatManager?.sendTyping(isStop: textView.text == "")
   }
 }
 
@@ -903,36 +978,19 @@ extension UserChatViewController {
   }
   
   func cellForTyping(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: TypingIndicatorCell = tableView.dequeueReusableCell(for: indexPath)
-    cell.configure(typingUsers: self.typingManagers)
-    return cell
+    if let typers = self.chatManager?.typers, typers.count > 0 {
+      let cell: TypingIndicatorCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(typingUsers: typers)
+      return cell
+    }
+
+    return UITableViewCell()
   }
   
   func cellForMessage(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let message = self.messages[indexPath.row]
     
     switch message.messageType {
-    //deprecated
-    case .ChannelClosed:
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      let viewModel = MessageCellModel(message: message, previous: nil)
-      cell.configure(viewModel)
-      cell.bubbleView.actionView.signalForClick().subscribe({ [weak self] (event) in
-        mainStore.dispatch(ClickBusinessHour(payload:self?.userChat))
-        dispatch(delay: 1.0, execute: { [weak self] in
-          if self?.view.superview == nil { return }
-          mainStore.dispatch(AnswerBusinessHour(payload: self?.userChat))
-        })
-      }).disposed(by: self.disposeBag)
-      return cell
-    //deprecated
-    case .BusinessHourQuestion, .BusinessHourAnswer:
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      let previousMessage: CHMessage? =
-        indexPath.row == 0 ? nil : self.messages[indexPath.row - 1]
-      let viewModel = MessageCellModel(message: message, previous: previousMessage)
-      cell.configure(viewModel)
-      return cell
     case .NewAlertMessage:
       let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
       return cell
@@ -1154,109 +1212,18 @@ extension UserChatViewController : SLKInputBarViewDelegate {
   }
 }
 
-extension UserChatViewController {
-  func reloadTypingCell() {
-    let indexPath = IndexPath(row: 0, section: 0)
-    if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
-      self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
+extension UserChatViewController: ChatDelegate {
+  func updateFor(element: ChatElement) {
+    switch element {
+    case .typing(_, _):
+      let indexPath = IndexPath(row: 0, section: 0)
+      if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
+        self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
+      }
+      break
+    default:
+      break
     }
-  }
-  
-  func initSocketObservers() {
-    WsService.shared.typingSubject
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (typingEntity) in
-        guard let s = self else { return }
-        if typingEntity.action == "stop" {
-          if let index = s.getTypingIndex(of: typingEntity) {
-            let person = s.typingManagers.remove(at: index)
-            s.removeTimer(with: person)
-          }
-        }
-        else if typingEntity.action == "start" {
-          if let manager = personSelector(
-            state: mainStore.state,
-            personType: typingEntity.personType ?? "",
-            personId: typingEntity.personId) as? CHManager {
-              if s.getTypingIndex(of: typingEntity) == nil {
-                s.typingManagers.append(manager)
-              }
-              s.addTimer(with: manager, delay: 15)
-          }
-        }
-        //reload row not section only if visible
-        s.reloadTypingCell()
-      }).disposed(by: self.disposeBag)
-    
-    WsService.shared.mOnCreate()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (message) in
-        guard let s = self else { return }
-        
-        let typing = CHTypingEntity.transform(from: message)
-        if let index = s.getTypingIndex(of: typing) {
-          let person = s.typingManagers.remove(at: index)
-          s.removeTimer(with: person)
-          s.reloadTypingCell()
-        }
-      }).disposed(by: self.disposeBag)
-  }
-
-  func sendTyping(isStop: Bool) {
-    WsService.shared.sendTyping(
-      chat: self.userChat, isStop: isStop
-    )
-  }
-  
-  func addTimer(with manager: CHManager, delay: TimeInterval) {
-    let timer = Timer.scheduledTimer(
-      timeInterval: delay,
-      target: self,
-      selector: #selector(self.expired(_:)),
-      userInfo: [manager],
-      repeats: false
-    )
-    
-    if let t = self.timeStorage[manager.key] {
-      t.invalidate()
-    }
-    
-    self.timeStorage[manager.key] = timer
-  }
-  
-  func removeTimer(with manager: CHManager?) {
-    guard let manager = manager else { return }
-    if let t = self.timeStorage.removeValue(forKey: manager.key) {
-      t.invalidate()
-    }
-  }
-  
-  func resetTypingInfo() {
-    self.timeStorage.forEach { (k, t) in
-      t.invalidate()
-    }
-    self.typingManagers.removeAll()
-    self.timeStorage.removeAll()
-  }
-  
-  @objc func expired(_ timer: Timer) {
-    guard let params = timer.userInfo as? [Any] else { return }
-    guard let manager = params[0] as? CHManager else { return }
-    
-    timer.invalidate()
-    if let index = self.typingManagers.index(where: { (m) in
-      return m.id == manager.id
-    }) {
-      self.typingManagers.remove(at: index)
-      self.timeStorage.removeValue(forKey: manager.key)
-      self.reloadTypingCell()
-    }
-  }
-  
-  func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
-    return self.typingManagers.index(where: {
-      $0.id == typingEntity.personId
-    })
   }
 }
 
@@ -1275,5 +1242,18 @@ extension UserChatViewController : TLYShyNavBarManagerDelegate {
     if self.titleView?.isExpanded == true {
       self.titleView?.isExpanded = false
     }
+  }
+}
+
+extension UserChatViewController {
+  func showError() {
+    if self.shyNavBarManager.isExpanded() {
+      self.shyNavBarManager.contract(false)
+    }
+    self.errorToastView.show(animated: true)
+  }
+  
+  func hideError() {
+    self.errorToastView.hide(animated: true)
   }
 }

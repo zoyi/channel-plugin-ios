@@ -41,6 +41,7 @@ struct CHChannel: CHEntity {
   var name = ""
   var country = ""
   var textColor = "white"
+  var outOfWorkPlugin = false
   var working = true
   var workingTime: [String:TimeRange]?
   var phoneNumber: String = ""
@@ -49,6 +50,7 @@ struct CHChannel: CHEntity {
   var serviceBlocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
+  var timeZone = ""
   
   var workingTimeString: String {
     let workingTime = self.workingTime?.map({ (key, value) -> SortableWorkingTime in
@@ -115,5 +117,6 @@ extension CHChannel: Mappable {
     requestGuestInfo        <- map["requestGuestInfo"]
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"]
+    timeZone                <- map["timeZone"]
   }
 }

@@ -25,8 +25,8 @@ final private class ViewAnimationStep {
     return self
   }
   
-  func execute() {
-    UIView.animate(withDuration: duration, animations: animations) { (_) in
+  func execute(option: UIViewAnimationOptions = .curveLinear) {
+    UIView.animate(withDuration: duration, delay: 0, options: option, animations:animations) { (_) in
       self.completed()
     }
   }
@@ -56,18 +56,18 @@ class AnimationSequence {
     return self
   }
   
-  func execute() {
-    executeSteps()
+  func execute(option: UIViewAnimationOptions = .curveLinear) {
+    executeSteps(option: option)
   }
   
-  fileprivate func executeSteps() {
+  fileprivate func executeSteps(option: UIViewAnimationOptions) {
     if sequence.isEmpty == false {
       let step = sequence.removeFirst()
       step
         .onCompleted {
-          self.executeSteps()
+          self.executeSteps(option: option)
         }
-        .execute()
+        .execute(option: option)
     }
     else {
       completion()

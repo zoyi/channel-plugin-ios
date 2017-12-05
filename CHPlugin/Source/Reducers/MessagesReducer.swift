@@ -77,32 +77,6 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     } else {
       return state ?? MessagesState()
     }
-  case _ as CreateChannelClosed:
-    let msg = LocalMessageFactory.generate(
-      type: .ChannelClosed
-    )
-    return state?.insert(message: msg.first!) ?? MessagesState()
-  case let action as ClickBusinessHour:
-    let prvmsgs = state?.findBy(type: .ChannelClosed) ?? []
-    if prvmsgs.count == 1 {
-      var prv = prvmsgs.first!
-      prv.messageType = .UserMessage
-      _ = state?.upsert(messages: [prv])
-    }
-    
-    let msg = LocalMessageFactory.generate(
-      type: .BusinessHourQuestion,
-      messages: [],
-      userChat: action.payload
-    )
-    return state?.insert(message: msg.first!) ?? MessagesState()
-  case let action as AnswerBusinessHour:
-    let msg = LocalMessageFactory.generate(
-      type: .BusinessHourAnswer,
-      messages: [],
-      userChat: action.payload
-    )
-    return state?.insert(message: msg.first!) ?? MessagesState()
   case _ as InsertWelcome:
     let msg = LocalMessageFactory.generate(
       type: .WelcomeMessage,
