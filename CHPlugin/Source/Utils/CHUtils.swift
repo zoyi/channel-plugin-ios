@@ -47,6 +47,8 @@ class CHUtils {
     switch name {
       case "png", "image":
         return "image/png"
+      case "gif":
+        return "image/gif"
       case "json":
         return "application/json"
       default:

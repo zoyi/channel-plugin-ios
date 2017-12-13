@@ -513,9 +513,9 @@ final class UserChatViewController: BaseSLKTextViewController {
       self?.chatManager?.sendTyping(isStop: true)
       mainStore.dispatch(CreateMessage(payload: updated))
       self?.showUserInfoGuideIfNeeded()
-      }, onError: { (error) in
-        message.state = .Failed
-        mainStore.dispatch(CreateMessage(payload: message))
+    }, onError: { (error) in
+      message.state = .Failed
+      mainStore.dispatch(CreateMessage(payload: message))
     }).disposed(by: self.disposeBag)
   }
   
@@ -580,17 +580,17 @@ extension UserChatViewController: StoreSubscriber {
     let hasNewMessage = self.hasNewMessage(current: self.messages, updated: messages)
     
     //message only needs to be replace if count is differe
-    if messages.count != self.messages.count {
-      self.messages = messages
-      // Photo - is this scalable? or doesn't need to care at this moment?
-      self.photoUrls = self.messages.reversed()
-        .filter({ $0.file?.isPreviewable == true })
-        .map({ (message) -> String in
-          return message.file?.url ?? ""
-        })
-      
-      self.tableView.layoutIfNeeded() //fixed contentOffset
-    }
+    //if messages.count != self.messages.count {
+    self.messages = messages
+    // Photo - is this scalable? or doesn't need to care at this moment?
+    self.photoUrls = self.messages.reversed()
+      .filter({ $0.file?.isPreviewable == true })
+      .map({ (message) -> String in
+        return message.file?.url ?? ""
+      })
+    
+    self.tableView.layoutIfNeeded() //fixed contentOffset
+    //}
     
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     
@@ -842,6 +842,7 @@ extension UserChatViewController {
         })
         
         messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
+        //TODO: rather create array of signal and trigger in order 
         self?.sendMessageRecursively(allMessages: messages, currentIndex: 0)
       }
       

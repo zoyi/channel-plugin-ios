@@ -11,6 +11,7 @@ import ObjectMapper
 import SwiftDate
 import RxSwift
 import DKImagePickerController
+import MobileCoreServices
 
 enum SendingState {
   case New, Sent, Failed
@@ -168,14 +169,17 @@ extension CHMessage {
 extension CHMessage {
   //TODO: refactor async call into actions 
   //but to do that, it also has to handle errors in redux
-  static func getMessages(userChatId: String,
-                   since: String,
-                   limit: String,
-                   sortOrder:String) -> Observable<[String: Any]> {
-    return UserChatPromise.getMessages(userChatId: userChatId,
-                                       since: since,
-                                       limit: limit,
-                                       sortOrder: sortOrder)
+  static func getMessages(
+    userChatId: String,
+    since: String,
+    limit: String,
+    sortOrder:String) -> Observable<[String: Any]> {
+    
+    return UserChatPromise.getMessages(
+      userChatId: userChatId,
+      since: since,
+      limit: limit,
+      sortOrder: sortOrder)
   }
   
   func send() -> Observable<CHMessage> {
@@ -188,19 +192,26 @@ extension CHMessage {
   
   func sendFile() -> Observable<CHMessage> {
     return Observable.create{ subscriber in
-      if self.file?.rawData == nil &&
-        self.file?.asset == nil {
+      guard let file = self.file, file.rawData != nil || file.asset != nil else {
         subscriber.onError(CHErrorPool.sendFileError)
         return Disposables.create()
       }
       
       var data: Data?
-      if let imageAsset = self.file?.asset {
-        imageAsset.fetchOriginalImage(true, completeBlock: { (image, info) in
-          data = UIImageJPEGRepresentation(image!, 1.0)
-        })
+      if let asset = file.asset {
+        if file.category == "gif" {
+          asset.fetchImageDataForAsset(true, completeBlock: { (rawData, info) in
+              data = rawData
+          })
+        } else if file.category == "image" {
+          asset.fetchOriginalImage(true, completeBlock: { (image, info) in
+            data = UIImageJPEGRepresentation(image!, 1.0)
+          })
+        } else {
+          //
+        }
       } else {
-        data = self.file?.rawData
+        data = file.rawData
       }
       
       if data == nil {
@@ -208,16 +219,17 @@ extension CHMessage {
         return Disposables.create()
       }
 
-      let disposable = UserChatPromise.uploadFile(name: self.file?.name,
-                                     file: data!,
-                                     requestId: self.requestId!,
-                                     userChatId: self.chatId,
-                                     category: self.file?.category ?? "")
-      .subscribe(onNext: { (message) in
-        subscriber.onNext(message)
-      }, onError: { (error) in
-        subscriber.onError(error)
-      })
+      let disposable = UserChatPromise.uploadFile(
+        name: file.name,
+        file: data!,
+        requestId: self.requestId!,
+        userChatId: self.chatId,
+        category: file.category)
+        .subscribe(onNext: { (message) in
+          subscriber.onNext(message)
+        }, onError: { (error) in
+          subscriber.onError(error)
+        })
       
       return Disposables.create(with: {
         disposable.dispose()

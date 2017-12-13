@@ -9,6 +9,7 @@
 import Foundation
 import ObjectMapper
 import DKImagePickerController
+import MobileCoreServices
 
 struct CHFile {
   var url = ""
@@ -38,7 +39,14 @@ struct CHFile {
   init(imageAsset: DKAsset) {
     self.asset = imageAsset
     self.image = true
-    self.category = "image"
+    let identifier = imageAsset.originalAsset?.value(forKey: "uniformTypeIdentifier") as? String
+    if identifier == kUTTypeGIF as String {
+      self.category = "gif"
+    } else if identifier != kUTTypeQuickTimeImage as String {
+      self.category = "image"
+    } else { //not handle video or live photo for now
+      self.category = "unknown"
+    }
   }
 }
 

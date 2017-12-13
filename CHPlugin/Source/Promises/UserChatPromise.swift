@@ -313,7 +313,7 @@ struct UserChatPromise {
           upload.uploadProgress(closure: { progress in
             dlog("upload progress \(progress.fractionCompleted)")
             guard var message = messageSelector(state: mainStore.state, id: requestId) else { return }
-            if (CGFloat(progress.fractionCompleted) - message.progress) > 0.1 || progress.fractionCompleted == 1.0 {
+            if (CGFloat(progress.fractionCompleted) - message.progress) > 0.1 && message.progress != 1.0{
               message.progress = CGFloat(progress.fractionCompleted)
               mainStore.dispatch(UpdateMessage(payload: message))
             }

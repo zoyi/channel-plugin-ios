@@ -83,7 +83,7 @@ class CHMImageView : BaseView {
           self?.placeholder = image
         })
       }
-      
+      //change to delegation to update ui rather using redux
       self.progressView.setProgress(message.progress, animated: false)
       
     } else {
