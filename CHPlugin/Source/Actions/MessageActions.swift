@@ -22,7 +22,7 @@ struct DeleteMessage: Action {
 
 // local message action
 struct CreateUserInfoGuide: Action {
-  public let payload: [String: Any]
+  public let payload: [String: Any?]
 }
 
 struct UpdateUserInfoGuide: Action {

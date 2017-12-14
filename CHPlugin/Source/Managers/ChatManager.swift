@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 enum ChatElement {
   case message(obj: CHMessage?)
@@ -19,12 +20,16 @@ enum ChatElement {
 
 enum ChatState {
   case idle
+  case infoNotLoaded
+  case infoLoading
+  case infoLoaded
   case chatLoading
   case chatLoaded
   case chatNotLoaded
   case chatJoining
   case waitingSocket
   case messageLoading
+  case messageLoaded
   case messageNotLoaded
   case chatReady
 }
@@ -36,12 +41,25 @@ protocol ChatDelegate : class {
 class ChatManager {
   var chatId = ""
   var chatType = ""
-  var chat: CHUserChat? = nil
-  let disposeBag = DisposeBag()
+  var chat: CHUserChat? = nil {
+    didSet {
+      if let chat = self.chat {
+        self.chatId = chat.id
+        self.chatType = "UserChat"
+      }
+    }
+  }
   
+  var didFetchInfo = false
+  var didChatLoaded = false
+  var state: ChatState = .idle
+  
+  let disposeBag = DisposeBag()
+
   fileprivate var typingPersons = [CHEntity]()
   fileprivate var timeStorage = [String: Timer]()
   fileprivate var animateTyping = false
+  
   var typers: [CHEntity] {
     get {
       return self.typingPersons
@@ -50,9 +68,16 @@ class ChatManager {
   
   weak var delegate: ChatDelegate? = nil
   
+  deinit {
+    dlog("Destroyed chatManager")
+  }
+  
   init(id: String?, type: String = "UserChat"){
     self.chatId = id ?? ""
     self.chatType = type
+    self.chat = userChatSelector(
+      state: mainStore.state,
+      userChatId: id)
     
     self.observeSocketEvents()
   }
@@ -62,6 +87,19 @@ class ChatManager {
     self.observeChatEvents()
     self.observeSessionEvents()
     self.observeTypingEvents()
+    self.observeAppState()
+  }
+  
+  fileprivate func observeAppState() {
+    NotificationCenter.default
+      .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
+      .observeOn(MainScheduler.instance)
+      .subscribe { [weak self] _ in
+        if self?.chatId == "" {
+          self?.didFetchInfo = false
+        }
+        self?.didChatLoaded = false
+      }.disposed(by: self.disposeBag)
   }
   
   fileprivate func observeMessageEvents() {
@@ -112,6 +150,8 @@ class ChatManager {
   }
 }
 
+// MARK: live typing
+
 extension ChatManager {
   public func sendTyping(isStop: Bool) {
     WsService.shared.sendTyping(
@@ -143,7 +183,7 @@ extension ChatManager {
     }
   }
   
-  public func resetTypingInfo() {
+  public func reset() {
     self.timeStorage.forEach { (k, t) in
       t.invalidate()
     }
@@ -169,5 +209,122 @@ extension ChatManager {
     return self.typingPersons.index(where: {
       $0.id == typingEntity.personId && $0.kind == typingEntity.personType
     })
+  }
+}
+
+extension ChatManager {
+  func isChatReady() -> Bool {
+    return self.state == .chatReady
+  }
+  
+  func isNewUserChat() -> Bool {
+    return self.chatId == ""
+  }
+  
+  func needToFetchInfo() -> Bool {
+    return !self.didFetchInfo && self.chatId == "" && self.state != .infoLoading
+  }
+  
+  func needToFetchChat() -> Bool {
+    return !self.didChatLoaded && self.chatId != "" && self.state != .chatLoading
+  }
+  
+  func isChatLoading() -> Bool {
+    return self.state == .chatLoading
+  }
+  
+  func isMessageLoading() -> Bool {
+    return self.state == .messageLoading
+  }
+}
+
+// MARK: APIs
+
+extension ChatManager {
+  //NOTE: not considered simultaneous calling of difference fetching functions
+  func fetchForNewUserChat() -> Observable<Any?> {
+    return Observable.create { [weak self] subscriber in
+      guard let s = self else { return Disposables.create() }
+      s.state = .infoLoading
+      
+      s.getPlugin()
+        .flatMap({ (plugin, bot) -> Observable<CHScript> in
+          mainStore.dispatchOnMain(GetPlugin(plugin: plugin, bot: bot))
+          return s.getWelcomeScript()
+        })
+        .subscribe(onNext: { (script) in
+          s.didFetchInfo = true
+          s.state = .infoLoaded
+          mainStore.dispatchOnMain(GetScript(payload: script))
+          subscriber.onNext(nil)
+        }, onError: { (error) in
+          s.didFetchInfo = false
+          s.state = .infoNotLoaded
+          subscriber.onError(error)
+        }).disposed(by: s.disposeBag)
+      
+      return Disposables.create()
+    }
+  }
+  
+  func fetchChat() -> Observable<ChatResponse> {
+    return Observable.create { [weak self] subscriber in
+      guard self?.state != .chatLoading else { return Disposables.create() }
+      guard let s = self else  { return Disposables.create() }
+      s.state = .chatLoading
+      
+      CHUserChat.get(userChatId: s.chatId)
+        .subscribe(onNext: { (response) in
+          s.state = .chatLoaded
+          s.didChatLoaded = true
+          mainStore.dispatch(GetUserChat(payload: response))
+          subscriber.onNext(response)
+        }, onError: { (error) in
+          s.state = .chatNotLoaded
+          s.didChatLoaded = false
+          subscriber.onError(error)
+        }).disposed(by: s.disposeBag)
+      
+      return Disposables.create()
+    }
+  }
+  
+  func createChat(
+    pluginId: String = "",
+    userOpenAt: Date? = nil,
+    completion: @escaping (String?) -> Void) {
+    if self.chatId != "" {
+      completion(self.chatId)
+      return;
+    }
+    
+    CHUserChat.create(
+      pluginId: mainStore.state.plugin.id,
+      timeStamp: userOpenAt)
+      .subscribe(onNext: { [weak self] (chatResponse) in
+        guard let userChat = chatResponse.userChat,
+          let session = chatResponse.session else { return }
+        self?.chatId = userChat.id
+        self?.chat = userChat
+        self?.didChatLoaded = true
+        mainStore.dispatch(CreateUserChat(payload: userChat))
+        mainStore.dispatch(CreateSession(payload: session))
+        WsService.shared.join(chatId: userChat.id)
+        
+        completion(userChat.id)
+      }, onError: { [weak self] (error) in
+        self?.didChatLoaded = false
+        self?.state = .chatNotLoaded
+        completion(nil)
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
+    return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
+  }
+  
+  func getWelcomeScript() -> Observable<CHScript> {
+    let scriptKey = mainStore.state.guest.ghost ? "welcome_ghost" : "welcome"
+    return ScriptPromise.get(pluginId: mainStore.state.plugin.id, scriptKey: scriptKey)
   }
 }

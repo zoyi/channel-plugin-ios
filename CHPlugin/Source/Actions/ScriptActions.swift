@@ -11,3 +11,7 @@ import ReSwift
 struct GetScripts: Action {
   public let payload: [CHScript]
 }
+
+struct GetScript: Action {
+  public let payload: CHScript
+}

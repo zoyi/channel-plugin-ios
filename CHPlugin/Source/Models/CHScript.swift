@@ -17,14 +17,9 @@ struct CHScript: ModelType {
 
   func getTranslatedMessage() -> String {
     do {
-      if let translated = try self.i18n?.getMessage()?.decodeHTML() {
+      if let translated = self.i18n?.getMessage() {
         return translated
       }
-      if let translated = try self.message.decodeHTML() {
-        return translated
-      }
-      return self.message
-    } catch {
       return self.message
     }
   }

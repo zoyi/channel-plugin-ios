@@ -13,9 +13,7 @@ import RxSwift
 import ReSwift
 
 private enum ProfileSection: Int {
-  //case userInfo
   case action
-  case agreement
 }
 
 private enum UserInfoRow: Int {
@@ -26,7 +24,6 @@ private enum UserInfoRow: Int {
 private enum ActionRow: Int {
   case closedChats
   case soundOption
-  //case deleteChat
 }
 
 final class ProfileViewController: BaseViewController {
@@ -41,6 +38,10 @@ final class ProfileViewController: BaseViewController {
   let logoImageView = UIImageView().then {
     $0.image = CHAssets.getImage(named: "channelSymbol")
     $0.contentMode = .center
+  }
+  let versionLabel = UILabel().then {
+    $0.font = UIFont.systemFont(ofSize: 13)
+    $0.textColor = CHColors.blueyGrey
   }
   
   let headerView = ProfileHeaderView()
@@ -70,14 +71,7 @@ final class ProfileViewController: BaseViewController {
     }
   }
   
-  var chatCount = 0 {
-    didSet {
-      self.canDelete = self.chatCount != 0
-    }
-  }
-  
   var hideOptions = false
-  var canDelete = false
   var showCompleted = false
   
   override func viewDidLoad() {
@@ -85,33 +79,40 @@ final class ProfileViewController: BaseViewController {
   
     self.setNavigation()
     self.handleActions()
+    
     self.tableView.separatorStyle = .none
     self.tableView.delegate = self
     self.tableView.dataSource = self
     self.tableView.isScrollEnabled = false
     
+    self.footerView.addSubview(self.versionLabel)
     self.footerView.addSubview(self.logoImageView)
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.footerView)
     
-    //let channel = mainStore.state.channel
-    //let height = channel.homepageUrl != "" || channel.phoneNumber != "" ? 180 : 110
+    let version = Bundle(for: ChannelPlugin.self)
+      .infoDictionary?["CFBundleShortVersionString"] as! String
+    self.versionLabel.text = "v\(version)"
+    
+    let channel = mainStore.state.channel
+    let height:CGFloat = channel.homepageUrl != "" || channel.phoneNumber != "" ? 180 : 110
     self.headerView.frame = CGRect(
       x: 0, y: 0,
       width: self.tableView.width,
-      height: 180
+      height: height
     )
     self.tableView.tableHeaderView = self.headerView
     
-    //self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(dismissAction(_:)))
-    //self.view.addGestureRecognizer(self.panGestureRecognizer!)
+//    TODO: drag to dismiss
+//    self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(dismissAction(_:)))
+//    self.view.addGestureRecognizer(self.panGestureRecognizer!)
   }
   
   @objc func dismissAction(_ panGesture: UIPanGestureRecognizer) {
     let translation = panGesture.translation(in: self.navigationController?.view)
     
     if panGesture.state == .began {
-      originalPosition = view.center
+      originalPosition = CGPoint(x: 0, y: 20)
       currentPositionTouched = panGesture.location(in: self.navigationController?.view)
     } else if panGesture.state == .changed {
       self.navigationController?.view.frame.origin = CGPoint(
@@ -135,7 +136,7 @@ final class ProfileViewController: BaseViewController {
         })
       } else {
         UIView.animate(withDuration: 0.2, animations: {
-          self.navigationController?.view.center = self.originalPosition!
+          self.navigationController?.view.origin = self.originalPosition!
         })
       }
     }
@@ -154,19 +155,24 @@ final class ProfileViewController: BaseViewController {
   override func setupConstraints() {
     super.setupConstraints()
     
-    self.tableView.snp.remakeConstraints { (make) in
+    self.tableView.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
     }
     
-    self.footerView.snp.remakeConstraints { (make) in
+    self.footerView.snp.makeConstraints { (make) in
       make.height.equalTo(48)
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
     }
     
-    self.logoImageView.snp.remakeConstraints { (make) in
+    self.logoImageView.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
+      make.top.equalToSuperview().inset(10)
+    }
+    
+    self.versionLabel.snp.makeConstraints { (make) in
+      make.trailing.equalToSuperview().inset(20)
       make.top.equalToSuperview().inset(10)
     }
   }
@@ -174,7 +180,7 @@ final class ProfileViewController: BaseViewController {
   func setNavigation() {
     
     self.title = CHAssets.localized("ch.settings.title")
-    self.navigationItem.rightBarButtonItem = NavigationItem(
+    self.navigationItem.leftBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
       style: .plain,
       actionHandler: { [weak self] in
@@ -210,22 +216,12 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch section {
-//    case ProfileSection.userInfo.rawValue:
-//      if self.guest is CHVeil {
-//        return Constant.userInfoCount
-//      } else if self.guest is CHUser {
-//        return self.userInfoModel.count
-//      }
-//
-//      return Constant.userInfoCount
     case ProfileSection.action.rawValue:
       if self.hideOptions {
         return 0
       }
       
       return Constant.actionCount
-    case ProfileSection.agreement.rawValue:
-      return 1
     default:
       return 0
     }
@@ -233,24 +229,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch (indexPath.section, indexPath.row) {
-//    case (ProfileSection.userInfo.rawValue,_):
-//      let model = self.userInfoModel[indexPath.row]
-//      if model == "username" {
-//        let cell = TextInputCell()
-//        cell.textField.text = self.guest?.ghost == true ? "" : self.userName
-//        cell.textField.isUserInteractionEnabled = false
-//        cell.textField.placeholder = CHAssets.localized("ch.settings.name_placeholder")
-//        cell.isEditable = self.guest is CHVeil
-//        return cell
-//      } else if model == "phonenumber" {
-//        let cell = TextInputCell()
-//        cell.textField.text = self.phoneNumber
-//        cell.textField.isUserInteractionEnabled = false
-//        cell.textField.placeholder = CHAssets.localized("ch.settings.phone_number_placeholder")
-//        cell.isEditable = self.guest is CHVeil
-//        return cell
-//      }
-//      return UITableViewCell()
     case (ProfileSection.action.rawValue,
           ActionRow.closedChats.rawValue):
       let cell = SwitchCell()
@@ -276,18 +254,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       cell.selectionStyle = .none
       cell.configure(title: CHAssets.localized("ch.settings.enable_chat_sound_vibrate"), isOn: isOn)
       return cell
-//    case (ProfileSection.action.rawValue,
-//          ActionRow.deleteChat.rawValue):
-//      let cell = LabelCell()
-//      cell.disabled = !self.canDelete
-//      cell.isUserInteractionEnabled = self.canDelete
-//      cell.titleLabel.text = CHAssets.localized("ch.settings.close_chat")
-//      return cell
-    case (ProfileSection.agreement.rawValue, _):
-      let cell = LabelCell()
-      cell.disabled = !self.canDelete
-      cell.titleLabel.text = CHAssets.localized("ch.settings.terms")
-      return cell
     default:
       return  UITableViewCell()
     }
@@ -295,110 +261,30 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     switch indexPath.section {
-//    case ProfileSection.userInfo.rawValue:
-//      return TextInputCell.height()
     case ProfileSection.action.rawValue:
       return LabelCell.height()
-    case ProfileSection.agreement.rawValue:
-      return 48
     default:
       return 40
     }
   }
   
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    switch (indexPath.section, indexPath.row) {
-//    case (ProfileSection.userInfo.rawValue,
-//          UserInfoRow.name.rawValue):
-//      if self.guest is CHUser {
-//        break
-//      }
-//      let controller = ProfileEditViewController(
-//        type: .name, text: self.userName)
-//      self.navigationController?.pushViewController(controller, animated: true)
-//      break
-//    case (ProfileSection.userInfo.rawValue,
-//          UserInfoRow.phone.rawValue):
-//      if self.guest is CHUser {
-//        break
-//      }
-//      let controller = ProfileEditViewController(
-//        type: .phone, text: self.phoneNumber)
-//      self.navigationController?.pushViewController(controller, animated: true)
-//      break
-    //case (ProfileSection.action.rawValue,
-    //      ActionRow.closeChat.rawValue):
-      
-    //  break
-//    case (ProfileSection.action.rawValue,
-//          ActionRow.deleteChat.rawValue):
-//      if self.canDelete {
-//        self.deleteSubject.onNext(nil)
-//      }
-//      break
-    case (ProfileSection.agreement.rawValue, _):
-      self.openAgreement()
-      break
-    default:
-      break
-    }
-    
-    tableView.deselectRow(at: indexPath, animated: true)
-  }
-  
-  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    switch section {
-//    case ProfileSection.userInfo.rawValue:
-//      let view = UIView()
-//      let label = UILabel().then {
-//        $0.font = UIFont.boldSystemFont(ofSize: 14)
-//        $0.textColor = CHColors.blueyGrey
-//        $0.text = CHAssets.localized("ch.settings.my_info")
-//      }
-//      view.addSubview(label)
-//
-//      label.snp.makeConstraints({ (make) in
-//        make.leading.equalToSuperview().inset(16)
-//        make.trailing.equalToSuperview().inset(16)
-//        make.bottom.equalToSuperview().inset(6)
-//      })
-//
-//      return view
-      
-    case ProfileSection.agreement.rawValue:
-      let view = UIView()
-      let divider = UIView().then {
-        $0.backgroundColor = CHColors.stale10
-      }
-      view.addSubview(divider)
-      
-      divider.snp.remakeConstraints({ (make) in
-        make.height.equalTo(1)
-        make.leading.equalToSuperview()
-        make.trailing.equalToSuperview()
-        make.centerY.equalToSuperview()
-      })
-      
-      return view
-    default:
-      return UIView()
-    }
-
-  }
-  
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     switch section {
-//    case ProfileSection.userInfo.rawValue:
-//      return 38
     case ProfileSection.action.rawValue:
-      return 8
-    case ProfileSection.agreement.rawValue:
-      return self.hideOptions ? 0 : 17
+      return 10
     default:
       return 0
     }
   }
-
+  
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    switch section {
+    case ProfileSection.action.rawValue:
+      return UIView()
+    default:
+      return nil
+    }
+  }
 }
 
 extension ProfileViewController : StoreSubscriber {
@@ -409,13 +295,7 @@ extension ProfileViewController : StoreSubscriber {
       plugin: state.plugin,
       channel: state.channel
     )
-    
-    let userChats = userChatsSelector(
-      state: state,
-      showCompleted: state.userChatsState.showCompletedChats
-    )
-    self.chatCount = userChats.count
-    
+
     if let guest = self.guest {
       self.userInfoModel.removeAll()
       self.userName = guest.ghost ? "" : guest.name
@@ -440,7 +320,6 @@ extension ProfileViewController : StoreSubscriber {
       showCompleted: showCompleted)
       .subscribe(onNext: { (data) in
         mainStore.dispatch(GetUserChats(payload: data))
-        
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         SVProgressHUD.dismiss()

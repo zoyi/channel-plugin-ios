@@ -10,6 +10,8 @@ import ReSwift
 
 func pluginReducer(action: Action, plugin: CHPlugin?) -> CHPlugin {
   switch action {
+  case let action as GetPlugin:
+    return action.plugin 
   case let action as CheckInSuccess:
     return (action.payload["plugin"] as? CHPlugin) ?? CHPlugin()
   case _ as CheckOutSuccess:

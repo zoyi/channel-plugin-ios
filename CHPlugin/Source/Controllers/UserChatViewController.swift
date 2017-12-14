@@ -123,8 +123,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
     if isBeingDismissed || isMovingFromParentViewController {
-      mainStore.dispatch(RemoveMessages(payload: self.userChatId))
-      self.chatManager?.resetTypingInfo()
+      self.chatManager?.reset()
     }
     
     self.chatManager?.sendTyping(isStop: true)
@@ -132,6 +131,10 @@ final class UserChatViewController: BaseSLKTextViewController {
       //self.loaded = false
       WsService.shared.leave(chatId: userChatId)
     }
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
   }
 
   override func viewDidLayoutSubviews() {
@@ -208,9 +211,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
 
   fileprivate func initLocalMessages() {
-    if self.userChatId == nil {
-      mainStore.dispatch(InsertWelcome())
-    }
+
   }
 
   fileprivate func initNavigationViews() {
@@ -233,33 +234,31 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   func initNavigationTitle() {
-    let titleView = self.navigationItem.titleView as? NavigationTitleView ?? NavigationTitleView()
+    let titleView = NavigationTitleView()
     titleView.configure(
       channel: mainStore.state.channel,
-      host: self.userChat?.lastTalkedHost,
+      userChat: self.userChat,
       plugin: mainStore.state.plugin)
     
     titleView.translatesAutoresizingMaskIntoConstraints = false
     titleView.layoutIfNeeded()
     titleView.sizeToFit()
     titleView.translatesAutoresizingMaskIntoConstraints = true
+    titleView.signalForChange().subscribe({ [weak self] (event) in
+      if self?.shyNavBarManager.isExpanded() == true {
+        self?.shyNavBarManager.contract(true)
+      } else {
+        self?.shyNavBarManager.expand(true)
+        self?.dismissKeyboard(true)
+      }
+    }).disposed(by: self.disposeBag)
     
-    if self.navigationItem.titleView == nil {
-      titleView.signalForChange().subscribe({ [weak self] (event) in
-        if self?.shyNavBarManager.isExpanded() == true {
-          self?.shyNavBarManager.contract(true)
-        } else {
-          self?.shyNavBarManager.expand(true)
-          self?.dismissKeyboard(true)
-        }
-      }).disposed(by: self.disposeBag)
-      
-      self.navigationItem.titleView = titleView
-      self.titleView = titleView
-      
-      self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-      self.navigationController?.navigationBar.shadowImage = UIImage()
-    }
+    self.navigationItem.titleView = titleView
+    self.titleView = titleView
+    
+    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+    self.navigationController?.navigationBar.shadowImage = UIImage()
+    
   }
   
   func initNavigationExtension() {
@@ -332,13 +331,13 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   fileprivate func showUserInfoGuideIfNeeded() {
-    if self.shouldShowGuide && self.userChat != nil {
+    if self.shouldShowGuide && self.userChat != nil  {
       self.shouldShowGuide = false
       dispatch(delay: 1.0, execute: { [weak self] in
         if self?.view.superview == nil { return }
         mainStore.dispatch(
-          CreateUserInfoGuide(payload: ["userChat": (self?.userChat)!]
-        ))
+          CreateUserInfoGuide(payload: ["userChat": self?.userChat])
+        )
       })
     }
   }
@@ -384,7 +383,7 @@ final class UserChatViewController: BaseSLKTextViewController {
         
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         self?.navigationController?.dismiss(animated: true, completion: {
-          mainStore.dispatch(ChannelIsHidden())
+          mainStore.dispatch(ChatListIsHidden())
         })
       }
     )
@@ -428,18 +427,18 @@ final class UserChatViewController: BaseSLKTextViewController {
     // TODO: show loader
     self.isFetching = true
     CHMessage.getMessages(userChatId: id,
-                   since: self.nextSeq,
-                   limit: Constant.messagePerRequest,
-                   sortOrder: "DESC")
-      .subscribe(onNext: { [weak self] (data) in
+      since: self.nextSeq,
+      limit: Constant.messagePerRequest,
+      sortOrder: "DESC").subscribe(onNext: { [weak self] (data) in
         if let nextSeq = data["next"] {
           self?.nextSeq = nextSeq as! String
         }
+        self?.chatManager?.state = .messageLoaded
         mainStore.dispatch(GetMessages(payload: data))
       }, onError: { [weak self] error in
         // TODO: show error
         self?.isFetching = false
-        self?.state = .messageNotLoaded
+        self?.chatManager?.state = .messageNotLoaded
         self?.tableView.hideIndicatorTo(.footer)
         self?.showError()
         //mainStore.dispatch(FailedGetMessages(error: error))
@@ -453,15 +452,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       }).disposed(by: self.disposeBag)
   }
 
-  fileprivate func fetchUserChat() {
-    guard let userChatId = self.userChatId else { return }
-    
-    CHUserChat.get(userChatId: userChatId)
-      .subscribe(onNext: { (response) in
-      mainStore.dispatch(GetUserChat(payload: response))
-    }).disposed(by: self.disposeBag)
-  }
-  
   func readAllManually() {
     guard var session = self.userChat?.session else { return }
     session.unread = 0
@@ -489,11 +479,13 @@ final class UserChatViewController: BaseSLKTextViewController {
       
       if let userChatId = s.userChatId {
         mainStore.dispatch(RemoveMessages(payload: userChatId))
-        subscribe.onNext(userChatId)
+        s.chatManager?.fetchChat().subscribe({ (_) in
+          subscribe.onNext(userChatId)
+        }).disposed(by: s.disposeBag)
         return Disposables.create()
       }
 
-      s.createUserChatIfNeed(completion: { (userChatId) in
+      s.chatManager?.createChat(completion: { (userChatId) in
         s.userChatId = userChatId
         subscribe.onNext(userChatId)
       })
@@ -519,38 +511,21 @@ final class UserChatViewController: BaseSLKTextViewController {
     }).disposed(by: self.disposeBag)
   }
   
-  fileprivate func createUserChatIfNeed(
-    pluginId: String = "",
-    userOpenAt: Date? = nil,
-    completion: @escaping (String?) -> Void) {
-    if self.userChatId != nil {
-      completion(self.userChatId)
-      return;
-    }
-    
-    CHUserChat.create(
-      pluginId: mainStore.state.plugin.id,
-      timeStamp: self.userChatOpenAt)
-      .subscribe(onNext: { [weak self] (chatResponse) in
-        guard let userChat = chatResponse.userChat,
-          let session = chatResponse.session else { return }
-        self?.userChatId = userChat.id
-        self?.chatManager?.chat = userChat
-        mainStore.dispatch(CreateUserChat(payload: userChat))
-        mainStore.dispatch(CreateSession(payload: session))
-        WsService.shared.join(chatId: userChat.id)
-
-        completion(userChat.id)
-      }, onError: { [weak self] (error) in
-        self?.state = .chatNotLoaded
-        self?.showError()
-        completion(nil)
-      }).disposed(by: self.disposeBag)
-    
-//    CHUserChat.create()
+//  fileprivate func createUserChatIfNeed(
+//    pluginId: String = "",
+//    userOpenAt: Date? = nil,
+//    completion: @escaping (String?) -> Void) {
+//    if self.userChatId != nil {
+//      completion(self.userChatId)
+//      return;
+//    }
+//
+//    CHUserChat.create(
+//      pluginId: mainStore.state.plugin.id,
+//      timeStamp: self.userChatOpenAt)
 //      .subscribe(onNext: { [weak self] (chatResponse) in
 //        guard let userChat = chatResponse.userChat,
-//        let session = chatResponse.session else { return }
+//          let session = chatResponse.session else { return }
 //        self?.userChatId = userChat.id
 //        self?.chatManager?.chat = userChat
 //        mainStore.dispatch(CreateUserChat(payload: userChat))
@@ -559,12 +534,11 @@ final class UserChatViewController: BaseSLKTextViewController {
 //
 //        completion(userChat.id)
 //      }, onError: { [weak self] (error) in
-//        //TODO: error handle to retry creating user chat
 //        self?.state = .chatNotLoaded
 //        self?.showError()
 //        completion(nil)
-//    }).disposed(by: self.disposeBag)
-  }
+//      }).disposed(by: self.disposeBag)
+//  }
 }
 
 // MARK: - StoreSubscriber
@@ -580,8 +554,10 @@ extension UserChatViewController: StoreSubscriber {
     let hasNewMessage = self.hasNewMessage(current: self.messages, updated: messages)
     
     //message only needs to be replace if count is differe
-    //if messages.count != self.messages.count {
     self.messages = messages
+    //fixed contentOffset
+    self.tableView.layoutIfNeeded()
+    
     // Photo - is this scalable? or doesn't need to care at this moment?
     self.photoUrls = self.messages.reversed()
       .filter({ $0.file?.isPreviewable == true })
@@ -589,21 +565,19 @@ extension UserChatViewController: StoreSubscriber {
         return message.file?.url ?? ""
       })
     
-    self.tableView.layoutIfNeeded() //fixed contentOffset
-    //}
-    
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     
     self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
     self.updateInputFieldIfNeeded(userChat: self.userChat, nextUserChat: userChat)
     self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
-    self.updateChatStateIfNeeded(state: state)
+    self.showErrorIfNeeded(state: state)
+    
+    self.fetchWelcomeInfoIfNeeded()
+    self.fetchChatIfNeeded()
     
     self.userChat = userChat
     self.channel = state.channel
-    
-    self.requestReadAll()
   }
 
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
@@ -619,41 +593,59 @@ extension UserChatViewController: StoreSubscriber {
     
     self.setNavItems(
       showSetting: userChats.count == 0,
-      currentUserChat: self.userChat,
+      currentUserChat: nextUserChat,
       guest: state.guest,
       textColor: state.plugin.textUIColor
     )
   }
   
-  func updateChatStateIfNeeded(state: AppState) {
+  func fetchWelcomeInfoIfNeeded() {
+    if self.chatManager?.needToFetchInfo() == true {
+      self.chatManager?.fetchForNewUserChat()
+        .subscribe({ (event) in
+          switch event {
+          case .error(_):
+            break
+          case .next(_):
+            mainStore.dispatchOnMain(InsertWelcome())
+          default:
+            break
+          }
+        }).disposed(by: self.disposeBag)
+    }
+//    else {
+//      self.chatManager?.getPlugin()
+//        .subscribe({ (event) in
+//          switch event {
+//          case .error(_):
+//            break
+//          case .next(let (plugin, bot)):
+//            mainStore.dispatchOnMain(
+//              GetPlugin(plugin: plugin, bot: bot)
+//            )
+//          default:
+//            break
+//          }
+//        }).disposed(by: self.disposeBag)
+//    }
+  }
+  
+  func fetchChatIfNeeded() {
+    if self.chatManager?.needToFetchChat() == true {
+      self.nextSeq = ""
+      self.chatManager?.fetchChat().subscribe({ [weak self] (event) in
+        self?.fetchMessages()
+        self?.scrollToBottom(false)
+      }).disposed(by: self.disposeBag)
+    }
+  }
+  
+  func showErrorIfNeeded(state: AppState) {
     let socketState = state.socketState.state
     
-    if socketState == .joined &&
-      self.state != .chatReady &&
-      self.state != .messageLoading {
-      self.state = .messageLoading
-      self.nextSeq = ""
-      
-      CHUserChat.get(userChatId: self.userChatId ?? "")
-        .subscribe(onNext: { [weak self] (response) in
-          mainStore.dispatch(GetUserChat(payload: response))
-          self?.fetchMessages()
-        }).disposed(by: self.disposeBag)
-      
-    } else if socketState == .disconnected ||
-      socketState == .reconnecting ||
-      self.state == .messageNotLoaded ||
-      self.state == .chatNotLoaded {
-      self.state = .idle
-    } else if socketState == .connected ||
-      socketState == .reconnecting {
-      self.state = .waitingSocket
-    }
-    
-    if socketState == .disconnected ||
-      socketState == .reconnecting ||
-      self.state == .messageNotLoaded ||
-      self.state == .chatNotLoaded {
+    if socketState == .reconnecting {
+      self.chatManager?.state = .waitingSocket
+    } else if socketState == .disconnected {
       self.showError()
     } else {
       self.hideError()
@@ -690,7 +682,7 @@ extension UserChatViewController: StoreSubscriber {
       //lastMessage?.log?.action == "resolve" &&
       !self.createdFeedback {
       self.createdFeedback = true
-      mainStore.dispatch(CreateFeedback(), delay: 1.0)
+      mainStore.dispatch(CreateFeedback())
     } else if newUserChat.isClosed() &&
       !self.createdFeedbackComplete {
       self.createdFeedbackComplete = true
@@ -805,13 +797,13 @@ extension UserChatViewController {
         self.sendMessage(userChatId: userChatId, text: msg)
       }
     } else if self.userChat == nil {
-      self.createUserChatIfNeed(completion: { [weak self] (userChatId) in
+      self.chatManager?.createChat(completion: { [weak self] (userChatId) in
         guard let s = self else { return }
         if let userChatId = userChatId {
           s.userChatId = userChatId
           s.sendMessage(userChatId: userChatId, text: msg)
         } else {
-          s.state = .chatNotLoaded
+          s.chatManager?.state = .chatNotLoaded
         }
       })
     } else {
@@ -827,39 +819,40 @@ extension UserChatViewController {
     return true
   }
 
-  private func presentPicker(type: DKImagePickerControllerSourceType,
-                             max: Int = 0,
-                             assetType: DKImagePickerControllerAssetType = .allPhotos) {
-    let pickerController = DKImagePickerController()
-    pickerController.sourceType = type
-    pickerController.showsCancelButton = true
-    pickerController.maxSelectableCount = max
-    pickerController.assetType = assetType
-    pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
-      func uploadImage(_ userChatId: String) {
-        let messages = assets.map({ (asset) -> CHMessage in
-          return CHMessage(chatId: userChatId, guest:  mainStore.state.guest, asset: asset)
-        })
+  private func presentPicker(
+    type: DKImagePickerControllerSourceType,
+    max: Int = 0,
+    assetType: DKImagePickerControllerAssetType = .allPhotos) {
+      let pickerController = DKImagePickerController()
+      pickerController.sourceType = type
+      pickerController.showsCancelButton = true
+      pickerController.maxSelectableCount = max
+      pickerController.assetType = assetType
+      pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
+        func uploadImage(_ userChatId: String) {
+          let messages = assets.map({ (asset) -> CHMessage in
+            return CHMessage(chatId: userChatId, guest:  mainStore.state.guest, asset: asset)
+          })
+          
+          messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
+          //TODO: rather create array of signal and trigger in order
+          self?.sendMessageRecursively(allMessages: messages, currentIndex: 0)
+        }
         
-        messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
-        //TODO: rather create array of signal and trigger in order 
-        self?.sendMessageRecursively(allMessages: messages, currentIndex: 0)
+        if let userChatId = self?.userChatId {
+          uploadImage(userChatId)
+        } else {
+          self?.chatManager?.createChat(completion: { (userChatId) in
+            self?.userChatId = userChatId
+            if let userChatId = userChatId {
+              uploadImage(userChatId)
+            } else {
+              self?.chatManager?.state = .chatNotLoaded
+            }
+          })
+        }
       }
-      
-      if let userChatId = self?.userChatId {
-        uploadImage(userChatId)
-      } else {
-        self?.createUserChatIfNeed(completion: { (userChatId) in
-          self?.userChatId = userChatId
-          if let userChatId = userChatId {
-            uploadImage(userChatId)
-          } else {
-            self?.state = .chatNotLoaded
-          }
-        })
-      }
-    }
-    self.present(pickerController, animated: true, completion: nil)
+      self.present(pickerController, animated: true, completion: nil)
   }
 
   private func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
@@ -1251,6 +1244,7 @@ extension UserChatViewController {
     if self.shyNavBarManager.isExpanded() {
       self.shyNavBarManager.contract(false)
     }
+    self.chatManager?.didChatLoaded = false
     self.errorToastView.show(animated: true)
   }
   

@@ -99,11 +99,7 @@ class WsService {
  
   //MARK: Private properties
   fileprivate var socket: SocketIOClient!
-  //#if DEBUG
-  //fileprivate static let baseUrl = WSType.DEV.rawValue
-  //#else
   var baseUrl = WSType.PRODUCTION.rawValue
-  //#endif
   
   //move these properties into state
   fileprivate var currentChatId: String?
@@ -288,7 +284,7 @@ fileprivate extension WsService {
     self.socket.on(CHSocketResponse.connected.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.connected.value)
       dlog("socket connected")
-      mainStore.dispatch(SocketConnected())
+      mainStore.dispatchOnMain(SocketConnected())
       self?.emitAuth()
     }
   }
@@ -297,7 +293,7 @@ fileprivate extension WsService {
     self.socket.on(CHSocketResponse.ready.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.ready.value)
       self?.readySubject.onNext(CHSocketResponse.ready.value)
-      mainStore.dispatch(SocketReady())
+      mainStore.dispatchOnMain(SocketReady())
       dlog("socket ready")
       
       if self?.currentChatId != "" {
@@ -320,21 +316,22 @@ fileprivate extension WsService {
           .map(JSONObject: json["entity"].object) else { return }
         if let manager = Mapper<CHManager>()
           .map(JSONObject: json["refers"]["manager"].object) {
-          mainStore.dispatch(UpdateManager(payload: manager))
+          mainStore.dispatchOnMain(UpdateManager(payload: manager))
         }
         
-        mainStore.dispatch(CreateSession(payload: session))
+        mainStore.dispatchOnMain(CreateSession(payload: session))
         break
       case WsServiceType.UserChat:
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatch(CreateUserChat(payload: userChat))
+        mainStore.dispatchOnMain(CreateUserChat(payload: userChat))
         break
       case WsServiceType.Message:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
+        guard message.isWelcome == false else { return }
         self?.messageOnCreateSubject.onNext(message)
-        mainStore.dispatch(CreateMessage(payload: message))
+        mainStore.dispatchOnMain(CreateMessage(payload: message))
         break
       default:
         break
@@ -354,47 +351,48 @@ fileprivate extension WsService {
       case WsServiceType.Channel:
         guard let channel = Mapper<CHChannel>()
           .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatch(UpdateChannel(payload: channel))
+        mainStore.dispatchOnMain(UpdateChannel(payload: channel))
   
       case WsServiceType.Session:
         guard let session = Mapper<CHSession>()
           .map(JSONObject: json["entity"].object) else { return }
         
-        mainStore.dispatch(UpdateSession(payload: session))
+        mainStore.dispatchOnMain(UpdateSession(payload: session))
         break
       case WsServiceType.UserChat:
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
         if let lastMessage = Mapper<CHMessage>()
-          .map(JSONObject: json["refers"]["message"].object) {
-          mainStore.dispatch(UpdateMessage(payload: lastMessage))
+          .map(JSONObject: json["refers"]["message"].object),
+          !lastMessage.isWelcome {
+          mainStore.dispatchOnMain(UpdateMessage(payload: lastMessage))
         }
         if let manager = Mapper<CHManager>()
           .map(JSONObject: json["refers"]["manager"].object) {
-          mainStore.dispatch(UpdateManager(payload: manager))
+          mainStore.dispatchOnMain(UpdateManager(payload: manager))
         }
         
-        mainStore.dispatch(UpdateUserChat(payload: userChat))
+        mainStore.dispatchOnMain(UpdateUserChat(payload: userChat))
         break
       case WsServiceType.Message:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatch(UpdateMessage(payload: message))
+        mainStore.dispatchOnMain(UpdateMessage(payload: message))
         break
       case WsServiceType.User:
         let user = Mapper<CHUser>()
           .map(JSONObject: json["entity"].object)
-        mainStore.dispatch(UpdateGuest(payload: user))
+        mainStore.dispatchOnMain(UpdateGuest(payload: user))
         break
       case WsServiceType.Veil:
         let user = Mapper<CHVeil>()
           .map(JSONObject: json["entity"].object) 
-        mainStore.dispatch(UpdateGuest(payload: user))
+        mainStore.dispatchOnMain(UpdateGuest(payload: user))
         break
       case WsServiceType.Manager:
         guard let manager = Mapper<CHManager>()
           .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatch(UpdateManager(payload: manager))
+        mainStore.dispatchOnMain(UpdateManager(payload: manager))
         break
       default:
         break
@@ -414,17 +412,17 @@ fileprivate extension WsService {
       case WsServiceType.Session:
         guard let session = Mapper<CHSession>()
           .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatch(DeleteSession(payload: session))
+        mainStore.dispatchOnMain(DeleteSession(payload: session))
         break
       case WsServiceType.UserChat:
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatch(DeleteUserChat(payload: userChat.id))
+        mainStore.dispatchOnMain(DeleteUserChat(payload: userChat.id))
         break
       case WsServiceType.Message:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatch(DeleteMessage(payload: message))
+        mainStore.dispatchOnMain(DeleteMessage(payload: message))
         break
       default:
         break
@@ -438,7 +436,7 @@ fileprivate extension WsService {
       dlog("socket joined: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
-      mainStore.dispatch(JoinedUserChat(payload: userChatId as! String))
+      mainStore.dispatchOnMain(JoinedUserChat(payload: userChatId as! String))
     }
   }
   
@@ -448,7 +446,7 @@ fileprivate extension WsService {
       dlog("socket leaved: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
-      mainStore.dispatch(LeavedUserChat(payload: userChatId as! String))
+      mainStore.dispatchOnMain(LeavedUserChat(payload: userChatId as! String))
     }
   }
   
@@ -473,7 +471,7 @@ fileprivate extension WsService {
         return
       }
       
-      mainStore.dispatch(GetPush(payload: push))
+      mainStore.dispatchOnMain(GetPush(payload: push))
     }
   }
 
@@ -481,10 +479,6 @@ fileprivate extension WsService {
     self.socket.on(CHSocketResponse.authenticated.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.authenticated.value)
       dlog("socket authenticated")
-      
-      if let chatId = self?.currentChatId {
-        self?.join(chatId: chatId)
-      }
       
       if let s = self {
         dispatch {
@@ -509,7 +503,7 @@ fileprivate extension WsService {
     self.socket.on(CHSocketResponse.reconnect.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.reconnect.value)
       dlog("socket reconnect attempt")
-      mainStore.dispatch(SocketReconnecting())
+      mainStore.dispatchOnMain(SocketReconnecting())
       self?.invalidateTimer()
     }
     
@@ -519,7 +513,7 @@ fileprivate extension WsService {
     self.socket.on(CHSocketResponse.disconnect.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.disconnect.value)
       dlog("socket disconnected")
-      mainStore.dispatch(SocketDisconnected())
+      mainStore.dispatchOnMain(SocketDisconnected())
     }
   }
   
@@ -527,7 +521,7 @@ fileprivate extension WsService {
     self.socket.on(CHSocketResponse.error.value) { [weak self] (data, ack) in
       self?.eventSubject.onNext(CHSocketResponse.error.value)
       dlog("socket error with data: \(data)")
-      mainStore.dispatch(SocketDisconnected())
+      mainStore.dispatchOnMain(SocketDisconnected())
     }
   }
   
@@ -535,7 +529,7 @@ fileprivate extension WsService {
     dlog("socket submitting auth")
     guard let channelId = PrefStore.getCurrentChannelId() else {
         //authentication cannot be completed due to missing data
-        //mainStore.dispatch(WsError())
+        //mainStore.dispatchOnMain(WsError())
         return
     }
     

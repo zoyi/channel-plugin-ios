@@ -11,6 +11,11 @@ import ReSwift
 func botsReducer(action: Action, state: BotsState?) -> BotsState {
   var state = state
   switch action {
+  case let action as GetBot:
+    if let bot = action.payload {
+      return state?.upsert(bots: [bot]) ?? BotsState()
+    }
+    return state ?? BotsState()
   case let action as GetMessages:
     if let bots = action.payload["bots"] as? [CHBot] {
       return state?.upsert(bots: bots) ?? BotsState()

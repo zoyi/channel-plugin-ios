@@ -17,8 +17,7 @@ struct PluginPromise {
     apiKey: String,
     params: [String: Any]) -> Observable<[String: Any]> {
     return Observable.create { subscriber in
-      
-      Alamofire.request(RestRouter.GetPluginConfiguration(
+      let req = Alamofire.request(RestRouter.GetPluginConfiguration(
           apiKey, params as RestRouter.ParametersType)
         )
         .validate(statusCode: 200..<300)
@@ -57,7 +56,9 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create()
+      return Disposables.create {
+        req.cancel()
+      }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
@@ -73,7 +74,7 @@ struct PluginPromise {
         ]
       ]
       
-      Alamofire.request(RestRouter.RegisterToken(
+      let req = Alamofire.request(RestRouter.RegisterToken(
           params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -91,15 +92,16 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create()
+      return Disposables.create {
+        req.cancel()
+      }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func unregisterPushToken() -> Observable<Any?> {
     return Observable.create { subscriber in
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
-      
-      Alamofire.request(RestRouter.UnregisterToken(key))
+      let req = Alamofire.request(RestRouter.UnregisterToken(key))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           if response.response?.statusCode == 200 {
@@ -110,14 +112,15 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create()
-    }
+      return Disposables.create {
+        req.cancel()
+      }
+    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func checkVersion() -> Observable<Any?> {
     return Observable.create { subscriber in
-      
-      Alamofire.request(RestRouter.CheckVersion)
+      let req = Alamofire.request(RestRouter.CheckVersion)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -143,14 +146,15 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create()
+      return Disposables.create{
+        req.cancel()
+      }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func getFollowingManagers() -> Observable<[CHManager]> {
-    return Observable.create({ (subscriber) in
-      
-      Alamofire.request(RestRouter.GetFollowingManager)
+    return Observable.create { (subscriber) in
+      let req = Alamofire.request(RestRouter.GetFollowingManager)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result{
@@ -163,7 +167,35 @@ struct PluginPromise {
             subscriber.onError(error)
           }
         })
-      return Disposables.create()
-    })
+      return Disposables.create {
+        req.cancel()
+      }
+    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+  }
+
+  static func getPlugin(pluginId: String) -> Observable<(CHPlugin, CHBot?)> {
+    return Observable.create { (subscriber) in
+      let req = Alamofire.request(RestRouter.GetPlugin(pluginId))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { response in
+          switch response.result{
+          case .success(let data):
+            let json = JSON(data)
+            guard let plugin = Mapper<CHPlugin>()
+              .map(JSONObject: json["plugin"].object) else {
+              subscriber.onError(CHErrorPool.pluginParseError)
+              return
+            }
+            let bot = Mapper<CHBot>()
+              .map(JSONObject: json["bot"].object)
+            subscriber.onNext((plugin, bot))
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+        })
+      return Disposables.create {
+        req.cancel()
+      }
+    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
 }

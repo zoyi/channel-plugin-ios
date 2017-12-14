@@ -27,15 +27,12 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     var messages = (action.payload["messages"] as? [CHMessage]) ?? []
     let userChatId = messages.first?.chatId ?? ""
     if let userChat = userChatSelector(state: mainStore.state, userChatId: userChatId) {
-      messages = LocalMessageFactory.generate(type: .NewAlertMessage,
-                                              messages: messages,
-                                              userChat: userChat)
+      messages = LocalMessageFactory.generate(
+        type: .NewAlertMessage,
+        messages: messages,
+        userChat: userChat)
     }
-    
     return state?.upsert(messages: messages) ?? MessagesState()
-  //case let action as FailedGetMessages:
-  //  state?.error = action.error
-  //  return state ?? MessagesState()
   case let action as RemoveMessages:
     let userChatId = action.payload ?? ""
     _ = state?.removeLocalMessages()
@@ -51,7 +48,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
   
   case let action as CreateUserInfoGuide:
     //create message
-    let userChat = action.payload["userChat"] as! CHUserChat
+    let userChat = action.payload["userChat"] as? CHUserChat
     let msg = LocalMessageFactory.generate(
       type: .UserInfoDialog,
       messages: [],

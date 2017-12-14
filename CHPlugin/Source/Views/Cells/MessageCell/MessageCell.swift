@@ -45,6 +45,8 @@ final class MessageCell: BaseTableViewCell, Reusable {
   
   let avatarView = AvatarView().then {
     $0.showBorder = false
+    $0.showOnline = false 
+    $0.initialLabel.font = UIFont.boldSystemFont(ofSize: 12)
     $0.layer.cornerRadius = 12.f
   }
   

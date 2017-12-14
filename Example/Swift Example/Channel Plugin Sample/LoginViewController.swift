@@ -28,7 +28,9 @@ class LoginViewController : UIViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if let destinationVC = segue.destination as? MainViewController {
       destinationVC.isUser = true
-      destinationVC.userId = self.idField.text!
+      destinationVC.userId = self.idField.text ?? ""
+      destinationVC.userName = self.usernameField.text ?? ""
+      destinationVC.phoneNumber = self.phoneField.text ?? ""
     }
   }
   

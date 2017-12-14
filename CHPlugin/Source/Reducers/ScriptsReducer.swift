@@ -11,6 +11,8 @@ import ReSwift
 func scriptsReducer(action: Action, state: ScriptsState?) -> ScriptsState {
   var state = state
   switch action {
+  case let action as GetScript:
+    return state?.upsert(scripts: [action.payload]) ?? ScriptsState()
   case let action as GetScripts:
     return state?.upsert(scripts: action.payload) ?? ScriptsState()
   default:

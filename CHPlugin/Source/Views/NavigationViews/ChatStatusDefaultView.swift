@@ -37,7 +37,7 @@ class ChatStatusViewFactory {
       let channel = mainStore.state.channel
       let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .alert)
       alertView.title = ""
-      alertView.message = "Timezone: " + channel.timeZone + "\n" + channel.workingTimeString
+      alertView.message = "Timezone: " + channel.timeZone + "\n\n" + channel.workingTimeString
       
       alertView.addAction(
         UIAlertAction(title: CHAssets.localized("ch.button_confirm"), style: .cancel) { _ in

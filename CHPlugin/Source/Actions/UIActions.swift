@@ -12,9 +12,9 @@ struct ShowProfile: Action {}
 
 struct HideProfile: Action {}
 
-struct ChannelIsShown: Action {}
+struct ChatListIsVisible: Action {}
 
-struct ChannelIsHidden: Action {}
+struct ChatListIsHidden: Action {}
 
 
 //checkinState

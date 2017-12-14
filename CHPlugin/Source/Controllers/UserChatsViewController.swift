@@ -179,6 +179,7 @@ class UserChatsViewController: BaseViewController {
     if let userChatId = userChatId {
       controller.userChatId = userChatId
     }
+    
     controller.preloadText = text
     controller.signalForNewChat()
       .subscribe { [weak self] event in
@@ -194,12 +195,24 @@ class UserChatsViewController: BaseViewController {
         self?.showProfileView()
       }.disposed(by: self.disposeBag)
     
-    self.navigationController?.pushViewController(controller, animated: animated)
+    if userChatId == nil {
+      //preload followings info before push in
+      PluginPromise.getFollowingManagers()
+        .subscribe({ (event) in
+          mainStore.dispatchOnMain(
+            UpdateFollowingManagers(payload: event.element ?? [])
+          )
+          self.navigationController?.pushViewController(controller, animated: animated)
+        }).disposed(by: self.disposeBag)
+    } else {
+       self.navigationController?.pushViewController(controller, animated: animated)
+    }
   }
 
   func showProfileView() {
     let controller = ProfileViewController()
     let navigation = MainNavigationController(rootViewController: controller)
+    navigation.modalPresentationStyle = .overCurrentContext
     self.present(navigation, animated: true, completion: nil)
   }
 }
@@ -246,7 +259,7 @@ extension UserChatsViewController: StoreSubscriber {
 
     self.nextSeq = state.userChatsState.nextSeq
     self.tableView.isHidden = self.userChats.count == 0 || !self.didLoad
-    self.emptyView.isHidden = self.userChats.count > 0 || !self.didLoad
+    self.emptyView.isHidden = self.userChats.count != 0 && self.didLoad
 
     self.plusButton.configure(
       bgColor: state.plugin.color,
@@ -441,10 +454,11 @@ extension UserChatsViewController {
 }
 
 extension UserChatsViewController : MGSwipeTableCellDelegate {
-  func swipeTableCell(_ cell: MGSwipeTableCell,
-                      tappedButtonAt index: Int,
-                      direction: MGSwipeDirection,
-                      fromExpansion: Bool) -> Bool {
+  func swipeTableCell(
+    _ cell: MGSwipeTableCell,
+    tappedButtonAt index: Int,
+    direction: MGSwipeDirection,
+    fromExpansion: Bool) -> Bool {
     
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
     

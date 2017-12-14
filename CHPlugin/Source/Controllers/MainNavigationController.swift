@@ -52,6 +52,14 @@ class MainNavigationController: BaseNavigationController {
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return self.statusBarStyle
   }
+  
+  override var shouldAutorotate: Bool {
+    return false
+  }
+  
+  override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    return UIInterfaceOrientationMask.portrait
+  }
 }
 
 // MARK: - StoreSubscriber

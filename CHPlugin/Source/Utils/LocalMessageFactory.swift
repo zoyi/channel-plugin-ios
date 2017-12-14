@@ -95,10 +95,10 @@ struct LocalMessageFactory {
     // TODO: consider to cut coupling between main store states
     let guest = mainStore.state.guest
     let msg = mainStore.state.scriptsState.getWelcomeMessage(guest: guest)
-    return CHMessage(chatId: "dummy",
-                   message: msg,
-                   type: .WelcomeMessage,
-                   id: "dummy")
+    let bot = mainStore.state.botsState.getDefaultBot()
+    return CHMessage(
+      chatId: "dummy",message: msg, type: .WelcomeMessage, entity: bot, id: "dummy"
+    )
   }
   
   //insert new message model into proper position
@@ -123,25 +123,26 @@ struct LocalMessageFactory {
         .createdAt
         .add(components: [Calendar.Component.nanosecond: -100])
       let msg = CHMessage(chatId: userChat.id,
-                        message: CHAssets.localized("ch.unread_divider"),
-                        type: .NewAlertMessage,
-                        createdAt: date,
-                        id: "new_dummy")
+        message: CHAssets.localized("ch.unread_divider"),
+        type: .NewAlertMessage,
+        createdAt: date,
+        id: "new_dummy")
       newMessages.insert(msg, at: position)
     }
 
     return newMessages
   }
 
-  private static func insertUserInfoDialog(messages: [CHMessage],
-                                           userChat: CHUserChat) -> [CHMessage] {
+  private static func insertUserInfoDialog(
+    messages: [CHMessage],
+    userChat: CHUserChat) -> [CHMessage] {
     let dialogType : DialogType =
       mainStore.state.guest.ghost
         ? .UserName : .PhoneNumber
     let msg = CHMessage(chatId:userChat.id,
-                      message: "",
-                      type: .UserInfoDialog,
-                      dialogType: dialogType)
+      message: "",
+      type: .UserInfoDialog,
+      dialogType: dialogType)
     return messages + [msg]
   }
   

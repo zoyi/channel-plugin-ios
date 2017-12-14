@@ -17,10 +17,10 @@ func uiReducer(action: Action, state: UIState?) -> UIState {
   case _ as HideProfile:
     state?.profileIsHidden = true
     return state ?? UIState()
-  case _ as ChannelIsShown:
+  case _ as ChatListIsVisible:
     state?.isChannelVisible = true
     return state ?? UIState()
-  case _ as ChannelIsHidden:
+  case _ as ChatListIsHidden:
     state?.isChannelVisible = false
     return state ?? UIState()
   default:

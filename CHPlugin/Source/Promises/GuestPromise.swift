@@ -72,6 +72,7 @@ struct GuestPromise {
             break
           case .failure(let error):
             if let data = response.data {
+              CRToastManager.dismissAllNotifications(false)
               CRToastManager.showErrorFromData(data)
             }
             subscriber.onNext((nil,error))

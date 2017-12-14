@@ -14,6 +14,11 @@ struct CheckInSuccess: Action {
 
 struct CheckOutSuccess: Action {}
 
+struct GetPlugin: Action {
+  public let plugin: CHPlugin
+  public let bot: CHBot?
+}
+
 struct UpdateChannel: Action {
   public let payload: CHChannel
 }

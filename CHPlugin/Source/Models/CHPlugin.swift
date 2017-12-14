@@ -17,7 +17,8 @@ struct CHPlugin: ModelType {
   var mobileMarginX = 0
   var mobileMarginY = 0
   var mobileHideButton = false
-
+  var botName = ""
+  
   var textUIColor: UIColor! {
     if self.textColor == "white" {
       return UIColor.white
@@ -39,5 +40,6 @@ extension CHPlugin: Mappable {
     mobileMarginX    <- map["mobileMarginX"]
     mobileMarginY    <- map["mobileMarginY"]
     mobileHideButton <- map["mobileHideButton"]
+    botName          <- map["botName"]
   }
 }

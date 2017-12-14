@@ -106,16 +106,16 @@ class NavigationTitleView : BaseView {
     }
   }
   
-  func configure(channel: CHChannel, host: CHEntity?, plugin: CHPlugin) {
+  func configure(channel: CHChannel, userChat: CHUserChat?, plugin: CHPlugin) {
     self.titleLabel.textColor = plugin.textUIColor
     self.subtitleLabel.textColor = plugin.textUIColor
     
-    if let host = host {
+    if userChat?.isReady() == true || userChat == nil {
+      self.configureForReady(channel: channel, plugin: plugin)
+    } else if let host = userChat?.lastTalkedHost, !(host is CHBot) {
       self.configureForFollow(host: host, plugin: plugin)
     } else if !channel.working {
       self.configureForOff(channel: channel, plugin: plugin)
-    } else {
-      self.configureForReady(channel: channel, plugin: plugin)
     }
   }
   
@@ -183,6 +183,10 @@ class NavigationTitleView : BaseView {
   
   func signalForChange() -> Observable<Bool> {
     return self.statusChangeSubject
+  }
+  
+  override var intrinsicContentSize: CGSize {
+    return UILayoutFittingExpandedSize
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {

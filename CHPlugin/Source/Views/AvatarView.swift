@@ -34,6 +34,8 @@ class AvatarView: NeverClearView {
   let initialLabel = UILabel().then {
     $0.font = Font.initialLabel
     $0.textColor = Color.initialLabel
+    $0.textAlignment = .center
+    $0.layer.masksToBounds = true
   }
 
   let avatarImageView = UIImageView().then {
@@ -108,18 +110,17 @@ class AvatarView: NeverClearView {
       }
       self.avatarImageView.isHidden = false
       self.initialLabel.isHidden = true
-      
-      if let manager = avatar as? CHManager, manager.online && self.showOnline {
-        self.onlineView.isHidden = false
-      } else {
-        self.onlineView.isHidden = true
-      }
-      
     } else {
-      self.backgroundColor = UIColor(avatar.color)
+      self.initialLabel.backgroundColor = UIColor(avatar.color)
       self.initialLabel.text = avatar.initial
       self.avatarImageView.isHidden = true
       self.initialLabel.isHidden = false
+    }
+    
+    if let manager = avatar as? CHManager, manager.online && self.showOnline {
+      self.onlineView.isHidden = false
+    } else {
+      self.onlineView.isHidden = true
     }
   }
 
@@ -130,9 +131,11 @@ class AvatarView: NeverClearView {
     
     self.layer.cornerRadius =  !self.showOnline ? self.height / 2 : 0
     
-    self.initialLabel.sizeToFit()
-    self.initialLabel.centerX = self.width / 2
-    self.initialLabel.centerY = self.height / 2
+    self.initialLabel.top = 0
+    self.initialLabel.left = 0
+    self.initialLabel.width = self.width
+    self.initialLabel.height = self.height
+    self.initialLabel.layer.cornerRadius = self.height / 2
     
     self.avatarImageView.top = 0
     self.avatarImageView.left = 0

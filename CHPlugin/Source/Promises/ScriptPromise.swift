@@ -13,9 +13,36 @@ import RxSwift
 import ObjectMapper
 
 struct ScriptPromise {
-  static func get(pluginId: String) -> Observable<[CHScript]> {
+  static func get(pluginId: String, scriptKey: String) -> Observable<CHScript> {
     return Observable.create { subscriber in
-      Alamofire.request(RestRouter.GetScripts(pluginId))
+      let req = Alamofire.request(RestRouter.GetScript(pluginId, scriptKey))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { response in
+          switch response.result {
+          case .success(let data):
+            let json = SwiftyJSON.JSON(data)
+            guard let script = Mapper<CHScript>()
+              .map(JSONObject: json["script"].object) else {
+                subscriber.onError(CHErrorPool.scriptParseError)
+                break
+            }
+            subscriber.onNext(script)
+            subscriber.onCompleted()
+            break
+          case .failure(let error):
+            subscriber.onError(error)
+            break
+          }
+        })
+      
+      return Disposables.create {
+        req.cancel()
+      }
+    }
+  }
+  static func getAll(pluginId: String) -> Observable<[CHScript]> {
+    return Observable.create { subscriber in
+      let req = Alamofire.request(RestRouter.GetScripts(pluginId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -35,7 +62,9 @@ struct ScriptPromise {
           }
         })
       
-      return Disposables.create()
+      return Disposables.create {
+        req.cancel()
+      }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
 }

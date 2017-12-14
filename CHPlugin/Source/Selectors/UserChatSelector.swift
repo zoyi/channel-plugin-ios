@@ -15,7 +15,7 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false) -> [CHUserCh
       return m1Last.createdAt > m2Last.createdAt
     }
     return c1.updatedAt! > c2.updatedAt!
-  }.filter ({ $0.state != "removed" })
+  }.filter ({ $0.state != "removed" && $0.lastMessageId != nil })
   
   if !showCompleted {
     userChats = userChats.filter({ (userChat) in

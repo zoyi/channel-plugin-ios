@@ -157,17 +157,18 @@
 どう致しますか？";
 "ch.chat.retry_sending_message.delete" = "削除";
 "ch.chat.new_message" = "新しいメッセージ";
-"ch.chat.expect_response_delay.instant" = "";
+"ch.chat.expect_response_delay.instant" = "応答までの時間 早い";
 "ch.chat.expect_response_delay.instant.description" = "通常数分内にご返信いたします";
 "ch.chat.expect_response_delay.normal.description" = "通常30分内にご返信いたします";
-"ch.chat.expect_response_delay.normal" = "";
+"ch.chat.expect_response_delay.normal" = "応答までの時間 普通";
 "ch.chat.expect_response_delay.delayed.description" = "ご返信まで数時間かかる場合がございます。ご理解くださいませ";
-"ch.chat.expect_response_delay.delayed" = "";
-"ch.chat.expect_response_delay.out_of_working.description" = "";
+"ch.chat.expect_response_delay.delayed" = "応答までの時間 遅延";
+"ch.chat.expect_response_delay.delayed.short_description" = "返信が遅くなる場合があります";
+"ch.chat.expect_response_delay.out_of_working.description" = "質問を残していただければ、できるだけ早く回答をいたします";
 "ch.chat.expect_response_delay.out_of_working" = "運休中";
 "ch.chat.expect_response_delay.instant.short_description" = "通常数分内にご返信いたします";
 "ch.chat.expect_response_delay.normal.short_description" = "通常30分内にご返信いたします";
-"ch.chat.expect_response_delay.delayed.short_description" = "";
-"ch.chat.expect_response_delay.out_of_working.short_description" = "";
+
+"ch.chat.expect_response_delay.out_of_working.short_description" = "現在チャットの運営時間外です";
 "ch.chat.expect_response_delay.out_of_working.detail" = "営業時間を確認する";
 "ch.chat.removed.title" = "削除された評価です";

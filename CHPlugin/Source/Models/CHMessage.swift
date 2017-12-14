@@ -27,9 +27,10 @@ struct CHMessage: ModelType {
   var personId = ""
   var message: String?
   var requestId: String?
+  var botOption: [String: Bool]? = nil
   
   var createdAt: Date
-  
+
   var readableDate: String {
     let updatedAt = DateInRegion(absoluteDate: self.createdAt, in: Date.defaultRegion)
     return "\(updatedAt.year)-\(updatedAt.month)-\(updatedAt.day)"
@@ -41,7 +42,7 @@ struct CHMessage: ModelType {
     let hour = updatedAt.hour > 12 ? updatedAt.hour - 12 : updatedAt.hour
     return String(format:"%d:%02d %@", hour, updatedAt.minute, suffix)
   }
-
+  
   var lastMessage: String? {
     if self.file?.isPreviewable == true {
       return CHAssets.localized("ch.notification.upload_image.description")
@@ -51,6 +52,14 @@ struct CHMessage: ModelType {
       return CHAssets.localized("ch.review.require.preview")
     }
     return self.message
+  }
+  
+  var isWelcome: Bool {
+    if let option = self.botOption, option["welcome"] == true {
+      return true
+    } else {
+      return false
+    }
   }
 
   var file: CHFile?
@@ -87,7 +96,7 @@ extension CHMessage: Mappable {
     self.messageType = type
     self.entity = entity
     self.personId = entity?.id ?? ""
-    self.personType = entity != nil ? "User" : ""
+    self.personType = entity?.kind ?? ""
     self.userGuideDialogType = dialogType
     self.progress = 1
   }
@@ -131,6 +140,7 @@ extension CHMessage: Mappable {
     webPage     <- map["webPage"]
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
+    botOption   <- map["botOption"]
     messageType = self.log != nil ? .Log : .Default
   }
 }

@@ -11,6 +11,17 @@ import ReSwift
 struct BotsState: StateType {
   var botDictionary: [String: CHBot] = [:]
   
+  func getDefaultBot() -> CHBot? {
+    return self.findBy(name: mainStore.state.plugin.botName)
+  }
+  
+  func findBy(name: String?) -> CHBot? {
+    guard let name = name else { return nil }
+    return self.botDictionary.filter({ (key, bot) in
+      return bot.name == name
+    }).map({ $1 }).first
+  }
+  
   func findBy(id: String?) -> CHBot? {
     guard let id = id else { return nil }
     return self.botDictionary[id]

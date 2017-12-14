@@ -27,6 +27,7 @@
 		225B05F81E4ED913001DE109 /* WsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F71E4ED913001DE109 /* WsServiceTests.swift */; };
 		225B05FA1E4ED9F5001DE109 /* ChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F91E4ED9F5001DE109 /* ChannelTests.swift */; };
 		225B05FE1E4EDA14001DE109 /* GuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05FD1E4EDA14001DE109 /* GuestTests.swift */; };
+		22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A20FB81FE22A54006C81F3 /* BotActions.swift */; };
 		650D7C351E724AD7007DE358 /* LocalMessageFactorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */; };
 		650D7C3B1E72546B007DE358 /* MessagesStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C3A1E72546B007DE358 /* MessagesStateTests.swift */; };
 		650D7C3D1E7254B2007DE358 /* ManagersStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C3C1E7254B2007DE358 /* ManagersStateTests.swift */; };
@@ -257,6 +258,7 @@
 		225B05F91E4ED9F5001DE109 /* ChannelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelTests.swift; sourceTree = "<group>"; };
 		225B05FB1E4EDA00001DE109 /* MessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTests.swift; sourceTree = "<group>"; };
 		225B05FD1E4EDA14001DE109 /* GuestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuestTests.swift; sourceTree = "<group>"; };
+		22A20FB81FE22A54006C81F3 /* BotActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotActions.swift; sourceTree = "<group>"; };
 		4060180CA545FF92875DFF9A /* Pods-CHPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHPlugin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CHPlugin/Pods-CHPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		4BA8F91DBEE116B6B97C9EC0 /* Pods-CHPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHPlugin.release.xcconfig"; path = "Pods/Target Support Files/Pods-CHPlugin/Pods-CHPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		650D7C311E716DBF007DE358 /* countryInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = countryInfo.json; path = Assets/countryInfo.json; sourceTree = "<group>"; };
@@ -963,6 +965,7 @@
 				659793431FA7167C00840F6A /* UserChatActions.swift */,
 				659793441FA7167C00840F6A /* WSocketActions.swift */,
 				223726081FBEEFA20097F22B /* CountryCodeActions.swift */,
+				22A20FB81FE22A54006C81F3 /* BotActions.swift */,
 			);
 			name = Actions;
 			path = Source/Actions;
@@ -1343,6 +1346,7 @@
 				659793731FA716CB00840F6A /* CHFile.swift in Sources */,
 				659793741FA716CB00840F6A /* CHGuest.swift in Sources */,
 				659793751FA716CB00840F6A /* CHi18n.swift in Sources */,
+				22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */,
 				659793761FA716CB00840F6A /* CHLog.swift in Sources */,
 				659793771FA716CB00840F6A /* CHManager.swift in Sources */,
 				659793781FA716CB00840F6A /* CHMessage.swift in Sources */,

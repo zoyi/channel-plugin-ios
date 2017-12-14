@@ -166,21 +166,17 @@ public final class ChannelPlugin : NSObject {
     let topController = CHUtils.getTopController()
     
     PluginPromise.checkVersion()
-      .flatMap { (event) -> Observable<Any?> in
+      .flatMap { (event) in
         return checkInChannel(checkinObj: checkinObj)
       }
-      .flatMap { (event) -> Observable<[CHManager]> in
-        return PluginPromise.getFollowingManagers()
-      }
-      .subscribe(onNext: { (managers) in
-        mainStore.dispatch(UpdateFollowingManagers(payload: managers))
+      .subscribe(onNext: { (_) in
         mainStore.dispatch(UpdateCheckinState(payload: .success))
         completion?(.success)
       
         if !ChannelPlugin.hideLauncherButton &&
           !mainStore.state.plugin.mobileHideButton {
-         // (!mainStore.state.channel.outOfWorkPlugin &&
-         // mainStore.state.channel.working) {
+//          (!mainStore.state.channel.outOfWorkPlugin &&
+//          mainStore.state.channel.working) {
           ChannelPlugin.showLauncher(on: topController?.view, animated: true)
         }
         
@@ -306,7 +302,7 @@ public final class ChannelPlugin : NSObject {
     }
     
     ChannelPlugin.delegate?.willShowChatList?()
-    mainStore.dispatch(ChannelIsShown())
+    mainStore.dispatch(ChatListIsVisible())
 
     let controller = MainNavigationController(rootViewController: UserChatsViewController())
     ChannelPlugin.baseNavigation = controller
@@ -323,7 +319,7 @@ public final class ChannelPlugin : NSObject {
     ChannelPlugin.delegate?.willHideChatList?()
     ChannelPlugin.baseNavigation?.dismiss(
       animated: animated, completion: {
-      mainStore.dispatch(ChannelIsHidden())
+      mainStore.dispatch(ChatListIsHidden())
 
       ChannelPlugin.baseNavigation?.removeFromParentViewController()
       ChannelPlugin.baseNavigation = nil
@@ -502,7 +498,7 @@ public final class ChannelPlugin : NSObject {
     let userChatController = UserChatViewController()
     userChatController.userChatId = userChatId
    
-    mainStore.dispatch(ChannelIsShown())
+    mainStore.dispatch(ChatListIsVisible())
 
     if let userChatViewController = topController as? UserChatViewController,
       userChatViewController.userChatId == userChatId {
@@ -587,7 +583,7 @@ public final class ChannelPlugin : NSObject {
 
   private class func fetchScripts() {
     ScriptPromise
-      .get(pluginId: mainStore.state.plugin.id)
+      .getAll(pluginId: mainStore.state.plugin.id)
       .subscribe(onNext: { (scripts) in
         mainStore.dispatch(GetScripts(payload: scripts))
       }, onError:{ error in

@@ -21,6 +21,7 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
         personId: $0.personId,
         message: $0.message,
         requestId: $0.requestId,
+        botOption: $0.botOption,
         createdAt: $0.createdAt,
         file: $0.file,
         webPage: $0.webPage,
@@ -35,9 +36,10 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
       return m1.createdAt > m2.createdAt
     })
 
-  return LocalMessageFactory.generate(type: .DateDivider,
-                                      messages: messages,
-                                      userChat: nil)
+  return LocalMessageFactory.generate(
+    type: .DateDivider,
+    messages: messages,
+    userChat: nil)
 }
 
 func messageSelector(state: AppState, id: String) -> CHMessage? {
@@ -52,6 +54,7 @@ func messageSelector(state: AppState, id: String) -> CHMessage? {
         personId: $0.personId,
         message: $0.message,
         requestId: $0.requestId,
+        botOption: $0.botOption,
         createdAt: $0.createdAt,
         file: $0.file,
         webPage: $0.webPage,

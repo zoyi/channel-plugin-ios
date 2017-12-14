@@ -14,18 +14,21 @@ class LiveTypingAvatarsView: BaseView {
   let firstAvatarView = AvatarView().then {
     $0.showBorder = false
     $0.showOnline = false
+    $0.initialLabel.font = UIFont.boldSystemFont(ofSize: 16)
     $0.avatarImageView.layer.borderColor = UIColor(mainStore.state.plugin.color).cgColor
     $0.alpha = 0
   }
   let secondAvatarView = AvatarView().then {
     $0.showBorder = false
     $0.showOnline = false
+    $0.initialLabel.font = UIFont.boldSystemFont(ofSize: 16)
     $0.avatarImageView.layer.borderColor = UIColor(mainStore.state.plugin.color).cgColor
     $0.alpha = 0
   }
   let thirdAvatarView = AvatarView().then {
     $0.showBorder = false
     $0.showOnline = false
+    $0.initialLabel.font = UIFont.boldSystemFont(ofSize: 16)
     $0.avatarImageView.layer.borderColor = UIColor(mainStore.state.plugin.color).cgColor
     $0.alpha = 0
   }

@@ -23,10 +23,10 @@ struct MessagesState: StateType {
 
   func findBy(userChatId: String?) -> [CHMessage] {
     guard userChatId != nil else {
-      return self.messageDictionary.filter({ $1.chatId.hasSuffix("dummy")}).map({ $1 })
+      return self.messageDictionary.filter({ $1.id.hasSuffix("dummy")}).map({ $1 })
     }
     return self.messageDictionary
-      .filter({ $1.chatId == userChatId! || $1.chatId.hasSuffix("dummy") })
+      .filter({ $1.chatId == userChatId! || $1.id.hasSuffix("dummy") })
       .map({ $1 })
   }
 
@@ -41,7 +41,6 @@ struct MessagesState: StateType {
         self.messageDictionary.removeValue(forKey: k)
       }
     }
-    
     return self
   }
   
@@ -52,7 +51,6 @@ struct MessagesState: StateType {
         self.messageDictionary.removeValue(forKey: k)
       }
     }
-    
     return self
   }
   
@@ -73,13 +71,11 @@ struct MessagesState: StateType {
     for message in messages {
       self.messageDictionary[message.id] = message
     }
-
     return self
   }
   
   mutating func insert(message: CHMessage?) -> MessagesState {
     guard let message = message else { return self }
-    
     self.messageDictionary[message.id] = message
     return self
   }
@@ -88,7 +84,6 @@ struct MessagesState: StateType {
     if message.requestId != nil {
       self.messageDictionary[message.requestId!] = nil
     }
-
     self.messageDictionary[message.id] = message
     return self
   }

@@ -17,14 +17,16 @@ enum EPType: String {
 
 enum RestRouter: URLRequestConvertible {
   case GetPluginConfiguration(String, ParametersType)
+  case GetPlugin(String)
+  
   case GetChannelAvatar(String)
   case UpdateGuest(ParametersType)
   case GetCurrentGuest
   case GetChannelManager(String)
   
   //case GetMessage(String, ParametersType)
-  
   case GetScripts(String)
+  case GetScript(String, String)
   
   case GetUserChats(ParametersType)
   case CreateUserChat(String, ParametersType)
@@ -45,10 +47,7 @@ enum RestRouter: URLRequestConvertible {
   case SendEvent(ParametersType)
   case GetCountryCodes
   case GetFollowingManager
-  
-  //#if DEBUG
-  //static let baseURL = EPType.DEV.rawValue
-  //#else
+
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -74,11 +73,12 @@ enum RestRouter: URLRequestConvertible {
          .SendEvent:
       return .post
     case .GetChannelAvatar, .GetCurrentGuest,
-         .GetMessages, .GetScripts,
+         .GetMessages, .GetScripts, .GetScript,
          .GetUserChat, .GetChannelManager, .GetUserChats,
          .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
-         .GetFollowingManager:
+         .GetFollowingManager,
+         .GetPlugin:
       return .get
     case .UpdateGuest, .SetMessagesReadAll,
          .CloseUserChat, .RemoveUserChat,
@@ -102,8 +102,12 @@ enum RestRouter: URLRequestConvertible {
       return "/app/guests/me"
     case .GetChannelManager(let managerId):
       return "/app/manangers/\(managerId)"
+    case .GetPlugin(let pluginId):
+      return "/app/plugins/\(pluginId)"
+    case .GetScript(let pluginId, let scriptKey):
+      return "/app/plugins/\(pluginId)/scripts/\(scriptKey)"
     case .GetScripts(let pluginId):
-      return "/app/plugin/\(pluginId)/scripts"
+      return "/app/plugins/\(pluginId)/scripts"
     case .GetUserChats:
       return "/app/user_chats"
     case .CreateUserChat(let pluginId, _):
@@ -204,8 +208,8 @@ enum RestRouter: URLRequestConvertible {
          .SendEvent(let params),
          .CreateUserChat(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
-    case .GetUserChat,
-         .GetScripts,
+    case .GetUserChat, .GetPlugin,
+         .GetScripts, .GetScript,
          .SetMessagesReadAll,
          .GetCountryCodes,
          .GetFollowingManager:
