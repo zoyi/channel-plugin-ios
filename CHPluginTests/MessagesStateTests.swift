@@ -86,10 +86,11 @@ class MessagesStateTests: QuickSpec {
       }
      
       it("local messages") {
-        let message = CHMessage(chatId: "dummy",
-            message: "message 1", type: .WelcomeMessage,
-            createdAt: Date.from(year:2010, month:12, day: 1),
-            id: "111")
+        let message = CHMessage(
+          chatId: "dummy",
+          message: "message 1", type: .WelcomeMessage,
+          createdAt: Date.from(year:2010, month:12, day: 1),
+          id: "111")
         
         state = state.upsert(messages: [message])
         expect(state.messageDictionary.count).to(equal(11))
@@ -116,10 +117,11 @@ class MessagesStateTests: QuickSpec {
     describe("upsert") {
       
       it("insert new") {
-        let message = CHMessage(chatId: "dummy",
-            message: "message 1", type: .WelcomeMessage,
-            createdAt: Date.from(year:2010, month:12, day: 1),
-            id: "111")
+        let message = CHMessage(
+          chatId: "dummy",
+          message: "message 1", type: .WelcomeMessage,
+          createdAt: Date.from(year:2010, month:12, day: 1),
+          id: "111")
         
         state = state.upsert(messages: [message])
         expect(state.messageDictionary.count).to(equal(11))
@@ -132,10 +134,11 @@ class MessagesStateTests: QuickSpec {
       }
       
       it("update existing") {
-        let message = CHMessage(chatId: "dummy",
-            message: "message 1", type: .WelcomeMessage,
-            createdAt: Date.from(year:2010, month:12, day: 1),
-            id: "1")
+        let message = CHMessage(
+          chatId: "dummy",
+          message: "message 1", type: .WelcomeMessage,
+          createdAt: Date.from(year:2010, month:12, day: 1),
+          id: "1")
         
         state = state.upsert(messages: [message])
         expect(state.messageDictionary.count).to(equal(10))
@@ -149,10 +152,11 @@ class MessagesStateTests: QuickSpec {
     }
     
     it("insert") {
-      let message = CHMessage(chatId: "dummy",
-          message: "message 1", type: .WelcomeMessage,
-          createdAt: Date.from(year:2010, month:12, day: 1),
-          id: "1")
+      let message = CHMessage(
+        chatId: "dummy",
+        message: "message 1", type: .WelcomeMessage,
+        createdAt: Date.from(year:2010, month:12, day: 1),
+        id: "1")
       
       state = state.insert(message: message)
       expect(state.messageDictionary.count).to(equal(10))
@@ -164,10 +168,11 @@ class MessagesStateTests: QuickSpec {
     }
     
     it("replace") {
-      var message = CHMessage(chatId: "dummy",
-          message: "message 1", type: .WelcomeMessage,
-          createdAt: Date.from(year:2010, month:12, day: 1),
-          id: "1234")
+      var message = CHMessage(
+        chatId: "dummy",
+        message: "message 1", type: .WelcomeMessage,
+        createdAt: Date.from(year:2010, month:12, day: 1),
+        id: "1234")
       
       message.requestId = "1234"
       

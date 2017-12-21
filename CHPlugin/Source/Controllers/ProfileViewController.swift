@@ -40,7 +40,7 @@ final class ProfileViewController: BaseViewController {
     $0.contentMode = .center
   }
   let versionLabel = UILabel().then {
-    $0.font = UIFont.systemFont(ofSize: 13)
+    $0.font = UIFont.systemFont(ofSize: 10)
     $0.textColor = CHColors.blueyGrey
   }
   
@@ -171,9 +171,9 @@ final class ProfileViewController: BaseViewController {
       make.top.equalToSuperview().inset(10)
     }
     
-    self.versionLabel.snp.makeConstraints { (make) in
+    self.versionLabel.snp.makeConstraints { [weak self] (make) in
       make.trailing.equalToSuperview().inset(20)
-      make.top.equalToSuperview().inset(10)
+      make.bottom.equalTo((self?.logoImageView.snp.bottom)!)
     }
   }
   

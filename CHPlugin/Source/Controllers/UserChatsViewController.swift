@@ -213,7 +213,7 @@ class UserChatsViewController: BaseViewController {
     let controller = ProfileViewController()
     let navigation = MainNavigationController(rootViewController: controller)
     navigation.modalPresentationStyle = .overCurrentContext
-    self.present(navigation, animated: true, completion: nil)
+    self.navigationController?.present(navigation, animated: true, completion: nil)
   }
 }
 

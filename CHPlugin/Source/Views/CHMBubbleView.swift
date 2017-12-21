@@ -91,6 +91,7 @@ class CHMBubbleView : BaseView {
       self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
     }
 
+    //TODO: fix layout properly
     self.messageView.snp.remakeConstraints({ [weak self] (make) in
       if self?.messageView.text == "" {
         return

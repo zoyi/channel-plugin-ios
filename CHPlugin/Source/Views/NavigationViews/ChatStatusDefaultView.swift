@@ -158,8 +158,7 @@ class ChatStatusDefaultView : BaseView {
     self.businessHoursLabel.snp.makeConstraints { (make) in
       make.leading.equalToSuperview().inset(18)
       make.trailing.equalToSuperview().inset(18)
-      make.top.equalToSuperview().inset(15)
-      make.bottom.equalToSuperview().inset(15)
+      make.centerY.equalToSuperview()
     }
   }
   

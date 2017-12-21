@@ -10,7 +10,6 @@ import Foundation
 import NVActivityIndicatorView
 import M13ProgressSuite
 import DKImagePickerController
-import SDWebImage
 import SnapKit
 
 class CHMImageView : BaseView {
@@ -97,10 +96,7 @@ class CHMImageView : BaseView {
         self.placeholder = nil
       }
       
-      self.imageView.sd_setImage(with: url, placeholderImage: self.imageView.image, options: .retryFailed,
-                                 progress: { (recv, total) in
-        
-      }, completed: { [weak self] (image, error, cacheType, url) in
+      self.imageView.sd_setImage(with: url, completed: { [weak self] (image, error, cacheType, url) in
         self?.imageView.alpha = 1
         self?.indicatorView.stopAnimating()
       })

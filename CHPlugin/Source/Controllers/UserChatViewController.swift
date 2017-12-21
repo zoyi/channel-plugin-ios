@@ -36,7 +36,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   var shouldShowGuide: Bool = false
   var isFetching = false
   var isRequstingReadAll = false
-  var userChatOpenAt: Date? = nil
   
   var photoUrls = [String]()
   var typingManagers = [CHManager]()
@@ -74,7 +73,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     //for proper layout in SlackTextViewController
     self.textInputBarLRC = 5
     self.textInputBarBC = 5
-    self.userChatOpenAt = self.userChatId == nil ? Date() : nil
     
     super.viewDidLoad()
     self.tableView.isHidden = true
@@ -510,35 +508,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       mainStore.dispatch(CreateMessage(payload: message))
     }).disposed(by: self.disposeBag)
   }
-  
-//  fileprivate func createUserChatIfNeed(
-//    pluginId: String = "",
-//    userOpenAt: Date? = nil,
-//    completion: @escaping (String?) -> Void) {
-//    if self.userChatId != nil {
-//      completion(self.userChatId)
-//      return;
-//    }
-//
-//    CHUserChat.create(
-//      pluginId: mainStore.state.plugin.id,
-//      timeStamp: self.userChatOpenAt)
-//      .subscribe(onNext: { [weak self] (chatResponse) in
-//        guard let userChat = chatResponse.userChat,
-//          let session = chatResponse.session else { return }
-//        self?.userChatId = userChat.id
-//        self?.chatManager?.chat = userChat
-//        mainStore.dispatch(CreateUserChat(payload: userChat))
-//        mainStore.dispatch(CreateSession(payload: session))
-//        WsService.shared.join(chatId: userChat.id)
-//
-//        completion(userChat.id)
-//      }, onError: { [weak self] (error) in
-//        self?.state = .chatNotLoaded
-//        self?.showError()
-//        completion(nil)
-//      }).disposed(by: self.disposeBag)
-//  }
 }
 
 // MARK: - StoreSubscriber

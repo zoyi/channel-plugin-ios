@@ -23,9 +23,10 @@ class MessageTests: QuickSpec {
     
     describe("create") {
       it("default") {
-        let message = CHMessage(chatId: self.userChatId,
-                              message: self.testMessage,
-                              type: .Default)
+        let message = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default)
         expect(message.requestId).notTo(equal(""))
         expect(message.id).to(equal(message.requestId))
         expect(message.entity).to(beNil())
@@ -35,14 +36,16 @@ class MessageTests: QuickSpec {
       }
       
       it("normal") {
-        let user = CHUser(id:"77", name:"Joyy", avatarUrl:nil,
-                        initial:"J", color:"#123456",
-                        ghost:false, mobileNumber: nil, meta:nil)
-        let message = CHMessage(chatId: self.userChatId,
-                              message: self.testMessage,
-                              type: .Default,
-                              entity: user)
-        
+        let user = CHUser(
+          id:"77", name:"Joyy", avatarUrl:nil,
+          initial:"J", color:"#123456",
+          ghost:false, mobileNumber: nil, meta:nil)
+        let message = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default,
+          entity: user)
+
         expect(message.requestId).notTo(equal(""))
         expect(message.id).to(equal(message.requestId))
         expect(message.entity).notTo(beNil())
@@ -54,32 +57,37 @@ class MessageTests: QuickSpec {
     
     describe("compares") {
       
-      let user = CHUser(id:"77", name:"Joyy", avatarUrl:nil,
-                      initial:"J", color:"#123456",
-                      ghost:false, mobileNumber: nil, meta:nil)
+      let user = CHUser(
+        id:"77", name:"Joyy", avatarUrl:nil,
+        initial:"J", color:"#123456",
+        ghost:false, mobileNumber: nil, meta:nil)
+
+      let message = CHMessage(
+        chatId: self.userChatId,
+        message: self.testMessage,
+        type: .Default,
+        entity: user,
+        createdAt: Date())
       
-      let message = CHMessage(chatId: self.userChatId,
-                            message: self.testMessage,
-                            type: .Default,
-                            entity: user,
-                            createdAt: Date())
+      let messagetwo = CHMessage(
+        chatId: self.userChatId,
+        message: self.testMessage,
+        type: .Default,
+        entity: user,
+        createdAt: Date())
       
-      let messagetwo = CHMessage(chatId: self.userChatId,
-                               message: self.testMessage,
-                               type: .Default,
-                               entity: user,
-                               createdAt: Date())
-      
-      let otherUser = CHUser(id:"75", name:"Joyy2", avatarUrl:nil,
-                           initial:"P", color:"#123456",
-                           ghost:false, mobileNumber: nil, meta:nil)
-      
-      let otherMessage = CHMessage(chatId: self.userChatId,
-                                 message: self.testMessage,
-                                 type: .Default,
-                                 entity: otherUser,
-                                 createdAt: Date())
-      
+      let otherUser = CHUser(
+        id:"75", name:"Joyy2", avatarUrl:nil,
+        initial:"P", color:"#123456",
+        ghost:false, mobileNumber: nil, meta:nil)
+
+      let otherMessage = CHMessage(
+        chatId: self.userChatId,
+        message: self.testMessage,
+        type: .Default,
+        entity: otherUser,
+        createdAt: Date())
+
       context("is coutinuous") {
         it("same person close time") {
           let continuous = message.isContinue(previous: messagetwo)
@@ -124,9 +132,10 @@ class MessageTests: QuickSpec {
     describe("sending") {
       
       it("normal text") {
-        let message = CHMessage(chatId: self.userChatId,
-                              message: self.testMessage,
-                              type: .Default)
+        let message = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default)
         waitUntil (timeout: 10) { done in
           _ = message.send().subscribe(onNext: { (msg) in
             expect(msg.chatId).to(equal(message.chatId))
@@ -139,9 +148,10 @@ class MessageTests: QuickSpec {
       }
       
       it("missing chat id") {
-        let message = CHMessage(chatId: "+!@#!@",
-                              message: self.testMessage,
-                              type: .Default)
+        let message = CHMessage(
+          chatId: "+!@#!@",
+          message: self.testMessage,
+          type: .Default)
         waitUntil (timeout: 10) { done in
           _ = message.send().subscribe(onNext: { (msg) in
             expect(msg).to(beNil())
@@ -207,55 +217,63 @@ class MessageTests: QuickSpec {
     
     describe("eqaulity") {
       it("normal") {
-        let message = CHMessage(chatId: self.userChatId,
-                              message: self.testMessage,
-                              type: .Default)
-        
-        let messagetwo = CHMessage(chatId: self.userChatId,
-                                 message: self.testMessage,
-                                 type: .Default)
+        let message = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default)
+
+        let messagetwo = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default)
         
         expect(message == messagetwo).to(beFalse())
       }
       
       it("same id") {
-        let message = CHMessage(chatId: self.userChatId,
-                              message: self.testMessage,
-                              type: .Default,
-                              id: "123")
+        let message = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default,
+          id: "123")
         
-        let messagetwo = CHMessage(chatId: self.userChatId,
-                                 message: self.testMessage,
-                                 type: .Default,
-                                 id: "123")
+        let messagetwo = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default,
+          id: "123")
         
         expect(message == messagetwo).to(beTrue())
       }
       
       it("different type") {
-        let message = CHMessage(chatId: self.userChatId,
-                              message: self.testMessage,
-                              type: .Default,
-                              id: "123")
+        let message = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default,
+          id: "123")
         
-        let messagetwo = CHMessage(chatId: self.userChatId,
-                                 message: self.testMessage,
-                                 type: .WelcomeMessage,
-                                 id: "123")
+        let messagetwo = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .WelcomeMessage,
+          id: "123")
         
         expect(message == messagetwo).to(beFalse())
       }
       
       it("different progress") {
-        var message = CHMessage(chatId: self.userChatId,
-                              message: self.testMessage,
-                              type: .Default,
-                              id: "123")
+        var message = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default,
+          id: "123")
         message.progress = 0.5
-        var messagetwo = CHMessage(chatId: self.userChatId,
-                                 message: self.testMessage,
-                                 type: .Default,
-                                 id: "123")
+        var messagetwo = CHMessage(
+          chatId: self.userChatId,
+          message: self.testMessage,
+          type: .Default,
+          id: "123")
         messagetwo.progress = 0.1
         expect(message == messagetwo).to(beFalse())
       }

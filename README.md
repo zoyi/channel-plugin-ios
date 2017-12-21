@@ -15,7 +15,7 @@
 
 https://developers.channel.io/docs
 
-## Install Channel plugin Framework from CocoaPods(iOS 8+)
+## Install Channel plugin Framework from CocoaPods(iOS 9+)
 
 Add below into your Podfile on Xcode.
 
@@ -35,7 +35,7 @@ pod install
 
 Now you can see Channel plugin framework by inspecting YOUR_PROJECT.xcworkspace.
 
-## Install Channel plugin Framework from Carthage(iOS 8+)
+## Install Channel plugin Framework from Carthage(iOS 9+)
 
 1. Add `github "zoyi/channel-plugin-ios"` to your `Cartfile`.
 2. Run `carthage update --platform iOS --no-use-binaries`.

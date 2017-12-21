@@ -110,12 +110,12 @@ class NavigationTitleView : BaseView {
     self.titleLabel.textColor = plugin.textUIColor
     self.subtitleLabel.textColor = plugin.textUIColor
     
-    if userChat?.isReady() == true || userChat == nil {
-      self.configureForReady(channel: channel, plugin: plugin)
-    } else if let host = userChat?.lastTalkedHost, !(host is CHBot) {
+    if let host = userChat?.lastTalkedHost, userChat?.isEngaged() == true {
       self.configureForFollow(host: host, plugin: plugin)
     } else if !channel.working {
       self.configureForOff(channel: channel, plugin: plugin)
+    } else {
+      self.configureForReady(channel: channel, plugin: plugin)
     }
   }
   

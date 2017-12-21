@@ -149,6 +149,10 @@ extension CHUserChat {
   func isReady() -> Bool {
     return self.state == "ready" || self.state == "open"
   }
+  
+  func isEngaged() -> Bool {
+    return self.state == "resolved" || self.state == "closed" || self.state == "following"
+  }
 }
 
 extension CHUserChat: Equatable {

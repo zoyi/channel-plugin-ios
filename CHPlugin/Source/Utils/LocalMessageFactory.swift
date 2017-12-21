@@ -23,10 +23,11 @@ enum MessageType {
 
 struct LocalMessageFactory {
   
-  static func generate(type: MessageType,
-                      messages: [CHMessage] = [],
-                      userChat: CHUserChat? = nil,
-                      text: String? = nil) -> [CHMessage] {
+  static func generate(
+    type: MessageType,
+    messages: [CHMessage] = [],
+    userChat: CHUserChat? = nil,
+    text: String? = nil) -> [CHMessage] {
     
     switch type {
     case .DateDivider:
@@ -80,11 +81,12 @@ struct LocalMessageFactory {
       let date = messages[element.0]
         .createdAt
         .add(components: [Calendar.Component.nanosecond: -100])
-      let msg = CHMessage(chatId:chatId,
-                        message:element.1,
-                        type: .DateDivider,
-                        createdAt: date,
-                        id: element.1)
+      let msg = CHMessage(
+        chatId:chatId,
+        message:element.1,
+        type: .DateDivider,
+        createdAt: date,
+        id: element.1)
       newMessages.insert(msg, at: element.0 + 1)
     }
     
@@ -102,8 +104,9 @@ struct LocalMessageFactory {
   }
   
   //insert new message model into proper position
-  private static func insertNewMessage(messages: [CHMessage],
-                                       userChat: CHUserChat) -> [CHMessage] {
+  private static func insertNewMessage(
+    messages: [CHMessage],
+    userChat: CHUserChat) -> [CHMessage] {
     guard let session = userChat.session else { return messages }
     guard let lastReadAt = session.lastReadAt else { return messages }
     

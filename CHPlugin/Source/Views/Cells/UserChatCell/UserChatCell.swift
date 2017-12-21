@@ -69,7 +69,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     )
   }
 
-  let multiAvatarView = MultiAvatarView()
+  let avatarView = AvatarView()
 
   let badge = Badge()
 
@@ -85,11 +85,11 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.selectedBackgroundView = self.bgView
     self.contentView.addSubview(self.titleLabel)
     self.contentView.addSubview(self.timestampLabel)
-    self.contentView.addSubview(self.multiAvatarView)
+    self.contentView.addSubview(self.avatarView)
     self.contentView.addSubview(self.badge)
     self.contentView.addSubview(self.messageLabel)
 
-    self.multiAvatarView.snp.remakeConstraints { (make) in
+    self.avatarView.snp.remakeConstraints { (make) in
       make.top.equalToSuperview().inset(Metric.cellTopPadding)
       make.left.equalToSuperview().inset(Metric.cellLeftPadding)
       make.size.equalTo(CGSize(width: Metric.avatarWidth, height: Metric.avatarHeight))
@@ -97,7 +97,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     
     self.titleLabel.snp.remakeConstraints { [weak self] (make) in
       make.top.equalToSuperview().inset(Metric.cellTopPadding)
-      make.left.equalTo((self?.multiAvatarView.snp.right)!).offset(Metric.avatarRightPadding)
+      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metric.avatarRightPadding)
     }
     
     self.timestampLabel.snp.remakeConstraints { [weak self] (make) in
@@ -108,7 +108,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     
     self.messageLabel.snp.remakeConstraints { [weak self] (make) in
       make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metric.titleBottomPadding)
-      make.left.equalTo((self?.multiAvatarView.snp.right)!).offset(Metric.avatarRightPadding)
+      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metric.avatarRightPadding)
       //if (self?.badge.isHidden)! {
       make.right.equalToSuperview().inset(76)
       //} else {
@@ -134,10 +134,10 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.messageLabel.text = viewModel.lastMessage
     
     if let avatar = viewModel.avatar {
-      self.multiAvatarView.configure([avatar])
+      self.avatarView.configure(avatar)
     } else {
       let channel = mainStore.state.channel
-      self.multiAvatarView.configure([channel])
+      self.avatarView.configure(channel)
     }
     
     self.messageLabel.textColor = viewModel.isClosed ?
@@ -159,4 +159,11 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     return Metric.cellHeight
   }
 
+  override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+    let avatarColor = self.avatarView.initialLabel.backgroundColor
+    super.setHighlighted(highlighted, animated: animated)
+    if highlighted {
+      self.avatarView.initialLabel.backgroundColor = avatarColor
+    }
+  }
 }

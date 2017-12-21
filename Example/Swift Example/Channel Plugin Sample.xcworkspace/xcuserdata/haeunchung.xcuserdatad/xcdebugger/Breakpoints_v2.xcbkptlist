@@ -9,13 +9,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-one/CHPlugin/Source/DialogView.swift"
-            timestampString = "525238057.810267"
+            filePath = "../../CHPlugin/Source/Views/AvatarView.swift"
+            timestampString = "535529900.540113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "245"
-            endingLineNumber = "245"
-            landmarkName = "measureHeight(fits:viewModel:)"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "showOnline"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../CHPlugin/Source/Controllers/UserChatViewController.swift"
+            timestampString = "535630369.090116"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "810"
+            endingLineNumber = "810"
+            landmarkName = "presentPicker(type:max:assetType:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +41,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-one/CHPlugin/Source/DialogView.swift"
-            timestampString = "525243667.61125"
+            filePath = "../../CHPlugin/Source/Controllers/UserChatViewController.swift"
+            timestampString = "535630369.090742"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
-            landmarkName = "measureHeight(fits:viewModel:)"
+            startingLineNumber = "481"
+            endingLineNumber = "481"
+            landmarkName = "resetUserChat()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,13 +57,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-one/CHPlugin/Source/DialogView.swift"
-            timestampString = "525243667.61125"
+            filePath = "../../CHPlugin/Source/Models/CHAssets.swift"
+            timestampString = "535527785.591242"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
-            landmarkName = "measureHeight(fits:viewModel:)"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "playPushSound()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +73,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-one/CHPlugin/Source/DialogView.swift"
-            timestampString = "525243667.61125"
+            filePath = "../../CHPlugin/Source/States/MessagesState.swift"
+            timestampString = "535529900.542951"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
-            landmarkName = "measureHeight(fits:viewModel:)"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "findBy(userChatId:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -73,13 +89,61 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-one/CHPlugin/Source/DialogView.swift"
-            timestampString = "525243667.61125"
+            filePath = "../../CHPlugin/Source/Reducers/MessagesReducer.swift"
+            timestampString = "535529900.543475"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
-            landmarkName = "measureHeight(fits:viewModel:)"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "messagesReducer(action:state:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "CHPlugin.messagesReducer(action: ReSwift.Action, state: Swift.Optional&lt;CHPlugin.MessagesState&gt;) -&gt; CHPlugin.MessagesState"
+                  moduleName = "CHPlugin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/haeunchung/Development/channel-plugin-ios/CHPlugin/Source/Reducers/MessagesReducer.swift"
+                  timestampString = "535628585.113291"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "39"
+                  endingLineNumber = "39"
+                  offsetFromSymbolStart = "41000">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "implicit closure #10 : @autoclosure () throws -&gt; CHPlugin.MessagesState in CHPlugin.messagesReducer(action: ReSwift.Action, state: Swift.Optional&lt;CHPlugin.MessagesState&gt;) -&gt; CHPlugin.MessagesState"
+                  moduleName = "CHPlugin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/haeunchung/Development/channel-plugin-ios/CHPlugin/Source/Reducers/MessagesReducer.swift"
+                  timestampString = "535628585.11535"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "39"
+                  endingLineNumber = "39"
+                  offsetFromSymbolStart = "12">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../CHPlugin/Source/States/MessagesState.swift"
+            timestampString = "535529900.544323"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "28"
+            endingLineNumber = "28"
+            landmarkName = "findBy(userChatId:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -89,14 +153,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Pods/CHSlackTextViewController/Source/SLKTextInputbar.m"
-            timestampString = "533108713.261452"
+            filePath = "../../CHPlugin/Source/Selectors/MessagesSelector.swift"
+            timestampString = "535529900.544519"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "403"
-            endingLineNumber = "403"
-            landmarkName = "-slk_appropriateRightButtonWidth"
-            landmarkType = "7">
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "messagesSelector(state:userChatId:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -105,61 +169,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Pods/CHSlackTextViewController/Source/SLKTextInputbar.m"
-            timestampString = "533108713.261986"
+            filePath = "../../CHPlugin/Source/Views/NavigationViews/NavigationTitleView.swift"
+            timestampString = "535629698.099136"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "460"
-            endingLineNumber = "460"
-            landmarkName = "-setContentInset:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/CHSlackTextViewController/Source/SLKTextInputbar.m"
-            timestampString = "533108713.262237"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "693"
-            endingLineNumber = "693"
-            landmarkName = "-slk_setupViewConstraints"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../ch-plugin-one/CHPlugin/Source/ChannelPlugin.swift"
-            timestampString = "526559662.93414"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "462"
-            endingLineNumber = "462"
-            landmarkName = "checkInChannel(checkinObj:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/CHSlackTextViewController/Source/SLKTextInputbar.m"
-            timestampString = "533108713.262517"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "414"
-            endingLineNumber = "414"
-            landmarkName = "-slk_appropriateRightButtonMargin"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "configure(channel:userChat:plugin:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

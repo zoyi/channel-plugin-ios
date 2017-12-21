@@ -1,4 +1,11 @@
 # Change Log
+### 2.4.0
+#### Update
+* Redesigned UserChat UI/UX
+
+#### Bug fixes
+* Fixed minor bugs
+* Fixed file upload logic (GIF)
 
 ### 2.3.3
 #### Updated

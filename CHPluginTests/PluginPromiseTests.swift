@@ -21,10 +21,7 @@ class PluginPromiseTests: QuickSpec {
           let promise = PluginPromise
             .getPluginConfiguration(apiKey: "52eb6f27-38c7-476d-ad92-83e6299b7e07", params: [:])
           _ = promise.subscribe(onNext: { (data) in
-            //let plugin = data["plugin"]!
-            //let channel = data["channel"]!
-            //let veil = data["veil"]!
-            //print("get data \(data)")
+
           }, onError: { error in
             expect(error).to(beNil())
           }, onCompleted: {

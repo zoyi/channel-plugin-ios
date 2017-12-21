@@ -56,6 +56,7 @@ class ChatManager {
   
   let disposeBag = DisposeBag()
 
+  fileprivate var welcomedAt = Date()
   fileprivate var typingPersons = [CHEntity]()
   fileprivate var timeStorage = [String: Timer]()
   fileprivate var animateTyping = false
@@ -289,18 +290,20 @@ extension ChatManager {
     }
   }
   
-  func createChat(
-    pluginId: String = "",
-    userOpenAt: Date? = nil,
-    completion: @escaping (String?) -> Void) {
+  func createChat(pluginId:String = "", completion: @escaping (String?) -> Void) {
     if self.chatId != "" {
       completion(self.chatId)
       return;
     }
+
+    var pluginId = pluginId
+    if pluginId == "" {
+      pluginId = mainStore.state.plugin.id
+    }
     
     CHUserChat.create(
-      pluginId: mainStore.state.plugin.id,
-      timeStamp: userOpenAt)
+      pluginId: pluginId,
+      timeStamp: self.welcomedAt)
       .subscribe(onNext: { [weak self] (chatResponse) in
         guard let userChat = chatResponse.userChat,
           let session = chatResponse.session else { return }
