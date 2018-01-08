@@ -101,7 +101,7 @@ enum RestRouter: URLRequestConvertible {
     case .GetCurrentGuest:
       return "/app/guests/me"
     case .GetChannelManager(let managerId):
-      return "/app/manangers/\(managerId)"
+      return "/app/managers/\(managerId)"
     case .GetPlugin(let pluginId):
       return "/app/plugins/\(pluginId)"
     case .GetScript(let pluginId, let scriptKey):

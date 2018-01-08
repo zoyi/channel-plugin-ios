@@ -182,7 +182,7 @@ extension CHMessage {
   static func getMessages(
     userChatId: String,
     since: String,
-    limit: String,
+    limit: Int,
     sortOrder:String) -> Observable<[String: Any]> {
     
     return UserChatPromise.getMessages(
@@ -190,6 +190,11 @@ extension CHMessage {
       since: since,
       limit: limit,
       sortOrder: sortOrder)
+  }
+  
+  func isMine() -> Bool {
+    let me = mainStore.state.guest
+    return self.entity?.id == me.id
   }
   
   func send() -> Observable<CHMessage> {

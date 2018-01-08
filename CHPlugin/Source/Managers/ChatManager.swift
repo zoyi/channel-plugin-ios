@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 enum ChatElement {
-  case message(obj: CHMessage?)
+  case messages(obj: [CHMessage])
   case manager(obj: CHManager?)
   case session(obj: CHSession?)
   case chat(obj: CHUserChat?)
@@ -35,7 +35,10 @@ enum ChatState {
 }
 
 protocol ChatDelegate : class {
+  func readyToDisplay()
   func updateFor(element: ChatElement)
+  func showError()
+  func hideError()
 }
 
 class ChatManager {
@@ -52,6 +55,7 @@ class ChatManager {
   
   var didFetchInfo = false
   var didChatLoaded = false
+  var didLoad = false
   var state: ChatState = .idle
   
   let disposeBag = DisposeBag()
@@ -60,6 +64,9 @@ class ChatManager {
   fileprivate var typingPersons = [CHEntity]()
   fileprivate var timeStorage = [String: Timer]()
   fileprivate var animateTyping = false
+  fileprivate var isFetching = false
+  fileprivate var isRequstingReadAll = false
+  fileprivate var nextSeq = ""
   
   var typers: [CHEntity] {
     get {
@@ -116,7 +123,8 @@ class ChatManager {
           s.delegate?.updateFor(element: .typing(obj: self?.typingPersons, animated: s.animateTyping))
         }
         
-        s.delegate?.updateFor(element: .message(obj: message))
+//        let messages = messagesSelector(state: mainStore.state, userChatId: s.chatId)
+//        s.delegate?.updateFor(element: .messages(obj: messages))
       }).disposed(by: self.disposeBag)
   }
   
@@ -273,12 +281,15 @@ extension ChatManager {
       guard self?.state != .chatLoading else { return Disposables.create() }
       guard let s = self else  { return Disposables.create() }
       s.state = .chatLoading
+      s.nextSeq = ""
       
       CHUserChat.get(userChatId: s.chatId)
         .subscribe(onNext: { (response) in
           s.state = .chatLoaded
           s.didChatLoaded = true
           mainStore.dispatch(GetUserChat(payload: response))
+        
+          s.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
           subscriber.onNext(response)
         }, onError: { (error) in
           s.state = .chatNotLoaded
@@ -322,6 +333,88 @@ extension ChatManager {
       }).disposed(by: self.disposeBag)
   }
   
+  func resetUserChat() -> Observable<String?> {
+    return Observable.create({ [weak self] (subscribe) in
+      guard let s = self else { return Disposables.create() }
+      s.nextSeq = ""
+
+      if let chatId = self?.chatId, chatId != "" {
+        mainStore.dispatch(RemoveMessages(payload: chatId))
+        s.fetchChat().subscribe({ (_) in
+          subscribe.onNext(chatId)
+        }).disposed(by: s.disposeBag)
+        return Disposables.create()
+      }
+      
+      s.createChat(completion: { (userChatId) in
+        subscribe.onNext(userChatId)
+      })
+      
+      return Disposables.create()
+    })
+  }
+  
+  func fetchMessages() {
+    if self.isFetching {
+      return
+    }
+    
+    // TODO: show loader
+    self.isFetching = true
+    CHMessage.getMessages(userChatId: self.chatId,
+      since: self.nextSeq,
+      limit: 30,
+      sortOrder: "DESC").subscribe(onNext: { [weak self] (data) in
+        if let nextSeq = data["next"] {
+          self?.nextSeq = nextSeq as! String
+        }
+        self?.state = .messageLoaded
+        mainStore.dispatch(GetMessages(payload: data))
+      }, onError: { [weak self] error in
+        // TODO: show error
+        self?.isFetching = false
+        self?.state = .messageNotLoaded
+        self?.delegate?.showError()
+      }, onCompleted: { [weak self] in
+        self?.isFetching = false
+        if self?.didLoad == false {
+          self?.didLoad = true
+          self?.state = .chatReady
+          self?.delegate?.readyToDisplay()
+          self?.requestReadAll()
+        }
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func requestReadAll() {
+    guard self.didLoad else { return }
+    guard !self.isRequstingReadAll else { return }
+    
+    if self.chat?.session == nil {
+      return
+    }
+    
+    if self.chat?.session?.unread == 0 &&
+      self.chat?.session?.alert == 0 {
+      return
+    }
+    
+    self.isRequstingReadAll = true
+    
+    self.chat?.readAll()
+      .subscribe(onNext: { [weak self] _ in
+        self?.isRequstingReadAll = false
+        self?.readAllManually()
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func readAllManually() {
+    guard var session = self.chat?.session else { return }
+    session.unread = 0
+    session.alert = 0
+    mainStore.dispatch(UpdateSession(payload: session))
+  }
+  
   func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
     return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
   }
@@ -329,5 +422,47 @@ extension ChatManager {
   func getWelcomeScript() -> Observable<CHScript> {
     let scriptKey = mainStore.state.guest.ghost ? "welcome_ghost" : "welcome"
     return ScriptPromise.get(pluginId: mainStore.state.plugin.id, scriptKey: scriptKey)
+  }
+}
+
+extension ChatManager {
+  func willAppear() {
+    self.state = .chatJoining
+    WsService.shared.join(chatId: self.chatId)
+  }
+  
+  func willDisppear() {
+    self.sendTyping(isStop: true)
+    self.requestReadAll()
+    WsService.shared.leave(chatId: self.chatId)
+  }
+  
+  func canLoadMore() -> Bool {
+    return self.nextSeq != "" && self.chatId != "" && self.chatType != ""
+  }
+  
+  func hasNewMessage(current: [CHMessage], updated: [CHMessage]) -> Bool {
+    if updated.count == 0 {
+      return false
+    }
+    
+    if current.count == 0 && updated.count != 0 {
+      return true
+    }
+    
+    if updated.count < current.count {
+      return false
+    }
+    
+    if updated.count > current.count {
+      let updatedLast = updated.first!
+      let currLast = current.first!
+      
+      if updatedLast.createdAt > currLast.createdAt {
+        return true
+      }
+    }
+    
+    return false
   }
 }

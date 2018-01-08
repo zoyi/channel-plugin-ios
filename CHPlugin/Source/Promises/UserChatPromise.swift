@@ -193,7 +193,7 @@ struct UserChatPromise {
   static func getMessages(
     userChatId: String,
     since: String,
-    limit: String,
+    limit: Int,
     sortOrder: String) -> Observable<[String: Any]> {
     return Observable.create { subscriber in
       let params = [

@@ -21,17 +21,15 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   // MARK: Constants
   struct Constant {
-    static let messagePerRequest = "30"
+    static let messagePerRequest = 30
     static let messageCellMaxWidth = UIScreen.main.bounds.width
   }
   
   // MARK: Properties
-  var state: ChatState = .idle
   var channel: CHChannel = mainStore.state.channel
   var userChatId: String?
   var userChat: CHUserChat?
-  var nextSeq: String = ""
-  var loaded: Bool = false
+
   var preloadText: String = ""
   var shouldShowGuide: Bool = false
   var isFetching = false
@@ -53,7 +51,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   var disposeBag = DisposeBag()
   var photoBrowser : MWPhotoBrowser? = nil
-  var chatManager : ChatManager? = nil
+  var chatManager : ChatManager!
   
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
@@ -61,6 +59,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
+  
+  var typingCell: TypingIndicatorCell!
   
   var titleView : NavigationTitleView? = nil
   
@@ -90,6 +90,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initManagers()
     self.initNavigationViews()
     self.initSLKTextView()
+    self.initTypingCell()
     self.initTableView()
     self.initInputViews()
     self.initViews()
@@ -100,51 +101,32 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     //new user chat
     if self.userChatId == nil {
-      self.endLoad()
+      self.readyToDisplay()
     }
   }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-
-    let navigationController = self.navigationController as! MainNavigationController
-    navigationController.useDefault = false
     
     mainStore.subscribe(self)
-    if let userChatId = self.userChatId {
-      self.state = .chatJoining
-      WsService.shared.join(chatId: userChatId)
-    }
+    self.chatManager.willAppear()
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
     if isBeingDismissed || isMovingFromParentViewController {
-      self.chatManager?.reset()
+      self.chatManager.reset()
     }
-    
-    self.chatManager?.sendTyping(isStop: true)
-    if let userChatId = self.userChatId {
-      //self.loaded = false
-      WsService.shared.leave(chatId: userChatId)
-    }
-  }
-  
-  override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-  }
-
-  override func viewDidLayoutSubviews() {
-    super.viewDidLayoutSubviews()
+    self.chatManager.willDisppear()
   }
 
   fileprivate func initManagers() {
     self.chatManager = ChatManager(id: self.userChatId)
-    self.chatManager?.chat = userChatSelector(
+    self.chatManager.chat = userChatSelector(
       state: mainStore.state,
       userChatId: self.userChatId)
-    self.chatManager?.delegate = self
+    self.chatManager.delegate = self
   }
   
   // MARK: - Helper methods
@@ -185,12 +167,18 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
+    self.tableView.register(cellType: WatermarkCell.self)
     
     self.tableView.estimatedRowHeight = 0
-//    self.tableView.rowHeight = 0
     self.tableView.clipsToBounds = true
     self.tableView.separatorStyle = .none
     self.tableView.allowsSelection = false
+  }
+
+  func initTypingCell() {
+    let cell = TypingIndicatorCell()
+    cell.configure(typingUsers: [])
+    self.typingCell = cell
   }
 
   // MARK: - Helper methods
@@ -201,15 +189,11 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
       tableView: self.tableView,
       initialRows: self.messages,
-      sectionIndex: 1
+      sectionIndex: self.channel.servicePlan == "free" ? 2 : 1
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
     self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
     self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
-  }
-
-  fileprivate func initLocalMessages() {
-
   }
 
   fileprivate func initNavigationViews() {
@@ -256,7 +240,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     self.navigationController?.navigationBar.shadowImage = UIImage()
-    
   }
   
   func initNavigationExtension() {
@@ -307,9 +290,9 @@ final class UserChatViewController: BaseSLKTextViewController {
       .subscribe(onNext: { [weak self] _ in
         guard let s = self else { return }
         WsService.shared.connect()
-        s.resetUserChat().subscribe({ (event) in
+        s.resetUserChat()?.subscribe({ (event) in
           if event.element != nil  {
-            s.fetchMessages()
+            s.chatManager.fetchMessages()
           }
         }).disposed(by: s.disposeBag)
       }).disposed(by: self.disposeBag)
@@ -361,9 +344,6 @@ final class UserChatViewController: BaseSLKTextViewController {
         textColor: tintColor,
         actionHandler: { [weak self] in
           self?.shyNavBarManager.disable = true
-          if let _ = self?.userChatId {
-            self?.requestReadAll()
-          }
           mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
           _ = self?.navigationController?.popViewController(animated: true)
       })
@@ -375,10 +355,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       image: CHAssets.getImage(named: "exit"),
       style: .plain,
       actionHandler: { [weak self] in
-        if self?.userChatId != nil {
-          self?.requestReadAll()
-        }
-        
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         self?.navigationController?.dismiss(animated: true, completion: {
           mainStore.dispatch(ChatListIsHidden())
@@ -387,109 +363,11 @@ final class UserChatViewController: BaseSLKTextViewController {
     )
   }
   
-  fileprivate func requestReadAll() {
-    guard self.loaded else { return }
-    guard !self.isRequstingReadAll else { return }
+  fileprivate func resetUserChat() -> Observable<String?>? {
+    self.createdFeedback = false
+    self.createdFeedbackComplete = false
     
-    if self.userChat?.session == nil {
-      return
-    }
-    
-    if self.userChat?.session?.unread == 0 &&
-      self.userChat?.session?.alert == 0 {
-      return
-    }
-    
-    self.isRequstingReadAll = true
-    
-    self.userChat?.readAll()
-      .subscribe(onNext: { [weak self] _ in
-        self?.isRequstingReadAll = false
-        self?.readAllManually()
-      }).disposed(by: self.disposeBag)
-  }
-  
-  fileprivate func fetchMessages() {
-    guard let id = self.userChatId else {
-      return
-    }
-    
-    if self.isFetching {
-      return
-    }
-
-    if self.nextSeq != "" {
-      self.tableView.showIndicatorTo(.footer)
-    }
-
-    // TODO: show loader
-    self.isFetching = true
-    CHMessage.getMessages(userChatId: id,
-      since: self.nextSeq,
-      limit: Constant.messagePerRequest,
-      sortOrder: "DESC").subscribe(onNext: { [weak self] (data) in
-        if let nextSeq = data["next"] {
-          self?.nextSeq = nextSeq as! String
-        }
-        self?.chatManager?.state = .messageLoaded
-        mainStore.dispatch(GetMessages(payload: data))
-      }, onError: { [weak self] error in
-        // TODO: show error
-        self?.isFetching = false
-        self?.chatManager?.state = .messageNotLoaded
-        self?.tableView.hideIndicatorTo(.footer)
-        self?.showError()
-        //mainStore.dispatch(FailedGetMessages(error: error))
-      }, onCompleted: { [weak self] in
-        self?.isFetching = false
-        self?.tableView.hideIndicatorTo(.footer)
-        if self?.loaded == false {
-          self?.endLoad()
-          self?.requestReadAll()
-        }
-      }).disposed(by: self.disposeBag)
-  }
-
-  func readAllManually() {
-    guard var session = self.userChat?.session else { return }
-    session.unread = 0
-    session.alert = 0
-    mainStore.dispatch(UpdateSession(payload: session))
-  }
-  
-  fileprivate func endLoad() {
-    if !self.loaded {
-      self.state = .chatReady
-      self.loaded = true
-      self.initLocalMessages()
-      self.initDwifft()
-      //NOTE: to make more smooth transition loading message
-      self.tableView.isHidden = false
-    }
-  }
-  
-  fileprivate func resetUserChat() -> Observable<String?> {
-    return Observable.create({ [weak self] (subscribe) in
-      guard let s = self else { return Disposables.create() }
-      s.nextSeq = ""
-      s.createdFeedback = false
-      s.createdFeedbackComplete = false
-      
-      if let userChatId = s.userChatId {
-        mainStore.dispatch(RemoveMessages(payload: userChatId))
-        s.chatManager?.fetchChat().subscribe({ (_) in
-          subscribe.onNext(userChatId)
-        }).disposed(by: s.disposeBag)
-        return Disposables.create()
-      }
-
-      s.chatManager?.createChat(completion: { (userChatId) in
-        s.userChatId = userChatId
-        subscribe.onNext(userChatId)
-      })
-      
-      return Disposables.create()
-    })
+    return self.chatManager.resetUserChat()
   }
   
   fileprivate func sendMessage(userChatId: String, text: String) {
@@ -500,7 +378,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.scrollToBottom(false)
     
     message.send().subscribe(onNext: { [weak self] (updated) in
-      self?.chatManager?.sendTyping(isStop: true)
+      self?.chatManager.sendTyping(isStop: true)
       mainStore.dispatch(CreateMessage(payload: updated))
       self?.showUserInfoGuideIfNeeded()
     }, onError: { (error) in
@@ -520,7 +398,7 @@ extension UserChatViewController: StoreSubscriber {
     
     //saved contentOffset
     let offset = self.tableView.contentOffset
-    let hasNewMessage = self.hasNewMessage(current: self.messages, updated: messages)
+    let hasNewMessage = self.chatManager.hasNewMessage(current: self.messages, updated: messages)
     
     //message only needs to be replace if count is differe
     self.messages = messages
@@ -569,8 +447,8 @@ extension UserChatViewController: StoreSubscriber {
   }
   
   func fetchWelcomeInfoIfNeeded() {
-    if self.chatManager?.needToFetchInfo() == true {
-      self.chatManager?.fetchForNewUserChat()
+    if self.chatManager.needToFetchInfo() == true {
+      self.chatManager.fetchForNewUserChat()
         .subscribe({ (event) in
           switch event {
           case .error(_):
@@ -582,28 +460,12 @@ extension UserChatViewController: StoreSubscriber {
           }
         }).disposed(by: self.disposeBag)
     }
-//    else {
-//      self.chatManager?.getPlugin()
-//        .subscribe({ (event) in
-//          switch event {
-//          case .error(_):
-//            break
-//          case .next(let (plugin, bot)):
-//            mainStore.dispatchOnMain(
-//              GetPlugin(plugin: plugin, bot: bot)
-//            )
-//          default:
-//            break
-//          }
-//        }).disposed(by: self.disposeBag)
-//    }
   }
   
   func fetchChatIfNeeded() {
-    if self.chatManager?.needToFetchChat() == true {
-      self.nextSeq = ""
-      self.chatManager?.fetchChat().subscribe({ [weak self] (event) in
-        self?.fetchMessages()
+    if self.chatManager.needToFetchChat() == true {
+      self.chatManager.fetchChat().subscribe({ [weak self] (event) in
+        self?.chatManager.fetchMessages()
         self?.scrollToBottom(false)
       }).disposed(by: self.disposeBag)
     }
@@ -613,7 +475,7 @@ extension UserChatViewController: StoreSubscriber {
     let socketState = state.socketState.state
     
     if socketState == .reconnecting {
-      self.chatManager?.state = .waitingSocket
+      self.chatManager.state = .waitingSocket
     } else if socketState == .disconnected {
       self.showError()
     } else {
@@ -660,52 +522,22 @@ extension UserChatViewController: StoreSubscriber {
   }
   
   func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
-    guard let lastMessage = updated.first, !isMyMessage(message: lastMessage) else {
+    guard let lastMessage = updated.first, !lastMessage.isMine() else {
         return
     }
     
     let offset = self.tableView.contentOffset.y
-    if hasNewMessage(current: current, updated: updated) &&
+    if self.chatManager.hasNewMessage(current: current, updated: updated) &&
       offset > UIScreen.main.bounds.height * 0.5 {
       self.newMessageView.configure(message: lastMessage)
       self.newMessageView.show(animated: true)
     }
   }
   
-  func isMyMessage(message: CHMessage) -> Bool {
-    let me = mainStore.state.guest
-    return message.entity?.id == me.id
-  }
-  
-  func hasNewMessage(current: [CHMessage], updated: [CHMessage]) -> Bool {
-    if updated.count == 0 {
-      return false
-    }
-    
-    if current.count == 0 && updated.count != 0 {
-      return true
-    }
-    
-    if updated.count < current.count {
-      return false
-    }
-    
-    if updated.count > current.count {
-      let updatedLast = updated.first!
-      let currLast = current.first!
-      
-      if updatedLast.createdAt > currLast.createdAt {
-        return true
-      }
-    }
-    
-    return false
-  }
-  
   func fixedOffsetIfNeeded(previousOffset: CGPoint, hasNewMessage: Bool) {
     var offset = previousOffset
     if let lastMessage = self.messages.first,
-      !self.isMyMessage(message: lastMessage),
+      lastMessage.isMine(),
       offset.y > UIScreen.main.bounds.height/2,
       hasNewMessage {
       let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
@@ -766,13 +598,13 @@ extension UserChatViewController {
         self.sendMessage(userChatId: userChatId, text: msg)
       }
     } else if self.userChat == nil {
-      self.chatManager?.createChat(completion: { [weak self] (userChatId) in
+      self.chatManager.createChat(completion: { [weak self] (userChatId) in
         guard let s = self else { return }
         if let userChatId = userChatId {
           s.userChatId = userChatId
           s.sendMessage(userChatId: userChatId, text: msg)
         } else {
-          s.chatManager?.state = .chatNotLoaded
+          s.chatManager.state = .chatNotLoaded
         }
       })
     } else {
@@ -811,12 +643,12 @@ extension UserChatViewController {
         if let userChatId = self?.userChatId {
           uploadImage(userChatId)
         } else {
-          self?.chatManager?.createChat(completion: { (userChatId) in
+          self?.chatManager.createChat(completion: { (userChatId) in
             self?.userChatId = userChatId
             if let userChatId = userChatId {
               uploadImage(userChatId)
             } else {
-              self?.chatManager?.state = .chatNotLoaded
+              self?.chatManager.state = .chatNotLoaded
             }
           })
         }
@@ -859,7 +691,7 @@ extension UserChatViewController {
   }
   
   override func textViewDidChange(_ textView: UITextView) {
-    self.chatManager?.sendTyping(isStop: textView.text == "")
+    self.chatManager.sendTyping(isStop: textView.text == "")
   }
 }
 
@@ -869,8 +701,8 @@ extension UserChatViewController {
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let yOffset = scrollView.contentOffset.y
     let triggerPoint = yOffset + UIScreen.main.bounds.height * 1.5
-    if triggerPoint > scrollView.contentSize.height && !self.isFetching && !self.nextSeq.isEmpty {
-      self.fetchMessages()
+    if triggerPoint > scrollView.contentSize.height && self.chatManager.canLoadMore() {
+      self.chatManager.fetchMessages()
     }
     
     if yOffset < 100 &&
@@ -884,20 +716,26 @@ extension UserChatViewController {
 
 extension UserChatViewController {
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return 2
+    return self.channel.servicePlan == "free" ? 3 : 2
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if section == 1 {
-      return self.messages.count
+      return self.channel.servicePlan == "free" ? 1 : self.messages.count
+    } else if section == 2 {
+      return self.channel.servicePlan == "free" ? self.messages.count : 0
     }
     return 0
   }
   
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     if indexPath.section == 0 {
+      return 40
+    }
+    
+    if indexPath.section == 1 && self.channel.servicePlan == "free" {
       return 40
     }
     
@@ -929,7 +767,11 @@ extension UserChatViewController {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
-    if section == 0 {
+    if section == 0 && self.channel.servicePlan == "free" {
+      let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.transform = tableView.transform
+      return cell
+    } else if section == 0 || (section == 1 && self.channel.servicePlan == "free") {
       let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
       cell.transform = tableView.transform
       return cell
@@ -941,12 +783,11 @@ extension UserChatViewController {
   }
   
   func cellForTyping(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if let typers = self.chatManager?.typers, typers.count > 0 {
-      let cell: TypingIndicatorCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(typingUsers: typers)
-      return cell
+    if let typingCell = self.typingCell {
+      typingCell.configure(typingUsers: self.chatManager.typers)
+      typingCell.transform = tableView.transform
+      return typingCell
     }
-
     return UITableViewCell()
   }
   
@@ -1148,9 +989,9 @@ extension UserChatViewController : UIDocumentInteractionControllerDelegate {
 
 extension UserChatViewController : CHNavigationDelegate {
   func willPopViewController(willShow: UIViewController) {
-    if self.userChatId != nil {
-      self.requestReadAll()
-    }
+//    if self.userChatId != nil {
+//      self.requestReadAll()
+//    }
   }
 }
 
@@ -1179,14 +1020,32 @@ extension UserChatViewController: ChatDelegate {
   func updateFor(element: ChatElement) {
     switch element {
     case .typing(_, _):
-      let indexPath = IndexPath(row: 0, section: 0)
-      if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
-        self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
+      let indexPath = IndexPath(row: 0, section: self.channel.servicePlan == "free" ? 1 : 0)
+      if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true,
+        let typingCell = self.typingCell {
+        typingCell.configure(typingUsers: self.chatManager.typers)
       }
       break
     default:
       break
     }
+  }
+  
+  func showError() {
+    if self.shyNavBarManager.isExpanded() {
+      self.shyNavBarManager.contract(false)
+    }
+    self.chatManager.didChatLoaded = false
+    self.errorToastView.show(animated: true)
+  }
+  
+  func hideError() {
+    self.errorToastView.hide(animated: true)
+  }
+  
+  func readyToDisplay() {
+    self.initDwifft()
+    self.tableView.isHidden = false
   }
 }
 
@@ -1208,16 +1067,3 @@ extension UserChatViewController : TLYShyNavBarManagerDelegate {
   }
 }
 
-extension UserChatViewController {
-  func showError() {
-    if self.shyNavBarManager.isExpanded() {
-      self.shyNavBarManager.contract(false)
-    }
-    self.chatManager?.didChatLoaded = false
-    self.errorToastView.show(animated: true)
-  }
-  
-  func hideError() {
-    self.errorToastView.hide(animated: true)
-  }
-}

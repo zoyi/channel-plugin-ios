@@ -118,5 +118,6 @@ extension CHChannel: Mappable {
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"]
     timeZone                <- map["timeZone"]
+    servicePlan             <- map["servicePlan"]
   }
 }
