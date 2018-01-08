@@ -7,5 +7,4 @@ target 'Channel Plugin Sample' do
 
   # Pods for Channel Plugin Sample
   pod 'CHPlugin', :path => '../..'
-  pod 'CHNavBar', :path => '../../../TLYShyNavBar'
 end

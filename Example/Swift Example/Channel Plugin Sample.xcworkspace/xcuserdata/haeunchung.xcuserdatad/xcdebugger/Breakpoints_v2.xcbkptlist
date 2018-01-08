@@ -9,28 +9,12 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../CHPlugin/Source/Views/AvatarView.swift"
-            timestampString = "535529900.540113"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "showOnline"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../CHPlugin/Source/Controllers/UserChatViewController.swift"
-            timestampString = "535630369.090116"
+            timestampString = "537092759.50343"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "810"
-            endingLineNumber = "810"
+            startingLineNumber = "642"
+            endingLineNumber = "642"
             landmarkName = "presentPicker(type:max:assetType:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -41,24 +25,8 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../CHPlugin/Source/Controllers/UserChatViewController.swift"
-            timestampString = "535630369.090742"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "481"
-            endingLineNumber = "481"
-            landmarkName = "resetUserChat()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../CHPlugin/Source/Models/CHAssets.swift"
-            timestampString = "535527785.591242"
+            timestampString = "537092759.503684"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "59"
@@ -73,13 +41,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../CHPlugin/Source/States/MessagesState.swift"
-            timestampString = "535529900.542951"
+            filePath = "../../CHPlugin/Source/Models/CHAssets.swift"
+            timestampString = "537092759.5037659"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
-            landmarkName = "findBy(userChatId:)"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "attributedLocalized(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -89,61 +57,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../CHPlugin/Source/Reducers/MessagesReducer.swift"
-            timestampString = "535529900.543475"
+            filePath = "../../CHPlugin/Source/Models/CHAssets.swift"
+            timestampString = "537092759.5038379"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "messagesReducer(action:state:)"
-            landmarkType = "9">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CHPlugin.messagesReducer(action: ReSwift.Action, state: Swift.Optional&lt;CHPlugin.MessagesState&gt;) -&gt; CHPlugin.MessagesState"
-                  moduleName = "CHPlugin"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/haeunchung/Development/channel-plugin-ios/CHPlugin/Source/Reducers/MessagesReducer.swift"
-                  timestampString = "535628585.113291"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "41000">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "implicit closure #10 : @autoclosure () throws -&gt; CHPlugin.MessagesState in CHPlugin.messagesReducer(action: ReSwift.Action, state: Swift.Optional&lt;CHPlugin.MessagesState&gt;) -&gt; CHPlugin.MessagesState"
-                  moduleName = "CHPlugin"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/haeunchung/Development/channel-plugin-ios/CHPlugin/Source/Reducers/MessagesReducer.swift"
-                  timestampString = "535628585.11535"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "12">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../CHPlugin/Source/States/MessagesState.swift"
-            timestampString = "535529900.544323"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
-            landmarkName = "findBy(userChatId:)"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "attributedLocalized(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -153,29 +73,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../CHPlugin/Source/Selectors/MessagesSelector.swift"
-            timestampString = "535529900.544519"
+            filePath = "../../CHPlugin/Source/Models/CHAssets.swift"
+            timestampString = "537092759.5038919"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "messagesSelector(state:userChatId:)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../CHPlugin/Source/Views/NavigationViews/NavigationTitleView.swift"
-            timestampString = "535629698.099136"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "configure(channel:userChat:plugin:)"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "attributedLocalized(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

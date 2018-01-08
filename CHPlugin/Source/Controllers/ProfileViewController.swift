@@ -193,10 +193,8 @@ final class ProfileViewController: BaseViewController {
     self.logoImageView.signalForClick()
       .subscribe(onNext: { _ in
         let channel = mainStore.state.channel
-        let urlString = "https://channel.io/" +
-          "?utm_campaign=plugin_exposure_ios" +
-          "&utm_medium=plugin&utm_source=" +
-          (channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
+        let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        let urlString = CHUtils.getUrlForUTM(source: "plugin_exposure", content: channelName)
 
         if let url = URL(string: urlString) {
           url.open()

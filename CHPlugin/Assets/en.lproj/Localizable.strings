@@ -168,3 +168,4 @@ Press the button below to refresh.";
 "ch.chat.expect_response_delay.out_of_working.short_description" = "Off-hours now";
 "ch.chat.expect_response_delay.out_of_working.detail" = "See business hours";
 "ch.chat.removed.title" = "The chat is now removed";
+"ch.watermark" = "Talking with <b>Channel.io</b>";

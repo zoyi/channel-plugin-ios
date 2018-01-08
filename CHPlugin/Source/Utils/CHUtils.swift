@@ -56,6 +56,10 @@ class CHUtils {
     }
   }
   
+  class func getUrlForUTM(source: String, content: String) -> String {
+    return "https://channel.io/ko/?utm_campaign=iOS&utm_source=\(source)&utm_medium=plugin&utm_content=\(content)"
+  }
+  
   class func getCountryDialCode(countryCode: String) -> String? {
     for each in mainStore.state.countryCodeState.codes {
       if each.code == countryCode {

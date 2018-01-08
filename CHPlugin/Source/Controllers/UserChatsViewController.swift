@@ -20,6 +20,7 @@ class UserChatsViewController: BaseViewController {
   // MARK: Properties
   var errorToastTopConstraint: Constraint?
   var plusBottomConstraint: Constraint?
+  var tableViewBottomConstraint: Constraint?
   
   var scrollOffset: CGFloat = 0.0
   var nextSeq: Int64? = 0
@@ -34,6 +35,7 @@ class UserChatsViewController: BaseViewController {
   let disposeBag = DisposeBag()
   
   let tableView = UITableView().then {
+    $0.clipsToBounds = false
     $0.register(cellType: UserChatCell.self)
     $0.separatorStyle = .singleLine
     $0.separatorColor = CHColors.snow
@@ -43,8 +45,10 @@ class UserChatsViewController: BaseViewController {
   let emptyView = UserChatsEmptyView().then {
     $0.isHidden = true
   }
-
-  // TODO: Reuse in UserChatViewController
+  
+  let watermarkView = WatermarkView().then {
+    $0.alpha = 0
+  }
   let errorToastView = ErrorToastView()
   let plusButton = NewChatView()
   
@@ -65,15 +69,25 @@ class UserChatsViewController: BaseViewController {
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.emptyView)
     self.view.addSubview(self.plusButton)
-
+    self.view.addSubview(self.watermarkView)
+    
     self.errorToastView.topLayoutGuide = self.topLayoutGuide
     self.errorToastView.containerView = self.view
     self.view.addSubview(self.errorToastView)
     
+    self.initTableView()
+    self.initActions()
+    self.setDefaultNavItems()
+    
+    self.showCompleted = mainStore.state.userChatsState.showCompletedChats
+
+    self.fetchInitUserChats()
+  }
+
+  func initTableView() {
     self.tableView.delegate = self
     self.tableView.dataSource = self
     self.tableView.allowsMultipleSelectionDuringEditing = true
-    self.tableView.tableFooterView = UIView()
     
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHUserChat>(
       tableView: self.tableView, initialRows: self.userChats
@@ -81,26 +95,33 @@ class UserChatsViewController: BaseViewController {
     self.diffCalculator?.forceOffAnimationEnabled = true
     self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
     self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
-    
-    self.setDefaultNavItems()
-    self.showCompleted = mainStore.state.userChatsState.showCompletedChats
-    
-    // actions
+  }
+  
+  func initActions() {
     self.errorToastView.refreshImageView.signalForClick()
-      .subscribe(onNext: { [weak self] _ in
+      .subscribe { [weak self] _ in
         self?.nextSeq = nil
         self?.fetchUserChats()
         WsService.shared.connect()
-      }).disposed(by: self.disposeBag)
-
-    self.plusButton.signalForClick()
-      .subscribe(onNext: { [weak self] (event) in
-        self?.showNewUserChat()
-      }).disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
     
-    self.fetchInitUserChats()
+    self.plusButton.signalForClick()
+      .subscribe { [weak self] _ in
+        self?.showNewUserChat()
+      }.disposed(by: self.disposeBag)
+    
+    self.watermarkView.signalForClick()
+      .subscribe{ _ in
+        let channel = mainStore.state.channel
+        let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
+        
+        if let url = URL(string: urlString) {
+          url.open()
+        }
+      }.disposed(by: self.disposeBag)
   }
-
+  
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     mainStore.subscribe(self)
@@ -113,8 +134,15 @@ class UserChatsViewController: BaseViewController {
 
   override func setupConstraints() {
     super.setupConstraints()
-    self.tableView.snp.makeConstraints { make in
-      make.edges.equalTo(0)
+    self.tableView.snp.makeConstraints { [weak self] make in
+      if #available(iOS 11.0, *) {
+        make.top.equalTo((self?.view.safeAreaLayoutGuide.snp.top)!)
+      } else {
+        make.top.equalToSuperview()
+      }
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+      self?.tableViewBottomConstraint = make.bottom.equalTo((self?.watermarkView.snp.top)!).constraint
     }
 
     self.emptyView.snp.makeConstraints { (make) in
@@ -124,6 +152,13 @@ class UserChatsViewController: BaseViewController {
     self.plusButton.snp.makeConstraints { [weak self] make in
       make.right.equalToSuperview().inset(24)
       self?.plusBottomConstraint = make.bottom.equalToSuperview().inset(24).constraint
+    }
+    
+    self.watermarkView.snp.makeConstraints { (make) in
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.bottom.equalToSuperview()
+      make.height.equalTo(40)
     }
   }
 
@@ -195,18 +230,13 @@ class UserChatsViewController: BaseViewController {
         self?.showProfileView()
       }.disposed(by: self.disposeBag)
     
-    if userChatId == nil {
-      //preload followings info before push in
-      PluginPromise.getFollowingManagers()
-        .subscribe({ (event) in
-          mainStore.dispatchOnMain(
-            UpdateFollowingManagers(payload: event.element ?? [])
-          )
-          self.navigationController?.pushViewController(controller, animated: animated)
-        }).disposed(by: self.disposeBag)
-    } else {
-       self.navigationController?.pushViewController(controller, animated: animated)
-    }
+    PluginPromise.getFollowingManagers()
+      .subscribe({ (event) in
+        mainStore.dispatchOnMain(
+          UpdateFollowingManagers(payload: event.element ?? [])
+        )
+        self.navigationController?.pushViewController(controller, animated: animated)
+      }).disposed(by: self.disposeBag)
   }
 
   func showProfileView() {
@@ -280,6 +310,8 @@ extension UserChatsViewController: StoreSubscriber {
       self.nextSeq = nil
       self.fetchUserChats()
     }
+    
+    self.showWatermarkIfNeeded()
   }
 
 }
@@ -297,7 +329,11 @@ extension UserChatsViewController: UIScrollViewDelegate {
       self.showPlusButton()
     }
     
+    //if close to bottom show watermark
+    //else hide
     self.scrollOffset = yOffset
+    
+    self.showWatermarkIfNeeded()
   }
   
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -450,6 +486,28 @@ extension UserChatsViewController {
   
   func signalForLoaded() -> Observable<Any?> {
     return self.loadSubject
+  }
+}
+
+extension UserChatsViewController {
+  func showWatermarkIfNeeded() {
+    let yOffset = self.tableView.contentOffset.y
+    let contentHeight = CGFloat(self.userChats.count * 84)
+    if contentHeight > self.tableView.bounds.height - 40 {
+      let triggerOffset = contentHeight - self.tableView.bounds.height - 40
+      if yOffset > 0 && yOffset > triggerOffset {
+        self.progressWatermark(yOffset - triggerOffset)
+      } else {
+        self.progressWatermark(0)
+      }
+    } else {
+      self.progressWatermark(40)
+    }
+  }
+  
+  func progressWatermark(_ offset: CGFloat) {
+    //self.tableViewBottomConstraint?.update(offset: offset)
+    self.watermarkView.alpha = offset/40
   }
 }
 
