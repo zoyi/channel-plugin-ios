@@ -46,9 +46,9 @@ class CHAssets {
     let data = localizedString.data(using: .utf16)
     do {
       let result = try NSMutableAttributedString(
-                    data: data!,
-                    options: [.documentType: NSAttributedString.DocumentType.html],
-                    documentAttributes: nil)
+        data: data!,
+        options: [.documentType: NSAttributedString.DocumentType.html],
+        documentAttributes: nil)
       return result
     } catch _ {
       return NSMutableAttributedString(string: localizedString)

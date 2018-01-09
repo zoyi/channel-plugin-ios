@@ -169,4 +169,4 @@
 "ch.chat.expect_response_delay.out_of_working.short_description" = "지금은 채팅 운영시간이 아닙니다";
 "ch.chat.expect_response_delay.out_of_working.detail" = "운영시간 자세히 보기";
 "ch.chat.removed.title" = "삭제된 상담입니다.";
-"ch.watermark" = "<b>Channel.io</b>로 채팅중입니다";
+"ch.watermark" = "Channel.io로 채팅중입니다";
