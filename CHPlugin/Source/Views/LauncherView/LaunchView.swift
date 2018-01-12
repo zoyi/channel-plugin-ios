@@ -37,7 +37,9 @@ final class LaunchView : BaseView {
     $0.layer.borderWidth = 1
     //$0.setImage(Assets.getImage(named: "balloon")?.withRenderingMode(.alwaysTemplate), for: .normal)
   }
-
+  
+  var layoutGuide: UILayoutGuide? = nil
+  
   override func initialize() {
     self.addSubview(self.buttonView)
     self.addSubview(self.badgeView)
@@ -64,10 +66,14 @@ final class LaunchView : BaseView {
   }
 
   override func updateConstraints() {
-    self.snp.remakeConstraints ({ (make) in
+    self.snp.remakeConstraints ({ [weak self] (make) in
       make.size.equalTo(CGSize(width:Metric.viewSize, height:Metric.viewSize))
       make.right.equalToSuperview().inset(Metric.xMargin)
-      make.bottom.equalToSuperview().inset(Metric.yMargin)
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo((self?.layoutGuide?.snp.bottom)!).offset(-Metric.yMargin)
+      } else {
+        make.bottom.equalToSuperview().inset(Metric.yMargin)
+      }
     })
     
     self.buttonView.snp.remakeConstraints { (make) in

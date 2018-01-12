@@ -491,6 +491,10 @@ extension UserChatsViewController {
 
 extension UserChatsViewController {
   func showWatermarkIfNeeded() {
+    if mainStore.state.channel.servicePlan != "free" {
+      return
+    }
+    
     let yOffset = self.tableView.contentOffset.y
     let contentHeight = CGFloat(self.userChats.count * 84)
     if contentHeight > self.tableView.bounds.height - 40 {

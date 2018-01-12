@@ -1,4 +1,11 @@
 # Change Log
+### 2.4.1
+#### Update
+* Added watermark
+
+#### Bug fixes
+* Fixed launcher button layout for iPhone X
+
 ### 2.4.0
 #### Update
 * Redesigned UserChat UI/UX

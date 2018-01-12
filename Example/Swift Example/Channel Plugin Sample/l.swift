@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     registerForRemoteNotification()
     
     ChannelPlugin.debugMode = true
-    ChannelPlugin.initialize(pluginId: "ee03ff28-5ba7-4a36-9285-93673ffe9c11")
+    ChannelPlugin.initialize(pluginId: "4be44efa-59d8-4847-990f-d5cb3e9af40f")
     
     return true
   }

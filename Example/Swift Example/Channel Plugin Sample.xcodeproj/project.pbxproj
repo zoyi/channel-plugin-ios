@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		15F8510430C25A46850F3920 /* Pods_Channel_Plugin_Sample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DD695E685D88DD933995EB6 /* Pods_Channel_Plugin_Sample.framework */; };
-		65BFBFE21E77E69900AF0CE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFE11E77E69900AF0CE7 /* AppDelegate.swift */; };
+		65BFBFE21E77E69900AF0CE7 /* l.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFE11E77E69900AF0CE7 /* l.swift */; };
 		65BFBFE41E77E69900AF0CE7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFE31E77E69900AF0CE7 /* ViewController.swift */; };
 		65BFBFE71E77E69900AF0CE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65BFBFE51E77E69900AF0CE7 /* Main.storyboard */; };
 		65BFBFE91E77E69900AF0CE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65BFBFE81E77E69900AF0CE7 /* Assets.xcassets */; };
@@ -24,7 +24,7 @@
 		64FC13449A3A2440AA05A05F /* Pods-Channel Plugin Sample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Channel Plugin Sample.release.xcconfig"; path = "Pods/Target Support Files/Pods-Channel Plugin Sample/Pods-Channel Plugin Sample.release.xcconfig"; sourceTree = "<group>"; };
 		6537E46A1E8B51690085D83F /* Channel Plugin Sample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Channel Plugin Sample.entitlements"; sourceTree = "<group>"; };
 		65BFBFDE1E77E69900AF0CE7 /* Channel Plugin Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Channel Plugin Sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		65BFBFE11E77E69900AF0CE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		65BFBFE11E77E69900AF0CE7 /* l.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = l.swift; sourceTree = "<group>"; };
 		65BFBFE31E77E69900AF0CE7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		65BFBFE61E77E69900AF0CE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		65BFBFE81E77E69900AF0CE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				6537E46A1E8B51690085D83F /* Channel Plugin Sample.entitlements */,
-				65BFBFE11E77E69900AF0CE7 /* AppDelegate.swift */,
+				65BFBFE11E77E69900AF0CE7 /* l.swift */,
 				65BFBFE31E77E69900AF0CE7 /* ViewController.swift */,
 				65BFBFF61E77E81800AF0CE7 /* EntryViewController.swift */,
 				65BFBFF71E77E81800AF0CE7 /* LoginViewController.swift */,
@@ -294,7 +294,7 @@
 			files = (
 				65BFBFFA1E77E81800AF0CE7 /* LoginViewController.swift in Sources */,
 				65BFBFE41E77E69900AF0CE7 /* ViewController.swift in Sources */,
-				65BFBFE21E77E69900AF0CE7 /* AppDelegate.swift in Sources */,
+				65BFBFE21E77E69900AF0CE7 /* l.swift in Sources */,
 				65BFBFF91E77E81800AF0CE7 /* EntryViewController.swift in Sources */,
 				65BFBFFB1E77E81800AF0CE7 /* MainViewController.swift in Sources */,
 			);

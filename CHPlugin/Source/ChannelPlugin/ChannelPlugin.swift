@@ -252,6 +252,10 @@ public final class ChannelPlugin : NSObject {
     ChannelPlugin.hideLauncher(animated: false)
     
     let launchView = LaunchView()
+    if #available(iOS 11.0, *) {
+      launchView.layoutGuide = view.safeAreaLayoutGuide
+    }
+    
     let viewModel = LaunchViewModel(
       plugin: mainStore.state.plugin, guest: mainStore.state.guest
     )
