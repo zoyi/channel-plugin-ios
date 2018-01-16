@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CHPlugin'
-  s.version          = '2.4.1'
+  s.version          = '2.4.2'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -34,7 +34,6 @@ Pod::Spec.new do |s|
   s.dependency 'SnapKit'
   s.dependency 'ManualLayout'
   s.dependency 'UIColor_Hex_Swift'
-  s.dependency 'SwiftDate'
   s.dependency 'SwiftyJSON'
   s.dependency 'Then'
   s.dependency 'ReSwift'

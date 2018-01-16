@@ -76,11 +76,11 @@ struct LocalMessageFactory {
         lastDateMsg = msg
       }
     }
-  
+
     for element in indexes {
-      let date = messages[element.0]
-        .createdAt
-        .add(components: [Calendar.Component.nanosecond: -100])
+      let createdAt = messages[element.0].createdAt
+      let date = Calendar.current.date(byAdding: .nanosecond, value: -100, to: createdAt)
+      
       let msg = CHMessage(
         chatId:chatId,
         message:element.1,
@@ -122,9 +122,9 @@ struct LocalMessageFactory {
     }
     
     if position >= 0 {
-      let date = messages[position]
-        .createdAt
-        .add(components: [Calendar.Component.nanosecond: -100])
+      let createdAt = messages[position].createdAt
+      let date = Calendar.current.date(byAdding: .nanosecond, value: -100, to: createdAt)
+      
       let msg = CHMessage(chatId: userChat.id,
         message: CHAssets.localized("ch.unread_divider"),
         type: .NewAlertMessage,

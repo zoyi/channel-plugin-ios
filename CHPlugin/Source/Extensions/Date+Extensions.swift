@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftDate
 
 extension Date {
   func readableShortString() -> String {
@@ -26,19 +25,32 @@ extension Date {
     return formatter.string(from: self)
   }
   
-  func readableTimestamp() -> String {
-    let now = DateInRegion()
-    let timeAt = DateInRegion(absoluteDate: self, in: Date.defaultRegion)
-    let suffix = timeAt.hour >= 12 ? "PM" : "AM"
-    let hour = timeAt.hour > 12 ? timeAt.hour - 12 : timeAt.hour
-    if timeAt.isToday {
-      return String(format:"%d:%02d %@", hour, timeAt.minute, suffix)
-    } else if timeAt.year == now.year {
-      return "\(timeAt.month)/\(timeAt.day)"
+  func readableTimeStamp() -> String {
+    let cal = NSCalendar.current
+    let now = Date()
+    
+    let end = cal.startOfDay(for: now)
+    let start = cal.startOfDay(for: self)
+    
+    //let flags = NSCalendarUnit.Day
+    
+    let components = cal.dateComponents([.day, .month, .year, .minute, .hour], from: start, to: end)
+    let startComponents = cal.dateComponents([.year, .day, .month], from: start)
+    let endComponents = cal.dateComponents([.year], from: end)
+    
+    if cal.isDate(start, inSameDayAs: end), var hours = components.hour, let minute = components.minute {
+      hours = hours > 12 ? hours - 12 : hours
+      return String(format:"%d:%02d %@", hours, minute, hours >= 12 ? "PM" : "AM")
+    } else if let startYear = startComponents.year, let endYear = endComponents.year, startYear == endYear {
+      return "\(startComponents.month ?? 0)/\(startComponents.day ?? 0)"
     }
-    return "\(timeAt.year)/\(timeAt.month)/\(timeAt.day)"
+    
+    let year = components.year ?? 0
+    let month = components.month ?? 0
+    let day = components.day ?? 0
+    return "\(year)/\(month)/\(day)"
   }
-  
+
   func printDate() -> String {
     let todaysDate:Date = Date()
     let cal = Calendar(identifier: Calendar.Identifier.gregorian)
@@ -71,3 +83,4 @@ extension Date {
     return date
   }
 }
+

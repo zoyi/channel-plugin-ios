@@ -1,4 +1,9 @@
 # Change Log
+
+### 2.4.2
+#### Update
+* Removed SwiftDate framework
+
 ### 2.4.1
 #### Update
 * Added watermark

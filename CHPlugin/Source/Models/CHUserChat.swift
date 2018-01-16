@@ -8,7 +8,6 @@
 
 import Foundation
 import ObjectMapper
-import SwiftDate
 import RxSwift
 
 struct CHUserChat: ModelType {
@@ -35,16 +34,7 @@ struct CHUserChat: ModelType {
   
   var readableUpdatedAt: String {
     if let updatedAt = self.lastMessage?.createdAt {
-      let now = DateInRegion()
-      let updatedAt = DateInRegion(absoluteDate: updatedAt, in: Date.defaultRegion)
-      let suffix = updatedAt.hour >= 12 ? "PM" : "AM"
-      let hour = updatedAt.hour > 12 ? updatedAt.hour - 12 : updatedAt.hour
-      if updatedAt.isToday {
-        return String(format:"%d:%02d %@", hour, updatedAt.minute, suffix)
-      } else if updatedAt.year == now.year {
-        return "\(updatedAt.month)/\(updatedAt.day)"
-      }
-      return "\(updatedAt.year)/\(updatedAt.month)/\(updatedAt.day)"
+      return updatedAt.readableTimeStamp()
     }
     return ""
   }

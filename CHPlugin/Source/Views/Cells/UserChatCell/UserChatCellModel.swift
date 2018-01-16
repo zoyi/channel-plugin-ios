@@ -38,7 +38,7 @@ struct UserChatCellModel: UserChatCellModelType {
     }
 
     self.timestamp = userChat.state == "resolved" ?
-      (userChat.resolvedAt?.readableTimestamp() ?? "") :
+      (userChat.resolvedAt?.readableTimeStamp() ?? "") :
       userChat.readableUpdatedAt
     self.avatar = userChat.lastTalkedHost ?? mainStore.state.channel
     self.badgeCount = userChat.session?.alert ?? 0

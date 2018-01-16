@@ -7,7 +7,6 @@
 //
 
 import Reusable
-import SwiftDate
 import SnapKit
 
 final class DateCell : BaseTableViewCell, Reusable {

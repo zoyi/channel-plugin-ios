@@ -8,7 +8,6 @@
 
 import Foundation
 import ObjectMapper
-import SwiftDate
 import RxSwift
 import DKImagePickerController
 import MobileCoreServices
@@ -32,15 +31,24 @@ struct CHMessage: ModelType {
   var createdAt: Date
 
   var readableDate: String {
-    let updatedAt = DateInRegion(absoluteDate: self.createdAt, in: Date.defaultRegion)
-    return "\(updatedAt.year)-\(updatedAt.month)-\(updatedAt.day)"
+    let updateComponents = Calendar.current.dateComponents([.year, .month, .day], from: self.createdAt)
+    guard let year = updateComponents.year else { return "" }
+    guard let month = updateComponents.month else { return "" }
+    guard let day = updateComponents.day else { return "" }
+    
+    return "\(year)-\(month)-\(day)"
   }
   
   var readableCreatedAt: String {
-    let updatedAt = DateInRegion(absoluteDate: self.createdAt, in: Date.defaultRegion)
-    let suffix = updatedAt.hour >= 12 ? "PM" : "AM"
-    let hour = updatedAt.hour > 12 ? updatedAt.hour - 12 : updatedAt.hour
-    return String(format:"%d:%02d %@", hour, updatedAt.minute, suffix)
+    let updateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour], from: self.createdAt)
+    let suffix = (updateComponents.hour ?? 0) >= 12 ? "PM" : "AM"
+    
+    var hours = 0
+    if let componentHour = updateComponents.hour {
+      hours = componentHour > 12 ? componentHour - 12 : componentHour
+    }
+    let minutes = updateComponents.minute ?? 0
+    return String(format:"%d:%02d %@", hours, minutes, suffix)
   }
   
   var lastMessage: String? {
