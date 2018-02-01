@@ -174,7 +174,9 @@ public final class ChannelPlugin : NSObject {
         completion?(.success)
       
         if !ChannelPlugin.hideLauncherButton &&
-          !mainStore.state.plugin.mobileHideButton {
+          !mainStore.state.plugin.mobileHideButton &&
+          !mainStore.state.channel.outOfWorkPlugin &&
+          !mainStore.state.channel.working {
           ChannelPlugin.showLauncher(on: topController?.view, animated: true)
         }
         
