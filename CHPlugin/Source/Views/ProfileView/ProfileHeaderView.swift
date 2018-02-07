@@ -38,15 +38,6 @@ final class ProfileHeaderView : BaseView {
   override func initialize() {
     super.initialize()
     
-//    _ = self.phoneView.signalForClick()
-//      .subscribe(onNext: { [weak self] (_) in
-//      //call
-//      let phoneNumber = self?.phoneLabel.text ?? ""
-//      if let url = URL(string: "tel://\(phoneNumber)") {
-//        url.open()
-//      }
-//    })
-    
     self.contactViews.buttonSize = 46
     
     self.channelIconView.addSubview(self.initialLabel)
@@ -75,12 +66,6 @@ final class ProfileHeaderView : BaseView {
     }
     
     self.channelNameLabel.snp.remakeConstraints { [weak self] (make) in
-//      if self?.channel?.phoneNumber != "" {
-//        make.bottom.equalTo((self?.phoneView.snp.top)!).offset(-10)
-//      } else {
-//        //make.bottom.equalToSuperview().inset(24)
-//      }
-      
       make.top.equalTo((self?.channelIconView.snp.bottom)!).offset(12)
       make.centerX.equalToSuperview()
     }
@@ -95,9 +80,10 @@ final class ProfileHeaderView : BaseView {
   func configure(plugin: CHPlugin, channel: CHChannel) {
     self.channel = channel
     
-    self.channelIconView.backgroundColor = UIColor(plugin.color)
     self.backgroundColor = UIColor(plugin.borderColor)
-   
+    self.channelIconView.backgroundColor = channel.avatarUrl != nil ?
+      UIColor.white : UIColor(plugin.color)
+    
     if let url = channel.avatarUrl {
       self.channelImageView.isHidden = false
       self.initialLabel.isHidden = true
