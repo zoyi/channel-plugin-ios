@@ -153,3 +153,23 @@ extension CHUserChat: Equatable {
       lhs.state == rhs.state
   }
 }
+
+/**
+ *  Public
+ */
+
+@objc
+public struct ChannelUserChat {
+  var chatId: String = ""
+  var message: String = ""
+  var managerName: String = ""
+  var managerAvatarUrl: String = ""
+  
+  init(with pushData: CHPush) {
+    self.chatId = pushData.userChat?.id ?? ""
+    self.message = pushData.message?.id ?? ""
+    self.managerName = pushData.manager?.name ?? ""
+    self.managerAvatarUrl = pushData.manager?.avatarUrl ?? ""
+  }
+}
+

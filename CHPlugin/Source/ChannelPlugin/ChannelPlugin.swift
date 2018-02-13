@@ -36,11 +36,14 @@ public protocol ChannelDelegate: class {
   @objc optional func badgeDidChange(count: Int) -> Void /* notify badge count when changed */
   @objc optional func shouldHandleChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
   @objc optional func willShowChatList() -> Void /* notify when chat list is about to show */
-  @objc optional func willHideChatList() -> Void /* notify when chat list is about to hide */ 
+  @objc optional func willHideChatList() -> Void /* notify when chat list is about to hide */
+  
+  @objc optional func didReceiveError(error: Error) -> Void
+  @objc optional func didReceivePush(with userChat: ChannelUserChat) -> Void
 }
 
 @objc
-public final class ChannelPlugin : NSObject {
+public final class ChannelPlugin: NSObject {
   @objc public static weak var delegate: ChannelDelegate? = nil
   
   private static var pluginId: String?
@@ -70,14 +73,14 @@ public final class ChannelPlugin : NSObject {
   @objc public static var hideLauncherButton = false
   //set default checkin tracking
   @objc public static var enabledTrackDefaultEvent = true
+  //set default in-app push view
+  @objc public static var showInAppPush = true
   
   // MARK: StoreSubscriber
 
   class CHPluginSubscriber : StoreSubscriber {
     func newState(state: AppState) {
-      
       self.handleBadgeDelegate(state.guest.alert)
-      
       if let launchView = ChannelPlugin.launchView {
         let viewModel = LaunchViewModel(
           plugin: state.plugin, guest: state.guest
@@ -89,9 +92,11 @@ public final class ChannelPlugin : NSObject {
     }
     
     func handlePush (push: CHPush?) {
-      if ChannelPlugin.baseNavigation == nil {
+      if ChannelPlugin.baseNavigation == nil && ChannelPlugin.showInAppPush {
         ChannelPlugin.showNotification(pushData: push)
       }
+
+      ChannelPlugin.delegate?.didReceivePush?(with: ChannelUserChat(with: push))
     }
     
     func handleBadgeDelegate(_ count: Int) {
@@ -331,6 +336,23 @@ public final class ChannelPlugin : NSObject {
   }
   
   /**
+   *  Show a user chat with given chat id
+   *
+   *  - parameter chatId: a String user chat id
+   *  - parameter completion: a closure to signal completion state
+   */
+  @objc public class func showChat(with chatId: String? = nil, completion: ((Bool) -> Void)? = nil) {
+    guard let chatId = chatId else { return }
+    
+    CHUserChat.get(userChatId: chatId).subscribe(onNext: { (response) in
+      ChannelPlugin.showUserChat(userChatId: chatId)
+      completion?(true)
+    }, onError: { error in
+      completion?(false)
+    }).disposed(by: disposeBeg)
+  }
+  
+  /**
    *   Check whether push notification is valid Channel push notification
    *   by inspecting userInfo
    *
@@ -376,7 +398,8 @@ public final class ChannelPlugin : NSObject {
       "device": UIDevice.current.modelName,
       "os": "\(UIDevice.current.systemName)_\(UIDevice.current.systemVersion)",
       "screenWidth": UIScreen.main.bounds.width,
-      "screenHeight": UIScreen.main.bounds.height
+      "screenHeight": UIScreen.main.bounds.height,
+      "plan": mainStore.state.channel.servicePlan
     ])
   }
   
@@ -403,8 +426,8 @@ public final class ChannelPlugin : NSObject {
     
     let checkin = CheckIn()
       .with(userId: PrefStore.getCurrentUserId() ?? "")
-    checkInChannel(checkinObj:checkin)
-      .subscribe(onNext: { (result) in
+    
+    checkInChannel(checkinObj:checkin).subscribe(onNext: { (result) in
       let userChatId = userInfo["chatId"] as! String
       ChannelPlugin.fetchScripts()
       ChannelPlugin.registerPushToken()
@@ -428,9 +451,9 @@ public final class ChannelPlugin : NSObject {
       properties: properties,
       sysProperties: sysProperties)
       .subscribe(onNext: { (event) in
-        
+        dlog("[CHPlugin] \(name) event sent successfully")
       }, onError: { (error) in
-        
+        dlog("[CHPlugin] \(name) event failed")
       }).disposed(by: disposeBeg)
   }
   
@@ -508,20 +531,18 @@ public final class ChannelPlugin : NSObject {
       userChatViewController.userChatId == userChatId {
       //do nothing
     }
-    else if topController is UserChatsViewController ||
-      topController is UserChatViewController {
-      topController.navigationController?.pushViewController(userChatController, animated: true)
+    else if topController is UserChatsViewController || topController is UserChatViewController {
+      topController.navigationController?.pushViewController(userChatController, animated: false)
     } else {
       let userChatsController = UserChatsViewController()
       let controller = MainNavigationController(rootViewController: userChatsController)
       ChannelPlugin.baseNavigation = controller
       
       userChatsController.signalForLoaded().subscribe(onNext: { _ in
-         controller.pushViewController(userChatController, animated: true)
+         controller.pushViewController(userChatController, animated: false)
       }).disposed(by: disposeBeg)
-      topController.present(controller, animated: false, completion:nil)
+      topController.present(controller, animated: true, completion: nil)
     }
-    
   }
   
   private class func registerPushToken() {
@@ -532,10 +553,10 @@ public final class ChannelPlugin : NSObject {
     PluginPromise
       .registerPushToken(channelId: channelId, token: pushToken)
       .subscribe(onNext: { (result) in
-        dlog("register token success")
+        dlog("[CHPlugin] register token success")
       }
       ,onError:{ error in
-        dlog("register token failed")
+        dlog("[CHPlugin] register token failed")
       }).disposed(by: disposeBeg)
   }
   
@@ -590,8 +611,10 @@ public final class ChannelPlugin : NSObject {
       .getAll(pluginId: mainStore.state.plugin.id)
       .subscribe(onNext: { (scripts) in
         mainStore.dispatch(GetScripts(payload: scripts))
+        dlog("[CHPlugin] fetched scripts successfully")
       }, onError:{ error in
         // no action
+        dlog("[CHPlugin] fetched scripts failed")
       }).disposed(by: disposeBeg)
   }
   

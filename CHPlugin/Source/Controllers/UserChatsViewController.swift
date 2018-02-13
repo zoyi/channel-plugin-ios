@@ -31,7 +31,8 @@ class UserChatsViewController: BaseViewController {
       self.diffCalculator?.rows = self.userChats
     }
   }
-
+  var userChat: CHUserChat? = nil
+  
   let disposeBag = DisposeBag()
   
   let tableView = UITableView().then {
