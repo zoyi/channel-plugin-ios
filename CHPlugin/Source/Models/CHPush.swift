@@ -13,6 +13,10 @@ struct CHPush {
   var type = ""
   
   var message: CHMessage?
+  
+  var user: CHUser?
+  var veil: CHVeil?
+  var bot: CHBot?
   var manager: CHManager?
   var userChat: CHUserChat?
   
@@ -32,6 +36,9 @@ extension CHPush : Mappable {
   mutating func mapping(map: Map) {
     message   <- map["entity"]
     manager   <- map["refers.manager"]
+    bot       <- map["refers.bot"]
+    user      <- map["refers.user"]
+    veil      <- map["refers.veil"]
     userChat  <- map["refers.userChat"]
     type      <- map["type"]
   }

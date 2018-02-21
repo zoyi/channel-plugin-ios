@@ -101,7 +101,9 @@ class AvatarView: NeverClearView {
 
   // MARK: Configuring
 
-  func configure(_ avatar: CHEntity) {
+  func configure(_ avatar: CHEntity?) {
+    guard let avatar = avatar else { return }
+    
     if let url = avatar.avatarUrl, url != "" {
       if url.contains("http") {
         self.avatarImageView.sd_setImage(with: URL(string:url))
@@ -110,11 +112,6 @@ class AvatarView: NeverClearView {
       }
       self.avatarImageView.isHidden = false
       self.initialLabel.isHidden = true
-    } else {
-      self.initialLabel.backgroundColor = UIColor(avatar.color)
-      self.initialLabel.text = avatar.initial
-      self.avatarImageView.isHidden = true
-      self.initialLabel.isHidden = false
     }
     
     if let manager = avatar as? CHManager, manager.online && self.showOnline {
