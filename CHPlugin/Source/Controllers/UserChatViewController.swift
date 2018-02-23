@@ -67,6 +67,10 @@ final class UserChatViewController: BaseSLKTextViewController {
   var newChatSubject = PublishSubject<Any?>()
   var profileSubject = PublishSubject<Any?>()
   
+  deinit {
+    mainStore.dispatch(RemoveMessages(payload: self.userChatId))
+  }
+  
   // MARK: View Life Cycle
   override func viewDidLoad() {
     //this has to be called before super.viewDidLoad
@@ -79,13 +83,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.edgesForExtendedLayout = UIRectEdge.bottom
     self.view.backgroundColor = UIColor.white
   
-    if userChatsSelector(state: mainStore.state).count != 0 {
-      //disable interactive pop if only one
-      self.navigationController?.interactivePopGestureRecognizer?.delegate = nil;
-    }
-    
-    let chNavigation = self.navigationController as! MainNavigationController
-    chNavigation.chDelegate = self
+//    let chNavigation = self.navigationController as! MainNavigationController
+//    chNavigation.chDelegate = self
     
     self.initManagers()
     self.initNavigationViews()
@@ -117,8 +116,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     mainStore.unsubscribe(self)
     if isBeingDismissed || isMovingFromParentViewController {
       self.chatManager.reset()
+      self.chatManager.willDisppear()
     }
-    self.chatManager.willDisppear()
   }
 
   fileprivate func initManagers() {
@@ -288,13 +287,12 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-        guard let s = self else { return }
         WsService.shared.connect()
-        s.resetUserChat()?.subscribe({ (event) in
+        _ = self?.resetUserChat()?.subscribe({ (event) in
           if event.element != nil  {
-            s.chatManager.fetchMessages()
+            self?.chatManager.fetchMessages()
           }
-        }).disposed(by: s.disposeBag)
+        })
       }).disposed(by: self.disposeBag)
     
     self.view.addSubview(self.newMessageView)
@@ -356,9 +354,8 @@ final class UserChatViewController: BaseSLKTextViewController {
       style: .plain,
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-        self?.navigationController?.dismiss(animated: true, completion: {
-          mainStore.dispatch(ChatListIsHidden())
-        })
+        mainStore.dispatch(ChatListIsHidden())
+        ChannelPlugin.hide(animated: true)
       }
     )
   }
@@ -464,9 +461,12 @@ extension UserChatViewController: StoreSubscriber {
   
   func fetchChatIfNeeded() {
     if self.chatManager.needToFetchChat() == true {
-      self.chatManager.fetchChat().subscribe({ [weak self] (event) in
+      self.chatManager.fetchChat()
+        .subscribe(onNext: { [weak self] (event) in
         self?.chatManager.fetchMessages()
         self?.scrollToBottom(false)
+      }, onError: { [weak self] error in
+        self?.navigationController?.popViewController(animated: true)
       }).disposed(by: self.disposeBag)
     }
   }
@@ -599,12 +599,11 @@ extension UserChatViewController {
       }
     } else if self.userChat == nil {
       self.chatManager.createChat(completion: { [weak self] (userChatId) in
-        guard let s = self else { return }
         if let userChatId = userChatId {
-          s.userChatId = userChatId
-          s.sendMessage(userChatId: userChatId, text: msg)
+          self?.userChatId = userChatId
+          self?.sendMessage(userChatId: userChatId, text: msg)
         } else {
-          s.chatManager.state = .chatNotLoaded
+          self?.chatManager.state = .chatNotLoaded
         }
       })
     } else {
@@ -987,13 +986,13 @@ extension UserChatViewController : UIDocumentInteractionControllerDelegate {
   }
 }
 
-extension UserChatViewController : CHNavigationDelegate {
-  func willPopViewController(willShow: UIViewController) {
-//    if self.userChatId != nil {
-//      self.requestReadAll()
-//    }
-  }
-}
+//extension UserChatViewController : CHNavigationDelegate {
+//  func willPopViewController(willShow: UIViewController) {
+////    if self.userChatId != nil {
+////      self.requestReadAll()
+////    }
+//  }
+//}
 
 extension UserChatViewController : SLKInputBarViewDelegate {
   func barStateDidChange(_ state: SLKInputBarState) {
