@@ -242,9 +242,10 @@ class UserChatsViewController: BaseViewController {
       }.disposed(by: self.disposeBag)
     
     PluginPromise.getFollowingManagers()
-      .subscribe({ [weak self] (event) in
-        mainStore.dispatchOnMain(
-          UpdateFollowingManagers(payload: event.element ?? [])
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext:{ [weak self] (managers) in
+        mainStore.dispatch(
+          UpdateFollowingManagers(payload: managers)
         )
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.shouldHideTable = false
