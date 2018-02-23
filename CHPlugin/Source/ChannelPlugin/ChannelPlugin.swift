@@ -95,8 +95,9 @@ public final class ChannelPlugin: NSObject {
       if ChannelPlugin.baseNavigation == nil && ChannelPlugin.showInAppPush {
         ChannelPlugin.showNotification(pushData: push)
       }
-
-      ChannelPlugin.delegate?.didReceivePush?(with: ChannelUserChat(with: push))
+      if let push = push {
+        ChannelPlugin.delegate?.didReceivePush?(with: ChannelUserChat(with: push))
+      }
     }
     
     func handleBadgeDelegate(_ count: Int) {
@@ -180,8 +181,7 @@ public final class ChannelPlugin: NSObject {
       
         if !ChannelPlugin.hideLauncherButton &&
           !mainStore.state.plugin.mobileHideButton &&
-          !mainStore.state.channel.outOfWorkPlugin &&
-          !mainStore.state.channel.working {
+          (!mainStore.state.channel.outOfWorkPlugin || mainStore.state.channel.working) {
           ChannelPlugin.showLauncher(on: topController?.view, animated: true)
         }
         
@@ -313,8 +313,10 @@ public final class ChannelPlugin: NSObject {
     ChannelPlugin.delegate?.willShowChatList?()
     mainStore.dispatch(ChatListIsVisible())
 
-    let controller = MainNavigationController(rootViewController: UserChatsViewController())
+    let userChatsController = UserChatsViewController()
+    let controller = MainNavigationController(rootViewController: userChatsController)
     ChannelPlugin.baseNavigation = controller
+  
     topController.present(controller, animated: animated, completion: nil)
   }
 
@@ -341,15 +343,14 @@ public final class ChannelPlugin: NSObject {
    *  - parameter chatId: a String user chat id
    *  - parameter completion: a closure to signal completion state
    */
-  @objc public class func showChat(with chatId: String? = nil, completion: ((Bool) -> Void)? = nil) {
+  @objc public class func showChat(with chatId: String?, completion: ((Bool) -> Void)? = nil) {
     guard let chatId = chatId else { return }
-    
-    CHUserChat.get(userChatId: chatId).subscribe(onNext: { (response) in
-      ChannelPlugin.showUserChat(userChatId: chatId)
-      completion?(true)
-    }, onError: { error in
+    guard mainStore.state.checkinState.status == .success else {
       completion?(false)
-    }).disposed(by: disposeBeg)
+      return
+    }
+    ChannelPlugin.showUserChat(userChatId: chatId)
+    completion?(true)
   }
   
   /**
@@ -522,25 +523,28 @@ public final class ChannelPlugin: NSObject {
       return
     }
 
-    let userChatController = UserChatViewController()
-    userChatController.userChatId = userChatId
-   
     mainStore.dispatch(ChatListIsVisible())
 
     if let userChatViewController = topController as? UserChatViewController,
       userChatViewController.userChatId == userChatId {
       //do nothing
-    }
-    else if topController is UserChatsViewController || topController is UserChatViewController {
-      topController.navigationController?.pushViewController(userChatController, animated: false)
+    } else if topController is UserChatsViewController {
+      let userChatsController = topController as! UserChatsViewController
+      userChatsController.showNewUserChat(userChatId: userChatId)
+    } else if topController is UserChatViewController {
+      topController.navigationController?.popViewController(animated: false, completion: {
+        let userChatsController = CHUtils.getTopController() as! UserChatsViewController
+        userChatsController.showNewUserChat(userChatId: userChatId)
+      })
     } else {
       let userChatsController = UserChatsViewController()
+      userChatsController.showNewChat = false
+      userChatsController.shouldHideTable = true
+      userChatsController.goToUserChatId = userChatId
+      
       let controller = MainNavigationController(rootViewController: userChatsController)
       ChannelPlugin.baseNavigation = controller
-      
-      userChatsController.signalForLoaded().subscribe(onNext: { _ in
-         controller.pushViewController(userChatController, animated: false)
-      }).disposed(by: disposeBeg)
+
       topController.present(controller, animated: true, completion: nil)
     }
   }
@@ -561,8 +565,7 @@ public final class ChannelPlugin: NSObject {
   }
   
   private class func showNotification(pushData: CHPush?) {
-    guard let topController = CHUtils.getTopController(),
-          let push = pushData else {
+    guard let topController = CHUtils.getTopController(), let push = pushData else {
       return
     }
 
