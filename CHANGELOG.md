@@ -8,6 +8,12 @@
 #### Bug fixes
 * Fixed retain cycle
 
+### 2.4.5
+#### Bug fixes
+* Displayed bot avatar and name on in-app push notification
+* Show Launcher properly 
+* Fixed incorrect timestamp
+ 
 ### 2.4.3
 #### Bug fixes
 * Synced launcher visibility based on channel settings

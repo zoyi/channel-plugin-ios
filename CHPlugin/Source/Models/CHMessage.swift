@@ -40,7 +40,7 @@ struct CHMessage: ModelType {
   }
   
   var readableCreatedAt: String {
-    let updateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour], from: self.createdAt)
+    let updateComponents = NSCalendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: self.createdAt)
     let suffix = (updateComponents.hour ?? 0) >= 12 ? "PM" : "AM"
     
     var hours = 0
