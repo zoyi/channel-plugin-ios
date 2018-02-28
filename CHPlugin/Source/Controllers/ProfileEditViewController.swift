@@ -65,8 +65,6 @@ final class ProfileEditViewController: BaseViewController {
     super.viewDidLoad()
     self.setNavigation()
     
-    self.navigationController?.interactivePopGestureRecognizer?.delegate = nil;
-    
     self.view.backgroundColor = CHColors.lightSnow
     self.view.addSubview(self.headerLabel)
     self.view.addSubview(self.fieldView as! UIView)

@@ -163,6 +163,7 @@ struct PluginPromise {
             let managers = Mapper<CHManager>()
               .mapArray(JSONObject: json["managers"].object)
             subscriber.onNext(managers ?? [])
+            subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)
           }

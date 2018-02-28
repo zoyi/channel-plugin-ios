@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     ChannelPlugin.debugMode = true
     ChannelPlugin.initialize(pluginId: "your-plugin-key-here")
-    
+   
     return true
   }
 

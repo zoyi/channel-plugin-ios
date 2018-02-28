@@ -1,5 +1,13 @@
 # Change Log
 
+### 2.5.0
+#### Update 
+* Added `didReceivePush:` `showChat:` methods and a class that contains necessary properties to display push view
+* Refactore some of chat logics 
+
+#### Bug fixes
+* Fixed retain cycle
+
 ### 2.4.5
 #### Bug fixes
 * Displayed bot avatar and name on in-app push notification

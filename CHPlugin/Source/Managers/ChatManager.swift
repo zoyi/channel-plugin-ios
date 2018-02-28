@@ -68,6 +68,10 @@ class ChatManager {
   fileprivate var isRequstingReadAll = false
   fileprivate var nextSeq = ""
   
+  fileprivate var messageDispose: Disposable?
+  fileprivate var typingDispose: Disposable?
+  fileprivate var notiDispose: Disposable?
+  
   var typers: [CHEntity] {
     get {
       return self.typingPersons
@@ -87,7 +91,7 @@ class ChatManager {
       state: mainStore.state,
       userChatId: id)
     
-    self.observeSocketEvents()
+    //self.observeSocketEvents()
   }
   
   fileprivate func observeSocketEvents() {
@@ -98,8 +102,14 @@ class ChatManager {
     self.observeAppState()
   }
   
+  fileprivate func disposeSignals() {
+    self.messageDispose?.dispose()
+    self.notiDispose?.dispose()
+    self.typingDispose?.dispose()
+  }
+  
   fileprivate func observeAppState() {
-    NotificationCenter.default
+    self.notiDispose = NotificationCenter.default
       .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
@@ -107,39 +117,36 @@ class ChatManager {
           self?.didFetchInfo = false
         }
         self?.didChatLoaded = false
-      }.disposed(by: self.disposeBag)
+      }
   }
   
   fileprivate func observeMessageEvents() {
-    WsService.shared.mOnCreate()
+    self.messageDispose = WsService.shared.mOnCreate()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (message) in
-        guard let s = self else { return }
-        
         let typing = CHTypingEntity.transform(from: message)
-        if let index = s.getTypingIndex(of: typing) {
-          let person = s.typingPersons.remove(at: index)
-          s.removeTimer(with: person)
-          s.delegate?.updateFor(element: .typing(obj: self?.typingPersons, animated: s.animateTyping))
+        if let index = self?.getTypingIndex(of: typing) {
+          let person = self?.typingPersons.remove(at: index)
+          self?.removeTimer(with: person)
+          self?.delegate?.updateFor(element: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
         }
         
 //        let messages = messagesSelector(state: mainStore.state, userChatId: s.chatId)
 //        s.delegate?.updateFor(element: .messages(obj: messages))
-      }).disposed(by: self.disposeBag)
+      })
   }
   
   fileprivate func observeChatEvents() { }
   fileprivate func observeSessionEvents() { }
   
   fileprivate func observeTypingEvents() {
-    WsService.shared.typingSubject
+    self.typingDispose = WsService.shared.typingSubject
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (typingEntity) in
-        guard let s = self else { return }
         if typingEntity.action == "stop" {
-          if let index = s.getTypingIndex(of: typingEntity) {
-            let person = s.typingPersons.remove(at: index)
-            s.removeTimer(with: person)
+          if let index = self?.getTypingIndex(of: typingEntity) {
+            let person = self?.typingPersons.remove(at: index)
+            self?.removeTimer(with: person)
           }
         }
         else if typingEntity.action == "start" {
@@ -147,15 +154,15 @@ class ChatManager {
             state: mainStore.state,
             personType: typingEntity.personType ?? "",
             personId: typingEntity.personId) as? CHManager {
-            if s.getTypingIndex(of: typingEntity) == nil {
-              s.typingPersons.append(manager)
+            if self?.getTypingIndex(of: typingEntity) == nil {
+              self?.typingPersons.append(manager)
             }
-            s.addTimer(with: manager, delay: 15)
+            self?.addTimer(with: manager, delay: 15)
           }
         }
         //reload row not section only if visible
-        s.delegate?.updateFor(element: .typing(obj: s.typingPersons, animated: s.animateTyping))
-      }).disposed(by: self.disposeBag)
+        self?.delegate?.updateFor(element: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
+      })
   }
 }
 
@@ -256,7 +263,7 @@ extension ChatManager {
       guard let s = self else { return Disposables.create() }
       s.state = .infoLoading
       
-      s.getPlugin()
+      let signal = s.getPlugin()
         .flatMap({ (plugin, bot) -> Observable<CHScript> in
           mainStore.dispatchOnMain(GetPlugin(plugin: plugin, bot: bot))
           return s.getWelcomeScript()
@@ -270,9 +277,11 @@ extension ChatManager {
           s.didFetchInfo = false
           s.state = .infoNotLoaded
           subscriber.onError(error)
-        }).disposed(by: s.disposeBag)
+        })
       
-      return Disposables.create()
+      return Disposables.create {
+        signal.dispose()
+      }
     }
   }
   
@@ -280,24 +289,26 @@ extension ChatManager {
     return Observable.create { [weak self] subscriber in
       guard self?.state != .chatLoading else { return Disposables.create() }
       guard let s = self else  { return Disposables.create() }
-      s.state = .chatLoading
-      s.nextSeq = ""
+      self?.state = .chatLoading
+      self?.nextSeq = ""
       
-      CHUserChat.get(userChatId: s.chatId)
+      let signal = CHUserChat.get(userChatId: s.chatId)
         .subscribe(onNext: { (response) in
-          s.state = .chatLoaded
-          s.didChatLoaded = true
+          self?.didChatLoaded = true
           mainStore.dispatch(GetUserChat(payload: response))
         
-          s.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
+          self?.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
           subscriber.onNext(response)
+          self?.state = .chatLoaded
         }, onError: { (error) in
-          s.state = .chatNotLoaded
-          s.didChatLoaded = false
+          self?.state = .chatNotLoaded
+          self?.didChatLoaded = false
           subscriber.onError(error)
-        }).disposed(by: s.disposeBag)
+        })
       
-      return Disposables.create()
+      return Disposables.create {
+        signal.dispose()
+      }
     }
   }
   
@@ -335,18 +346,18 @@ extension ChatManager {
   
   func resetUserChat() -> Observable<String?> {
     return Observable.create({ [weak self] (subscribe) in
-      guard let s = self else { return Disposables.create() }
-      s.nextSeq = ""
+      //guard let s = self else { return Disposables.create() }
+      self?.nextSeq = ""
 
       if let chatId = self?.chatId, chatId != "" {
         mainStore.dispatch(RemoveMessages(payload: chatId))
-        s.fetchChat().subscribe({ (_) in
+        _ = self?.fetchChat().subscribe({ (_) in
           subscribe.onNext(chatId)
-        }).disposed(by: s.disposeBag)
+        })
         return Disposables.create()
       }
       
-      s.createChat(completion: { (userChatId) in
+      self?.createChat(completion: { (userChatId) in
         subscribe.onNext(userChatId)
       })
       
@@ -428,12 +439,14 @@ extension ChatManager {
 extension ChatManager {
   func willAppear() {
     self.state = .chatJoining
+    self.observeSocketEvents()
     WsService.shared.join(chatId: self.chatId)
   }
   
   func willDisppear() {
     self.sendTyping(isStop: true)
     self.requestReadAll()
+    self.disposeSignals()
     WsService.shared.leave(chatId: self.chatId)
   }
   
@@ -442,19 +455,22 @@ extension ChatManager {
   }
   
   func hasNewMessage(current: [CHMessage], updated: [CHMessage]) -> Bool {
-    if updated.count == 0 {
+    let currentCount = current.count
+    let updatedCount = updated.count
+    
+    if updatedCount == 0 {
       return false
     }
     
-    if current.count == 0 && updated.count != 0 {
+    if currentCount == 0 && updatedCount != 0 {
       return true
     }
     
-    if updated.count < current.count {
+    if updatedCount < currentCount {
       return false
     }
     
-    if updated.count > current.count {
+    if updatedCount > currentCount {
       let updatedLast = updated.first!
       let currLast = current.first!
       
