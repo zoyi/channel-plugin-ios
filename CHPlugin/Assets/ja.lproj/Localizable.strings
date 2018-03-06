@@ -168,8 +168,8 @@
 "ch.chat.expect_response_delay.out_of_working" = "運休中";
 "ch.chat.expect_response_delay.instant.short_description" = "通常数分内にご返信いたします";
 "ch.chat.expect_response_delay.normal.short_description" = "通常30分内にご返信いたします";
-
 "ch.chat.expect_response_delay.out_of_working.short_description" = "現在チャットの運営時間外です";
 "ch.chat.expect_response_delay.out_of_working.detail" = "営業時間を確認する";
 "ch.chat.removed.title" = "削除された評価です";
 "ch.watermark" = "Channel.ioでお届けしています";
+"ch.message_input.disabled_new_chat_placeholder" = "新たな問い合わせを受けられません";

@@ -484,19 +484,25 @@ extension UserChatViewController: StoreSubscriber {
   }
   
   func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
+    let channel = mainStore.state.channel
+
     if nextUserChat?.isCompleted() == true {
       self.textInputbar.barState = .disabled
+      self.textInputbar.hideLeftButton()
       self.rightButton.setImage(nil, for: .normal)
       self.rightButton.setImage(nil, for: .disabled)
       self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
+      self.rightButton.isEnabled = true
       self.textView.placeholder = nextUserChat?.isRemoved() == true ?
         CHAssets.localized("ch.chat.removed.title") :
         CHAssets.localized("ch.review.complete.title")
-      
-      self.rightButton.isEnabled = true
-      self.leftButton.isEnabled = false
       self.textView.isEditable = false
+    } else if !channel.allowNewChat && (userChat == nil && nextUserChat == nil) {
+      self.textInputbar.barState = .disabled
+      self.textInputbar.hideAllButtons()
+      self.textView.isEditable = false
+      self.textView.placeholder = CHAssets.localized("ch.message_input.disabled_new_chat_placeholder")
     } else if userChat?.isCompleted() == false || (userChat == nil && nextUserChat == nil) {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)

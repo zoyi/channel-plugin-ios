@@ -170,3 +170,4 @@ Press the button below to refresh.";
 "ch.chat.removed.title" = "The chat is now removed";
 "ch.channel_io" = "Channel.io";
 "ch.watermark" = "Talking with Channel.io";
+"ch.message_input.disabled_new_chat_placeholder" = "You cannot make a new chat";

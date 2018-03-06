@@ -170,3 +170,4 @@
 "ch.chat.expect_response_delay.out_of_working.detail" = "운영시간 자세히 보기";
 "ch.chat.removed.title" = "삭제된 상담입니다.";
 "ch.watermark" = "Channel.io로 채팅중입니다";
+"ch.message_input.disabled_new_chat_placeholder" = "새로운 문의를 하실 수 없습니다.";

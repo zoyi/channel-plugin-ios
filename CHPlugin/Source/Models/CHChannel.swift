@@ -41,7 +41,6 @@ struct CHChannel: CHEntity {
   var name = ""
   var country = ""
   var textColor = "white"
-  var outOfWorkPlugin = false
   var working = true
   var workingTime: [String:TimeRange]?
   var phoneNumber: String = ""
@@ -51,6 +50,8 @@ struct CHChannel: CHEntity {
   var homepageUrl = ""
   var expectedResponseDelay = ""
   var timeZone = ""
+  var awayOption = ""
+  var workingType = ""
   
   var workingTimeString: String {
     let workingTime = self.workingTime?.map({ (key, value) -> SortableWorkingTime in
@@ -95,8 +96,27 @@ struct CHChannel: CHEntity {
     return  workingTime ?? "unknown"
   }
   
-  func isBlocked() -> Bool {
+  var isBlocked: Bool {
     return self.serviceBlocked || self.servicePlan == "free"
+  }
+  
+  var shouldShowLauncherButton: Bool {
+    return self.awayOption != "hidden"
+  }
+
+  var allowNewChat: Bool {
+    return self.awayOption == "active" && self.working
+  }
+  
+  var shouldShowWorkingTimes: Bool {
+    if let workingTime = self.workingTime, workingTime.count != 0 {
+      return self.workingType == "custom" && !self.working
+    }
+    return false
+  }
+  
+  var shouldShowSingleManager: Bool {
+    return self.expectedResponseDelay == "delayed" || !self.working
   }
 }
 
@@ -119,5 +139,7 @@ extension CHChannel: Mappable {
     expectedResponseDelay   <- map["expectedResponseDelay"]
     timeZone                <- map["timeZone"]
     servicePlan             <- map["servicePlan"]
+    workingType             <- map["workingType"] //always, never, custom
+    awayOption              <- map["awayOption"] //active, disabled, hidden
   }
 }
