@@ -30,9 +30,17 @@ class ChatStatusViewFactory {
     plugin: CHPlugin,
     managers: [CHManager]) -> UIView {
     
-    let extensionViewHeight = ChatStatusDefaultView.viewHeight(fits: width, channel: channel, followingManagers: managers)
-    let statusView = ChatStatusDefaultView(frame: CGRect(x: 0, y:0, width: width, height: extensionViewHeight))
-    statusView.configure(channel: mainStore.state.channel, plugin: mainStore.state.plugin, followingManagers: managers)
+    let extensionViewHeight = ChatStatusDefaultView.viewHeight(
+      fits: width, channel: channel, userChat: userChat, followingManagers: managers)
+    let statusView = ChatStatusDefaultView(
+      frame: CGRect(x: 0, y:0, width: width, height: extensionViewHeight))
+    
+    statusView.configure(
+      channel: mainStore.state.channel,
+      plugin: mainStore.state.plugin,
+      userChat: userChat,
+      followingManagers: managers)
+    
     _ = statusView.signalForBusinessHoursClick().subscribe({ (_) in
       let channel = mainStore.state.channel
       let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .alert)
@@ -58,6 +66,12 @@ class ChatStatusDefaultView : BaseView {
     static let statusTitleTop = 10.f
     static let statusTitleBottom = 4.f
     static let statusDescBottom = 15.f
+    static let avatarOneWidth = 44.f + Metric.avatarLeading + Metric.avatarTrailing
+    static let avatarTwoWidth = 44.f + Metric.avatarLeading + Metric.avatarTrailing + 38.f
+    static let avatarThreeWidth = 44.f + Metric.avatarLeading + Metric.avatarTrailing + 76.f
+    static let businessHourTop = 15.f
+    static let businessHourBottom = 15.f
+    static let businessHourSide = 10.f
   }
   
   let disposeBag = DisposeBag()
@@ -166,12 +180,14 @@ class ChatStatusDefaultView : BaseView {
     return self.businessSubject
   }
   
-  func configure(channel: CHChannel, plugin: CHPlugin, followingManagers: [CHManager]) {
+  func configure(channel: CHChannel, plugin: CHPlugin, userChat: CHUserChat?, followingManagers: [CHManager]) {
     self.backgroundColor = UIColor(plugin.color)
 
     if !channel.working {
       self.statusLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working")
-      self.statusDescLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.description")
+      self.statusDescLabel.text = !channel.allowNewChat && userChat == nil ?
+        CHAssets.localized("ch.chat.expect_response_delay.out_of_working.disabled") :
+        CHAssets.localized("ch.chat.expect_response_delay.out_of_working.description")
       self.statusImageView.image = plugin.textColor == "white" ?
         CHAssets.getImage(named: "offhoursW") :
         CHAssets.getImage(named: "offhoursB")
@@ -213,25 +229,29 @@ class ChatStatusDefaultView : BaseView {
     }
   }
   
-  static func viewHeight(fits width: CGFloat, channel: CHChannel, followingManagers: [CHManager]) -> CGFloat {
+  static func viewHeight(fits width: CGFloat, channel: CHChannel, userChat: CHUserChat?, followingManagers: [CHManager]) -> CGFloat {
     var height: CGFloat = 0
     var avatarWidth:CGFloat = Metric.avatarLeading + Metric.avatarTrailing
+    
     if followingManagers.count == 0 {
       avatarWidth = Metric.avatarTrailing
-    } else if followingManagers.count == 1 || channel.expectedResponseDelay == "delayed" || !channel.working {
-      avatarWidth += 64
+    } else if channel.shouldShowSingleManager {
+      avatarWidth += Metric.avatarOneWidth
     } else if followingManagers.count == 2 {
-      avatarWidth += 102
+      avatarWidth += Metric.avatarTwoWidth
     } else {
-      avatarWidth += 140
+      avatarWidth += Metric.avatarThreeWidth
     }
     
     height += Metric.statusTitleTop
     if !channel.working {
       height += CHAssets.localized("ch.chat.expect_response_delay.out_of_working")
         .height(fits: width - avatarWidth, font: UIFont.boldSystemFont(ofSize: 14))
-      height += CHAssets.localized("ch.chat.expect_response_delay.out_of_working.description")
-        .height(fits: width - avatarWidth, font: UIFont.systemFont(ofSize: 13))
+      height += !channel.allowNewChat && userChat == nil ?
+        CHAssets.localized("ch.chat.expect_response_delay.out_of_working.disabled")
+          .height(fits: width - avatarWidth, font: UIFont.systemFont(ofSize: 13)) :
+        CHAssets.localized("ch.chat.expect_response_delay.out_of_working.description")
+          .height(fits: width - avatarWidth, font: UIFont.systemFont(ofSize: 13))
     } else {
       height += CHAssets.localized("ch.chat.expect_response_delay.\(channel.expectedResponseDelay)")
         .height(fits: width - avatarWidth, font: UIFont.boldSystemFont(ofSize: 14))
@@ -244,10 +264,10 @@ class ChatStatusDefaultView : BaseView {
     
     //if business hour set ..
     if let workingTime = channel.workingTime, workingTime.count != 0, !channel.working {
-      height += 15 //top
+      height += Metric.businessHourTop //top
       height += CHAssets.localized("ch.chat.expect_response_delay.out_of_working.detail")
-        .height(fits: width - 20, font: UIFont.boldSystemFont(ofSize: 13))
-      height += 15 //bottom
+        .height(fits: width - Metric.businessHourSide * 2, font: UIFont.boldSystemFont(ofSize: 13))
+      height += Metric.businessHourBottom //bottom
     }
 
     return height

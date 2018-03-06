@@ -425,8 +425,7 @@ extension UserChatViewController: StoreSubscriber {
   }
 
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
-    if let prevUserChat = self.userChat, let nextUserChat = nextUserChat,
-      prevUserChat.isReady() && !nextUserChat.isReady() {
+    if self.userChat?.state != nextUserChat?.state || self.channel.isDiff(from: state.channel) {
       self.initNavigationViews()
     }
     
@@ -498,16 +497,23 @@ extension UserChatViewController: StoreSubscriber {
         CHAssets.localized("ch.chat.removed.title") :
         CHAssets.localized("ch.review.complete.title")
       self.textView.isEditable = false
-    } else if !channel.allowNewChat && (userChat == nil && nextUserChat == nil) {
+    } else if (!self.channel.allowNewChat && !channel.allowNewChat) &&
+      self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.textInputbar.barState = .disabled
       self.textInputbar.hideAllButtons()
       self.textView.isEditable = false
-      self.textView.placeholder = CHAssets.localized("ch.message_input.disabled_new_chat_placeholder")
-    } else if userChat?.isCompleted() == false || (userChat == nil && nextUserChat == nil) {
+      self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder.disabled_new_chat")
+    } else {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.tintColor = CHColors.cobalt
       self.rightButton.setTitle("", for: .normal)
+      self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
+      
+      self.textInputbar.barState = .normal
+      self.textInputbar.setButtonsHidden(false)
+      
+      self.textView.isEditable = true
       self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
     }
   }
@@ -562,6 +568,10 @@ extension UserChatViewController: StoreSubscriber {
       at: UITableViewScrollPosition.bottom,
       animated: animated
     )
+  }
+  
+  private func isNewChat(with current: CHUserChat?, nextUserChat: CHUserChat?) -> Bool {
+    return userChat == nil && nextUserChat == nil
   }
 }
 
@@ -1007,12 +1017,11 @@ extension UserChatViewController : SLKInputBarViewDelegate {
     self.textInputbar.layer.borderWidth = 2
     
     if state == .disabled {
-      self.textInputbar.layer.borderColor = CHColors.darkTwo.cgColor
+      self.textInputbar.layer.borderColor = CHColors.paleGrey.cgColor
       self.textInputbar.backgroundColor = CHColors.snow
       self.textView.backgroundColor = UIColor.clear
       self.textView.isHidden = false
     } else {
-
       self.textInputbar.layer.borderColor = CHColors.paleGrey.cgColor
       self.textInputbar.backgroundColor = UIColor.white
       self.textView.backgroundColor = UIColor.clear

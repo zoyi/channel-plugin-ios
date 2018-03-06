@@ -49,6 +49,7 @@
 "ch.out_of_work.fri" = "금";
 "ch.out_of_work.sat" = "토";
 "ch.out_of_work.sun" = "일";
+"ch.out_of_work.lunch_time" = "휴무시간";
 "ch.out_of_work.user_answer" = "운영시간을 자세히 알려주세요.";
 "ch.out_of_work.title" = "네, 운영시간은 다음과 같습니다.";
 "ch.mobile_verification.country.us" = "미국";
@@ -170,4 +171,5 @@
 "ch.chat.expect_response_delay.out_of_working.detail" = "운영시간 자세히 보기";
 "ch.chat.removed.title" = "삭제된 상담입니다.";
 "ch.watermark" = "Channel.io로 채팅중입니다";
-"ch.message_input.disabled_new_chat_placeholder" = "새로운 문의를 하실 수 없습니다.";
+"ch.chat.expect_response_delay.out_of_working.disabled" = "운영시간이 아닐 때에는 새로운 문의를 하실 수 없습니다.";
+"ch.message_input.placeholder.disabled_new_chat" = "새로운 문의를 하실 수 없습니다.";

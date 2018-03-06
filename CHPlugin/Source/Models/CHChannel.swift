@@ -43,6 +43,7 @@ struct CHChannel: CHEntity {
   var textColor = "white"
   var working = true
   var workingTime: [String:TimeRange]?
+  var lunchTime: TimeRange?
   var phoneNumber: String = ""
   var requestGuestInfo = true
   var servicePlan = ""
@@ -54,7 +55,12 @@ struct CHChannel: CHEntity {
   var workingType = ""
   
   var workingTimeString: String {
-    let workingTime = self.workingTime?.map({ (key, value) -> SortableWorkingTime in
+    var workingTimeDictionary = self.workingTime
+    if let launchTime = self.lunchTime {
+      workingTimeDictionary?["lunch_time"] = launchTime
+    }
+    
+    let workingTime = workingTimeDictionary?.map({ (key, value) -> SortableWorkingTime in
       let fromValue = value.from
       let toValue = value.to
       
@@ -105,7 +111,9 @@ struct CHChannel: CHEntity {
   }
 
   var allowNewChat: Bool {
-    return self.awayOption == "active" && self.working
+    return self.workingType == "always" ||
+      self.awayOption == "active" ||
+      (self.awayOption == "custom" && self.working)
   }
   
   var shouldShowWorkingTimes: Bool {
@@ -117,6 +125,11 @@ struct CHChannel: CHEntity {
   
   var shouldShowSingleManager: Bool {
     return self.expectedResponseDelay == "delayed" || !self.working
+  }
+  
+  func isDiff(from channel: CHChannel) -> Bool {
+    return self.working != channel.working || self.workingType != channel.workingType ||
+      self.expectedResponseDelay != channel.expectedResponseDelay
   }
 }
 
@@ -134,6 +147,7 @@ extension CHChannel: Mappable {
     phoneNumber             <- map["phoneNumber"]
     working                 <- map["working"]
     workingTime             <- map["workingTime"]
+    lunchTime               <- map["lunchTime"]
     requestGuestInfo        <- map["requestGuestInfo"]
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"]

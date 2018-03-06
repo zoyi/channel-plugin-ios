@@ -50,6 +50,7 @@
 "ch.out_of_work.fri" = "金";
 "ch.out_of_work.sat" = "土";
 "ch.out_of_work.sun" = "日";
+"ch.out_of_work.lunch_time" = "休憩時間";
 "ch.out_of_work.user_answer" = "営業時間を詳しく教えてください。";
 "ch.out_of_work.title" = "はい、運営時間は以下のようになります。";
 "ch.mobile_verification.country.us" = "アメリカ";
@@ -172,4 +173,5 @@
 "ch.chat.expect_response_delay.out_of_working.detail" = "営業時間を確認する";
 "ch.chat.removed.title" = "削除された評価です";
 "ch.watermark" = "Channel.ioでお届けしています";
-"ch.message_input.disabled_new_chat_placeholder" = "新たな問い合わせを受けられません";
+"ch.chat.expect_response_delay.out_of_working.disabled" = "運営時間外には新たな問い合わせを受けられません";
+"ch.message_input.placeholder.disabled_new_chat" = "新しい問い合わせができません";
