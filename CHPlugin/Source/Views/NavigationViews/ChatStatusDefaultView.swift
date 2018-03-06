@@ -195,7 +195,7 @@ class ChatStatusDefaultView : BaseView {
     self.statusLabel.textColor = plugin.textUIColor
     self.statusDescLabel.textColor = plugin.textUIColor
     
-    if channel.expectedResponseDelay == "delayed" || !channel.working {
+    if channel.shouldShowSingleManager {
       if let manager = followingManagers.first {
         self.multiAvatarView.configure(persons: [manager])
       }
@@ -203,7 +203,7 @@ class ChatStatusDefaultView : BaseView {
       self.multiAvatarView.configure(persons: followingManagers)
     }
     
-    if let workingTime = channel.workingTime, workingTime.count != 0, !channel.working {
+    if channel.shouldShowWorkingTimes {
       self.businessHoursLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.detail")
       self.businessHoursLabel.textColor = plugin.textUIColor
       self.businessHourLabelHeightConstraint?.update(offset: 50)

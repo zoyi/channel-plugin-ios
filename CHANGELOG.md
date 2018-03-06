@@ -1,5 +1,10 @@
 # Change Log
 
+### 2.6.0
+#### Updated
+* Updated Channel model
+* Updated `showChat:` to show new chat if chat id is nil
+
 ### 2.5.0
 #### Update 
 * Added `didReceivePush:` `showChat:` methods and a class that contains necessary properties to display push view

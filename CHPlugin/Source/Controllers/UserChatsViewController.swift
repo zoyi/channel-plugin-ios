@@ -55,7 +55,7 @@ class UserChatsViewController: BaseViewController {
   
   var showCompleted = false
   var didLoad = false
-  var showNewChat = true
+  var showNewChat = false
   var shouldHideTable = false
   var goToUserChatId: String? = nil
   
@@ -480,7 +480,9 @@ extension UserChatsViewController {
   }
   
   func showChatIfNeeded(_ userChats: [CHUserChat]?) {
-    if let userChats = userChats {
+    if showNewChat {
+      self.showNewUserChat(animated: false)
+    } else if let userChats = userChats {
       if userChats.count == 0 {
         self.showNewUserChat(animated: false)
       } else if userChats.count == 1 {

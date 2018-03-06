@@ -292,8 +292,6 @@
 		656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTitleView.swift; sourceTree = "<group>"; };
 		656C984D1FC6A3F10064F53E /* ChatStatusDefaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusDefaultView.swift; sourceTree = "<group>"; };
 		656C984F1FC6A4200064F53E /* ChatStatusFollowedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusFollowedView.swift; sourceTree = "<group>"; };
-		657206A31ECD4995005DF476 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = Source/ProfileViewController.swift; sourceTree = "<group>"; };
-		657206B01ECD7887005DF476 /* ProfileEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileEditViewController.swift; path = Source/ProfileEditViewController.swift; sourceTree = "<group>"; };
 		659792A51FA7167A00840F6A /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		659792A61FA7167A00840F6A /* CRToast+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CRToast+Extensions.swift"; sourceTree = "<group>"; };
 		659792A71FA7167A00840F6A /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
@@ -530,7 +528,6 @@
 				14D2AA751E24AE06006FEE22 /* Products */,
 				143D7E321E24DBE40095961F /* Frameworks */,
 				CE7DAEC6EBBF2AA341A85E13 /* Pods */,
-				6573DBB31FA705C3008D2AC2 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -650,15 +647,6 @@
 				65A2F4171FCE625400A21D8A /* ChatStatusViewModel.swift */,
 			);
 			path = NavigationViews;
-			sourceTree = "<group>";
-		};
-		6573DBB31FA705C3008D2AC2 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				657206B01ECD7887005DF476 /* ProfileEditViewController.swift */,
-				657206A31ECD4995005DF476 /* ProfileViewController.swift */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		659792A41FA7167A00840F6A /* Extensions */ = {

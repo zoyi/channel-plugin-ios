@@ -181,7 +181,7 @@ public final class ChannelPlugin: NSObject {
       
         if !ChannelPlugin.hideLauncherButton &&
           !mainStore.state.plugin.mobileHideButton &&
-          (!mainStore.state.channel.outOfWorkPlugin || mainStore.state.channel.working) {
+          (mainStore.state.channel.working || mainStore.state.channel.shouldShowLauncherButton) {
           ChannelPlugin.showLauncher(on: topController?.view, animated: true)
         }
         
@@ -340,11 +340,10 @@ public final class ChannelPlugin: NSObject {
   /**
    *  Show a user chat with given chat id
    *
-   *  - parameter chatId: a String user chat id
+   *  - parameter chatId: a String user chat id. Will open new chat if chat id is invalid
    *  - parameter completion: a closure to signal completion state
    */
-  @objc public class func showChat(with chatId: String?, completion: ((Bool) -> Void)? = nil) {
-    guard let chatId = chatId else { return }
+  @objc public class func showChat(with chatId: String? = nil, completion: ((Bool) -> Void)? = nil) {
     guard mainStore.state.checkinState.status == .success else {
       completion?(false)
       return
@@ -488,7 +487,7 @@ public final class ChannelPlugin: NSObject {
         .getPluginConfiguration(apiKey: pluginId!, params: params)
         .subscribe(onNext: { (data) in
           let channel = data["channel"] as! CHChannel
-          if channel.isBlocked() {
+          if channel.isBlocked {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }
@@ -518,7 +517,6 @@ public final class ChannelPlugin: NSObject {
   }
   
   private class func showUserChat(userChatId: String?) {
-    guard let userChatId = userChatId else { return }
     guard let topController = CHUtils.getTopController() else {
       return
     }
@@ -538,9 +536,11 @@ public final class ChannelPlugin: NSObject {
       })
     } else {
       let userChatsController = UserChatsViewController()
-      userChatsController.showNewChat = false
+      userChatsController.showNewChat = userChatId == nil
       userChatsController.shouldHideTable = true
-      userChatsController.goToUserChatId = userChatId
+      if let userChatId = userChatId {
+        userChatsController.goToUserChatId = userChatId
+      }
       
       let controller = MainNavigationController(rootViewController: userChatsController)
       ChannelPlugin.baseNavigation = controller
