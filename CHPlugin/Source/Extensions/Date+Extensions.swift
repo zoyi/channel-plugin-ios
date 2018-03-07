@@ -25,6 +25,12 @@ extension Date {
     return formatter.string(from: self)
   }
   
+  func fullDateString() -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
+    return formatter.string(from: self)
+  }
+  
   func readableTimeStamp() -> String {
     let cal = NSCalendar.current
     let now = Date()

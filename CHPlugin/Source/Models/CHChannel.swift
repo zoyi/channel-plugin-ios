@@ -113,7 +113,7 @@ struct CHChannel: CHEntity {
   var allowNewChat: Bool {
     return self.workingType == "always" ||
       self.awayOption == "active" ||
-      (self.awayOption == "custom" && self.working)
+      (self.workingType == "custom" && self.working)
   }
   
   var shouldShowWorkingTimes: Bool {

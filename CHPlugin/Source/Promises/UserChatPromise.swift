@@ -299,7 +299,7 @@ struct UserChatPromise {
       
       Alamofire.upload(
         multipartFormData: { formData in
-          let fileName = "Channel_Photo_test.png"
+          let fileName = "Channel_Photo_\(Date().fullDateString()).png"
           formData.append(file, withName: "file",
                           fileName: name ?? fileName,
                           mimeType: mimeType)

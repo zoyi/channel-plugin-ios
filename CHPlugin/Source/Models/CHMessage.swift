@@ -243,7 +243,7 @@ extension CHMessage {
       }
 
       let disposable = UserChatPromise.uploadFile(
-        name: file.name,
+        name: nil,
         file: data!,
         requestId: self.requestId!,
         userChatId: self.chatId,
