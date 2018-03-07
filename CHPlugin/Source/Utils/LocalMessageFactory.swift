@@ -159,7 +159,8 @@ struct LocalMessageFactory {
       chatId: "feedback_dummy",
       message: "",
       type: .SatisfactionFeedback,
-      createdAt: date)
+      createdAt: date,
+      id: "feedback_dummy")
   }
   
   private static func feedbackCompleted() -> CHMessage {
@@ -168,7 +169,8 @@ struct LocalMessageFactory {
       chatId: "completed_dummy",
       message: "",
       type: .SatisfactionCompleted,
-      createdAt: date)
+      createdAt: date,
+      id: "feedback_dummy")
   }
 }
 

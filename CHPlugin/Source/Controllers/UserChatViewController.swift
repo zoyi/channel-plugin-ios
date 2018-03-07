@@ -133,6 +133,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.shouldScrollToBottomAfterKeyboardShows = true
     self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
     self.textView.keyboardType = .default
+    
+    if let userChat = self.userChat, userChat.isCompleted() {
+      self.alwaysEnableRightButton = true
+    }
   }
   
   func initInputViews() {
@@ -492,7 +496,6 @@ extension UserChatViewController: StoreSubscriber {
       self.rightButton.setImage(nil, for: .disabled)
       self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
-      self.rightButton.isEnabled = true
       self.textView.placeholder = nextUserChat?.isRemoved() == true ?
         CHAssets.localized("ch.chat.removed.title") :
         CHAssets.localized("ch.review.complete.title")
