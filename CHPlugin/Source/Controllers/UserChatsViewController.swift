@@ -496,7 +496,7 @@ extension UserChatsViewController {
 
 extension UserChatsViewController {
   func showWatermarkIfNeeded() {
-    if mainStore.state.channel.servicePlan != "free" {
+    if !mainStore.state.channel.isBlocked {
       return
     }
     

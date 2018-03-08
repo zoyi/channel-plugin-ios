@@ -53,6 +53,8 @@ struct CHChannel: CHEntity {
   var timeZone = ""
   var awayOption = ""
   var workingType = ""
+  var trial = true
+  var trialExpiryDate: Date? = nil
   
   var workingTimeString: String {
     var workingTimeDictionary = self.workingTime
@@ -155,5 +157,7 @@ extension CHChannel: Mappable {
     servicePlan             <- map["servicePlan"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden
+    trial                   <- map["trial"]
+    trialExpiryDate         <- (map["trialExpiryDate"], CustomDateTransform())
   }
 }
