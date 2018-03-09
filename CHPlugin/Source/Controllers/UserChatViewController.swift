@@ -106,9 +106,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    
-    mainStore.subscribe(self)
     self.chatManager.willAppear()
+    mainStore.subscribe(self)
   }
 
   override func viewWillDisappear(_ animated: Bool) {

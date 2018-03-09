@@ -487,7 +487,7 @@ public final class ChannelPlugin: NSObject {
         .getPluginConfiguration(apiKey: pluginId!, params: params)
         .subscribe(onNext: { (data) in
           let channel = data["channel"] as! CHChannel
-          if channel.isBlocked && channel.trial {
+          if channel.isBlocked && !channel.trial {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }

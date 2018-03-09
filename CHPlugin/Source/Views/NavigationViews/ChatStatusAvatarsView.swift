@@ -65,14 +65,10 @@ class ChatStatusAvatarsView: BaseView {
   
   override func setLayouts() {
     super.setLayouts()
-    
-    self.snp.makeConstraints { [weak self] (make) in
-      self?.widthConstraint = make.width.equalTo(0).constraint
-    }
-    
+
     self.firstAvatarView.snp.remakeConstraints { [weak self] (make) in
       guard let s = self else { return }
-      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize))
+      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize)).priority(750)
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
       make.leading.equalToSuperview()
@@ -81,7 +77,7 @@ class ChatStatusAvatarsView: BaseView {
     
     self.secondAvatarView.snp.remakeConstraints { [weak self] (make) in
       guard let s = self else { return }
-      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize))
+      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize)).priority(750)
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
       s.secondTrailingContraint = make.trailing.equalToSuperview().constraint
@@ -90,7 +86,7 @@ class ChatStatusAvatarsView: BaseView {
     
     self.thirdAvatarView.snp.remakeConstraints { [weak self] (make) in
       guard let s = self else { return }
-      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize))
+      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize)).priority(750)
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
       make.trailing.equalToSuperview()
@@ -102,7 +98,7 @@ class ChatStatusAvatarsView: BaseView {
     guard self.isIdentical(persons: persons) == false else { return }
     self.persons = persons
     
-    self.widthConstraint?.deactivate()
+    self.isHidden = persons.count == 0
     if persons.count == 1 {
       self.firstAvatarView.configure(persons[0])
       self.firstTrailingContraint?.activate()
@@ -127,11 +123,6 @@ class ChatStatusAvatarsView: BaseView {
       self.secondTrailingContraint?.deactivate()
       self.thirdLeadingConstraint?.activate()
       self.layoutThreeAvatars()
-    } else {
-      self.widthConstraint?.activate()
-      self.firstAvatarView.alpha = 0
-      self.secondAvatarView.alpha = 0
-      self.thirdAvatarView.alpha = 0
     }
   }
   

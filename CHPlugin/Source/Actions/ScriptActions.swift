@@ -13,5 +13,5 @@ struct GetScripts: Action {
 }
 
 struct GetScript: Action {
-  public let payload: CHScript
+  public let payload: CHScript?
 }
