@@ -49,7 +49,7 @@ Pod::Spec.new do |s|
   s.dependency 'CHSlackTextViewController'
   s.dependency 'MGSwipeTableCell'
   s.dependency 'M13ProgressSuite'
-  s.dependency 'CHPhotoBrowser', '2.1.7'
+  s.dependency 'CHPhotoBrowser'
   s.dependency 'SVProgressHUD'
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit'
