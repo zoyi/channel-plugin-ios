@@ -136,8 +136,12 @@ extension CHUserChat {
     return self.state == "closed" || self.state == "resolved" || self.state == "removed"
   }
   
-  func isReady() -> Bool {
+  func isReadyOrOpen() -> Bool {
     return self.state == "ready" || self.state == "open"
+  }
+  
+  func isOpen() -> Bool {
+    return self.state == "open"
   }
   
   func isEngaged() -> Bool {

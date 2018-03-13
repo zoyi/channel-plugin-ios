@@ -246,7 +246,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   func initNavigationExtension() {
     let view: UIView!
-    if self.userChat?.isReady() == true || self.userChat == nil {
+    if self.userChat?.isOpen() == true || self.userChat == nil {
       view = ChatStatusViewFactory.createDefaultExtensionView(
         fit: self.view.bounds.width,
         userChat: self.userChat,
@@ -424,11 +424,13 @@ extension UserChatViewController: StoreSubscriber {
     self.fetchChatIfNeeded()
     
     self.userChat = userChat
+    self.chatManager.chat = userChat
     self.channel = state.channel
   }
 
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
-    if self.userChat?.state != nextUserChat?.state || self.channel.isDiff(from: state.channel) {
+    if (self.userChat?.isReadyOrOpen() == true && nextUserChat?.isReadyOrOpen() == false)
+      || self.channel.isDiff(from: state.channel) {
       self.initNavigationViews()
     }
     
@@ -1015,9 +1017,9 @@ extension UserChatViewController : UIDocumentInteractionControllerDelegate {
 
 //extension UserChatViewController : CHNavigationDelegate {
 //  func willPopViewController(willShow: UIViewController) {
-////    if self.userChatId != nil {
-////      self.requestReadAll()
-////    }
+//    if self.userChatId != nil {
+//      self.requestReadAll()
+//    }
 //  }
 //}
 

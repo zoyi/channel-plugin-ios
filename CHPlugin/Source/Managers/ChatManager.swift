@@ -331,13 +331,13 @@ extension ChatManager {
       .subscribe(onNext: { [weak self] (chatResponse) in
         guard let userChat = chatResponse.userChat,
           let session = chatResponse.session else { return }
-        self?.chatId = userChat.id
-        self?.chat = userChat
-        self?.didChatLoaded = true
-        mainStore.dispatch(CreateUserChat(payload: userChat))
         mainStore.dispatch(CreateSession(payload: session))
+        mainStore.dispatch(CreateUserChat(payload: userChat))
         WsService.shared.join(chatId: userChat.id)
         
+        self?.didChatLoaded = true
+        self?.chatId = userChat.id
+
         completion(userChat.id)
       }, onError: { [weak self] (error) in
         self?.didChatLoaded = false
@@ -400,7 +400,6 @@ extension ChatManager {
   }
   
   func requestReadAll() {
-    guard self.didLoad else { return }
     guard !self.isRequstingReadAll else { return }
     
     if self.chat?.session == nil {
