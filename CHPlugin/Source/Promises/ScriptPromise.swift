@@ -13,7 +13,7 @@ import RxSwift
 import ObjectMapper
 
 struct ScriptPromise {
-  static func get(pluginId: String, scriptKey: String) -> Observable<CHScript> {
+  static func get(pluginId: String, scriptKey: String) -> Observable<CHScript?> {
     return Observable.create { subscriber in
       let req = Alamofire.request(RestRouter.GetScript(pluginId, scriptKey))
         .validate(statusCode: 200..<300)
@@ -21,11 +21,7 @@ struct ScriptPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            guard let script = Mapper<CHScript>()
-              .map(JSONObject: json["script"].object) else {
-                subscriber.onError(CHErrorPool.scriptParseError)
-                break
-            }
+            let script = Mapper<CHScript>().map(JSONObject: json["script"].object)
             subscriber.onNext(script)
             subscriber.onCompleted()
             break

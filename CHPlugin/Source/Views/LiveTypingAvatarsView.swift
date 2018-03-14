@@ -66,6 +66,10 @@ class LiveTypingAvatarsView: BaseView {
   override func setLayouts() {
     super.setLayouts()
     
+    self.snp.makeConstraints { [weak self] (make) in
+      self?.widthConstraint = make.width.equalTo(0).constraint
+    }
+    
     self.firstAvatarView.snp.remakeConstraints { [weak self] (make) in
       guard let s = self else { return }
       make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize))
@@ -100,6 +104,7 @@ class LiveTypingAvatarsView: BaseView {
     self.persons = persons
     
     self.widthConstraint?.deactivate()
+    
     if persons.count == 1 {
       self.firstAvatarView.configure(persons[0])
       self.firstTrailingContraint?.activate()

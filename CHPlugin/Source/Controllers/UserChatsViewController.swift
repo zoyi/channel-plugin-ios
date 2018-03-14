@@ -226,6 +226,8 @@ class UserChatsViewController: BaseViewController {
       controller.userChatId = userChatId
     }
     
+    self.showNewChat = true
+    
     controller.preloadText = text
     controller.signalForNewChat()
       .subscribe { [weak self] event in
@@ -248,6 +250,7 @@ class UserChatsViewController: BaseViewController {
           UpdateFollowingManagers(payload: managers)
         )
         self?.navigationController?.pushViewController(controller, animated: animated)
+        self?.showNewChat = false
         self?.shouldHideTable = false
       }).disposed(by: self.disposeBag)
   }
@@ -302,8 +305,8 @@ extension UserChatsViewController: StoreSubscriber {
 
     self.nextSeq = state.userChatsState.nextSeq
     self.tableView.isHidden = (self.userChats.count == 0 || !self.didLoad) || self.shouldHideTable
-    self.emptyView.isHidden = self.userChats.count != 0 && self.didLoad
-
+    self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad || self.showNewChat
+    
     self.plusButton.configure(
       bgColor: state.plugin.color,
       borderColor: state.plugin.borderColor,
@@ -480,7 +483,7 @@ extension UserChatsViewController {
   }
   
   func showChatIfNeeded(_ userChats: [CHUserChat]?) {
-    if showNewChat {
+    if self.showNewChat  {
       self.showNewUserChat(animated: false)
     } else if let userChats = userChats {
       if userChats.count == 0 {
@@ -496,7 +499,7 @@ extension UserChatsViewController {
 
 extension UserChatsViewController {
   func showWatermarkIfNeeded() {
-    if mainStore.state.channel.servicePlan != "free" {
+    if !mainStore.state.channel.isBlocked {
       return
     }
     
@@ -515,7 +518,6 @@ extension UserChatsViewController {
   }
   
   func progressWatermark(_ offset: CGFloat) {
-    //self.tableViewBottomConstraint?.update(offset: offset)
     self.watermarkView.alpha = offset/40
   }
 }

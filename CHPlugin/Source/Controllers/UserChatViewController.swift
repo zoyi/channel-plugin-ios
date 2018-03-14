@@ -106,9 +106,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    
-    mainStore.subscribe(self)
     self.chatManager.willAppear()
+    mainStore.subscribe(self)
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -787,6 +786,15 @@ extension UserChatViewController {
     let section = indexPath.section
     if section == 0 && self.channel.servicePlan == "free" {
       let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
+      _ = cell.signalForClick().subscribe { _ in
+        let channel = mainStore.state.channel
+        let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
+        
+        if let url = URL(string: urlString) {
+          url.open()
+        }
+      }
       cell.transform = tableView.transform
       return cell
     } else if section == 0 || (section == 1 && self.channel.servicePlan == "free") {

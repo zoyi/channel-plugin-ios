@@ -12,7 +12,10 @@ func scriptsReducer(action: Action, state: ScriptsState?) -> ScriptsState {
   var state = state
   switch action {
   case let action as GetScript:
-    return state?.upsert(scripts: [action.payload]) ?? ScriptsState()
+    if let script = action.payload {
+      return state?.upsert(scripts: [script]) ?? ScriptsState()
+    }
+    return state ?? ScriptsState()
   case let action as GetScripts:
     return state?.upsert(scripts: action.payload) ?? ScriptsState()
   default:

@@ -261,10 +261,12 @@ extension ChatManager {
   func fetchForNewUserChat() -> Observable<Any?> {
     return Observable.create { [weak self] subscriber in
       guard let s = self else { return Disposables.create() }
+      guard s.state != .infoLoading else { return Disposables.create() }
+      
       s.state = .infoLoading
       
       let signal = s.getPlugin()
-        .flatMap({ (plugin, bot) -> Observable<CHScript> in
+        .flatMap({ (plugin, bot) -> Observable<CHScript?> in
           mainStore.dispatchOnMain(GetPlugin(plugin: plugin, bot: bot))
           return s.getWelcomeScript()
         })
@@ -430,7 +432,7 @@ extension ChatManager {
     return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
   }
   
-  func getWelcomeScript() -> Observable<CHScript> {
+  func getWelcomeScript() -> Observable<CHScript?> {
     let scriptKey = mainStore.state.guest.ghost ? "welcome_ghost" : "welcome"
     return ScriptPromise.get(pluginId: mainStore.state.plugin.id, scriptKey: scriptKey)
   }
