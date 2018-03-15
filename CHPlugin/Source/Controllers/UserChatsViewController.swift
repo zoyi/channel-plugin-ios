@@ -485,6 +485,8 @@ extension UserChatsViewController {
   func showChatIfNeeded(_ userChats: [CHUserChat]?) {
     if self.showNewChat  {
       self.showNewUserChat(animated: false)
+    } else if let userChatId = self.goToUserChatId {
+      self.showNewUserChat(userChatId: userChatId, animated: false)
     } else if let userChats = userChats {
       if userChats.count == 0 {
         self.showNewUserChat(animated: false)

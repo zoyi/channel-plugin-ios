@@ -13,7 +13,7 @@ struct SessionsState: StateType {
 
   func findBy(userChatId: String) -> CHSession? {
     return self.sessions
-      .filter({ $1.chatType == "UserChat" && $1.chatId == userChatId }).first?.value
+      .filter({ $1.chatType == "UserChat" && $1.chatId == userChatId && $1.personType != "Manager" }).first?.value
   }
   
   mutating func remove(session: CHSession) -> SessionsState {
