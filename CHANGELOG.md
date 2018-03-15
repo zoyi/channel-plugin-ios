@@ -4,7 +4,10 @@
 #### Updated
 * Updated Channel model
 * Updated `showChat:` to show new chat if chat id is nil
-
+* Allowed trial channel to pass checkin validation
+* Improved error logs
+* Removed CHPhotoBrowser specific version from dependency
+ 
 ### 2.5.0
 #### Update 
 * Added `didReceivePush:` `showChat:` methods and a class that contains necessary properties to display push view

@@ -189,18 +189,21 @@ public final class ChannelPlugin: NSObject {
         ChannelPlugin.registerPushToken()
       
       }, onError: { error in
-        dlog("Check in error: \(error)")
         let code = (error as NSError).code
         if code == -1001 {
+          dlog("Checkin error: network timeout")
           mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
           completion?(.networkTimeout)
         } else if code == CHErrorCode.versionError.rawValue {
+          dlog("Checkin error: version mismatch")
           mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
           completion?(.notAvailableVersion)
         } else if code == CHErrorCode.serviceBlockedError.rawValue {
+          dlog("Checkin error: require payment")
           mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
           completion?(.requirePayment)
         } else {
+          dlog("Checkin error: unknown")
           mainStore.dispatch(UpdateCheckinState(payload: .checkinError))
           completion?(.checkinError)
         }
@@ -218,7 +221,7 @@ public final class ChannelPlugin: NSObject {
     
     PluginPromise.unregisterPushToken()
       .subscribe(onNext: { _ in
-        dlog("[CHPlugin] : Checkout success")
+        dlog("Checkout success")
       }, onError: { (error) in
         
       }).disposed(by: disposeBeg)
@@ -451,9 +454,9 @@ public final class ChannelPlugin: NSObject {
       properties: properties,
       sysProperties: sysProperties)
       .subscribe(onNext: { (event) in
-        dlog("[CHPlugin] \(name) event sent successfully")
+        dlog("\(name) event sent successfully")
       }, onError: { (error) in
-        dlog("[CHPlugin] \(name) event failed")
+        dlog("\(name) event failed")
       }).disposed(by: disposeBeg)
   }
   
@@ -557,10 +560,10 @@ public final class ChannelPlugin: NSObject {
     PluginPromise
       .registerPushToken(channelId: channelId, token: pushToken)
       .subscribe(onNext: { (result) in
-        dlog("[CHPlugin] register token success")
+        dlog("register token success")
       }
       ,onError:{ error in
-        dlog("[CHPlugin] register token failed")
+        dlog("register token failed")
       }).disposed(by: disposeBeg)
   }
   
@@ -614,10 +617,10 @@ public final class ChannelPlugin: NSObject {
       .getAll(pluginId: mainStore.state.plugin.id)
       .subscribe(onNext: { (scripts) in
         mainStore.dispatch(GetScripts(payload: scripts))
-        dlog("[CHPlugin] fetched scripts successfully")
+        dlog("fetched scripts successfully")
       }, onError:{ error in
         // no action
-        dlog("[CHPlugin] fetched scripts failed")
+        dlog("fetched scripts failed")
       }).disposed(by: disposeBeg)
   }
   
