@@ -69,7 +69,11 @@ struct MessagesState: StateType {
   
   mutating func upsert(messages: [CHMessage]) -> MessagesState {
     for message in messages {
-      self.messageDictionary[message.id] = message
+      if let isWelcome = message.botOption?["welcome"], isWelcome {
+        self.messageDictionary["welcome_dummy"] = message
+      } else {
+        self.messageDictionary[message.id] = message
+      }
     }
     return self
   }

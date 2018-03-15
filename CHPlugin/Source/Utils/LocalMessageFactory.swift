@@ -99,7 +99,7 @@ struct LocalMessageFactory {
     let msg = mainStore.state.scriptsState.getWelcomeMessage(guest: guest)
     let bot = mainStore.state.botsState.getDefaultBot()
     return CHMessage(
-      chatId: "dummy",message: msg, type: .WelcomeMessage, entity: bot, id: "dummy"
+      chatId: "welcome_dummy",message: msg, type: .WelcomeMessage, entity: bot, id: "welcome_dummy"
     )
   }
   
