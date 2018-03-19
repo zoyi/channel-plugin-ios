@@ -118,7 +118,7 @@ class UserChatsViewController: BaseViewController {
     
     self.plusButton.signalForClick()
       .subscribe { [weak self] _ in
-        self?.showNewUserChat()
+        self?.showUserChat()
       }.disposed(by: self.disposeBag)
     
     self.watermarkView.signalForClick()
@@ -220,7 +220,7 @@ class UserChatsViewController: BaseViewController {
     }
   }
   
-  func showNewUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
+  func showUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
     let controller = UserChatViewController()
     if let userChatId = userChatId {
       controller.userChatId = userChatId
@@ -234,7 +234,7 @@ class UserChatsViewController: BaseViewController {
         self?.navigationController?.popViewController(
           animated: true, completion: {
             let text = event.element as! String
-            self?.showNewUserChat(text: text, animated: true)
+            self?.showUserChat(text: text, animated: true)
         })
       }.disposed(by: self.disposeBag)
     
@@ -415,7 +415,7 @@ extension UserChatsViewController: UITableViewDelegate {
     tableView.deselectRow(at: indexPath, animated: true)
 
     let userChat = self.userChats[indexPath.row]
-    self.showNewUserChat(userChatId: userChat.id, animated: true)
+    self.showUserChat(userChatId: userChat.id, animated: true)
   }
 
   func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -433,9 +433,9 @@ extension UserChatsViewController: UITableViewDelegate {
 
 extension UserChatsViewController {
   func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false) {
-    if showIndicator {
-      SVProgressHUD.show()
-    }
+//    if showIndicator {
+//      SVProgressHUD.show()
+//    }
 
     UserChatPromise.getChats(
       since: isInit ? nil : self.nextSeq,
@@ -446,15 +446,15 @@ extension UserChatsViewController {
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat])
 
         mainStore.dispatch(GetUserChats(payload: data))
-        SVProgressHUD.dismiss()
+        //SVProgressHUD.dismiss()
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.show(animated:true)
         self?.didLoad = true
-        SVProgressHUD.dismiss()
+        //SVProgressHUD.dismiss()
         //mainStore.dispatch(FailedGetUserChats(error: error))
       }, onCompleted: {
-        SVProgressHUD.dismiss()
+        //SVProgressHUD.dismiss()
         dlog("Get UserChats complete")
       }).disposed(by: self.disposeBag)
   }
@@ -484,17 +484,18 @@ extension UserChatsViewController {
   
   func showChatIfNeeded(_ userChats: [CHUserChat]?) {
     if self.showNewChat  {
-      self.showNewUserChat(animated: false)
+      self.showUserChat(animated: false)
     } else if let userChatId = self.goToUserChatId {
-      self.showNewUserChat(userChatId: userChatId, animated: false)
+      self.showUserChat(userChatId: userChatId, animated: false)
     } else if let userChats = userChats {
       if userChats.count == 0 {
-        self.showNewUserChat(animated: false)
+        self.showUserChat(animated: false)
       } else if userChats.count == 1 {
-        self.showNewUserChat(userChatId: userChats[0].id, animated: false)
+        self.shouldHideTable = true
+        self.showUserChat(userChatId: userChats[0].id, animated: false)
       }
     } else if let userChatId = self.goToUserChatId {
-      self.showNewUserChat(userChatId: userChatId, animated: false)
+      self.showUserChat(userChatId: userChatId, animated: false)
     }
   }
 }

@@ -531,11 +531,11 @@ public final class ChannelPlugin: NSObject {
       //do nothing
     } else if topController is UserChatsViewController {
       let userChatsController = topController as! UserChatsViewController
-      userChatsController.showNewUserChat(userChatId: userChatId)
+      userChatsController.showUserChat(userChatId: userChatId)
     } else if topController is UserChatViewController {
       topController.navigationController?.popViewController(animated: false, completion: {
         let userChatsController = CHUtils.getTopController() as! UserChatsViewController
-        userChatsController.showNewUserChat(userChatId: userChatId)
+        userChatsController.showUserChat(userChatId: userChatId)
       })
     } else {
       let userChatsController = UserChatsViewController()
