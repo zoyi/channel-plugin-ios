@@ -352,9 +352,11 @@ extension ChatManager {
       self?.nextSeq = ""
 
       if let chatId = self?.chatId, chatId != "" {
-        mainStore.dispatch(RemoveMessages(payload: chatId))
-        _ = self?.fetchChat().subscribe({ (_) in
+        _ = self?.fetchChat().subscribe(onNext: { _ in
+          mainStore.dispatch(RemoveMessages(payload: chatId))
           subscribe.onNext(chatId)
+        }, onError: { error in
+          subscribe.onError(error)
         })
         return Disposables.create()
       }

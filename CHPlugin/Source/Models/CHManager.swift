@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RxSwift
 import ObjectMapper
 
 struct CHManager: CHEntity {
@@ -53,4 +54,10 @@ struct ReviewAvatar: CHEntity {
   var color = ""
   // Manager
   var username = ""
+}
+
+extension CHManager {
+  static func getRecentFollowers() -> Observable<[CHManager]> {
+    return PluginPromise.getFollowingManagers()
+  }
 }
