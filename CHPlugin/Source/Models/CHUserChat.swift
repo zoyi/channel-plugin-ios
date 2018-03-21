@@ -163,7 +163,7 @@ extension CHUserChat: Equatable {
  */
 
 @objc
-public class ChannelUserChat: NSObject {
+public class PushEvent: NSObject {
   var chatId: String = ""
   var message: String = ""
   var managerName: String = ""

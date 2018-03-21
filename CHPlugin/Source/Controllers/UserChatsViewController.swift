@@ -489,6 +489,7 @@ extension UserChatsViewController {
       self.showUserChat(userChatId: userChatId, animated: false)
     } else if let userChats = userChats {
       if userChats.count == 0 {
+        self.shouldHideTable = true
         self.showUserChat(animated: false)
       } else if userChats.count == 1 {
         self.shouldHideTable = true

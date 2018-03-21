@@ -39,7 +39,7 @@ public protocol ChannelDelegate: class {
   @objc optional func willHideChatList() -> Void /* notify when chat list is about to hide */
   
   @objc optional func didReceiveError(error: Error) -> Void
-  @objc optional func didReceivePush(with userChat: ChannelUserChat) -> Void
+  @objc optional func didReceivePush(with event: PushEvent) -> Void
 }
 
 @objc
@@ -96,7 +96,7 @@ public final class ChannelPlugin: NSObject {
         ChannelPlugin.showNotification(pushData: push)
       }
       if let push = push {
-        ChannelPlugin.delegate?.didReceivePush?(with: ChannelUserChat(with: push))
+        ChannelPlugin.delegate?.didReceivePush?(with: PushEvent(with: push))
       }
     }
     

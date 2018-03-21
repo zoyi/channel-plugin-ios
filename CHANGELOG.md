@@ -1,5 +1,9 @@
 # Change Log
 
+### 2.6.2
+#### Updated
+* Renamed `ChannelUserChat` to `PushEvent`
+
 ### 2.6.0
 #### Updated
 * Updated Channel model
