@@ -217,6 +217,8 @@ enum RestRouter: URLRequestConvertible {
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     }
+    
+    urlRequest.timeoutInterval = 5
     return urlRequest
   }
 

@@ -238,20 +238,20 @@ class UserChatsViewController: BaseViewController {
         })
       }.disposed(by: self.disposeBag)
     
-    controller.signalForProfile()
-      .subscribe { [weak self] _ in
-        self?.showProfileView()
-      }.disposed(by: self.disposeBag)
-    
-    PluginPromise.getFollowingManagers()
+    controller.signalForProfile().subscribe { [weak self] _ in
+      self?.showProfileView()
+    }.disposed(by: self.disposeBag)
+
+    CHManager.getRecentFollowers()
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext:{ [weak self] (managers) in
-        mainStore.dispatch(
-          UpdateFollowingManagers(payload: managers)
-        )
+      .subscribe(onNext: { [weak self] (managers) in
+        mainStore.dispatch(UpdateFollowingManagers(payload: managers))
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.shouldHideTable = false
+        dlog("got following managers")
+      }, onError: { (error) in
+        dlog("error getting following managers: \(error.localizedDescription)")
       }).disposed(by: self.disposeBag)
   }
 

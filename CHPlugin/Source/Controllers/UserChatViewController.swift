@@ -378,10 +378,12 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.scrollToBottom(false)
     
     message.send().subscribe(onNext: { [weak self] (updated) in
+      dlog("Message has been sent successfully")
       self?.chatManager.sendTyping(isStop: true)
       mainStore.dispatch(CreateMessage(payload: updated))
       self?.showUserInfoGuideIfNeeded()
     }, onError: { (error) in
+      dlog("Message has been failed to send")
       message.state = .Failed
       mainStore.dispatch(CreateMessage(payload: message))
     }).disposed(by: self.disposeBag)
@@ -469,7 +471,9 @@ extension UserChatViewController: StoreSubscriber {
         .subscribe(onNext: { [weak self] (event) in
         self?.chatManager.fetchMessages()
         self?.scrollToBottom(false)
+        dlog("fetched chat info")
       }, onError: { [weak self] error in
+        dlog("failed to fetch chat info - \(error.localizedDescription)")
         self?.navigationController?.popViewController(animated: true)
       }).disposed(by: self.disposeBag)
     }

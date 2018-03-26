@@ -262,10 +262,10 @@ extension CHMessage {
   
   func sendText() -> Observable<CHMessage> {
     return Observable.create { subscriber in
-      let disposable = UserChatPromise.createMessage(userChatId: self.chatId,
-                                        message: self.message ?? "",
-                                        requestId: self.requestId!)
-        .subscribe(onNext: { (message) in
+      let disposable = UserChatPromise.createMessage(
+        userChatId: self.chatId,
+        message: self.message ?? "",
+        requestId: self.requestId!).subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)
