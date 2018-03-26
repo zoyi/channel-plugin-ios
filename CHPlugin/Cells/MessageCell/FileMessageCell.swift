@@ -11,7 +11,7 @@ import Reusable
 import SnapKit
 
 class FileMessageCell: MessageCell {
-  let fileView = CHMFileView().then {
+  let fileView = FileMessageView().then {
     $0.backgroundColor = UIColor.white
   }
   
@@ -30,7 +30,7 @@ class FileMessageCell: MessageCell {
   override func setLayouts() {
     super.setLayouts()
     self.fileView.snp.makeConstraints { [weak self] (make) in
-      make.height.equalTo(CHMFileView.Metric.HEIGHT)
+      make.height.equalTo(FileMessageView.Metric.HEIGHT)
       self?.topConstraint = make.top.equalToSuperview().inset(5).priority(850).constraint
       self?.topToTimeConstraint = make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(3).priority(750).constraint
       self?.topToTextConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3).constraint
@@ -75,7 +75,7 @@ class FileMessageCell: MessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
     height += 3
-    height += CHMFileView.viewHeight(fits: width, viewModel: viewModel)
+    height += FileMessageView.viewHeight(fits: width, viewModel: viewModel)
     return height
   }
 }

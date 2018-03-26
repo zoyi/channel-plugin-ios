@@ -1,5 +1,5 @@
 //
-//  CHMBubbleView.swift
+//  TextMessageView.swft
 //  CHPlugin
 //
 //  Created by 이수완 on 2017. 3. 20..
@@ -9,7 +9,7 @@
 import Foundation
 import SnapKit
 
-class CHMBubbleView : BaseView {
+class TextMessageView : BaseView {
 
   //MARK: Constant
 
@@ -114,7 +114,7 @@ class CHMBubbleView : BaseView {
   }
 }
 
-extension CHMBubbleView : UITextViewDelegate {
+extension TextMessageView : UITextViewDelegate {
   func textView(_ textView: UITextView,
                 shouldInteractWith URL: URL,
                 in characterRange: NSRange) -> Bool {

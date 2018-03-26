@@ -52,7 +52,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     $0.textColor = Color.timestamp
   }
   
-  let textMessageView = CHMBubbleView()
+  let textMessageView = TextMessageView()
 
   let resendButtonView = UIButton().then {
     $0.isHidden = true
@@ -145,7 +145,7 @@ class MessageCell: BaseTableViewCell, Reusable {
 
     //bubble height
     if viewModel.message.message != "" {
-      viewHeight += CHMBubbleView.viewHeight(fits: bubbleMaxWidth, viewModel: viewModel)
+      viewHeight += TextMessageView.viewHeight(fits: bubbleMaxWidth, viewModel: viewModel)
     }
     
     return viewHeight

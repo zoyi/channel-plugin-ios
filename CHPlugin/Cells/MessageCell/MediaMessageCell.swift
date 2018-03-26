@@ -11,7 +11,7 @@ import Reusable
 import SnapKit
 
 class MediaMessageCell: MessageCell {
-  let mediaView = CHMImageView().then {
+  let mediaView = MediaMessageView().then {
     $0.backgroundColor = UIColor.white
   }
   
@@ -54,7 +54,7 @@ class MediaMessageCell: MessageCell {
     super.configure(viewModel)
     self.mediaView.configure(message: viewModel, isThumbnail: true)
     
-    let size = CHMImageView.viewSize(fits: self.width, viewModel: viewModel)
+    let size = MediaMessageView.viewSize(fits: self.width, viewModel: viewModel)
     self.widthConstraint?.update(offset: size.width)
     self.heightConstraint?.update(offset: size.height)
     
@@ -84,7 +84,7 @@ class MediaMessageCell: MessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
     height += 3
-    height += CHMImageView.viewSize(fits: width, viewModel: viewModel).height
+    height += MediaMessageView.viewSize(fits: width, viewModel: viewModel).height
     return height
   }
 }

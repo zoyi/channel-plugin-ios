@@ -9,7 +9,7 @@
 import Foundation
 import SnapKit
 
-class CHMFileView : BaseView {
+class FileMessageView : BaseView {
   
   //MARK: Constant
   

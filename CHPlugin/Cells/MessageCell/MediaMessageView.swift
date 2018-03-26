@@ -12,7 +12,7 @@ import M13ProgressSuite
 import DKImagePickerController
 import SnapKit
 
-class CHMImageView : BaseView {
+class MediaMessageView : BaseView {
 
   //MARK: properties
   

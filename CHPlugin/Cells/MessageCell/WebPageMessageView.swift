@@ -10,7 +10,7 @@ import Foundation
 import SDWebImage
 import SnapKit
 
-class CHMWebpageView : BaseView {
+class WebPageMessageView : BaseView {
   struct Metric {
     static let imageHeight = 120.f // TODO: support dynamic height?
   }
