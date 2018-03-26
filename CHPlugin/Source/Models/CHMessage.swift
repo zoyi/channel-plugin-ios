@@ -25,6 +25,7 @@ struct CHMessage: ModelType {
   var personType = ""
   var personId = ""
   var message: String?
+  var messageV2: NSAttributedString?
   var requestId: String?
   var botOption: [String: Bool]? = nil
   
@@ -59,7 +60,7 @@ struct CHMessage: ModelType {
     } else if self.log != nil && self.log?.action == "resolve" {
       return CHAssets.localized("ch.review.require.preview")
     }
-    return self.message
+    return self.messageV2?.string
   }
   
   var isWelcome: Bool {
@@ -109,7 +110,7 @@ extension CHMessage: Mappable {
     self.progress = 1
   }
   
-  init(chatId: String, guest: CHGuest, message: String) {
+  init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(now.timeIntervalSince1970 * 1000)"
     self.id = requestId
@@ -121,13 +122,13 @@ extension CHMessage: Mappable {
     self.requestId = requestId
     self.createdAt = now
     self.state = .New
-    self.messageType = .UserMessage
+    self.messageType = messageType
     self.progress = 1
     //self.isRemote = false
   }
   
   init(chatId: String, guest: CHGuest, asset: DKAsset) {
-    self.init(chatId: chatId, guest: guest, message: "")
+    self.init(chatId: chatId, guest: guest, message: "", messageType: .Media)
     self.file = CHFile(imageAsset: asset)
     self.progress = 0
   }
@@ -143,13 +144,25 @@ extension CHMessage: Mappable {
     personType  <- map["personType"]
     personId    <- map["personId"]
     message     <- map["message"]
+    messageV2   <- (map["messageV2"], CustomMessageTransform())
     requestId   <- map["requestId"]
     file        <- map["file"]
     webPage     <- map["webPage"]
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
-    messageType = self.log != nil ? .Log : .Default
+    
+    if self.log != nil {
+      messageType = .Log
+    } else if self.file?.image == true {
+      messageType = .Media
+    } else if self.file != nil {
+      messageType = .File
+    } else if self.webPage != nil {
+      messageType = .WebPage
+    } else {
+      messageType = .Default
+    }
   }
 }
 
