@@ -161,6 +161,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   fileprivate func initTableView() {
     // TableView configuration
+    self.tableView.register(cellType: MediaMessageCell.self)
+    self.tableView.register(cellType: FileMessageCell.self)
+    self.tableView.register(cellType: WebPageMessageCell.self)
     self.tableView.register(cellType: MessageCell.self)
     self.tableView.register(cellType: NewMessageDividerCell.self)
     self.tableView.register(cellType: DateCell.self)
@@ -556,14 +559,20 @@ extension UserChatViewController: StoreSubscriber {
   
   func fixedOffsetIfNeeded(previousOffset: CGPoint, hasNewMessage: Bool) {
     var offset = previousOffset
-    if let lastMessage = self.messages.first,
-      lastMessage.isMine(),
-      offset.y > UIScreen.main.bounds.height/2,
-      hasNewMessage {
+    if let lastMessage = self.messages.first, !lastMessage.isMine(),
+      offset.y > UIScreen.main.bounds.height/2, hasNewMessage {
       let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
       let viewModel = MessageCellModel(message: lastMessage, previous: previous)
-      offset.y += MessageCell.measureHeight(fits: 0, viewModel: viewModel)
-
+      if lastMessage.messageType == .WebPage {
+        offset.y += WebPageMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+      } else if lastMessage.messageType == .Media {
+        offset.y += MediaMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+      } else if lastMessage.messageType == .File {
+        offset.y += FileMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+      } else {
+        offset.y += MessageCell.cellHeight(fits: 0, viewModel: viewModel)
+      }
+      
       self.tableView.contentOffset = offset
     } else if hasNewMessage {
       self.scrollToBottom(false)
@@ -660,7 +669,7 @@ extension UserChatViewController {
           
           messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
           //TODO: rather create array of signal and trigger in order
-          self?.sendMessageRecursively(allMessages: messages, currentIndex: 0)
+          self?.chatManager.sendMessageRecursively(allMessages: messages, currentIndex: 0)
         }
         
         if let userChatId = self?.userChatId {
@@ -677,31 +686,6 @@ extension UserChatViewController {
         }
       }
       self.present(pickerController, animated: true, completion: nil)
-  }
-
-  private func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
-    var message = allMessages.get(index: currentIndex)
-    message?.send().subscribe(onNext: { [weak self] (updated) in
-      message?.state = .Sent
-      mainStore.dispatch(CreateMessage(payload: updated))
-
-      if !(self?.isViewLoaded == true && self?.view.window != nil){
-        let messages = messagesSelector(state: mainStore.state, userChatId: self?.userChatId)
-        self?.updatePhotoUrls(messages: messages)
-      }
-
-      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
-    }, onError: { [weak self] (error) in
-      message?.state = .Failed
-      mainStore.dispatch(CreateMessage(payload: message!))
-
-      if !(self?.isViewLoaded == true && self?.view.window != nil) {
-        let messages = messagesSelector(state: mainStore.state, userChatId: self?.userChatId)
-        self?.updatePhotoUrls(messages: messages)
-      }
-
-      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
-    }).disposed(by: self.disposeBag)
   }
 
   private func updatePhotoUrls(messages: [CHMessage]) {
@@ -770,20 +754,26 @@ extension UserChatViewController {
     let viewModel = MessageCellModel(message: message, previous: previousMessage)
     switch message.messageType {
     case .DateDivider:
-      return 40
+      return DateCell.cellHeight()
     case .NewAlertMessage:
-      return 54
+      return NewMessageDividerCell.cellHeight()
     case .SatisfactionFeedback:
-      return 158 + 16
+      return SatisfactionFeedbackCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //158 + 16
     case .SatisfactionCompleted:
-      return 104 + 16
+      return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
     case .Log:
-      return 46
+      return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
     case .UserInfoDialog:
       let model = DialogViewModel.model(type: message.userGuideDialogType)
-      return UserInfoDialogCell.measureHeight(fits: Constant.messageCellMaxWidth, viewModel: model)
+      return UserInfoDialogCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: model)
+    case .Media:
+      return MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .File:
+      return FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .WebPage:
+      return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
-      let calSize = MessageCell.measureHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       return calSize
     }
   }
@@ -825,6 +815,11 @@ extension UserChatViewController {
   
   func cellForMessage(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let message = self.messages[indexPath.row]
+    let previousMessage: CHMessage? =
+      indexPath.row == self.messages.count - 1 ?
+        self.messages[indexPath.row] :
+        self.messages[indexPath.row + 1]
+    let viewModel = MessageCellModel(message: message, previous: previousMessage)
     
     switch message.messageType {
     case .NewAlertMessage:
@@ -873,40 +868,49 @@ extension UserChatViewController {
     case .SatisfactionCompleted:
       let cell: SatisfactionCompleteCell = tableView.dequeueReusableCell(for: indexPath)
       let chat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-      cell.configure(
-        review: chat?.review,
-        duration: chat?.resolutionTime)
+      cell.configure(review: chat?.review, duration: chat?.resolutionTime)
       return cell
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      let previousMessage: CHMessage? =
-        indexPath.row == self.messages.count - 1 ?
-          self.messages[indexPath.row] :
-          self.messages[indexPath.row + 1]
-      let viewModel = MessageCellModel(message: message, previous: previousMessage)
       cell.configure(viewModel)
+      return cell
+    case .WebPage:
+      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel)
+      cell.signalForClick().subscribe{ [weak self] _ in
+        self?.didWebPageTapped(message: message)
+      }.disposed(by: self.disposeBag)
+      return cell
+    case .Media:
+      let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel)
+      cell.signalForClick().subscribe { [weak self] _ in
+        self?.didImageTapped(message: message)
+      }.disposed(by: self.disposeBag)
+      return cell
+    case .File:
+      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel)
+      cell.signalForClick().subscribe { [weak self] _ in
+        self?.didFileTapped(message: message)
+      }.disposed(by: self.disposeBag)
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      let previousMessage: CHMessage? =
-        indexPath.row == self.messages.count - 1 ?
-          self.messages[indexPath.row] :
-          self.messages[indexPath.row + 1]
-      let viewModel = MessageCellModel(message: message, previous: previousMessage)
       cell.configure(viewModel)
-      
-      cell.clipImageView.signalForClick()
-        .subscribe { [weak self] _ in
-          self?.didImageTapped(message: message)
-        }.disposed(by: self.disposeBag)
-      cell.clipWebpageView.signalForClick()
-        .subscribe{ [weak self] _ in
-          self?.didWebPageTapped(message: message)
-        }.disposed(by: self.disposeBag)
-      cell.clipFileView.signalForClick()
-        .subscribe { [weak self] _ in
-          self?.didFileTapped(message: message)
-        }.disposed(by: self.disposeBag)
+//
+//      cell.clipImageView.signalForClick()
+//        .subscribe { [weak self] _ in
+//          self?.didImageTapped(message: message)
+//        }.disposed(by: self.disposeBag)
+//      cell.clipWebpageView.signalForClick()
+//        .subscribe{ [weak self] _ in
+//          self?.didWebPageTapped(message: message)
+//        }.disposed(by: self.disposeBag)
+//      cell.clipFileView.signalForClick()
+//        .subscribe { [weak self] _ in
+//          self?.didFileTapped(message: message)
+//        }.disposed(by: self.disposeBag)
       
       return cell
     }
@@ -1048,7 +1052,7 @@ extension UserChatViewController : SLKInputBarViewDelegate {
 }
 
 extension UserChatViewController: ChatDelegate {
-  func updateFor(element: ChatElement) {
+  func update(for element: ChatElement) {
     switch element {
     case .typing(_, _):
       let indexPath = IndexPath(row: 0, section: self.channel.servicePlan == "free" ? 1 : 0)
@@ -1056,7 +1060,9 @@ extension UserChatViewController: ChatDelegate {
         let typingCell = self.typingCell {
         typingCell.configure(typingUsers: self.chatManager.typers)
       }
-      break
+    case .photos(let urls):
+      self.photoUrls = urls
+      self.photoBrowser?.reloadData()
     default:
       break
     }

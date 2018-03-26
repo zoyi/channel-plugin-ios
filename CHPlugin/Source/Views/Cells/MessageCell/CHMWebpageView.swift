@@ -71,8 +71,6 @@ class CHMWebpageView : BaseView {
     
     self.titleLabel.text = message.webpage?.title ?? ""
     self.descLabel.text = message.webpage?.description ?? ""
-//    self.imageWidth = message.webpage?.previewThumb?.width ?? 0.0
-//    self.imageHeight = message.webpage?.previewThumb?.height ?? 0.0
   }
   
   override func layoutSubviews() {
@@ -118,7 +116,7 @@ class CHMWebpageView : BaseView {
     }
   }
 
-  class func measureHeight(fits width: CGFloat, webpage: CHWebPage?) -> CGFloat {
+  class func viewHeight(fits width: CGFloat, webpage: CHWebPage?) -> CGFloat {
     var viewHeight : CGFloat = 0.0
 
     // add preview height

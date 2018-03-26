@@ -82,4 +82,8 @@ final class SatisfactionCompleteCell: BaseTableViewCell, Reusable {
       }
     }
   }
+  
+  class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+    return 104 + 16
+  }
 }

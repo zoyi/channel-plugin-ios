@@ -138,7 +138,7 @@ class CHMImageView : BaseView {
     }
   }
 
-  class func measureSize(fits width: CGFloat, viewModel: MessageCellModelType) -> CGSize {
+  class func viewSize(fits width: CGFloat, viewModel: MessageCellModelType) -> CGSize {
     if let previewThumb = viewModel.file?.previewThumb {
       return getThumbnailImageSize(imageSize: CGSize(width: previewThumb.width, height: previewThumb.height))
     }

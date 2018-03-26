@@ -12,11 +12,7 @@ import SnapKit
 final class TextInputCell: BaseTableViewCell {
   
   let textField = UITextField().then {
-    if #available(iOS 8.2, *) {
-      $0.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)
-    } else {
-      $0.font = UIFont.systemFont(ofSize: 16)
-    }
+    $0.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)
     $0.textColor = CHColors.dark
   }
   

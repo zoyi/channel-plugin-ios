@@ -117,4 +117,8 @@ class CHMFileView : BaseView {
       make.bottom.equalTo((self?.imageView.snp.bottom)!)
     }
   }
+  
+  class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+    return 70
+  }
 }

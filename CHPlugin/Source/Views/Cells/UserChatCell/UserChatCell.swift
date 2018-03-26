@@ -143,8 +143,6 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.messageLabel.textColor = viewModel.isClosed ?
       CHColors.blueyGrey :  Color.messageLabel
 
-    //self.setNeedsLayout()
-    //self.layoutIfNeeded()
   }
 
   // MARK: Layout

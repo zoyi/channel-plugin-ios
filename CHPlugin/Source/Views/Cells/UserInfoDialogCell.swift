@@ -28,7 +28,7 @@ final class UserInfoDialogCell : BaseTableViewCell, Reusable {
     self.dialogView.configure(viewModel: viewModel)
   }
   
-  class func measureHeight(fits width: CGFloat, viewModel: DialogViewModelType) -> CGFloat {
-    return DialogView.measureHeight(fits: width - 20, viewModel: viewModel) + 20 //top bot margin
+  class func cellHeight(fits width: CGFloat, viewModel: DialogViewModelType) -> CGFloat {
+    return DialogView.viewHeight(fits: width - 20, viewModel: viewModel) + 20 //top bot margin
   }
 }

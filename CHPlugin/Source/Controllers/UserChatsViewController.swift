@@ -81,7 +81,6 @@ class UserChatsViewController: BaseViewController {
     self.initTableView()
     self.initActions()
     //self.initNotifications()
-    self.setDefaultNavItems()
     
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     self.fetchUserChats(isInit: true, showIndicator: true)
@@ -138,6 +137,11 @@ class UserChatsViewController: BaseViewController {
     mainStore.subscribe(self)
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    self.setDefaultNavItems()
+  }
+  
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
@@ -305,6 +309,7 @@ extension UserChatsViewController: StoreSubscriber {
 
     self.nextSeq = state.userChatsState.nextSeq
     self.tableView.isHidden = (self.userChats.count == 0 || !self.didLoad) || self.shouldHideTable
+    self.plusButton.isHidden = self.tableView.isHidden
     self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad || self.showNewChat
     
     self.plusButton.configure(

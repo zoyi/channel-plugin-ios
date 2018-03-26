@@ -65,4 +65,8 @@ final class LogCell : BaseTableViewCell, Reusable {
     self.setNeedsLayout()
     self.layoutIfNeeded()
   }
+  
+  class func cellHeight(fit width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+    return 46
+  }
 }

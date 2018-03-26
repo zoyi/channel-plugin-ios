@@ -43,4 +43,7 @@ final class NewMessageDividerCell: BaseTableViewCell, Reusable {
     }
   }
 
+  class func cellHeight() -> CGFloat {
+    return 54
+  }
 }

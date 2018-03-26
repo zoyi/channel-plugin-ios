@@ -241,7 +241,7 @@ class DialogView : BaseView {
     }
   }
   
-  class func measureHeight(fits width:CGFloat, viewModel: DialogViewModelType) -> CGFloat {
+  class func viewHeight(fits width:CGFloat, viewModel: DialogViewModelType) -> CGFloat {
     var height:CGFloat = 0.0
     
     if viewModel.title != "" {

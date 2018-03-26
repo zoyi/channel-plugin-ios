@@ -21,6 +21,14 @@ final class DateCell : BaseTableViewCell, Reusable {
     self.addSubview(self.titleLabel)
   }
   
+  override func setLayouts() {
+    super.setLayouts()
+    self.titleLabel.snp.makeConstraints { (make) in
+      make.centerX.equalToSuperview()
+      make.centerY.equalToSuperview()
+    }
+  }
+  
   func configure(date: String) {
     self.titleLabel.text = date
   }
@@ -29,12 +37,7 @@ final class DateCell : BaseTableViewCell, Reusable {
     self.titleLabel.text = dateString
   }
   
-  override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    self.titleLabel.snp.remakeConstraints { (make) in
-      make.centerX.equalToSuperview()
-      make.centerY.equalToSuperview()
-    }
+  class func cellHeight() -> CGFloat {
+    return 40
   }
 }

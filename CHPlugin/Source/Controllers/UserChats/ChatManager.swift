@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 
 enum ChatElement {
+  case photos(obj: [String])
   case messages(obj: [CHMessage])
   case manager(obj: CHManager?)
   case session(obj: CHSession?)
@@ -36,7 +37,7 @@ enum ChatState {
 
 protocol ChatDelegate : class {
   func readyToDisplay()
-  func updateFor(element: ChatElement)
+  func update(for element: ChatElement)
   func showError()
   func hideError()
 }
@@ -128,9 +129,8 @@ class ChatManager {
         if let index = self?.getTypingIndex(of: typing) {
           let person = self?.typingPersons.remove(at: index)
           self?.removeTimer(with: person)
-          self?.delegate?.updateFor(element: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
+          self?.delegate?.update(for: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
         }
-        
 //        let messages = messagesSelector(state: mainStore.state, userChatId: s.chatId)
 //        s.delegate?.updateFor(element: .messages(obj: messages))
       })
@@ -161,7 +161,7 @@ class ChatManager {
           }
         }
         //reload row not section only if visible
-        self?.delegate?.updateFor(element: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
+        self?.delegate?.update(for: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
       })
   }
 }
@@ -217,7 +217,7 @@ extension ChatManager {
     }) {
       self.typingPersons.remove(at: index)
       self.timeStorage.removeValue(forKey: person.key)
-      self.delegate?.updateFor(element: .typing(obj: nil, animated: self.animateTyping))
+      self.delegate?.update(for: .typing(obj: nil, animated: self.animateTyping))
     }
   }
   
@@ -225,6 +225,35 @@ extension ChatManager {
     return self.typingPersons.index(where: {
       $0.id == typingEntity.personId && $0.kind == typingEntity.personType
     })
+  }
+}
+
+extension ChatManager {
+  func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
+    var message = allMessages.get(index: currentIndex)
+    message?.send().subscribe(onNext: { [weak self] (updated) in
+      message?.state = .Sent
+      mainStore.dispatch(CreateMessage(payload: updated))
+
+      let urls = messagesSelector(state: mainStore.state, userChatId: self?.chatId)
+        .filter({ $0.file?.isPreviewable == true })
+        .map({ (message) -> String in
+          return message.file?.url ?? ""
+        })
+      self?.delegate?.update(for: .photos(obj: urls))
+      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
+    }, onError: { [weak self] (error) in
+      message?.state = .Failed
+      mainStore.dispatch(CreateMessage(payload: message!))
+      
+      let urls = messagesSelector(state: mainStore.state, userChatId: self?.chatId)
+        .filter({ $0.file?.isPreviewable == true })
+        .map({ (message) -> String in
+          return message.file?.url ?? ""
+        })
+      self?.delegate?.update(for: .photos(obj: urls))
+      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
+    }).disposed(by: self.disposeBag)
   }
 }
 
@@ -251,6 +280,10 @@ extension ChatManager {
   
   func isMessageLoading() -> Bool {
     return self.state == .messageLoading
+  }
+  
+  func canLoadMore() -> Bool {
+    return self.nextSeq != "" && self.chatId != "" && self.chatType != ""
   }
 }
 
@@ -317,7 +350,7 @@ extension ChatManager {
   func createChat(pluginId:String = "", completion: @escaping (String?) -> Void) {
     if self.chatId != "" {
       completion(self.chatId)
-      return;
+      return
     }
 
     var pluginId = pluginId
@@ -452,11 +485,7 @@ extension ChatManager {
     self.disposeSignals()
     WsService.shared.leave(chatId: self.chatId)
   }
-  
-  func canLoadMore() -> Bool {
-    return self.nextSeq != "" && self.chatId != "" && self.chatType != ""
-  }
-  
+
   func hasNewMessage(current: [CHMessage], updated: [CHMessage]) -> Bool {
     let currentCount = current.count
     let updatedCount = updated.count
@@ -483,5 +512,28 @@ extension ChatManager {
     }
     
     return false
+  }
+}
+
+extension ChatManager {
+  func didClickOnRetry(for message: CHMessage?) {
+    guard let message = message else { return }
+    
+    let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
+    alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.retry_sending_message"), style: .default) { [weak self] _ in
+      message.send().subscribe(onNext: { (message) in
+        mainStore.dispatch(CreateMessage(payload: message))
+      }).disposed(by: (self?.disposeBag)!)
+    })
+    
+    alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.delete"), style: .destructive) {  _ in
+      mainStore.dispatch(DeleteMessage(payload: message))
+    })
+    
+    alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.resend.cancel"), style: .cancel) { _ in
+      // no action
+    })
+    
+    CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
   }
 }

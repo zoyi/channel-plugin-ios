@@ -62,26 +62,35 @@ class CHMBubbleView : BaseView {
     self.layer.cornerRadius = Constant.singleCornerRadius
     self.addSubview(self.messageView)
   }
+  
+  override func setLayouts() {
+    super.setLayouts()
+
+    self.messageView.snp.makeConstraints({ (make) in
+      make.leading.equalToSuperview().inset(Metric.leftRightPadding)
+      make.top.equalToSuperview().inset(Metric.topBottomPadding)
+      make.trailing.equalToSuperview().inset(Metric.leftRightPadding)
+      make.bottom.equalToSuperview().inset(Metric.topBottomPadding)
+    })
+  }
 
   func configure(_ viewModel: MessageCellModelType) {
     self.backgroundColor = viewModel.bubbleBackgroundColor 
     
-    self.messageView.text = viewModel.message.message
+    if let attributedText = viewModel.message.messageV2 {
+      self.messageView.attributedText = attributedText
+    } else {
+      self.messageView.text = viewModel.message.message
+    }
+    
     self.messageView.textColor = viewModel.createdByMe ? viewModel.textColor : Color.message
     //self.messageView.tintColor = viewModel.createdByMe ? viewModel.textColor : UIColor.blue
     let linkColor = viewModel.createdByMe ? viewModel.textColor : CHColors.cobalt
     self.messageView.linkTextAttributes = [
       NSAttributedStringKey.foregroundColor.rawValue: linkColor,
       NSAttributedStringKey.underlineStyle.rawValue: 1]
-
-    self.viewModel = viewModel
-  }
-
-  //MARK: layout
-
-  override func layoutSubviews() {
-    super.layoutSubviews()
     
+    self.viewModel = viewModel
     //TODO: performance check
     if self.viewModel?.isContinuous == true {
       self.roundCorners(corners: [.allCorners], radius: Constant.cornerRadius)
@@ -90,21 +99,10 @@ class CHMBubbleView : BaseView {
     } else {
       self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
     }
-
-    //TODO: fix layout properly
-    self.messageView.snp.remakeConstraints({ [weak self] (make) in
-      if self?.messageView.text == "" {
-        return
-      }
-      make.leading.equalToSuperview().inset(Metric.leftRightPadding).priority(999)
-      make.top.equalToSuperview().inset(Metric.topBottomPadding)
-      make.trailing.equalToSuperview().inset(Metric.leftRightPadding).priority(999)
- 
-      make.bottom.equalToSuperview().inset(Metric.topBottomPadding)
-    })
   }
 
-  class func measureHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  //MARK: layout
+  class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
 
     if let msg = viewModel.message.message {

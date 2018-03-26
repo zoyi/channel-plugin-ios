@@ -155,4 +155,8 @@ final class SatisfactionFeedbackCell: BaseTableViewCell,Reusable {
   func signalForFeedback() -> Observable<String> {
     return self.feedbackSubject
   }
+  
+  class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+    return 158 + 16
+  }
 }

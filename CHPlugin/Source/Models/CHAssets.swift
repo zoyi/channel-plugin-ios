@@ -19,6 +19,10 @@ class CHAssets {
     return UIImage(named: named, in: bundle, compatibleWith: nil)
   }
 
+  class func getPath(name: String, type: String) -> String? {
+    return Bundle(for: self).path(forResource: name, ofType: type)
+  }
+  
   class func getData(named: String) -> Data? {
     let bundle = Bundle(for: self)
     if #available(iOS 9.0, *) {
