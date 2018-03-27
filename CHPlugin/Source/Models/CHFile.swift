@@ -29,7 +29,8 @@ struct CHFile {
   var asset: DKAsset?
   var downloaded: Bool = false
   var localUrl: URL?
-
+  var fileUrl: URL?
+  
   init(data: Data, category: String? = nil) {
     self.rawData = data
     self.image = false
@@ -51,9 +52,8 @@ struct CHFile {
 }
 
 extension CHFile: Mappable {
-  init?(map: Map) {
-
-  }
+  init?(map: Map) { }
+  
   mutating func mapping(map: Map) {
     url          <- map["url"]
     name         <- map["name"]
@@ -62,5 +62,7 @@ extension CHFile: Mappable {
     category     <- map["extension"]
     image        <- map["image"]
     previewThumb <- map["previewThumb"]
+    
+    fileUrl = URL(string: url)
   }
 }

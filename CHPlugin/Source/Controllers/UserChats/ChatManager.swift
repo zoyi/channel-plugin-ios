@@ -19,22 +19,6 @@ enum ChatElement {
   case typing(obj: [CHEntity]?, animated: Bool)
 }
 
-enum ChatState {
-  case idle
-  case infoNotLoaded
-  case infoLoading
-  case infoLoaded
-  case chatLoading
-  case chatLoaded
-  case chatNotLoaded
-  case chatJoining
-  case waitingSocket
-  case messageLoading
-  case messageLoaded
-  case messageNotLoaded
-  case chatReady
-}
-
 protocol ChatDelegate : class {
   func readyToDisplay()
   func update(for element: ChatElement)

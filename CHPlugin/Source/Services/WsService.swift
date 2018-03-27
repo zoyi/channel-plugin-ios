@@ -66,6 +66,24 @@ struct WsServiceType: OptionSet {
   static let Veil = WsServiceType(rawValue: 1 << 9)
   static let User = WsServiceType(rawValue: 1 << 10)
   
+  static let CreateMessage = WsServiceType.Create.union(WsServiceType.Message)
+  static let UpdateMessage = WsServiceType.Update.union(WsServiceType.Message)
+  static let DeleteMessage = WsServiceType.Delete.union(WsServiceType.Message)
+  
+  static let CreateSession = WsServiceType.Create.union(WsServiceType.Session)
+  static let UpdateSession = WsServiceType.Update.union(WsServiceType.Session)
+  static let DeleteSession = WsServiceType.Delete.union(WsServiceType.Session)
+  
+  static let UpdateManager = WsServiceType.Update.union(WsServiceType.Manager)
+  static let UpdateChannel = WsServiceType.Update.union(WsServiceType.Channel)
+  
+  static let CreateUserChat = WsServiceType.Create.union(WsServiceType.UserChat)
+  static let UpdateUserChat = WsServiceType.Update.union(WsServiceType.UserChat)
+  static let DeleteUserChat = WsServiceType.Delete.union(WsServiceType.UserChat)
+  
+  static let UpdateUser = WsServiceType.Update.union(WsServiceType.User)
+  static let UpdateVeil = WsServiceType.Update.union(WsServiceType.Veil)
+  
   let rawValue: Int
   init(rawValue: Int) { self.rawValue = rawValue }
   
@@ -92,7 +110,7 @@ struct WsServiceType: OptionSet {
 class WsService {
   //MARK: Share Singleton Instance
   static let shared = WsService()
-  let eventSubject = PublishSubject<String>()
+  let eventSubject = PublishSubject<(WsServiceType, Any?)>()
   let readySubject = PublishSubject<String>()
   let typingSubject = PublishSubject<CHTypingEntity>()
   let messageOnCreateSubject = PublishSubject<CHMessage>()
@@ -105,6 +123,8 @@ class WsService {
   fileprivate var currentChatId: String?
   fileprivate var currentChat: CHUserChat?
   fileprivate var heartbeatTimer: Timer?
+  
+  private var queue = DispatchQueue(label: "channel.websocket", qos: .background)
   
   private var stopTypingThrottleFnc: ((CHUserChat?) -> Void)?
   private var startTypingThrottleFnc: ((CHUserChat?) -> Void)?
@@ -124,19 +144,19 @@ class WsService {
     
     self.stopTypingThrottleFnc = throttle(
       delay: 1.0,
-      queue: DispatchQueue.global(qos: .background),
+      queue: queue,
       action: self.stopTyping)
     
     self.startTypingThrottleFnc = throttle(
       delay: 1.0,
-      queue: DispatchQueue.global(qos: .background),
+      queue: queue,
       action: self.startTyping)
   }
   
   //MARK: Signals 
   
   //TODO: update to <String, Any?> to receive data
-  func listen() -> PublishSubject<String> {
+  func listen() -> PublishSubject<(WsServiceType, Any?)> {
     return self.eventSubject
   }
   
@@ -282,7 +302,6 @@ fileprivate extension WsService {
   
   fileprivate func onConnect() {
     self.socket.on(CHSocketResponse.connected.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.connected.value)
       dlog("socket connected")
       mainStore.dispatchOnMain(SocketConnected())
       self?.emitAuth()
@@ -291,7 +310,6 @@ fileprivate extension WsService {
   
   fileprivate func onReady() {
     self.socket.on(CHSocketResponse.ready.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.ready.value)
       self?.readySubject.onNext(CHSocketResponse.ready.value)
       mainStore.dispatchOnMain(SocketReady())
       dlog("socket ready")
@@ -304,14 +322,14 @@ fileprivate extension WsService {
   
   fileprivate func onCreate() {
     self.socket.on(CHSocketResponse.create.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.create.value)
       dlog("socket on created")
       guard let data = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: data) else { return }
-      guard let type = WsServiceType(string: json["type"].stringValue) else { return }
+      guard var type = WsServiceType(string: json["type"].stringValue) else { return }
+      type = WsServiceType.Create.union(type)
       
       switch type {
-      case WsServiceType.Session:
+      case WsServiceType.CreateSession:
         guard let session = Mapper<CHSession>()
           .map(JSONObject: json["entity"].object) else { return }
         if let manager = Mapper<CHManager>()
@@ -320,19 +338,19 @@ fileprivate extension WsService {
         }
         
         mainStore.dispatchOnMain(CreateSession(payload: session))
-        break
-      case WsServiceType.UserChat:
+        self?.eventSubject.onNext((type, session))
+      case WsServiceType.CreateUserChat:
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(CreateUserChat(payload: userChat))
-        break
-      case WsServiceType.Message:
+        self?.eventSubject.onNext((type, userChat))
+      case WsServiceType.CreateMessage:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
         guard message.isWelcome == false else { return }
         self?.messageOnCreateSubject.onNext(message)
         mainStore.dispatchOnMain(CreateMessage(payload: message))
-        break
+        self?.eventSubject.onNext((type, message))
       default:
         break
       }
@@ -341,25 +359,25 @@ fileprivate extension WsService {
   
   fileprivate func onUpdate() {
     self.socket.on(CHSocketResponse.update.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.update.value)
       dlog("socket on update")
       guard let data = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: data) else { return }
-      guard let type = WsServiceType(string: json["type"].stringValue) else { return }
+      guard var type = WsServiceType(string: json["type"].stringValue) else { return }
+      type = WsServiceType.Update.union(type)
       
       switch type {
-      case WsServiceType.Channel:
+      case WsServiceType.UpdateChannel:
         guard let channel = Mapper<CHChannel>()
           .map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateChannel(payload: channel))
-  
-      case WsServiceType.Session:
+        self?.eventSubject.onNext((type, channel))
+      case WsServiceType.UpdateSession:
         guard let session = Mapper<CHSession>()
           .map(JSONObject: json["entity"].object) else { return }
-        
         mainStore.dispatchOnMain(UpdateSession(payload: session))
+        self?.eventSubject.onNext((type, session))
         break
-      case WsServiceType.UserChat:
+      case WsServiceType.UpdateUserChat:
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
         if let lastMessage = Mapper<CHMessage>()
@@ -373,27 +391,27 @@ fileprivate extension WsService {
         }
         
         mainStore.dispatchOnMain(UpdateUserChat(payload: userChat))
-        break
-      case WsServiceType.Message:
+        self?.eventSubject.onNext((type, userChat))
+      case WsServiceType.UpdateMessage:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateMessage(payload: message))
-        break
-      case WsServiceType.User:
+        self?.eventSubject.onNext((type, message))
+      case WsServiceType.UpdateUser:
         let user = Mapper<CHUser>()
           .map(JSONObject: json["entity"].object)
         mainStore.dispatchOnMain(UpdateGuest(payload: user))
-        break
-      case WsServiceType.Veil:
-        let user = Mapper<CHVeil>()
+        self?.eventSubject.onNext((type, user))
+      case WsServiceType.UpdateVeil:
+        let veil = Mapper<CHVeil>()
           .map(JSONObject: json["entity"].object) 
-        mainStore.dispatchOnMain(UpdateGuest(payload: user))
-        break
-      case WsServiceType.Manager:
+        mainStore.dispatchOnMain(UpdateGuest(payload: veil))
+        self?.eventSubject.onNext((type, veil))
+      case WsServiceType.UpdateManager:
         guard let manager = Mapper<CHManager>()
           .map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateManager(payload: manager))
-        break
+        self?.eventSubject.onNext((type, manager))
       default:
         break
       }
@@ -402,28 +420,28 @@ fileprivate extension WsService {
   
   fileprivate func onDelete() {
     self.socket.on(CHSocketResponse.delete.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.delete.value)
       dlog("socket on delete")
       guard let data = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: data) else { return }
-      guard let type = WsServiceType(string: json["type"].stringValue) else { return }
+      guard var type = WsServiceType(string: json["type"].stringValue) else { return }
+      type = WsServiceType.Delete.union(type)
       
       switch type {
-      case WsServiceType.Session:
+      case WsServiceType.DeleteSession:
         guard let session = Mapper<CHSession>()
           .map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteSession(payload: session))
-        break
-      case WsServiceType.UserChat:
+        self?.eventSubject.onNext((type, session))
+      case WsServiceType.DeleteUserChat:
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteUserChat(payload: userChat.id))
-        break
-      case WsServiceType.Message:
+        self?.eventSubject.onNext((type, userChat))
+      case WsServiceType.DeleteMessage:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteMessage(payload: message))
-        break
+        self?.eventSubject.onNext((type, message))
       default:
         break
       }
@@ -432,7 +450,6 @@ fileprivate extension WsService {
   
   fileprivate func onJoined() {
     self.socket.on(CHSocketResponse.joined.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.joined.value)
       dlog("socket joined: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
@@ -442,7 +459,6 @@ fileprivate extension WsService {
   
   fileprivate func onLeaved() {
     self.socket.on(CHSocketResponse.leaved.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.leaved.value)
       dlog("socket leaved: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
@@ -461,7 +477,6 @@ fileprivate extension WsService {
   
   fileprivate func onPush() {
     self.socket.on(CHSocketResponse.push.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.push.value)
       //dlog("socket pushed: \(data)")
       guard let entity = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: entity) else { return }
@@ -477,7 +492,6 @@ fileprivate extension WsService {
 
   fileprivate func onAuthenticated() {
     self.socket.on(CHSocketResponse.authenticated.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.authenticated.value)
       dlog("socket authenticated")
       
       if let s = self {
@@ -494,14 +508,12 @@ fileprivate extension WsService {
   
   fileprivate func onUnauthorized() {
     self.socket.on(CHSocketResponse.unauthorized.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.authenticated.value)
       dlog("unauthorized")
     }
   }
   
   fileprivate func onReconnectAttempt() {
     self.socket.on(CHSocketResponse.reconnect.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.reconnect.value)
       dlog("socket reconnect attempt")
       mainStore.dispatchOnMain(SocketReconnecting())
       self?.invalidateTimer()
@@ -511,7 +523,6 @@ fileprivate extension WsService {
   
   fileprivate func onDisconnect() {
     self.socket.on(CHSocketResponse.disconnect.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.disconnect.value)
       dlog("socket disconnected")
       mainStore.dispatchOnMain(SocketDisconnected())
     }
@@ -519,7 +530,6 @@ fileprivate extension WsService {
   
   fileprivate func onError() {
     self.socket.on(CHSocketResponse.error.value) { [weak self] (data, ack) in
-      self?.eventSubject.onNext(CHSocketResponse.error.value)
       dlog("socket error with data: \(data)")
       mainStore.dispatchOnMain(SocketDisconnected())
     }

@@ -83,9 +83,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.edgesForExtendedLayout = UIRectEdge.bottom
     self.view.backgroundColor = UIColor.white
   
-//    let chNavigation = self.navigationController as! MainNavigationController
-//    chNavigation.chDelegate = self
-    
     self.initManagers()
     self.initNavigationViews()
     self.initSLKTextView()
@@ -898,20 +895,6 @@ extension UserChatViewController {
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel)
-//
-//      cell.clipImageView.signalForClick()
-//        .subscribe { [weak self] _ in
-//          self?.didImageTapped(message: message)
-//        }.disposed(by: self.disposeBag)
-//      cell.clipWebpageView.signalForClick()
-//        .subscribe{ [weak self] _ in
-//          self?.didWebPageTapped(message: message)
-//        }.disposed(by: self.disposeBag)
-//      cell.clipFileView.signalForClick()
-//        .subscribe { [weak self] _ in
-//          self?.didFileTapped(message: message)
-//        }.disposed(by: self.disposeBag)
-      
       return cell
     }
   }
