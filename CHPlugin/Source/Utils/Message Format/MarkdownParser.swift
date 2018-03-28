@@ -79,7 +79,25 @@ open class MarkdownParser {
 
   // MARK: Parsing
   open func parse(_ markdown: String) -> NSAttributedString {
-    return parse(NSAttributedString(string: markdown))
+    let tokens = markdown.components(separatedBy: "```")
+    let attributedString = NSMutableAttributedString(string: markdown)
+    var location = 0
+    for (index, token) in tokens.enumerated() {
+      let range = NSRange(location: location, length: token.count)
+      if index % 2 != 1 && token != "" {
+        let parsed = parse(NSAttributedString(string: token))
+        attributedString.replaceCharacters(in: range, with: parsed)
+        location += parsed.string.count
+      } else if index % 2 == 1 && token != "" {
+        let startPart = NSRange(location: range.location, length: 3)
+        let endPart = NSRange(location: range.location + token.count + 3, length: 3)
+        attributedString.deleteCharacters(in: endPart)
+        attributedString.deleteCharacters(in: startPart)
+        attributedString.addAttributes([NSAttributedStringKey.font: self.font], range: range)
+        location += range.length
+      }
+    }
+    return attributedString
   }
 
   open func parse(_ markdown: NSAttributedString) -> NSAttributedString {
