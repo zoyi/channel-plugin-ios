@@ -63,15 +63,19 @@ final class PhoneActionView: DialogActionView {
     self.countryCodeView.addSubview(self.countryLabel)
     self.countryCodeView.addSubview(self.arrowDownView)
     
-    UtilityPromise.getGeoIP()
-      .subscribe(onNext: { [weak self] (geoInfo) in
+    UtilityPromise.getCountryCodes()
+      .observeOn(MainScheduler.instance)
+      .flatMap { (countries) -> Observable<GeoIPInfo> in
+        mainStore.dispatch(GetCountryCodes(payload: countries))
+        return UtilityPromise.getGeoIP()
+      }.subscribe(onNext: { [weak self] (geoInfo) in
         if let countryCode = CHUtils.getCountryDialCode(countryCode: geoInfo.country) {
           self?.countryLabel.text = "+" + countryCode
         }
       }, onError: { [weak self] (error) in
         self?.countryLabel.text = Constants.defaultDailCode
-    }).disposed(by: self.disposeBeg)
-  
+      }).disposed(by: self.disposeBeg)
+    
     self.confirmButton.signalForClick()
       .subscribe(onNext: { [weak self] _ in
       if let code = self?.countryLabel.text,

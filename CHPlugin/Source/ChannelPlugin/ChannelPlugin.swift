@@ -126,11 +126,6 @@ public final class ChannelPlugin: NSObject {
 
     // Init other frameworks
     SVProgressHUD.setDefaultStyle(.dark)
-    
-    UtilityPromise.getCountryCodes()
-      .subscribe(onNext:{ (countries) in
-        mainStore.dispatch(GetCountryCodes(payload: countries))
-      }).disposed(by: disposeBeg)
   }
 
   /**
@@ -637,6 +632,8 @@ public final class ChannelPlugin: NSObject {
 
 extension ChannelPlugin {
   fileprivate class func initWebsocket() {
+    NotificationCenter.default.removeObserver(self)
+    
     NotificationCenter.default
       .addObserver(
         self,
