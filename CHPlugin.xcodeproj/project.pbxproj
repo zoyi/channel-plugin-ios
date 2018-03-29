@@ -38,8 +38,10 @@
 		650D7C4C1E72B174007DE358 /* UserChatsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C461E725699007DE358 /* UserChatsReducerTests.swift */; };
 		651A58871E88E3970042A59F /* countryInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 650D7C311E716DBF007DE358 /* countryInfo.json */; };
 		652AE2111E81485D00B7484C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 652AE2131E81485D00B7484C /* Localizable.strings */; };
+		653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653A6C14206C893F0048163D /* ChannelPluginSettings.swift */; };
+		653A6C17206C9BD20048163D /* ChannelIO+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */; };
 		654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654BFF4A1FD93CC80028D364 /* ReSwift+Extensions.swift */; };
-		6556A29A1FA7318A00B80F4E /* ChannelPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6556A2991FA7316C00B80F4E /* ChannelPlugin.swift */; };
+		6556A29A1FA7318A00B80F4E /* ChannelIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6556A2991FA7316C00B80F4E /* ChannelIO.swift */; };
 		6556A29C1FA821D300B80F4E /* CHError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6556A29B1FA821D300B80F4E /* CHError.swift */; };
 		65581E551E7BDC92008B8C70 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E541E7BDC92008B8C70 /* ImageIO.framework */; };
 		65581E571E7BDC97008B8C70 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E561E7BDC97008B8C70 /* QuartzCore.framework */; };
@@ -122,7 +124,7 @@
 		6597936D1FA716CB00840F6A /* CHChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D51FA7167B00840F6A /* CHChannel.swift */; };
 		6597936E1FA716CB00840F6A /* CHColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D61FA7167B00840F6A /* CHColors.swift */; };
 		6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D71FA7167B00840F6A /* CHConstants.swift */; };
-		659793701FA716CB00840F6A /* Checkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D81FA7167B00840F6A /* Checkin.swift */; };
+		659793701FA716CB00840F6A /* Guest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D81FA7167B00840F6A /* Guest.swift */; };
 		659793711FA716CB00840F6A /* CHEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D91FA7167B00840F6A /* CHEntity.swift */; };
 		659793721FA716CB00840F6A /* CHEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792DA1FA7167B00840F6A /* CHEvent.swift */; };
 		659793731FA716CB00840F6A /* CHFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792DB1FA7167B00840F6A /* CHFile.swift */; };
@@ -306,8 +308,10 @@
 		652AE2121E81485D00B7484C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2141E81485F00B7484C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2151E81485F00B7484C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		653A6C14206C893F0048163D /* ChannelPluginSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPluginSettings.swift; sourceTree = "<group>"; };
+		653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelIO+Helper.swift"; sourceTree = "<group>"; };
 		654BFF4A1FD93CC80028D364 /* ReSwift+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReSwift+Extensions.swift"; sourceTree = "<group>"; };
-		6556A2991FA7316C00B80F4E /* ChannelPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPlugin.swift; sourceTree = "<group>"; };
+		6556A2991FA7316C00B80F4E /* ChannelIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelIO.swift; sourceTree = "<group>"; };
 		6556A29B1FA821D300B80F4E /* CHError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHError.swift; sourceTree = "<group>"; };
 		65581E541E7BDC92008B8C70 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		65581E561E7BDC97008B8C70 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -391,7 +395,7 @@
 		659792D51FA7167B00840F6A /* CHChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHChannel.swift; sourceTree = "<group>"; };
 		659792D61FA7167B00840F6A /* CHColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHColors.swift; sourceTree = "<group>"; };
 		659792D71FA7167B00840F6A /* CHConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHConstants.swift; sourceTree = "<group>"; };
-		659792D81FA7167B00840F6A /* Checkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkin.swift; sourceTree = "<group>"; };
+		659792D81FA7167B00840F6A /* Guest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guest.swift; sourceTree = "<group>"; };
 		659792D91FA7167B00840F6A /* CHEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEntity.swift; sourceTree = "<group>"; };
 		659792DA1FA7167B00840F6A /* CHEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEvent.swift; sourceTree = "<group>"; };
 		659792DB1FA7167B00840F6A /* CHFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHFile.swift; sourceTree = "<group>"; };
@@ -694,7 +698,10 @@
 		6556A2981FA7316C00B80F4E /* ChannelPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				6556A2991FA7316C00B80F4E /* ChannelPlugin.swift */,
+				6556A2991FA7316C00B80F4E /* ChannelIO.swift */,
+				653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */,
+				653A6C14206C893F0048163D /* ChannelPluginSettings.swift */,
+				659792D81FA7167B00840F6A /* Guest.swift */,
 			);
 			name = ChannelPlugin;
 			path = Source/ChannelPlugin;
@@ -880,7 +887,6 @@
 				659792D51FA7167B00840F6A /* CHChannel.swift */,
 				659792D61FA7167B00840F6A /* CHColors.swift */,
 				659792D71FA7167B00840F6A /* CHConstants.swift */,
-				659792D81FA7167B00840F6A /* Checkin.swift */,
 				659792D91FA7167B00840F6A /* CHEntity.swift */,
 				659792DA1FA7167B00840F6A /* CHEvent.swift */,
 				659792DB1FA7167B00840F6A /* CHFile.swift */,
@@ -1470,16 +1476,17 @@
 				65CB1422206A02F200E456B5 /* LabelCell.swift in Sources */,
 				6597936A1FA716CB00840F6A /* URL+Extensions.swift in Sources */,
 				65CB1431206A02F200E456B5 /* TextInputCell.swift in Sources */,
+				653A6C17206C9BD20048163D /* ChannelIO+Helper.swift in Sources */,
 				6597936B1FA716CB00840F6A /* CHReLogger.swift in Sources */,
 				6597936C1FA716CB00840F6A /* CHAssets.swift in Sources */,
 				65CB1426206A02F200E456B5 /* MediaMessageCell.swift in Sources */,
-				6556A29A1FA7318A00B80F4E /* ChannelPlugin.swift in Sources */,
+				6556A29A1FA7318A00B80F4E /* ChannelIO.swift in Sources */,
 				6597936D1FA716CB00840F6A /* CHChannel.swift in Sources */,
 				65CB1435206A02F200E456B5 /* UserInfoDialogCell.swift in Sources */,
 				6597936E1FA716CB00840F6A /* CHColors.swift in Sources */,
 				6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */,
 				659001312068CD200054B353 /* MarkdownParser.swift in Sources */,
-				659793701FA716CB00840F6A /* Checkin.swift in Sources */,
+				659793701FA716CB00840F6A /* Guest.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
 				654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */,
 				65CB14052069E2B800E456B5 /* UserChatInteractor.swift in Sources */,
@@ -1566,6 +1573,7 @@
 				659793A01FA716CB00840F6A /* LocalMessageFactory.swift in Sources */,
 				659793A11FA716CB00840F6A /* PrefStore.swift in Sources */,
 				659793A21FA716CB00840F6A /* AvatarView.swift in Sources */,
+				653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */,
 				659793A31FA716CB00840F6A /* Badge.swift in Sources */,
 				65CB142E206A02F200E456B5 /* SatisfactionCompleteCell.swift in Sources */,
 				659793A41FA716CB00840F6A /* BaseButton.swift in Sources */,

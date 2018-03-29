@@ -8,9 +8,9 @@
 
 import Foundation
 import UIKit
-import CHPlugin
+import ChannelIO
 
-class MainViewController : UIViewController, ChannelDelegate {
+class MainViewController : UIViewController, ChannelIODelegate {
   @IBOutlet var loginTypeLabel: UILabel!
   @IBOutlet var descLabel: UILabel!
   
@@ -21,7 +21,7 @@ class MainViewController : UIViewController, ChannelDelegate {
   var phoneNumber: String = ""
   override func viewDidLoad() {
     super.viewDidLoad()
-    ChannelPlugin.delegate = self
+    ChannelIO.delegate = self
     self.loginTypeLabel.text = self.isUser
       ? "Checked in (user)" : "Checked in (veil)"
     self.descLabel.text = "Check out when navigates back"
@@ -40,7 +40,7 @@ class MainViewController : UIViewController, ChannelDelegate {
     super.viewWillDisappear(animated)
     
     if self.isMovingFromParentViewController {
-      ChannelPlugin.checkOut()
+      ChannelIO.shutdown()
     }
   }
   
@@ -52,7 +52,7 @@ class MainViewController : UIViewController, ChannelDelegate {
     print("will hide")
   }
   
-  func shouldHandleChatLink(url: URL) -> Bool {
+  func onClickChatLink(url: URL) -> Bool {
     return true
   }
   
@@ -61,13 +61,14 @@ class MainViewController : UIViewController, ChannelDelegate {
       return
     }
     
-    let checkin = CheckIn()
-    checkin.with(name: self.userName)
-      .with(userId: self.userId)
+    let guest = Guest()
+      .with(name: self.userName)
+      .with(id: self.userId)
       .with(mobileNumber: self.phoneNumber)
     
-    ChannelPlugin.checkIn(checkin) { completion in
-      //compltion block
+    let settings = ChannelPluginSettings(pluginKey: "52eb6f27-38c7-476d-ad92-83e6299b7e07")
+    
+    ChannelIO.boot(with: settings, guest: guest) { (completion) in
       switch completion {
       case .success:
         break
@@ -79,10 +80,10 @@ class MainViewController : UIViewController, ChannelDelegate {
   }
   
   func loginAsVeil() {
+    let settings = ChannelPluginSettings(pluginKey: "52eb6f27-38c7-476d-ad92-83e6299b7e07")
     
-    ChannelPlugin.checkIn { completion in
-      //compltion block
-
+    ChannelIO.boot(with: settings) { completion in
+      
     }
   }
 }

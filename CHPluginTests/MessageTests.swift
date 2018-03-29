@@ -183,7 +183,7 @@ class MessageTests: QuickSpec {
       }
  
       it("normal file") {
-        guard let path = Bundle(for: ChannelPlugin.self).path(forResource: "countryInfo", ofType: "json") else {
+        guard let path = Bundle(for: ChannelIO.self).path(forResource: "countryInfo", ofType: "json") else {
           print("error to read file")
           expect(false).to(beTrue())
           return

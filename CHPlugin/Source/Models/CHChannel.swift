@@ -108,8 +108,8 @@ struct CHChannel: CHEntity {
     return self.serviceBlocked || self.servicePlan == "free"
   }
   
-  var shouldShowLauncherButton: Bool {
-    return self.awayOption != "hidden"
+  var shouldShowDefaultLauncher: Bool {
+    return self.awayOption != "hidden" || self.working
   }
 
   var allowNewChat: Bool {

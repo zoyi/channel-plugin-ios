@@ -449,7 +449,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onJoined() {
-    self.socket.on(CHSocketResponse.joined.value) { [weak self] (data, ack) in
+    self.socket.on(CHSocketResponse.joined.value) { (data, ack) in
       dlog("socket joined: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
@@ -458,7 +458,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onLeaved() {
-    self.socket.on(CHSocketResponse.leaved.value) { [weak self] (data, ack) in
+    self.socket.on(CHSocketResponse.leaved.value) { (data, ack) in
       dlog("socket leaved: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
@@ -476,7 +476,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onPush() {
-    self.socket.on(CHSocketResponse.push.value) { [weak self] (data, ack) in
+    self.socket.on(CHSocketResponse.push.value) { (data, ack) in
       //dlog("socket pushed: \(data)")
       guard let entity = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: entity) else { return }
@@ -507,7 +507,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onUnauthorized() {
-    self.socket.on(CHSocketResponse.unauthorized.value) { [weak self] (data, ack) in
+    self.socket.on(CHSocketResponse.unauthorized.value) { (data, ack) in
       dlog("unauthorized")
     }
   }
@@ -522,14 +522,14 @@ fileprivate extension WsService {
   }
   
   fileprivate func onDisconnect() {
-    self.socket.on(CHSocketResponse.disconnect.value) { [weak self] (data, ack) in
+    self.socket.on(CHSocketResponse.disconnect.value) { (data, ack) in
       dlog("socket disconnected")
       mainStore.dispatchOnMain(SocketDisconnected())
     }
   }
   
   fileprivate func onError() {
-    self.socket.on(CHSocketResponse.error.value) { [weak self] (data, ack) in
+    self.socket.on(CHSocketResponse.error.value) { (data, ack) in
       dlog("socket error with data: \(data)")
       mainStore.dispatchOnMain(SocketDisconnected())
     }

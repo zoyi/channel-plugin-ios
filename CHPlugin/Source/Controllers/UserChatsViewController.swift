@@ -291,7 +291,7 @@ extension UserChatsViewController {
   }
   
   @objc func exitMessengerButtonTapped(sender: UIBarButtonItem) {
-    ChannelPlugin.hide(animated: true)
+    ChannelIO.close(animated: true)
   }
   
   @objc func moreButtonTapped(sender: UIBarButtonItem) {

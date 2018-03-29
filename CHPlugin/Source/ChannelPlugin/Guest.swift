@@ -7,44 +7,40 @@
 //
 
 @objc
-public class CheckIn : NSObject {
-  var userId = ""
+public class Guest : NSObject {
+  var id = ""
   var name = ""
   var avatarUrl = ""
   var mobileNumber = ""
-  var meta = [String:Any]()
-  
-  public override init() {
-    
-  }
+  var property = [String:Any]()
   
   @discardableResult
-  @objc public func with(name: String) -> CheckIn {
+  @objc public func with(name: String) -> Guest {
     self.name = name
     return self
   }
   
   @discardableResult
-  @objc public func with(userId: String) -> CheckIn {
-    self.userId = userId
+  @objc public func with(id: String) -> Guest {
+    self.id = id
     return self
   }
   
   @discardableResult
-  @objc public func with(avatarUrl: String) -> CheckIn {
+  @objc public func with(avatarUrl: String) -> Guest {
     self.avatarUrl = avatarUrl
     return self
   }
   
   @discardableResult
-  @objc public func with(mobileNumber: String) -> CheckIn {
+  @objc public func with(mobileNumber: String) -> Guest {
     self.mobileNumber = mobileNumber
     return self
   }
   
   @discardableResult
-  @objc public func with(metaKey:String, metaValue:Any) -> CheckIn {
-    self.meta[metaKey] = metaValue
+  @objc public func with(propertyKey:String, value:Any) -> Guest {
+    self.property[propertyKey] = value
     return self
   }
   
@@ -62,8 +58,8 @@ public class CheckIn : NSObject {
       params["avatarUrl"] = self.avatarUrl
     }
     
-    if self.meta.count != 0 {
-      params["meta"] = self.meta
+    if self.property.count != 0 {
+      params["property"] = self.property
     }
     
     return params

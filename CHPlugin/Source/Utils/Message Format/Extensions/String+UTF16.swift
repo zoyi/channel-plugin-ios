@@ -24,7 +24,7 @@ extension String {
     stride(from: 0, to: self.count, by: 4).forEach {
       let startIndex = self.index(self.startIndex, offsetBy: $0)
       let endIndex = self.index(self.startIndex, offsetBy: $0 + 4)
-      let hex4 = substring(with: startIndex..<endIndex)
+      let hex4 = self[startIndex..<endIndex]
       
       if let utf16 = UInt16(hex4, radix: 16) {
         utf16Array.append(utf16)

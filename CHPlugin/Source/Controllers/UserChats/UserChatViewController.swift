@@ -357,8 +357,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       style: .plain,
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-        mainStore.dispatch(ChatListIsHidden())
-        ChannelPlugin.hide(animated: true)
+        ChannelIO.close(animated: true)
       }
     )
   }
@@ -988,7 +987,7 @@ extension UserChatViewController {
 
   func didWebPageTapped(message: CHMessage) {
     guard let url = URL(string:message.webPage?.url ?? "") else { return }
-    let shouldHandle = ChannelPlugin.delegate?.shouldHandleChatLink?(url: url)
+    let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
     if shouldHandle == true || shouldHandle == nil {
       url.openWithUniversal()
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 import UserNotifications
-import CHPlugin
+import ChannelIO
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -21,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     registerForRemoteNotification()
     
-    ChannelPlugin.debugMode = true
-    ChannelPlugin.initialize(pluginId: "your-plugin-key-here")
+//    ChannelIO.shared.debugMode = true
+//    ChannelIO.shared.initialize(pluginId: "your-plugin-key-here")
    
     return true
   }
@@ -67,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
   }
   
   func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-    ChannelPlugin.register(deviceToken: deviceToken)
+    ChannelIO.initPushToken(deviceToken: deviceToken)
   }
   
   //when push was selected
@@ -76,7 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
     let userInfo = response.notification.request.content.userInfo
-    ChannelPlugin.handlePushNotification(userInfo)
+    ChannelIO.handlePushNotification(userInfo)
     
     completionHandler()
   }

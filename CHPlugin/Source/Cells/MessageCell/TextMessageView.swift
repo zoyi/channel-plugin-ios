@@ -118,7 +118,7 @@ extension TextMessageView : UITextViewDelegate {
   func textView(_ textView: UITextView,
                 shouldInteractWith URL: URL,
                 in characterRange: NSRange) -> Bool {
-    let shouldhandle = ChannelPlugin.delegate?.shouldHandleChatLink?(url: URL)
+    let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
     return shouldhandle == true || shouldhandle == nil
   }
   
@@ -126,7 +126,7 @@ extension TextMessageView : UITextViewDelegate {
   func textView(_ textView: UITextView,
                 shouldInteractWith URL: URL,
                 in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-    let shouldhandle = ChannelPlugin.delegate?.shouldHandleChatLink?(url: URL)
+    let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
     if shouldhandle == true || shouldhandle == nil {
       URL.openWithUniversal()
     }
