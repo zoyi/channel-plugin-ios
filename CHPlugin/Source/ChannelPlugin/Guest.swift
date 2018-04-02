@@ -15,31 +15,31 @@ public class Guest : NSObject {
   var property = [String:Any]()
   
   @discardableResult
-  @objc public func with(name: String) -> Guest {
+  @objc public func set(name: String) -> Guest {
     self.name = name
     return self
   }
   
   @discardableResult
-  @objc public func with(id: String) -> Guest {
+  @objc public func set(id: String) -> Guest {
     self.id = id
     return self
   }
   
   @discardableResult
-  @objc public func with(avatarUrl: String) -> Guest {
+  @objc public func set(avatarUrl: String) -> Guest {
     self.avatarUrl = avatarUrl
     return self
   }
   
   @discardableResult
-  @objc public func with(mobileNumber: String) -> Guest {
+  @objc public func set(mobileNumber: String) -> Guest {
     self.mobileNumber = mobileNumber
     return self
   }
   
   @discardableResult
-  @objc public func with(propertyKey:String, value:Any) -> Guest {
+  @objc public func set(propertyKey:String, value:Any) -> Guest {
     self.property[propertyKey] = value
     return self
   }

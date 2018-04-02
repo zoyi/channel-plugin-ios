@@ -381,7 +381,7 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    let guest = Guest().with(id: PrefStore.getCurrentUserId() ?? "")
+    let guest = Guest().set(id: PrefStore.getCurrentUserId() ?? "")
     
     ChannelIO.checkInChannel(guest:guest).observeOn(MainScheduler.instance)
       .subscribe(onNext: { (result) in

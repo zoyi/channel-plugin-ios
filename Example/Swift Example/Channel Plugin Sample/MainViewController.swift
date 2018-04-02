@@ -62,9 +62,9 @@ class MainViewController : UIViewController, ChannelIODelegate {
     }
     
     let guest = Guest()
-      .with(name: self.userName)
-      .with(id: self.userId)
-      .with(mobileNumber: self.phoneNumber)
+      .set(name: self.userName)
+      .set(id: self.userId)
+      .set(mobileNumber: self.phoneNumber)
     
     let settings = ChannelPluginSettings(pluginKey: "52eb6f27-38c7-476d-ad92-83e6299b7e07")
     
