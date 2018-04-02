@@ -77,6 +77,8 @@ class TextMessageView : BaseView {
   func configure(_ viewModel: MessageCellModelType) {
     self.backgroundColor = viewModel.bubbleBackgroundColor 
     
+    self.isHidden = viewModel.message.messageV2 == nil && viewModel.message.message == nil
+    
     if let attributedText = viewModel.message.messageV2 {
       self.messageView.attributedText = attributedText
     } else {

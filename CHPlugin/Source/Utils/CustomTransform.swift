@@ -42,11 +42,11 @@ struct StringTransform: TransformType {
 }
 
 struct CustomMessageTransform: TransformType {
-  var markdown = MarkdownParser(font: UIFont.systemFont(ofSize: 15))
+  static var markdown = MarkdownParser(font: UIFont.systemFont(ofSize: 15))
   
   func transformFromJSON(_ value: Any?) -> NSAttributedString? {
     if let message = value as? String {
-      return self.markdown.parse(message)
+      return CustomMessageTransform.markdown.parse(message)
     }
     return nil
   }

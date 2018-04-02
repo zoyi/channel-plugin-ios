@@ -8,6 +8,8 @@
 
 import Foundation
 import SnapKit
+import M13ProgressSuite
+import NVActivityIndicatorView
 
 class FileMessageView : BaseView {
   
@@ -53,6 +55,17 @@ class FileMessageView : BaseView {
     $0.image = CHAssets.getImage(named: "chevronRightSmall")
   }
   
+  var progressBackgroundView = UIView().then {
+    $0.backgroundColor = UIColor.white
+    $0.alpha = 0.5
+  }
+  
+  var progressView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20)).then {
+    $0.type = .ballRotateChase
+    $0.color = CHColors.light
+    $0.startAnimating()
+  }
+  
   //MARK: init
   
   override func initialize() {
@@ -66,20 +79,25 @@ class FileMessageView : BaseView {
     self.addSubview(self.titleLabel)
     self.addSubview(self.infoLabel)
     self.addSubview(self.arrowImageView)
+    self.addSubview(self.progressBackgroundView)
+    self.addSubview(self.progressView)
   }
   
   func configure(message: MessageCellModelType) {
     guard let file = message.file else { return }
     self.titleLabel.text = file.name
-    self.infoLabel.text = "\(file.size) • \(file.category)"
+    self.infoLabel.text = "\(file.readableSize) • \(file.category)"
 
+    self.progressBackgroundView.isHidden = message.progress == 1.0
+    self.progressView.isHidden = message.progress == 1.0
+    
     switch file.category {
     case "zip", "archive":
       self.imageView.image = CHAssets.getImage(named: "zip")
       break
     case "pdf", "image", "psd", "text", "audio", "sketch",
          "font", "vector", "pages", "numbers", "xls", "data",
-         "ppt", "system", "script", "key", "hwp":
+         "ppt", "system", "script", "key", "hwp", "video":
       self.imageView.image = CHAssets.getImage(named: file.category)
       break
     default:
@@ -115,6 +133,15 @@ class FileMessageView : BaseView {
       make.left.equalTo((self?.titleLabel.snp.left)!)
       make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(1)
       make.bottom.equalTo((self?.imageView.snp.bottom)!)
+    }
+    
+    self.progressBackgroundView.snp.makeConstraints { (make) in
+      make.edges.equalToSuperview()
+    }
+    
+    self.progressView.snp.remakeConstraints { (make) in
+      make.centerX.equalToSuperview()
+      make.centerY.equalToSuperview()
     }
   }
   

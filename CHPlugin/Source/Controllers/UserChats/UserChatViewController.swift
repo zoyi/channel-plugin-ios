@@ -16,6 +16,7 @@ import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire
 import CHNavBar
+import AVKit
 
 final class UserChatViewController: BaseSLKTextViewController {
 
@@ -651,7 +652,7 @@ extension UserChatViewController {
   private func presentPicker(
     type: DKImagePickerControllerSourceType,
     max: Int = 0,
-    assetType: DKImagePickerControllerAssetType = .allPhotos) {
+    assetType: DKImagePickerControllerAssetType = .allAssets) {
       let pickerController = DKImagePickerController()
       pickerController.sourceType = type
       pickerController.showsCancelButton = true
@@ -885,7 +886,8 @@ extension UserChatViewController {
       }.disposed(by: self.disposeBag)
       return cell
     case .File:
-      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
+      //let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel)
       cell.signalForClick().subscribe { [weak self] _ in
         self?.didFileTapped(message: message)
@@ -942,6 +944,16 @@ extension UserChatViewController {
   
   func didFileTapped(message: CHMessage) {
     guard let url = message.file?.url else { return }
+    
+    if message.file?.category == "video" {
+      let moviePlayer = AVPlayerViewController()
+      let player = AVPlayer(url: URL(string: url)!)
+      moviePlayer.player = player
+      moviePlayer.modalPresentationStyle = .overFullScreen
+      moviePlayer.modalTransitionStyle = .crossDissolve
+      self.present(moviePlayer, animated: true, completion: nil)
+      return
+    }
     
     if let localUrl = message.file?.localUrl,
       message.file?.downloaded == true {

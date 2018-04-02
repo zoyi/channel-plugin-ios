@@ -287,7 +287,7 @@ struct UserChatPromise {
     file: Data,
     requestId: String,
     userChatId: String,
-    category: String) -> Observable<CHMessage> {
+    mimeType: Mimetype) -> Observable<CHMessage> {
     //validate category to make sure it can be handled
     return Observable.create { subscriber in
       let params: [String: Any] = [:]
@@ -295,14 +295,11 @@ struct UserChatPromise {
       let requestIdData = requestId.data(using: String.Encoding.utf8, allowLossyConversion: false)
       let request = RestRouter.UploadFile(userChatId, params as RestRouter.ParametersType)
       
-      let mimeType = CHUtils.nameToExt(name: category)
-      
       Alamofire.upload(
         multipartFormData: { formData in
-          let fileName = "Channel_Photo_\(Date().fullDateString()).png"
           formData.append(file, withName: "file",
-                          fileName: name ?? fileName,
-                          mimeType: mimeType)
+                          fileName: name ?? "Channel_File",
+                          mimeType: mimeType.rawValue)
           formData.append(requestIdData!, withName: "requestId")
         },
         to: (request.urlRequest?.url?.absoluteString)!,
