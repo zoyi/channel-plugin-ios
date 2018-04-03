@@ -27,6 +27,11 @@ public class ChannelPluginSettings: NSObject {
   var locale: String = ""
   
   @objc
+  override public init() {
+    super.init()
+  }
+  
+  @objc
   public init(
     pluginKey: String,
     debugMode: Bool = false,

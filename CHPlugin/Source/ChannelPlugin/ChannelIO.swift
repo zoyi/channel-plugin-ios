@@ -32,19 +32,18 @@ func dlog(_ str: String) {
 }
 
 @objc
-public protocol ChannelIODelegate: class {
+public protocol ChannelPluginDelegate: class {
   @objc optional func onChangeBadge(count: Int) -> Void /* notify badge count when changed */
   @objc optional func onClickChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
-  @objc optional func willShowChatList() -> Void /* notify when chat list is about to show */
-  @objc optional func willHideChatList() -> Void /* notify when chat list is about to hide */
-  
+  @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
+  @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void
 }
 
 @objc
 public final class ChannelIO: NSObject {
   //MARK: Properties
-  @objc public static weak var delegate: ChannelIODelegate? = nil
+  @objc public static weak var delegate: ChannelPluginDelegate? = nil
   
   internal static var launchView : LaunchView?
   internal static var chatNotificationView: ChatNotificationView?
@@ -203,6 +202,7 @@ public final class ChannelIO: NSObject {
    */
   @objc public class func show(animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
+    guard ChannelIO.launchView == nil else { return }
     guard let topController = CHUtils.getTopController() else { return }
     
     ChannelIO.showLauncher(on: topController.view, animated: animated)
@@ -247,7 +247,7 @@ public final class ChannelIO: NSObject {
    */
   @objc public class func hide(animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
-    guard (ChannelIO.launchView != nil) else { return }
+    guard ChannelIO.launchView != nil else { return }
     
     ChannelIO.launchView?.remove(animated: animated)
     ChannelIO.launchView = nil
@@ -263,7 +263,7 @@ public final class ChannelIO: NSObject {
     guard !mainStore.state.uiState.isChannelVisible else { return }
     guard let topController = CHUtils.getTopController() else { return }
     
-    ChannelIO.delegate?.willShowChatList?()
+    ChannelIO.delegate?.willShowMessenger?()
     mainStore.dispatch(ChatListIsVisible())
 
     let userChatsController = UserChatsViewController()
@@ -282,7 +282,7 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation != nil else { return }
     
-    ChannelIO.delegate?.willHideChatList?()
+    ChannelIO.delegate?.willHideMessenger?()
     ChannelIO.baseNavigation?.dismiss(
       animated: animated, completion: {
       mainStore.dispatch(ChatListIsHidden())
