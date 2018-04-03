@@ -18,12 +18,4 @@ class EntryViewController : UIViewController {
     
     UIApplication.shared.statusBarStyle = .lightContent
   }
-  
-  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == "MainViewSegue" {
-      if let destinationVC = segue.destination as? MainViewController {
-        destinationVC.isUser = false
-      }
-    }
-  }
 }

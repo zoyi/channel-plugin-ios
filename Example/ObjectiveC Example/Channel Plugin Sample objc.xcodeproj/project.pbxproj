@@ -13,8 +13,8 @@
 		65F77B431E810910001E8FBA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65F77B411E810910001E8FBA /* Main.storyboard */; };
 		65F77B451E810910001E8FBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65F77B441E810910001E8FBA /* Assets.xcassets */; };
 		65F77B481E810910001E8FBA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65F77B461E810910001E8FBA /* LaunchScreen.storyboard */; };
-		65F77B511E810CA7001E8FBA /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F77B501E810CA7001E8FBA /* MainViewController.m */; };
-		65F77B541E810CCB001E8FBA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F77B531E810CCB001E8FBA /* LoginViewController.m */; };
+		65F77B511E810CA7001E8FBA /* VeilViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F77B501E810CA7001E8FBA /* VeilViewController.m */; };
+		65F77B541E810CCB001E8FBA /* UserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F77B531E810CCB001E8FBA /* UserViewController.m */; };
 		65F77B571E810CD8001E8FBA /* EntryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F77B561E810CD8001E8FBA /* EntryViewController.m */; };
 		6E0110920507A2939BF00A43 /* Pods_Channel_Plugin_Sample_objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F556EBD2B569BC2F69E7C9D /* Pods_Channel_Plugin_Sample_objc.framework */; };
 /* End PBXBuildFile section */
@@ -32,10 +32,10 @@
 		65F77B441E810910001E8FBA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65F77B471E810910001E8FBA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		65F77B491E810910001E8FBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		65F77B4F1E810CA7001E8FBA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		65F77B501E810CA7001E8FBA /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		65F77B521E810CCB001E8FBA /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
-		65F77B531E810CCB001E8FBA /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		65F77B4F1E810CA7001E8FBA /* VeilViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeilViewController.h; sourceTree = "<group>"; };
+		65F77B501E810CA7001E8FBA /* VeilViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeilViewController.m; sourceTree = "<group>"; };
+		65F77B521E810CCB001E8FBA /* UserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserViewController.h; sourceTree = "<group>"; };
+		65F77B531E810CCB001E8FBA /* UserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserViewController.m; sourceTree = "<group>"; };
 		65F77B551E810CD8001E8FBA /* EntryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EntryViewController.h; sourceTree = "<group>"; };
 		65F77B561E810CD8001E8FBA /* EntryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EntryViewController.m; sourceTree = "<group>"; };
 		8F556EBD2B569BC2F69E7C9D /* Pods_Channel_Plugin_Sample_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Channel_Plugin_Sample_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,10 +94,10 @@
 				65F77B461E810910001E8FBA /* LaunchScreen.storyboard */,
 				65F77B491E810910001E8FBA /* Info.plist */,
 				65F77B381E810910001E8FBA /* Supporting Files */,
-				65F77B4F1E810CA7001E8FBA /* MainViewController.h */,
-				65F77B501E810CA7001E8FBA /* MainViewController.m */,
-				65F77B521E810CCB001E8FBA /* LoginViewController.h */,
-				65F77B531E810CCB001E8FBA /* LoginViewController.m */,
+				65F77B4F1E810CA7001E8FBA /* VeilViewController.h */,
+				65F77B501E810CA7001E8FBA /* VeilViewController.m */,
+				65F77B521E810CCB001E8FBA /* UserViewController.h */,
+				65F77B531E810CCB001E8FBA /* UserViewController.m */,
 				65F77B551E810CD8001E8FBA /* EntryViewController.h */,
 				65F77B561E810CD8001E8FBA /* EntryViewController.m */,
 			);
@@ -223,11 +223,12 @@
 				"${BUILT_PRODUCTS_DIR}/CHDwifft/CHDwifft.framework",
 				"${BUILT_PRODUCTS_DIR}/CHNavBar/CHNavBar.framework",
 				"${BUILT_PRODUCTS_DIR}/CHPhotoBrowser/CHPhotoBrowser.framework",
-				"${BUILT_PRODUCTS_DIR}/CHPlugin/CHPlugin.framework",
 				"${BUILT_PRODUCTS_DIR}/CHSlackTextViewController/CHSlackTextViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/CRToast/CRToast.framework",
+				"${BUILT_PRODUCTS_DIR}/ChannelIO/ChannelIO.framework",
 				"${BUILT_PRODUCTS_DIR}/DACircularProgress/DACircularProgress.framework",
 				"${BUILT_PRODUCTS_DIR}/DKImagePickerController/DKImagePickerController.framework",
+				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${BUILT_PRODUCTS_DIR}/M13ProgressSuite/M13ProgressSuite.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/MGSwipeTableCell/MGSwipeTableCell.framework",
@@ -244,7 +245,6 @@
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Socket.IO-Client-Swift/SocketIO.framework",
 				"${BUILT_PRODUCTS_DIR}/StarscreamSocketIO/StarscreamSocketIO.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftDate/SwiftDate.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/Then/Then.framework",
 				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift/UIColor_Hex_Swift.framework",
@@ -256,11 +256,12 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHDwifft.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHNavBar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHPhotoBrowser.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHPlugin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHSlackTextViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CRToast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChannelIO.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DACircularProgress.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DKImagePickerController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/M13ProgressSuite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MGSwipeTableCell.framework",
@@ -277,7 +278,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketIO.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StarscreamSocketIO.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftDate.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Then.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
@@ -316,8 +316,8 @@
 				65F77B571E810CD8001E8FBA /* EntryViewController.m in Sources */,
 				65F77B3D1E810910001E8FBA /* AppDelegate.m in Sources */,
 				65F77B3A1E810910001E8FBA /* main.m in Sources */,
-				65F77B511E810CA7001E8FBA /* MainViewController.m in Sources */,
-				65F77B541E810CCB001E8FBA /* LoginViewController.m in Sources */,
+				65F77B511E810CA7001E8FBA /* VeilViewController.m in Sources */,
+				65F77B541E810CCB001E8FBA /* UserViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
