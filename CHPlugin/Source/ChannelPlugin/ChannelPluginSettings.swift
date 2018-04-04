@@ -8,22 +8,22 @@
 
 @objc
 public class ChannelPluginSettings: NSObject {
-  /** pluinkey that you can obtain from channel desk **/
+  /* pluinkey that you can obtain from channel desk */
   @objc public var pluginKey: String = ""
   
-  /** true if debug information to be printed in console. Default is false **/
+  /* true if debug information to be printed in console. Default is false */
   @objc public var debugMode: Bool = false
   
-  /** true if default launcher button not to be displayed. Default is false **/
+  /* true if default launcher button not to be displayed. Default is false */
   @objc public var hideDefaultLauncher: Bool = false
   
-  /** true if default in-app push notification not to be displayed. Default is false **/
+  /* true if default in-app push notification not to be displayed. Default is false */
   @objc public var hideDefaultInAppPush: Bool = false
   
-  /** true if tracking default event. Default is true **/
+  /* true if tracking default event. Default is true **/
   @objc public var enabledTrackDefaultEvent: Bool = true
   
-  /** **/
+  /* */
   var locale: String = ""
   
   @objc

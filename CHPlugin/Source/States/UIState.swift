@@ -32,12 +32,11 @@ public enum ChannelPluginCompletionStatus : Int {
   case success
   case notInitialized
   case networkTimeout
-  case duplicated
   case notAvailableVersion
   case serviceUnderConstruction
-  case unknown
   case requirePayment
   case accessDenied
+  case unknown
 }
 
 struct CheckinState: StateType {

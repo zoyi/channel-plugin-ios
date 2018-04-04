@@ -35,8 +35,8 @@ func dlog(_ str: String) {
 public protocol ChannelPluginDelegate: class {
   @objc optional func onChangeBadge(count: Int) -> Void /* notify badge count when changed */
   @objc optional func onClickChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
-  @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
-  @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
+  @objc optional func willOpenMessenger() -> Void /* notify when chat list is about to show */
+  @objc optional func willCloseMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void
 }
 
@@ -263,7 +263,7 @@ public final class ChannelIO: NSObject {
     guard !mainStore.state.uiState.isChannelVisible else { return }
     guard let topController = CHUtils.getTopController() else { return }
     
-    ChannelIO.delegate?.willShowMessenger?()
+    ChannelIO.delegate?.willOpenMessenger?()
     mainStore.dispatch(ChatListIsVisible())
 
     let userChatsController = UserChatsViewController()
@@ -282,7 +282,7 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation != nil else { return }
     
-    ChannelIO.delegate?.willHideMessenger?()
+    ChannelIO.delegate?.willCloseMessenger?()
     ChannelIO.baseNavigation?.dismiss(
       animated: animated, completion: {
       mainStore.dispatch(ChatListIsHidden())

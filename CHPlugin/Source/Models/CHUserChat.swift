@@ -164,16 +164,16 @@ extension CHUserChat: Equatable {
 
 @objc
 public class PushEvent: NSObject {
-  var chatId: String = ""
-  var message: String = ""
-  var managerName: String = ""
-  var managerAvatarUrl: String = ""
+  @objc public var chatId: String = ""
+  @objc public var message: String = ""
+  @objc public var senderName: String = ""
+  @objc public var senderAvatarUrl: String = ""
   
   init(with pushData: CHPush?) {
     self.chatId = pushData?.userChat?.id ?? ""
     self.message = pushData?.message?.message ?? ""
-    self.managerName = pushData?.manager?.name ?? ""
-    self.managerAvatarUrl = pushData?.manager?.avatarUrl ?? ""
+    self.senderName = pushData?.manager?.name ?? ""
+    self.senderAvatarUrl = pushData?.manager?.avatarUrl ?? ""
   }
 }
 
