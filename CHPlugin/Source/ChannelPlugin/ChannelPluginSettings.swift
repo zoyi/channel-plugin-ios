@@ -7,7 +7,7 @@
 //
 
 @objc
-public class ChannelPluginSettings: NSObject {
+public class ChannelPluginSettings: NSObject, NSCoding {
   /* pluinkey that you can obtain from channel desk */
   @objc public var pluginKey: String = ""
   
@@ -43,5 +43,27 @@ public class ChannelPluginSettings: NSObject {
     self.hideDefaultLauncher = hideDefaultLauncher
     self.hideDefaultInAppPush = hideDefaultInAppPush
     self.enabledTrackDefaultEvent = enabledTrackDefaultEvent
+  }
+  
+  required convenience public init(coder aDecoder: NSCoder) {
+    let pluginKey = aDecoder.decodeObject(forKey: "pluginKey") as! String
+    let debugMode = aDecoder.decodeBool(forKey: "debugMode")
+    let hideDefaultLauncher = aDecoder.decodeBool(forKey: "hideDefaultLauncher")
+    let hideDefaultInAppPush = aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
+    let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: "enabledTrackDefaultEvent")
+    self.init(pluginKey: pluginKey,
+              debugMode: debugMode,
+              hideDefaultLauncher: hideDefaultLauncher,
+              hideDefaultInAppPush: hideDefaultInAppPush,
+              enabledTrackDefaultEvent: enabledTrackDefaultEvent
+    )
+  }
+  
+  public func encode(with aCoder: NSCoder) {
+    aCoder.encode(self.pluginKey, forKey: "pluginKey")
+    aCoder.encode(self.debugMode, forKey: "debugMode")
+    aCoder.encode(self.hideDefaultLauncher, forKey: "hideDefaultLauncher")
+    aCoder.encode(self.hideDefaultInAppPush, forKey: "hideDefaultInAppPush")
+    aCoder.encode(self.enabledTrackDefaultEvent, forKey: "enabledTrackDefaultEvent")
   }
 }

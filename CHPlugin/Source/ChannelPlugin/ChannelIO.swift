@@ -136,7 +136,7 @@ public final class ChannelIO: NSObject {
       
       ChannelIO.fetchScripts()
       ChannelIO.registerPushToken()
-      
+      PrefStore.setChannelPluginSettings(pluginSetting: settings)
     }, onError: { error in
       let code = (error as NSError).code
       if code == -1001 {
@@ -168,8 +168,6 @@ public final class ChannelIO: NSObject {
    *   - parameter deviceToken: a Data that represents device token
    */
   @objc public class func initPushToken(deviceToken: Data) {
-    guard ChannelIO.isValidStatus else { return }
-    
     let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
     ChannelIO.pushToken = token
   }
@@ -185,9 +183,9 @@ public final class ChannelIO: NSObject {
     
     PluginPromise.unregisterPushToken()
       .subscribe(onNext: { _ in
-        dlog("Checkout success")
+        dlog("shutdown success")
       }, onError: { (error) in
-        
+        dlog("shutdown fail")
       }).disposed(by: disposeBeg)
     
     WsService.shared.disconnect()
@@ -375,21 +373,23 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
 
     //check if checkin 
-    if mainStore.state.channel.id != "" {
+    if ChannelIO.isValidStatus {
       let userChatId = userInfo["chatId"] as! String
       ChannelIO.showUserChat(userChatId:userChatId)
       return
     }
     
     let guest = Guest().set(id: PrefStore.getCurrentUserId() ?? "")
+    guard let settings = PrefStore.getChannelPluginSettings() else {
+      dlog("ChannelPluginSetting is missing")
+      return
+    }
     
-    ChannelIO.checkInChannel(guest:guest).observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (result) in
-      let userChatId = userInfo["chatId"] as! String
-      ChannelIO.fetchScripts()
-      ChannelIO.registerPushToken()
-      //not guarantee to be connected here
-      ChannelIO.showUserChat(userChatId:userChatId)
-    }).disposed(by: disposeBeg)
+    ChannelIO.boot(with: settings, guest: guest) { (status) in
+      if status == .success {
+        let userChatId = userInfo["chatId"] as! String
+        ChannelIO.showUserChat(userChatId:userChatId)
+      }
+    }
   }
 }

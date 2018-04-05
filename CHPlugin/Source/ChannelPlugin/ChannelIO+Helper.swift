@@ -151,8 +151,8 @@ extension ChannelIO {
       .subscribe(onNext: { (result) in
         dlog("register token success")
       }
-        ,onError:{ error in
-          dlog("register token failed")
+      ,onError:{ error in
+        dlog("register token failed")
       }).disposed(by: disposeBeg)
   }
   
