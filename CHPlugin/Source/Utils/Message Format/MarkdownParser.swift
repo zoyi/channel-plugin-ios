@@ -81,6 +81,11 @@ open class MarkdownParser {
   open func parse(_ markdown: String) -> NSAttributedString {
     let tokens = markdown.components(separatedBy: "```")
     let attributedString = NSMutableAttributedString(string: markdown, attributes: [NSAttributedStringKey.font: self.font])
+
+    if tokens.count == 2 {
+      return parse(attributedString)
+    }
+    
     var location = 0
     for (index, token) in tokens.enumerated() {
       let range = NSRange(location: location, length: token.count)

@@ -9,7 +9,7 @@
 import UIKit
 
 open class MarkdownBold: MarkdownCommonElement {
-  fileprivate static let regex = "(\\s+|^)(\\*\\*|__)(.+?)(\\2)"
+  fileprivate static let regex = "(\\s*|^)(\\*\\*)(.+?)(\\2)"
   
   open var font: UIFont?
   open var color: UIColor?

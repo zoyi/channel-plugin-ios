@@ -11,7 +11,7 @@ import UIKit
 
 open class MarkdownBoldItalic: MarkdownCommonElement {
   
-  fileprivate static let regex = "(\\s+|^)(\\*\\*\\*|___)(.+?)(\\2)"
+  fileprivate static let regex = "(\\s*|^)(\\*\\*\\*)(.+?)(\\2)"
   
   open var font: UIFont?
   open var color: UIColor?
