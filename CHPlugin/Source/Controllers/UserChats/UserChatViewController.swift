@@ -931,6 +931,7 @@ extension UserChatViewController {
     self.photoBrowser?.enableSwipeToDismiss = true
     
     let navigation = MainNavigationController(rootViewController: self.photoBrowser!)
+    navigation.useDefault = true
     navigation.modalPresentationStyle = .overCurrentContext
     
     if let index = self.photoUrls.index(of: imgUrl ?? "") {

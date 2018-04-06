@@ -133,9 +133,8 @@ extension CHMessage: Mappable {
   init(chatId: String, guest: CHGuest, asset: DKAsset) {
     self.init(chatId: chatId, guest: guest, message: "", messageType: .Media)
     self.file = CHFile(imageAsset: asset)
-    if self.file?.mimeType != .image || self.file?.mimeType != .gif {
-      self.messageType = .File
-    }
+    self.messageType = self.file?.mimeType == .image || self.file?.mimeType == .gif ? .Media : .File
+
     self.progress = 0
   }
   

@@ -27,6 +27,7 @@ class MainNavigationController: BaseNavigationController {
         self.navigationBar.barTintColor = nil
         self.navigationBar.titleTextAttributes =  [NSAttributedStringKey.foregroundColor: UIColor.white]
         self.navigationBar.isTranslucent = false
+        self.statusBarStyle = .lightContent
         self.setNeedsStatusBarAppearanceUpdate()
       }
     }

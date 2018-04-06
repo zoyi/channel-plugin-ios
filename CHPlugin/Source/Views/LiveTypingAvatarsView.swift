@@ -100,7 +100,6 @@ class LiveTypingAvatarsView: BaseView {
   }
   
   func configure(persons: [CHEntity]) {
-    guard self.isIdentical(persons: persons) == false else { return }
     self.persons = persons
     
     self.widthConstraint?.deactivate()
@@ -143,20 +142,6 @@ class LiveTypingAvatarsView: BaseView {
       self.secondAvatarView.alpha = 0
       self.thirdAvatarView.alpha = 0
     }
-  }
-  
-  func isIdentical(persons: [CHEntity]) -> Bool {
-    for person in persons {
-      if self.persons.index(where: { (p) in
-        return p.avatarUrl == person.avatarUrl && p.name == person.name
-      }) != nil {
-        continue
-      } else {
-        return false
-      }
-    }
-    
-    return true
   }
   
   func layoutOneAvatar() {
