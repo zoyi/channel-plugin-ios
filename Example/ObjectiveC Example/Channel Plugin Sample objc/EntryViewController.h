@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface EntryViewController : UIViewController
-@property (weak) IBOutlet UIButton *userBttn;
-@property (weak) IBOutlet UIButton *veilBttn;  
+@property (weak) IBOutlet UIButton *userButton;
+@property (weak) IBOutlet UIButton *veilButton;  
 @end

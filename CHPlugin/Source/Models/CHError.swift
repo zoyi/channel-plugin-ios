@@ -26,6 +26,7 @@ enum CHErrorCode: Int {
   case readAllError = 9004
   case sendFileError = 9005
   case serviceBlockedError = 9006
+  case pluginKeyError = 9007
 }
 
 enum CHErrorDomain: String {
@@ -49,6 +50,8 @@ class CHError: Error {
 }
 
 struct CHErrorPool {
+  static let unknownError = CHError(domain: .channelPlugin, code: .unknownError)
+  static let pluginKeyError = CHError(domain: .channelPlugin, code: .pluginKeyError)
   static let pluginParseError = CHError(domain: .pluginPromise, code: .pluginParseError)
   static let registerParseError = CHError(domain: .pluginPromise, code: .registerParseError)
   static let unregisterError = CHError(domain: .pluginPromise, code: .unregisterError)

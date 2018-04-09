@@ -28,18 +28,17 @@ struct UIState: StateType {
  *    - accessDeined: accces to ChannelPlugin server denied
  */
 @objc
-public enum ChannelCheckInCompletionStatus : Int {
+public enum ChannelPluginCompletionStatus : Int {
   case success
   case notInitialized
   case networkTimeout
-  case duplicated
   case notAvailableVersion
   case serviceUnderConstruction
-  case checkinError
   case requirePayment
   case accessDenied
+  case unknown
 }
 
 struct CheckinState: StateType {
-  var status: ChannelCheckInCompletionStatus = .notInitialized
+  var status: ChannelPluginCompletionStatus = .notInitialized
 }

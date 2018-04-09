@@ -20,5 +20,5 @@ struct ChatListIsHidden: Action {}
 //checkinState
 
 struct UpdateCheckinState: Action {
-  public let payload: ChannelCheckInCompletionStatus
+  public let payload: ChannelPluginCompletionStatus
 }

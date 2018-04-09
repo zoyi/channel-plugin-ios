@@ -56,6 +56,22 @@ class CHUtils {
     }
   }
   
+  class func emojiMap() -> [String: String] {
+    if let path = CHAssets.getPath(name: "emoji_map", type: "json") {
+      do {
+        let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+        let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+        if let jsonResult = jsonResult as? Dictionary<String, String> {
+          return jsonResult
+        }
+      } catch {
+        return [:]
+      }
+    }
+    
+    return [:]
+  }
+  
   class func getUrlForUTM(source: String, content: String) -> String {
     return "https://channel.io/ko/?utm_campaign=iOS&utm_source=\(source)&utm_medium=plugin&utm_content=\(content)"
   }

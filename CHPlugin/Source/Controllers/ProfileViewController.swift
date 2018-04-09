@@ -90,7 +90,7 @@ final class ProfileViewController: BaseViewController {
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.footerView)
     
-    let version = Bundle(for: ChannelPlugin.self)
+    let version = Bundle(for: ChannelIO.self)
       .infoDictionary?["CFBundleShortVersionString"] as! String
     self.versionLabel.text = "v\(version)"
     

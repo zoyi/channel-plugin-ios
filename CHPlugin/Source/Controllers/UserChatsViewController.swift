@@ -81,7 +81,6 @@ class UserChatsViewController: BaseViewController {
     self.initTableView()
     self.initActions()
     //self.initNotifications()
-    self.setDefaultNavItems()
     
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     self.fetchUserChats(isInit: true, showIndicator: true)
@@ -138,6 +137,11 @@ class UserChatsViewController: BaseViewController {
     mainStore.subscribe(self)
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    self.setDefaultNavItems()
+  }
+  
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     mainStore.unsubscribe(self)
@@ -238,20 +242,20 @@ class UserChatsViewController: BaseViewController {
         })
       }.disposed(by: self.disposeBag)
     
-    controller.signalForProfile()
-      .subscribe { [weak self] _ in
-        self?.showProfileView()
-      }.disposed(by: self.disposeBag)
-    
-    PluginPromise.getFollowingManagers()
+    controller.signalForProfile().subscribe { [weak self] _ in
+      self?.showProfileView()
+    }.disposed(by: self.disposeBag)
+
+    CHManager.getRecentFollowers()
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext:{ [weak self] (managers) in
-        mainStore.dispatch(
-          UpdateFollowingManagers(payload: managers)
-        )
+      .subscribe(onNext: { [weak self] (managers) in
+        mainStore.dispatch(UpdateFollowingManagers(payload: managers))
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.shouldHideTable = false
+        dlog("got following managers")
+      }, onError: { (error) in
+        dlog("error getting following managers: \(error.localizedDescription)")
       }).disposed(by: self.disposeBag)
   }
 
@@ -287,7 +291,7 @@ extension UserChatsViewController {
   }
   
   @objc func exitMessengerButtonTapped(sender: UIBarButtonItem) {
-    ChannelPlugin.hide(animated: true)
+    ChannelIO.close(animated: true)
   }
   
   @objc func moreButtonTapped(sender: UIBarButtonItem) {
@@ -305,6 +309,7 @@ extension UserChatsViewController: StoreSubscriber {
 
     self.nextSeq = state.userChatsState.nextSeq
     self.tableView.isHidden = (self.userChats.count == 0 || !self.didLoad) || self.shouldHideTable
+    self.plusButton.isHidden = self.tableView.isHidden
     self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad || self.showNewChat
     
     self.plusButton.configure(

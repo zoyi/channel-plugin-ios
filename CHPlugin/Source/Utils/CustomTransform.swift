@@ -14,7 +14,7 @@ class CustomDateTransform: TransformType {
   public typealias JSON = Double
 
   public init() {}
-
+  
   open func transformFromJSON(_ value: Any?) -> Date? {
     if let timeInt = value as? Double {
       return Date(timeIntervalSince1970: TimeInterval(timeInt / 1000))
@@ -38,5 +38,20 @@ struct StringTransform: TransformType {
   
   func transformToJSON(_ value: String?) -> Any? {
     return value
+  }
+}
+
+struct CustomMessageTransform: TransformType {
+  static var markdown = MarkdownParser(font: UIFont.systemFont(ofSize: 15))
+  
+  func transformFromJSON(_ value: Any?) -> NSAttributedString? {
+    if let message = value as? String {
+      return CustomMessageTransform.markdown.parse(message)
+    }
+    return nil
+  }
+  
+  func transformToJSON(_ value: NSAttributedString?) -> String? {
+    return value?.string ?? ""
   }
 }

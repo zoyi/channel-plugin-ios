@@ -41,6 +41,7 @@ final class LaunchView : BaseView {
   var layoutGuide: UILayoutGuide? = nil
   
   override func initialize() {
+    super.initialize()
     self.addSubview(self.buttonView)
     self.addSubview(self.badgeView)
   }

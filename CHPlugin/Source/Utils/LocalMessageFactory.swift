@@ -17,7 +17,7 @@ enum MessageType {
   case SatisfactionCompleted
   case Log
   case WebPage
-  case Image
+  case Media
   case File
 }
 

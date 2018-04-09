@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import <UserNotifications/UserNotifications.h>
-#import <CHPlugin/CHPlugin-Swift.h>
+#import <ChannelIO/ChannelIO-Swift.h>
 
 @interface AppDelegate () <UNUserNotificationCenterDelegate>
 
@@ -16,13 +16,8 @@
 
 @implementation AppDelegate
 
-#define ChannelPluginId @"faa73a7c-4158-4a38-9a7a-793a969fd5bc"
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   [self registerForRemoteNotification];
-  
-  [ChannelPlugin setDebugMode:YES];
-  [ChannelPlugin initializeWithPluginId:ChannelPluginId];
   return YES;
 }
 
@@ -54,12 +49,12 @@
 }
   
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-  [ChannelPlugin registerWithDeviceToken:deviceToken];
+  [ChannelIO initPushTokenWithDeviceToken:deviceToken];
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
   NSDictionary *userInfo = response.notification.request.content.userInfo;
-  [ChannelPlugin handlePushNotification:userInfo];
+  [ChannelIO handlePushNotification:userInfo];
   
   completionHandler();
 }

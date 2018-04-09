@@ -14,8 +14,8 @@
 		65BFBFE91E77E69900AF0CE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65BFBFE81E77E69900AF0CE7 /* Assets.xcassets */; };
 		65BFBFEC1E77E69900AF0CE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65BFBFEA1E77E69900AF0CE7 /* LaunchScreen.storyboard */; };
 		65BFBFF91E77E81800AF0CE7 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFF61E77E81800AF0CE7 /* EntryViewController.swift */; };
-		65BFBFFA1E77E81800AF0CE7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFF71E77E81800AF0CE7 /* LoginViewController.swift */; };
-		65BFBFFB1E77E81800AF0CE7 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFF81E77E81800AF0CE7 /* MainViewController.swift */; };
+		65BFBFFA1E77E81800AF0CE7 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFF71E77E81800AF0CE7 /* UserViewController.swift */; };
+		65BFBFFB1E77E81800AF0CE7 /* VeilViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BFBFF81E77E81800AF0CE7 /* VeilViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,8 +31,8 @@
 		65BFBFEB1E77E69900AF0CE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		65BFBFED1E77E69900AF0CE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		65BFBFF61E77E81800AF0CE7 /* EntryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
-		65BFBFF71E77E81800AF0CE7 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		65BFBFF81E77E81800AF0CE7 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		65BFBFF71E77E81800AF0CE7 /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
+		65BFBFF81E77E81800AF0CE7 /* VeilViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VeilViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,8 +81,8 @@
 				65BFBFE11E77E69900AF0CE7 /* AppDelegate.swift */,
 				65BFBFE31E77E69900AF0CE7 /* ViewController.swift */,
 				65BFBFF61E77E81800AF0CE7 /* EntryViewController.swift */,
-				65BFBFF71E77E81800AF0CE7 /* LoginViewController.swift */,
-				65BFBFF81E77E81800AF0CE7 /* MainViewController.swift */,
+				65BFBFF71E77E81800AF0CE7 /* UserViewController.swift */,
+				65BFBFF81E77E81800AF0CE7 /* VeilViewController.swift */,
 				65BFBFE51E77E69900AF0CE7 /* Main.storyboard */,
 				65BFBFE81E77E69900AF0CE7 /* Assets.xcassets */,
 				65BFBFEA1E77E69900AF0CE7 /* LaunchScreen.storyboard */,
@@ -188,11 +188,12 @@
 				"${BUILT_PRODUCTS_DIR}/CHDwifft/CHDwifft.framework",
 				"${BUILT_PRODUCTS_DIR}/CHNavBar/CHNavBar.framework",
 				"${BUILT_PRODUCTS_DIR}/CHPhotoBrowser/CHPhotoBrowser.framework",
-				"${BUILT_PRODUCTS_DIR}/CHPlugin/CHPlugin.framework",
 				"${BUILT_PRODUCTS_DIR}/CHSlackTextViewController/CHSlackTextViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/CRToast/CRToast.framework",
+				"${BUILT_PRODUCTS_DIR}/ChannelIO/ChannelIO.framework",
 				"${BUILT_PRODUCTS_DIR}/DACircularProgress/DACircularProgress.framework",
 				"${BUILT_PRODUCTS_DIR}/DKImagePickerController/DKImagePickerController.framework",
+				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${BUILT_PRODUCTS_DIR}/M13ProgressSuite/M13ProgressSuite.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/MGSwipeTableCell/MGSwipeTableCell.framework",
@@ -220,11 +221,12 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHDwifft.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHNavBar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHPhotoBrowser.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHPlugin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHSlackTextViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CRToast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChannelIO.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DACircularProgress.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DKImagePickerController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/M13ProgressSuite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MGSwipeTableCell.framework",
@@ -290,11 +292,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65BFBFFA1E77E81800AF0CE7 /* LoginViewController.swift in Sources */,
+				65BFBFFA1E77E81800AF0CE7 /* UserViewController.swift in Sources */,
 				65BFBFE41E77E69900AF0CE7 /* ViewController.swift in Sources */,
 				65BFBFE21E77E69900AF0CE7 /* AppDelegate.swift in Sources */,
 				65BFBFF91E77E81800AF0CE7 /* EntryViewController.swift in Sources */,
-				65BFBFFB1E77E81800AF0CE7 /* MainViewController.swift in Sources */,
+				65BFBFFB1E77E81800AF0CE7 /* VeilViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

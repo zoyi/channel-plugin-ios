@@ -7,7 +7,6 @@
 //
 
 #import "EntryViewController.h"
-#import "MainViewController.h"
 
 @interface EntryViewController ()
 
@@ -25,10 +24,4 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  if ([[segue identifier] isEqualToString:@"MainViewSegue"]) {
-    MainViewController *viewController = [segue destinationViewController];
-    viewController.isUser = false;
-  }
-}
 @end

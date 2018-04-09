@@ -1,4 +1,25 @@
 # Change Log
+### 3.0.0
+#### Breaking Changed
+* Renamed framework CHPlugin to ChannelIO
+* Removed ChannelPlugin public properties `debugMode`, `hideLauncherButton`,
+`enabledTrackDefaultEvent` and `showInAppPush` (these properties moved into `ChannelPluginSettings)
+* Removed `initialize:` and `checkIn` method and added `boot:`
+* Renamed `checkOut` to `shutdown`
+* Renamed `register:` to `initPushToken:`
+* Renamed `show:` and `hide:` to `open:` and `close:` respectively
+* Renamed `showLauncher:` and `hideLauncher:` to `show:` and `hide:` respectively
+* Renamed `showChat:` to `openChat:`
+* Renamed `track:` parameter names to `eventName` and `eventProperty`
+* Renamed `ChannelCheckinCompletionStatus` to `ChannelPluginCompletionStatus` (enum)
+* Renamed `CheckIn` to `Guest` (class)
+* Introduced `ChannelPluginSettings` class for ChannelIO configuration
+* Renamed ChannelPlugin to ChannelIO (class)
+
+#### Updated
+* Introduced message formatting (i.e. *something* for italic and **more** for bold)
+* Refactored message cell structures
+* Upload video is available
 
 ### 2.6.2
 #### Updated

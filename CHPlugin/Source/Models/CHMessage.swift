@@ -11,6 +11,7 @@ import ObjectMapper
 import RxSwift
 import DKImagePickerController
 import MobileCoreServices
+import AVFoundation
 
 enum SendingState {
   case New, Sent, Failed
@@ -25,6 +26,7 @@ struct CHMessage: ModelType {
   var personType = ""
   var personId = ""
   var message: String?
+  var messageV2: NSAttributedString?
   var requestId: String?
   var botOption: [String: Bool]? = nil
   
@@ -59,7 +61,7 @@ struct CHMessage: ModelType {
     } else if self.log != nil && self.log?.action == "resolve" {
       return CHAssets.localized("ch.review.require.preview")
     }
-    return self.message
+    return self.messageV2?.string
   }
   
   var isWelcome: Bool {
@@ -98,6 +100,7 @@ extension CHMessage: Mappable {
     let requestId = "\(now.timeIntervalSince1970 * 1000)"
     self.id = id ?? requestId
     self.message = message
+    self.messageV2 = CustomMessageTransform.markdown.parse(message)
     self.requestId = requestId
     self.chatId = chatId
     self.createdAt = createdAt ?? now
@@ -109,7 +112,7 @@ extension CHMessage: Mappable {
     self.progress = 1
   }
   
-  init(chatId: String, guest: CHGuest, message: String) {
+  init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(now.timeIntervalSince1970 * 1000)"
     self.id = requestId
@@ -118,17 +121,20 @@ extension CHMessage: Mappable {
     self.personType = guest.type
     self.personId = guest.id
     self.message = message
+    self.messageV2 = CustomMessageTransform.markdown.parse(message)
     self.requestId = requestId
     self.createdAt = now
     self.state = .New
-    self.messageType = .UserMessage
+    self.messageType = messageType
     self.progress = 1
     //self.isRemote = false
   }
   
   init(chatId: String, guest: CHGuest, asset: DKAsset) {
-    self.init(chatId: chatId, guest: guest, message: "")
+    self.init(chatId: chatId, guest: guest, message: "", messageType: .Media)
     self.file = CHFile(imageAsset: asset)
+    self.messageType = self.file?.mimeType == .image || self.file?.mimeType == .gif ? .Media : .File
+
     self.progress = 0
   }
   
@@ -143,13 +149,25 @@ extension CHMessage: Mappable {
     personType  <- map["personType"]
     personId    <- map["personId"]
     message     <- map["message"]
+    messageV2   <- (map["messageV2"], CustomMessageTransform())
     requestId   <- map["requestId"]
     file        <- map["file"]
     webPage     <- map["webPage"]
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
-    messageType = self.log != nil ? .Log : .Default
+    
+    if self.log != nil {
+      messageType = .Log
+    } else if self.file?.image == true {
+      messageType = .Media
+    } else if self.file != nil {
+      messageType = .File
+    } else if self.webPage != nil {
+      messageType = .WebPage
+    } else {
+      messageType = .Default
+    }
   }
 }
 
@@ -206,8 +224,20 @@ extension CHMessage {
   }
   
   func send() -> Observable<CHMessage> {
-    if file != nil {
-      return self.sendFile()
+    if self.file != nil {
+      if let mimeType = self.file?.mimeType {
+        switch mimeType {
+        case .image:
+          return self.sendImage()
+        case .gif:
+          return self.sendGif()
+        case .video:
+          return self.sendVideo()
+        default:
+          return self.sendFile()
+        }
+      }
+      return self.sendText()
     } else {
       return self.sendText()
     }
@@ -220,35 +250,35 @@ extension CHMessage {
         return Disposables.create()
       }
       
-      var data: Data?
-      if let asset = file.asset {
-        if file.category == "gif" {
-          asset.fetchImageDataForAsset(true, completeBlock: { (rawData, info) in
-              data = rawData
-          })
-        } else if file.category == "image" {
-          asset.fetchOriginalImage(true, completeBlock: { (image, info) in
-            data = UIImageJPEGRepresentation(image!, 1.0)
-          })
-        } else {
-          //
-        }
-      } else {
-        data = file.rawData
-      }
-      
-      if data == nil {
-        subscriber.onError(CHErrorPool.sendFileError)
-        return Disposables.create()
+      var signal: Disposable?
+      if let asset = file.asset, let mimeType = file.mimeType {
+        asset.fetchAVAsset(nil, completeBlock: { (asset, info) in
+          if let asset = asset as? AVURLAsset {
+            let data = try! Data(contentsOf: asset.url)
+            signal = self.send(data: data, fileName: "Channel_File", mimeType: mimeType)
+              .subscribe(onNext: { (message) in
+                subscriber.onNext(message)
+              }, onError: { (error) in
+                subscriber.onError(error)
+              })
+          } else {
+            //?
+          }
+        })
       }
 
-      let disposable = UserChatPromise.uploadFile(
-        name: nil,
-        file: data!,
-        requestId: self.requestId!,
+      return Disposables.create {
+        signal?.dispose()
+      }
+    }
+  }
+  
+  func sendText() -> Observable<CHMessage> {
+    return Observable.create { subscriber in
+      let disposable = UserChatPromise.createMessage(
         userChatId: self.chatId,
-        category: file.category)
-        .subscribe(onNext: { (message) in
+        message: self.message ?? "",
+        requestId: self.requestId!).subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)
@@ -260,21 +290,104 @@ extension CHMessage {
     }
   }
   
-  func sendText() -> Observable<CHMessage> {
-    return Observable.create { subscriber in
-      let disposable = UserChatPromise.createMessage(userChatId: self.chatId,
-                                        message: self.message ?? "",
-                                        requestId: self.requestId!)
+  private func sendGif() -> Observable<CHMessage> {
+    return Observable.create({ (subscriber) in
+      guard let file = self.file, let asset = file.asset else {
+        subscriber.onError(CHErrorPool.sendFileError)
+        return Disposables.create()
+      }
+      
+      var signal: Disposable?
+      asset.fetchImageDataForAsset(false, completeBlock: { (rawData, info) in
+        signal = self.send(
+          data: rawData,
+          fileName: "Channel_Gif_Photo_\(Date().fullDateString()).gif",
+          mimeType: file.mimeType).subscribe(onNext: { (message) in
+            subscriber.onNext(message)
+          }, onError: { (error) in
+            subscriber.onError(error)
+          })
+      })
+      return Disposables.create {
+        signal?.dispose()
+      }
+    })
+  }
+  
+  private func sendImage() -> Observable<CHMessage> {
+    return Observable.create({ (subscriber) in
+      guard let file = self.file, let asset = file.asset else {
+        subscriber.onError(CHErrorPool.sendFileError)
+        return Disposables.create()
+      }
+      
+      var signal: Disposable?
+      asset.fetchOriginalImage(false, completeBlock: { (image, info) in
+        signal = self.send(
+          data: UIImageJPEGRepresentation(image!, 1.0),
+          fileName: "Channel_Photo_\(Date().fullDateString()).png",
+          mimeType: file.mimeType).subscribe(onNext: { (message) in
+            subscriber.onNext(message)
+          }, onError: { (error) in
+            subscriber.onError(error)
+          })
+      })
+      return Disposables.create {
+        signal?.dispose()
+      }
+    })
+  }
+  
+  private func sendVideo() -> Observable<CHMessage> {
+    return Observable.create({ (subscriber) in
+      guard let file = self.file, let asset = file.asset else {
+        subscriber.onError(CHErrorPool.sendFileError)
+        return Disposables.create()
+      }
+      
+      var signal: Disposable?
+      asset.fetchAVAsset(nil, completeBlock: { (asset, info) in
+        if let asset = asset as? AVURLAsset {
+          let data = try! Data(contentsOf: asset.url)
+          signal = self.send(
+            data: data,
+            fileName: "Channel_Video_\(Date().fullDateString()).mp4",
+            mimeType: file.mimeType).subscribe(onNext: { (message) in
+              subscriber.onNext(message)
+            }, onError: { (error) in
+              subscriber.onError(error)
+            })
+        }
+      })
+      return Disposables.create {
+        signal?.dispose()
+      }
+    })
+  }
+  
+  private func send(data: Data?, fileName: String? = "", mimeType: Mimetype?) -> Observable<CHMessage> {
+    return Observable.create({ (subscriber) in
+      guard let data = data, let mimeType = mimeType else {
+        subscriber.onError(CHErrorPool.sendFileError)
+        return Disposables.create()
+      }
+      
+      let disposable = UserChatPromise.uploadFile(
+        name: fileName,
+        file: data,
+        requestId: self.requestId!,
+        userChatId: self.chatId,
+        mimeType: mimeType)
         .subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)
         })
       
-      return Disposables.create(with: {
+      return Disposables.create {
         disposable.dispose()
-      })
-    }
+      }
+    })
   }
 }
 

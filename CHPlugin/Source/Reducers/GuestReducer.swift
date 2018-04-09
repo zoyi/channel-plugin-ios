@@ -24,8 +24,6 @@ func guestReducer(action: Action, guest: CHGuest?) -> CHGuest {
     guest = action.payload
     return guest ?? CHVeil()
   case _ as CheckOutSuccess:
-    PrefStore.clearCurrentUserId()
-    PrefStore.clearCurrentChannelId()
     return CHVeil()
   default:
     return guest ?? CHVeil()
