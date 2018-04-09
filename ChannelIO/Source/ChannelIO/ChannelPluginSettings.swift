@@ -24,7 +24,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc public var enabledTrackDefaultEvent: Bool = true
   
   /* */
-  var locale: String = ""
+  var locale: CHLocale? = nil
   
   @objc
   override public init() {
@@ -37,12 +37,21 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     debugMode: Bool = false,
     hideDefaultLauncher: Bool = false,
     hideDefaultInAppPush: Bool = false,
-    enabledTrackDefaultEvent: Bool = true) {
+    enabledTrackDefaultEvent: Bool = true,
+    locale: String? = nil) {
     self.pluginKey = pluginKey
     self.debugMode = debugMode
     self.hideDefaultLauncher = hideDefaultLauncher
     self.hideDefaultInAppPush = hideDefaultInAppPush
     self.enabledTrackDefaultEvent = enabledTrackDefaultEvent
+    
+    if locale == "en" {
+      self.locale = .english
+    } else if locale == "ko" {
+      self.locale = .korean
+    } else if locale == "ja" {
+      self.locale = .japanese
+    }
   }
   
   required convenience public init(coder aDecoder: NSCoder) {
@@ -51,12 +60,14 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     let hideDefaultLauncher = aDecoder.decodeBool(forKey: "hideDefaultLauncher")
     let hideDefaultInAppPush = aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
     let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: "enabledTrackDefaultEvent")
+    let locale = aDecoder.decodeObject(forKey: "locale") as? String
+    
     self.init(pluginKey: pluginKey,
               debugMode: debugMode,
               hideDefaultLauncher: hideDefaultLauncher,
               hideDefaultInAppPush: hideDefaultInAppPush,
-              enabledTrackDefaultEvent: enabledTrackDefaultEvent
-    )
+              enabledTrackDefaultEvent: enabledTrackDefaultEvent,
+              locale: locale)
   }
   
   public func encode(with aCoder: NSCoder) {
@@ -65,5 +76,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     aCoder.encode(self.hideDefaultLauncher, forKey: "hideDefaultLauncher")
     aCoder.encode(self.hideDefaultInAppPush, forKey: "hideDefaultInAppPush")
     aCoder.encode(self.enabledTrackDefaultEvent, forKey: "enabledTrackDefaultEvent")
+    aCoder.encode(self.locale?.rawValue, forKey: "locale")
   }
 }

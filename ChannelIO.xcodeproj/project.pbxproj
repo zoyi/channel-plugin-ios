@@ -13,7 +13,7 @@
 		142147871E56D75F004C9FAD /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 142147861E56D75F004C9FAD /* WebKit.framework */; };
 		142147891E56D76B004C9FAD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 142147881E56D76B004C9FAD /* libz.tbd */; };
 		1469AF9B1E2F6CF9000A8675 /* UserChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1469AF9A1E2F6CF8000A8675 /* UserChatTests.swift */; };
-		14D2AA7E1E24AE07006FEE22 /* CHPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D2AA741E24AE06006FEE22 /* CHPlugin.framework */; };
+		14D2AA7E1E24AE07006FEE22 /* ChannelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D2AA741E24AE06006FEE22 /* ChannelIO.framework */; };
 		14D2AA831E24AE07006FEE22 /* CHPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */; };
 		14D2AA851E24AE07006FEE22 /* CHPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 14D2AA771E24AE06006FEE22 /* CHPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		14DFAC681E4A189D00130119 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14DFAC671E4A189D00130119 /* Images.xcassets */; };
@@ -275,10 +275,10 @@
 		142147861E56D75F004C9FAD /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		142147881E56D76B004C9FAD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1469AF9A1E2F6CF8000A8675 /* UserChatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatTests.swift; sourceTree = "<group>"; };
-		14D2AA741E24AE06006FEE22 /* CHPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CHPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14D2AA741E24AE06006FEE22 /* ChannelIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ChannelIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D2AA771E24AE06006FEE22 /* CHPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHPlugin.h; sourceTree = "<group>"; };
 		14D2AA781E24AE06006FEE22 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		14D2AA7D1E24AE07006FEE22 /* CHPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CHPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		14D2AA7D1E24AE07006FEE22 /* ChannelIOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChannelIOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHPluginTests.swift; sourceTree = "<group>"; };
 		14D2AA841E24AE07006FEE22 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14DFAC671E4A189D00130119 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Assets/Images.xcassets; sourceTree = "<group>"; };
@@ -544,7 +544,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14D2AA7E1E24AE07006FEE22 /* CHPlugin.framework in Frameworks */,
+				14D2AA7E1E24AE07006FEE22 /* ChannelIO.framework in Frameworks */,
 				DCC49F0A108DACC9BFC099B9 /* Pods_CHPluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -589,8 +589,8 @@
 		14D2AA6A1E24AE06006FEE22 = {
 			isa = PBXGroup;
 			children = (
-				14D2AA761E24AE06006FEE22 /* CHPlugin */,
-				14D2AA811E24AE07006FEE22 /* CHPluginTests */,
+				14D2AA761E24AE06006FEE22 /* ChannelIO */,
+				14D2AA811E24AE07006FEE22 /* ChannelIOTests */,
 				14D2AA751E24AE06006FEE22 /* Products */,
 				143D7E321E24DBE40095961F /* Frameworks */,
 				CE7DAEC6EBBF2AA341A85E13 /* Pods */,
@@ -600,13 +600,13 @@
 		14D2AA751E24AE06006FEE22 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				14D2AA741E24AE06006FEE22 /* CHPlugin.framework */,
-				14D2AA7D1E24AE07006FEE22 /* CHPluginTests.xctest */,
+				14D2AA741E24AE06006FEE22 /* ChannelIO.framework */,
+				14D2AA7D1E24AE07006FEE22 /* ChannelIOTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		14D2AA761E24AE06006FEE22 /* CHPlugin */ = {
+		14D2AA761E24AE06006FEE22 /* ChannelIO */ = {
 			isa = PBXGroup;
 			children = (
 				6597933C1FA7167C00840F6A /* Actions */,
@@ -628,10 +628,10 @@
 				14D2AA781E24AE06006FEE22 /* Info.plist */,
 				14DFAC671E4A189D00130119 /* Images.xcassets */,
 			);
-			path = CHPlugin;
+			path = ChannelIO;
 			sourceTree = "<group>";
 		};
-		14D2AA811E24AE07006FEE22 /* CHPluginTests */ = {
+		14D2AA811E24AE07006FEE22 /* ChannelIOTests */ = {
 			isa = PBXGroup;
 			children = (
 				650D7C371E724E3B007DE358 /* States */,
@@ -643,7 +643,7 @@
 				14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */,
 				14D2AA841E24AE07006FEE22 /* Info.plist */,
 			);
-			path = CHPluginTests;
+			path = ChannelIOTests;
 			sourceTree = "<group>";
 		};
 		225B05F61E4ED68F001DE109 /* Services */ = {
@@ -1158,9 +1158,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		14D2AA731E24AE06006FEE22 /* CHPlugin */ = {
+		14D2AA731E24AE06006FEE22 /* ChannelIO */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 14D2AA881E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "CHPlugin" */;
+			buildConfigurationList = 14D2AA881E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "ChannelIO" */;
 			buildPhases = (
 				AD09686C4489DC3760317A6B /* [CP] Check Pods Manifest.lock */,
 				65F77B071E80E570001E8FBA /* ShellScript */,
@@ -1175,14 +1175,14 @@
 			);
 			dependencies = (
 			);
-			name = CHPlugin;
+			name = ChannelIO;
 			productName = CHPlugin;
-			productReference = 14D2AA741E24AE06006FEE22 /* CHPlugin.framework */;
+			productReference = 14D2AA741E24AE06006FEE22 /* ChannelIO.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		14D2AA7C1E24AE07006FEE22 /* CHPluginTests */ = {
+		14D2AA7C1E24AE07006FEE22 /* ChannelIOTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 14D2AA8B1E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "CHPluginTests" */;
+			buildConfigurationList = 14D2AA8B1E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "ChannelIOTests" */;
 			buildPhases = (
 				2687F909F125936A6FB091BE /* [CP] Check Pods Manifest.lock */,
 				14D2AA791E24AE07006FEE22 /* Sources */,
@@ -1196,9 +1196,9 @@
 			dependencies = (
 				14D2AA801E24AE07006FEE22 /* PBXTargetDependency */,
 			);
-			name = CHPluginTests;
+			name = ChannelIOTests;
 			productName = CHPluginTests;
-			productReference = 14D2AA7D1E24AE07006FEE22 /* CHPluginTests.xctest */;
+			productReference = 14D2AA7D1E24AE07006FEE22 /* ChannelIOTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1223,7 +1223,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 14D2AA6E1E24AE06006FEE22 /* Build configuration list for PBXProject "CHPlugin" */;
+			buildConfigurationList = 14D2AA6E1E24AE06006FEE22 /* Build configuration list for PBXProject "ChannelIO" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1238,8 +1238,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				14D2AA731E24AE06006FEE22 /* CHPlugin */,
-				14D2AA7C1E24AE07006FEE22 /* CHPluginTests */,
+				14D2AA731E24AE06006FEE22 /* ChannelIO */,
+				14D2AA7C1E24AE07006FEE22 /* ChannelIOTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1664,7 +1664,7 @@
 /* Begin PBXTargetDependency section */
 		14D2AA801E24AE07006FEE22 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 14D2AA731E24AE06006FEE22 /* CHPlugin */;
+			target = 14D2AA731E24AE06006FEE22 /* ChannelIO */;
 			targetProxy = 14D2AA7F1E24AE07006FEE22 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1923,7 +1923,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		14D2AA6E1E24AE06006FEE22 /* Build configuration list for PBXProject "CHPlugin" */ = {
+		14D2AA6E1E24AE06006FEE22 /* Build configuration list for PBXProject "ChannelIO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				14D2AA861E24AE07006FEE22 /* Debug */,
@@ -1932,7 +1932,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		14D2AA881E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "CHPlugin" */ = {
+		14D2AA881E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "ChannelIO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				14D2AA891E24AE07006FEE22 /* Debug */,
@@ -1941,7 +1941,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		14D2AA8B1E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "CHPluginTests" */ = {
+		14D2AA8B1E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "ChannelIOTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				14D2AA8C1E24AE07006FEE22 /* Debug */,

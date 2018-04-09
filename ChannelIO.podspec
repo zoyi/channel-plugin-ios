@@ -25,8 +25,8 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0.0' }
 
-  s.source_files = 'CHPlugin/Source/**/*'
-  s.resources = 'CHPlugin/Assets/*'
+  s.source_files = 'ChannelIO/Source/**/*'
+  s.resources = 'ChannelIO/Assets/*'
   s.frameworks = 'SystemConfiguration', 'CoreTelephony', 'CoreLocation', 'WebKit'
   s.requires_arc = 'true' 
  

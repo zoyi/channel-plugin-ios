@@ -37,7 +37,7 @@ extension ChannelIO {
   
   internal class func track(
     eventName: String,
-    eventProperty: [String: Any]? = nil,
+    eventProperty: [String: Any]?,
     sysProperty: [String: Any]?) {
     if eventName.utf16.count > 30 || eventName == "" {
       return
@@ -80,11 +80,14 @@ extension ChannelIO {
       PluginPromise
         .getPluginConfiguration(apiKey: settings.pluginKey, params: params)
         .subscribe(onNext: { (data) in
+          var data = data
           let channel = data["channel"] as! CHChannel
           if channel.isBlocked && !channel.trial {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }
+          
+          data["settings"] = settings
           
           WsService.shared.connect()
           mainStore.dispatch(CheckInSuccess(payload: data))
