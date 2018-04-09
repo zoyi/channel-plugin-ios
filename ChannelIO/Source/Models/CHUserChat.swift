@@ -153,7 +153,7 @@ extension CHUserChat: Equatable {
   static func ==(lhs: CHUserChat, rhs: CHUserChat) -> Bool {
     return lhs.id == rhs.id &&
       lhs.session?.alert == rhs.session?.alert &&
-      lhs.lastMessageId == rhs.lastMessageId &&
+      lhs.lastMessage?.lastMessage == rhs.lastMessage?.lastMessage &&
       lhs.state == rhs.state
   }
 }

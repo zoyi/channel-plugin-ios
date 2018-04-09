@@ -85,13 +85,24 @@ class CHUtils {
     return nil
   }
   
-  class func getLocale() -> String? {
-    guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
-    let start = str.startIndex
-    let end = str.index(str.startIndex, offsetBy: 2)
-    let locale = String(str[start..<end])
-    
-    return locale
+  class func getLocale() -> CHLocale? {
+    if let settings = mainStore.state.settings, let locale = settings.locale {
+      return locale
+    } else {
+      guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
+      let start = str.startIndex
+      let end = str.index(str.startIndex, offsetBy: 2)
+      let locale = String(str[start..<end])
+      
+      if locale == "en" {
+        return .english
+      } else if locale == "ko" {
+        return .korean
+      } else if locale == "ja" {
+        return .japanese
+      }
+      return .english
+    }
   }
   
   class func getCurrentStage() -> String? {

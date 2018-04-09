@@ -22,6 +22,7 @@ private enum UserInfoRow: Int {
 }
 
 private enum ActionRow: Int {
+  case languageOption
   case closedChats
   case soundOption
 }
@@ -77,37 +78,20 @@ final class ProfileViewController: BaseViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
   
-    self.setNavigation()
+    self.initNavigation()
+    self.initTableView()
+    self.initViews()
     self.handleActions()
-    
-    self.tableView.separatorStyle = .none
-    self.tableView.delegate = self
-    self.tableView.dataSource = self
-    self.tableView.isScrollEnabled = false
     
     self.footerView.addSubview(self.versionLabel)
     self.footerView.addSubview(self.logoImageView)
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.footerView)
-    
-    let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as! String
-    self.versionLabel.text = "v\(version)"
-    
-    let channel = mainStore.state.channel
-    let height:CGFloat = channel.homepageUrl != "" || channel.phoneNumber != "" ? 180 : 110
-    self.headerView.frame = CGRect(
-      x: 0, y: 0,
-      width: self.tableView.width,
-      height: height
-    )
-    self.tableView.tableHeaderView = self.headerView
-    
 //    TODO: drag to dismiss
 //    self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(dismissAction(_:)))
 //    self.view.addGestureRecognizer(self.panGestureRecognizer!)
   }
-  
+
   @objc func dismissAction(_ panGesture: UIPanGestureRecognizer) {
     let translation = panGesture.translation(in: self.navigationController?.view)
     
@@ -177,9 +161,7 @@ final class ProfileViewController: BaseViewController {
     }
   }
   
-  func setNavigation() {
-    
-    self.title = CHAssets.localized("ch.settings.title")
+  func initNavigation() {
     self.navigationItem.leftBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
       style: .plain,
@@ -187,6 +169,34 @@ final class ProfileViewController: BaseViewController {
         self?.dismiss(animated: true, completion: nil)
       }
     )
+  }
+  
+  func initTableView() {
+    if #available(iOS 11.0, *) {
+      self.tableView.contentInsetAdjustmentBehavior = .never
+    } else {
+      self.automaticallyAdjustsScrollViewInsets = false
+    }
+    
+    self.tableView.separatorStyle = .none
+    self.tableView.delegate = self
+    self.tableView.dataSource = self
+    self.tableView.isScrollEnabled = false
+    
+    let channel = mainStore.state.channel
+    let height:CGFloat = channel.homepageUrl != "" || channel.phoneNumber != "" ? 180 : 110
+    self.headerView.frame = CGRect(
+      x: 0, y: 0,
+      width: self.tableView.width,
+      height: height
+    )
+    self.tableView.tableHeaderView = self.headerView
+  }
+  
+  func initViews() {
+    let version = Bundle(for: ChannelIO.self)
+      .infoDictionary?["CFBundleShortVersionString"] as! String
+    self.versionLabel.text = "v\(version)"
   }
   
   func handleActions() {
@@ -228,6 +238,21 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch (indexPath.section, indexPath.row) {
     case (ProfileSection.action.rawValue,
+          ActionRow.languageOption.rawValue):
+      let cell = LabelCell()
+      cell.arrowImageView.isHidden = false
+      
+      let locale = CHUtils.getLocale()
+      if locale == .english {
+        cell.titleLabel.text = CHAssets.localized("ch.language.english")
+      } else if locale == .korean {
+        cell.titleLabel.text = CHAssets.localized("ch.language.korean")
+      } else if locale == .japanese {
+        cell.titleLabel.text = CHAssets.localized("ch.language.japanese")
+      }
+      
+      return cell
+    case (ProfileSection.action.rawValue,
           ActionRow.closedChats.rawValue):
       let cell = SwitchCell()
       let isOn = mainStore.state.userChatsState.showCompletedChats
@@ -254,6 +279,18 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       return cell
     default:
       return  UITableViewCell()
+    }
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    switch (indexPath.section, indexPath.row) {
+    case (ProfileSection.action.rawValue,
+          ActionRow.languageOption.rawValue):
+      let controller = LanguageOptionViewController()
+      self.navigationController?.pushViewController(controller, animated: true)
+      break
+    default:
+      break
     }
   }
   
@@ -287,8 +324,9 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension ProfileViewController : StoreSubscriber {
   func newState(state: AppState) {
-    self.guest = state.guest
-
+    self.title = CHAssets.localized("ch.settings.title")
+    
+    self.guest = state.guest    
     self.headerView.configure(
       plugin: state.plugin,
       channel: state.channel
@@ -330,9 +368,9 @@ extension ProfileViewController : StoreSubscriber {
   }
   
   func openAgreement() {
-    let locale = CHUtils.getLocale() ?? "ko"
+    let locale = CHUtils.getLocale() ?? .korean
     let url = "https://channel.io/" +
-      locale +
+      locale.rawValue +
       "/terms_user?channel=" +
       (mainStore.state.channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
     

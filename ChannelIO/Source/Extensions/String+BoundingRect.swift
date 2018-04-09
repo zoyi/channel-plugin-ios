@@ -9,7 +9,7 @@
 import UIKit
 
 extension String {
-  func boundingRect(with size: CGSize, attributes: [NSAttributedStringKey: AnyObject]) -> CGRect {
+  func boundingRect(with size: CGSize, attributes: [NSAttributedStringKey: Any]) -> CGRect {
     let options: NSStringDrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
     let rect = self.boundingRect(with: size, options: options, attributes: attributes, context: nil)
     return snap(rect)
@@ -32,6 +32,11 @@ extension String {
   func height(fits width: CGFloat, font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
     let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
     return self.size(fits: size, font: font, maximumNumberOfLines: maximumNumberOfLines).height
+  }
+  
+  func height(fits width: CGFloat, attributes: [NSAttributedStringKey:Any]) -> CGFloat {
+    let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+    return self.boundingRect(with: size, attributes: attributes).height
   }
 }
 

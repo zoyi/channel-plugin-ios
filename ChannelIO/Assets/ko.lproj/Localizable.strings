@@ -173,3 +173,7 @@
 "ch.watermark" = "Channel.io로 채팅중입니다";
 "ch.chat.expect_response_delay.out_of_working.disabled" = "운영시간이 아닐 때에는 새로운 문의를 하실 수 없습니다.";
 "ch.message_input.placeholder.disabled_new_chat" = "새로운 문의를 하실 수 없습니다.";
+"ch.language.korean" = "한국어";
+"ch.language.japanese" = "日本語";
+"ch.language.english" = "English";
+"ch.language" = "언어";

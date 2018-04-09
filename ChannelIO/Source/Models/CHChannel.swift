@@ -104,7 +104,7 @@ struct CHChannel: CHEntity {
     return  workingTime ?? "unknown"
   }
   
-  var isBlocked: Bool {
+  var shouldBlock: Bool {
     return self.serviceBlocked || self.servicePlan == "free"
   }
   

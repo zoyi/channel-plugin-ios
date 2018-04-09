@@ -40,8 +40,14 @@ class CHAssets {
   }
   
   class func localized(_ key: String) -> String {
-    let bundle = Bundle(for: self)
-    return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    if let settings = mainStore.state.settings, let locale = settings.locale?.rawValue {
+      guard let path = Bundle(for: self).path(forResource: locale, ofType: "lproj") else { return "" }
+      guard let bundle = Bundle.init(path: path) else { return "" }
+      return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    } else {
+      let bundle = Bundle(for: self)
+      return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    }
   }
   
   class func attributedLocalized(_ key: String) -> NSMutableAttributedString {

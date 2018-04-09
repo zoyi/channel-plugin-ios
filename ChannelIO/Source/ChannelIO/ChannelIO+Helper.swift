@@ -82,7 +82,7 @@ extension ChannelIO {
         .subscribe(onNext: { (data) in
           var data = data
           let channel = data["channel"] as! CHChannel
-          if channel.isBlocked && !channel.trial {
+          if channel.shouldBlock && !channel.trial {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }

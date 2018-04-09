@@ -22,3 +22,7 @@ struct GetPlugin: Action {
 struct UpdateChannel: Action {
   public let payload: CHChannel
 }
+
+struct UpdateLocale: Action {
+  public let payload: CHLocale
+}

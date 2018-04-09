@@ -80,7 +80,7 @@ open class MarkdownParser {
   // MARK: Parsing
   open func parse(_ markdown: String) -> NSAttributedString {
     let tokens = markdown.components(separatedBy: "```")
-    let attributedString = NSMutableAttributedString(string: markdown, attributes: [NSAttributedStringKey.font: self.font])
+    let attributedString = NSMutableAttributedString(string: markdown)
 
     if tokens.count == 2 {
       return parse(attributedString)
@@ -88,7 +88,7 @@ open class MarkdownParser {
     
     var location = 0
     for (index, token) in tokens.enumerated() {
-      let range = NSRange(location: location, length: token.count)
+      var range = NSRange(location: location, length: token.count)
       if index % 2 != 1 && token != "" {
         let parsed = parse(NSAttributedString(string: token))
         attributedString.replaceCharacters(in: range, with: parsed)
@@ -98,7 +98,13 @@ open class MarkdownParser {
         let endPart = NSRange(location: range.location + token.count + 3, length: 3)
         attributedString.deleteCharacters(in: endPart)
         attributedString.deleteCharacters(in: startPart)
+        attributedString.addAttributes([NSAttributedStringKey.font: self.font], range: range)
         location += range.length
+      } else if index == tokens.count - 1 && token != "" {
+        let parsed = parse(NSAttributedString(string: token))
+        range.location += 3
+        attributedString.replaceCharacters(in: range, with: parsed)
+        location += parsed.string.count
       }
     }
     return attributedString

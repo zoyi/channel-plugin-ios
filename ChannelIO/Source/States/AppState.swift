@@ -23,4 +23,11 @@ struct AppState: StateType {
   var socketState: WSocketState
   var scriptsState: ScriptsState
   var countryCodeState: CountryCodeState
+  var settings: ChannelPluginSettings?
+}
+
+enum CHLocale: String {
+  case english = "en"
+  case korean = "ko"
+  case japanese = "ja"
 }

@@ -173,3 +173,7 @@ Press the button below to refresh.";
 "ch.watermark" = "Talking with Channel.io";
 "ch.chat.expect_response_delay.out_of_working.disabled" = "You cannot make a new chat when it is off-hours.";
 "ch.message_input.placeholder.disabled_new_chat" = "You cannot make a new chat";
+"ch.language.korean" = "한국어";
+"ch.language.japanese" = "日本語";
+"ch.language.english" = "English";
+"ch.language" = "Language";

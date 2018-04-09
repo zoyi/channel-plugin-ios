@@ -15,15 +15,13 @@ struct CHi18n {
   var ko: String?
 
   func getMessage() -> String? {
-    guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
-    let start = str.startIndex
-    let end = str.index(str.startIndex, offsetBy: 2)
-    let locale = String(str[start..<end])
-    if locale == "en" {
+    let key = CHUtils.getLocale()
+    
+    if key == .english {
       return en
-    } else if locale == "ja" {
+    } else if key == .japanese {
       return ja
-    } else if locale == "ko" {
+    } else if key == .korean {
       return ko
     }
     return nil

@@ -43,8 +43,9 @@ extension Date {
     let endComponents = cal.dateComponents([.year], from: end)
     
     if cal.isDate(start, inSameDayAs: end), var hours = startComponents.hour, let minute = startComponents.minute {
+      let suffix = hours >= 12 ? "PM" : "AM"
       hours = hours > 12 ? hours - 12 : hours
-      return String(format:"%d:%02d %@", hours, minute, hours >= 12 ? "PM" : "AM")
+      return String(format:"%d:%02d %@", hours, minute, suffix)
     } else if let startYear = startComponents.year, let endYear = endComponents.year, startYear == endYear {
       return "\(startComponents.month ?? 0)/\(startComponents.day ?? 0)"
     }

@@ -40,6 +40,8 @@
 		652AE2111E81485D00B7484C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 652AE2131E81485D00B7484C /* Localizable.strings */; };
 		653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653A6C14206C893F0048163D /* ChannelPluginSettings.swift */; };
 		653A6C17206C9BD20048163D /* ChannelIO+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */; };
+		6549CFB0207B691C000091D2 /* LanguageOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6549CFAF207B691C000091D2 /* LanguageOptionViewController.swift */; };
+		6549CFB2207B6C6A000091D2 /* CheckableLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6549CFB1207B6C6A000091D2 /* CheckableLabelCell.swift */; };
 		654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654BFF4A1FD93CC80028D364 /* ReSwift+Extensions.swift */; };
 		6556A29A1FA7318A00B80F4E /* ChannelIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6556A2991FA7316C00B80F4E /* ChannelIO.swift */; };
 		6556A29C1FA821D300B80F4E /* CHError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6556A29B1FA821D300B80F4E /* CHError.swift */; };
@@ -52,6 +54,7 @@
 		65581E611E7BDCC4008B8C70 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E601E7BDCC4008B8C70 /* CFNetwork.framework */; };
 		65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E621E7BDCDB008B8C70 /* MediaPlayer.framework */; };
 		65581E651E7BDCE0008B8C70 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E641E7BDCE0008B8C70 /* AssetsLibrary.framework */; };
+		655824F6207B3D7000980F71 /* SettingReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655824F5207B3D7000980F71 /* SettingReducer.swift */; };
 		656A8F381E72B4C000A8FE3B /* MessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05FB1E4EDA00001DE109 /* MessageTests.swift */; };
 		656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */; };
 		656C984E1FC6A3F10064F53E /* ChatStatusDefaultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984D1FC6A3F10064F53E /* ChatStatusDefaultView.swift */; };
@@ -310,6 +313,8 @@
 		652AE2151E81485F00B7484C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		653A6C14206C893F0048163D /* ChannelPluginSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPluginSettings.swift; sourceTree = "<group>"; };
 		653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelIO+Helper.swift"; sourceTree = "<group>"; };
+		6549CFAF207B691C000091D2 /* LanguageOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageOptionViewController.swift; sourceTree = "<group>"; };
+		6549CFB1207B6C6A000091D2 /* CheckableLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableLabelCell.swift; sourceTree = "<group>"; };
 		654BFF4A1FD93CC80028D364 /* ReSwift+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReSwift+Extensions.swift"; sourceTree = "<group>"; };
 		6556A2991FA7316C00B80F4E /* ChannelIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelIO.swift; sourceTree = "<group>"; };
 		6556A29B1FA821D300B80F4E /* CHError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHError.swift; sourceTree = "<group>"; };
@@ -322,6 +327,7 @@
 		65581E601E7BDCC4008B8C70 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		65581E621E7BDCDB008B8C70 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		65581E641E7BDCE0008B8C70 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		655824F5207B3D7000980F71 /* SettingReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingReducer.swift; sourceTree = "<group>"; };
 		656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTitleView.swift; sourceTree = "<group>"; };
 		656C984D1FC6A3F10064F53E /* ChatStatusDefaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusDefaultView.swift; sourceTree = "<group>"; };
 		656C984F1FC6A4200064F53E /* ChatStatusFollowedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusFollowedView.swift; sourceTree = "<group>"; };
@@ -623,7 +629,7 @@
 				65CB1408206A02F200E456B5 /* Cells */,
 				659793031FA7167C00840F6A /* Views */,
 				652AE20E1E81482F00B7484C /* Assets */,
-				6556A2981FA7316C00B80F4E /* ChannelPlugin */,
+				6556A2981FA7316C00B80F4E /* ChannelIO */,
 				14D2AA771E24AE06006FEE22 /* CHPlugin.h */,
 				14D2AA781E24AE06006FEE22 /* Info.plist */,
 				14DFAC671E4A189D00130119 /* Images.xcassets */,
@@ -695,7 +701,7 @@
 			name = Assets;
 			sourceTree = "<group>";
 		};
-		6556A2981FA7316C00B80F4E /* ChannelPlugin */ = {
+		6556A2981FA7316C00B80F4E /* ChannelIO */ = {
 			isa = PBXGroup;
 			children = (
 				6556A2991FA7316C00B80F4E /* ChannelIO.swift */,
@@ -703,8 +709,8 @@
 				653A6C14206C893F0048163D /* ChannelPluginSettings.swift */,
 				659792D81FA7167B00840F6A /* Guest.swift */,
 			);
-			name = ChannelPlugin;
-			path = Source/ChannelPlugin;
+			name = ChannelIO;
+			path = Source/ChannelIO;
 			sourceTree = "<group>";
 		};
 		656C984A1FC6A2B60064F53E /* NavigationViews */ = {
@@ -857,6 +863,7 @@
 				659792C61FA7167B00840F6A /* ProfileEditViewController.swift */,
 				659792C71FA7167B00840F6A /* ProfileViewController.swift */,
 				659792C81FA7167B00840F6A /* UserChatsViewController.swift */,
+				6549CFAF207B691C000091D2 /* LanguageOptionViewController.swift */,
 			);
 			name = Controllers;
 			path = Source/Controllers;
@@ -941,6 +948,7 @@
 				659792FB1FA7167B00840F6A /* WSocketReducer.swift */,
 				223726061FBEEF370097F22B /* CountryCodeReducer.swift */,
 				65AA7AE61FD64CCF00D2A8B1 /* BotReducer.swift */,
+				655824F5207B3D7000980F71 /* SettingReducer.swift */,
 			);
 			name = Reducers;
 			path = Source/Reducers;
@@ -1103,6 +1111,7 @@
 				65CB141C206A02F200E456B5 /* UserChatCell */,
 				65CB141F206A02F200E456B5 /* UserInfoDialogCell.swift */,
 				65CB1420206A02F200E456B5 /* WatermarkCell.swift */,
+				6549CFB1207B6C6A000091D2 /* CheckableLabelCell.swift */,
 			);
 			name = Cells;
 			path = Source/Cells;
@@ -1456,6 +1465,7 @@
 				6590FA932068C85A0054B353 /* UserChatView.swift in Sources */,
 				6597935B1FA716CB00840F6A /* UserChatsViewController.swift in Sources */,
 				6597935C1FA716CB00840F6A /* UserChatViewController.swift in Sources */,
+				6549CFB2207B6C6A000091D2 /* CheckableLabelCell.swift in Sources */,
 				65CB1424206A02F200E456B5 /* FileMessageCell.swift in Sources */,
 				6597935D1FA716CB00840F6A /* Array+Extensions.swift in Sources */,
 				6597935E1FA716CB00840F6A /* CRToast+Extensions.swift in Sources */,
@@ -1510,6 +1520,7 @@
 				6597937B1FA716CB00840F6A /* CHPreviewThumb.swift in Sources */,
 				6597937C1FA716CB00840F6A /* CHPush.swift in Sources */,
 				656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */,
+				655824F6207B3D7000980F71 /* SettingReducer.swift in Sources */,
 				65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */,
 				6597937D1FA716CB00840F6A /* CHScript.swift in Sources */,
 				659001502068CD7D0054B353 /* MarkdownQuote.swift in Sources */,
@@ -1612,6 +1623,7 @@
 				659793CC1FA716CB00840F6A /* ProfileView.swift in Sources */,
 				659793CD1FA716CB00840F6A /* ProfileViewModel.swift in Sources */,
 				659793CE1FA716CB00840F6A /* ProfileViewRow.swift in Sources */,
+				6549CFB0207B691C000091D2 /* LanguageOptionViewController.swift in Sources */,
 				65CB14072069E41900E456B5 /* UserChatRouter.swift in Sources */,
 				6556A29C1FA821D300B80F4E /* CHError.swift in Sources */,
 				659793CF1FA716CB00840F6A /* TextActionView.swift in Sources */,

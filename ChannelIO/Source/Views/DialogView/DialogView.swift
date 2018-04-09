@@ -398,9 +398,9 @@ extension DialogView {
   }
   
   func openAgreement() {
-    let locale = CHUtils.getLocale() ?? "ko"
+    let locale = CHUtils.getLocale() ?? .korean
     let url = "https://channel.io/" +
-        locale +
+        locale.rawValue +
         "/terms_user?channel=" +
         (mainStore.state.channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
     

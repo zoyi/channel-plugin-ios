@@ -10,7 +10,7 @@ import UIKit
 
 open class MarkdownLink: MarkdownLinkElement {
   
-  fileprivate static let regex = "(\\[[^\\[]*?\\])?\\<[^@][^\\>]*\\>"
+  fileprivate static let regex = "(\\[[^\\n\\[]*?\\])?\\<[^<>\\n]+\\>"
   
   open var font: UIFont?
   open var color: UIColor?

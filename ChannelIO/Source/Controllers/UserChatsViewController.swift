@@ -135,6 +135,9 @@ class UserChatsViewController: BaseViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     mainStore.subscribe(self)
+    
+    //in order to reload if language has been changed
+    self.tableView.reloadData()
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -262,7 +265,7 @@ class UserChatsViewController: BaseViewController {
   func showProfileView() {
     let controller = ProfileViewController()
     let navigation = MainNavigationController(rootViewController: controller)
-    navigation.modalPresentationStyle = .overCurrentContext
+    //navigation.modalPresentationStyle = .overCurrentContext
     self.navigationController?.present(navigation, animated: true, completion: nil)
   }
 }
@@ -508,7 +511,7 @@ extension UserChatsViewController {
 
 extension UserChatsViewController {
   func showWatermarkIfNeeded() {
-    if !mainStore.state.channel.isBlocked {
+    if !mainStore.state.channel.shouldBlock {
       return
     }
     

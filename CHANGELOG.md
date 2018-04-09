@@ -13,10 +13,10 @@
 * Renamed `track:` parameter names to `eventName` and `eventProperty`
 * Renamed `ChannelCheckinCompletionStatus` to `ChannelPluginCompletionStatus` (enum)
 * Renamed `CheckIn` to `Guest` (class)
-* Introduced `ChannelPluginSettings` class for ChannelIO configuration
 * Renamed ChannelPlugin to ChannelIO (class)
 
 #### Updated
+* Introduced `ChannelPluginSettings` class for ChannelIO configuration (added locale option)
 * Introduced message formatting (i.e. *something* for italic and **more** for bold)
 * Refactored message cell structures
 * Upload video is available

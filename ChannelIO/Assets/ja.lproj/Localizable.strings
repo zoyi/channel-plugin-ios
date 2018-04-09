@@ -175,3 +175,7 @@
 "ch.watermark" = "Channel.ioでお届けしています";
 "ch.chat.expect_response_delay.out_of_working.disabled" = "運営時間外には新たな問い合わせを受けられません";
 "ch.message_input.placeholder.disabled_new_chat" = "新しい問い合わせができません";
+"ch.language.korean" = "한국어";
+"ch.language.japanese" = "日本語";
+"ch.language.english" = "English";
+"ch.language" = "言語";

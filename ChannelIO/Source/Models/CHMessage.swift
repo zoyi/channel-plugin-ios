@@ -120,14 +120,13 @@ extension CHMessage: Mappable {
     self.chatId = chatId
     self.personType = guest.type
     self.personId = guest.id
-    self.message = message
-    self.messageV2 = CustomMessageTransform.markdown.parse(message)
     self.requestId = requestId
     self.createdAt = now
     self.state = .New
     self.messageType = messageType
     self.progress = 1
-    //self.isRemote = false
+    self.message = self.format(message: message)
+    self.messageV2 = CustomMessageTransform.markdown.parse(self.message ?? "")
   }
   
   init(chatId: String, guest: CHGuest, asset: DKAsset) {
@@ -168,6 +167,14 @@ extension CHMessage: Mappable {
     } else {
       messageType = .Default
     }
+  }
+  
+  func format(message: String) -> String {
+    var filterText = message
+    filterText = filterText.replacingOccurrences(of: "<", with: "\\<")
+    filterText = filterText.replacingOccurrences(of: ":", with: "\\:")
+    filterText = filterText.replacingOccurrences(of: "[", with: "\\[")
+    return filterText
   }
 }
 
@@ -400,5 +407,6 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
     lhs.progress == rhs.progress &&
     lhs.file?.downloaded == rhs.file?.downloaded &&
     lhs.state == rhs.state &&
-    lhs.webPage == rhs.webPage
+    lhs.webPage == rhs.webPage &&
+    lhs.message == rhs.message
 }

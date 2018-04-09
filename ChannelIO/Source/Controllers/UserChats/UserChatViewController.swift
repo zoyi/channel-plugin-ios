@@ -52,6 +52,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   var disposeBag = DisposeBag()
   var photoBrowser : MWPhotoBrowser? = nil
+  var currentLocale: CHLocale? = CHUtils.getLocale()
   var chatManager : ChatManager!
   
   var errorToastView = ErrorToastView().then {
@@ -431,9 +432,15 @@ extension UserChatViewController: StoreSubscriber {
   }
 
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
-    if (self.userChat?.isReadyOrOpen() == true && nextUserChat?.isReadyOrOpen() == false)
-      || self.channel.isDiff(from: state.channel) {
+    if (self.userChat?.isReadyOrOpen() == true && nextUserChat?.isReadyOrOpen() == false) ||
+      self.channel.isDiff(from: state.channel) ||
+      self.currentLocale != state.settings?.locale {
+      self.currentLocale = state.settings?.locale
       self.initNavigationViews()
+      //replace welcome with updated locale only if user chat has not been created
+      if self.userChat == nil && nextUserChat == nil {
+        mainStore.dispatch(InsertWelcome())
+      }
     }
     
     let userChats = userChatsSelector(

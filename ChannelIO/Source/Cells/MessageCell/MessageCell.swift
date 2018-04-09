@@ -144,7 +144,7 @@ class MessageCell: BaseTableViewCell, Reusable {
       width - Metric.messageCellMinMargin - Metric.bubbleLeftMargin
 
     //bubble height
-    if viewModel.message.message != "" {
+    if viewModel.message.messageV2?.string != "" {
       viewHeight += TextMessageView.viewHeight(fits: bubbleMaxWidth, viewModel: viewModel)
     }
     

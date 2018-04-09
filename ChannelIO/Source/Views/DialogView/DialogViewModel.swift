@@ -36,7 +36,7 @@ struct DialogViewModel: DialogViewModelType {
   func shouldShowFooter() -> Bool {
     if self.type == .UserName {
       let locale = CHUtils.getLocale()
-      return locale == "ko" || locale == "ja"
+      return locale == .korean || locale == .japanese
     } else {
       return true
     }

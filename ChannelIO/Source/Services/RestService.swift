@@ -160,7 +160,7 @@ enum RestRouter: URLRequestConvertible {
     }
     
     if let locale = CHUtils.getLocale() {
-      req.setValue(locale, forHTTPHeaderField: "X-Locale")
+      req.setValue(locale.rawValue, forHTTPHeaderField: "X-Locale")
     }
     
     return req

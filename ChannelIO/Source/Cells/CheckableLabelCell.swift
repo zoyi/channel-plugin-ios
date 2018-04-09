@@ -1,16 +1,16 @@
 //
-//  LabelCell.swift
-//  CHPlugin
+//  CheckableLabelCell.swift
+//  ChannelIO
 //
-//  Created by Haeun Chung on 18/05/2017.
-//  Copyright © 2017 ZOYI. All rights reserved.
+//  Created by Haeun Chung on 09/04/2018.
+//  Copyright © 2018 ZOYI. All rights reserved.
 //
 
 import Foundation
 import SnapKit
 import Reusable
 
-final class LabelCell : BaseTableViewCell, Reusable {
+final class CheckableLabelCell : BaseTableViewCell, Reusable {
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 16)
@@ -18,16 +18,17 @@ final class LabelCell : BaseTableViewCell, Reusable {
     $0.numberOfLines = 1
   }
   
-  let arrowImageView = UIImageView().then {
+  let checkImageView = UIImageView().then {
     $0.contentMode = .center
-    $0.image = CHAssets.getImage(named: "chevronRightSmall")
+    $0.image = CHAssets.getImage(named: "checkBlue")
     $0.isHidden = true
   }
   
-  var disabled = false {
+  var checked = false {
     didSet {
-      self.titleLabel.textColor = self.disabled ?
-        CHColors.blueyGrey60 : CHColors.dark
+      self.titleLabel.textColor = self.checked ?
+        CHColors.dark : CHColors.blueyGrey60
+      self.checkImageView.isHidden = !self.checked
     }
   }
   
@@ -35,7 +36,7 @@ final class LabelCell : BaseTableViewCell, Reusable {
     super.initialize()
     
     self.addSubview(self.titleLabel)
-    self.addSubview(self.arrowImageView)
+    self.addSubview(self.checkImageView)
   }
   
   override func layoutSubviews() {
@@ -46,7 +47,7 @@ final class LabelCell : BaseTableViewCell, Reusable {
       make.leading.equalToSuperview().inset(16)
     }
     
-    self.arrowImageView.snp.remakeConstraints { (make) in
+    self.checkImageView.snp.remakeConstraints { (make) in
       make.centerY.equalToSuperview()
       make.trailing.equalToSuperview().inset(10)
     }
