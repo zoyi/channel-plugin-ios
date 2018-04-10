@@ -17,6 +17,7 @@ import CHSlackTextViewController
 import Alamofire
 import CHNavBar
 import AVKit
+import UINavigationItem_Margin
 
 final class UserChatViewController: BaseSLKTextViewController {
 
@@ -328,6 +329,7 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     if showSetting {
+      self.navigationItem.leftMargin = 0
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "settings"),
         style: .plain,
@@ -337,23 +339,22 @@ final class UserChatViewController: BaseSLKTextViewController {
     } else {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
-      
       let tintColor = mainStore.state.plugin.textUIColor
+      
+      self.navigationItem.leftMargin = 0
+      self.navigationItem.leftBarButtonItem?.tintColor = tintColor
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "back")?.withRenderingMode(.alwaysTemplate),
         text: alertCount,
-        fitToSize: alert != 0,
-        alignment: alert == 0 ? .left : .center,
         textColor: tintColor,
         actionHandler: { [weak self] in
           self?.shyNavBarManager.disable = true
           mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
           _ = self?.navigationController?.popViewController(animated: true)
-      })
-      
-      self.navigationItem.leftBarButtonItem?.tintColor = tintColor
+        })
     }
     
+    self.navigationItem.rightMargin = 0
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
       style: .plain,

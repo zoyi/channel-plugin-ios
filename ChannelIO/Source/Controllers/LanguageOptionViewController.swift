@@ -44,16 +44,14 @@ class LanguageOptionViewController: BaseViewController {
   func initNavigation() {
     self.title = CHAssets.localized("ch.language")
     
-    let backImage = CHAssets.getImage(named: "back")
-    let navigationImage = mainStore.state.plugin.textColor == "white" ?
-      backImage : backImage?.overlayWith(color: CHColors.black)
-    
+    let tintColor = mainStore.state.plugin.textUIColor
+    self.navigationItem.leftBarButtonItem?.tintColor = tintColor
     self.navigationItem.leftBarButtonItem = NavigationItem(
-      image:  navigationImage,
+      image:  CHAssets.getImage(named: "back")?.withRenderingMode(.alwaysTemplate),
       style: .plain,
       actionHandler: { [weak self] in
         _ = self?.navigationController?.popViewController(animated: true)
-    })
+      })
   }
 }
 

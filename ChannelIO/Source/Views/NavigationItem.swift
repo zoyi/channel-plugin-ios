@@ -30,19 +30,9 @@ class NavigationItem: UIBarButtonItem {
     button.setImage(image, for: .normal)
     button.setTitle(text, for: .normal)
     button.imageView?.tintColor = textColor
-    button.frame = CGRect(x: 0, y: 0, width: 34, height: 30)
+    button.frame = CGRect(x: 0, y: 0, width: 40, height: 30)
     button.setTitleColor(textColor, for: .normal)
-    if fitToSize {
-      button.sizeToFit()
-    }
-    if alignment == .left {
-      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -20, bottom: 0, right: 0)
-    } else if alignment == .right {
-      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -20)
-    } else {
-      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
-    }
-    
+
     self.init(customView: button)
     button.addTarget(self, action: #selector(barButtonItemPressed), for: .touchUpInside)
     self.actionHandler = actionHandler
