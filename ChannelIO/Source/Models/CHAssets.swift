@@ -6,7 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import AVFoundation
 
 class CHAssets {

@@ -9,18 +9,18 @@ github "ReSwift/ReSwift"
 github "ReactiveX/RxSwift" ~> 4.0
 github "Hearst-DD/ObjectMapper" ~> 2.2
 github "ninjaprox/NVActivityIndicatorView"
-github "jflinter/Dwifft"
+github "zoyi/Dwifft"
 github "Alamofire/Alamofire" ~> 4.5
 github "zhangao0086/DKImagePickerController"
 github "socketio/socket.io-client-swift" ~> 12.1.2
 github "zoyi/SlackTextViewController" ~> 1.10.6
 github "MortimerGoro/MGSwipeTableCell" ~> 1.5.6
 github "Marxon13/M13ProgressSuite" ~> 1.2.9
-github "zoyi/MWPhotoBrowser"
-github "zoyi/DACircularProgress" ~> 2.3.2
-github "jdg/MBProgressHUD" ~> 0.9
+git "/Users/R3alFr3e/Developments/MWPhotoBrowser" "master"
 github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit"
-github "zoyi/SDWebImage" ~> 4.0.0
+github "rs/SDWebImage" ~> 4.3.0
 github "devxoul/UINavigationItem-Margin"
+github "devxoul/CGFloatLiteral" ~> 0.2
+github "intoxicated/TLYShyNavBar"

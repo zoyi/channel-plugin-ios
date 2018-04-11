@@ -14,8 +14,6 @@
 		142147891E56D76B004C9FAD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 142147881E56D76B004C9FAD /* libz.tbd */; };
 		1469AF9B1E2F6CF9000A8675 /* UserChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1469AF9A1E2F6CF8000A8675 /* UserChatTests.swift */; };
 		14D2AA7E1E24AE07006FEE22 /* ChannelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D2AA741E24AE06006FEE22 /* ChannelIO.framework */; };
-		14D2AA831E24AE07006FEE22 /* CHPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */; };
-		14D2AA851E24AE07006FEE22 /* CHPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 14D2AA771E24AE06006FEE22 /* CHPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		14DFAC681E4A189D00130119 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14DFAC671E4A189D00130119 /* Images.xcassets */; };
 		1CE1C12A418324FDD33E1EA0 /* Pods_ChannelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3042303E08BB985C3D1774FE /* Pods_ChannelIO.framework */; };
 		222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B71FBAAD37002CFA88 /* CHAnimations.swift */; };
@@ -27,6 +25,8 @@
 		225B05F81E4ED913001DE109 /* WsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F71E4ED913001DE109 /* WsServiceTests.swift */; };
 		225B05FA1E4ED9F5001DE109 /* ChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F91E4ED9F5001DE109 /* ChannelTests.swift */; };
 		225B05FE1E4EDA14001DE109 /* GuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05FD1E4EDA14001DE109 /* GuestTests.swift */; };
+		2263481D209DB5C00072801B /* ChannelIO.h in Headers */ = {isa = PBXBuildFile; fileRef = 2263481C209DB5C00072801B /* ChannelIO.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		22634860209DC83C0072801B /* ChannelIOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2263485F209DC83B0072801B /* ChannelIOTests.swift */; };
 		22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A20FB81FE22A54006C81F3 /* BotActions.swift */; };
 		650D7C351E724AD7007DE358 /* LocalMessageFactorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */; };
 		650D7C3B1E72546B007DE358 /* MessagesStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C3A1E72546B007DE358 /* MessagesStateTests.swift */; };
@@ -246,7 +246,6 @@
 		65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141E206A02F200E456B5 /* UserChatCellModel.swift */; };
 		65CB1435206A02F200E456B5 /* UserInfoDialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141F206A02F200E456B5 /* UserInfoDialogCell.swift */; };
 		65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1420206A02F200E456B5 /* WatermarkCell.swift */; };
-		9082412A16C6E900192AFF1E /* Pods_CHPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAB172C860090B9E300CFCA4 /* Pods_CHPlugin.framework */; };
 		DCC49F0A108DACC9BFC099B9 /* Pods_CHPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 941B21CFD296106169AF80C3 /* Pods_CHPluginTests.framework */; };
 		E29716873DA93AF29BB46118 /* Pods_ChannelIOTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7580C3CDEA3355C7B50D9382 /* Pods_ChannelIOTests.framework */; };
 /* End PBXBuildFile section */
@@ -282,10 +281,8 @@
 		142147881E56D76B004C9FAD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1469AF9A1E2F6CF8000A8675 /* UserChatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatTests.swift; sourceTree = "<group>"; };
 		14D2AA741E24AE06006FEE22 /* ChannelIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ChannelIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		14D2AA771E24AE06006FEE22 /* CHPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHPlugin.h; sourceTree = "<group>"; };
 		14D2AA781E24AE06006FEE22 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14D2AA7D1E24AE07006FEE22 /* ChannelIOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChannelIOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHPluginTests.swift; sourceTree = "<group>"; };
 		14D2AA841E24AE07006FEE22 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14DFAC671E4A189D00130119 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Assets/Images.xcassets; sourceTree = "<group>"; };
 		222086B71FBAAD37002CFA88 /* CHAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAnimations.swift; sourceTree = "<group>"; };
@@ -298,6 +295,8 @@
 		225B05F91E4ED9F5001DE109 /* ChannelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelTests.swift; sourceTree = "<group>"; };
 		225B05FB1E4EDA00001DE109 /* MessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTests.swift; sourceTree = "<group>"; };
 		225B05FD1E4EDA14001DE109 /* GuestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuestTests.swift; sourceTree = "<group>"; };
+		2263481C209DB5C00072801B /* ChannelIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelIO.h; sourceTree = "<group>"; };
+		2263485F209DC83B0072801B /* ChannelIOTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelIOTests.swift; sourceTree = "<group>"; };
 		22A20FB81FE22A54006C81F3 /* BotActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotActions.swift; sourceTree = "<group>"; };
 		2D031DBBCA1028953145D1B6 /* Pods-ChannelIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIO.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChannelIO/Pods-ChannelIO.debug.xcconfig"; sourceTree = "<group>"; };
 		3042303E08BB985C3D1774FE /* Pods_ChannelIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChannelIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -550,7 +549,6 @@
 				142147851E56D75B004C9FAD /* CoreLocation.framework in Frameworks */,
 				142147831E56D756004C9FAD /* CoreTelephony.framework in Frameworks */,
 				142147811E56D74F004C9FAD /* SystemConfiguration.framework in Frameworks */,
-				9082412A16C6E900192AFF1E /* Pods_CHPlugin.framework in Frameworks */,
 				1CE1C12A418324FDD33E1EA0 /* Pods_ChannelIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -642,7 +640,7 @@
 				659793031FA7167C00840F6A /* Views */,
 				652AE20E1E81482F00B7484C /* Assets */,
 				6556A2981FA7316C00B80F4E /* ChannelIO */,
-				14D2AA771E24AE06006FEE22 /* CHPlugin.h */,
+				2263481C209DB5C00072801B /* ChannelIO.h */,
 				14D2AA781E24AE06006FEE22 /* Info.plist */,
 				14DFAC671E4A189D00130119 /* Images.xcassets */,
 			);
@@ -652,13 +650,13 @@
 		14D2AA811E24AE07006FEE22 /* ChannelIOTests */ = {
 			isa = PBXGroup;
 			children = (
+				2263485F209DC83B0072801B /* ChannelIOTests.swift */,
 				650D7C371E724E3B007DE358 /* States */,
 				650D7C361E724DFB007DE358 /* Reducers */,
 				650D7C331E724AC1007DE358 /* Misc */,
 				225B05F61E4ED68F001DE109 /* Services */,
 				65C4A75B1E499BED006D7CD5 /* Promises */,
 				1469AF991E2F6CB3000A8675 /* Models */,
-				14D2AA821E24AE07006FEE22 /* CHPluginTests.swift */,
 				14D2AA841E24AE07006FEE22 /* Info.plist */,
 			);
 			path = ChannelIOTests;
@@ -1176,7 +1174,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14D2AA851E24AE07006FEE22 /* CHPlugin.h in Headers */,
+				2263481D209DB5C00072801B /* ChannelIO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1652,13 +1650,13 @@
 				1469AF9B1E2F6CF9000A8675 /* UserChatTests.swift in Sources */,
 				65C4A75F1E49AC78006D7CD5 /* UserChatPromiseTests.swift in Sources */,
 				225B05FE1E4EDA14001DE109 /* GuestTests.swift in Sources */,
+				22634860209DC83C0072801B /* ChannelIOTests.swift in Sources */,
 				65C4A7631E4AB3D0006D7CD5 /* ScriptPromiseTests.swift in Sources */,
 				650D7C3F1E7254C9007DE358 /* UserChatsStateTests.swift in Sources */,
 				225B05F81E4ED913001DE109 /* WsServiceTests.swift in Sources */,
 				650D7C411E725559007DE358 /* SessionsStateTests.swift in Sources */,
 				650D7C3B1E72546B007DE358 /* MessagesStateTests.swift in Sources */,
 				656A8F381E72B4C000A8FE3B /* MessageTests.swift in Sources */,
-				14D2AA831E24AE07006FEE22 /* CHPluginTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

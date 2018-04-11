@@ -12,7 +12,7 @@ import Nimble
 //import RxSwift
 //import ReSwift
 
-@testable import CHPlugin
+@testable import ChannelIO
 
 class LocalMessageFactoryTests: QuickSpec {
   override func spec() {

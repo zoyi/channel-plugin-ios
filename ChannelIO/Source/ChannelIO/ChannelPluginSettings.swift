@@ -6,6 +6,8 @@
 //  Copyright © 2018 ZOYI. All rights reserved.
 //
 
+import Foundation
+
 @objc
 public class ChannelPluginSettings: NSObject, NSCoding {
   /* pluinkey that you can obtain from channel desk */

@@ -6,6 +6,8 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
+import UIKit
+
 enum MessageType {
   case Default
   case WelcomeMessage

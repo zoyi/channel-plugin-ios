@@ -10,7 +10,7 @@ import Quick
 import Nimble
 import SwiftDate
 
-@testable import CHPlugin
+@testable import ChannelIO
 
 class UserChatTests: QuickSpec {
 

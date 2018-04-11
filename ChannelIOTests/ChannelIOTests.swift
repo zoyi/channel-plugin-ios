@@ -8,9 +8,9 @@
 
 import Quick
 import Nimble
-import CHPlugin
+import ChannelIO
 
-class CHPluginTests: QuickSpec {
+class ChannelIOTests: QuickSpec {
 
   override func spec() {
     describe("CHPlugin") {

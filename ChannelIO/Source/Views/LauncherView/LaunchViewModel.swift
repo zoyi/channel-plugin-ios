@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol LaunchViewModelType {
   var xMargin: CGFloat { get }

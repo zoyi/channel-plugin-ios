@@ -11,7 +11,7 @@ import Nimble
 //import RxSwpift
 //import ReSwift
 
-@testable import CHPlugin
+@testable import ChannelIO
 
 class UserChatsReducerTests: QuickSpec {
   override func spec() {

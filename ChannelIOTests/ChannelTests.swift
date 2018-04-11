@@ -8,7 +8,7 @@
 
 import Quick
 import Nimble
-@testable import CHPlugin
+@testable import ChannelIO
 
 class ChannelTests: QuickSpec {
   

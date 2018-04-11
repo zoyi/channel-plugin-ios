@@ -7,6 +7,8 @@
 //
 import Foundation
 
+import Foundation
+
 @objc
 public class Guest : NSObject {
   var id = ""

@@ -11,7 +11,7 @@ import Nimble
 //import RxSwift
 //import ReSwift
 
-@testable import CHPlugin
+@testable import ChannelIO
 
 class SessionsStateTests: QuickSpec {
   override func spec() {
