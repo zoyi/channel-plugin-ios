@@ -12,9 +12,3 @@ protocol DialogAction {
   func signalForAction() -> PublishSubject<Any?>
 }
 
-class DialogActionView : BaseView, DialogAction {
-  func signalForAction() -> PublishSubject<Any?> {
-    assert(false)
-    return PublishSubject<Any?>()
-  }
-}

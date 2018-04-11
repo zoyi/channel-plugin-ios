@@ -21,17 +21,7 @@ struct DeleteMessage: Action {
 }
 
 // local message action
-struct CreateUserInfoGuide: Action {
-  public let payload: [String: Any?]
-}
-
-struct UpdateUserInfoGuide: Action {
-  public let payload: DialogType
-}
-
-struct CompleteUserInfoGuide: Action {}
 
 struct InsertWelcome : Action {}
-
 struct CreateFeedback: Action {}
 struct CreateCompletedFeedback: Action {}

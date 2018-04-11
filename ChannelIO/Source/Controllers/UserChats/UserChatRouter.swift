@@ -12,10 +12,11 @@ import DKImagePickerController
 import CHPhotoBrowser
 
 class UserChatRouter: NSObject, UserChatRouterProtocol {
-//  static func createModule(userChatId: String?) -> UserChatView {
-//    let view = UserChatView()
-//    return view
-//  }
+  static func createModule(userChatId: String?) -> UserChatView {
+    let view = UserChatView()
+    return view
+  }
+  
   func showImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate) {
     guard let url = url else { return }
     let index = photoUrls.index { (photoUrl) -> Bool in

@@ -290,7 +290,6 @@ extension UserChatInteractor {
       self?.sendTyping(isStop: true)
       mainStore.dispatch(CreateMessage(payload: updated))
       self?.updateMessages()
-      self?.showUserInfoGuideIfNeeded()
     }, onError: { [weak self] (error) in
       dlog("Message has been failed to send")
       message.state = .Failed
@@ -335,17 +334,7 @@ extension UserChatInteractor {
 
 //custom dialogs
 extension UserChatInteractor {
-  func showUserInfoGuideIfNeeded() {
-    if self.shouldShowUserGuide && self.userChat != nil {
-      self.shouldShowUserGuide = false
-      dispatch(delay: 1.0, execute: { [weak self] in
-        mainStore.dispatch(
-          CreateUserInfoGuide(payload: ["userChat": self?.userChat])
-        )
-        self?.updateMessages()
-      })
-    }
-  }
+
 }
 
 //

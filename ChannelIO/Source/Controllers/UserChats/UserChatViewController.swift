@@ -311,18 +311,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       }).disposed(by: self.disposeBag)
   }
   
-  fileprivate func showUserInfoGuideIfNeeded() {
-    if self.shouldShowGuide && self.userChat != nil  {
-      self.shouldShowGuide = false
-      dispatch(delay: 1.0, execute: { [weak self] in
-        if self?.view.superview == nil { return }
-        mainStore.dispatch(
-          CreateUserInfoGuide(payload: ["userChat": self?.userChat])
-        )
-      })
-    }
-  }
-
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
     
@@ -378,7 +366,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       dlog("Message has been sent successfully")
       self?.chatManager.sendTyping(isStop: true)
       mainStore.dispatch(CreateMessage(payload: updated))
-      self?.showUserInfoGuideIfNeeded()
     }, onError: { (error) in
       dlog("Message has been failed to send")
       message.state = .Failed
@@ -764,9 +751,6 @@ extension UserChatViewController {
       return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
     case .Log:
       return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
-    case .UserInfoDialog:
-      let model = DialogViewModel.model(type: message.userGuideDialogType)
-      return UserInfoDialogCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: model)
     case .Media:
       return MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .File:
@@ -833,25 +817,6 @@ extension UserChatViewController {
     case .Log:
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
-      return cell
-    case .UserInfoDialog:
-      let cell: UserInfoDialogCell = tableView.dequeueReusableCell(for: indexPath)
-      let model = DialogViewModel.model(type: message.userGuideDialogType)
-      cell.configure(viewModel: model)
-      cell.dialogView.signalForCountryCode()
-        .subscribe(onNext: { [weak self] (code) in
-          self?.dismissKeyboard(true)
-          
-          let pickerView = CountryCodePickerView(frame: (self?.view.frame)!)
-          pickerView.pickedCode = code
-          pickerView.showPicker(onView: (self?.navigationController?.view)!,animated: true)
-          
-          pickerView.signalForSubmit()
-            .subscribe(onNext: { (code) in
-              cell.dialogView.setCountryCodeText(code: code)
-              cell.dialogView.phoneFieldView.phoneField.becomeFirstResponder()
-            }).disposed(by: (self?.disposeBag)!)
-        }).disposed(by: self.disposeBag)
       return cell
     case .SatisfactionFeedback:
       let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)

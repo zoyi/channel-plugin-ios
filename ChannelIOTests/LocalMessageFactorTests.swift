@@ -123,19 +123,6 @@ class LocalMessageFactoryTests: QuickSpec {
       }
     }
     
-    it("user info dialog") {
-      var userChat = CHUserChat()
-      userChat.id = "12345"
-      
-      let messages = LocalMessageFactory
-        .generate(type: .UserInfoDialog, messages: [], userChat: userChat)
-      expect(messages.count).to(equal(1))
-      
-      let msg = messages.first!
-      expect(msg.messageType).to(equal(MessageType.UserInfoDialog))
-      expect(msg.message).to(equal(""))
-    }
-    
     it("welcome message") {
       let messages = LocalMessageFactory.generate(type: .WelcomeMessage)
       expect(messages.count).to(equal(1))

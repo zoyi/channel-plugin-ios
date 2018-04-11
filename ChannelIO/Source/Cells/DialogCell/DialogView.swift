@@ -348,12 +348,12 @@ extension DialogView {
 
         mainStore.dispatch(UpdateGuest(payload: guest!))
         
-        guard user.mobileNumber != nil else {
-          mainStore.dispatch(UpdateUserInfoGuide(payload: .PhoneNumber))
-          return
-        }
+        //guard user.mobileNumber != nil else {
+        //  mainStore.dispatch(UpdateUserInfoGuide(payload: .PhoneNumber))
+        //  return
+        //}
 
-        mainStore.dispatch(CompleteUserInfoGuide())
+        //mainStore.dispatch(CompleteUserInfoGuide())
       }).disposed(by: self.disposeBeg)
   }
 }
@@ -389,7 +389,7 @@ extension DialogView {
         }
 
         mainStore.dispatch(UpdateGuest(payload: guest!))
-        mainStore.dispatch(CompleteUserInfoGuide())
+        //mainStore.dispatch(CompleteUserInfoGuide())
       }).disposed(by: self.disposeBeg)
   }
   

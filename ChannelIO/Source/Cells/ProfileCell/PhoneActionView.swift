@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import SnapKit
 
-final class PhoneActionView: DialogActionView {
+final class PhoneActionView: BaseView, DialogAction {
   //MARK: Constants
   struct Constants {
     static let defaultDailCode = "+82"
@@ -28,9 +28,7 @@ final class PhoneActionView: DialogActionView {
   //MARK: Properties
   let submitSubject = PublishSubject<Any?>()
   let confirmButton = UIButton().then {
-    $0.setTitle(CHAssets.localized("ch.mobile_verification.button"), for: UIControlState.normal)
-    $0.setTitleColor(CHColors.dark, for: UIControlState.normal)
-    $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+    $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
   }
   
   let countryCodeView = UIView()
@@ -55,7 +53,10 @@ final class PhoneActionView: DialogActionView {
   
   override func initialize() {
     super.initialize()
-    self.translatesAutoresizingMaskIntoConstraints = false
+    
+    self.layer.cornerRadius = 2.f
+    self.layer.borderWidth = 1.f
+    self.layer.borderColor = CHColors.brightSkyBlue.cgColor
     
     self.addSubview(self.phoneField)
     self.addSubview(self.confirmButton)
@@ -86,8 +87,8 @@ final class PhoneActionView: DialogActionView {
     }).disposed(by: self.disposeBeg)
   }
 
-  override func layoutSubviews() {
-    super.layoutSubviews()
+  override func setLayouts() {
+    super.setLayouts()
     
     self.countryCodeView.snp.makeConstraints { (make) in
       //make.width.greaterThanOrEqualTo(Metric.codeViewWidth)
@@ -125,7 +126,7 @@ final class PhoneActionView: DialogActionView {
 
   //MARK: UserActionView Protocol
   
-  override func signalForAction() -> PublishSubject<Any?> {
+  func signalForAction() -> PublishSubject<Any?> {
     return submitSubject
   }
 

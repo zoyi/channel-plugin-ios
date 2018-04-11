@@ -46,34 +46,6 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
   case let action as DeleteUserChat:
     return state?.remove(userChatId: action.payload) ?? MessagesState()
   
-  case let action as CreateUserInfoGuide:
-    //create message
-    let userChat = action.payload["userChat"] as? CHUserChat
-    let msg = LocalMessageFactory.generate(
-      type: .UserInfoDialog,
-      messages: [],
-      userChat: userChat
-    )
-    return state?.insert(message: msg.first!) ?? MessagesState()
-  case let action as UpdateUserInfoGuide:
-    let dialogType = action.payload
-    guard var msg = state?.findBy(type: .UserInfoDialog)?.first else {
-      return state ?? MessagesState()
-    }
-    
-    if dialogType == .None {
-      return state?.remove(message: msg) ?? MessagesState()
-    }
-    
-    msg.userGuideDialogType = dialogType
-    return state?.upsert(messages: [msg]) ?? MessagesState()
-  case _ as CompleteUserInfoGuide:
-    if var msg = state?.findBy(type: .UserInfoDialog)?.first {
-      msg.userGuideDialogType = .Completed
-      return state?.upsert(messages: [msg]) ?? MessagesState()
-    } else {
-      return state ?? MessagesState()
-    }
   case _ as InsertWelcome:
     let msg = LocalMessageFactory.generate(
       type: .WelcomeMessage,

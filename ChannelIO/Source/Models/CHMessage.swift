@@ -82,8 +82,7 @@ struct CHMessage: ModelType {
   // Used in only client
   var state: SendingState = .Sent
   var messageType: MessageType = .Default
-  
-  var userGuideDialogType: DialogType = .None
+
   var progress: CGFloat = 1
   //var isRemote = true
 }
@@ -94,8 +93,7 @@ extension CHMessage: Mappable {
        type: MessageType,
        entity: CHEntity? = nil,
        createdAt:Date? = Date(),
-       id: String? = nil,
-       dialogType: DialogType = .None) {
+       id: String? = nil) {
     let now = Date()
     let requestId = "\(now.timeIntervalSince1970 * 1000)"
     self.id = id ?? requestId
@@ -108,7 +106,6 @@ extension CHMessage: Mappable {
     self.entity = entity
     self.personId = entity?.id ?? ""
     self.personType = entity?.kind ?? ""
-    self.userGuideDialogType = dialogType
     self.progress = 1
   }
   
@@ -412,7 +409,6 @@ extension CHMessage: Equatable {}
 func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
   return lhs.id == rhs.id &&
     lhs.messageType == rhs.messageType &&
-    lhs.userGuideDialogType == rhs.userGuideDialogType &&
     lhs.progress == rhs.progress &&
     lhs.file?.downloaded == rhs.file?.downloaded &&
     lhs.state == rhs.state &&

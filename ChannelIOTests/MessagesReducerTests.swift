@@ -150,60 +150,6 @@ class MessagesReducerTests: QuickSpec {
       expect(find.count).to(equal(0))
     }
     
-    it("CreateUserInfoGuide") {
-      var userChat = CHUserChat()
-      userChat.id = "123"
-      
-      let payload = ["userChat": userChat]
-      state = messagesReducer(
-        action: CreateUserInfoGuide(payload:payload), state: state
-      )
-      let find = state.findBy(type: .UserInfoDialog)
-      expect(find).notTo(beNil())
-    }
-    
-    it("UpdateUserInfoGuide") {
-      var userChat = CHUserChat()
-      userChat.id = "123"
-      
-      let payload = ["userChat": userChat]
-      
-      state = messagesReducer(
-        action: CreateUserInfoGuide(payload:payload), state: state
-      )
-      var find = state.findBy(type: .UserInfoDialog)
-      expect(find).notTo(beNil())
-      
-      state = messagesReducer(
-        action: UpdateUserInfoGuide(payload:.PhoneNumber), state: state
-      )
-      
-      find = state.findBy(type: .UserInfoDialog)
-      expect(find).notTo(beNil())
-      expect(find?.first!.userGuideDialogType).to(equal(DialogType.PhoneNumber))
-    }
-    
-    it("CompleteUserInfoGuide") {
-      var userChat = CHUserChat()
-      userChat.id = "123"
-      
-      let payload = ["userChat": userChat]
-      
-      state = messagesReducer(
-        action: CreateUserInfoGuide(payload:payload), state: state
-      )
-      var find = state.findBy(type: .UserInfoDialog)
-      expect(find).notTo(beNil())
-      expect(find?.count).to(equal(1))
-      
-      state = messagesReducer(action: CompleteUserInfoGuide(), state: state)
-      
-      find = state.findBy(type: .UserInfoDialog)
-      expect(find).notTo(beNil())
-      expect(find?.count).to(equal(1))
-      expect(find?.first!.userGuideDialogType).to(equal(DialogType.Completed))
-    }
-    
     it("CreateChannelClosed") {
       state = messagesReducer(
         action: CreateChannelClosed(), state: state

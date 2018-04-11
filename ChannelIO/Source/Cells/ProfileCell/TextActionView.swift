@@ -9,22 +9,12 @@
 import Foundation
 import RxSwift
 import SnapKit
+import RxCocoa
 
-class TextActionView: DialogActionView, UITextFieldDelegate {
-  //MARK: Constants
-  
-  //MARK: Properties
+class TextActionView: BaseView, DialogAction, UITextFieldDelegate {
   let submitSubject = PublishSubject<Any?>()
   let confirmButton = UIButton().then {
-    $0.setTitle(CHAssets.localized("ch.name_verification.button"), for: .normal)
-    $0.setTitleColor(CHColors.dark, for: .normal)
-    $0.setTitleColor(CHColors.blueyGrey, for: .disabled)
-    $0.isEnabled = false
-    $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-    $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-    $0.setContentHuggingPriority(
-      UILayoutPriority(rawValue: 1000), for: .horizontal
-    )
+    $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
   }
   
   let textField = UITextField().then {
@@ -34,24 +24,31 @@ class TextActionView: DialogActionView, UITextFieldDelegate {
   }
   
   let disposeBeg = DisposeBag()
-  //MARK: Init
-  
+
   override func initialize() {
     super.initialize()
-    self.translatesAutoresizingMaskIntoConstraints = false
+    
+    self.layer.cornerRadius = 2.f
+    self.layer.borderWidth = 1.f
+    self.layer.borderColor = CHColors.brightSkyBlue.cgColor
     
     self.addSubview(self.confirmButton)
     self.addSubview(self.textField)
 
-    self.textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+    self.textField.rx.text.subscribe(onNext: { (text) in
+      if let text = text {
+        self.confirmButton.isEnabled = text.count > 0
+      }
+    }).disposed(by: self.disposeBeg)
+    
     self.confirmButton.signalForClick()
       .subscribe(onNext: { [weak self] _ in
       self?.submitSubject.onNext(self?.textField.text)
     }).disposed(by: self.disposeBeg)
   }
   
-  override func layoutSubviews() {
-    super.layoutSubviews()
+  override func setLayouts() {
+    super.setLayouts()
     
     self.textField.snp.makeConstraints { (make) in
       make.leading.equalToSuperview().inset(10)
@@ -61,22 +58,16 @@ class TextActionView: DialogActionView, UITextFieldDelegate {
     
     self.confirmButton.snp.makeConstraints { [weak self] (make) in
       make.left.equalTo((self?.textField.snp.right)!)
-      make.width.greaterThanOrEqualTo(75)
+      make.width.equalTo(44)
+      make.height.equalTo(44)
       make.trailing.equalToSuperview()
-      make.top.equalToSuperview()
-      make.bottom.equalToSuperview()
     }
   }
   
   //MARK: UserActionView Protocol
   
-  override func signalForAction() -> PublishSubject<Any?> {
+  func signalForAction() -> PublishSubject<Any?> {
     return submitSubject
-  }
-  
-  @objc func textFieldDidChange(_ textField: UITextField) {
-    guard let text = textField.text else { return }
-    self.confirmButton.isEnabled = text.count > 0
   }
 }
 

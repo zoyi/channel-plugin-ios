@@ -144,7 +144,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     self.tableView.register(cellType: MessageCell.self)
     self.tableView.register(cellType: NewMessageDividerCell.self)
     self.tableView.register(cellType: DateCell.self)
-    self.tableView.register(cellType: UserInfoDialogCell.self)
     self.tableView.register(cellType: SatisfactionFeedbackCell.self)
     self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
@@ -277,18 +276,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
       }).disposed(by: self.disposeBag)
   }
 
-  fileprivate func showUserInfoGuideIfNeeded() {
-    if self.shouldShowGuide && self.userChat != nil  {
-      self.shouldShowGuide = false
-      dispatch(delay: 1.0, execute: { [weak self] in
-        if self?.view.superview == nil { return }
-        mainStore.dispatch(
-          CreateUserInfoGuide(payload: ["userChat": self?.userChat])
-        )
-      })
-    }
-  }
-
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
     if showSetting {
@@ -341,7 +328,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
       dlog("Message has been sent successfully")
       self?.chatManager.sendTyping(isStop: true)
       mainStore.dispatch(CreateMessage(payload: updated))
-      self?.showUserInfoGuideIfNeeded()
       }, onError: { (error) in
         dlog("Message has been failed to send")
         message.state = .Failed
@@ -353,15 +339,19 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 //protocol
 extension UserChatView {
   func display(messages: [CHMessage]) {
-    
+    self.messages = messages
+    self.tableView.reloadData()
   }
   
   func display(typers: [CHEntity]) {
-    
+    //if visible reload
+    if let typingCell = self.typingCell {
+      typingCell.configure(typingUsers: self.chatManager.typers)
+    }
   }
   
   func display(error: Error?, visible: Bool) {
-    
+    //dispay error
   }
   
   func displayNewBanner() {
@@ -747,10 +737,7 @@ extension UserChatView {
       return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
     case .Log:
       return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
-    case .UserInfoDialog:
-      let model = DialogViewModel.model(type: message.userGuideDialogType)
-      return UserInfoDialogCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: model)
-    case .Media:
+   case .Media:
       return MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .File:
       return FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
@@ -817,25 +804,6 @@ extension UserChatView {
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
       return cell
-    case .UserInfoDialog:
-      let cell: UserInfoDialogCell = tableView.dequeueReusableCell(for: indexPath)
-      let model = DialogViewModel.model(type: message.userGuideDialogType)
-      cell.configure(viewModel: model)
-      cell.dialogView.signalForCountryCode()
-        .subscribe(onNext: { [weak self] (code) in
-          self?.dismissKeyboard(true)
-
-          let pickerView = CountryCodePickerView(frame: (self?.view.frame)!)
-          pickerView.pickedCode = code
-          pickerView.showPicker(onView: (self?.navigationController?.view)!,animated: true)
-
-          pickerView.signalForSubmit()
-            .subscribe(onNext: { (code) in
-              cell.dialogView.setCountryCodeText(code: code)
-              cell.dialogView.phoneFieldView.phoneField.becomeFirstResponder()
-            }).disposed(by: (self?.disposeBag)!)
-        }).disposed(by: self.disposeBag)
-      return cell
     case .SatisfactionFeedback:
       let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
       cell.signalForFeedback().subscribe(onNext: { [weak self] (response) in
@@ -882,6 +850,7 @@ extension UserChatView {
 
 // MARK: MWPhotoBrowser
 
+//interactor
 extension UserChatView: MWPhotoBrowserDelegate {
   func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
     return UInt(self.photoUrls.count)
@@ -904,6 +873,7 @@ extension UserChatView {
     return self.newChatSubject
   }
 
+  //presenter
   func didImageTapped(message: CHMessage) {
     let imgUrl = message.file?.url
     self.photoBrowser = MWPhotoBrowser(delegate: self)
@@ -921,6 +891,7 @@ extension UserChatView {
     }
   }
 
+  //presenter
   func didFileTapped(message: CHMessage) {
     guard let url = message.file?.url else { return }
 
@@ -957,6 +928,7 @@ extension UserChatView {
     }
   }
 
+  //router
   func showDocumentController(url: URL) {
     let docController = UIDocumentInteractionController(url: url)
     docController.delegate = self
@@ -966,6 +938,7 @@ extension UserChatView {
     }
   }
 
+  //presenter
   func didWebPageTapped(message: CHMessage) {
     guard let url = URL(string:message.webPage?.url ?? "") else { return }
     let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
@@ -977,6 +950,7 @@ extension UserChatView {
 
 // MARK: UIDocumentInteractionControllerDelegate methods
 
+//move to router
 extension UserChatView : UIDocumentInteractionControllerDelegate {
   func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
     if let controller = CHUtils.getTopController() {
@@ -985,14 +959,6 @@ extension UserChatView : UIDocumentInteractionControllerDelegate {
     return UIViewController()
   }
 }
-
-//extension UserChatViewController : CHNavigationDelegate {
-//  func willPopViewController(willShow: UIViewController) {
-//    if self.userChatId != nil {
-//      self.requestReadAll()
-//    }
-//  }
-//}
 
 extension UserChatView : SLKInputBarViewDelegate {
   func barStateDidChange(_ state: SLKInputBarState) {

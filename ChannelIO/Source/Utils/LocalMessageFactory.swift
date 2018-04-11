@@ -41,9 +41,6 @@ struct LocalMessageFactory {
     case .UserMessage:
       let msg = getUserMessage(msg: text ?? "", userChat: userChat)
       return messages + [msg]
-    case .UserInfoDialog:
-      let msgs = insertUserInfoDialog(messages: messages, userChat: userChat!)
-      return msgs
     case .WelcomeMessage:
       if let msg = getWelcomeMessage() {
         return [msg] + messages
@@ -138,19 +135,6 @@ struct LocalMessageFactory {
     return newMessages
   }
 
-  private static func insertUserInfoDialog(
-    messages: [CHMessage],
-    userChat: CHUserChat) -> [CHMessage] {
-    let dialogType : DialogType =
-      mainStore.state.guest.ghost
-        ? .UserName : .PhoneNumber
-    let msg = CHMessage(chatId:userChat.id,
-      message: "",
-      type: .UserInfoDialog,
-      dialogType: dialogType)
-    return messages + [msg]
-  }
-  
   private static func getUserMessage(msg: String, userChat: CHUserChat?) -> CHMessage {
     return CHMessage(chatId:userChat?.id ?? "dummy", message:msg, type: .UserMessage)
   }

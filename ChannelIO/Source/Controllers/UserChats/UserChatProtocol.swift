@@ -107,7 +107,7 @@ protocol UserChatInteractorProtocol: class {
 }
 
 protocol UserChatRouterProtocol: class {
-  //static func createModule(userChatId: String?) -> UserChatView
+  static func createModule(userChatId: String?) -> UserChatView
   
   func showImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate)
   func showRetryActionSheet(from view: UIViewController?) -> Observable<Bool?>

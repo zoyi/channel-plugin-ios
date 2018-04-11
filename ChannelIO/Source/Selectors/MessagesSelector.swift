@@ -30,7 +30,6 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
         entity: personSelector(state: state, personType: $0.personType, personId: $0.personId),
         state: $0.state,
         messageType: $0.messageType,
-        userGuideDialogType: $0.userGuideDialogType,
         progress: $0.progress
       )
     }).sorted(by: { (m1, m2) -> Bool in
@@ -64,7 +63,6 @@ func messageSelector(state: AppState, id: String) -> CHMessage? {
         entity: personSelector(state: state, personType: $0.personType, personId: $0.personId),
         state: $0.state,
         messageType: $0.messageType,
-        userGuideDialogType: $0.userGuideDialogType,
         progress: $0.progress
       )
     })

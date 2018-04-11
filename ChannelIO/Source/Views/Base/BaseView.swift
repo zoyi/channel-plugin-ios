@@ -11,7 +11,6 @@ import UIKit
 class BaseView: UIView {
 
   // MARK: Initializing
-
   override init(frame: CGRect) {
     super.init(frame: frame)
     self.initialize()
