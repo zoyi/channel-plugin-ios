@@ -48,7 +48,7 @@ class TextMessageView : BaseView {
     $0.isSelectable = true
     $0.dataDetectorTypes = UIDataDetectorTypes.link
     $0.textContainer.lineFragmentPadding = 0
-    $0.textContainerInset = UIEdgeInsets.zero
+    $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
   }
 
   var viewModel: MessageCellModelType?
@@ -77,7 +77,7 @@ class TextMessageView : BaseView {
   func configure(_ viewModel: MessageCellModelType) {
     self.backgroundColor = viewModel.bubbleBackgroundColor 
     
-    self.isHidden = viewModel.message.messageV2 == nil && viewModel.message.message == nil
+    self.isHidden = viewModel.message.isEmpty()
     
     if let attributedText = viewModel.message.messageV2 {
       self.messageView.attributedText = attributedText

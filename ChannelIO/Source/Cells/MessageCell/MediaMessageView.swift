@@ -17,7 +17,6 @@ class MediaMessageView : BaseView {
   //MARK: properties
   
   let imageView = UIImageView()
-  var asset: DKAsset?
   var placeholder: UIImage?
   
   static var imageMaxSize: CGSize = {
@@ -33,7 +32,7 @@ class MediaMessageView : BaseView {
   fileprivate var imageSize = imageDefaultSize
 
   var indicatorView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 44, height: 44)).then {
-    $0.type = .ballClipRotate
+    $0.type = .ballRotateChase
     $0.color = CHColors.light
     $0.startAnimating()
   }
@@ -61,7 +60,12 @@ class MediaMessageView : BaseView {
   func configure(message: MessageCellModelType, isThumbnail: Bool) {
     guard let file = message.file else { return }
     guard file.image == true else { return }
-
+    
+    if message.isFailed {
+      self.progressView.isHidden = true
+      self.indicatorView.isHidden = true
+    }
+    
     if message.progress == 1 {
       self.progressView.isHidden = true
       self.indicatorView.isHidden = false
@@ -72,16 +76,14 @@ class MediaMessageView : BaseView {
       self.indicatorView.isHidden = true
       self.progressView.isHidden = false
       
-      if self.asset != file.asset {
-        self.asset = file.asset
-        file.asset?.fetchOriginalImageWithCompleteBlock({
-          [weak self] (image, info) in
+      file.asset?.fetchOriginalImageWithCompleteBlock({
+        [weak self] (image, info) in
 
-          self?.imageView.alpha = 0.4
-          self?.imageView.image = image
-          self?.placeholder = image
-        })
-      }
+        self?.imageView.alpha = 0.4
+        self?.imageView.image = image
+        self?.placeholder = image
+      })
+      
       //change to delegation to update ui rather using redux
       self.progressView.setProgress(message.progress, animated: false)
       

@@ -89,7 +89,7 @@ struct CHFile {
   
   static func convertToMimetype(from name: String) -> Mimetype {
     switch name {
-    case "png", "image", String(kUTTypeImage), String(kUTTypeJPEG), String(kUTTypePNG):
+    case "png", "image", "public.heic", String(kUTTypeImage), String(kUTTypeJPEG), String(kUTTypePNG):
       return .image
     case "gif", String(kUTTypeGIF):
       return .gif

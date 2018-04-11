@@ -74,6 +74,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     self.resendButtonView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
       self?.presenter?.didClickOnRetry(for: self?.viewModel?.message)
+      self?.resendButtonView.isHidden = true
     }).disposed(by :self.disposeBag)
   }
 

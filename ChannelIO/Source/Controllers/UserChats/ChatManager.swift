@@ -504,16 +504,17 @@ extension ChatManager {
     guard let message = message else { return }
     
     let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
-    alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.retry_sending_message"), style: .default) { [weak self] _ in
-      message.send().subscribe(onNext: { (message) in
-        mainStore.dispatch(CreateMessage(payload: message))
-      }).disposed(by: (self?.disposeBag)!)
-    })
     
     alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.delete"), style: .destructive) {  _ in
       mainStore.dispatch(DeleteMessage(payload: message))
     })
     
+    alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.retry_sending_message"), style: .default) { [weak self] _ in
+      message.send().subscribe(onNext: { (message) in
+        mainStore.dispatch(CreateMessage(payload: message))
+      }).disposed(by: (self?.disposeBag)!)
+    })
+
     alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.resend.cancel"), style: .cancel) { _ in
       // no action
     })

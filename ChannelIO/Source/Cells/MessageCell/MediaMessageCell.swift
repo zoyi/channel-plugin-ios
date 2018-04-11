@@ -24,6 +24,10 @@ class MediaMessageCell: MessageCell {
   var topToTextConstraint: Constraint? = nil
   var topToTimeConstraint: Constraint? = nil
   
+  override func prepareForReuse() {
+    self.mediaView.imageView.image = nil
+  }
+  
   override func initialize() {
     super.initialize()
     self.contentView.addSubview(self.mediaView)
@@ -45,8 +49,8 @@ class MediaMessageCell: MessageCell {
     
     self.resendButtonView.snp.remakeConstraints { [weak self] (make) in
       make.size.equalTo(CGSize(width: 40, height: 40))
-      make.bottom.equalTo((self?.mediaView.snp.bottom)!)
-      make.right.equalTo((self?.mediaView.snp.left)!).inset(4)
+      make.bottom.equalTo((self?.mediaView.snp.bottom)!).offset(10)
+      make.right.equalTo((self?.mediaView.snp.left)!).offset(4)
     }
   }
   

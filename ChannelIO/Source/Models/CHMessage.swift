@@ -179,6 +179,16 @@ extension CHMessage: Mappable {
 }
 
 extension CHMessage {
+  func isEmpty() -> Bool {
+    if let messageV2 = self.messageV2?.string, messageV2 != "" {
+      return false
+    } else if let message = self.message, message != "" {
+      return false
+    } else {
+      return true
+    }
+  }
+  
   func isSameDate(previous: CHMessage?) -> Bool {
     if previous == nil { return true }
     return NSCalendar.current
