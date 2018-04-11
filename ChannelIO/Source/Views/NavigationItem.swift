@@ -27,7 +27,7 @@ class NavigationItem: UIBarButtonItem {
     actionHandler: (() -> Void)?) {
     
     let button = UIButton(type: .custom)
-    button.setImage(image, for: .normal)
+    button.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
     button.setTitle(text, for: .normal)
     button.imageView?.tintColor = textColor
     button.frame = CGRect(x: 0, y: 0, width: 40, height: 30)

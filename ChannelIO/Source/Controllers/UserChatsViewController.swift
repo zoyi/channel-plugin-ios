@@ -87,6 +87,7 @@ class UserChatsViewController: BaseViewController {
   }
 
   func initTableView() {
+    self.tableView.tableFooterView = UIView()
     self.tableView.delegate = self
     self.tableView.dataSource = self
     self.tableView.allowsMultipleSelectionDuringEditing = true
@@ -135,7 +136,6 @@ class UserChatsViewController: BaseViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     mainStore.subscribe(self)
-    
     //in order to reload if language has been changed
     self.tableView.reloadData()
   }
@@ -179,21 +179,22 @@ class UserChatsViewController: BaseViewController {
       make.height.equalTo(40)
     }
   }
-
+  
   // MARK: - Helper methods
   fileprivate func setDefaultNavItems() {
-    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+    let tintColor = mainStore.state.plugin.textUIColor
+    self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      style: .plain,
-      target: self,
-      action: #selector(exitMessengerButtonTapped(sender:))
-    )
-    self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+      textColor: tintColor,
+      actionHandler: {
+        ChannelIO.close(animated: true)
+      })
+    self.navigationItem.leftBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "settings"),
-      style: .plain,
-      target: self,
-      action: #selector(moreButtonTapped(sender:))
-    )
+      textColor: tintColor,
+      actionHandler: { [weak self] in
+        self?.showProfileView()
+      })
   }
 
   fileprivate func setEditingNavItems() {
@@ -292,14 +293,6 @@ extension UserChatsViewController {
       }).disposed(by: self.disposeBag)
     }
   }
-  
-  @objc func exitMessengerButtonTapped(sender: UIBarButtonItem) {
-    ChannelIO.close(animated: true)
-  }
-  
-  @objc func moreButtonTapped(sender: UIBarButtonItem) {
-    self.showProfileView()
-  }
 }
 // MARK: - StoreSubscriber
 
@@ -312,8 +305,8 @@ extension UserChatsViewController: StoreSubscriber {
 
     self.nextSeq = state.userChatsState.nextSeq
     self.tableView.isHidden = (self.userChats.count == 0 || !self.didLoad) || self.shouldHideTable
-    self.plusButton.isHidden = self.tableView.isHidden
     self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad || self.showNewChat
+    self.plusButton.isHidden = self.tableView.isHidden && self.showNewChat
     
     self.plusButton.configure(
       bgColor: state.plugin.color,
@@ -441,10 +434,6 @@ extension UserChatsViewController: UITableViewDelegate {
 
 extension UserChatsViewController {
   func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false) {
-//    if showIndicator {
-//      SVProgressHUD.show()
-//    }
-
     UserChatPromise.getChats(
       since: isInit ? nil : self.nextSeq,
       limit: 30, sortOrder: "DESC",

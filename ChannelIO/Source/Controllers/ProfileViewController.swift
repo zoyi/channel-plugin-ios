@@ -164,7 +164,7 @@ final class ProfileViewController: BaseViewController {
   func initNavigation() {
     self.navigationItem.leftBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      style: .plain,
+      textColor: mainStore.state.plugin.textUIColor,
       actionHandler: { [weak self] in
         self?.dismiss(animated: true, completion: nil)
       }

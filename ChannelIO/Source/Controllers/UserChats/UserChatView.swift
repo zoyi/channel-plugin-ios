@@ -290,36 +290,32 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   }
 
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
+    let tintColor = mainStore.state.plugin.textUIColor
     if showSetting {
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "settings"),
-        style: .plain,
+        textColor: tintColor,
         actionHandler: { [weak self] in
           self?.profileSubject.onNext(nil)
       })
     } else {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
-
-      let tintColor = mainStore.state.plugin.textUIColor
+      
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "back")?.withRenderingMode(.alwaysTemplate),
         text: alertCount,
-        fitToSize: alert != 0,
-        alignment: alert == 0 ? .left : .center,
         textColor: tintColor,
         actionHandler: { [weak self] in
           self?.shyNavBarManager.disable = true
           mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
           _ = self?.navigationController?.popViewController(animated: true)
       })
-
-      self.navigationItem.leftBarButtonItem?.tintColor = tintColor
     }
 
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      style: .plain,
+      textColor: tintColor,
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         ChannelIO.close(animated: true)
