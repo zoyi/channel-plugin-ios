@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>31</integer>
 		</dict>
+		<key>ChannelIO.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>33</integer>
+		</dict>
 	</dict>
 </dict>
 </plist>
