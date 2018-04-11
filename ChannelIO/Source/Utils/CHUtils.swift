@@ -86,7 +86,7 @@ class CHUtils {
   }
   
   class func getLocale() -> CHLocale? {
-    if let settings = mainStore.state.settings, let locale = settings.locale {
+    if let settings = mainStore.state.settings, let locale = settings.appLocale {
       return locale
     } else {
       guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }

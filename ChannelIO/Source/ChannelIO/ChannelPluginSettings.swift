@@ -23,8 +23,25 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   /* true if tracking default event. Default is true **/
   @objc public var enabledTrackDefaultEvent: Bool = true
   
-  /* */
-  var locale: CHLocale? = nil
+  /* force to use a specific langauge. Currently supports en, ko, ja*/
+  @objc public var locale: String? {
+    get {
+      return self.appLocale?.rawValue
+    }
+    set {
+      if locale == "en" {
+        self.appLocale = .english
+      } else if locale == "ko" {
+        self.appLocale = .korean
+      } else if locale == "ja" {
+        self.appLocale = .japanese
+      } else {
+        self.appLocale = nil
+      }
+    }
+  }
+  
+  var appLocale: CHLocale? = nil
   
   @objc
   override public init() {
@@ -39,19 +56,14 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     hideDefaultInAppPush: Bool = false,
     enabledTrackDefaultEvent: Bool = true,
     locale: String? = nil) {
+    super.init()
+    
     self.pluginKey = pluginKey
     self.debugMode = debugMode
     self.hideDefaultLauncher = hideDefaultLauncher
     self.hideDefaultInAppPush = hideDefaultInAppPush
     self.enabledTrackDefaultEvent = enabledTrackDefaultEvent
-    
-    if locale == "en" {
-      self.locale = .english
-    } else if locale == "ko" {
-      self.locale = .korean
-    } else if locale == "ja" {
-      self.locale = .japanese
-    }
+    self.locale = locale
   }
   
   required convenience public init(coder aDecoder: NSCoder) {
@@ -76,6 +88,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     aCoder.encode(self.hideDefaultLauncher, forKey: "hideDefaultLauncher")
     aCoder.encode(self.hideDefaultInAppPush, forKey: "hideDefaultInAppPush")
     aCoder.encode(self.enabledTrackDefaultEvent, forKey: "enabledTrackDefaultEvent")
-    aCoder.encode(self.locale?.rawValue, forKey: "locale")
+    aCoder.encode(self.appLocale?.rawValue, forKey: "locale")
   }
 }

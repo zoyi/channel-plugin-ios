@@ -434,8 +434,8 @@ extension UserChatViewController: StoreSubscriber {
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
     if (self.userChat?.isReadyOrOpen() == true && nextUserChat?.isReadyOrOpen() == false) ||
       self.channel.isDiff(from: state.channel) ||
-      self.currentLocale != state.settings?.locale {
-      self.currentLocale = state.settings?.locale
+      self.currentLocale != state.settings?.appLocale {
+      self.currentLocale = state.settings?.appLocale
       self.initNavigationViews()
       //replace welcome with updated locale only if user chat has not been created
       if self.userChat == nil && nextUserChat == nil {

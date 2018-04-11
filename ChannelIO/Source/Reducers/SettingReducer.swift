@@ -18,7 +18,7 @@ func settingReducer(action: Action, state: ChannelPluginSettings?) -> ChannelPlu
   case _ as CheckOutSuccess:
     return nil
   case let action as UpdateLocale:
-    state?.locale = action.payload
+    state?.appLocale = action.payload
     return state ?? ChannelPluginSettings()
   default:
     return state ?? ChannelPluginSettings()
