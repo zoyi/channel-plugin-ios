@@ -90,11 +90,10 @@ extension ChannelIO {
           data["settings"] = settings
           
           WsService.shared.connect()
+          mainStore.dispatch(UpdateCheckinState(payload: .success))
           mainStore.dispatch(CheckInSuccess(payload: data))
         
-          if ChannelIO.settings?.enabledTrackDefaultEvent == true {
-            ChannelIO.track(eventName: "CheckIn", eventProperty: nil)
-          }
+          ChannelIO.sendDefaultEvent(.boot)
           
           WsService.shared.ready().subscribe(onNext: { _ in
             subscriber.onNext(data)
@@ -116,6 +115,7 @@ extension ChannelIO {
       return
     }
     
+    ChannelIO.sendDefaultEvent(.open)
     mainStore.dispatch(ChatListIsVisible())
     
     if let userChatViewController = topController as? UserChatViewController,
@@ -193,6 +193,12 @@ extension ChannelIO {
     }
     
     mainStore.dispatch(RemovePush())
+  }
+  
+  internal class func sendDefaultEvent(_ event: CHDefaultEvent, property: [String: Any]? = nil) {
+    if ChannelIO.settings?.enabledTrackDefaultEvent == true {
+      ChannelIO.track(eventName: event.rawValue, eventProperty: property)
+    }
   }
   
   internal class func hideNotification() {

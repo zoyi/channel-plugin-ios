@@ -1244,6 +1244,7 @@
 					};
 					14D2AA7C1E24AE07006FEE22 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 8278Q64QFC;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1850,7 +1851,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/CHPlugin/Modules",
 				);
-				INFOPLIST_FILE = CHPlugin/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ChannelIO/Info.plist";
 				INSTALL_PATH = /Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1892,7 +1893,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/CHPlugin/Modules",
 				);
-				INFOPLIST_FILE = CHPlugin/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ChannelIO/Info.plist";
 				INSTALL_PATH = /Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1919,14 +1920,15 @@
 			baseConfigurationReference = 7D758F40EFD6FB632F31F612 /* Pods-ChannelIOTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 8278Q64QFC;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos/Nimble",
 					"$(PROJECT_DIR)/build/Debug-iphoneos/Quick",
 				);
-				INFOPLIST_FILE = CHPluginTests/Info.plist;
+				INFOPLIST_FILE = ChannelIOTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zoyi.channel.plugin.CHPluginTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zoyi.channel.plugin.ChannelIOTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -1937,14 +1939,15 @@
 			baseConfigurationReference = 00803488A5019FEA40B484B1 /* Pods-ChannelIOTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 8278Q64QFC;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos/Nimble",
 					"$(PROJECT_DIR)/build/Debug-iphoneos/Quick",
 				);
-				INFOPLIST_FILE = CHPluginTests/Info.plist;
+				INFOPLIST_FILE = ChannelIOTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zoyi.channel.plugin.CHPluginTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zoyi.channel.plugin.ChannelIOTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

@@ -9,6 +9,11 @@
 import Foundation
 import ObjectMapper
 
+enum CHDefaultEvent: String {
+  case boot = "Boot"
+  case open = "ChannelOpen"
+}
+
 struct CHEvent {
   var id: String = ""
   var channelId: String = ""

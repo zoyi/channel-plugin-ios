@@ -125,7 +125,6 @@ public final class ChannelIO: NSObject {
       return ChannelIO.checkInChannel(guest: guest)
     }
     .subscribe(onNext: { (_) in
-      mainStore.dispatch(UpdateCheckinState(payload: .success))
       completion?(.success)
       
       if !settings.hideDefaultLauncher &&
@@ -262,6 +261,7 @@ public final class ChannelIO: NSObject {
     guard let topController = CHUtils.getTopController() else { return }
     
     ChannelIO.delegate?.willOpenMessenger?()
+    ChannelIO.sendDefaultEvent(.open)
     mainStore.dispatch(ChatListIsVisible())
 
     let userChatsController = UserChatsViewController()
