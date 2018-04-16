@@ -118,7 +118,7 @@ class TextMessageView : BaseView {
     ]
     
     if let message = viewModel.message.messageV2 {
-      let extraPadding: CGFloat = message.string.guessLanguage() == "日本語" ? 40 : 0
+      let extraPadding: CGFloat = message.string.guessLanguage() == "日本語" ? 40 : 10
       viewHeight += message.string.height(fits: width - extraPadding - Metric.leftRightPadding * 2, attributes: attributes)
       viewHeight += Metric.topBottomPadding * 2
     }

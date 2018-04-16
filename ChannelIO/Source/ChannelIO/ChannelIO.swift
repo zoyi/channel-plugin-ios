@@ -43,6 +43,9 @@ public protocol ChannelPluginDelegate: class {
 public final class ChannelIO: NSObject {
   //MARK: Properties
   @objc public static weak var delegate: ChannelPluginDelegate? = nil
+  @objc public static var booted: Bool {
+    return mainStore.state.checkinState.status == .success
+  }
   
   internal static var launchView : LaunchView?
   internal static var chatNotificationView: ChatNotificationView?
