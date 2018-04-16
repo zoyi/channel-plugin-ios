@@ -29,7 +29,7 @@ struct CHMessage: ModelType {
   var messageV2: NSAttributedString?
   var requestId: String?
   var botOption: [String: Bool]? = nil
-  
+  var profileBot: [CHProfileItem]? = []
   var createdAt: Date
 
   var readableDate: String {
@@ -126,8 +126,8 @@ extension CHMessage: Mappable {
     self.messageV2 = CustomMessageTransform.markdown.parse(self.message ?? "")
   }
   
-  init(chatId: String, guest: CHGuest, asset: DKAsset) {
-    self.init(chatId: chatId, guest: guest, message: "", messageType: .Media)
+  init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset) {
+    self.init(chatId: chatId, guest: guest, message: message, messageType: .Media)
     self.file = CHFile(imageAsset: asset)
     self.messageType = self.file?.mimeType == .image || self.file?.mimeType == .gif ? .Media : .File
 
@@ -152,6 +152,7 @@ extension CHMessage: Mappable {
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
+    profileBot  <- map["profileBot"]
     
     if self.log != nil {
       messageType = .Log
@@ -161,6 +162,8 @@ extension CHMessage: Mappable {
       messageType = .File
     } else if self.webPage != nil {
       messageType = .WebPage
+    } else if let profiles = self.profileBot, profiles.count != 0 {
+      messageType = .Profile
     } else {
       messageType = .Default
     }

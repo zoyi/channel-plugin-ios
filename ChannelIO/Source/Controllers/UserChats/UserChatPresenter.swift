@@ -182,13 +182,25 @@ extension UserChatPresenter {
   
   func send(text: String, assets: [DKAsset]) {
     guard let interactor = self.interactor else { return }
+    guard let chatId = self.userChatId else { return }
+    let guest = mainStore.state.guest
+    
+    var messages = assets.enumerated().map { (index, asset) -> CHMessage in
+      if index == 0 {
+        return CHMessage(chatId: chatId, guest: guest, message: text, asset: asset)
+      }
+      return CHMessage(chatId: chatId, guest: guest, asset: asset)
+    }
+    
+    if messages.count == 0 {
+      messages = [CHMessage(chatId: chatId, guest: guest, message: text)]
+    }
     
     if let userChat = self.userChat, userChat.isActive() {
-      interactor.send(text: text, assets: assets)
-        .subscribe().disposed(by: self.disposeBag)
+      interactor.send(messages: messages).subscribe().disposed(by: self.disposeBag)
     } else if self.userChat == nil {
-      interactor.createChat().flatMap({ (userChat) -> Observable<[CHMessage]> in
-        return interactor.send(text: text, assets: assets)
+      interactor.createChat().flatMap({ (userChat) -> Observable<Any?> in
+        return interactor.send(messages: messages)
       }).flatMap({ (messages) -> Observable<Bool?> in
         return interactor.requestProfileBot()
       }).subscribe(onNext: { (completed) in

@@ -58,7 +58,6 @@ struct CHErrorPool {
   static let versionError = CHError(domain: .pluginPromise, code: .versionError)
   static let eventParseError = CHError(domain: .eventPromise, code: .eventParseError)
   static let guestParseError = CHError(domain: .guestPromise, code: .guestParseError)
-  static let scriptParseError = CHError(domain: .scriptPromise, code: .scriptParseError)
   static let userChatParseError = CHError(domain: .userChatPromise, code: .userChatParseError)
   static let chatResponseParseError = CHError(domain: .userChatPromise, code: .chatResponseParseError)
   static let userChatRemoveError = CHError(domain: .userChatPromise, code: .userChatRemoveError)

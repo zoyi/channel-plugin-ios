@@ -35,6 +35,9 @@ protocol MessageCellModelType {
   var messageType: MessageType { get }
   var progress: CGFloat { get }
   var isFailed: Bool { get }
+  var profileItems: [CHProfileItem] { get set }
+  var currentIndex: Int { get set }
+  var totalCount: Int { get set }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -57,6 +60,10 @@ struct MessageCellModel: MessageCellModelType {
   let messageType: MessageType
   let progress: CGFloat
   let isFailed: Bool
+  
+  var profileItems: [CHProfileItem]
+  var currentIndex: Int
+  var totalCount: Int
   
   init(message: CHMessage, previous: CHMessage?) {
     let channel = mainStore.state.channel
@@ -85,6 +92,17 @@ struct MessageCellModel: MessageCellModelType {
     self.messageType = message.messageType
     self.progress = message.progress
     self.isFailed = message.state == .Failed
+    
+    self.profileItems = message.profileBot ?? []
+    if let index = self.profileItems.index(where: { (profileItem) -> Bool in
+      return profileItem.value == nil
+    }) {
+      self.currentIndex = index
+    } else {
+      self.currentIndex = self.profileItems.count - 1
+    }
+    //calculated need to fill index
+    self.totalCount = self.profileItems.count //max 4
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

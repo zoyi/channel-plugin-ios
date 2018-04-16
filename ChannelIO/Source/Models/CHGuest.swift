@@ -34,6 +34,14 @@ extension CHGuest {
     return GuestPromise.update(user: self)
   }
   
+  func getWelcome() -> String? {
+    if self.named {
+      return mainStore.state.plugin.welcomeNamedI18n?.getMessage()
+    } else {
+      return mainStore.state.plugin.welcomeI18n?.getMessage()
+    }
+  }
+  
   static func getCurrent() -> Observable<CHGuest> {
     return GuestPromise.getCurrent()
   }

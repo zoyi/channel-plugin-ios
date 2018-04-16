@@ -134,17 +134,17 @@ class ChatManager {
           }
         }
         else if typingEntity.action == "start" {
-          if let manager = personSelector(
+          if let typer = personSelector(
             state: mainStore.state,
             personType: typingEntity.personType ?? "",
-            personId: typingEntity.personId) as? CHManager {
+            personId: typingEntity.personId) {
             if self?.getTypingIndex(of: typingEntity) == nil {
-              self?.typingPersons.append(manager)
+              self?.typingPersons.append(typer)
             }
-            self?.addTimer(with: manager, delay: 15)
+            self?.addTimer(with: typer, delay: 15)
           }
         }
-        //reload row not section only if visible
+
         self?.delegate?.update(for: .typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
       })
   }
@@ -316,7 +316,7 @@ extension ChatManager {
       s.state = .infoLoading
       
       let signal = s.getPlugin()
-        .subscribe(onNext: { (script) in
+        .subscribe(onNext: { (plugin, bot) in
           mainStore.dispatchOnMain(GetPlugin(plugin: plugin, bot: bot))
           s.didFetchInfo = true
           s.state = .infoLoaded

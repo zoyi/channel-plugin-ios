@@ -19,11 +19,11 @@ struct CHi18n {
     let key = CHUtils.getLocale()
     
     if key == .english {
-      return en
+      return en ?? text
     } else if key == .japanese {
-      return ja
+      return ja ?? text
     } else if key == .korean {
-      return ko
+      return ko ?? text
     }
     return text
   }

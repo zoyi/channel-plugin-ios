@@ -21,6 +21,7 @@ enum MessageType {
   case WebPage
   case Media
   case File
+  case Profile
 }
 
 struct LocalMessageFactory {
@@ -95,7 +96,7 @@ struct LocalMessageFactory {
   private static func getWelcomeMessage() -> CHMessage? {
     // TODO: consider to cut coupling between main store states    
     let guest = mainStore.state.guest
-    let msg = mainStore.state.scriptsState.getWelcomeMessage(guest: guest)
+    let msg = guest.getWelcome() ?? ""
     let bot = mainStore.state.botsState.getDefaultBot()
     return CHMessage(
       chatId: "welcome_dummy", message: msg, type: .WelcomeMessage, entity: bot, id: "welcome_dummy"

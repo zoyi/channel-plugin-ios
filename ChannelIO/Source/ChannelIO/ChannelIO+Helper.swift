@@ -80,7 +80,7 @@ extension ChannelIO {
       }
       
       PluginPromise
-        .getPluginConfiguration(apiKey: settings.pluginKey, params: params)
+        .boot(pluginKey: settings.pluginKey, params: params)
         .subscribe(onNext: { (data) in
           var data = data
           let channel = data["channel"] as! CHChannel
@@ -209,18 +209,6 @@ extension ChannelIO {
     mainStore.dispatch(RemovePush())
     ChannelIO.chatNotificationView?.remove(animated: true)
     ChannelIO.chatNotificationView = nil
-  }
-  
-  internal class func fetchScripts() {
-    ScriptPromise
-      .getAll(pluginId: mainStore.state.plugin.id)
-      .subscribe(onNext: { (scripts) in
-        mainStore.dispatch(GetScripts(payload: scripts))
-        dlog("fetched scripts successfully")
-      }, onError:{ error in
-        // no action
-        dlog("fetched scripts failed")
-      }).disposed(by: self.disposeBeg)
   }
 }
 

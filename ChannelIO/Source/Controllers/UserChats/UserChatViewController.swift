@@ -33,7 +33,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   var userChat: CHUserChat?
 
   var preloadText: String = ""
-  var shouldShowGuide: Bool = false
   var isFetching = false
   var isRequstingReadAll = false
   
@@ -93,10 +92,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initTableView()
     self.initInputViews()
     self.initViews()
-    
-    self.shouldShowGuide = (mainStore.state.guest.ghost == true ||
-      mainStore.state.guest.mobileNumber == nil) &&
-      mainStore.state.channel.requestGuestInfo
     
     //new user chat
     if self.userChatId == nil {
@@ -163,12 +158,12 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: MessageCell.self)
     self.tableView.register(cellType: NewMessageDividerCell.self)
     self.tableView.register(cellType: DateCell.self)
-    self.tableView.register(cellType: UserInfoDialogCell.self)
     self.tableView.register(cellType: SatisfactionFeedbackCell.self)
     self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
     self.tableView.register(cellType: WatermarkCell.self)
+    self.tableView.register(cellType: ProfileCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -539,6 +534,8 @@ extension UserChatViewController: StoreSubscriber {
         offset.y += MediaMessageCell.cellHeight(fits: 0, viewModel: viewModel)
       } else if lastMessage.messageType == .File {
         offset.y += FileMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+      } else if lastMessage.messageType == .Profile {
+        offset.y += ProfileCell.cellHeight(fits: 0, viewModel: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: 0, viewModel: viewModel)
       }
@@ -751,6 +748,8 @@ extension UserChatViewController {
       return FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .WebPage:
       return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .Profile:
+      return ProfileCell.cellHeight(fit: Constant.messageCellMaxWidth, model: viewModel)
     default:
       let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       return calSize
@@ -857,6 +856,11 @@ extension UserChatViewController {
       cell.signalForClick().subscribe { [weak self] _ in
         self?.didFileTapped(message: message)
       }.disposed(by: self.disposeBag)
+      return cell
+    case .Profile:
+      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.presenter = self.chatManager
+      cell.configure(model: viewModel)
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)

@@ -10,16 +10,32 @@ import Foundation
 import UIKit
 import SnapKit
 
-class ProfileTextView: ProfileInputView, ProfileContentProtocol { 
+
+class ProfileTextView: ProfileInputView, ProfileContentProtocol {
+  let textView = TextActionView()
+  override var inputFieldView: UIView? {
+    get {
+      return self.textView
+    }
+    set {
+      self.inputFieldView = textView
+    }
+  }
+  
   override func initialize() {
     super.initialize()
+
+    
+    self.textView.signalForAction().subscribe(onNext: { (text) in
+
+    }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
     super.setLayouts()
   }
   
-  override func configure(model: ProfileCellModelType) {
-    super.configure(model: model)
+  override func configure(model: MessageCellModelType, index: Int, presenter: ChatManager?) {
+    super.configure(model: model, index: index, presenter: presenter)
   }
 }

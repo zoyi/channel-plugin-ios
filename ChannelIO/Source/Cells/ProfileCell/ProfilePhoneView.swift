@@ -19,7 +19,7 @@ class ProfilePhoneView: ProfileInputView, ProfileContentProtocol {
     super.setLayouts()
   }
   
-  override func configure(model: ProfileCellModelType) {
-    super.configure(model: model)
+  override func configure(model: MessageCellModelType, index: Int, presenter: ChatManager?) {
+    super.configure(model: model, index: index, presenter: presenter)
   }
 }

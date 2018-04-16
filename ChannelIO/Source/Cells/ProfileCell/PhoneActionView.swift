@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import SnapKit
 
-final class PhoneActionView: BaseView, DialogAction {
+final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
   //MARK: Constants
   struct Constants {
     static let defaultDailCode = "+82"

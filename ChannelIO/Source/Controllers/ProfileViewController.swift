@@ -48,29 +48,10 @@ final class ProfileViewController: BaseViewController {
   let headerView = ProfileHeaderView()
   let deleteSubject = PublishSubject<Any?>()
   let disposeBag = DisposeBag()
-  var userInfoModel = [String]()
-
-  var guest: CHGuest?
   
-  var panGestureRecognizer: UIPanGestureRecognizer? = nil
-  var originalPosition: CGPoint?
-  var currentPositionTouched: CGPoint?
-  
-  var userName:String = "" {
-    didSet {
-      if self.guest is CHVeil || self.userName != "" {
-        self.userInfoModel.append("username")
-      }
-    }
-  }
-  
-  var phoneNumber:String = "" {
-    didSet {
-      if self.guest is CHVeil || self.phoneNumber != "" {
-        self.userInfoModel.append("phonenumber")
-      }
-    }
-  }
+  //var panGestureRecognizer: UIPanGestureRecognizer? = nil
+  //var originalPosition: CGPoint?
+  //var currentPositionTouched: CGPoint?
   
   var hideOptions = false
   var showCompleted = false
@@ -92,6 +73,7 @@ final class ProfileViewController: BaseViewController {
 //    self.view.addGestureRecognizer(self.panGestureRecognizer!)
   }
 
+  /*
   @objc func dismissAction(_ panGesture: UIPanGestureRecognizer) {
     let translation = panGesture.translation(in: self.navigationController?.view)
     
@@ -125,7 +107,7 @@ final class ProfileViewController: BaseViewController {
       }
     }
   }
-  
+  */
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     mainStore.subscribe(self)
@@ -326,18 +308,11 @@ extension ProfileViewController : StoreSubscriber {
   func newState(state: AppState) {
     self.title = CHAssets.localized("ch.settings.title")
     
-    self.guest = state.guest    
     self.headerView.configure(
       plugin: state.plugin,
       channel: state.channel
     )
 
-    if let guest = self.guest {
-      self.userInfoModel.removeAll()
-      self.userName = guest.ghost ? "" : guest.name
-      self.phoneNumber = guest.mobileNumber ?? ""
-    }
-    
     let showCompleted = state.userChatsState.showCompletedChats
     if self.showCompleted != showCompleted {
       self.showCompleted = showCompleted

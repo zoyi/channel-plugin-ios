@@ -11,7 +11,7 @@ import RxSwift
 import SnapKit
 import RxCocoa
 
-class TextActionView: BaseView, DialogAction, UITextFieldDelegate {
+class TextActionView: BaseView, DialogAction, UITextFieldDelegate, ProfileInputProtocol {
   let submitSubject = PublishSubject<Any?>()
   let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
@@ -24,7 +24,7 @@ class TextActionView: BaseView, DialogAction, UITextFieldDelegate {
   }
   
   let disposeBeg = DisposeBag()
-
+  
   override func initialize() {
     super.initialize()
     
@@ -61,6 +61,7 @@ class TextActionView: BaseView, DialogAction, UITextFieldDelegate {
       make.width.equalTo(44)
       make.height.equalTo(44)
       make.trailing.equalToSuperview()
+      make.centerY.equalToSuperview()
     }
   }
   

@@ -9,27 +9,13 @@
 import UIKit
 
 protocol ProfileCellModelType: MessageCellModelType {
-  var items: [Any] { get set }
+  var profileItems: [CHProfileItem] { get set }
   var currentIndex: Int { get set }
   var totalCount: Int { get set }
 }
 
-protocol ProfileContentProtocol: class {
-  var view: UIView { get }
-}
-
-extension ProfileContentProtocol where Self: UIView {
-  var view: UIView { return self }
-}
-
-enum ProfileInputType {
-  case text
-  case email
-  case mobileNumber
-}
-
 class ProfileCellModel: ProfileCellModelType {
-  var items: [Any]
+  var profileItems: [CHProfileItem]
   var currentIndex: Int
   var totalCount: Int
   
@@ -82,9 +68,15 @@ class ProfileCellModel: ProfileCellModelType {
     self.isFailed = message.state == .Failed
     
     //profile cell infomation
-    self.items = []
+    self.profileItems = message.profileBot ?? []
+    if let index = self.profileItems.index(where: { (profileItem) -> Bool in
+      return profileItem.value == nil
+    }) {
+      self.currentIndex = index
+    } else {
+      self.currentIndex = self.profileItems.count - 1
+    }
     //calculated need to fill index 
-    self.currentIndex = 0
-    self.totalCount = self.items.count //max 4
+    self.totalCount = self.profileItems.count //max 4
   }
 }
