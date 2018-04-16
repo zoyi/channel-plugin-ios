@@ -11,8 +11,6 @@ import Foundation
 protocol CHEntity : ModelType {
   var name: String { get set }
   var avatarUrl: String? { get set }
-  var initial: String { get set }
-  var color: String { get set }
 }
 
 extension CHEntity {

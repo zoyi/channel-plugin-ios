@@ -12,50 +12,41 @@ import ObjectMapper
 struct CHVeil: CHGuest, CHEntity {
   // ModelType
   var id = ""
-  // Entity
+  
   var name = ""
   var avatarUrl: String?
-  var initial = ""
-  var color = ""
-  // Guest
-  var ghost = false
+  var named = false
   var mobileNumber: String?
-  var meta: [String : AnyObject]?
-
-  //
+  
   var alert = 0
   var unread = 0
+  
+  var profile: [String : Any]?
 }
 
 extension CHVeil: Mappable {
   init?(map: Map) { }
   
   init(id: String, name: String,
-       avatarUrl: String?, initial: String,
-       color: String, ghost: Bool,
-       mobileNumber: String?, meta: [String: AnyObject]?) {
+       avatarUrl: String?, named: Bool,
+       mobileNumber: String?, profile: [String: Any]?) {
     self.id = id
     self.name = name
     self.avatarUrl = avatarUrl
-    self.initial = initial
-    self.ghost = ghost
+    self.named = named
     self.mobileNumber = mobileNumber
-    self.meta = meta
-    self.color = color
+    self.profile = profile
   }
   
   mutating func mapping(map: Map) {
     id              <- map["id"]
     name            <- map["name"]
-    avatarUrl       <- map["avatarUrl"]
-    initial         <- map["initial"]
-    color           <- map["color"]
-    ghost           <- map["ghost"]
     mobileNumber    <- map["mobileNumber"]
-    meta            <- map["meta"]
-    
+    avatarUrl       <- map["avatarUrl"]
+    named           <- map["named"]
     alert           <- map["alert"]
     unread          <- map["unread"]
+    profile         <- map["profile"]
   }
 }
 

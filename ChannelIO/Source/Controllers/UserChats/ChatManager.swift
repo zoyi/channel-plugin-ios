@@ -113,7 +113,7 @@ class ChatManager {
         if let index = self?.getTypingIndex(of: typing) {
           let person = self?.typingPersons.remove(at: index)
           self?.removeTimer(with: person)
-          self?.delegate?.update(for: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
+          self?.delegate?.update(for: .typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
         }
 //        let messages = messagesSelector(state: mainStore.state, userChatId: s.chatId)
 //        s.delegate?.updateFor(element: .messages(obj: messages))
@@ -145,7 +145,7 @@ class ChatManager {
           }
         }
         //reload row not section only if visible
-        self?.delegate?.update(for: .typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
+        self?.delegate?.update(for: .typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
       })
   }
 }
@@ -201,7 +201,7 @@ extension ChatManager {
     }) {
       self.typingPersons.remove(at: index)
       self.timeStorage.removeValue(forKey: person.key)
-      self.delegate?.update(for: .typing(obj: nil, animated: self.animateTyping))
+      self.delegate?.update(for: .typing(obj: self.typingPersons, animated: self.animateTyping))
     }
   }
   
@@ -213,8 +213,41 @@ extension ChatManager {
 }
 
 extension ChatManager {
-  func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
+  func sendMessage(userChatId: String, text: String) -> Observable<CHMessage?> {
+    return Observable.create({ (subscriber) in
+      let me = mainStore.state.guest
+      var message = CHMessage(chatId: userChatId, guest: me, message: text)
+      
+      mainStore.dispatch(CreateMessage(payload: message))
+      //self.scrollToBottom(false)
+      
+      let signal = message.send().subscribe(onNext: { [weak self] (updated) in
+        dlog("Message has been sent successfully")
+        self?.sendTyping(isStop: true)
+        mainStore.dispatch(CreateMessage(payload: updated))
+        subscriber.onNext(updated)
+      }, onError: { (error) in
+        dlog("Message has been failed to send")
+        message.state = .Failed
+        mainStore.dispatch(CreateMessage(payload: message))
+        subscriber.onNext(message)
+      })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+  
+  func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int, requestBot: Bool = false) {
     var message = allMessages.get(index: currentIndex)
+    if message == nil && requestBot {
+      _ = PluginPromise.requestProfileBot(pluginId: mainStore.state.plugin.id, chatId: self.chatId)
+        .subscribe(onNext: { (_) in
+        
+      })
+    }
+    
     message?.send().subscribe(onNext: { [weak self] (updated) in
       message?.state = .Sent
       mainStore.dispatch(CreateMessage(payload: updated))
@@ -283,14 +316,11 @@ extension ChatManager {
       s.state = .infoLoading
       
       let signal = s.getPlugin()
-        .flatMap({ (plugin, bot) -> Observable<CHScript?> in
-          mainStore.dispatchOnMain(GetPlugin(plugin: plugin, bot: bot))
-          return s.getWelcomeScript()
-        })
         .subscribe(onNext: { (script) in
+          mainStore.dispatchOnMain(GetPlugin(plugin: plugin, bot: bot))
           s.didFetchInfo = true
           s.state = .infoLoaded
-          mainStore.dispatchOnMain(GetScript(payload: script))
+
           subscriber.onNext(nil)
         }, onError: { (error) in
           s.didFetchInfo = false
@@ -331,83 +361,72 @@ extension ChatManager {
     }
   }
   
-  func createChat(pluginId:String = "", completion: @escaping (String?) -> Void) {
-    if self.chatId != "" {
-      completion(self.chatId)
-      return
-    }
-
-    var pluginId = pluginId
-    if pluginId == "" {
-      pluginId = mainStore.state.plugin.id
-    }
-    
-    CHUserChat.create(
-      pluginId: pluginId,
-      timeStamp: self.welcomedAt)
-      .subscribe(onNext: { [weak self] (chatResponse) in
-        guard let userChat = chatResponse.userChat,
-          let session = chatResponse.session else { return }
-        mainStore.dispatch(CreateSession(payload: session))
-        mainStore.dispatch(CreateUserChat(payload: userChat))
-        WsService.shared.join(chatId: userChat.id)
-        
-        self?.didChatLoaded = true
-        self?.chatId = userChat.id
-        
-        completion(userChat.id)
+  func createChat(pluginId:String = "") -> Observable<String> {
+    return Observable.create({ [weak self] (subscriber) in
+      if let chatId = self?.chatId, chatId != "" {
+        subscriber.onNext(chatId)
+        return Disposables.create()
+      }
+      
+      var pluginId = pluginId
+      if pluginId == "" {
+        pluginId = mainStore.state.plugin.id
+      }
+      
+      let signal = CHUserChat.create(
+        pluginId: pluginId,
+        timeStamp: self?.welcomedAt)
+        .subscribe(onNext: { (chatResponse) in
+          guard let userChat = chatResponse.userChat,
+            let session = chatResponse.session else { return }
+          mainStore.dispatch(CreateSession(payload: session))
+          mainStore.dispatch(CreateUserChat(payload: userChat))
+          WsService.shared.join(chatId: userChat.id)
+          
+          self?.didChatLoaded = true
+          self?.chatId = userChat.id
+          
+          subscriber.onNext(userChat.id)
         }, onError: { [weak self] (error) in
           self?.didChatLoaded = false
           self?.state = .chatNotLoaded
-          completion(nil)
-      }).disposed(by: self.disposeBag)
-    
-//    CHUserChat.create(pluginId: pluginId, timeStamp: self.welcomedAt)
-//      .flatMap { [weak self] (response) -> Observable<Bool?> in
-//        guard let userChat = response.userChat, let session = response.session else {
-//          return Observable.just(nil)
-//        }
-//        
-//        mainStore.dispatch(CreateSession(payload: session))
-//        mainStore.dispatch(CreateUserChat(payload: userChat))
-//        WsService.shared.join(chatId: userChat.id)
-//        
-//        self?.didChatLoaded = true
-//        self?.chatId = userChat.id
-//        return PluginPromise.requestProfileBot(pluginId: pluginId, chatId: userChat.id)
-//      }.subscribe(onNext: { [weak self] (completed) in
-//        if let completed = completed, completed {
-//          completion(self?.chatId)
-//        } else {
-//          completion(nil)
-//        }
-//      }, onError: { [weak self] (error) in
-//        self?.didChatLoaded = false
-//        self?.state = .chatNotLoaded
-//        completion(nil)
-//      }).disposed(by: self.disposeBag)
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+  
+  func requestProfileBot(chatId: String?) -> Observable<Bool?> {
+    return PluginPromise.requestProfileBot(pluginId: mainStore.state.plugin.id, chatId: chatId)
   }
   
   func resetUserChat() -> Observable<String?> {
     return Observable.create({ [weak self] (subscribe) in
       //guard let s = self else { return Disposables.create() }
       self?.nextSeq = ""
-
+      var signal: Disposable?
+      
       if let chatId = self?.chatId, chatId != "" {
-        _ = self?.fetchChat().subscribe(onNext: { _ in
+        signal = self?.fetchChat().subscribe(onNext: { _ in
           mainStore.dispatch(RemoveMessages(payload: chatId))
           subscribe.onNext(chatId)
         }, onError: { error in
           subscribe.onError(error)
         })
-        return Disposables.create()
+      } else {
+        signal = self?.createChat().subscribe(onNext: { chatId in
+          subscribe.onNext(chatId)
+        }, onError: { error in
+          subscribe.onError(error)
+        })
       }
       
-      self?.createChat(completion: { (userChatId) in
-        subscribe.onNext(userChatId)
-      })
-      
-      return Disposables.create()
+      return Disposables.create {
+        signal?.dispose()
+      }
     })
   }
   
@@ -458,26 +477,10 @@ extension ChatManager {
     self.isRequstingReadAll = true
     
     self.chat?.readAll()
-      .subscribe(onNext: { [weak self] _ in
-        self?.isRequstingReadAll = false
-        self?.readAllManually()
-      }).disposed(by: self.disposeBag)
-  }
-  
-  func readAllManually() {
-    guard var session = self.chat?.session else { return }
-    session.unread = 0
-    session.alert = 0
-    mainStore.dispatch(UpdateSession(payload: session))
   }
   
   func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
     return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
-  }
-  
-  func getWelcomeScript() -> Observable<CHScript?> {
-    let scriptKey = mainStore.state.guest.ghost ? "welcome_ghost" : "welcome"
-    return ScriptPromise.get(pluginId: mainStore.state.plugin.id, scriptKey: scriptKey)
   }
 }
 

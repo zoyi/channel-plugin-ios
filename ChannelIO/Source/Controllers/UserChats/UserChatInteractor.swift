@@ -29,7 +29,6 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   var userChatId: String = ""
   var userChat: CHUserChat? = nil
   
-  var shouldShowUserGuide = false
   var didFetchInfo = false
   var didChatLoaded = false
   var didLoad = false
@@ -66,11 +65,8 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
   }
   
-  init(userChatId: String) {
+  init(userChatId: String = "") {
     self.userChatId = userChatId
-    self.shouldShowUserGuide = (mainStore.state.guest.ghost == true ||
-      mainStore.state.guest.mobileNumber == nil) &&
-      mainStore.state.channel.requestGuestInfo
   }
   
   func subscribeDataSource() {
@@ -95,6 +91,25 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   
   func refreshUserChat() {
     
+  }
+  
+  func readyToPresent() -> Observable<Any?> {
+    return Observable.create({ (subscriber) in
+      let signal = CHManager.getRecentFollowers()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (managers) in
+          mainStore.dispatch(UpdateFollowingManagers(payload: managers))
+          subscriber.onNext(nil)
+          dlog("got following managers")
+        }, onError: { (error) in
+          subscriber.onError(error)
+          dlog("error getting following managers: \(error.localizedDescription)")
+        })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
   }
   
   func joinSocket() {
@@ -132,7 +147,7 @@ extension UserChatInteractor {
         if let index = self?.getTypingIndex(of: typing) {
           let person = self?.typingPersons.remove(at: index)
           self?.removeTimer(with: person)
-          self?.chatEventSubject.onNext(.typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
+          self?.chatEventSubject.onNext(.typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
         }
         let messages = messagesSelector(state: mainStore.state, userChatId: self?.userChatId)
         self?.chatEventSubject.onNext(.messages(obj: messages, next: self?.nextSeq ?? ""))
@@ -189,7 +204,7 @@ extension UserChatInteractor {
             self?.addTimer(with: manager, delay: 15)
           }
         }
-        self?.chatEventSubject.onNext(.typing(obj: self?.typingPersons, animated: self?.animateTyping ?? false))
+        self?.chatEventSubject.onNext(.typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
       })
   }
 }
@@ -262,13 +277,7 @@ extension UserChatInteractor {
       return
     }
     
-    self.isRequstingReadAll = true
-    
     self.userChat?.readAll()
-      .subscribe(onNext: { [weak self] _ in
-        self?.isRequstingReadAll = false
-        self?.readAllManually()
-      }).disposed(by: self.disposeBag)
   }
   
   func readAllManually() {
@@ -297,6 +306,36 @@ extension UserChatInteractor {
       self?.updateMessages()
     }).disposed(by: self.disposeBag)
 
+  }
+  
+  func send(messages: [CHMessage]) -> Observable<Any?> {
+    return Observable.create({ (subscribe) -> Disposable in
+      return Disposables.create()
+    })
+  }
+  
+  func send(text: String) -> Observable<CHMessage> {
+    return Observable.create({ (subscribe) -> Disposable in
+      return Disposables.create()
+    })
+  }
+  
+  func send(assets: [DKAsset]) -> Observable<[CHMessage]> {
+    return Observable.create({ (subscribe) -> Disposable in
+      return Disposables.create()
+    })
+  }
+  
+  func send(message: CHMessage?) -> Observable<CHMessage?> {
+    return Observable.create({ (subscribe) -> Disposable in
+      return Disposables.create()
+    })
+  }
+  
+  func requestProfileBot() -> Observable<Bool?> {
+    return Observable.create({ (subscribe) -> Disposable in
+      return Disposables.create()
+    })
   }
   
   func send(message: CHMessage?) {
@@ -340,7 +379,39 @@ extension UserChatInteractor {
 //
 extension UserChatInteractor: StoreSubscriber {
   func newState(state: AppState) {
+    //let messages = messagesSelector(state: state, userChatId: self.userChatId)
+    //self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
     
+    //saved contentOffset
+    //let offset = self.tableView.contentOffset
+    //let hasNewMessage = self.chatManager.hasNewMessage(current: self.messages, updated: messages)
+    
+    //message only needs to be replace if count is differe
+    //self.messages = messages
+    //fixed contentOffset
+    //self.tableView.layoutIfNeeded()
+    
+    // Photo - is this scalable? or doesn't need to care at this moment?
+//    self.photoUrls = self.messages.reversed()
+//      .filter({ $0.file?.isPreviewable == true })
+//      .map({ (message) -> String in
+//        return message.file?.url ?? ""
+//      })
+    
+    //let userChat = userChatSelector(state: state, userChatId: self.userChatId)
+    
+    //self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
+    //self.updateInputFieldIfNeeded(userChat: self.userChat, nextUserChat: userChat)
+    //self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
+    //self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
+    //self.showErrorIfNeeded(state: state)
+    
+    //self.fetchWelcomeInfoIfNeeded()
+    //self.fetchChatIfNeeded()
+    
+    //self.userChat = userChat
+    //self.chatManager.chat = userChat
+    //self.channel = state.channel
   }
   
   func updateMessages() {
@@ -400,7 +471,7 @@ extension UserChatInteractor {
     }) {
       self.typingPersons.remove(at: index)
       self.timeStorage.removeValue(forKey: person.key)
-      self.chatEventSubject.onNext(.typing(obj: nil, animated: self.animateTyping))
+      self.chatEventSubject.onNext(.typing(obj: self.typingPersons, animated: self.animateTyping))
     }
   }
   

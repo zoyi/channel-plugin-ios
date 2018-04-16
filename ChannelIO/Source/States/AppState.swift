@@ -21,7 +21,6 @@ struct AppState: StateType {
   var messagesState: MessagesState
   var uiState: UIState
   var socketState: WSocketState
-  var scriptsState: ScriptsState
   var countryCodeState: CountryCodeState
   var settings: ChannelPluginSettings?
 }

@@ -133,7 +133,6 @@ public final class ChannelIO: NSObject {
         ChannelIO.showLauncher(on: CHUtils.getTopController()?.view, animated: true)
       }
       
-      ChannelIO.fetchScripts()
       ChannelIO.registerPushToken()
       PrefStore.setChannelPluginSettings(pluginSetting: settings)
     }, onError: { error in

@@ -16,7 +16,7 @@ enum ChatEvent {
   case manager(obj: CHManager?)
   case session(obj: CHSession?)
   case chat(obj: CHUserChat?)
-  case typing(obj: [CHEntity]?, animated: Bool)
+  case typing(obj: [CHEntity], animated: Bool)
   case error(obj: Error?)
 }
 
@@ -66,10 +66,14 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnManager(from view: UIViewController?)
   func didClickOnFile(with message: CHMessage?, from view: UIViewController?)
   func didClickOnImage(with url: URL?, from view: UIViewController?)
+  func didClickOnVideo(with url: URL?, from view: UIViewController?)
   func didClickOnWeb(with url: String?, from view: UIViewController?)
   func didClickOnTranslate(for message: CHMessage?)
   func didClickOnRetry(for message: CHMessage?, from view: UIViewController?)
+  func didClickOnNewChat(with text: String, from view: UINavigationController?)
+  func didClickOnSettings(from view: UIViewController?)
   
+  func readyToDisplay() -> Observable<Any?>?
   func viewDidLoad()
   func prepareDataSource()
   func cleanDataSource()
@@ -85,6 +89,7 @@ protocol UserChatInteractorProtocol: class {
   var shouldFetchChat: Bool { get }
   var shouldRefreshChat: Bool { get }
   
+  func readyToPresent() -> Observable<Any?>
   func refreshUserChat()
   func subscribeDataSource()
   func unsunbscribeDataSource()
@@ -100,16 +105,25 @@ protocol UserChatInteractorProtocol: class {
   func translate(for message: CHMessage)
   func sendFeedback(rating: String)
   
-  func send(text: String, assets:[DKAsset])
-  func send(message: CHMessage?)
+  func send(text: String) -> Observable<CHMessage>
+  func send(assets: [DKAsset]) -> Observable<[CHMessage]>
+  func send(messages: [CHMessage]) -> Observable<Any?>
+  func send(message: CHMessage?) -> Observable<CHMessage?>
   func sendTyping(isStop: Bool)
   func delete(message: CHMessage?)
+  func requestProfileBot() -> Observable<Bool?>
 }
 
 protocol UserChatRouterProtocol: class {
   static func createModule(userChatId: String?) -> UserChatView
   
-  func showImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate)
+  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate)
+  func presentVideoPlayer(with url: URL?, from view: UIViewController?)
+  func presentSettings(from view: UIViewController?)
+  func pushFileView(with url: URL?, from view: UIViewController?)
+  
+  func showNewChat(with text: String, from view: UINavigationController?)
+  
   func showRetryActionSheet(from view: UIViewController?) -> Observable<Bool?>
   func showOptionActionSheet(from view: UIViewController?) -> Observable<[DKAsset]> 
   func showOptionPicker(

@@ -55,11 +55,9 @@ class GuestTests: QuickSpec {
       it("normal") {
         let user = CHUser(id: "123", name: "user",
                         avatarUrl: "www.zoyi.co",
-                        initial:"JJ",
-                        color: "#123456",
-                        ghost: false,
+                        named: false,
                         mobileNumber: "+8201032314123",
-                        meta: ["userInfo":"test" as AnyObject])
+                        profile: ["userInfo":"test"])
         
         expect(user.id).to(equal("123"))
         expect(user.name).to(equal("user"))
@@ -112,11 +110,9 @@ class GuestTests: QuickSpec {
       it("normal") {
         let veil = CHVeil(id: "123", name: "user",
                         avatarUrl: "www.zoyi.co",
-                        initial:"JJ",
-                        color: "#123456",
-                        ghost: false,
+                        named: false,
                         mobileNumber: "+8201032314123",
-                        meta: ["userInfo":"test" as AnyObject])
+                        profile: ["userInfo":"test"])
         expect(veil.id).to(equal("123"))
         expect(veil.name).to(equal("user"))
         expect(veil.avatarUrl).to(equal("www.zoyi.co"))

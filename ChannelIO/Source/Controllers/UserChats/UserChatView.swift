@@ -31,7 +31,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   var userChat: CHUserChat?
 
   var preloadText: String = ""
-  var shouldShowGuide: Bool = false
   var isFetching = false
   var isRequstingReadAll = false
 
@@ -90,21 +89,8 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     self.presenter?.cleanDataSource()
-//
-//    if isBeingDismissed || isMovingFromParentViewController {
-//      self.chatManager.reset()
-//      self.chatManager.willDisppear()
-//    }
   }
-//
-//  fileprivate func initManagers() {
-//    self.chatManager = ChatManager(id: self.userChatId)
-//    self.chatManager.chat = userChatSelector(
-//      state: mainStore.state,
-//      userChatId: self.userChatId)
-//    self.chatManager.delegate = self
-//  }
-//
+
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
     self.shouldScrollToBottomAfterKeyboardShows = true
@@ -339,13 +325,15 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 //protocol
 extension UserChatView {
   func display(messages: [CHMessage]) {
+    let hasNewMessage = false // self.presenter?.hasNewMessage(current: current, updated: updated)
+    self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages, hasNewMessage: hasNewMessage)
     self.messages = messages
     self.tableView.reloadData()
   }
   
   func display(typers: [CHEntity]) {
-    //if visible reload
-    if let typingCell = self.typingCell {
+    let indexPath = IndexPath(row: 0, section: self.channel.servicePlan == "free" ? 1 : 0)
+    if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let typingCell = self.typingCell {
       typingCell.configure(typingUsers: self.chatManager.typers)
     }
   }
@@ -532,14 +520,13 @@ extension UserChatView {
   }
 
   //presenter
-  func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
+  func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage], hasNewMessage: Bool) {
     guard let lastMessage = updated.first, !lastMessage.isMine() else {
       return
     }
 
     let offset = self.tableView.contentOffset.y
-    if self.chatManager.hasNewMessage(current: current, updated: updated) &&
-      offset > UIScreen.main.bounds.height * 0.5 {
+    if hasNewMessage && offset > UIScreen.main.bounds.height * 0.5 {
       self.newMessageView.configure(message: lastMessage)
       self.newMessageView.show(animated: true)
     }
@@ -598,25 +585,36 @@ extension UserChatView {
     let msg = self.textView.text!
     self.presenter?.send(text: msg, assets: [])
     
-    if let userChat = self.userChat,
-      userChat.isActive() {
-      if let userChatId = self.userChatId {
-        self.sendMessage(userChatId: userChatId, text: msg)
-      }
-    } else if self.userChat == nil {
-      self.chatManager.createChat(completion: { [weak self] (userChatId) in
-        if let userChatId = userChatId {
-          self?.userChatId = userChatId
-          self?.sendMessage(userChatId: userChatId, text: msg)
-        } else {
-          self?.chatManager.state = .chatNotLoaded
-        }
-      })
-    } else {
-      mainStore.dispatch(RemoveMessages(payload: userChatId))
-      self.newChatSubject.onNext(self.textView.text)
-    }
-    
+    //move this logic into presenter
+//    if let userChat = self.userChat,
+//      userChat.isActive() {
+//      if let userChatId = self.userChatId {
+//        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
+//          
+//          }.disposed(by: self.disposeBag)
+//      }
+//    } else if self.userChat == nil {
+//      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
+//        guard let s = self else {
+//          return Observable.just(nil)
+//        }
+//        s.userChatId = chatId
+//        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
+//      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
+//        guard let s = self else {
+//          return Observable.just(nil)
+//        }
+//        return s.chatManager.requestProfileBot(chatId: s.userChatId)
+//      }).subscribe(onNext: { (completed) in
+//        
+//      }, onError: { [weak self] (error) in
+//        self?.chatManager.state = .chatNotLoaded
+//      }).disposed(by: self.disposeBag)
+//    } else {
+//      mainStore.dispatch(RemoveMessages(payload: userChatId))
+//      self.newChatSubject.onNext(self.textView.text)
+//    }
+//    
     self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
   }
@@ -624,42 +622,6 @@ extension UserChatView {
   override func forceTextInputbarAdjustment(for responder: UIResponder?) -> Bool {
     // TODO: check if responder is equal to our text field
     return true
-  }
-
-  private func presentPicker(
-    type: DKImagePickerControllerSourceType,
-    max: Int = 0,
-    assetType: DKImagePickerControllerAssetType = .allPhotos) {
-    let pickerController = DKImagePickerController()
-    pickerController.sourceType = type
-    pickerController.showsCancelButton = true
-    pickerController.maxSelectableCount = max
-    pickerController.assetType = assetType
-    pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
-      func uploadImage(_ userChatId: String) {
-        let messages = assets.map({ (asset) -> CHMessage in
-          return CHMessage(chatId: userChatId, guest:  mainStore.state.guest, asset: asset)
-        })
-
-        messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
-        //TODO: rather create array of signal and trigger in order
-        self?.chatManager.sendMessageRecursively(allMessages: messages, currentIndex: 0)
-      }
-
-      if let userChatId = self?.userChatId {
-        uploadImage(userChatId)
-      } else {
-        self?.chatManager.createChat(completion: { (userChatId) in
-          self?.userChatId = userChatId
-          if let userChatId = userChatId {
-            uploadImage(userChatId)
-          } else {
-            self?.chatManager.state = .chatNotLoaded
-          }
-        })
-      }
-    }
-    self.present(pickerController, animated: true, completion: nil)
   }
 
   private func updatePhotoUrls(messages: [CHMessage]) {

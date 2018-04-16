@@ -10,6 +10,8 @@ import Foundation
 import ObjectMapper
 import DKImagePickerController
 import MobileCoreServices
+import RxSwift
+import Alamofire
 
 enum Mimetype: String {
   case image = "image/png"
@@ -60,6 +62,24 @@ struct CHFile {
       } else {
         return "\(MB) MB"
       }
+    }
+  }
+  
+  var urlInDocumentsDirectoryString = ""
+  var urlInDocumentsDirectory: URL? {
+    set {
+      if let path = newValue?.path {
+        self.urlInDocumentsDirectoryString = path
+      }
+    }
+    get {
+      return URL(fileURLWithPath: self.urlInDocumentsDirectoryString)
+    }
+  }
+  
+  var isDownloaded: Bool {
+    get {
+      return FileManager.default.fileExists(atPath: self.urlInDocumentsDirectoryString)
     }
   }
   
@@ -118,5 +138,55 @@ extension CHFile: Mappable {
     previewThumb <- map["previewThumb"]
     
     fileUrl = URL(string: url)
+  }
+}
+
+extension CHFile {
+  func download() -> Observable<(URL?, Float)> {
+    return Observable.create({ (subscriber) in
+      let error: NSError = NSError(domain: "download", code: 404, userInfo: nil)
+      guard let url = self.fileUrl else {
+        subscriber.onError(error)
+        return Disposables.create()
+      }
+      
+      if self.isDownloaded {
+        subscriber.onNext((self.urlInDocumentsDirectory, 100))
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
+      
+      let destination: DownloadRequest.DownloadFileDestination = { _, response in
+        let documentsURL:URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fileURL:URL = documentsURL.appendingPathComponent(response.suggestedFilename!)
+        
+        return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
+      }
+      
+      let req = Alamofire.download(url, to: destination)
+        .downloadProgress { (download) in
+          DispatchQueue.main.async() {
+            subscriber.onNext((nil, Float(download.fractionCompleted)))
+          }
+        }.validate(statusCode: 200..<300)
+        .response { (response) in
+          //SVProgressHUD.dismiss()
+          guard response.response?.statusCode == 200 else {
+            subscriber.onError(error)
+            return
+          }
+          
+          let directoryURL = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+          let pathURL = URL(fileURLWithPath: directoryURL, isDirectory: true)
+          guard let fileName = response.response?.suggestedFilename else { return }
+          let fileURL = pathURL.appendingPathComponent(fileName)
+          
+          subscriber.onNext((fileURL, 1))
+          subscriber.onCompleted()
+      }
+      return Disposables.create {
+        req.cancel()
+      }
+    })
   }
 }

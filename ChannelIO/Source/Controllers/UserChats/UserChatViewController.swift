@@ -354,24 +354,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     return self.chatManager.resetUserChat()
   }
-  
-  fileprivate func sendMessage(userChatId: String, text: String) {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: userChatId, guest: me, message: text)
-    
-    mainStore.dispatch(CreateMessage(payload: message))
-    self.scrollToBottom(false)
-    
-    message.send().subscribe(onNext: { [weak self] (updated) in
-      dlog("Message has been sent successfully")
-      self?.chatManager.sendTyping(isStop: true)
-      mainStore.dispatch(CreateMessage(payload: updated))
-    }, onError: { (error) in
-      dlog("Message has been failed to send")
-      message.state = .Failed
-      mainStore.dispatch(CreateMessage(payload: message))
-    }).disposed(by: self.disposeBag)
-  }
 }
 
 // MARK: - StoreSubscriber
@@ -613,24 +595,36 @@ extension UserChatViewController {
     self.textView.refreshFirstResponder()
     let msg = self.textView.text!
     
+    //move this logic into presenter
     if let userChat = self.userChat,
       userChat.isActive() {
       if let userChatId = self.userChatId {
-        self.sendMessage(userChatId: userChatId, text: msg)
+        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
+          
+        }.disposed(by: self.disposeBag)
       }
     } else if self.userChat == nil {
-      self.chatManager.createChat(completion: { [weak self] (userChatId) in
-        if let userChatId = userChatId {
-          self?.userChatId = userChatId
-          self?.sendMessage(userChatId: userChatId, text: msg)
-        } else {
-          self?.chatManager.state = .chatNotLoaded
+      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
+        guard let s = self else {
+          return Observable.just(nil)
         }
-      })
+        s.userChatId = chatId
+        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
+      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
+        guard let s = self else {
+          return Observable.just(nil)
+        }
+        return s.chatManager.requestProfileBot(chatId: s.userChatId)
+      }).subscribe(onNext: { (completed) in
+        
+      }, onError: { [weak self] (error) in
+        self?.chatManager.state = .chatNotLoaded
+      }).disposed(by: self.disposeBag)
     } else {
       mainStore.dispatch(RemoveMessages(payload: userChatId))
       self.newChatSubject.onNext(self.textView.text)
     }
+    
     self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
   }
@@ -650,26 +644,26 @@ extension UserChatViewController {
       pickerController.maxSelectableCount = max
       pickerController.assetType = assetType
       pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
-        func uploadImage(_ userChatId: String) {
+        func uploadImage(_ userChatId: String, requestBot: Bool = false) {
           let messages = assets.map({ (asset) -> CHMessage in
             return CHMessage(chatId: userChatId, guest:  mainStore.state.guest, asset: asset)
           })
           
           messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
           //TODO: rather create array of signal and trigger in order
-          self?.chatManager.sendMessageRecursively(allMessages: messages, currentIndex: 0)
+          self?.chatManager.sendMessageRecursively(
+            allMessages: messages, currentIndex: 0, requestBot: requestBot
+          )
         }
         
         if let userChatId = self?.userChatId {
           uploadImage(userChatId)
         } else {
-          self?.chatManager.createChat(completion: { (userChatId) in
-            self?.userChatId = userChatId
-            if let userChatId = userChatId {
-              uploadImage(userChatId)
-            } else {
-              self?.chatManager.state = .chatNotLoaded
-            }
+          _ = self?.chatManager.createChat().subscribe(onNext: { [weak self] (chatId) in
+            self?.userChatId = chatId
+            uploadImage(chatId, requestBot:true)
+          }, onError: { [weak self] (error) in
+            self?.chatManager.state = .chatNotLoaded
           })
         }
       }

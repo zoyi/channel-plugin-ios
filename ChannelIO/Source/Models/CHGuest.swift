@@ -10,9 +10,9 @@ import Foundation
 import RxSwift
 
 protocol CHGuest: CHEntity {
-  var ghost: Bool { get set }
+  var named: Bool { get set }
   var mobileNumber: String? { get set }
-  var meta: [String : AnyObject]? { get set }
+  var profile: [String : Any]? { get set }
   
   var alert: Int { get set }
   var unread: Int { get set }

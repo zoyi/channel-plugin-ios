@@ -88,7 +88,6 @@
 		659793451FA7168400840F6A /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792CB1FA7167B00840F6A /* AppState.swift */; };
 		659793461FA7168700840F6A /* ManagersState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792CC1FA7167B00840F6A /* ManagersState.swift */; };
 		659793471FA7168A00840F6A /* MessagesState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792CD1FA7167B00840F6A /* MessagesState.swift */; };
-		659793481FA7168E00840F6A /* ScriptsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792CE1FA7167B00840F6A /* ScriptsState.swift */; };
 		659793491FA7169100840F6A /* SessionsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792CF1FA7167B00840F6A /* SessionsState.swift */; };
 		6597934A1FA7169400840F6A /* UIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D01FA7167B00840F6A /* UIState.swift */; };
 		6597934B1FA7169700840F6A /* UserChatsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D11FA7167B00840F6A /* UserChatsState.swift */; };
@@ -96,7 +95,6 @@
 		6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597933D1FA7167C00840F6A /* MessageActions.swift */; };
 		6597934E1FA716CB00840F6A /* PluginActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597933E1FA7167C00840F6A /* PluginActions.swift */; };
 		6597934F1FA716CB00840F6A /* PushActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597933F1FA7167C00840F6A /* PushActions.swift */; };
-		659793501FA716CB00840F6A /* ScriptActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793401FA7167C00840F6A /* ScriptActions.swift */; };
 		659793511FA716CB00840F6A /* SessionActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793411FA7167C00840F6A /* SessionActions.swift */; };
 		659793521FA716CB00840F6A /* UIActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793421FA7167C00840F6A /* UIActions.swift */; };
 		659793531FA716CB00840F6A /* UserChatActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793431FA7167C00840F6A /* UserChatActions.swift */; };
@@ -141,7 +139,6 @@
 		6597937A1FA716CB00840F6A /* CHPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792E21FA7167B00840F6A /* CHPlugin.swift */; };
 		6597937B1FA716CB00840F6A /* CHPreviewThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792E31FA7167B00840F6A /* CHPreviewThumb.swift */; };
 		6597937C1FA716CB00840F6A /* CHPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792E41FA7167B00840F6A /* CHPush.swift */; };
-		6597937D1FA716CB00840F6A /* CHScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792E51FA7167B00840F6A /* CHScript.swift */; };
 		6597937E1FA716CB00840F6A /* CHSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792E61FA7167B00840F6A /* CHSession.swift */; };
 		6597937F1FA716CB00840F6A /* CHUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792E71FA7167B00840F6A /* CHUser.swift */; };
 		659793801FA716CB00840F6A /* CHUserChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792E81FA7167B00840F6A /* CHUserChat.swift */; };
@@ -152,7 +149,6 @@
 		659793861FA716CB00840F6A /* EventPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BB1FA7167B00840F6A /* EventPromise.swift */; };
 		659793871FA716CB00840F6A /* GuestPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BC1FA7167B00840F6A /* GuestPromise.swift */; };
 		659793881FA716CB00840F6A /* PluginPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BD1FA7167B00840F6A /* PluginPromise.swift */; };
-		659793891FA716CB00840F6A /* ScriptPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BE1FA7167B00840F6A /* ScriptPromise.swift */; };
 		6597938A1FA716CB00840F6A /* UserChatPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BF1FA7167B00840F6A /* UserChatPromise.swift */; };
 		6597938B1FA716CB00840F6A /* UtilityPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C01FA7167B00840F6A /* UtilityPromise.swift */; };
 		6597938C1FA716CB00840F6A /* AppReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792F01FA7167B00840F6A /* AppReducer.swift */; };
@@ -162,7 +158,6 @@
 		659793901FA716CB00840F6A /* MessagesReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792F41FA7167B00840F6A /* MessagesReducer.swift */; };
 		659793911FA716CB00840F6A /* PluginReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792F51FA7167B00840F6A /* PluginReducer.swift */; };
 		659793921FA716CB00840F6A /* PushReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792F61FA7167B00840F6A /* PushReducer.swift */; };
-		659793931FA716CB00840F6A /* ScriptsReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792F71FA7167B00840F6A /* ScriptsReducer.swift */; };
 		659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792F81FA7167B00840F6A /* SessionsReducer.swift */; };
 		659793951FA716CB00840F6A /* UIReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792F91FA7167B00840F6A /* UIReducer.swift */; };
 		659793961FA716CB00840F6A /* UserChatReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792FA1FA7167B00840F6A /* UserChatReducer.swift */; };
@@ -383,7 +378,6 @@
 		659792BB1FA7167B00840F6A /* EventPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPromise.swift; sourceTree = "<group>"; };
 		659792BC1FA7167B00840F6A /* GuestPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestPromise.swift; sourceTree = "<group>"; };
 		659792BD1FA7167B00840F6A /* PluginPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginPromise.swift; sourceTree = "<group>"; };
-		659792BE1FA7167B00840F6A /* ScriptPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptPromise.swift; sourceTree = "<group>"; };
 		659792BF1FA7167B00840F6A /* UserChatPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatPromise.swift; sourceTree = "<group>"; };
 		659792C01FA7167B00840F6A /* UtilityPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityPromise.swift; sourceTree = "<group>"; };
 		659792C21FA7167B00840F6A /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
@@ -397,7 +391,6 @@
 		659792CB1FA7167B00840F6A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		659792CC1FA7167B00840F6A /* ManagersState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagersState.swift; sourceTree = "<group>"; };
 		659792CD1FA7167B00840F6A /* MessagesState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesState.swift; sourceTree = "<group>"; };
-		659792CE1FA7167B00840F6A /* ScriptsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptsState.swift; sourceTree = "<group>"; };
 		659792CF1FA7167B00840F6A /* SessionsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsState.swift; sourceTree = "<group>"; };
 		659792D01FA7167B00840F6A /* UIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIState.swift; sourceTree = "<group>"; };
 		659792D11FA7167B00840F6A /* UserChatsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatsState.swift; sourceTree = "<group>"; };
@@ -419,7 +412,6 @@
 		659792E21FA7167B00840F6A /* CHPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHPlugin.swift; sourceTree = "<group>"; };
 		659792E31FA7167B00840F6A /* CHPreviewThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHPreviewThumb.swift; sourceTree = "<group>"; };
 		659792E41FA7167B00840F6A /* CHPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHPush.swift; sourceTree = "<group>"; };
-		659792E51FA7167B00840F6A /* CHScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHScript.swift; sourceTree = "<group>"; };
 		659792E61FA7167B00840F6A /* CHSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHSession.swift; sourceTree = "<group>"; };
 		659792E71FA7167B00840F6A /* CHUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHUser.swift; sourceTree = "<group>"; };
 		659792E81FA7167B00840F6A /* CHUserChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHUserChat.swift; sourceTree = "<group>"; };
@@ -435,7 +427,6 @@
 		659792F41FA7167B00840F6A /* MessagesReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesReducer.swift; sourceTree = "<group>"; };
 		659792F51FA7167B00840F6A /* PluginReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginReducer.swift; sourceTree = "<group>"; };
 		659792F61FA7167B00840F6A /* PushReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushReducer.swift; sourceTree = "<group>"; };
-		659792F71FA7167B00840F6A /* ScriptsReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptsReducer.swift; sourceTree = "<group>"; };
 		659792F81FA7167B00840F6A /* SessionsReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsReducer.swift; sourceTree = "<group>"; };
 		659792F91FA7167B00840F6A /* UIReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIReducer.swift; sourceTree = "<group>"; };
 		659792FA1FA7167B00840F6A /* UserChatReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatReducer.swift; sourceTree = "<group>"; };
@@ -478,7 +469,6 @@
 		6597933D1FA7167C00840F6A /* MessageActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActions.swift; sourceTree = "<group>"; };
 		6597933E1FA7167C00840F6A /* PluginActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginActions.swift; sourceTree = "<group>"; };
 		6597933F1FA7167C00840F6A /* PushActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushActions.swift; sourceTree = "<group>"; };
-		659793401FA7167C00840F6A /* ScriptActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptActions.swift; sourceTree = "<group>"; };
 		659793411FA7167C00840F6A /* SessionActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActions.swift; sourceTree = "<group>"; };
 		659793421FA7167C00840F6A /* UIActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIActions.swift; sourceTree = "<group>"; };
 		659793431FA7167C00840F6A /* UserChatActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatActions.swift; sourceTree = "<group>"; };
@@ -854,7 +844,6 @@
 				659792BB1FA7167B00840F6A /* EventPromise.swift */,
 				659792BC1FA7167B00840F6A /* GuestPromise.swift */,
 				659792BD1FA7167B00840F6A /* PluginPromise.swift */,
-				659792BE1FA7167B00840F6A /* ScriptPromise.swift */,
 				659792BF1FA7167B00840F6A /* UserChatPromise.swift */,
 				659792C01FA7167B00840F6A /* UtilityPromise.swift */,
 			);
@@ -885,7 +874,6 @@
 				659792CB1FA7167B00840F6A /* AppState.swift */,
 				659792CC1FA7167B00840F6A /* ManagersState.swift */,
 				659792CD1FA7167B00840F6A /* MessagesState.swift */,
-				659792CE1FA7167B00840F6A /* ScriptsState.swift */,
 				659792CF1FA7167B00840F6A /* SessionsState.swift */,
 				659792D01FA7167B00840F6A /* UIState.swift */,
 				659792D11FA7167B00840F6A /* UserChatsState.swift */,
@@ -916,7 +904,6 @@
 				659792E21FA7167B00840F6A /* CHPlugin.swift */,
 				659792E31FA7167B00840F6A /* CHPreviewThumb.swift */,
 				659792E41FA7167B00840F6A /* CHPush.swift */,
-				659792E51FA7167B00840F6A /* CHScript.swift */,
 				659792E61FA7167B00840F6A /* CHSession.swift */,
 				659792E71FA7167B00840F6A /* CHUser.swift */,
 				659792E81FA7167B00840F6A /* CHUserChat.swift */,
@@ -951,7 +938,6 @@
 				659792F41FA7167B00840F6A /* MessagesReducer.swift */,
 				659792F51FA7167B00840F6A /* PluginReducer.swift */,
 				659792F61FA7167B00840F6A /* PushReducer.swift */,
-				659792F71FA7167B00840F6A /* ScriptsReducer.swift */,
 				659792F81FA7167B00840F6A /* SessionsReducer.swift */,
 				659792F91FA7167B00840F6A /* UIReducer.swift */,
 				659792FA1FA7167B00840F6A /* UserChatReducer.swift */,
@@ -1073,7 +1059,6 @@
 				6597933D1FA7167C00840F6A /* MessageActions.swift */,
 				6597933E1FA7167C00840F6A /* PluginActions.swift */,
 				6597933F1FA7167C00840F6A /* PushActions.swift */,
-				659793401FA7167C00840F6A /* ScriptActions.swift */,
 				659793411FA7167C00840F6A /* SessionActions.swift */,
 				659793421FA7167C00840F6A /* UIActions.swift */,
 				659793431FA7167C00840F6A /* UserChatActions.swift */,
@@ -1437,7 +1422,6 @@
 				659001452068CD7D0054B353 /* MarkdownUnescaping.swift in Sources */,
 				6597934E1FA716CB00840F6A /* PluginActions.swift in Sources */,
 				6597934F1FA716CB00840F6A /* PushActions.swift in Sources */,
-				659793501FA716CB00840F6A /* ScriptActions.swift in Sources */,
 				659793511FA716CB00840F6A /* SessionActions.swift in Sources */,
 				659793521FA716CB00840F6A /* UIActions.swift in Sources */,
 				659793531FA716CB00840F6A /* UserChatActions.swift in Sources */,
@@ -1511,7 +1495,6 @@
 				656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */,
 				655824F6207B3D7000980F71 /* SettingReducer.swift in Sources */,
 				65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */,
-				6597937D1FA716CB00840F6A /* CHScript.swift in Sources */,
 				659001502068CD7D0054B353 /* MarkdownQuote.swift in Sources */,
 				6590015E2068CD9A0054B353 /* MarkdownLevelElement.swift in Sources */,
 				65A2F4181FCE625400A21D8A /* ChatStatusViewModel.swift in Sources */,
@@ -1531,7 +1514,6 @@
 				6590014A2068CD7D0054B353 /* MarkdownEmoji.swift in Sources */,
 				659793881FA716CB00840F6A /* PluginPromise.swift in Sources */,
 				656C98501FC6A4200064F53E /* ChatStatusFollowedView.swift in Sources */,
-				659793891FA716CB00840F6A /* ScriptPromise.swift in Sources */,
 				223726091FBEEFA20097F22B /* CountryCodeActions.swift in Sources */,
 				65CB142D206A02F200E456B5 /* NewMessageDividerCell.swift in Sources */,
 				65CB142A206A02F200E456B5 /* TextMessageView.swift in Sources */,
@@ -1550,7 +1532,6 @@
 				659793921FA716CB00840F6A /* PushReducer.swift in Sources */,
 				222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */,
 				65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */,
-				659793931FA716CB00840F6A /* ScriptsReducer.swift in Sources */,
 				659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */,
 				6590014F2068CD7D0054B353 /* MarkdownMention.swift in Sources */,
 				659793951FA716CB00840F6A /* UIReducer.swift in Sources */,
@@ -1624,7 +1605,6 @@
 				659793491FA7169100840F6A /* SessionsState.swift in Sources */,
 				6597934C1FA7169900840F6A /* WSocketState.swift in Sources */,
 				659793461FA7168700840F6A /* ManagersState.swift in Sources */,
-				659793481FA7168E00840F6A /* ScriptsState.swift in Sources */,
 				6597934A1FA7169400840F6A /* UIState.swift in Sources */,
 				65A2F41B1FCEA27900A21D8A /* ContactsView.swift in Sources */,
 				223726071FBEEF370097F22B /* CountryCodeReducer.swift in Sources */,

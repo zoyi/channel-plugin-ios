@@ -73,7 +73,7 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .GetPluginConfiguration, .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
-         .SendEvent, .Boot:
+         .SendEvent, .Boot, .RequestProfileBot:
       return .post
     case .GetChannelAvatar, .GetCurrentGuest,
          .GetMessages, .GetScripts, .GetScript,
@@ -81,8 +81,7 @@ enum RestRouter: URLRequestConvertible {
          .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetFollowingManager,
-         .GetPlugin,
-         .RequestProfileBot:
+         .GetPlugin:
       return .get
     case .UpdateGuest, .SetMessagesReadAll,
          .CloseUserChat, .RemoveUserChat,
