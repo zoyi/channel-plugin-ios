@@ -16,14 +16,7 @@ class ProfileCell : MessageCell {
   override func initialize() {
     super.initialize()
     
-    self.layer.borderColor = CHColors.dark10.cgColor
-    self.layer.borderWidth = 1.f
-    self.layer.cornerRadius = 6.f
-    
-    self.layer.shadowColor = CHColors.dark10.cgColor
-    self.layer.shadowOpacity = 0.2
-    self.layer.shadowOffset = CGSize(width: 0, height: 2)
-    self.layer.shadowRadius = 3
+    self.contentView.addSubview(self.profileExtendableView)
   }
   
   override func setLayouts() {

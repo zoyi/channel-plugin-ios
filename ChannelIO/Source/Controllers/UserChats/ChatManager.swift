@@ -354,13 +354,38 @@ extension ChatManager {
         
         self?.didChatLoaded = true
         self?.chatId = userChat.id
-
+        
         completion(userChat.id)
-      }, onError: { [weak self] (error) in
-        self?.didChatLoaded = false
-        self?.state = .chatNotLoaded
-        completion(nil)
+        }, onError: { [weak self] (error) in
+          self?.didChatLoaded = false
+          self?.state = .chatNotLoaded
+          completion(nil)
       }).disposed(by: self.disposeBag)
+    
+//    CHUserChat.create(pluginId: pluginId, timeStamp: self.welcomedAt)
+//      .flatMap { [weak self] (response) -> Observable<Bool?> in
+//        guard let userChat = response.userChat, let session = response.session else {
+//          return Observable.just(nil)
+//        }
+//        
+//        mainStore.dispatch(CreateSession(payload: session))
+//        mainStore.dispatch(CreateUserChat(payload: userChat))
+//        WsService.shared.join(chatId: userChat.id)
+//        
+//        self?.didChatLoaded = true
+//        self?.chatId = userChat.id
+//        return PluginPromise.requestProfileBot(pluginId: pluginId, chatId: userChat.id)
+//      }.subscribe(onNext: { [weak self] (completed) in
+//        if let completed = completed, completed {
+//          completion(self?.chatId)
+//        } else {
+//          completion(nil)
+//        }
+//      }, onError: { [weak self] (error) in
+//        self?.didChatLoaded = false
+//        self?.state = .chatNotLoaded
+//        completion(nil)
+//      }).disposed(by: self.disposeBag)
   }
   
   func resetUserChat() -> Observable<String?> {

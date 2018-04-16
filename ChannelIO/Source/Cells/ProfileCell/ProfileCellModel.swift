@@ -58,17 +58,17 @@ class ProfileCellModel: ProfileCellModelType {
     let plugin = mainStore.state.plugin
     let isContinuous = message.isContinue(previous: previous)
     let clipType = MessageCellModel.getClipType(message: message)
-    let createdByMe = message.entity is CHUser || message.entity is CHVeil
+    let createdByMe = false
     
     self.name = message.entity?.name ?? ""
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
     self.message = message
     self.avatarEntity = message.entity ?? channel
-    self.avatarIsHidden = createdByMe || isContinuous
-    self.bubbleBackgroundColor = createdByMe ? UIColor(plugin.color) : CHColors.lightGray
+    self.avatarIsHidden = isContinuous
+    self.bubbleBackgroundColor = CHColors.lightGray
     self.textColor = plugin.textColor == "white" ? CHColors.white : CHColors.black
-    self.usernameIsHidden = createdByMe || isContinuous
+    self.usernameIsHidden = isContinuous
     self.imageIsHidden = (clipType != ClipType.Image)
     self.fileIsHidden = (clipType != ClipType.File)
     self.webpageIsHidden = (clipType != ClipType.Webpage)

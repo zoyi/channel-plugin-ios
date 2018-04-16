@@ -47,9 +47,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     self.pluginKeyField.resignFirstResponder()
     
     guard var pluginKey = self.pluginKeyField.text else { return }
-    if pluginKey == "" {
-      pluginKey = "52eb6f27-38c7-476d-ad92-83e6299b7e07"
-    }
+    pluginKey = "f1e5621f-7f3c-4119-bece-a0f74ffe7e24"
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     ChannelIO.boot(with: settings) { completion in
       
