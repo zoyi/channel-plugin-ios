@@ -97,7 +97,26 @@ class MessageCell: BaseTableViewCell, Reusable {
 
     self.layoutViews()
   }
-
+  
+  func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+    self.presenter = presenter 
+    self.viewModel = viewModel
+    
+    self.usernameLabel.text = viewModel.name
+    self.usernameLabel.isHidden = viewModel.usernameIsHidden
+    
+    self.timestampLabel.text = viewModel.timestamp
+    self.timestampLabel.isHidden = viewModel.timestampIsHidden
+    
+    self.avatarView.configure(viewModel.avatarEntity)
+    self.avatarView.isHidden = viewModel.avatarIsHidden
+    
+    self.textMessageView.configure(viewModel)
+    self.resendButtonView.isHidden = !viewModel.isFailed
+    
+    self.layoutViews()
+  }
+  
   override func setLayouts() {
     super.setLayouts()
     

@@ -15,8 +15,6 @@ struct CHProfileItem {
   var type          : String = ""
   var nameI18n      : CHi18n? = nil
   var value         : Any? = nil
-  
-  var isCompleted   : Bool = false
 }
 
 extension CHProfileItem: Mappable {
@@ -29,4 +27,16 @@ extension CHProfileItem: Mappable {
     nameI18n  <- map["nameI18n"]
     value     <- map["value"]
   }
+}
+
+extension CHProfileItem: Equatable {}
+
+func ==(lhs: CHProfileItem, rhs: CHProfileItem) -> Bool {
+  let lv = "\(lhs.value ?? 0)"
+  let hv = "\(rhs.value ?? 0)"
+  
+  return lhs.id == rhs.id &&
+    lhs.key == rhs.key &&
+    lhs.nameI18n == rhs.nameI18n &&
+    lv == hv
 }

@@ -95,7 +95,7 @@ You can delete your browser cookie to erase your data.";
 "ch.button_close" = "Close";
 "ch.scripts.out_of_work.default" = "Oops, you reached us during our non-business hours! Feel free to leave us a message and we'll get back to you as soon as possible.";
 "ch.agreement" = "By continuing, you agree to Channel's terms of service.";
-"ch.terms_of_service" = "Terms of service";
+"ch.terms_of_service" = "terms of service";
 "ch.unknown" = "Unknown";
 "ch.user_chat_managers" = "%s and %d others";
 "ch.agreement.button" = "Terms of service";

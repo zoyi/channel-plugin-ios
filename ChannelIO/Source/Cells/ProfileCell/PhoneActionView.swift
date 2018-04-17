@@ -9,6 +9,7 @@
 import Foundation
 import RxSwift
 import SnapKit
+import PhoneNumberKit
 
 final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
   //MARK: Constants
@@ -18,7 +19,7 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
   
   struct Metric {
     static let countryLabelLeading = 16.f
-    static let arrowImageLeading = 9.f
+    static let arrowImageLeading = 3.f
     static let arrowImageTrailing = 3.f
     static let phoneFieldLeading = 10.f
     static let confirmButtonWidth = 75.f
@@ -29,12 +30,14 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
   let submitSubject = PublishSubject<Any?>()
   let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
+    $0.tintColor = CHColors.cobalt
   }
   
   let countryCodeView = UIView()
   let countryLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 18)
     $0.textColor = CHColors.dark
+    $0.textAlignment = .center
   }
   
   let arrowDownView = UIImageView().then {
@@ -53,10 +56,11 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
   
   override func initialize() {
     super.initialize()
+    self.phoneField.delegate = self
     
     self.layer.cornerRadius = 2.f
     self.layer.borderWidth = 1.f
-    self.layer.borderColor = CHColors.brightSkyBlue.cgColor
+    self.layer.borderColor = CHColors.paleGrey20.cgColor
     
     self.addSubview(self.phoneField)
     self.addSubview(self.confirmButton)
@@ -77,6 +81,30 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
         self?.countryLabel.text = Constants.defaultDailCode
       }).disposed(by: self.disposeBeg)
     
+    self.phoneField.rx.text.subscribe(onNext: { [weak self] (text) in
+      if let text = text {
+        self?.confirmButton.isHidden = text.count == 0
+      }
+      self?.confirmButton.isHighlighted = false
+      self?.setFocus()
+    }).disposed(by: self.disposeBeg)
+    
+    self.countryCodeView.signalForClick()
+      .subscribe(onNext: { [weak self] (value) in
+        self?.phoneField.resignFirstResponder()
+        
+        var code = (self?.countryLabel.text ?? "")
+        code.remove(at: code.startIndex)
+        
+        CountryCodePickerView.presentCodePicker(with: code)
+          .subscribe(onNext: { (newCode) in
+            if let newCode = newCode {
+              self?.countryLabel.text =  "+" + newCode
+              self?.countryLabel.sizeToFit()
+            }
+          }).disposed(by: (self?.disposeBeg)!)
+      }).disposed(by: self.disposeBeg)
+    
     self.confirmButton.signalForClick()
       .subscribe(onNext: { [weak self] _ in
       if let code = self?.countryLabel.text,
@@ -91,14 +119,14 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
     super.setLayouts()
     
     self.countryCodeView.snp.makeConstraints { (make) in
-      //make.width.greaterThanOrEqualTo(Metric.codeViewWidth)
+      make.width.equalTo(70).priority(750)
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
       make.leading.equalToSuperview()
     }
     
     self.countryLabel.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview().inset(Metric.countryLabelLeading)
+      make.leading.equalToSuperview().inset(10)
       make.centerY.equalToSuperview()
     }
     
@@ -117,17 +145,76 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
     }
     
     self.confirmButton.snp.makeConstraints { (make) in
-      make.width.equalTo(Metric.confirmButtonWidth)
+      make.width.equalTo(44)
       make.trailing.equalToSuperview()
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
     }
   }
 
+  func setMobileNumber(with fullNumber: String) {
+    do {
+      let phKit = PhoneNumberKit()
+      let phoneNumber = try phKit.parse(fullNumber)
+      self.phoneField.text = "\(phoneNumber.nationalNumber)"
+      self.countryLabel.text = "\(phoneNumber.countryCode)"
+    } catch {
+      //self.number = text
+    }
+    self.confirmButton.isHidden = fullNumber == ""
+  }
+  
   //MARK: UserActionView Protocol
   
   func signalForAction() -> PublishSubject<Any?> {
     return submitSubject
   }
-
+  
+  func signalForText() -> Observable<String?> {
+    return self.phoneField.rx.text.asObservable()
+  }
 }
+
+extension PhoneActionView {
+  func setPhoneNumber(with value: String) {
+    if let text = self.phoneField.text, text != "" {
+      self.phoneField.text = value
+    }
+    self.confirmButton.isHidden = value == ""
+  }
+  
+  func setFocus() {
+    self.layer.borderColor = CHColors.brightSkyBlue.cgColor
+    self.confirmButton.tintColor = CHColors.brightSkyBlue
+  }
+  
+  func setOutFocus() {
+    self.layer.borderColor = CHColors.paleGrey20.cgColor
+    self.confirmButton.tintColor = CHColors.paleGrey20
+  }
+  
+  func setInvalid() {
+    self.layer.borderColor = CHColors.yellowishOrange.cgColor
+    self.confirmButton.tintColor = CHColors.yellowishOrange
+  }
+}
+
+extension PhoneActionView: UITextFieldDelegate {
+  func textFieldDidBeginEditing(_ textField: UITextField) {
+    if self.phoneField == textField {
+      self.setFocus()
+    } else {
+      self.setOutFocus()
+    }
+  }
+  
+  func textFieldDidEndEditing(_ textField: UITextField) {
+    self.setOutFocus()
+  }
+  
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    self.phoneField.resignFirstResponder()
+    return true
+  }
+}
+

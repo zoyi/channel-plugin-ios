@@ -101,7 +101,6 @@ struct MessageCellModel: MessageCellModelType {
     } else {
       self.currentIndex = self.profileItems.count - 1
     }
-    //calculated need to fill index
     self.totalCount = self.profileItems.count //max 4
   }
 

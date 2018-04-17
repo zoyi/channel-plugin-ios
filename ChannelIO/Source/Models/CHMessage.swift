@@ -239,6 +239,10 @@ extension CHMessage {
     return self.entity?.id == me.id
   }
   
+  func updateProfile(with key: String, value: Any) -> Observable<CHMessage> {
+    return UserChatPromise.updateMessageProfile(messageId: self.id, key: key, value: value)
+  }
+  
   func send() -> Observable<CHMessage> {
     if self.file != nil {
       if let mimeType = self.file?.mimeType {

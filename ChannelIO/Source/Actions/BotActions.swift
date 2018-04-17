@@ -13,7 +13,7 @@ struct GetBot: Action {
 }
 
 struct BotRequest {
-  static func postProfileItem(item: CHProfileItem) {
+  static func postProfileItem(messageId: String?, item: CHProfileItem) {
     //find profile message
     //update message
     //post request

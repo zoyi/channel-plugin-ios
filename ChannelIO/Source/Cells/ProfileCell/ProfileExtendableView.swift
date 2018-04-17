@@ -10,37 +10,52 @@ import UIKit
 
 class ProfileExtendableView: BaseView {
   var items: [ProfileContentProtocol] = []
-  let presenter: ChatManager? = nil
+  var footer = UILabel().then {
+    let text = CHAssets.localized("ch.agreement")
+    $0.text = text
+    $0.font = UIFont.systemFont(ofSize: 11)
+    $0.textColor = CHColors.blueyGrey
+    $0.textAlignment = .center
+    
+    let range = text.range(of: CHAssets.localized("ch.terms_of_service"))
+    $0.attributedText = $0.text?.addFont(
+      UIFont.boldSystemFont(ofSize: 11),
+      color: CHColors.blueyGrey,
+      on: NSRange(range!, in: text))
+  }
+  
+  var presenter: ChatManager? = nil
   
   override func initialize() {
     super.initialize()
-    
+    self.addSubview(self.footer)
+    _ = self.footer.signalForClick().subscribe { _ in
+      UserChatActions.openAgreement()
+    }
     self.layer.borderColor = CHColors.dark10.cgColor
     self.layer.borderWidth = 1.f
     self.layer.cornerRadius = 6.f
     
-    self.layer.shadowColor = CHColors.dark10.cgColor
+    self.layer.shadowColor = CHColors.dark.cgColor
     self.layer.shadowOpacity = 0.2
     self.layer.shadowOffset = CGSize(width: 0, height: 2)
-    self.layer.shadowRadius = 3
+    self.layer.shadowRadius = 2
+    self.backgroundColor = CHColors.white
   }
   
   override func setLayouts() {
     super.setLayouts()
+    
+    self.footer.snp.makeConstraints { (make) in
+      make.bottom.equalToSuperview().inset(12)
+      make.left.equalToSuperview().inset(14)
+      make.right.equalToSuperview().inset(14)
+    }
   }
   
-  func configure(model: MessageCellModelType) {
-//    for (index, item) in self.items.enumerated() {
-//      if let value = model.profileItems[index].value {
-//        item.view.removeFromSuperview()
-//
-//        let completionView = ProfileCompletionView()
-//        completionView.configure(text: "\(value)")
-//        self.addSubview(completionView)
-//        self.items[index] = completionView
-//      }
-//    }
-//
+  func configure(model: MessageCellModelType, presenter: ChatManager? = nil) {
+    self.presenter = presenter
+    
     self.items.forEach { (item) in
       item.view.removeFromSuperview()
     }
@@ -48,9 +63,10 @@ class ProfileExtendableView: BaseView {
     var lastView: UIView?
     
     for (index, item) in model.profileItems.enumerated() {
-      if let value = item.value, item.isCompleted {
+      self.footer.isHidden = index != 0
+      if item.value != nil {
         let completionView = ProfileCompletionView()
-        completionView.configure(text: "\(value)")
+        completionView.configure(model: model, index: index, presenter: presenter)
         self.addSubview(completionView)
         self.items.append(completionView)
         
@@ -107,9 +123,14 @@ class ProfileExtendableView: BaseView {
     }
   }
   
-  class func viewHeight(model: MessageCellModelType) -> CGFloat {
-    //if first then check footer?
-    //calculate completed fields * 80
-    return 10.f + CGFloat(model.currentIndex + 1) * 80.f
+  class func viewHeight(fit width: CGFloat, model: MessageCellModelType) -> CGFloat {
+    var height = 0.f
+    height += 10.f //top margin
+    height += CGFloat(model.currentIndex + 1) * 80.f
+    if model.currentIndex == 0 {
+      height += CHAssets.localized("ch.agreement").height(fits: width, font: UIFont.systemFont(ofSize: 11))
+      height += 12
+    }
+    return height
   }
 }

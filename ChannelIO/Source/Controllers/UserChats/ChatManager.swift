@@ -17,6 +17,7 @@ enum ChatElement {
   case session(obj: CHSession?)
   case chat(obj: CHUserChat?)
   case typing(obj: [CHEntity]?, animated: Bool)
+  case profile(obj: CHMessage)
 }
 
 protocol ChatDelegate : class {
@@ -481,6 +482,30 @@ extension ChatManager {
   
   func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
     return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
+  }
+  
+  func updateProfileItem(with message: CHMessage?, key: String?, value: Any?) -> Observable<Bool> {
+    return Observable.create({ (subscriber) in
+      guard let message = message else {
+        subscriber.onNext(false)
+        return Disposables.create()
+      }
+      guard let key = key, let value = value else {
+        subscriber.onNext(false)
+        return Disposables.create()
+      }
+      
+      message.updateProfile(with: key, value: value)
+        .subscribe(onNext: { [weak self] (message) in
+          mainStore.dispatch(UpdateMessage(payload: message))
+          self?.delegate?.update(for: .profile(obj: message))
+          subscriber.onNext(true)
+        }, onError: { (error) in
+          subscriber.onNext(false)
+        }).disposed(by: self.disposeBag)
+      return Disposables.create()
+    })
+
   }
 }
 

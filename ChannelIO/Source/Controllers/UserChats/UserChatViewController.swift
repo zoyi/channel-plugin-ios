@@ -535,7 +535,7 @@ extension UserChatViewController: StoreSubscriber {
       } else if lastMessage.messageType == .File {
         offset.y += FileMessageCell.cellHeight(fits: 0, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
-        offset.y += ProfileCell.cellHeight(fits: 0, viewModel: viewModel)
+        offset.y += ProfileCell.cellHeight(fit: self.tableView.frame.width - 52, model: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: 0, viewModel: viewModel)
       }
@@ -749,7 +749,7 @@ extension UserChatViewController {
     case .WebPage:
       return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .Profile:
-      return ProfileCell.cellHeight(fit: Constant.messageCellMaxWidth, model: viewModel)
+      return ProfileCell.cellHeight(fit: tableView.frame.width - 52, model: viewModel)
     default:
       let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       return calSize
@@ -859,8 +859,7 @@ extension UserChatViewController {
       return cell
     case .Profile:
       let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(model: viewModel)
+      cell.configure(viewModel, presenter: self.chatManager)
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -1028,6 +1027,12 @@ extension UserChatViewController: ChatDelegate {
     case .photos(let urls):
       self.photoUrls = urls
       self.photoBrowser?.reloadData()
+    case .profile(_):
+      if self.tableView.visibleCells.contains(where: { (cell) -> Bool in
+        return cell is ProfileCell
+      }) {
+        self.tableView.reloadData()
+      }
     default:
       break
     }

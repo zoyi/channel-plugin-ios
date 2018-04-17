@@ -39,3 +39,10 @@ extension CHi18n: Mappable {
     ko      <- map["ko"]
   }
 }
+
+extension CHi18n: Equatable {}
+
+func ==(lhs: CHi18n, rhs: CHi18n) -> Bool {
+  return lhs.text == rhs.text && lhs.ko == rhs.ko &&
+    lhs.ja == rhs.ja && lhs.en == rhs.en
+}

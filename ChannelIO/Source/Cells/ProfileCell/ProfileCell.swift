@@ -38,7 +38,7 @@ class ProfileCell : MessageCell {
 
   override func initialize() {
     super.initialize()
-    
+    self.contentView.layer.masksToBounds = false
     self.contentView.addSubview(self.profileExtendableView)
   }
   
@@ -52,13 +52,13 @@ class ProfileCell : MessageCell {
     }
   }
   
-  func configure(model: MessageCellModelType) {
-    super.configure(model)
-    self.profileExtendableView.configure(model: model)
+  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+    super.configure(viewModel, presenter: presenter)
+    self.profileExtendableView.configure(model: viewModel, presenter: presenter)
   }
   
   class func cellHeight(fit width: CGFloat, model: MessageCellModelType) -> CGFloat {
-    let height = MessageCell.cellHeight(fits: width, viewModel: model) + 20
-    return height + ProfileExtendableView.viewHeight(model: model)
+    let height = MessageCell.cellHeight(fits: width, viewModel: model)
+    return height + ProfileExtendableView.viewHeight(fit: width, model: model)
   }
 }

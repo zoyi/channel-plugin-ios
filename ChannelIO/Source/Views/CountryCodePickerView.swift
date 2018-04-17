@@ -47,6 +47,27 @@ final class CountryCodePickerView : BaseView {
     $0.backgroundColor = CHColors.gray.withAlphaComponent(0.5)
   }
   
+  static func presentCodePicker(with code: String) -> Observable<String?> {
+    return Observable.create({ (subscriber) in
+      var controller = CHUtils.getTopController()
+      if let navigation = controller?.navigationController {
+        controller = navigation
+      }
+      
+      let pickerView = CountryCodePickerView(frame: (controller?.view.frame)!)
+
+      pickerView.pickedCode = code
+      pickerView.showPicker(onView: (controller?.view)!,animated: true)
+      let signal = pickerView.signalForSubmit().subscribe(onNext: { (countryCode) in
+        subscriber.onNext(countryCode)
+      })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+  
   override func initialize() {
     super.initialize()
     self.countries = mainStore.state.countryCodeState.codes

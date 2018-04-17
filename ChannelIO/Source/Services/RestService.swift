@@ -50,7 +50,8 @@ enum RestRouter: URLRequestConvertible {
   case GetFollowingManager
   
   case RequestProfileBot(String, String)
-
+  case UpdateProfileItem(String, ParametersType)
+  
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -73,7 +74,8 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .GetPluginConfiguration, .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
-         .SendEvent, .Boot, .RequestProfileBot:
+         .SendEvent, .Boot, .RequestProfileBot,
+         .UpdateProfileItem:
       return .post
     case .GetChannelAvatar, .GetCurrentGuest,
          .GetMessages, .GetScripts, .GetScript,
@@ -149,6 +151,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/channels/following_managers"
     case .RequestProfileBot(let pluginId, let chatId):
       return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
+    case .UpdateProfileItem(let messageId, _):
+      return "/app/messages/\(messageId)/profile_bot"
     }
   }
   
@@ -212,7 +216,8 @@ enum RestRouter: URLRequestConvertible {
          .GetUserChats(let params), .RegisterToken(let params),
          .DoneUserChat(_, let params),
          .SendEvent(let params),
-         .CreateUserChat(_, let params):
+         .CreateUserChat(_, let params),
+         .UpdateProfileItem(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetScripts, .GetScript,
