@@ -1,3 +1,6 @@
+# 3.0.1 (Apr 15, 2018)
+* Fixed to boot / shutdown properly 
+
 # 3.0.1 (Apr 13, 2018)
 ## Updates
 * Renamed default event name `CheckIn` to `Boot`

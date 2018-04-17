@@ -14,6 +14,8 @@ extension ChannelIO {
   internal class func prepare() {
     if let subscriber = ChannelIO.subscriber {
       mainStore.unsubscribe(subscriber)
+      ChannelIO.hide(animated: false)
+      ChannelIO.close(animated: false)
     }
     
     let toastOptions:[AnyHashable: Any] = [

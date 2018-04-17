@@ -108,7 +108,6 @@ public final class ChannelIO: NSObject {
     with settings: ChannelPluginSettings,
     guest: Guest? = nil,
     completion: ((ChannelPluginCompletionStatus) -> Void)? = nil) {
-    
     ChannelIO.prepare()
     ChannelIO.settings = settings
     ChannelIO.guest = guest
@@ -119,8 +118,6 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    let topController = CHUtils.getTopController()
-    
     PluginPromise.checkVersion().flatMap { (event) in
       return ChannelIO.checkInChannel(guest: guest)
     }
@@ -130,7 +127,7 @@ public final class ChannelIO: NSObject {
       if !settings.hideDefaultLauncher &&
         !mainStore.state.plugin.mobileHideButton &&
         (mainStore.state.channel.shouldShowDefaultLauncher) {
-        ChannelIO.showLauncher(on: topController?.view, animated: true)
+        ChannelIO.showLauncher(on: CHUtils.getTopController()?.view, animated: true)
       }
       
       ChannelIO.fetchScripts()
@@ -181,14 +178,14 @@ public final class ChannelIO: NSObject {
     ChannelIO.hideNotification()
     
     PluginPromise.unregisterPushToken()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { _ in
         dlog("shutdown success")
+        mainStore.dispatch(CheckOutSuccess())
+        WsService.shared.disconnect()
       }, onError: { (error) in
         dlog("shutdown fail")
       }).disposed(by: disposeBeg)
-    
-    WsService.shared.disconnect()
-    mainStore.dispatch(CheckOutSuccess())
   }
   
   /**
