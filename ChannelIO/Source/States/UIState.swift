@@ -12,6 +12,7 @@ struct UIState: StateType {
   var isChannelVisible: Bool = false
   var launcherIsHidden: Bool = true
   var profileIsHidden: Bool = true
+  var profileBotShouldKeepFocus: Bool = false
 }
 
 /**

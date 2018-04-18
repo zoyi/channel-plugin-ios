@@ -9,6 +9,14 @@
 import UIKit
 
 class ProfileExtendableView: BaseView {
+  struct Metric {
+    static let footerLeading = 14.f
+    static let footerTrailing = 14.f
+    static let footerBottom = 12.f
+    static let topMargin = 10.f
+    static let itemHeight = 80.f
+  }
+  
   var items: [ProfileContentProtocol] = []
   var footer = UILabel().then {
     let text = CHAssets.localized("ch.agreement")
@@ -16,6 +24,7 @@ class ProfileExtendableView: BaseView {
     $0.font = UIFont.systemFont(ofSize: 11)
     $0.textColor = CHColors.blueyGrey
     $0.textAlignment = .center
+    $0.numberOfLines = 0
     
     let range = text.range(of: CHAssets.localized("ch.terms_of_service"))
     $0.attributedText = $0.text?.addFont(
@@ -47,9 +56,9 @@ class ProfileExtendableView: BaseView {
     super.setLayouts()
     
     self.footer.snp.makeConstraints { (make) in
-      make.bottom.equalToSuperview().inset(12)
-      make.left.equalToSuperview().inset(14)
-      make.right.equalToSuperview().inset(14)
+      make.bottom.equalToSuperview().inset(Metric.footerBottom)
+      make.left.equalToSuperview().inset(Metric.footerLeading)
+      make.right.equalToSuperview().inset(Metric.footerTrailing)
     }
   }
   
@@ -63,7 +72,6 @@ class ProfileExtendableView: BaseView {
     var lastView: UIView?
     
     for (index, item) in model.profileItems.enumerated() {
-      self.footer.isHidden = index != 0
       if item.value != nil {
         let completionView = ProfileCompletionView()
         completionView.configure(model: model, index: index, presenter: presenter)
@@ -74,9 +82,9 @@ class ProfileExtendableView: BaseView {
           if let lview = lastView {
             make.top.equalTo(lview.snp.bottom)
           } else {
-            make.top.equalToSuperview().inset(10)
+            make.top.equalToSuperview().inset(Metric.topMargin)
           }
-          make.height.equalTo(80)
+          make.height.equalTo(Metric.itemHeight)
           make.leading.equalToSuperview()
           make.trailing.equalToSuperview()
           if index == 3 {
@@ -109,9 +117,9 @@ class ProfileExtendableView: BaseView {
           if let lview = lastView {
             make.top.equalTo(lview.snp.bottom)
           } else {
-            make.top.equalToSuperview().inset(10)
+            make.top.equalToSuperview().inset(Metric.topMargin)
           }
-          make.height.equalTo(80)
+          make.height.equalTo(Metric.itemHeight)
           make.leading.equalToSuperview()
           make.trailing.equalToSuperview()
           if index == 3 {
@@ -121,15 +129,17 @@ class ProfileExtendableView: BaseView {
         break
       }
     }
+    
+    self.footer.isHidden = self.items.count != 1
   }
   
   class func viewHeight(fit width: CGFloat, model: MessageCellModelType) -> CGFloat {
     var height = 0.f
-    height += 10.f //top margin
-    height += CGFloat(model.currentIndex + 1) * 80.f
+    height += Metric.topMargin //top margin
+    height += CGFloat(model.currentIndex + 1) * Metric.itemHeight
     if model.currentIndex == 0 {
       height += CHAssets.localized("ch.agreement").height(fits: width, font: UIFont.systemFont(ofSize: 11))
-      height += 12
+      height += Metric.footerBottom
     }
     return height
   }

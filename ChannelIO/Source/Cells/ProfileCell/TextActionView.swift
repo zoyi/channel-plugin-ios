@@ -11,7 +11,7 @@ import RxSwift
 import SnapKit
 import RxCocoa
 
-class TextActionView: BaseView, DialogAction, ProfileInputProtocol {
+class TextActionView: BaseView, Actionable {
   let submitSubject = PublishSubject<Any?>()
   let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
@@ -37,12 +37,17 @@ class TextActionView: BaseView, DialogAction, ProfileInputProtocol {
     self.addSubview(self.confirmButton)
     self.addSubview(self.textField)
     
+    NotificationCenter.default.rx
+      .notification(Notification.Name.Channel.dismissKeyboard)
+      .subscribe(onNext: { [weak self] (_) in
+        self?.textField.resignFirstResponder()
+      }).disposed(by: self.disposeBeg)
+    
     self.textField.delegate = self
     self.textField.rx.text.subscribe(onNext: { [weak self] (text) in
       if let text = text {
         self?.confirmButton.isHidden = text.count == 0
       }
-      self?.confirmButton.isHighlighted = false
       self?.setFocus()
     }).disposed(by: self.disposeBeg)
     
@@ -72,8 +77,8 @@ class TextActionView: BaseView, DialogAction, ProfileInputProtocol {
   
   //MARK: UserActionView Protocol
   
-  func signalForAction() -> PublishSubject<Any?> {
-    return submitSubject
+  func signalForAction() -> Observable<Any?> {
+    return self.submitSubject.asObserver()
   }
   
   func signalForText() -> Observable<String?> {
@@ -82,8 +87,8 @@ class TextActionView: BaseView, DialogAction, ProfileInputProtocol {
 }
 
 extension TextActionView {
-  func setText(with value: String) {
-    if let text = self.textField.text, text != "" {
+  func setIntialValue(with value: String) {
+    if let text = self.textField.text, text == "" {
       self.textField.text = value
     }
     self.confirmButton.isHidden = value == ""
@@ -119,7 +124,7 @@ extension TextActionView: UITextFieldDelegate {
   }
   
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-    self.textField.resignFirstResponder()
-    return true
+    self.submitSubject.onNext(textField.text)
+    return false
   }
 }

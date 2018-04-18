@@ -9,12 +9,18 @@
 import UIKit
 import Reusable
 import SnapKit
+import RxSwift
 
-protocol ProfileInputProtocol: class {
+protocol Actionable: class {
+  func signalForAction() -> Observable<Any?>
+  func signalForText() -> Observable<String?>
+  func setFocus()
+  func setOutFocus()
+  func setInvalid()
   var view: UIView { get }
 }
 
-extension ProfileInputProtocol where Self: UIView {
+extension Actionable where Self: UIView {
   var view: UIView { return self }
 }
 
@@ -32,8 +38,14 @@ enum ProfileInputType {
   case mobileNumber
 }
 
-
 class ProfileCell : MessageCell {
+  struct Metric {
+    static let viewTop = 20.f
+    static let viewLeading = 26.f
+    static let viewTrailing = 26.f
+    static let viewBottom = 5.f
+  }
+  
   let profileExtendableView = ProfileExtendableView()
 
   override func initialize() {
@@ -45,10 +57,10 @@ class ProfileCell : MessageCell {
   override func setLayouts() {
     super.setLayouts()
     self.profileExtendableView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(20)
-      make.left.equalToSuperview().inset(26)
-      make.right.equalToSuperview().inset(26)
-      make.bottom.equalToSuperview().inset(5)
+      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.viewTop)
+      make.left.equalToSuperview().inset(Metric.viewLeading)
+      make.right.equalToSuperview().inset(Metric.viewTrailing)
+      make.bottom.equalToSuperview().inset(Metric.viewBottom)
     }
   }
   

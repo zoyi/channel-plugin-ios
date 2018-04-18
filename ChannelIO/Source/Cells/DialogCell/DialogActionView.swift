@@ -8,7 +8,3 @@
 
 import RxSwift
 
-protocol DialogAction {
-  func signalForAction() -> PublishSubject<Any?>
-}
-

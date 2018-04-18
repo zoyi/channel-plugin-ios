@@ -496,6 +496,7 @@ extension ChatManager {
       }
       
       message.updateProfile(with: key, value: value)
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (message) in
           mainStore.dispatch(UpdateMessage(payload: message))
           self?.delegate?.update(for: .profile(obj: message))

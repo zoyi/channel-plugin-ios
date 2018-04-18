@@ -11,40 +11,21 @@ import UIKit
 import SnapKit
 
 
-class ProfileTextView: ProfileInputView, ProfileContentProtocol {
+class ProfileTextView: ProfileItemBaseView, ProfileContentProtocol {
   let textView = TextActionView()
-  var model: MessageCellModelType?
-  var index: Int = 0
-  var item: CHProfileItem?
   
-  override var inputFieldView: UIView? {
+  override var fieldView: Actionable? {
     get {
       return self.textView
     }
     set {
-      self.inputFieldView = textView
+      self.fieldView = textView
     }
   }
   
   override func initialize() {
     super.initialize()
-
     self.textView.setOutFocus()
-    self.textView.signalForText().subscribe(onNext: { [weak self] (text) in
-      self?.titleLabel.text = self?.item?.nameI18n?.getMessage()
-    }).disposed(by: self.disposeBag)
-    
-    self.textView.signalForAction().subscribe(onNext: { [weak self] (text) in
-      if let index = self?.index, let item = self?.model?.profileItems[index] {
-        _ = self?.presenter?.updateProfileItem(with: self?.model?.message, key: item.key, value: text)
-          .subscribe(onNext: { (completed) in
-            if !completed {
-              self?.textView.setInvalid()
-              self?.titleLabel.text = "invalid input"
-            }
-          })
-      }
-    }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -53,15 +34,10 @@ class ProfileTextView: ProfileInputView, ProfileContentProtocol {
   
   override func configure(model: MessageCellModelType, index: Int?, presenter: ChatManager?) {
     super.configure(model: model, index: index, presenter: presenter)
-    guard let index = index else { return }
-    self.model = model
-    self.index = index
+    guard let item = self.item else { return }
     
-    let item = model.profileItems[index]
-    self.item = item
-    
-    if let value = mainStore.state.guest.profile?[item.key]{
-      self.textView.setText(with: "\(value)")
+    if let value = mainStore.state.guest.profile?[item.key] {
+      self.textView.setIntialValue(with: "\(value)")
     }
   }
 }

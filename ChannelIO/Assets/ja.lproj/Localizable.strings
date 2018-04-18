@@ -179,3 +179,4 @@
 "ch.language.japanese" = "日本語";
 "ch.language.english" = "English";
 "ch.language" = "言語";
+"ch.input.invalid" = "올바른 형태가 아닙니다.";

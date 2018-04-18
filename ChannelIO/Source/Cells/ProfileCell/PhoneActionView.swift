@@ -11,7 +11,7 @@ import RxSwift
 import SnapKit
 import PhoneNumberKit
 
-final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
+final class PhoneActionView: BaseView, Actionable {
   //MARK: Constants
   struct Constants {
     static let defaultDailCode = "+82"
@@ -45,7 +45,7 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
     $0.image = CHAssets.getImage(named: "dropdownTriangle")
   }
   
-  let phoneField = UITextField().then {
+  let phoneField = PhoneNumberTextField().then {
     $0.keyboardType = .phonePad
     $0.placeholder = CHAssets.localized("ch.mobile_verification.placeholder")
   }
@@ -56,7 +56,6 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
   
   override func initialize() {
     super.initialize()
-    self.phoneField.delegate = self
     
     self.layer.cornerRadius = 2.f
     self.layer.borderWidth = 1.f
@@ -68,8 +67,22 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
     self.countryCodeView.addSubview(self.countryLabel)
     self.countryCodeView.addSubview(self.arrowDownView)
     
-    UtilityPromise.getCountryCodes()
-      .observeOn(MainScheduler.instance)
+    NotificationCenter.default.rx
+      .notification(Notification.Name(rawValue: "com.zoyi.channel.keyboard_dismiss"))
+      .subscribe(onNext: { [weak self] (_) in
+        self?.phoneField.resignFirstResponder()
+      }).disposed(by: self.disposeBeg)
+    
+    self.phoneField.delegate = self
+    self.phoneField.rx.text.subscribe(onNext: { [weak self] (text) in
+      if let text = text {
+        self?.confirmButton.isHidden = text.count == 0
+      }
+      self?.confirmButton.isHighlighted = false
+      self?.setFocus()
+    }).disposed(by: self.disposeBeg)
+    
+    UtilityPromise.getCountryCodes().observeOn(MainScheduler.instance)
       .flatMap { (countries) -> Observable<GeoIPInfo> in
         mainStore.dispatch(GetCountryCodes(payload: countries))
         return UtilityPromise.getGeoIP()
@@ -80,38 +93,24 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
       }, onError: { [weak self] (error) in
         self?.countryLabel.text = Constants.defaultDailCode
       }).disposed(by: self.disposeBeg)
-    
-    self.phoneField.rx.text.subscribe(onNext: { [weak self] (text) in
-      if let text = text {
-        self?.confirmButton.isHidden = text.count == 0
-      }
-      self?.confirmButton.isHighlighted = false
-      self?.setFocus()
-    }).disposed(by: self.disposeBeg)
-    
-    self.countryCodeView.signalForClick()
-      .subscribe(onNext: { [weak self] (value) in
-        self?.phoneField.resignFirstResponder()
+
+    self.countryCodeView.signalForClick().subscribe(onNext: { [weak self] (value) in
+      self?.phoneField.resignFirstResponder()
         
-        var code = (self?.countryLabel.text ?? "")
-        code.remove(at: code.startIndex)
+      var code = (self?.countryLabel.text ?? "")
+      code.remove(at: code.startIndex)
         
-        CountryCodePickerView.presentCodePicker(with: code)
-          .subscribe(onNext: { (newCode) in
-            if let newCode = newCode {
-              self?.countryLabel.text =  "+" + newCode
-              self?.countryLabel.sizeToFit()
-            }
-          }).disposed(by: (self?.disposeBeg)!)
+      CountryCodePickerView.presentCodePicker(with: code)
+        .subscribe(onNext: { (newCode) in
+          if let newCode = newCode {
+            self?.countryLabel.text =  "+" + newCode
+            self?.phoneField.becomeFirstResponder()
+          }
+        }).disposed(by: (self?.disposeBeg)!)
       }).disposed(by: self.disposeBeg)
     
-    self.confirmButton.signalForClick()
-      .subscribe(onNext: { [weak self] _ in
-      if let code = self?.countryLabel.text,
-        let number = self?.phoneField.text {
-        let fullNumber = code + "-" + number
-        self?.submitSubject.onNext(fullNumber)
-      }
+    self.confirmButton.signalForClick().subscribe(onNext: { [weak self] _ in
+      self?.submitValue()
     }).disposed(by: self.disposeBeg)
   }
 
@@ -166,8 +165,8 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
   
   //MARK: UserActionView Protocol
   
-  func signalForAction() -> PublishSubject<Any?> {
-    return submitSubject
+  func signalForAction() -> Observable<Any?> {
+    return self.submitSubject.asObserver()
   }
   
   func signalForText() -> Observable<String?> {
@@ -176,8 +175,8 @@ final class PhoneActionView: BaseView, DialogAction, ProfileInputProtocol {
 }
 
 extension PhoneActionView {
-  func setPhoneNumber(with value: String) {
-    if let text = self.phoneField.text, text != "" {
+  func setIntialValue(with value: String) {
+    if let text = self.phoneField.text, text == "" {
       self.phoneField.text = value
     }
     self.confirmButton.isHidden = value == ""
@@ -197,6 +196,13 @@ extension PhoneActionView {
     self.layer.borderColor = CHColors.yellowishOrange.cgColor
     self.confirmButton.tintColor = CHColors.yellowishOrange
   }
+  
+  func submitValue() {
+    if let code = self.countryLabel.text, let number = self.phoneField.text {
+      let fullNumber = code + "-" + number
+      self.submitSubject.onNext(fullNumber)
+    }
+  }
 }
 
 extension PhoneActionView: UITextFieldDelegate {
@@ -213,8 +219,8 @@ extension PhoneActionView: UITextFieldDelegate {
   }
   
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-    self.phoneField.resignFirstResponder()
-    return true
+    self.submitValue()
+    return false
   }
 }
 

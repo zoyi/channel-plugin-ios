@@ -25,6 +25,8 @@ final class CountryCodePickerView : BaseView {
     }
   }
   
+  var selectedCode = ""
+  
   var submitSubject = PublishSubject<String>()
   let actionView = UIView()
   let closeButton = UIButton().then {
@@ -89,11 +91,11 @@ final class CountryCodePickerView : BaseView {
     
     self.submitButton.signalForClick()
       .subscribe(onNext: { [weak self] (event) in
-      guard let code = self?.pickedCode else { return }
+      guard let code = self?.selectedCode else { return }
       self?.submitSubject.onNext(code)
       self?.submitSubject.onCompleted()
         
-      self?.remove(animated: true)
+      self?.removePicker(animated: true)
     }).disposed(by: self.disposeBeg)
   }
   
@@ -189,7 +191,7 @@ extension CountryCodePickerView : UIPickerViewDelegate {
   }
   
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    self.pickedCode = self.countries[row].dial
+    self.selectedCode = self.countries[row].dial
   }
 }
 
