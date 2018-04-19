@@ -13,6 +13,21 @@ import SnapKit
 
 class ProfileTextView: ProfileItemBaseView, ProfileContentProtocol {
   let textView = TextActionView()
+  var firstResponder: UIView {
+    return self.textView.textField
+  }
+  var didFirstResponder: Bool {
+    return self.textView.didFocus
+  }
+  override var fieldType: ProfileInputType {
+    didSet {
+      if self.fieldType == .number {
+        self.textView.textField.keyboardType = .numberPad
+      } else {
+        self.textView.textField.keyboardType = .default
+      }
+    }
+  }
   
   override var fieldView: Actionable? {
     get {

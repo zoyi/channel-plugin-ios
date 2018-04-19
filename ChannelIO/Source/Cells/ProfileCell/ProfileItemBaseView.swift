@@ -36,6 +36,7 @@ class ProfileItemBaseView: BaseView {
   var model: MessageCellModelType?
   var index: Int = 0
   var item: CHProfileItem?
+  var fieldType: ProfileInputType = .text
   
   let disposeBag = DisposeBag()
   weak var presenter: ChatManager? = nil
@@ -52,12 +53,15 @@ class ProfileItemBaseView: BaseView {
     
     self.fieldView?.signalForAction().subscribe(onNext: { [weak self] (value) in
       if let index = self?.index, let item = self?.model?.profileItems[index] {
-        mainStore.dispatch(ProfileSetFocus(payload: index < 3))
+        //mainStore.dispatch(ProfileSetFocus(payload: index < 3))
+        self?.fieldView?.setLoading()
         _ = self?.presenter?.updateProfileItem(with: self?.model?.message, key: item.key, value: value)
           .subscribe(onNext: { (completed) in
             if !completed {
               self?.fieldView?.setInvalid()
               self?.setInvalidTitle(with: CHAssets.localized("ch.input.invalid"))
+            } else {
+              
             }
           })
       }

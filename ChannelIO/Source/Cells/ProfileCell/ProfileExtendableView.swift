@@ -34,10 +34,13 @@ class ProfileExtendableView: BaseView {
   }
   
   var presenter: ChatManager? = nil
+  var shouldBecomeFirstResponder = false
   
   override func initialize() {
     super.initialize()
+
     self.addSubview(self.footer)
+    
     _ = self.footer.signalForClick().subscribe { _ in
       UserChatActions.openAgreement()
     }
@@ -64,6 +67,14 @@ class ProfileExtendableView: BaseView {
   
   func configure(model: MessageCellModelType, presenter: ChatManager? = nil) {
     self.presenter = presenter
+    
+    for item in self.items {
+      if item.didFirstResponder {
+        self.shouldBecomeFirstResponder = true
+        //self.fakeTextField.becomeFirstResponder()
+        break
+      }
+    }
     
     self.items.forEach { (item) in
       item.view.removeFromSuperview()
@@ -94,13 +105,7 @@ class ProfileExtendableView: BaseView {
         lastView = completionView
       } else {
         var itemView: ProfileContentProtocol?
-        if item.key == "email" {
-          let textView = ProfileTextView()
-          textView.configure(model: model, index: index, presenter: self.presenter)
-          self.addSubview(textView)
-          self.items.append(textView)
-          itemView = textView
-        } else if item.key == "mobileNumber" {
+        if item.fieldType == .mobileNumber {
           let phoneView = ProfilePhoneView()
           phoneView.configure(model: model, index:index, presenter: self.presenter)
           self.addSubview(phoneView)
@@ -108,11 +113,17 @@ class ProfileExtendableView: BaseView {
           itemView = phoneView
         } else {
           let textView = ProfileTextView()
+          textView.fieldType = item.fieldType
           textView.configure(model: model, index: index, presenter: self.presenter)
           self.addSubview(textView)
           self.items.append(textView)
           itemView = textView
         }
+        
+        if self.shouldBecomeFirstResponder {
+          itemView?.firstResponder.becomeFirstResponder()
+        }
+        
         itemView?.view.snp.makeConstraints({ (make) in
           if let lview = lastView {
             make.top.equalTo(lview.snp.bottom)

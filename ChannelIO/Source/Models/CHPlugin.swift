@@ -6,6 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
+import RxSwift
 import Foundation
 import ObjectMapper
 
@@ -45,5 +46,11 @@ extension CHPlugin: Mappable {
     botName          <- map["botName"]
     welcomeNamedI18n <- map["welcomeNamedI18n"]
     welcomeI18n      <- map["welcomeI18n"]
+  }
+}
+
+extension CHPlugin {
+  static func get(with id: String) -> Observable<(CHPlugin, CHBot?)> {
+    return PluginPromise.getPlugin(pluginId: id)
   }
 }

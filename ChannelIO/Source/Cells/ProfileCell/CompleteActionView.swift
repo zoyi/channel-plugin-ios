@@ -21,6 +21,7 @@ class CompleteActionView: BaseView, Actionable {
   let completionImageView = UIImageView().then {
     $0.image = CHAssets.getImage(named: "complete")
   }
+  var didFocus: Bool = false
   
   override func initialize() {
     super.initialize()
@@ -38,7 +39,7 @@ class CompleteActionView: BaseView, Actionable {
     }
     
     self.completionImageView.snp.makeConstraints { [weak self] (make) in
-      make.left.greaterThanOrEqualTo((self?.contentLabel.snp.right)!).offset(12)
+      make.left.greaterThanOrEqualTo((self?.contentLabel.snp.right)!).offset(14)
       make.right.equalToSuperview()
       make.centerY.equalToSuperview()
       make.height.equalTo(24)
@@ -54,6 +55,7 @@ class CompleteActionView: BaseView, Actionable {
     return self.submitSubject.asObserver()
   }
   
+  func setLoading() {}
   func setFocus() {}
   func setOutFocus() {}
   func setInvalid() {}

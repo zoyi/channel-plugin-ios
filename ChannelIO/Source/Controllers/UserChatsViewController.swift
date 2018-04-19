@@ -262,11 +262,13 @@ class UserChatsViewController: BaseViewController {
     controller.signalForProfile().subscribe { [weak self] _ in
       self?.showProfileView()
     }.disposed(by: self.disposeBag)
-
-    CHManager.getRecentFollowers()
+    
+    Observable.zip(CHPlugin.get(with: mainStore.state.plugin.id), CHManager.getRecentFollowers())
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (managers) in
+      .subscribe(onNext: { [weak self] (info, managers) in
         mainStore.dispatch(UpdateFollowingManagers(payload: managers))
+        mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
+        
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.shouldHideTable = false

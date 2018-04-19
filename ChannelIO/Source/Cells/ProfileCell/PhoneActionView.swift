@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 import SnapKit
 import PhoneNumberKit
+import NVActivityIndicatorView
 
 final class PhoneActionView: BaseView, Actionable {
   //MARK: Constants
@@ -33,6 +34,12 @@ final class PhoneActionView: BaseView, Actionable {
     $0.tintColor = CHColors.cobalt
   }
   
+  let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
+    $0.type = .circleStrokeSpin
+    $0.color = CHColors.light
+    $0.isHidden = true
+  }
+  
   let countryCodeView = UIView()
   let countryLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 18)
@@ -50,8 +57,10 @@ final class PhoneActionView: BaseView, Actionable {
     $0.placeholder = CHAssets.localized("ch.mobile_verification.placeholder")
   }
   
+  var didFocus = false
   let disposeBeg = DisposeBag()
   var userGeoInfo: GeoIPInfo?
+  
   //MARK: Init
   
   override func initialize() {
@@ -63,9 +72,14 @@ final class PhoneActionView: BaseView, Actionable {
     
     self.addSubview(self.phoneField)
     self.addSubview(self.confirmButton)
+    self.addSubview(self.loadIndicator)
     self.addSubview(self.countryCodeView)
     self.countryCodeView.addSubview(self.countryLabel)
     self.countryCodeView.addSubview(self.arrowDownView)
+    
+    if self.didFocus {
+      self.phoneField.becomeFirstResponder()
+    }
     
     NotificationCenter.default.rx
       .notification(Notification.Name(rawValue: "com.zoyi.channel.keyboard_dismiss"))
@@ -78,7 +92,6 @@ final class PhoneActionView: BaseView, Actionable {
       if let text = text {
         self?.confirmButton.isHidden = text.count == 0
       }
-      self?.confirmButton.isHighlighted = false
       self?.setFocus()
     }).disposed(by: self.disposeBeg)
     
@@ -149,18 +162,11 @@ final class PhoneActionView: BaseView, Actionable {
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
     }
-  }
-
-  func setMobileNumber(with fullNumber: String) {
-    do {
-      let phKit = PhoneNumberKit()
-      let phoneNumber = try phKit.parse(fullNumber)
-      self.phoneField.text = "\(phoneNumber.nationalNumber)"
-      self.countryLabel.text = "\(phoneNumber.countryCode)"
-    } catch {
-      //self.number = text
+    
+    self.loadIndicator.snp.makeConstraints { [weak self] (make) in
+      make.centerY.equalTo((self?.confirmButton.snp.centerY)!)
+      make.centerX.equalTo((self?.confirmButton.snp.centerX)!)
     }
-    self.confirmButton.isHidden = fullNumber == ""
   }
   
   //MARK: UserActionView Protocol
@@ -177,9 +183,24 @@ final class PhoneActionView: BaseView, Actionable {
 extension PhoneActionView {
   func setIntialValue(with value: String) {
     if let text = self.phoneField.text, text == "" {
-      self.phoneField.text = value
+      do {
+        let phKit = PhoneNumberKit()
+        let phoneNumber = try phKit.parse(value)
+        self.countryLabel.text = "\(phoneNumber.countryCode)"
+        self.phoneField.text = "\(phoneNumber.nationalNumber)"
+      }
+      catch {
+        print("Generic parser error")
+      }
+      
     }
     self.confirmButton.isHidden = value == ""
+  }
+  
+  func setLoading() {
+    self.confirmButton.isHidden = true
+    self.loadIndicator.isHidden = false
+    self.loadIndicator.startAnimating()
   }
   
   func setFocus() {
@@ -189,12 +210,13 @@ extension PhoneActionView {
   
   func setOutFocus() {
     self.layer.borderColor = CHColors.paleGrey20.cgColor
-    self.confirmButton.tintColor = CHColors.paleGrey20
   }
   
   func setInvalid() {
     self.layer.borderColor = CHColors.yellowishOrange.cgColor
+    self.confirmButton.isHidden = false
     self.confirmButton.tintColor = CHColors.yellowishOrange
+    self.loadIndicator.isHidden = true
   }
   
   func submitValue() {
@@ -208,6 +230,7 @@ extension PhoneActionView {
 extension PhoneActionView: UITextFieldDelegate {
   func textFieldDidBeginEditing(_ textField: UITextField) {
     if self.phoneField == textField {
+      self.didFocus = true
       self.setFocus()
     } else {
       self.setOutFocus()

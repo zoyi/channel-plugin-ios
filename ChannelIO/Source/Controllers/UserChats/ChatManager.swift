@@ -498,8 +498,8 @@ extension ChatManager {
       message.updateProfile(with: key, value: value)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (message) in
-          mainStore.dispatch(UpdateMessage(payload: message))
           self?.delegate?.update(for: .profile(obj: message))
+          mainStore.dispatch(UpdateMessage(payload: message))
           subscriber.onNext(true)
         }, onError: { (error) in
           subscriber.onNext(false)

@@ -63,6 +63,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   var typingCell: TypingIndicatorCell!
+  var profileIndexPath: IndexPath?
   
   var titleView : NavigationTitleView? = nil
   
@@ -95,6 +96,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     //new user chat
     if self.userChatId == nil {
+       mainStore.dispatchOnMain(InsertWelcome())
       self.readyToDisplay()
     }
   }
@@ -383,7 +385,6 @@ extension UserChatViewController: StoreSubscriber {
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     self.showErrorIfNeeded(state: state)
     
-    self.fetchWelcomeInfoIfNeeded()
     self.fetchChatIfNeeded()
     
     self.userChat = userChat
@@ -398,9 +399,6 @@ extension UserChatViewController: StoreSubscriber {
       self.currentLocale = state.settings?.appLocale
       self.initNavigationViews()
       //replace welcome with updated locale only if user chat has not been created
-      if self.userChat == nil && nextUserChat == nil {
-        mainStore.dispatch(InsertWelcome())
-      }
     }
     
     let userChats = userChatsSelector(
@@ -414,22 +412,6 @@ extension UserChatViewController: StoreSubscriber {
       guest: state.guest,
       textColor: state.plugin.textUIColor
     )
-  }
-  
-  func fetchWelcomeInfoIfNeeded() {
-    if self.chatManager.needToFetchInfo() == true {
-      self.chatManager.fetchForNewUserChat()
-        .subscribe({ (event) in
-          switch event {
-          case .error(_):
-            break
-          case .next(_):
-            mainStore.dispatchOnMain(InsertWelcome())
-          default:
-            break
-          }
-        }).disposed(by: self.disposeBag)
-    }
   }
   
   func fetchChatIfNeeded() {
@@ -1028,10 +1010,10 @@ extension UserChatViewController: ChatDelegate {
       self.photoUrls = urls
       self.photoBrowser?.reloadData()
     case .profile(_):
-      if self.tableView.visibleCells.contains(where: { (cell) -> Bool in
-        return cell is ProfileCell
-      }) {
-        self.tableView.reloadData()
+      self.textView.becomeFirstResponder()
+      self.tableView.reloadData()
+      if let indexPath = self.profileIndexPath {
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
       }
     default:
       break

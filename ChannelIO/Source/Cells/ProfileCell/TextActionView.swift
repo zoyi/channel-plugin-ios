@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 import SnapKit
 import RxCocoa
+import NVActivityIndicatorView
 
 class TextActionView: BaseView, Actionable {
   let submitSubject = PublishSubject<Any?>()
@@ -19,13 +20,20 @@ class TextActionView: BaseView, Actionable {
     $0.tintColor = CHColors.cobalt
   }
   
+  let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
+    $0.type = .circleStrokeSpin
+    $0.color = CHColors.light
+    $0.isHidden = true
+  }
+  
   let textField = UITextField().then {
     $0.font = UIFont.systemFont(ofSize: 18)
     $0.textColor = CHColors.dark
-    $0.placeholder = CHAssets.localized("ch.name_verification.placeholder")
+    //$0.placeholder = CHAssets.localized("ch.name_verification.placeholder")
   }
   
   let disposeBeg = DisposeBag()
+  var didFocus = false
   
   override func initialize() {
     super.initialize()
@@ -36,6 +44,7 @@ class TextActionView: BaseView, Actionable {
     
     self.addSubview(self.confirmButton)
     self.addSubview(self.textField)
+    self.addSubview(self.loadIndicator)
     
     NotificationCenter.default.rx
       .notification(Notification.Name.Channel.dismissKeyboard)
@@ -53,8 +62,15 @@ class TextActionView: BaseView, Actionable {
     
     self.confirmButton.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-      self?.submitSubject.onNext(self?.textField.text)
-    }).disposed(by: self.disposeBeg)
+        self?.didFocus = true
+
+        if self?.textField.keyboardType == .numberPad {
+          self?.submitSubject.onNext(Int(self?.textField.text ?? "0"))
+        } else {
+          self?.submitSubject.onNext(self?.textField.text)
+        }
+        
+      }).disposed(by: self.disposeBeg)
   }
   
   override func setLayouts() {
@@ -72,6 +88,11 @@ class TextActionView: BaseView, Actionable {
       make.height.equalTo(44)
       make.trailing.equalToSuperview()
       make.centerY.equalToSuperview()
+    }
+    
+    self.loadIndicator.snp.makeConstraints { [weak self] (make) in
+      make.centerX.equalTo((self?.confirmButton.snp.centerX)!)
+      make.centerY.equalTo((self?.confirmButton.snp.centerY)!)
     }
   }
   
@@ -94,6 +115,12 @@ extension TextActionView {
     self.confirmButton.isHidden = value == ""
   }
   
+  func setLoading() {
+    self.confirmButton.isHidden = true
+    self.loadIndicator.isHidden = false
+    self.loadIndicator.startAnimating()
+  }
+  
   func setFocus() {
     self.layer.borderColor = CHColors.brightSkyBlue.cgColor
     self.confirmButton.tintColor = CHColors.brightSkyBlue
@@ -101,18 +128,20 @@ extension TextActionView {
   
   func setOutFocus() {
     self.layer.borderColor = CHColors.paleGrey20.cgColor
-    self.confirmButton.tintColor = CHColors.paleGrey20
   }
   
   func setInvalid() {
     self.layer.borderColor = CHColors.yellowishOrange.cgColor
     self.confirmButton.tintColor = CHColors.yellowishOrange
+    self.confirmButton.isHidden = false
+    self.loadIndicator.isHidden = true
   }
 }
 
 extension TextActionView: UITextFieldDelegate {
   func textFieldDidBeginEditing(_ textField: UITextField) {
     if self.textField == textField {
+      self.didFocus = true
       self.setFocus()
     } else {
       self.setOutFocus()
@@ -124,6 +153,7 @@ extension TextActionView: UITextFieldDelegate {
   }
   
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    self.didFocus = true
     self.submitSubject.onNext(textField.text)
     return false
   }

@@ -9,10 +9,17 @@
 import Foundation
 import RxSwift
 import UIKit
+import PhoneNumberKit
 
 class ProfileCompletionView: ProfileItemBaseView, ProfileContentProtocol {
   let contentView = CompleteActionView()
-
+  var firstResponder: UIView {
+    return self
+  }
+  var didFirstResponder: Bool {
+    return false
+  }
+  
   override var fieldView: Actionable? {
     get {
       return self.contentView
@@ -34,7 +41,11 @@ class ProfileCompletionView: ProfileItemBaseView, ProfileContentProtocol {
     super.configure(model: model, index: index, presenter: presenter)
     self.indexLabel.isHidden = true
     if let index = index, let value = model.profileItems[index].value {
-      self.contentView.contentLabel.text = "\(value)"
+      if self.item?.fieldType == .mobileNumber {
+        self.contentView.contentLabel.text = PartialFormatter().formatPartial("\(value)")
+      } else {
+        self.contentView.contentLabel.text = "\(value)"
+      }
     }
   }
 }

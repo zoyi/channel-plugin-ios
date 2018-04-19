@@ -15,6 +15,8 @@ struct CHProfileItem {
   var type          : String = ""
   var nameI18n      : CHi18n? = nil
   var value         : Any? = nil
+  
+  var fieldType     : ProfileInputType = .text
 }
 
 extension CHProfileItem: Mappable {
@@ -26,6 +28,16 @@ extension CHProfileItem: Mappable {
     type      <- map["type"]
     nameI18n  <- map["nameI18n"]
     value     <- map["value"]
+    
+    if key == "mobileNumber" {
+      fieldType = .mobileNumber
+    } else if key == "email" {
+      fieldType = .email
+    } else if type == "Number" {
+      fieldType = .number
+    } else {
+      fieldType = .text
+    }
   }
 }
 

@@ -36,7 +36,7 @@ extension CHGuest {
   
   func getWelcome() -> String? {
     if self.named {
-      return mainStore.state.plugin.welcomeNamedI18n?.getMessage()
+      return mainStore.state.plugin.welcomeNamedI18n?.getMessage()?.replace("${name}", withString: self.name)
     } else {
       return mainStore.state.plugin.welcomeI18n?.getMessage()
     }

@@ -14,9 +14,12 @@ import RxSwift
 protocol Actionable: class {
   func signalForAction() -> Observable<Any?>
   func signalForText() -> Observable<String?>
+  func setLoading()
   func setFocus()
   func setOutFocus()
   func setInvalid()
+  
+  var didFocus: Bool { get set }
   var view: UIView { get }
 }
 
@@ -26,6 +29,8 @@ extension Actionable where Self: UIView {
 
 protocol ProfileContentProtocol: class {
   var view: UIView { get }
+  var firstResponder: UIView { get }
+  var didFirstResponder: Bool { get }
 }
 
 extension ProfileContentProtocol where Self: UIView {
@@ -35,6 +40,7 @@ extension ProfileContentProtocol where Self: UIView {
 enum ProfileInputType {
   case text
   case email
+  case number
   case mobileNumber
 }
 

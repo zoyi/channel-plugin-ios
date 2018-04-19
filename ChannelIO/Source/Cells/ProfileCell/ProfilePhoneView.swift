@@ -12,6 +12,12 @@ import SnapKit
 
 class ProfilePhoneView: ProfileItemBaseView, ProfileContentProtocol {
   let phoneView = PhoneActionView()
+  var firstResponder: UIView {
+    return self.phoneView.phoneField
+  }
+  var didFirstResponder: Bool {
+    return self.phoneView.didFocus
+  }
   
   override var fieldView: Actionable? {
     get {

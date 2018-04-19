@@ -121,6 +121,8 @@ public final class ChannelIO: NSObject {
       return
     }
     
+    let controller = CHUtils.getTopController()
+    
     PluginPromise.checkVersion().flatMap { (event) in
       return ChannelIO.checkInChannel(profile: profile)
     }
@@ -130,7 +132,7 @@ public final class ChannelIO: NSObject {
       if !settings.hideDefaultLauncher &&
         !mainStore.state.plugin.mobileHideButton &&
         (mainStore.state.channel.shouldShowDefaultLauncher) {
-        ChannelIO.showLauncher(on: CHUtils.getTopController()?.view, animated: true)
+        ChannelIO.showLauncher(on: controller?.view, animated: true)
       }
       
       ChannelIO.registerPushToken()
