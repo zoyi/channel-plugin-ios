@@ -1,4 +1,7 @@
-# 3.0.1 (Apr 15, 2018)
+# 3.0.3 (Apr 22, 2018)
+* Removed colon escape from message
+
+# 3.0.2 (Apr 15, 2018)
 * Fixed to boot / shutdown properly 
 
 # 3.0.1 (Apr 13, 2018)

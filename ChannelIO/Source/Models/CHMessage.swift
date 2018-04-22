@@ -172,7 +172,6 @@ extension CHMessage: Mappable {
   func format(message: String) -> String {
     var filterText = message
     filterText = filterText.replacingOccurrences(of: "<", with: "\\<")
-    filterText = filterText.replacingOccurrences(of: ":", with: "\\:")
     filterText = filterText.replacingOccurrences(of: "[", with: "\\[")
     return filterText
   }
