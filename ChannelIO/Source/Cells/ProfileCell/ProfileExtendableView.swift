@@ -18,7 +18,7 @@ class ProfileExtendableView: BaseView {
   }
   
   var items: [ProfileContentProtocol] = []
-  var footer = UILabel().then {
+  var footerLabel = UILabel().then {
     let text = CHAssets.localized("ch.agreement")
     $0.text = text
     $0.font = UIFont.systemFont(ofSize: 11)
@@ -33,17 +33,16 @@ class ProfileExtendableView: BaseView {
       on: NSRange(range!, in: text))
   }
   
-  var presenter: ChatManager? = nil
   var shouldBecomeFirstResponder = false
   
   override func initialize() {
     super.initialize()
-
-    self.addSubview(self.footer)
+    self.addSubview(self.footerLabel)
     
-    _ = self.footer.signalForClick().subscribe { _ in
+    _ = self.footerLabel.signalForClick().subscribe { _ in
       UserChatActions.openAgreement()
     }
+    
     self.layer.borderColor = CHColors.dark10.cgColor
     self.layer.borderWidth = 1.f
     self.layer.cornerRadius = 6.f
@@ -58,24 +57,29 @@ class ProfileExtendableView: BaseView {
   override func setLayouts() {
     super.setLayouts()
     
-    self.footer.snp.makeConstraints { (make) in
+    self.footerLabel.snp.makeConstraints { (make) in
       make.bottom.equalToSuperview().inset(Metric.footerBottom)
       make.left.equalToSuperview().inset(Metric.footerLeading)
       make.right.equalToSuperview().inset(Metric.footerTrailing)
     }
   }
   
-  func configure(model: MessageCellModelType, presenter: ChatManager? = nil) {
-    self.presenter = presenter
-    
+  func configure(model: MessageCellModelType, presenter: ChatManager? = nil, redraw: Bool = false) {
+    if redraw {
+      presenter?.shouldRedrawProfileBot = false
+      self.drawViews(model: model, presenter: presenter)
+    } 
+  }
+  
+  func drawViews(model: MessageCellModelType, presenter: ChatManager? = nil) {
     for item in self.items {
       if item.didFirstResponder {
         self.shouldBecomeFirstResponder = true
-        //self.fakeTextField.becomeFirstResponder()
         break
       }
     }
     
+    //NOTE: this can be optimized, do not draw everything again if not necessary
     self.items.forEach { (item) in
       item.view.removeFromSuperview()
     }
@@ -107,14 +111,14 @@ class ProfileExtendableView: BaseView {
         var itemView: ProfileContentProtocol?
         if item.fieldType == .mobileNumber {
           let phoneView = ProfilePhoneView()
-          phoneView.configure(model: model, index:index, presenter: self.presenter)
+          phoneView.configure(model: model, index:index, presenter: presenter)
           self.addSubview(phoneView)
           self.items.append(phoneView)
           itemView = phoneView
         } else {
           let textView = ProfileTextView()
           textView.fieldType = item.fieldType
-          textView.configure(model: model, index: index, presenter: self.presenter)
+          textView.configure(model: model, index: index, presenter: presenter)
           self.addSubview(textView)
           self.items.append(textView)
           itemView = textView
@@ -141,7 +145,7 @@ class ProfileExtendableView: BaseView {
       }
     }
     
-    self.footer.isHidden = self.items.count != 1
+    self.footerLabel.isHidden = self.items.count != 1
   }
   
   class func viewHeight(fit width: CGFloat, model: MessageCellModelType) -> CGFloat {

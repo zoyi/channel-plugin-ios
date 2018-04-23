@@ -23,9 +23,6 @@ func uiReducer(action: Action, state: UIState?) -> UIState {
   case _ as ChatListIsHidden:
     state?.isChannelVisible = false
     return state ?? UIState()
-  case let action as ProfileSetFocus:
-    state?.profileBotShouldKeepFocus = action.payload
-    return state ?? UIState()
   default:
     return state ?? UIState()
   }

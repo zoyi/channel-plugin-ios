@@ -263,6 +263,7 @@ class UserChatsViewController: BaseViewController {
       self?.showProfileView()
     }.disposed(by: self.disposeBag)
     
+    //NOTE: Make sure to call onCompleted on observable method to avoid leak
     Observable.zip(CHPlugin.get(with: mainStore.state.plugin.id), CHManager.getRecentFollowers())
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (info, managers) in

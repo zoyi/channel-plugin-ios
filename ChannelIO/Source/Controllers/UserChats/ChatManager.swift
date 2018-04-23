@@ -43,6 +43,7 @@ class ChatManager {
   var didChatLoaded = false
   var didLoad = false
   var state: ChatState = .idle
+  var shouldRedrawProfileBot = true
   
   let disposeBag = DisposeBag()
 
@@ -252,24 +253,10 @@ extension ChatManager {
     message?.send().subscribe(onNext: { [weak self] (updated) in
       message?.state = .Sent
       mainStore.dispatch(CreateMessage(payload: updated))
-
-      let urls = messagesSelector(state: mainStore.state, userChatId: self?.chatId)
-        .filter({ $0.file?.isPreviewable == true })
-        .map({ (message) -> String in
-          return message.file?.url ?? ""
-        })
-      self?.delegate?.update(for: .photos(obj: urls))
       self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
     }, onError: { [weak self] (error) in
       message?.state = .Failed
       mainStore.dispatch(CreateMessage(payload: message!))
-      
-      let urls = messagesSelector(state: mainStore.state, userChatId: self?.chatId)
-        .filter({ $0.file?.isPreviewable == true })
-        .map({ (message) -> String in
-          return message.file?.url ?? ""
-        })
-      self?.delegate?.update(for: .photos(obj: urls))
       self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
     }).disposed(by: self.disposeBag)
   }
@@ -309,31 +296,6 @@ extension ChatManager {
 
 extension ChatManager {
   //NOTE: not considered simultaneous calling of difference fetching functions
-  func fetchForNewUserChat() -> Observable<Any?> {
-    return Observable.create { [weak self] subscriber in
-      guard let s = self else { return Disposables.create() }
-      guard s.state != .infoLoading else { return Disposables.create() }
-      
-      s.state = .infoLoading
-      
-      let signal = s.getPlugin()
-        .subscribe(onNext: { (plugin, bot) in
-          mainStore.dispatchOnMain(GetPlugin(plugin: plugin, bot: bot))
-          s.didFetchInfo = true
-          s.state = .infoLoaded
-
-          subscriber.onNext(nil)
-        }, onError: { (error) in
-          s.didFetchInfo = false
-          s.state = .infoNotLoaded
-          subscriber.onError(error)
-        })
-      
-      return Disposables.create {
-        signal.dispose()
-      }
-    }
-  }
   
   func fetchChat() -> Observable<ChatResponse> {
     return Observable.create { [weak self] subscriber in
@@ -349,6 +311,7 @@ extension ChatManager {
         
           self?.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
           subscriber.onNext(response)
+          subscriber.onCompleted()
           self?.state = .chatLoaded
         }, onError: { (error) in
           self?.state = .chatNotLoaded
@@ -388,6 +351,7 @@ extension ChatManager {
           self?.chatId = userChat.id
           
           subscriber.onNext(userChat.id)
+          subscriber.onCompleted()
         }, onError: { [weak self] (error) in
           self?.didChatLoaded = false
           self?.state = .chatNotLoaded
@@ -498,6 +462,7 @@ extension ChatManager {
       message.updateProfile(with: key, value: value)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (message) in
+          self?.shouldRedrawProfileBot = true
           self?.delegate?.update(for: .profile(obj: message))
           mainStore.dispatch(UpdateMessage(payload: message))
           subscriber.onNext(true)

@@ -819,7 +819,7 @@ extension UserChatViewController {
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.presenter = self.chatManager
       cell.configure(viewModel)
-      cell.signalForClick().subscribe{ [weak self] _ in
+      cell.webView.signalForClick().subscribe{ [weak self] _ in
         self?.didWebPageTapped(message: message)
       }.disposed(by: self.disposeBag)
       return cell
@@ -827,7 +827,7 @@ extension UserChatViewController {
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.presenter = self.chatManager
       cell.configure(viewModel)
-      cell.signalForClick().subscribe { [weak self] _ in
+      cell.mediaView.signalForClick().subscribe { [weak self] _ in
         self?.didImageTapped(message: message)
       }.disposed(by: self.disposeBag)
       return cell
@@ -835,7 +835,7 @@ extension UserChatViewController {
       let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
       cell.presenter = self.chatManager
       cell.configure(viewModel)
-      cell.signalForClick().subscribe { [weak self] _ in
+      cell.fileView.signalForClick().subscribe { [weak self] _ in
         self?.didFileTapped(message: message)
       }.disposed(by: self.disposeBag)
       return cell

@@ -426,22 +426,6 @@ extension UserChatView {
 //  }
 
 extension UserChatView {
-  func fetchWelcomeInfoIfNeeded() {
-    if self.chatManager.needToFetchInfo() == true {
-      self.chatManager.fetchForNewUserChat()
-        .subscribe({ (event) in
-          switch event {
-          case .error(_):
-            break
-          case .next(_):
-            mainStore.dispatchOnMain(InsertWelcome())
-          default:
-            break
-          }
-        }).disposed(by: self.disposeBag)
-    }
-  }
-
   func fetchChatIfNeeded() {
     if self.chatManager.needToFetchChat() == true {
       self.chatManager.fetchChat()

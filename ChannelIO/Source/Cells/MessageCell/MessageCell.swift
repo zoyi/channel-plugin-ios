@@ -11,7 +11,7 @@ import Reusable
 import SnapKit
 
 class MessageCell: BaseTableViewCell, Reusable {
-  var presenter: ChatManager? = nil
+  weak var presenter: ChatManager? = nil
   // MARK: Constants
   struct Font {
     static let usernameLabel = UIFont.boldSystemFont(ofSize: 12)

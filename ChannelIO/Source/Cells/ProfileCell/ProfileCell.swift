@@ -70,9 +70,14 @@ class ProfileCell : MessageCell {
     }
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.profileExtendableView.prepareForReuse()
+  }
+  
   override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
     super.configure(viewModel, presenter: presenter)
-    self.profileExtendableView.configure(model: viewModel, presenter: presenter)
+    self.profileExtendableView.configure(model: viewModel, presenter: presenter, redraw: presenter?.shouldRedrawProfileBot ?? false)
   }
   
   class func cellHeight(fit width: CGFloat, model: MessageCellModelType) -> CGFloat {

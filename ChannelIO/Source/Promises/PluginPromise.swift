@@ -190,6 +190,7 @@ struct PluginPromise {
             let bot = Mapper<CHBot>()
               .map(JSONObject: json["bot"].object)
             subscriber.onNext((plugin, bot))
+            subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)
           }
@@ -259,6 +260,7 @@ struct PluginPromise {
           case .success(let data):
             let json = JSON(data)
             subscriber.onNext(json["result"].bool)
+            subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)
           }
