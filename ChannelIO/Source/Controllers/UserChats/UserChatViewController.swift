@@ -517,7 +517,7 @@ extension UserChatViewController: StoreSubscriber {
       } else if lastMessage.messageType == .File {
         offset.y += FileMessageCell.cellHeight(fits: 0, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
-        offset.y += ProfileCell.cellHeight(fit: self.tableView.frame.width - 52, model: viewModel)
+        offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width - 52, viewModel: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: 0, viewModel: viewModel)
       }
@@ -731,7 +731,7 @@ extension UserChatViewController {
     case .WebPage:
       return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .Profile:
-      return ProfileCell.cellHeight(fit: tableView.frame.width - 52, model: viewModel)
+      return ProfileCell.cellHeight(fits: tableView.frame.width - 52, viewModel: viewModel)
     default:
       let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       return calSize

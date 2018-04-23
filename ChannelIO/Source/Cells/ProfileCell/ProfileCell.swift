@@ -44,7 +44,7 @@ enum ProfileInputType {
   case mobileNumber
 }
 
-class ProfileCell : MessageCell {
+class ProfileCell : WebPageMessageCell {
   struct Metric {
     static let viewTop = 20.f
     static let viewLeading = 26.f
@@ -53,7 +53,9 @@ class ProfileCell : MessageCell {
   }
   
   let profileExtendableView = ProfileExtendableView()
-
+  var topToMessageConstraint: Constraint?
+  var topToWebConstraint: Constraint?
+  
   override func initialize() {
     super.initialize()
     self.contentView.layer.masksToBounds = false
@@ -63,7 +65,8 @@ class ProfileCell : MessageCell {
   override func setLayouts() {
     super.setLayouts()
     self.profileExtendableView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.viewTop)
+      self?.topToMessageConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.viewTop).constraint
+      self?.topToWebConstraint =  make.top.equalTo((self?.webView.snp.bottom)!).offset(Metric.viewTop).priority(750).constraint
       make.left.equalToSuperview().inset(Metric.viewLeading)
       make.right.equalToSuperview().inset(Metric.viewTrailing)
       make.bottom.equalToSuperview().inset(Metric.viewBottom)
@@ -72,16 +75,22 @@ class ProfileCell : MessageCell {
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    self.profileExtendableView.prepareForReuse()
   }
   
   override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.profileExtendableView.configure(model: viewModel, presenter: presenter, redraw: presenter?.shouldRedrawProfileBot ?? false)
+    if viewModel.message.webPage != nil {
+      self.topToMessageConstraint?.deactivate()
+      self.topToWebConstraint?.activate()
+    } else {
+      self.topToMessageConstraint?.activate()
+      self.topToWebConstraint?.deactivate()
+    }
   }
   
-  class func cellHeight(fit width: CGFloat, model: MessageCellModelType) -> CGFloat {
-    let height = MessageCell.cellHeight(fits: width, viewModel: model)
-    return height + ProfileExtendableView.viewHeight(fit: width, model: model)
+  override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+    let height = super.cellHeight(fits: width, viewModel: viewModel)
+    return height + ProfileExtendableView.viewHeight(fit: width, model: viewModel)
   }
 }

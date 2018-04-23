@@ -160,11 +160,11 @@ extension CHMessage: Mappable {
       messageType = .Media
     } else if self.file != nil {
       messageType = .File
-    } else if self.webPage != nil {
-      messageType = .WebPage
     } else if let profiles = self.profileBot, profiles.count != 0 {
       messageType = .Profile
-    } else {
+    } else if self.webPage != nil {
+      messageType = .WebPage
+    }  else {
       messageType = .Default
     }
   }

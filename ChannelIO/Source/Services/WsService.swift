@@ -398,6 +398,7 @@ fileprivate extension WsService {
       case WsServiceType.UpdateMessage:
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
+        self?.messageOnCreateSubject.onNext(message)
         mainStore.dispatchOnMain(UpdateMessage(payload: message))
         self?.eventSubject.onNext((type, message))
       case WsServiceType.UpdateUser:

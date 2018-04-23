@@ -20,6 +20,7 @@ final class CountryCodePickerView : BaseView {
         return country.dial == self.pickedCode
       }
       if index != nil {
+        self.selectedCode = self.pickedCode
         self.pickerView.selectRow(index!, inComponent: 0, animated: false)
       }
     }
