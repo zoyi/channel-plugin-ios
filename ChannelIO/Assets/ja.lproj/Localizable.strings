@@ -179,4 +179,5 @@
 "ch.language.japanese" = "日本語";
 "ch.language.english" = "English";
 "ch.language" = "言語";
-"ch.input.invalid" = "올바른 형태가 아닙니다.";
+"ch.profile_form.error" = "正しい形式でご入力ください";
+"ch.profile_form.placeholder" = "ご入力ください";

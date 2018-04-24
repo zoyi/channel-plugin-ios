@@ -54,7 +54,7 @@ final class PhoneActionView: BaseView, Actionable {
   
   let phoneField = PhoneNumberTextField().then {
     $0.keyboardType = .phonePad
-    $0.placeholder = CHAssets.localized("ch.mobile_verification.placeholder")
+    $0.placeholder = CHAssets.localized("ch.profile_form.placeholder")
   }
   
   var didFocus = false

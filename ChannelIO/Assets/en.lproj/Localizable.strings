@@ -177,4 +177,5 @@ Press the button below to refresh.";
 "ch.language.japanese" = "日本語";
 "ch.language.english" = "English";
 "ch.language" = "Language";
-"ch.input.invalid" = "Format is not correct.";
+"ch.profile_form.error" = "Format is not correct.";
+"ch.input.default.placeholder" = "Please enter";

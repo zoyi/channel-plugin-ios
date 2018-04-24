@@ -59,7 +59,7 @@ class ProfileItemBaseView: BaseView {
           .subscribe(onNext: { (completed) in
             if !completed {
               self?.fieldView?.setInvalid()
-              self?.setInvalidTitle(with: CHAssets.localized("ch.input.invalid"))
+              self?.setInvalidTitle(with: CHAssets.localized("ch.profile_form.error"))
             } else {
               
             }
