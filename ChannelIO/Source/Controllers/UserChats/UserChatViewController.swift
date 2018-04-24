@@ -52,7 +52,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   var disposeBag = DisposeBag()
   var photoBrowser : MWPhotoBrowser? = nil
-  var currentLocale: CHLocale? = CHUtils.getLocale()
+  var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
   
   var errorToastView = ErrorToastView().then {

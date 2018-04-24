@@ -26,16 +26,22 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc public var enabledTrackDefaultEvent: Bool = true
   
   /* force to use a specific langauge. Currently supports en, ko, ja*/
-  @objc public var locale: String? {
+  @objc public var locale: CHLocale {
     get {
-      return self.appLocale?.rawValue
+      if self.appLocale == .japanese {
+        return .japanese
+      } else if self.appLocale == .korean {
+        return .korean
+      } else {
+        return .english
+      }
     }
     set {
-      if locale == "en" {
+      if locale == .english {
         self.appLocale = .english
-      } else if locale == "ko" {
+      } else if locale == .korean {
         self.appLocale = .korean
-      } else if locale == "ja" {
+      } else if locale == .japanese {
         self.appLocale = .japanese
       } else {
         self.appLocale = nil
@@ -43,7 +49,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     }
   }
   
-  var appLocale: CHLocale? = nil
+  var appLocale: CHLocaleString? = nil
   
   @objc
   override public init() {
@@ -57,7 +63,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     hideDefaultLauncher: Bool = false,
     hideDefaultInAppPush: Bool = false,
     enabledTrackDefaultEvent: Bool = true,
-    locale: String? = nil) {
+    locale: CHLocale = .korean) {
     super.init()
     
     self.pluginKey = pluginKey
@@ -74,7 +80,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     let hideDefaultLauncher = aDecoder.decodeBool(forKey: "hideDefaultLauncher")
     let hideDefaultInAppPush = aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
     let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: "enabledTrackDefaultEvent")
-    let locale = aDecoder.decodeObject(forKey: "locale") as? String
+    let locale = CHLocale(rawValue: aDecoder.decodeInteger(forKey: "locale")) ?? .korean
     
     self.init(pluginKey: pluginKey,
               debugMode: debugMode,
