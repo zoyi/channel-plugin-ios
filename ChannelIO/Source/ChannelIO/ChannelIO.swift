@@ -55,7 +55,8 @@ public final class ChannelIO: NSObject {
   internal static var currentAlertCount = 0
 
   static var isValidStatus: Bool {
-    return mainStore.state.checkinState.status == .success
+    return mainStore.state.checkinState.status == .success &&
+      mainStore.state.channel.id != ""
   }
 
   internal static var settings: ChannelPluginSettings? = nil
@@ -166,6 +167,10 @@ public final class ChannelIO: NSObject {
   @objc public class func initPushToken(deviceToken: Data) {
     let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
     ChannelIO.pushToken = token
+    
+    if ChannelIO.isValidStatus {
+      ChannelIO.registerPushToken()
+    }
   }
 
   /**

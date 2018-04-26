@@ -1,3 +1,6 @@
+# 3.0.4 (Apr 26, 2018)
+* Registered push token properly
+
 # 3.0.3 (Apr 22, 2018)
 * Removed colon escape from message
 
