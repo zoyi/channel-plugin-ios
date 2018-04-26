@@ -59,4 +59,7 @@ class CompleteActionView: BaseView, Actionable {
   func setFocus() {}
   func setOutFocus() {}
   func setInvalid() {}
+  func signalForFocus() -> Observable<Bool> {
+    return Observable.just(false);
+  }
 }

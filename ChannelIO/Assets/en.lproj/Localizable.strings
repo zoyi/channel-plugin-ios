@@ -178,4 +178,4 @@ Press the button below to refresh.";
 "ch.language.english" = "English";
 "ch.language" = "Language";
 "ch.profile_form.error" = "Format is not correct.";
-"ch.input.default.placeholder" = "Please enter";
+"ch.profile_form.placeholder" = "Please enter";

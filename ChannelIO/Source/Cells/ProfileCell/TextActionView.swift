@@ -14,6 +14,8 @@ import NVActivityIndicatorView
 
 class TextActionView: BaseView, Actionable {
   let submitSubject = PublishSubject<Any?>()
+  let focusSubject = PublishSubject<Bool>()
+  
   let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
     $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysTemplate), for: .disabled)
@@ -124,10 +126,12 @@ extension TextActionView {
   func setFocus() {
     self.layer.borderColor = CHColors.brightSkyBlue.cgColor
     self.confirmButton.tintColor = CHColors.brightSkyBlue
+    self.focusSubject.onNext(true)
   }
   
   func setOutFocus() {
     self.layer.borderColor = CHColors.paleGrey20.cgColor
+    self.focusSubject.onNext(false)
   }
   
   func setInvalid() {
@@ -135,6 +139,10 @@ extension TextActionView {
     self.confirmButton.tintColor = CHColors.yellowishOrange
     self.confirmButton.isHidden = false
     self.loadIndicator.isHidden = true
+  }
+  
+  func signalForFocus() -> Observable<Bool> {
+    return self.focusSubject
   }
 }
 

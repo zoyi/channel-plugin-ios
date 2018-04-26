@@ -47,6 +47,10 @@ class ProfileItemBaseView: BaseView {
     self.addSubview(self.indexLabel)
     self.addSubview((self.fieldView?.view)!)
     
+    self.fieldView?.signalForFocus().subscribe(onNext: { [weak self] (focus) in
+      self?.presenter?.profileIsFocus(focus: focus)
+    }).disposed(by: self.disposeBag)
+    
     self.fieldView?.signalForText().subscribe(onNext: { [weak self] (text) in
       self?.setTitle(with: self?.item?.nameI18n?.getMessage())
     }).disposed(by: self.disposeBag)

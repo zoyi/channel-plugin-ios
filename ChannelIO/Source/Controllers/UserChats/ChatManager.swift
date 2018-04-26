@@ -9,6 +9,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import CHSlackTextViewController
 
 enum ChatElement {
   case photos(obj: [String])
@@ -23,6 +24,7 @@ enum ChatElement {
 protocol ChatDelegate : class {
   func readyToDisplay()
   func update(for element: ChatElement)
+  func updateInputBar(state: SLKInputBarState)
   func showError()
   func hideError()
 }
@@ -260,6 +262,14 @@ extension ChatManager {
       mainStore.dispatch(CreateMessage(payload: message!))
       self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
     }).disposed(by: self.disposeBag)
+  }
+  
+  func profileIsFocus(focus: Bool) {
+    if focus {
+      self.delegate?.updateInputBar(state: .disabled);
+    } else {
+      self.delegate?.updateInputBar(state: .normal);
+    }
   }
 }
 

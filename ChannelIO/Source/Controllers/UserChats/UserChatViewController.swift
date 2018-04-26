@@ -1020,6 +1020,10 @@ extension UserChatViewController: ChatDelegate {
     }
   }
   
+  func updateInputBar(state: SLKInputBarState){
+    self.textInputbar.barState = state;
+  }
+  
   func showError() {
     if self.shyNavBarManager.isExpanded() {
       self.shyNavBarManager.contract(false)
