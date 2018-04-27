@@ -37,7 +37,9 @@ class UserViewController : UIViewController {
       .set(id: self.idField.text ?? "")
       .set(mobileNumber: self.phoneField.text ?? "")
     
-    //pluginKey = "52eb6f27-38c7-476d-ad92-83e6299b7e07"
+    if pluginKey == "" {
+      pluginKey = "52eb6f27-38c7-476d-ad92-83e6299b7e07"
+    }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     
     ChannelIO.boot(with: settings, guest: guest) { (completion) in
