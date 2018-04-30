@@ -59,7 +59,7 @@ public final class ChannelIO: NSObject {
   }
 
   internal static var settings: ChannelPluginSettings? = nil
-  internal static var guest: Guest? = nil
+  internal static var profile: Profile? = nil
   
 
   // MARK: StoreSubscriber
@@ -106,11 +106,11 @@ public final class ChannelIO: NSObject {
    */
   @objc public class func boot(
     with settings: ChannelPluginSettings,
-    guest: Guest? = nil,
+    profile: Profile? = nil,
     completion: ((ChannelPluginCompletionStatus) -> Void)? = nil) {
     ChannelIO.prepare()
     ChannelIO.settings = settings
-    ChannelIO.guest = guest
+    ChannelIO.profile = profile
     
     if settings.pluginKey == "" {
       mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
@@ -119,7 +119,7 @@ public final class ChannelIO: NSObject {
     }
     
     PluginPromise.checkVersion().flatMap { (event) in
-      return ChannelIO.checkInChannel(guest: guest)
+      return ChannelIO.checkInChannel(profile: profile)
     }
     .subscribe(onNext: { (_) in
       completion?(.success)
@@ -380,13 +380,17 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    let guest = Guest().set(id: PrefStore.getCurrentUserId() ?? "")
+    let profile = Profile()
+    if let userId = PrefStore.getCurrentUserId() {
+      profile.set(userId: userId)
+    }
+    
     guard let settings = PrefStore.getChannelPluginSettings() else {
       dlog("ChannelPluginSetting is missing")
       return
     }
     
-    ChannelIO.boot(with: settings, guest: guest) { (status) in
+    ChannelIO.boot(with: settings, profile: profile) { (status) in
       if status == .success {
         let userChatId = userInfo["chatId"] as! String
         ChannelIO.showUserChat(userChatId:userChatId)

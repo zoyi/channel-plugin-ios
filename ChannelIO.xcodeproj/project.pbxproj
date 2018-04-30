@@ -128,7 +128,7 @@
 		6597936D1FA716CB00840F6A /* CHChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D51FA7167B00840F6A /* CHChannel.swift */; };
 		6597936E1FA716CB00840F6A /* CHColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D61FA7167B00840F6A /* CHColors.swift */; };
 		6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D71FA7167B00840F6A /* CHConstants.swift */; };
-		659793701FA716CB00840F6A /* Guest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D81FA7167B00840F6A /* Guest.swift */; };
+		659793701FA716CB00840F6A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D81FA7167B00840F6A /* Profile.swift */; };
 		659793711FA716CB00840F6A /* CHEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D91FA7167B00840F6A /* CHEntity.swift */; };
 		659793721FA716CB00840F6A /* CHEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792DA1FA7167B00840F6A /* CHEvent.swift */; };
 		659793731FA716CB00840F6A /* CHFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792DB1FA7167B00840F6A /* CHFile.swift */; };
@@ -406,7 +406,7 @@
 		659792D51FA7167B00840F6A /* CHChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHChannel.swift; sourceTree = "<group>"; };
 		659792D61FA7167B00840F6A /* CHColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHColors.swift; sourceTree = "<group>"; };
 		659792D71FA7167B00840F6A /* CHConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHConstants.swift; sourceTree = "<group>"; };
-		659792D81FA7167B00840F6A /* Guest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guest.swift; sourceTree = "<group>"; };
+		659792D81FA7167B00840F6A /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		659792D91FA7167B00840F6A /* CHEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEntity.swift; sourceTree = "<group>"; };
 		659792DA1FA7167B00840F6A /* CHEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEvent.swift; sourceTree = "<group>"; };
 		659792DB1FA7167B00840F6A /* CHFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHFile.swift; sourceTree = "<group>"; };
@@ -717,7 +717,7 @@
 				6556A2991FA7316C00B80F4E /* ChannelIO.swift */,
 				653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */,
 				653A6C14206C893F0048163D /* ChannelPluginSettings.swift */,
-				659792D81FA7167B00840F6A /* Guest.swift */,
+				659792D81FA7167B00840F6A /* Profile.swift */,
 			);
 			name = ChannelIO;
 			path = Source/ChannelIO;
@@ -1485,7 +1485,7 @@
 				6597936E1FA716CB00840F6A /* CHColors.swift in Sources */,
 				6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */,
 				659001312068CD200054B353 /* MarkdownParser.swift in Sources */,
-				659793701FA716CB00840F6A /* Guest.swift in Sources */,
+				659793701FA716CB00840F6A /* Profile.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
 				654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */,
 				65CB14052069E2B800E456B5 /* UserChatInteractor.swift in Sources */,

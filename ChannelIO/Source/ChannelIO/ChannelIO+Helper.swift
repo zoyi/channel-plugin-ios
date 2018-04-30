@@ -56,7 +56,7 @@ extension ChannelIO {
       }).disposed(by: self.disposeBeg)
   }
   
-  internal class func checkInChannel(guest: Guest? = nil) -> Observable<Any?> {
+  internal class func checkInChannel(profile: Profile? = nil) -> Observable<Any?> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
         subscriber.onError(CHErrorPool.unknownError)
@@ -69,12 +69,12 @@ extension ChannelIO {
       }
 
       var params = [String: Any]()
-      if let guest = guest {
-        params["body"] = guest.generateParams()
+      if let profile = profile {
+        params["body"] = profile.generateParams()
       }
       
-      if let guestId = guest?.id, guestId != "" {
-        PrefStore.setCurrentUserId(userId: guestId)
+      if let userId = profile?.userId, userId != "" {
+        PrefStore.setCurrentUserId(userId: userId)
       } else {
         PrefStore.clearCurrentUserId()
       }

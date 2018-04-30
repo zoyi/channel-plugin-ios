@@ -10,39 +10,39 @@ import Foundation
 import Foundation
 
 @objc
-public class Guest : NSObject {
-  var id = ""
+public class Profile : NSObject {
+  var userId = ""
   var name = ""
   var avatarUrl = ""
   var mobileNumber = ""
   var property = [String:Any]()
   
   @discardableResult
-  @objc public func set(name: String) -> Guest {
+  @objc public func set(name: String) -> Profile {
     self.name = name
     return self
   }
   
   @discardableResult
-  @objc public func set(id: String) -> Guest {
-    self.id = id
+  @objc public func set(userId: String) -> Profile {
+    self.userId = userId
     return self
   }
   
   @discardableResult
-  @objc public func set(avatarUrl: String) -> Guest {
+  @objc public func set(avatarUrl: String) -> Profile {
     self.avatarUrl = avatarUrl
     return self
   }
   
   @discardableResult
-  @objc public func set(mobileNumber: String) -> Guest {
+  @objc public func set(mobileNumber: String) -> Profile {
     self.mobileNumber = mobileNumber
     return self
   }
   
   @discardableResult
-  @objc public func set(propertyKey:String, value:Any) -> Guest {
+  @objc public func set(propertyKey:String, value:Any) -> Profile {
     self.property[propertyKey] = value
     return self
   }
