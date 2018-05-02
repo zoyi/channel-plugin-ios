@@ -53,7 +53,6 @@ Pod::Spec.new do |s|
   s.dependency 'SVProgressHUD'
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit'
-  s.dependency "StarscreamSocketIO", "~> 8.0.3"
   s.dependency 'CHNavBar'
   s.dependency 'UINavigationItem+Margin'
 end
