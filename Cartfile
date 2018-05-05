@@ -23,13 +23,4 @@ github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit"
 github "zoyi/SDWebImage" ~> 4.0.0
-
-
-
-
-
-
-
-
-
-
+github "devxoul/UINavigationItem-Margin"

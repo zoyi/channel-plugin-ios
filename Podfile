@@ -25,12 +25,15 @@ target 'ChannelIO' do
   pod 'ReSwift'
   pod 'Reusable'
   pod 'RxSwift'
+  pod 'RxCocoa'
   pod 'SnapKit'
   pod 'SwiftDate'
   pod 'SwiftyJSON'
   pod 'Then'
   pod 'UIColor_Hex_Swift'
   pod 'CHNavBar'
+  pod 'UINavigationItem+Margin'
+
   target 'ChannelIOTests' do
     inherit! :search_paths
 	pod 'Nimble'
