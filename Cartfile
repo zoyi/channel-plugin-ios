@@ -4,7 +4,7 @@ github "isair/ManualLayout"
 github "yeahdongcn/UIColor-Hex-Swift" >= 4.0.0
 github "SwiftyJSON/SwiftyJSON"
 github "malcommac/SwiftDate" ~> 4.4.2
-github "devxoul/Then" == 2.1.1
+github "intoxicated/Then"
 github "ReSwift/ReSwift"
 github "ReactiveX/RxSwift" ~> 4.0
 github "Hearst-DD/ObjectMapper" ~> 2.2
