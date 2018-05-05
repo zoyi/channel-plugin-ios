@@ -1,7 +1,7 @@
 github "AliSoftware/Reusable"
 github "zoyi/SnapKit"
 github "isair/ManualLayout"
-github "yeahdongcn/UIColor-Hex-Swift" >= 4.0.0
+github "mRs-/HexColors"
 github "SwiftyJSON/SwiftyJSON"
 github "malcommac/SwiftDate" ~> 4.4.2
 github "intoxicated/Then"
@@ -16,7 +16,7 @@ github "socketio/socket.io-client-swift" ~> 13.1.0
 github "zoyi/SlackTextViewController" ~> 1.10.6
 github "MortimerGoro/MGSwipeTableCell" ~> 1.5.6
 github "Marxon13/M13ProgressSuite" ~> 1.2.9
-git "/Users/R3alFr3e/Developments/MWPhotoBrowser" "master"
+github "zoyi/MWPhotoBrowser"
 github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit"

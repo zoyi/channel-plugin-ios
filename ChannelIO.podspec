@@ -33,7 +33,7 @@ Pod::Spec.new do |s|
   s.dependency 'Reusable'
   s.dependency 'SnapKit'
   s.dependency 'ManualLayout'
-  s.dependency 'UIColor_Hex_Swift'
+  s.dependency 'HexColors'
   s.dependency 'SwiftyJSON'
   s.dependency 'Then'
   s.dependency 'ReSwift'

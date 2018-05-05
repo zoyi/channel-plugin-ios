@@ -10,8 +10,7 @@
 #endif
 #endif
 
-#import "HEXColor.h"
 
-FOUNDATION_EXPORT double UIColor_Hex_SwiftVersionNumber;
-FOUNDATION_EXPORT const unsigned char UIColor_Hex_SwiftVersionString[];
+FOUNDATION_EXPORT double HexColorsVersionNumber;
+FOUNDATION_EXPORT const unsigned char HexColorsVersionString[];
 

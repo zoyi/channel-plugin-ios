@@ -51,7 +51,7 @@ final class LaunchView : BaseView {
     Metric.yMargin = viewModel.yMargin
 
     self.buttonView.backgroundColor = UIColor(viewModel.bgColor)
-    self.buttonView.layer.borderColor = UIColor(viewModel.borderColor).cgColor
+    self.buttonView.layer.borderColor = UIColor(viewModel.borderColor)?.cgColor
     if viewModel.iconColor == UIColor.white {
       self.buttonView.setImage(CHAssets.getImage(named: "balloonWhite"), for: .normal)
     } else {

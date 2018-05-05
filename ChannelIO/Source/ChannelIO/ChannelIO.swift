@@ -14,7 +14,6 @@ import SnapKit
 import Then
 import ReSwift
 import RxSwift
-import UIColor_Hex_Swift
 import UserNotifications
 import SVProgressHUD
 import CRToast

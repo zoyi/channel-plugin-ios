@@ -51,7 +51,7 @@ final class ChatNotificationView : BaseView {
     static let timestampLabelNumberOfLines = 1
     static let nameLabelNumberOfLines = 1
     static let cornerRadius = 8.f
-    static let shadowColor = UIColor("#516378").cgColor
+    static let shadowColor = CHColors.dark.cgColor
     static let shadowOffset = CGSize(width: 0.f, height: 5.f)
     static let shadowBlur = 15.f
     static let shadowOpacity = 0.4.f

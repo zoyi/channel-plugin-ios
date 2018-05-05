@@ -71,7 +71,7 @@ struct MessageCellModel: MessageCellModelType {
     self.message = message
     self.avatarEntity = message.entity ?? channel
     self.avatarIsHidden = createdByMe || isContinuous
-    self.bubbleBackgroundColor = createdByMe ? UIColor(plugin.color) : CHColors.lightGray
+    self.bubbleBackgroundColor = createdByMe ? UIColor(plugin.color)! : CHColors.lightGray
     self.textColor = plugin.textColor == "white" ? CHColors.white : CHColors.black
     self.usernameIsHidden = createdByMe || isContinuous
     self.imageIsHidden = (clipType != ClipType.Image)

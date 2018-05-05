@@ -13,7 +13,7 @@ final class ProfileHeaderView : BaseView {
   
   let channelIconView = UIView().then {
     $0.layer.borderWidth = 1
-    $0.layer.borderColor = UIColor("#33152128").cgColor
+    $0.layer.borderColor = UIColor("#33152128")?.cgColor
     $0.layer.cornerRadius = 3
     $0.clipsToBounds = true
   }

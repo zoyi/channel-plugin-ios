@@ -39,7 +39,7 @@ class NewChatView : BaseButton {
   
   func configure(bgColor: String, borderColor: String, tintColor: String) {
     self.backgroundColor = UIColor(bgColor)
-    self.layer.borderColor = UIColor(borderColor).cgColor
+    self.layer.borderColor = UIColor(borderColor)?.cgColor
     self.imageView?.tintColor = tintColor == "white" ? UIColor.white : UIColor.black
   }
   

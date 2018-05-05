@@ -29,7 +29,7 @@ target 'ChannelIO' do
   pod 'SwiftDate'
   pod 'SwiftyJSON'
   pod 'Then'
-  pod 'UIColor_Hex_Swift'
+  pod 'HexColors'
   pod 'CHNavBar'
   pod 'UINavigationItem+Margin'
 
