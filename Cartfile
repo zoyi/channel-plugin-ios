@@ -1,5 +1,5 @@
 github "AliSoftware/Reusable"
-github "SnapKit/SnapKit"
+github "zoyi/SnapKit"
 github "isair/ManualLayout"
 github "yeahdongcn/UIColor-Hex-Swift" >= 4.0.0
 github "SwiftyJSON/SwiftyJSON"
