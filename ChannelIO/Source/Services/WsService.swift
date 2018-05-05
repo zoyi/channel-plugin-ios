@@ -117,6 +117,8 @@ class WsService {
  
   //MARK: Private properties
   fileprivate var socket: SocketIOClient!
+  fileprivate var manager: SocketManager!
+  
   var baseUrl = WSType.PRODUCTION.rawValue
   
   //move these properties into state
@@ -178,7 +180,8 @@ class WsService {
     dlog("Try to connect Socket")
     
     self.disconnect()
-    self.socket = SocketIOClient(
+    
+    self.manager = SocketManager(
       socketURL: URL(string: "\(self.baseUrl)")!,
       config: [
         .log(false),
@@ -187,10 +190,10 @@ class WsService {
         .reconnectAttempts(5),
         .reconnectWait(10)
       ])
-    
+
+    self.socket = self.manager.socket(forNamespace: "/app")
     self.socket.removeAllHandlers()
     self.addSocketHandlers()
-    self.socket.joinNamespace("/app")
     self.socket.connect()
   }
   

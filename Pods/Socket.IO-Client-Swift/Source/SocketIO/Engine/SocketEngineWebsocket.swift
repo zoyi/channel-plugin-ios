@@ -24,10 +24,12 @@
 //
 
 import Foundation
-import StarscreamSocketIO
+import Starscream
 
 /// Protocol that is used to implement socket.io WebSocket support
-public protocol SocketEngineWebsocket : SocketEngineSpec, WebSocketDelegate {
+public protocol SocketEngineWebsocket : SocketEngineSpec {
+    // MARK: Methods
+
     /// Sends an engine.io message through the WebSocket transport.
     ///
     /// You shouldn't call this directly, instead call the `write` method on `SocketEngine`.
@@ -63,17 +65,5 @@ extension SocketEngineWebsocket {
                 ws?.write(data: bin)
             }
         }
-    }
-
-    // MARK: Starscream delegate methods
-
-    /// Delegate method for when a message is received.
-    public func websocketDidReceiveMessage(socket: WebSocket, text: String) {
-        parseEngineMessage(text)
-    }
-
-    /// Delegate method for when binary is received.
-    public func websocketDidReceiveData(socket: WebSocket, data: Data) {
-        parseEngineData(data)
     }
 }

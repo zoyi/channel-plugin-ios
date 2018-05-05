@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FA5ACF844CECB98749BF8DA9B269AE0"
+               BlueprintIdentifier = "4D117EA85E1D199DCFB2590D49D49116"
                BuildableName = "UINavigationItem_Margin.framework"
                BlueprintName = "UINavigationItem+Margin"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6FA5ACF844CECB98749BF8DA9B269AE0"
+            BlueprintIdentifier = "4D117EA85E1D199DCFB2590D49D49116"
             BuildableName = "UINavigationItem_Margin.framework"
             BlueprintName = "UINavigationItem+Margin"
             ReferencedContainer = "container:Pods.xcodeproj">

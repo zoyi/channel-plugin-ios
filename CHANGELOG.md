@@ -1,3 +1,7 @@
+# 3.0.5 (May 5, 2018)
+* Resolved carthage dependencies conflicts
+* SocketIO version to 13.x 
+
 # 3.0.4 (Apr 26, 2018)
 * Registered push token properly
 
