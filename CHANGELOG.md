@@ -1,7 +1,8 @@
-# 3.0.5 (May 5, 2018)
+# 3.0.6 (May 11, 2018)
 * Resolved carthage dependencies conflicts
 * SocketIO version to 13.x 
 * Removed UIColor-hex-swift and added HexColors
+* Fixed right button that was not able to click after chat was completed
 
 # 3.0.4 (Apr 26, 2018)
 * Registered push token properly
