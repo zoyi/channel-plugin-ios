@@ -10,8 +10,8 @@ import UIKit
 
 class ProfileExtendableView: BaseView {
   struct Metric {
-    static let footerLeading = 14.f
-    static let footerTrailing = 14.f
+    static let footerLeading = 12.f
+    static let footerTrailing = 12.f
     static let footerBottom = 12.f
     static let topMargin = 10.f
     static let itemHeight = 80.f
@@ -27,10 +27,20 @@ class ProfileExtendableView: BaseView {
     $0.numberOfLines = 0
     
     let range = text.range(of: CHAssets.localized("ch.terms_of_service"))
-    $0.attributedText = $0.text?.addFont(
+    let attrText = $0.text?.addFont(
       UIFont.boldSystemFont(ofSize: 11),
       color: CHColors.blueyGrey,
       on: NSRange(range!, in: text))
+    let paragraph = NSMutableParagraphStyle()
+    paragraph.alignment = .center
+    paragraph.lineBreakMode = .byCharWrapping
+    
+    attrText?.addAttribute(
+      NSAttributedStringKey.paragraphStyle,
+      value: paragraph,
+      range: NSRange(location:0, length: text.count))
+    
+    $0.attributedText = attrText
   }
   
   var shouldBecomeFirstResponder = false
@@ -153,7 +163,18 @@ class ProfileExtendableView: BaseView {
     height += Metric.topMargin //top margin
     height += CGFloat(model.currentIndex + 1) * Metric.itemHeight
     if model.currentIndex == 0 {
-      height += CHAssets.localized("ch.agreement").height(fits: width, font: UIFont.systemFont(ofSize: 11))
+      let paragraph = NSMutableParagraphStyle()
+      paragraph.alignment = .center
+      paragraph.lineBreakMode = .byCharWrapping
+
+      let font = UIFont.systemFont(ofSize: 11)
+      height += CHAssets.localized("ch.agreement").height(
+        fits: width - Metric.footerLeading - Metric.footerTrailing,
+        attributes: [
+          NSAttributedStringKey.font: font,
+          NSAttributedStringKey.paragraphStyle: paragraph
+        ]
+      )
       height += Metric.footerBottom
     }
     return height
