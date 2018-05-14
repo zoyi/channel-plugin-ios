@@ -83,7 +83,7 @@ final class PhoneActionView: BaseView, Actionable {
     }
     
     NotificationCenter.default.rx
-      .notification(Notification.Name(rawValue: "com.zoyi.channel.keyboard_dismiss"))
+      .notification(Notification.Name.Channel.dismissKeyboard)
       .subscribe(onNext: { [weak self] (_) in
         self?.phoneField.resignFirstResponder()
       }).disposed(by: self.disposeBeg)

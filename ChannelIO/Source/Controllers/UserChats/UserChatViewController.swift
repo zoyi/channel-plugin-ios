@@ -143,13 +143,17 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.textInputbar.autoHideRightButton = false
     self.textInputbar.signalForClick()
       .subscribe { [weak self] (_) in
-      if self?.textInputbar.barState == .disabled {
+      if self?.textInputbar.barState == .disabled && self?.chatManager.profileIsFocus == false {
         return
       }
       self?.shyNavBarManager.contract(true)
       self?.presentKeyboard(self?.menuAccesoryView == nil)
     }.disposed(by: self.disposeBag)
-
+    
+    self.tableView.signalForClick().subscribe { [weak self] _ in
+      NotificationCenter.default.post(name: Notification.Name.Channel.dismissKeyboard, object: nil)
+      self?.dismissKeyboard(true)
+    }.disposed(by: self.disposeBag)
   }
   
   fileprivate func initTableView() {
