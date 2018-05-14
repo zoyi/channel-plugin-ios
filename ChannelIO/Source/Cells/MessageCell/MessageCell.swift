@@ -28,7 +28,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     static let cellLeftPadding = 10.f
     static let avatarWidth = 24.f
     static let avatarRightPadding = 6.f
-    static let bubbleLeftMargin = Metric.cellLeftPadding + Metric.avatarWidth + Metric.avatarRightPadding + 10
+    static let bubbleLeftMargin = 40.f
     static let usernameHeight = 15.f
     static let cellTopPaddingOfContinous = 3.f
     static let cellTopPaddingDefault = 16.f

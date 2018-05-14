@@ -735,7 +735,7 @@ extension UserChatViewController {
     case .WebPage:
       return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .Profile:
-      return ProfileCell.cellHeight(fits: tableView.frame.width - 52, viewModel: viewModel)
+      return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
     default:
       let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       return calSize

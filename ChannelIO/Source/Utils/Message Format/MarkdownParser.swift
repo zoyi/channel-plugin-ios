@@ -108,8 +108,14 @@ open class MarkdownParser {
 
   open func parse(_ markdown: NSAttributedString) -> NSAttributedString {
     let attributedString = NSMutableAttributedString(attributedString: markdown)
-    attributedString.addAttribute(
-      NSAttributedStringKey.font, value: font,
+    
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineBreakMode = .byWordWrapping
+    paragraphStyle.alignment = .left
+    paragraphStyle.minimumLineHeight = 20
+    
+    attributedString.addAttributes(
+      [NSAttributedStringKey.font: font, NSAttributedStringKey.paragraphStyle:paragraphStyle],
       range: NSRange(location: 0, length: attributedString.length))
     
     var elements: [MarkdownElement] = escapingElements

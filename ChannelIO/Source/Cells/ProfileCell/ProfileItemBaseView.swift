@@ -31,7 +31,10 @@ class ProfileItemBaseView: BaseView {
   let indexLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.isHidden = true
+    $0.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
+    $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
+  
   var fieldView: Actionable? = nil
   var model: MessageCellModelType?
   var index: Int = 0
