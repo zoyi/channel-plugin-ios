@@ -4,6 +4,8 @@
 * Changed locale field type from String to Enum
 * Changed userId location from Profile to ChannelPluginSettings
 * Added ProfileBot feature
+## Bug fixes
+* Fixed unexpected behavior when homepage and/or phoneNumber is missing in ProfileView
 
 # 3.0.6 (May 11, 2018)
 * Resolved carthage dependencies conflicts

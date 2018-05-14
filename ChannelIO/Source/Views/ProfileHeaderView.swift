@@ -31,8 +31,7 @@ final class ProfileHeaderView : BaseView {
   }
   
   let contactViews = ContactsView()
-  
-  
+  var contactTopConstraint: Constraint? = nil
   var channel: CHChannel? = nil
 
   override func initialize() {
@@ -48,35 +47,37 @@ final class ProfileHeaderView : BaseView {
 
   }
   
-  override func layoutSubviews() {
-    super.layoutSubviews()
-
-    self.initialLabel.snp.remakeConstraints { (make) in
+  override func setLayouts() {
+    super.setLayouts()
+    
+    self.initialLabel.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
     }
     
-    self.channelImageView.snp.remakeConstraints { (make) in
+    self.channelImageView.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
     }
     
-    self.channelIconView.snp.remakeConstraints { (make) in
+    self.channelIconView.snp.makeConstraints { (make) in
       make.top.equalToSuperview().inset(18)
       make.centerX.equalToSuperview()
       make.size.equalTo(CGSize(width: 40, height: 40))
     }
     
-    self.channelNameLabel.snp.remakeConstraints { [weak self] (make) in
+    self.channelNameLabel.snp.makeConstraints { [weak self] (make) in
       make.top.equalTo((self?.channelIconView.snp.bottom)!).offset(12)
       make.centerX.equalToSuperview()
+      make.leading.equalToSuperview().inset(20)
+      make.trailing.equalToSuperview().inset(20)
     }
     
     self.contactViews.snp.makeConstraints { [weak self] (make) in
       make.centerX.equalToSuperview()
-      make.top.equalTo((self?.channelNameLabel.snp.bottom)!).offset(16)
+      self?.contactTopConstraint = make.top.equalTo((self?.channelNameLabel.snp.bottom)!).offset(16).constraint
       make.bottom.equalToSuperview().inset(28)
     }
   }
-  
+
   func configure(plugin: CHPlugin, channel: CHChannel) {
     self.channel = channel
     
@@ -104,26 +105,32 @@ final class ProfileHeaderView : BaseView {
     
     self.contactViews.removeAllButtons()
     
-    self.contactViews.addButton(
-      baseColor: plugin.textUIColor,
-      image: CHAssets.getImage(named: "homepage")) {
-        guard let url = URL(string: self.channel?.homepageUrl ?? "") else { return }
-        url.open()
-    }
-    
-    self.contactViews.addButton(
-      baseColor: plugin.textUIColor,
-      image: CHAssets.getImage(named: "phone")) {
-        guard let phoneNumber = self.channel?.phoneNumber else { return }
-        if let url = URL(string: "tel://\(phoneNumber)") {
+    if let homeUrl = self.channel?.homepageUrl, homeUrl != "" {
+      self.contactViews.addButton(
+        baseColor: plugin.textUIColor,
+        image: CHAssets.getImage(named: "homepage")) {
+          guard let url = URL(string: homeUrl) else { return }
           url.open()
         }
-      }
+    }
 
-    self.contactViews.layoutButtons()
+    if let phoneNumber = self.channel?.phoneNumber, phoneNumber != "" {
+      self.contactViews.addButton(
+        baseColor: plugin.textUIColor,
+        image: CHAssets.getImage(named: "phone")) {
+          guard let url = URL(string: "tel://\(phoneNumber)") else { return }
+          url.open()
+        }
+    }
     
-    self.setNeedsLayout()
-    self.layoutIfNeeded()
+    self.contactViews.layoutButtons()
+    if self.contactViews.buttons.count == 0 {
+      self.contactViews.isHidden = true
+      self.contactTopConstraint?.deactivate()
+    } else {
+      self.contactViews.isHidden = false
+      self.contactTopConstraint?.activate()
+    }
   }
   
 }
