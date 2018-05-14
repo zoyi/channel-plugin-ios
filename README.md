@@ -21,7 +21,7 @@ Add below into your Podfile on Xcode.
 
 ```
 target YOUR_PROJECT_TARGET do
-  pod 'CHPlugin'
+  pod 'ChannelIO'
 end
 ```
 
@@ -39,6 +39,6 @@ Now you can see Channel plugin framework by inspecting YOUR_PROJECT.xcworkspace.
 
 1. Add `github "zoyi/channel-plugin-ios"` to your `Cartfile`.
 2. Run `carthage update --platform iOS --no-use-binaries`.
-3. Go to your Xcode project's "General" settings. Open `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Checkouts/channel-plugin-ios` in Finder and drag `CHPlugin.framework` to the "Embedded Binaries" section in Xcode along with other dependencies. Make sure `Copy items if needed` is selected and click `Finish`.
+3. Go to your Xcode project's "General" settings. Open `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build/iOS` in Finder and drag `ChannelIO.framework` to the "Embedded Binaries" section in Xcode along with other dependencies. Make sure `Copy items if needed` is selected and click `Finish`.
 
 
