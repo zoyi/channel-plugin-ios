@@ -13,6 +13,9 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   /* pluinkey that you can obtain from channel desk */
   @objc public var pluginKey: String = ""
   
+  /* user id to distinguish normal user and anonymous user */
+  @objc public var userId: String? = nil
+  
   /* true if debug information to be printed in console. Default is false */
   @objc public var debugMode: Bool = false
   
@@ -59,6 +62,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc
   public init(
     pluginKey: String,
+    userId: String? = nil,
     debugMode: Bool = false,
     hideDefaultLauncher: Bool = false,
     hideDefaultInAppPush: Bool = false,
@@ -67,6 +71,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     super.init()
     
     self.pluginKey = pluginKey
+    self.userId = userId
     self.debugMode = debugMode
     self.hideDefaultLauncher = hideDefaultLauncher
     self.hideDefaultInAppPush = hideDefaultInAppPush
@@ -76,6 +81,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   
   required convenience public init(coder aDecoder: NSCoder) {
     let pluginKey = aDecoder.decodeObject(forKey: "pluginKey") as! String
+    let userId = aDecoder.decodeObject(forKey: "userId") as! String
     let debugMode = aDecoder.decodeBool(forKey: "debugMode")
     let hideDefaultLauncher = aDecoder.decodeBool(forKey: "hideDefaultLauncher")
     let hideDefaultInAppPush = aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
@@ -83,6 +89,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     let locale = CHLocale(rawValue: aDecoder.decodeInteger(forKey: "locale")) ?? .korean
     
     self.init(pluginKey: pluginKey,
+              userId: userId,
               debugMode: debugMode,
               hideDefaultLauncher: hideDefaultLauncher,
               hideDefaultInAppPush: hideDefaultInAppPush,
@@ -92,6 +99,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   
   public func encode(with aCoder: NSCoder) {
     aCoder.encode(self.pluginKey, forKey: "pluginKey")
+    aCoder.encode(self.userId, forKey: "userId")
     aCoder.encode(self.debugMode, forKey: "debugMode")
     aCoder.encode(self.hideDefaultLauncher, forKey: "hideDefaultLauncher")
     aCoder.encode(self.hideDefaultInAppPush, forKey: "hideDefaultInAppPush")

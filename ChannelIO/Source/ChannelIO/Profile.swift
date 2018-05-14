@@ -13,21 +13,15 @@ import Foundation
 
 @objc
 public class Profile : NSObject {
-  var userId = ""
   var name = ""
   var avatarUrl = ""
   var mobileNumber = ""
+  var email = ""
   var property = [String:Any]()
   
   @discardableResult
   @objc public func set(name: String) -> Profile {
     self.name = name
-    return self
-  }
-  
-  @discardableResult
-  @objc public func set(userId: String) -> Profile {
-    self.userId = userId
     return self
   }
   
@@ -44,6 +38,12 @@ public class Profile : NSObject {
   }
   
   @discardableResult
+  @objc public func set(email: String) -> Profile {
+    self.email = email
+    return self
+  }
+  
+  @discardableResult
   @objc public func set(propertyKey:String, value:Any) -> Profile {
     self.property[propertyKey] = value
     return self
@@ -54,7 +54,11 @@ public class Profile : NSObject {
     if self.name != "" {
       params["name"] = self.name
     }
-    
+
+    if self.email != "" {
+      params["email"] = self.email
+    }
+
     if self.mobileNumber != "" {
       params["mobileNumber"] = self.mobileNumber
     }

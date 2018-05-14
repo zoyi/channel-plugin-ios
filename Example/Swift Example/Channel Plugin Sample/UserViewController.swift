@@ -34,13 +34,14 @@ class UserViewController : UIViewController {
     guard var pluginKey = self.pluginKeyField.text else { return }
     let profile = Profile()
       .set(name: self.usernameField.text ?? "")
-      .set(userId: self.idField.text ?? "")
       .set(mobileNumber: self.phoneField.text ?? "")
     
     if pluginKey == "" {
       pluginKey = "f6747e65-d3d0-4177-b2eb-13b9ff21c2e1"
     }
+    
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
+    settings.userId = self.idField.text
     settings.debugMode = true
     
     ChannelIO.boot(with: settings, profile: profile) { (completion) in

@@ -384,14 +384,13 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    let profile = Profile()
-    if let userId = PrefStore.getCurrentUserId() {
-      profile.set(userId: userId)
-    }
-    
     guard let settings = PrefStore.getChannelPluginSettings() else {
       dlog("ChannelPluginSetting is missing")
       return
+    }
+    
+    if let userId = PrefStore.getCurrentUserId() {
+      settings.userId = userId
     }
     
     ChannelIO.boot(with: settings, profile: profile) { (status) in

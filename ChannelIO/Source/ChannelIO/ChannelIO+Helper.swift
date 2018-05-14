@@ -73,7 +73,7 @@ extension ChannelIO {
         params["body"] = profile.generateParams()
       }
       
-      if let userId = profile?.userId, userId != "" {
+      if let userId = settings.userId, userId != "" {
         PrefStore.setCurrentUserId(userId: userId)
       } else {
         PrefStore.clearCurrentUserId()
