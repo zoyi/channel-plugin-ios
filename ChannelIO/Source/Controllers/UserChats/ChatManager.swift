@@ -46,6 +46,7 @@ class ChatManager {
   var didLoad = false
   var state: ChatState = .idle
   var shouldRedrawProfileBot = true
+  var profileIsFocus = false
   
   let disposeBag = DisposeBag()
 
@@ -265,6 +266,7 @@ extension ChatManager {
   }
   
   func profileIsFocus(focus: Bool) {
+    self.profileIsFocus = focus
     if focus {
       self.delegate?.updateInputBar(state: .disabled);
     } else {

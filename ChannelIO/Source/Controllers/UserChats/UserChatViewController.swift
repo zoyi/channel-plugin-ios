@@ -461,7 +461,7 @@ extension UserChatViewController: StoreSubscriber {
       self.textInputbar.hideAllButtons()
       self.textView.isEditable = false
       self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder.disabled_new_chat")
-    } else {
+    } else if !self.chatManager.profileIsFocus {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.tintColor = CHColors.cobalt
@@ -890,7 +890,6 @@ extension UserChatViewController {
       self.photoBrowser?.setCurrentPhotoIndex(UInt(index))
       
       self.present(navigation, animated: true, completion: nil)
-      //_ = self.navigationController?.pushViewController(self.photoBrowser!, animated: true)
     }
   }
   
