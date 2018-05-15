@@ -17,9 +17,8 @@ class TextActionView: BaseView, Actionable {
   let focusSubject = PublishSubject<Bool>()
   
   let confirmButton = UIButton().then {
-    $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
-    $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysTemplate), for: .disabled)
-    $0.tintColor = CHColors.cobalt
+    $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
+    $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysOriginal), for: .disabled)
   }
   
   let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
@@ -66,7 +65,7 @@ class TextActionView: BaseView, Actionable {
       .subscribe(onNext: { [weak self] _ in
         self?.didFocus = true
 
-        if self?.textField.keyboardType == .numberPad {
+        if self?.textField.keyboardType == .decimalPad {
           self?.submitSubject.onNext(Int(self?.textField.text ?? "0"))
         } else {
           self?.submitSubject.onNext(self?.textField.text)

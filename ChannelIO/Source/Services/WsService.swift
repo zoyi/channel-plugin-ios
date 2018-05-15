@@ -116,8 +116,8 @@ class WsService {
   let messageOnCreateSubject = PublishSubject<CHMessage>()
  
   //MARK: Private properties
-  fileprivate var socket: SocketIOClient!
-  fileprivate var manager: SocketManager!
+  fileprivate var socket: SocketIOClient?
+  fileprivate var manager: SocketManager?
   
   var baseUrl = WSType.PRODUCTION.rawValue
   
@@ -191,16 +191,16 @@ class WsService {
         .reconnectWait(10)
       ])
 
-    self.socket = self.manager.socket(forNamespace: "/app")
-    self.socket.removeAllHandlers()
+    self.socket = self.manager?.socket(forNamespace: "/app")
+    self.socket?.removeAllHandlers()
     self.addSocketHandlers()
-    self.socket.connect()
+    self.socket?.connect()
   }
   
   func disconnect() {
     if self.socket != nil {
-      self.socket.removeAllHandlers()
-      self.socket.disconnect()
+      self.socket?.removeAllHandlers()
+      self.socket?.disconnect()
       self.socket = nil
       self.invalidateTimer()
       dlog("socket disconnect manually")
@@ -217,9 +217,7 @@ class WsService {
     
     self.currentChatId = chatId
     
-    if self.socket != nil {
-      self.socket.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
-    }
+    self.socket?.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
   }
   
   func leave(chatId: String?) {
@@ -227,10 +225,7 @@ class WsService {
     guard chatId != "" else { return }
     
     self.currentChatId = ""
-
-    if self.socket != nil {
-      self.socket.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
-    }
+    self.socket?.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
   }
   
   func sendTyping(chat: CHUserChat?, isStop: Bool) {
@@ -270,7 +265,7 @@ class WsService {
   @objc func heartbeat() {
     dlog("heartbeat")
     if self.socket != nil {
-      self.socket.emit(CHSocketRequest.heartbeat.value)
+      self.socket?.emit(CHSocketRequest.heartbeat.value)
     } else {
       self.invalidateTimer()
     }
@@ -304,7 +299,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onConnect() {
-    self.socket.on(CHSocketResponse.connected.value) { [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.connected.value) { [weak self] (data, ack) in
       dlog("socket connected")
       mainStore.dispatchOnMain(SocketConnected())
       self?.emitAuth()
@@ -312,7 +307,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onReady() {
-    self.socket.on(CHSocketResponse.ready.value) { [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.ready.value) { [weak self] (data, ack) in
       self?.readySubject.onNext(CHSocketResponse.ready.value)
       mainStore.dispatchOnMain(SocketReady())
       dlog("socket ready")
@@ -324,7 +319,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onCreate() {
-    self.socket.on(CHSocketResponse.create.value) { [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.create.value) { [weak self] (data, ack) in
       dlog("socket on created")
       guard let data = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: data) else { return }
@@ -361,7 +356,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onUpdate() {
-    self.socket.on(CHSocketResponse.update.value) { [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.update.value) { [weak self] (data, ack) in
       dlog("socket on update")
       guard let data = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: data) else { return }
@@ -423,7 +418,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onDelete() {
-    self.socket.on(CHSocketResponse.delete.value) { [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.delete.value) { [weak self] (data, ack) in
       dlog("socket on delete")
       guard let data = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: data) else { return }
@@ -453,7 +448,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onJoined() {
-    self.socket.on(CHSocketResponse.joined.value) { (data, ack) in
+    self.socket?.on(CHSocketResponse.joined.value) { (data, ack) in
       dlog("socket joined: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
@@ -462,7 +457,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onLeaved() {
-    self.socket.on(CHSocketResponse.leaved.value) { (data, ack) in
+    self.socket?.on(CHSocketResponse.leaved.value) { (data, ack) in
       dlog("socket leaved: \(data)")
       
       guard let userChatId = data.get(index: 0) else { return }
@@ -471,7 +466,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onTyping() {
-    self.socket.on(CHSocketResponse.typing.value) {  [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.typing.value) {  [weak self] (data, ack) in
       guard let entity = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: entity) else { return }
       guard let typing = Mapper<CHTypingEntity>().map(JSONObject: json.object) else { return }
@@ -480,7 +475,7 @@ fileprivate extension WsService {
   }
   
   fileprivate func onPush() {
-    self.socket.on(CHSocketResponse.push.value) { (data, ack) in
+    self.socket?.on(CHSocketResponse.push.value) { (data, ack) in
       //dlog("socket pushed: \(data)")
       guard let entity = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: entity) else { return }
@@ -495,7 +490,7 @@ fileprivate extension WsService {
   }
 
   fileprivate func onAuthenticated() {
-    self.socket.on(CHSocketResponse.authenticated.value) { [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.authenticated.value) { [weak self] (data, ack) in
       dlog("socket authenticated")
       
       if let s = self {
@@ -511,13 +506,13 @@ fileprivate extension WsService {
   }
   
   fileprivate func onUnauthorized() {
-    self.socket.on(CHSocketResponse.unauthorized.value) { (data, ack) in
+    self.socket?.on(CHSocketResponse.unauthorized.value) { (data, ack) in
       dlog("unauthorized")
     }
   }
   
   fileprivate func onReconnectAttempt() {
-    self.socket.on(CHSocketResponse.reconnect.value) { [weak self] (data, ack) in
+    self.socket?.on(CHSocketResponse.reconnect.value) { [weak self] (data, ack) in
       dlog("socket reconnect attempt")
       mainStore.dispatchOnMain(SocketReconnecting())
       self?.invalidateTimer()
@@ -526,14 +521,14 @@ fileprivate extension WsService {
   }
   
   fileprivate func onDisconnect() {
-    self.socket.on(CHSocketResponse.disconnect.value) { (data, ack) in
+    self.socket?.on(CHSocketResponse.disconnect.value) { (data, ack) in
       dlog("socket disconnected")
       mainStore.dispatchOnMain(SocketDisconnected())
     }
   }
   
   fileprivate func onError() {
-    self.socket.on(CHSocketResponse.error.value) { (data, ack) in
+    self.socket?.on(CHSocketResponse.error.value) { (data, ack) in
       dlog("socket error with data: \(data)")
       mainStore.dispatchOnMain(SocketDisconnected())
     }
@@ -563,6 +558,6 @@ fileprivate extension WsService {
       "guestId":  guestId,
       "guestType": guestType
     ]
-    self.socket.emit("authentication", submission)
+    self.socket?.emit("authentication", submission)
   }
 }

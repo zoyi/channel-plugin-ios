@@ -470,7 +470,6 @@ extension UserChatViewController: StoreSubscriber {
     } else if !self.chatManager.profileIsFocus {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
-      self.rightButton.tintColor = CHColors.cobalt
       self.rightButton.setTitle("", for: .normal)
       self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
       

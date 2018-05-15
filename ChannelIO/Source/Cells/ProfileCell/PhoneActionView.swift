@@ -31,8 +31,7 @@ final class PhoneActionView: BaseView, Actionable {
   let submitSubject = PublishSubject<Any?>()
   let focusSubject = PublishSubject<Bool>()
   let confirmButton = UIButton().then {
-    $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysTemplate), for: .normal)
-    $0.tintColor = CHColors.cobalt
+    $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
   }
   
   let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {

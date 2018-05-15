@@ -22,7 +22,7 @@ class ProfileTextView: ProfileItemBaseView, ProfileContentProtocol {
   override var fieldType: ProfileInputType {
     didSet {
       if self.fieldType == .number {
-        self.textView.textField.keyboardType = .numberPad
+        self.textView.textField.keyboardType = .decimalPad
       } else {
         self.textView.textField.keyboardType = .default
       }

@@ -54,13 +54,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   
   var appLocale: CHLocaleString? = nil
   
-  @objc
-  override public init() {
-    super.init()
-  }
-  
-  @objc
-  public init(
+  @objc public init(
     pluginKey: String,
     userId: String? = nil,
     debugMode: Bool = false,
@@ -81,7 +75,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   
   required convenience public init(coder aDecoder: NSCoder) {
     let pluginKey = aDecoder.decodeObject(forKey: "pluginKey") as! String
-    let userId = aDecoder.decodeObject(forKey: "userId") as! String
+    let userId = aDecoder.decodeObject(forKey: "userId") as? String
     let debugMode = aDecoder.decodeBool(forKey: "debugMode")
     let hideDefaultLauncher = aDecoder.decodeBool(forKey: "hideDefaultLauncher")
     let hideDefaultInAppPush = aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
@@ -105,5 +99,47 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     aCoder.encode(self.hideDefaultInAppPush, forKey: "hideDefaultInAppPush")
     aCoder.encode(self.enabledTrackDefaultEvent, forKey: "enabledTrackDefaultEvent")
     aCoder.encode(self.appLocale?.rawValue, forKey: "locale")
+  }
+  
+  @discardableResult
+  @objc public func set(userId: String?) -> ChannelPluginSettings {
+    self.userId = userId
+    return self
+  }
+  
+  @discardableResult
+  @objc public func set(pluginKey: String) -> ChannelPluginSettings {
+    self.pluginKey = pluginKey
+    return self
+  }
+  
+  @discardableResult
+  @objc public func set(debugMode: Bool) -> ChannelPluginSettings {
+    self.debugMode = debugMode
+    return self
+  }
+  
+  @discardableResult
+  @objc public func set(hideDefaultLauncher: Bool) -> ChannelPluginSettings {
+    self.hideDefaultLauncher = hideDefaultLauncher
+    return self
+  }
+  
+  @discardableResult
+  @objc public func set(hideDefaultInAppPush: Bool) -> ChannelPluginSettings {
+    self.hideDefaultInAppPush = hideDefaultInAppPush
+    return self
+  }
+  
+  @discardableResult
+  @objc public func set(enabledTrackDefaultEvent: Bool) -> ChannelPluginSettings {
+    self.enabledTrackDefaultEvent = enabledTrackDefaultEvent
+    return self
+  }
+  
+  @discardableResult
+  @objc public func set(locale: CHLocale) -> ChannelPluginSettings {
+    self.locale = locale
+    return self
   }
 }
