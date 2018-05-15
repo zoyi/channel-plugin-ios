@@ -135,10 +135,6 @@ final class ProfileViewController: BaseViewController {
       height: height
     )
     self.tableView.tableHeaderView = self.headerView
-//    self.headerView.configure(
-//      plugin: mainStore.state.plugin,
-//      channel: mainStore.state.channel
-//    )
   }
   
   func initViews() {

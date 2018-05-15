@@ -108,9 +108,9 @@ final class ProfileHeaderView : BaseView {
     if let homeUrl = self.channel?.homepageUrl, homeUrl != "" {
       self.contactViews.addButton(
         baseColor: plugin.textUIColor,
-        image: CHAssets.getImage(named: "homepage")) {
+        image: CHAssets.getImage(named: "homepage")) { [weak self] in
           guard let url = URL(string: homeUrl) else { return }
-          url.open()
+          self?.promptForHomepage(url: url)
         }
     }
 
@@ -133,4 +133,30 @@ final class ProfileHeaderView : BaseView {
     }
   }
   
+  func promptForHomepage(url: URL) {
+    let alertView = UIAlertController(
+      title: nil,
+      message: url.absoluteString,
+      preferredStyle: .alert)
+    
+    let openAction = UIAlertAction(
+      title: CHAssets.localized("ch.common.open"),
+      style: .default,
+      handler: { alert in
+        url.open()
+      })
+
+    let cancelAction = UIAlertAction(
+      title: CHAssets.localized("ch.common.cancel"),
+      style: .cancel,
+      handler: { alert  in
+        
+      })
+    
+    alertView.addAction(openAction)
+    alertView.addAction(cancelAction)
+    
+    let controller = CHUtils.getTopController()
+    controller?.present(alertView, animated: true, completion: nil)
+  }
 }

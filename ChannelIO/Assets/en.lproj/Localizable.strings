@@ -179,3 +179,5 @@ Press the button below to refresh.";
 "ch.language" = "Language";
 "ch.profile_form.error" = "Format is not correct.";
 "ch.profile_form.placeholder" = "Please enter";
+"ch.common.open" = "Open";
+"ch.common.cancel" = "Cancel";

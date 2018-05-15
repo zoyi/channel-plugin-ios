@@ -126,7 +126,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
-    self.shouldScrollToBottomAfterKeyboardShows = true
     self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
     self.textView.keyboardType = .default
   }

@@ -179,3 +179,5 @@
 "ch.language" = "언어";
 "ch.profile_form.error" = "올바른 형태가 아닙니다.";
 "ch.profile_form.placeholder" = "입력해주세요.";
+"ch.common.open" = "열기";
+"ch.common.cancel" = "취소";
