@@ -326,10 +326,13 @@ final class UserChatViewController: BaseSLKTextViewController {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
       
-      self.navigationItem.leftMargin = 0
+      self.navigationItem.leftMargin = alert == 0 ? 0 : 16
+      self.navigationItem.rightMargin = 0
+      
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "back"),
         text: alertCount,
+        fitToSize: alert != 0,
         textColor: tintColor,
         actionHandler: { [weak self] in
           self?.shyNavBarManager.disable = true
