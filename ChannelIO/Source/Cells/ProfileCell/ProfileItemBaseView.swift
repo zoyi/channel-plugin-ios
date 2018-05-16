@@ -60,15 +60,12 @@ class ProfileItemBaseView: BaseView {
     
     self.fieldView?.signalForAction().subscribe(onNext: { [weak self] (value) in
       if let index = self?.index, let item = self?.model?.profileItems[index] {
-
         self?.fieldView?.setLoading()
         _ = self?.presenter?.updateProfileItem(with: self?.model?.message, key: item.key, value: value)
           .subscribe(onNext: { (completed) in
             if !completed {
               self?.fieldView?.setInvalid()
               self?.setInvalidTitle(with: CHAssets.localized("ch.profile_form.error"))
-            } else {
-              
             }
           })
       }

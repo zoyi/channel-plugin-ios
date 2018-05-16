@@ -65,8 +65,11 @@ class TextActionView: BaseView, Actionable {
       .subscribe(onNext: { [weak self] _ in
         self?.didFocus = true
 
-        if self?.textField.keyboardType == .decimalPad {
-          self?.submitSubject.onNext(Float(self?.textField.text ?? "0"))
+        if let text = self?.textField.text, self?.textField.keyboardType == .decimalPad {
+          let numberFormatter = NumberFormatter()
+          numberFormatter.numberStyle = .decimal
+          let value = numberFormatter.number(from: text)
+          self?.submitSubject.onNext(value)
         } else {
           self?.submitSubject.onNext(self?.textField.text)
         }
