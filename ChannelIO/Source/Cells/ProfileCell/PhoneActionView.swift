@@ -108,8 +108,8 @@ final class PhoneActionView: BaseView, Actionable {
       }).disposed(by: self.disposeBeg)
 
     self.countryCodeView.signalForClick().subscribe(onNext: { [weak self] (value) in
-      self?.phoneField.resignFirstResponder()
-        
+      let firstResponder = UIResponder.slk_currentFirst()
+      UIApplication.shared.sendAction(#selector(UIApplication.resignFirstResponder), to: nil, from: nil, for: nil)
       var code = (self?.countryLabel.text ?? "")
       code.remove(at: code.startIndex)
         
@@ -117,6 +117,8 @@ final class PhoneActionView: BaseView, Actionable {
         .subscribe(onNext: { (newCode) in
           if let newCode = newCode {
             self?.countryLabel.text =  "+" + newCode
+          }
+          if firstResponder == self?.phoneField {
             self?.phoneField.becomeFirstResponder()
           }
         }).disposed(by: (self?.disposeBeg)!)

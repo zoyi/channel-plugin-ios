@@ -66,7 +66,7 @@ class TextActionView: BaseView, Actionable {
         self?.didFocus = true
 
         if self?.textField.keyboardType == .decimalPad {
-          self?.submitSubject.onNext(Int(self?.textField.text ?? "0"))
+          self?.submitSubject.onNext(Float(self?.textField.text ?? "0"))
         } else {
           self?.submitSubject.onNext(self?.textField.text)
         }

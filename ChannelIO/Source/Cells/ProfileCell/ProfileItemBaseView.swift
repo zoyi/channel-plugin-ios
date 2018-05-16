@@ -60,7 +60,7 @@ class ProfileItemBaseView: BaseView {
     
     self.fieldView?.signalForAction().subscribe(onNext: { [weak self] (value) in
       if let index = self?.index, let item = self?.model?.profileItems[index] {
-        //mainStore.dispatch(ProfileSetFocus(payload: index < 3))
+
         self?.fieldView?.setLoading()
         _ = self?.presenter?.updateProfileItem(with: self?.model?.message, key: item.key, value: value)
           .subscribe(onNext: { (completed) in

@@ -29,6 +29,8 @@ final class CountryCodePickerView : BaseView {
   var selectedCode = ""
   
   var submitSubject = PublishSubject<String>()
+  var cancelSubject = PublishSubject<Any?>()
+  
   let actionView = UIView()
   let closeButton = UIButton().then {
     $0.setTitleColor(CHColors.dark, for: UIControlState.normal)
@@ -61,12 +63,19 @@ final class CountryCodePickerView : BaseView {
 
       pickerView.pickedCode = code
       pickerView.showPicker(onView: (controller?.view)!,animated: true)
-      let signal = pickerView.signalForSubmit().subscribe(onNext: { (countryCode) in
+      let submitSignal = pickerView.signalForSubmit().subscribe(onNext: { (countryCode) in
         subscriber.onNext(countryCode)
+        subscriber.onCompleted()
+      })
+      
+      let cancelSignal = pickerView.signalForCancel().subscribe(onNext: { (_) in
+        subscriber.onNext(nil)
+        subscriber.onCompleted()
       })
       
       return Disposables.create {
-        signal.dispose()
+        submitSignal.dispose()
+        cancelSignal.dispose()
       }
     })
   }
@@ -85,13 +94,14 @@ final class CountryCodePickerView : BaseView {
 
     self.pickerView.delegate = self
     
-    self.closeButton.signalForClick()
-      .subscribe(onNext: { [weak self] (event) in
-      self?.remove(animated: true)
+    self.closeButton.signalForClick().subscribe(onNext: { [weak self] (event) in
+      self?.cancelSubject.onNext(nil)
+      self?.cancelSubject.onCompleted()
+        
+      self?.removePicker(animated: true)
     }).disposed(by: self.disposeBeg)
     
-    self.submitButton.signalForClick()
-      .subscribe(onNext: { [weak self] (event) in
+    self.submitButton.signalForClick().subscribe(onNext: { [weak self] (event) in
       guard let code = self?.selectedCode else { return }
       self?.submitSubject.onNext(code)
       self?.submitSubject.onCompleted()
@@ -139,7 +149,11 @@ final class CountryCodePickerView : BaseView {
   }
   
   func signalForSubmit() -> Observable<String> {
-    return self.submitSubject
+    return self.submitSubject.asObservable()
+  }
+  
+  func signalForCancel() -> Observable<Any?> {
+    return self.cancelSubject.asObservable()
   }
 }
 
