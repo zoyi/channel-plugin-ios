@@ -129,9 +129,9 @@ public final class ChannelIO: NSObject {
     .subscribe(onNext: { (_) in
       completion?(.success)
       
-      if !settings.hideDefaultLauncher &&
-        !mainStore.state.plugin.mobileHideButton &&
-        (mainStore.state.channel.shouldShowDefaultLauncher) {
+      if !settings.hideDefaultLauncher ||
+        !mainStore.state.plugin.mobileHideButton ||
+        !mainStore.state.channel.shouldHideDefaultButton {
         ChannelIO.showLauncher(on: controller?.view, animated: true)
       }
       

@@ -1,9 +1,11 @@
-# 3.1.0 (May 14, 2018)
+# 3.1.0 (May 16, 2018)
 ## Updates
 * Renamed Guest to Profile
 * Changed locale field type from String to Enum
 * Changed userId location from Profile to ChannelPluginSettings
 * Added ProfileBot feature
+* Updated default launcher visibility condition
+
 ## Bug fixes
 * Fixed unexpected behavior when homepage and/or phoneNumber is missing in ProfileView
 
