@@ -32,6 +32,7 @@ final class PhoneActionView: BaseView, Actionable {
   let focusSubject = PublishSubject<Bool>()
   let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
+    $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysOriginal), for: .disabled)
   }
   
   let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
@@ -197,7 +198,7 @@ extension PhoneActionView {
   
   func setFocus() {
     self.layer.borderColor = CHColors.brightSkyBlue.cgColor
-    self.confirmButton.tintColor = CHColors.brightSkyBlue
+    self.confirmButton.isEnabled = true
     self.focusSubject.onNext(true)
   }
   
@@ -208,8 +209,8 @@ extension PhoneActionView {
   
   func setInvalid() {
     self.layer.borderColor = CHColors.yellowishOrange.cgColor
+    self.confirmButton.isEnabled = false
     self.confirmButton.isHidden = false
-    self.confirmButton.tintColor = CHColors.yellowishOrange
     self.loadIndicator.isHidden = true
   }
   

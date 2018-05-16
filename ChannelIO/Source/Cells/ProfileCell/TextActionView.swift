@@ -127,7 +127,7 @@ extension TextActionView {
   
   func setFocus() {
     self.layer.borderColor = CHColors.brightSkyBlue.cgColor
-    self.confirmButton.tintColor = CHColors.brightSkyBlue
+    self.confirmButton.isEnabled = true
     self.focusSubject.onNext(true)
   }
   
@@ -138,7 +138,7 @@ extension TextActionView {
   
   func setInvalid() {
     self.layer.borderColor = CHColors.yellowishOrange.cgColor
-    self.confirmButton.tintColor = CHColors.yellowishOrange
+    self.confirmButton.isEnabled = false
     self.confirmButton.isHidden = false
     self.loadIndicator.isHidden = true
   }

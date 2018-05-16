@@ -96,6 +96,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     self.resendButtonView.isHidden = !viewModel.isFailed
 
     self.layoutViews()
+    self.textMessageView.updateConstraints()
   }
   
   func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
@@ -115,6 +116,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     self.resendButtonView.isHidden = !viewModel.isFailed
     
     self.layoutViews()
+    self.textMessageView.updateConstraints()
   }
   
   override func setLayouts() {

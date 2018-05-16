@@ -13,10 +13,11 @@ extension UIView {
     self.layer.setNeedsLayout()
     self.layer.layoutIfNeeded()
     
-    let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-    let mask = CAShapeLayer()
-    mask.path = path.cgPath
-    self.layer.mask = mask
+    let rectShape = CAShapeLayer()
+    rectShape.bounds = self.frame
+    rectShape.position = self.center
+    rectShape.path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius)).cgPath
+    self.layer.mask = rectShape
   }
 }
 

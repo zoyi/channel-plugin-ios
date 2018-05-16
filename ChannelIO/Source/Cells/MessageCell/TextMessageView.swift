@@ -75,8 +75,9 @@ class TextMessageView : BaseView {
   }
 
   func configure(_ viewModel: MessageCellModelType) {
-    self.backgroundColor = viewModel.bubbleBackgroundColor 
-    
+    self.viewModel = viewModel
+
+    self.backgroundColor = viewModel.bubbleBackgroundColor
     self.isHidden = viewModel.message.isEmpty()
     
     if let attributedText = viewModel.message.messageV2 {
@@ -91,9 +92,11 @@ class TextMessageView : BaseView {
     self.messageView.linkTextAttributes = [
       NSAttributedStringKey.foregroundColor.rawValue: linkColor,
       NSAttributedStringKey.underlineStyle.rawValue: 1]
+  }
+  
+  override func updateConstraints() {
+    super.updateConstraints()
     
-    self.viewModel = viewModel
-    //TODO: performance check
     if self.viewModel?.isContinuous == true {
       self.roundCorners(corners: [.allCorners], radius: Constant.cornerRadius)
     } else if self.viewModel?.createdByMe == true {
@@ -102,7 +105,7 @@ class TextMessageView : BaseView {
       self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
     }
   }
-
+  
   //MARK: layout
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0

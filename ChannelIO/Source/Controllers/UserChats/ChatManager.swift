@@ -61,6 +61,7 @@ class ChatManager {
   fileprivate var messageDispose: Disposable?
   fileprivate var typingDispose: Disposable?
   fileprivate var notiDispose: Disposable?
+  fileprivate var dispearDispose: Disposable?
   
   var typers: [CHEntity] {
     get {
@@ -80,8 +81,6 @@ class ChatManager {
     self.chat = userChatSelector(
       state: mainStore.state,
       userChatId: id)
-    
-    //self.observeSocketEvents()
   }
   
   fileprivate func observeSocketEvents() {
@@ -96,6 +95,7 @@ class ChatManager {
     self.messageDispose?.dispose()
     self.notiDispose?.dispose()
     self.typingDispose?.dispose()
+    self.dispearDispose?.dispose()
   }
   
   fileprivate func observeAppState() {
@@ -107,6 +107,14 @@ class ChatManager {
           self?.didFetchInfo = false
         }
         self?.didChatLoaded = false
+        self?.willAppear()
+      }
+    
+    self.dispearDispose = NotificationCenter.default
+      .rx.notification(Notification.Name.UIApplicationWillResignActive)
+      .observeOn(MainScheduler.instance)
+      .subscribe { [weak self] _ in
+        self?.willDisppear()
       }
   }
   
