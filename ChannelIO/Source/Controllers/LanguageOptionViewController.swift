@@ -15,8 +15,8 @@ class LanguageOptionViewController: BaseViewController {
     $0.separatorStyle = .none
   }
   
-  let locales = [CHLocale.korean, CHLocale.english, CHLocale.japanese]
-  let currentLocale: CHLocale? = CHUtils.getLocale()
+  let locales = [CHLocaleString.korean, CHLocaleString.english, CHLocaleString.japanese]
+  let currentLocale: CHLocaleString? = CHUtils.getLocale()
   
   override func viewDidLoad() {
     super.viewDidLoad()

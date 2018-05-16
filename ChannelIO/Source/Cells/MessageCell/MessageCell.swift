@@ -11,7 +11,7 @@ import Reusable
 import SnapKit
 
 class MessageCell: BaseTableViewCell, Reusable {
-  var presenter: ChatManager? = nil
+  weak var presenter: ChatManager? = nil
   // MARK: Constants
   struct Font {
     static let usernameLabel = UIFont.boldSystemFont(ofSize: 12)
@@ -28,7 +28,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     static let cellLeftPadding = 10.f
     static let avatarWidth = 24.f
     static let avatarRightPadding = 6.f
-    static let bubbleLeftMargin = Metric.cellLeftPadding + Metric.avatarWidth + Metric.avatarRightPadding
+    static let bubbleLeftMargin = 40.f
     static let usernameHeight = 15.f
     static let cellTopPaddingOfContinous = 3.f
     static let cellTopPaddingDefault = 16.f
@@ -97,7 +97,26 @@ class MessageCell: BaseTableViewCell, Reusable {
 
     self.layoutViews()
   }
-
+  
+  func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+    self.presenter = presenter 
+    self.viewModel = viewModel
+    
+    self.usernameLabel.text = viewModel.name
+    self.usernameLabel.isHidden = viewModel.usernameIsHidden
+    
+    self.timestampLabel.text = viewModel.timestamp
+    self.timestampLabel.isHidden = viewModel.timestampIsHidden
+    
+    self.avatarView.configure(viewModel.avatarEntity)
+    self.avatarView.isHidden = viewModel.avatarIsHidden
+    
+    self.textMessageView.configure(viewModel)
+    self.resendButtonView.isHidden = !viewModel.isFailed
+    
+    self.layoutViews()
+  }
+  
   override func setLayouts() {
     super.setLayouts()
     

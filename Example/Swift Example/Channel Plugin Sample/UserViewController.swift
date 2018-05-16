@@ -32,17 +32,19 @@ class UserViewController : UIViewController {
     self.pluginKeyField.resignFirstResponder()
     
     guard var pluginKey = self.pluginKeyField.text else { return }
-    let guest = Guest()
+    let profile = Profile()
       .set(name: self.usernameField.text ?? "")
-      .set(id: self.idField.text ?? "")
       .set(mobileNumber: self.phoneField.text ?? "")
     
     if pluginKey == "" {
-      pluginKey = "52eb6f27-38c7-476d-ad92-83e6299b7e07"
+      pluginKey = "f6747e65-d3d0-4177-b2eb-13b9ff21c2e1"
     }
-    let settings = ChannelPluginSettings(pluginKey: pluginKey)
     
-    ChannelIO.boot(with: settings, guest: guest) { (completion) in
+    let settings = ChannelPluginSettings(pluginKey: pluginKey)
+    settings.userId = self.idField.text
+    settings.debugMode = true
+    
+    ChannelIO.boot(with: settings, profile: profile) { (completion) in
       switch completion {
       case .success:
         break

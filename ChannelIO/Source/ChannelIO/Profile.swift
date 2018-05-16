@@ -9,40 +9,42 @@ import Foundation
 
 import Foundation
 
+import Foundation
+
 @objc
-public class Guest : NSObject {
-  var id = ""
+public class Profile : NSObject {
   var name = ""
   var avatarUrl = ""
   var mobileNumber = ""
+  var email = ""
   var property = [String:Any]()
   
   @discardableResult
-  @objc public func set(name: String) -> Guest {
+  @objc public func set(name: String) -> Profile {
     self.name = name
     return self
   }
   
   @discardableResult
-  @objc public func set(id: String) -> Guest {
-    self.id = id
-    return self
-  }
-  
-  @discardableResult
-  @objc public func set(avatarUrl: String) -> Guest {
+  @objc public func set(avatarUrl: String) -> Profile {
     self.avatarUrl = avatarUrl
     return self
   }
   
   @discardableResult
-  @objc public func set(mobileNumber: String) -> Guest {
+  @objc public func set(mobileNumber: String) -> Profile {
     self.mobileNumber = mobileNumber
     return self
   }
   
   @discardableResult
-  @objc public func set(propertyKey:String, value:Any) -> Guest {
+  @objc public func set(email: String) -> Profile {
+    self.email = email
+    return self
+  }
+  
+  @discardableResult
+  @objc public func set(propertyKey:String, value:Any) -> Profile {
     self.property[propertyKey] = value
     return self
   }
@@ -52,7 +54,11 @@ public class Guest : NSObject {
     if self.name != "" {
       params["name"] = self.name
     }
-    
+
+    if self.email != "" {
+      params["email"] = self.email
+    }
+
     if self.mobileNumber != "" {
       params["mobileNumber"] = self.mobileNumber
     }

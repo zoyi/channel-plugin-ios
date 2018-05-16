@@ -8,7 +8,31 @@
 
 import Foundation
 
+extension NSAttributedString {
+  func addFont(_ font: UIFont, color: UIColor, on range: NSRange) -> NSAttributedString {
+    let attributedText = NSMutableAttributedString(attributedString: self)
+    attributedText.addAttributes([
+      NSAttributedStringKey.foregroundColor: color,
+      NSAttributedStringKey.font: font], range: range)
+    return attributedText
+  }
+  
+  func combine(_ text: NSAttributedString) -> NSAttributedString {
+    let attributedText = NSMutableAttributedString(attributedString: self)
+    attributedText.append(text)
+    return attributedText
+  }
+}
+
 extension String {
+  func addFont(_ font: UIFont, color: UIColor, on range: NSRange) -> NSMutableAttributedString {
+    let attributedText = NSMutableAttributedString(string: self)
+    attributedText.addAttributes([
+      NSAttributedStringKey.foregroundColor: color,
+      NSAttributedStringKey.font: font], range: range)
+    return attributedText
+  }
+  
   func replace(_ target: String, withString: String) -> String {
     return self.replacingOccurrences(of: target, with: withString, options: NSString.CompareOptions.literal, range: nil)
   }

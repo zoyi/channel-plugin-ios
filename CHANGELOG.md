@@ -1,3 +1,14 @@
+# 3.1.0 (May 16, 2018)
+## Updates
+* Renamed Guest to Profile
+* Changed locale field type from String to Enum
+* Changed userId location from Profile to ChannelPluginSettings
+* Added ProfileBot feature
+* Updated default launcher visibility condition
+
+## Bug fixes
+* Fixed unexpected behavior when homepage and/or phoneNumber is missing in ProfileView
+
 # 3.0.6 (May 11, 2018)
 * Resolved carthage dependencies conflicts
 * SocketIO version to 13.x 

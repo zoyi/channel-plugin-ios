@@ -204,7 +204,7 @@ struct UserChatPromise {
         ]
       ]
       
-      Alamofire.request(RestRouter.GetMessages(userChatId, params as RestRouter.ParametersType))
+      let req = Alamofire.request(RestRouter.GetMessages(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -244,8 +244,10 @@ struct UserChatPromise {
             subscriber.onError(error)
           }
         })
-      return Disposables.create()
-      }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+      return Disposables.create {
+        req.cancel()
+      }
+    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func createMessage(
@@ -260,7 +262,7 @@ struct UserChatPromise {
         ]
       ]
       
-      Alamofire.request(RestRouter.CreateMessage(userChatId, params as RestRouter.ParametersType))
+      let req = Alamofire.request(RestRouter.CreateMessage(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -278,10 +280,44 @@ struct UserChatPromise {
             subscriber.onError(error)
           }
         })
-      return Disposables.create()
+      return Disposables.create {
+        req.cancel()
+      }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
 
+  static func updateMessageProfile(messageId: String, key: String, value: Any) -> Observable<CHMessage> {
+    return Observable.create { subscriber in
+      let params = [
+        "body": [
+          key: value
+        ]
+      ]
+      
+      let req = Alamofire.request(RestRouter.UpdateProfileItem(messageId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { (response) in
+          switch response.result {
+          case .success(let data):
+            let json = JSON(data)
+            guard let message = Mapper<CHMessage>()
+              .map(JSONObject: json["message"].object) else {
+                subscriber.onError(CHErrorPool.messageParseError)
+                break
+            }
+            
+            subscriber.onNext(message)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+        })
+      return Disposables.create {
+        req.cancel()
+      }
+    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+  }
+  
   static func uploadFile(
     name: String? = nil,
     file: Data,
@@ -344,7 +380,7 @@ struct UserChatPromise {
   
   static func setMessageReadAll(userChatId: String) -> Observable<Any?> {
     return Observable.create { subscriber in
-      Alamofire.request(RestRouter.SetMessagesReadAll(userChatId))
+      let req = Alamofire.request(RestRouter.SetMessagesReadAll(userChatId))
         .validate(statusCode: 200..<300)
         .response(completionHandler: { (response) in
           if response.response?.statusCode == 200 {
@@ -354,7 +390,9 @@ struct UserChatPromise {
             subscriber.onError(CHErrorPool.readAllError)
           }
         })
-      return Disposables.create()
+      return Disposables.create {
+        req.cancel()
+      }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
 }

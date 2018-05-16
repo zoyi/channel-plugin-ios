@@ -10,13 +10,10 @@ import UIKit
 import RxSwift
 import DKImagePickerController
 import CHPhotoBrowser
+import AVKit
 
 class UserChatRouter: NSObject, UserChatRouterProtocol {
-//  static func createModule(userChatId: String?) -> UserChatView {
-//    let view = UserChatView()
-//    return view
-//  }
-  func showImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate) {
+  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate) {
     guard let url = url else { return }
     let index = photoUrls.index { (photoUrl) -> Bool in
       return photoUrl.absoluteString == url.absoluteString
@@ -30,6 +27,44 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
       browser?.setCurrentPhotoIndex(UInt(index!))
     }
     view?.present(navigation, animated: true, completion: nil)
+  }
+  
+  func presentVideoPlayer(with url: URL?, from view: UIViewController?) {
+    guard let url = url else { return }
+    
+    let moviePlayer = AVPlayerViewController()
+    let player = AVPlayer(url: url)
+    moviePlayer.player = player
+    moviePlayer.modalPresentationStyle = .overFullScreen
+    moviePlayer.modalTransitionStyle = .crossDissolve
+    view?.present(moviePlayer, animated: true, completion: nil)
+  }
+  
+  func presentSettings(from view: UIViewController?) {
+    let controller = ProfileViewController()
+    let navigation = MainNavigationController(rootViewController: controller)
+    view?.navigationController?.present(navigation, animated: true, completion: nil)
+  }
+  
+  func showNewChat(with text: String, from view: UINavigationController?) {
+    view?.popViewController(animated: false, completion: {
+      let controller = UserChatRouter.createModule(userChatId: nil)
+      _ = controller.presenter?.readyToDisplay()?.subscribe(onNext: { _ in
+        view?.pushViewController(controller, animated: false)
+      })
+    })
+  }
+  
+  static func createModule(userChatId: String?) -> UserChatView {
+    let view = UserChatView()
+    
+    let presenter = UserChatPresenter()
+    let interactor = UserChatInteractor()
+    presenter.router = UserChatRouter()
+    presenter.interactor = interactor
+    
+    view.presenter = presenter
+    return view
   }
   
   func showOptionActionSheet(from view: UIViewController?) -> Observable<[DKAsset]> {
@@ -102,3 +137,24 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
   }
 }
 
+extension UserChatRouter : UIDocumentInteractionControllerDelegate {
+  func pushFileView(with url: URL?, from view: UIViewController?) {
+    guard let url = url, let view = view else { return }
+    
+    let docController = UIDocumentInteractionController(url: url)
+    docController.delegate = self
+    
+    if !docController.presentPreview(animated: true) {
+      docController.presentOptionsMenu(
+        from: view.bounds, in: view.view, animated: true)
+    }
+  }
+  
+  func documentInteractionControllerViewControllerForPreview(
+    _ controller: UIDocumentInteractionController) -> UIViewController {
+    if let controller = CHUtils.getTopController() {
+      return controller
+    }
+    return UIViewController()
+  }
+}

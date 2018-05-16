@@ -6,6 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
+import RxSwift
 import Foundation
 import ObjectMapper
 
@@ -19,6 +20,9 @@ struct CHPlugin: ModelType {
   var mobileHideButton = false
   var botName = ""
   
+  var welcomeNamedI18n: CHi18n?
+  var welcomeI18n: CHi18n?
+  
   var textUIColor: UIColor! {
     if self.textColor == "white" {
       return UIColor.white
@@ -29,9 +33,8 @@ struct CHPlugin: ModelType {
 }
 
 extension CHPlugin: Mappable {
-  init?(map: Map) {
-
-  }
+  init?(map: Map) { }
+  
   mutating func mapping(map: Map) {
     id               <- map["id"]
     color            <- map["color"]
@@ -41,5 +44,13 @@ extension CHPlugin: Mappable {
     mobileMarginY    <- map["mobileMarginY"]
     mobileHideButton <- map["mobileHideButton"]
     botName          <- map["botName"]
+    welcomeNamedI18n <- map["welcomeNamedI18n"]
+    welcomeI18n      <- map["welcomeI18n"]
+  }
+}
+
+extension CHPlugin {
+  static func get(with id: String) -> Observable<(CHPlugin, CHBot?)> {
+    return PluginPromise.getPlugin(pluginId: id)
   }
 }

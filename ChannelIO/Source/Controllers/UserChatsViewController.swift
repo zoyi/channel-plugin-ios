@@ -229,13 +229,26 @@ class UserChatsViewController: BaseViewController {
   }
   
   func showUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
+    //let controller = UserChatRouter.createModule(userChatId: userChatId)
+    
+    //signalFor new chat
+    //signalFor profile
+//    self.showNewChat = true
+//
+//    controller.presenter?.readyToDisplay()?.subscribe(onNext: { [weak self] _ in
+//      self?.showNewChat = false
+//      self?.shouldHideTable = false
+//      self?.navigationController?.pushViewController(controller, animated: animated)
+//      dlog("got following managers")
+//    }).disposed(by: self.disposeBag)
+//
     let controller = UserChatViewController()
     if let userChatId = userChatId {
       controller.userChatId = userChatId
     }
-    
+
     self.showNewChat = true
-    
+
     controller.preloadText = text
     controller.signalForNewChat()
       .subscribe { [weak self] event in
@@ -245,15 +258,18 @@ class UserChatsViewController: BaseViewController {
             self?.showUserChat(text: text, animated: true)
         })
       }.disposed(by: self.disposeBag)
-    
+
     controller.signalForProfile().subscribe { [weak self] _ in
       self?.showProfileView()
     }.disposed(by: self.disposeBag)
-
-    CHManager.getRecentFollowers()
+    
+    //NOTE: Make sure to call onCompleted on observable method to avoid leak
+    Observable.zip(CHPlugin.get(with: mainStore.state.plugin.id), CHManager.getRecentFollowers())
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (managers) in
+      .subscribe(onNext: { [weak self] (info, managers) in
         mainStore.dispatch(UpdateFollowingManagers(payload: managers))
+        mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
+        
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.shouldHideTable = false

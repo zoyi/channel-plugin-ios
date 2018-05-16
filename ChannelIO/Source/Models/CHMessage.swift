@@ -29,7 +29,7 @@ struct CHMessage: ModelType {
   var messageV2: NSAttributedString?
   var requestId: String?
   var botOption: [String: Bool]? = nil
-  
+  var profileBot: [CHProfileItem]? = []
   var createdAt: Date
 
   var readableDate: String {
@@ -82,8 +82,7 @@ struct CHMessage: ModelType {
   // Used in only client
   var state: SendingState = .Sent
   var messageType: MessageType = .Default
-  
-  var userGuideDialogType: DialogType = .None
+
   var progress: CGFloat = 1
   //var isRemote = true
 }
@@ -94,8 +93,7 @@ extension CHMessage: Mappable {
        type: MessageType,
        entity: CHEntity? = nil,
        createdAt:Date? = Date(),
-       id: String? = nil,
-       dialogType: DialogType = .None) {
+       id: String? = nil) {
     let now = Date()
     let requestId = "\(now.timeIntervalSince1970 * 1000)"
     self.id = id ?? requestId
@@ -108,7 +106,6 @@ extension CHMessage: Mappable {
     self.entity = entity
     self.personId = entity?.id ?? ""
     self.personType = entity?.kind ?? ""
-    self.userGuideDialogType = dialogType
     self.progress = 1
   }
   
@@ -129,8 +126,8 @@ extension CHMessage: Mappable {
     self.messageV2 = CustomMessageTransform.markdown.parse(self.message ?? "")
   }
   
-  init(chatId: String, guest: CHGuest, asset: DKAsset) {
-    self.init(chatId: chatId, guest: guest, message: "", messageType: .Media)
+  init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset) {
+    self.init(chatId: chatId, guest: guest, message: message, messageType: .Media)
     self.file = CHFile(imageAsset: asset)
     self.messageType = self.file?.mimeType == .image || self.file?.mimeType == .gif ? .Media : .File
 
@@ -155,6 +152,7 @@ extension CHMessage: Mappable {
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
+    profileBot  <- map["profileBot"]
     
     if self.log != nil {
       messageType = .Log
@@ -162,9 +160,11 @@ extension CHMessage: Mappable {
       messageType = .Media
     } else if self.file != nil {
       messageType = .File
+    } else if let profiles = self.profileBot, profiles.count != 0 {
+      messageType = .Profile
     } else if self.webPage != nil {
       messageType = .WebPage
-    } else {
+    }  else {
       messageType = .Default
     }
   }
@@ -237,6 +237,10 @@ extension CHMessage {
   func isMine() -> Bool {
     let me = mainStore.state.guest
     return self.entity?.id == me.id
+  }
+  
+  func updateProfile(with key: String, value: Any) -> Observable<CHMessage> {
+    return UserChatPromise.updateMessageProfile(messageId: self.id, key: key, value: value)
   }
   
   func send() -> Observable<CHMessage> {
@@ -412,7 +416,6 @@ extension CHMessage: Equatable {}
 func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
   return lhs.id == rhs.id &&
     lhs.messageType == rhs.messageType &&
-    lhs.userGuideDialogType == rhs.userGuideDialogType &&
     lhs.progress == rhs.progress &&
     lhs.file?.downloaded == rhs.file?.downloaded &&
     lhs.state == rhs.state &&

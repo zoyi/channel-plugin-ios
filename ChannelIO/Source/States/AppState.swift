@@ -21,12 +21,17 @@ struct AppState: StateType {
   var messagesState: MessagesState
   var uiState: UIState
   var socketState: WSocketState
-  var scriptsState: ScriptsState
   var countryCodeState: CountryCodeState
   var settings: ChannelPluginSettings?
 }
 
-enum CHLocale: String {
+@objc public enum CHLocale: Int {
+  case english
+  case korean
+  case japanese
+}
+
+enum CHLocaleString: String {
   case english = "en"
   case korean = "ko"
   case japanese = "ja"

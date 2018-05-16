@@ -24,5 +24,5 @@ struct UpdateChannel: Action {
 }
 
 struct UpdateLocale: Action {
-  public let payload: CHLocale
+  public let payload: CHLocaleString
 }

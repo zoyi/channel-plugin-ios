@@ -82,17 +82,13 @@ open class MarkdownParser {
     let tokens = markdown.components(separatedBy: "```")
     let attributedString = NSMutableAttributedString(string: markdown)
 
-    if tokens.count == 2 {
-      return parse(attributedString)
-    }
-    
     var location = 0
     for (index, token) in tokens.enumerated() {
-      var range = NSRange(location: location, length: token.count)
+      var range = NSRange(location: location, length: token.utf16.count)
       if index % 2 != 1 && token != "" {
         let parsed = parse(NSAttributedString(string: token))
         attributedString.replaceCharacters(in: range, with: parsed)
-        location += parsed.string.count
+        location += parsed.string.utf16.count
       } else if index % 2 == 1 && token != "" && (index != tokens.count - 1) {
         let startPart = NSRange(location: range.location, length: 3)
         let endPart = NSRange(location: range.location + token.count + 3, length: 3)
@@ -104,7 +100,7 @@ open class MarkdownParser {
         let parsed = parse(NSAttributedString(string: token))
         range.location += 3
         attributedString.replaceCharacters(in: range, with: parsed)
-        location += parsed.string.count
+        location += parsed.string.utf16.count
       }
     }
     return attributedString
@@ -112,8 +108,14 @@ open class MarkdownParser {
 
   open func parse(_ markdown: NSAttributedString) -> NSAttributedString {
     let attributedString = NSMutableAttributedString(attributedString: markdown)
-    attributedString.addAttribute(
-      NSAttributedStringKey.font, value: font,
+    
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineBreakMode = .byWordWrapping
+    paragraphStyle.alignment = .left
+    paragraphStyle.minimumLineHeight = 20
+    
+    attributedString.addAttributes(
+      [NSAttributedStringKey.font: font, NSAttributedStringKey.paragraphStyle:paragraphStyle],
       range: NSRange(location: 0, length: attributedString.length))
     
     var elements: [MarkdownElement] = escapingElements

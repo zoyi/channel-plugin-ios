@@ -65,7 +65,6 @@ class WebPageMessageView : BaseView {
     
     if self.imageUrl != "" {
       let url = URL(string: self.imageUrl)
-      //self.thumbnailImageView.kf.setImage(with: url)
       self.thumbnailImageView.sd_setImage(with: url)
     }
     
@@ -92,6 +91,15 @@ class WebPageMessageView : BaseView {
         make.top.equalToSuperview()
       } else {
         make.top.equalTo((self?.thumbnailImageView.snp.bottom)!)
+      }
+      
+      if self?.titleLabel.text != "" && self?.descLabel.text != "" {
+        make.height.equalTo(60)
+      } else if ((self?.titleLabel.text == "" && self?.descLabel.text != "") ||
+        (self?.titleLabel.text != "" && self?.descLabel.text == "")) {
+        make.height.equalTo(40)
+      } else {
+        make.height.equalTo(0)
       }
       
       make.leading.equalToSuperview()

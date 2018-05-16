@@ -14,13 +14,13 @@ func settingReducer(action: Action, state: ChannelPluginSettings?) -> ChannelPlu
     if let settings = action.payload["settings"] as? ChannelPluginSettings {
       return settings
     }
-    return state ?? ChannelPluginSettings()
+    return state
   case _ as CheckOutSuccess:
     return nil
   case let action as UpdateLocale:
     state?.appLocale = action.payload
-    return state ?? ChannelPluginSettings()
+    return state
   default:
-    return state ?? ChannelPluginSettings()
+    return state
   }
 }

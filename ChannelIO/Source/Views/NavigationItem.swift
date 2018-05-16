@@ -30,9 +30,11 @@ class NavigationItem: UIBarButtonItem {
     button.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
     button.setTitle(text, for: .normal)
     button.imageView?.tintColor = textColor
-    button.frame = CGRect(x: 0, y: 0, width: 40, height: 30)
+    button.frame = CGRect(x: 0, y: 0, width: 44, height: 40)
     button.setTitleColor(textColor, for: .normal)
-
+    if fitToSize {
+      button.sizeToFit()
+    }
     self.init(customView: button)
     button.addTarget(self, action: #selector(barButtonItemPressed), for: .touchUpInside)
     self.actionHandler = actionHandler

@@ -12,3 +12,11 @@ struct GetBot: Action {
   public let payload: CHBot?
 }
 
+struct BotRequest {
+  static func postProfileItem(messageId: String?, item: CHProfileItem) {
+    //find profile message
+    //update message
+    //post request
+  }
+}
+

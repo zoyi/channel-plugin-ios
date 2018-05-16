@@ -33,7 +33,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   var userChat: CHUserChat?
 
   var preloadText: String = ""
-  var shouldShowGuide: Bool = false
   var isFetching = false
   var isRequstingReadAll = false
   
@@ -53,7 +52,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   var disposeBag = DisposeBag()
   var photoBrowser : MWPhotoBrowser? = nil
-  var currentLocale: CHLocale? = CHUtils.getLocale()
+  var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
   
   var errorToastView = ErrorToastView().then {
@@ -64,6 +63,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   var typingCell: TypingIndicatorCell!
+  var profileIndexPath: IndexPath?
   
   var titleView : NavigationTitleView? = nil
   
@@ -94,12 +94,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initInputViews()
     self.initViews()
     
-    self.shouldShowGuide = (mainStore.state.guest.ghost == true ||
-      mainStore.state.guest.mobileNumber == nil) &&
-      mainStore.state.channel.requestGuestInfo
-    
     //new user chat
     if self.userChatId == nil {
+       mainStore.dispatchOnMain(InsertWelcome())
       self.readyToDisplay()
     }
   }
@@ -129,7 +126,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
-    self.shouldScrollToBottomAfterKeyboardShows = true
     self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
     self.textView.keyboardType = .default
   }
@@ -146,13 +142,17 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.textInputbar.autoHideRightButton = false
     self.textInputbar.signalForClick()
       .subscribe { [weak self] (_) in
-      if self?.textInputbar.barState == .disabled {
+      if self?.textInputbar.barState == .disabled && self?.chatManager.profileIsFocus == false {
         return
       }
       self?.shyNavBarManager.contract(true)
       self?.presentKeyboard(self?.menuAccesoryView == nil)
     }.disposed(by: self.disposeBag)
-
+    
+    self.tableView.signalForClick().subscribe { [weak self] _ in
+      NotificationCenter.default.post(name: Notification.Name.Channel.dismissKeyboard, object: nil)
+      self?.dismissKeyboard(true)
+    }.disposed(by: self.disposeBag)
   }
   
   fileprivate func initTableView() {
@@ -163,12 +163,12 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: MessageCell.self)
     self.tableView.register(cellType: NewMessageDividerCell.self)
     self.tableView.register(cellType: DateCell.self)
-    self.tableView.register(cellType: UserInfoDialogCell.self)
     self.tableView.register(cellType: SatisfactionFeedbackCell.self)
     self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
     self.tableView.register(cellType: WatermarkCell.self)
+    self.tableView.register(cellType: ProfileCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -311,18 +311,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       }).disposed(by: self.disposeBag)
   }
   
-  fileprivate func showUserInfoGuideIfNeeded() {
-    if self.shouldShowGuide && self.userChat != nil  {
-      self.shouldShowGuide = false
-      dispatch(delay: 1.0, execute: { [weak self] in
-        if self?.view.superview == nil { return }
-        mainStore.dispatch(
-          CreateUserInfoGuide(payload: ["userChat": self?.userChat])
-        )
-      })
-    }
-  }
-
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
     
@@ -338,10 +326,13 @@ final class UserChatViewController: BaseSLKTextViewController {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
       
-      self.navigationItem.leftMargin = 0
+      self.navigationItem.leftMargin = alert == 0 ? 0 : 16
+      self.navigationItem.rightMargin = 0
+      
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "back"),
         text: alertCount,
+        fitToSize: alert != 0,
         textColor: tintColor,
         actionHandler: { [weak self] in
           self?.shyNavBarManager.disable = true
@@ -365,25 +356,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.createdFeedbackComplete = false
     
     return self.chatManager.resetUserChat()
-  }
-  
-  fileprivate func sendMessage(userChatId: String, text: String) {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: userChatId, guest: me, message: text)
-    
-    mainStore.dispatch(CreateMessage(payload: message))
-    self.scrollToBottom(false)
-    
-    message.send().subscribe(onNext: { [weak self] (updated) in
-      dlog("Message has been sent successfully")
-      self?.chatManager.sendTyping(isStop: true)
-      mainStore.dispatch(CreateMessage(payload: updated))
-      self?.showUserInfoGuideIfNeeded()
-    }, onError: { (error) in
-      dlog("Message has been failed to send")
-      message.state = .Failed
-      mainStore.dispatch(CreateMessage(payload: message))
-    }).disposed(by: self.disposeBag)
   }
 }
 
@@ -419,7 +391,6 @@ extension UserChatViewController: StoreSubscriber {
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     self.showErrorIfNeeded(state: state)
     
-    self.fetchWelcomeInfoIfNeeded()
     self.fetchChatIfNeeded()
     
     self.userChat = userChat
@@ -434,9 +405,6 @@ extension UserChatViewController: StoreSubscriber {
       self.currentLocale = state.settings?.appLocale
       self.initNavigationViews()
       //replace welcome with updated locale only if user chat has not been created
-      if self.userChat == nil && nextUserChat == nil {
-        mainStore.dispatch(InsertWelcome())
-      }
     }
     
     let userChats = userChatsSelector(
@@ -450,22 +418,6 @@ extension UserChatViewController: StoreSubscriber {
       guest: state.guest,
       textColor: state.plugin.textUIColor
     )
-  }
-  
-  func fetchWelcomeInfoIfNeeded() {
-    if self.chatManager.needToFetchInfo() == true {
-      self.chatManager.fetchForNewUserChat()
-        .subscribe({ (event) in
-          switch event {
-          case .error(_):
-            break
-          case .next(_):
-            mainStore.dispatchOnMain(InsertWelcome())
-          default:
-            break
-          }
-        }).disposed(by: self.disposeBag)
-    }
   }
   
   func fetchChatIfNeeded() {
@@ -515,10 +467,9 @@ extension UserChatViewController: StoreSubscriber {
       self.textInputbar.hideAllButtons()
       self.textView.isEditable = false
       self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder.disabled_new_chat")
-    } else {
+    } else if !self.chatManager.profileIsFocus {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
-      self.rightButton.tintColor = CHColors.cobalt
       self.rightButton.setTitle("", for: .normal)
       self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
       
@@ -570,6 +521,8 @@ extension UserChatViewController: StoreSubscriber {
         offset.y += MediaMessageCell.cellHeight(fits: 0, viewModel: viewModel)
       } else if lastMessage.messageType == .File {
         offset.y += FileMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+      } else if lastMessage.messageType == .Profile {
+        offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width - 52, viewModel: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: 0, viewModel: viewModel)
       }
@@ -626,24 +579,36 @@ extension UserChatViewController {
     self.textView.refreshFirstResponder()
     let msg = self.textView.text!
     
+    //move this logic into presenter
     if let userChat = self.userChat,
       userChat.isActive() {
       if let userChatId = self.userChatId {
-        self.sendMessage(userChatId: userChatId, text: msg)
+        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
+          
+        }.disposed(by: self.disposeBag)
       }
     } else if self.userChat == nil {
-      self.chatManager.createChat(completion: { [weak self] (userChatId) in
-        if let userChatId = userChatId {
-          self?.userChatId = userChatId
-          self?.sendMessage(userChatId: userChatId, text: msg)
-        } else {
-          self?.chatManager.state = .chatNotLoaded
+      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
+        guard let s = self else {
+          return Observable.just(nil)
         }
-      })
+        s.userChatId = chatId
+        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
+      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
+        guard let s = self else {
+          return Observable.just(nil)
+        }
+        return s.chatManager.requestProfileBot(chatId: s.userChatId)
+      }).subscribe(onNext: { (completed) in
+        
+      }, onError: { [weak self] (error) in
+        self?.chatManager.state = .chatNotLoaded
+      }).disposed(by: self.disposeBag)
     } else {
       mainStore.dispatch(RemoveMessages(payload: userChatId))
       self.newChatSubject.onNext(self.textView.text)
     }
+    
     self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
   }
@@ -663,26 +628,26 @@ extension UserChatViewController {
       pickerController.maxSelectableCount = max
       pickerController.assetType = assetType
       pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
-        func uploadImage(_ userChatId: String) {
+        func uploadImage(_ userChatId: String, requestBot: Bool = false) {
           let messages = assets.map({ (asset) -> CHMessage in
             return CHMessage(chatId: userChatId, guest:  mainStore.state.guest, asset: asset)
           })
           
           messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
           //TODO: rather create array of signal and trigger in order
-          self?.chatManager.sendMessageRecursively(allMessages: messages, currentIndex: 0)
+          self?.chatManager.sendMessageRecursively(
+            allMessages: messages, currentIndex: 0, requestBot: requestBot
+          )
         }
         
         if let userChatId = self?.userChatId {
           uploadImage(userChatId)
         } else {
-          self?.chatManager.createChat(completion: { (userChatId) in
-            self?.userChatId = userChatId
-            if let userChatId = userChatId {
-              uploadImage(userChatId)
-            } else {
-              self?.chatManager.state = .chatNotLoaded
-            }
+          _ = self?.chatManager.createChat().subscribe(onNext: { [weak self] (chatId) in
+            self?.userChatId = chatId
+            uploadImage(chatId, requestBot:true)
+          }, onError: { [weak self] (error) in
+            self?.chatManager.state = .chatNotLoaded
           })
         }
       }
@@ -764,15 +729,14 @@ extension UserChatViewController {
       return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
     case .Log:
       return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
-    case .UserInfoDialog:
-      let model = DialogViewModel.model(type: message.userGuideDialogType)
-      return UserInfoDialogCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: model)
     case .Media:
       return MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .File:
       return FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .WebPage:
       return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .Profile:
+      return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
     default:
       let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       return calSize
@@ -834,25 +798,6 @@ extension UserChatViewController {
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
       return cell
-    case .UserInfoDialog:
-      let cell: UserInfoDialogCell = tableView.dequeueReusableCell(for: indexPath)
-      let model = DialogViewModel.model(type: message.userGuideDialogType)
-      cell.configure(viewModel: model)
-      cell.dialogView.signalForCountryCode()
-        .subscribe(onNext: { [weak self] (code) in
-          self?.dismissKeyboard(true)
-          
-          let pickerView = CountryCodePickerView(frame: (self?.view.frame)!)
-          pickerView.pickedCode = code
-          pickerView.showPicker(onView: (self?.navigationController?.view)!,animated: true)
-          
-          pickerView.signalForSubmit()
-            .subscribe(onNext: { (code) in
-              cell.dialogView.setCountryCodeText(code: code)
-              cell.dialogView.phoneFieldView.phoneField.becomeFirstResponder()
-            }).disposed(by: (self?.disposeBag)!)
-        }).disposed(by: self.disposeBag)
-      return cell
     case .SatisfactionFeedback:
       let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
       cell.signalForFeedback()
@@ -879,7 +824,7 @@ extension UserChatViewController {
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.presenter = self.chatManager
       cell.configure(viewModel)
-      cell.signalForClick().subscribe{ [weak self] _ in
+      cell.webView.signalForClick().subscribe{ [weak self] _ in
         self?.didWebPageTapped(message: message)
       }.disposed(by: self.disposeBag)
       return cell
@@ -887,7 +832,7 @@ extension UserChatViewController {
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.presenter = self.chatManager
       cell.configure(viewModel)
-      cell.signalForClick().subscribe { [weak self] _ in
+      cell.mediaView.signalForClick().subscribe { [weak self] _ in
         self?.didImageTapped(message: message)
       }.disposed(by: self.disposeBag)
       return cell
@@ -895,9 +840,13 @@ extension UserChatViewController {
       let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
       cell.presenter = self.chatManager
       cell.configure(viewModel)
-      cell.signalForClick().subscribe { [weak self] _ in
+      cell.fileView.signalForClick().subscribe { [weak self] _ in
         self?.didFileTapped(message: message)
       }.disposed(by: self.disposeBag)
+      return cell
+    case .Profile:
+      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -946,7 +895,6 @@ extension UserChatViewController {
       self.photoBrowser?.setCurrentPhotoIndex(UInt(index))
       
       self.present(navigation, animated: true, completion: nil)
-      //_ = self.navigationController?.pushViewController(self.photoBrowser!, animated: true)
     }
   }
   
@@ -1065,9 +1013,19 @@ extension UserChatViewController: ChatDelegate {
     case .photos(let urls):
       self.photoUrls = urls
       self.photoBrowser?.reloadData()
+    case .profile(_):
+      self.textView.becomeFirstResponder()
+      self.tableView.reloadData()
+      if let indexPath = self.profileIndexPath {
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+      }
     default:
       break
     }
+  }
+  
+  func updateInputBar(state: SLKInputBarState){
+    self.textInputbar.barState = state;
   }
   
   func showError() {

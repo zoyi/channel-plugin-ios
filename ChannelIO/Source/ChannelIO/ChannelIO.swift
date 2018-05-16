@@ -43,6 +43,9 @@ public protocol ChannelPluginDelegate: class {
 public final class ChannelIO: NSObject {
   //MARK: Properties
   @objc public static weak var delegate: ChannelPluginDelegate? = nil
+  @objc public static var booted: Bool {
+    return mainStore.state.checkinState.status == .success
+  }
   
   internal static var launchView : LaunchView?
   internal static var chatNotificationView: ChatNotificationView?
@@ -59,7 +62,7 @@ public final class ChannelIO: NSObject {
   }
 
   internal static var settings: ChannelPluginSettings? = nil
-  internal static var guest: Guest? = nil
+  internal static var profile: Profile? = nil
   
 
   // MARK: StoreSubscriber
@@ -106,11 +109,11 @@ public final class ChannelIO: NSObject {
    */
   @objc public class func boot(
     with settings: ChannelPluginSettings,
-    guest: Guest? = nil,
+    profile: Profile? = nil,
     completion: ((ChannelPluginCompletionStatus) -> Void)? = nil) {
     ChannelIO.prepare()
     ChannelIO.settings = settings
-    ChannelIO.guest = guest
+    ChannelIO.profile = profile
     
     if settings.pluginKey == "" {
       mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
@@ -118,19 +121,20 @@ public final class ChannelIO: NSObject {
       return
     }
     
+    let controller = CHUtils.getTopController()
+    
     PluginPromise.checkVersion().flatMap { (event) in
-      return ChannelIO.checkInChannel(guest: guest)
+      return ChannelIO.checkInChannel(profile: profile)
     }
     .subscribe(onNext: { (_) in
       completion?(.success)
       
-      if !settings.hideDefaultLauncher &&
-        !mainStore.state.plugin.mobileHideButton &&
-        (mainStore.state.channel.shouldShowDefaultLauncher) {
-        ChannelIO.showLauncher(on: CHUtils.getTopController()?.view, animated: true)
+      if !settings.hideDefaultLauncher ||
+        !mainStore.state.plugin.mobileHideButton ||
+        !mainStore.state.channel.shouldHideDefaultButton {
+        ChannelIO.showLauncher(on: controller?.view, animated: true)
       }
       
-      ChannelIO.fetchScripts()
       ChannelIO.registerPushToken()
       PrefStore.setChannelPluginSettings(pluginSetting: settings)
     }, onError: { error in
@@ -380,13 +384,16 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    let guest = Guest().set(id: PrefStore.getCurrentUserId() ?? "")
     guard let settings = PrefStore.getChannelPluginSettings() else {
       dlog("ChannelPluginSetting is missing")
       return
     }
     
-    ChannelIO.boot(with: settings, guest: guest) { (status) in
+    if let userId = PrefStore.getCurrentUserId() {
+      settings.userId = userId
+    }
+    
+    ChannelIO.boot(with: settings, profile: profile) { (status) in
       if status == .success {
         let userChatId = userInfo["chatId"] as! String
         ChannelIO.showUserChat(userChatId:userChatId)

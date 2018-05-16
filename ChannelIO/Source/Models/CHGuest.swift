@@ -10,9 +10,9 @@ import Foundation
 import RxSwift
 
 protocol CHGuest: CHEntity {
-  var ghost: Bool { get set }
+  var named: Bool { get set }
   var mobileNumber: String? { get set }
-  var meta: [String : AnyObject]? { get set }
+  var profile: [String : Any]? { get set }
   
   var alert: Int { get set }
   var unread: Int { get set }
@@ -32,6 +32,14 @@ extension CHGuest {
   func update() -> Observable<(CHGuest?, Any?)> {
     //ideally intercept and apply result
     return GuestPromise.update(user: self)
+  }
+  
+  func getWelcome() -> String? {
+    if self.named {
+      return mainStore.state.plugin.welcomeNamedI18n?.getMessage()?.replace("${name}", withString: self.name)
+    } else {
+      return mainStore.state.plugin.welcomeI18n?.getMessage()
+    }
   }
   
   static func getCurrent() -> Observable<CHGuest> {

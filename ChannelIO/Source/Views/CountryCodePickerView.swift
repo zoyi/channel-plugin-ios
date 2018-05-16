@@ -20,12 +20,17 @@ final class CountryCodePickerView : BaseView {
         return country.dial == self.pickedCode
       }
       if index != nil {
+        self.selectedCode = self.pickedCode
         self.pickerView.selectRow(index!, inComponent: 0, animated: false)
       }
     }
   }
   
+  var selectedCode = ""
+  
   var submitSubject = PublishSubject<String>()
+  var cancelSubject = PublishSubject<Any?>()
+  
   let actionView = UIView()
   let closeButton = UIButton().then {
     $0.setTitleColor(CHColors.dark, for: UIControlState.normal)
@@ -47,6 +52,34 @@ final class CountryCodePickerView : BaseView {
     $0.backgroundColor = CHColors.gray.withAlphaComponent(0.5)
   }
   
+  static func presentCodePicker(with code: String) -> Observable<String?> {
+    return Observable.create({ (subscriber) in
+      var controller = CHUtils.getTopController()
+      if let navigation = controller?.navigationController {
+        controller = navigation
+      }
+      
+      let pickerView = CountryCodePickerView(frame: (controller?.view.frame)!)
+
+      pickerView.pickedCode = code
+      pickerView.showPicker(onView: (controller?.view)!,animated: true)
+      let submitSignal = pickerView.signalForSubmit().subscribe(onNext: { (countryCode) in
+        subscriber.onNext(countryCode)
+        subscriber.onCompleted()
+      })
+      
+      let cancelSignal = pickerView.signalForCancel().subscribe(onNext: { (_) in
+        subscriber.onNext(nil)
+        subscriber.onCompleted()
+      })
+      
+      return Disposables.create {
+        submitSignal.dispose()
+        cancelSignal.dispose()
+      }
+    })
+  }
+  
   override func initialize() {
     super.initialize()
     self.countries = mainStore.state.countryCodeState.codes
@@ -61,18 +94,19 @@ final class CountryCodePickerView : BaseView {
 
     self.pickerView.delegate = self
     
-    self.closeButton.signalForClick()
-      .subscribe(onNext: { [weak self] (event) in
-      self?.remove(animated: true)
+    self.closeButton.signalForClick().subscribe(onNext: { [weak self] (event) in
+      self?.cancelSubject.onNext(nil)
+      self?.cancelSubject.onCompleted()
+        
+      self?.removePicker(animated: true)
     }).disposed(by: self.disposeBeg)
     
-    self.submitButton.signalForClick()
-      .subscribe(onNext: { [weak self] (event) in
-      guard let code = self?.pickedCode else { return }
+    self.submitButton.signalForClick().subscribe(onNext: { [weak self] (event) in
+      guard let code = self?.selectedCode else { return }
       self?.submitSubject.onNext(code)
       self?.submitSubject.onCompleted()
         
-      self?.remove(animated: true)
+      self?.removePicker(animated: true)
     }).disposed(by: self.disposeBeg)
   }
   
@@ -115,7 +149,11 @@ final class CountryCodePickerView : BaseView {
   }
   
   func signalForSubmit() -> Observable<String> {
-    return self.submitSubject
+    return self.submitSubject.asObservable()
+  }
+  
+  func signalForCancel() -> Observable<Any?> {
+    return self.cancelSubject.asObservable()
   }
 }
 
@@ -168,7 +206,7 @@ extension CountryCodePickerView : UIPickerViewDelegate {
   }
   
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    self.pickedCode = self.countries[row].dial
+    self.selectedCode = self.countries[row].dial
   }
 }
 

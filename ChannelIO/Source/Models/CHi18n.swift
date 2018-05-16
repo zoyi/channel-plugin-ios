@@ -10,6 +10,7 @@ import Foundation
 import ObjectMapper
 
 struct CHi18n {
+  var text: String = ""
   var en: String?
   var ja: String?
   var ko: String?
@@ -18,23 +19,30 @@ struct CHi18n {
     let key = CHUtils.getLocale()
     
     if key == .english {
-      return en
+      return en ?? text
     } else if key == .japanese {
-      return ja
+      return ja ?? text
     } else if key == .korean {
-      return ko
+      return ko ?? text
     }
-    return nil
+    return text
   }
 }
 
 extension CHi18n: Mappable {
-  init?(map: Map) {
-
-  }
+  init?(map: Map) { }
+  
   mutating func mapping(map: Map) {
-    en <- map["en"]
-    ja <- map["ja"]
-    ko <- map["ko"]
+    text    <- map ["text"]
+    en      <- map["en"]
+    ja      <- map["ja"]
+    ko      <- map["ko"]
   }
+}
+
+extension CHi18n: Equatable {}
+
+func ==(lhs: CHi18n, rhs: CHi18n) -> Bool {
+  return lhs.text == rhs.text && lhs.ko == rhs.ko &&
+    lhs.ja == rhs.ja && lhs.en == rhs.en
 }

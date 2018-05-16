@@ -107,19 +107,12 @@ class TextMessageView : BaseView {
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
 
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineBreakMode = .byWordWrapping
-    paragraphStyle.alignment = .left
-    paragraphStyle.minimumLineHeight = 20
-
-    let attributes = [
-      NSAttributedStringKey.font: Font.messageView,
-      NSAttributedStringKey.paragraphStyle: paragraphStyle
-    ]
-    
     if let message = viewModel.message.messageV2 {
       let extraPadding: CGFloat = message.string.guessLanguage() == "日本語" ? 40 : 0
-      viewHeight += message.string.height(fits: width - extraPadding - Metric.leftRightPadding * 2, attributes: attributes)
+      var range = NSRange(location:0, length: message.string.count)
+      viewHeight += message.string.height(
+        fits: width - extraPadding - Metric.leftRightPadding * 2,
+        attributes:  message.attributes(at: 0, effectiveRange: &range))
       viewHeight += Metric.topBottomPadding * 2
     }
 

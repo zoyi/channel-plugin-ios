@@ -16,7 +16,6 @@ struct ChatListIsVisible: Action {}
 
 struct ChatListIsHidden: Action {}
 
-
 //checkinState
 
 struct UpdateCheckinState: Action {

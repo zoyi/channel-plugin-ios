@@ -17,6 +17,7 @@ enum EPType: String {
 
 enum RestRouter: URLRequestConvertible {
   case GetPluginConfiguration(String, ParametersType)
+  case Boot(String, ParametersType)
   case GetPlugin(String)
   
   case GetChannelAvatar(String)
@@ -47,7 +48,10 @@ enum RestRouter: URLRequestConvertible {
   case SendEvent(ParametersType)
   case GetCountryCodes
   case GetFollowingManager
-
+  
+  case RequestProfileBot(String, String)
+  case UpdateProfileItem(String, ParametersType)
+  
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -70,7 +74,8 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .GetPluginConfiguration, .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
-         .SendEvent:
+         .SendEvent, .Boot, .RequestProfileBot,
+         .UpdateProfileItem:
       return .post
     case .GetChannelAvatar, .GetCurrentGuest,
          .GetMessages, .GetScripts, .GetScript,
@@ -94,6 +99,8 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .GetPluginConfiguration(let apiKey, _):
       return "/app/plugins/\(apiKey)/check_in"
+    case .Boot(let pluginKey, _):
+      return "/app/plugins/\(pluginKey)/boot"
     case .GetChannelAvatar(let channelId):
       return "/app/channels/\(channelId)/avatar"
     case .UpdateGuest:
@@ -142,6 +149,10 @@ enum RestRouter: URLRequestConvertible {
       return "/countries"
     case .GetFollowingManager:
       return "/app/channels/following_managers"
+    case .RequestProfileBot(let pluginId, let chatId):
+      return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
+    case .UpdateProfileItem(let messageId, _):
+      return "/app/messages/\(messageId)/profile_bot"
     }
   }
   
@@ -199,20 +210,21 @@ enum RestRouter: URLRequestConvertible {
     urlRequest.httpMethod = method.rawValue
     
     switch self {
-    case .GetPluginConfiguration(_, let params):
-      urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
-    case .UpdateGuest(let params), .GetMessages(_, let params),
+    case .GetPluginConfiguration(_, let params), .Boot(_, let params),
+         .UpdateGuest(let params), .GetMessages(_, let params),
          .CreateMessage(_, let params), .UploadFile(_, let params),
          .GetUserChats(let params), .RegisterToken(let params),
          .DoneUserChat(_, let params),
          .SendEvent(let params),
-         .CreateUserChat(_, let params):
+         .CreateUserChat(_, let params),
+         .UpdateProfileItem(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetScripts, .GetScript,
          .SetMessagesReadAll,
          .GetCountryCodes,
-         .GetFollowingManager:
+         .GetFollowingManager,
+         .RequestProfileBot:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

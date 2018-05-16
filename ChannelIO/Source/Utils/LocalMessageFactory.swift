@@ -21,6 +21,7 @@ enum MessageType {
   case WebPage
   case Media
   case File
+  case Profile
 }
 
 struct LocalMessageFactory {
@@ -41,9 +42,6 @@ struct LocalMessageFactory {
     case .UserMessage:
       let msg = getUserMessage(msg: text ?? "", userChat: userChat)
       return messages + [msg]
-    case .UserInfoDialog:
-      let msgs = insertUserInfoDialog(messages: messages, userChat: userChat!)
-      return msgs
     case .WelcomeMessage:
       if let msg = getWelcomeMessage() {
         return [msg] + messages
@@ -98,7 +96,7 @@ struct LocalMessageFactory {
   private static func getWelcomeMessage() -> CHMessage? {
     // TODO: consider to cut coupling between main store states    
     let guest = mainStore.state.guest
-    let msg = mainStore.state.scriptsState.getWelcomeMessage(guest: guest)
+    let msg = guest.getWelcome() ?? ""
     let bot = mainStore.state.botsState.getDefaultBot()
     return CHMessage(
       chatId: "welcome_dummy", message: msg, type: .WelcomeMessage, entity: bot, id: "welcome_dummy"
@@ -138,19 +136,6 @@ struct LocalMessageFactory {
     return newMessages
   }
 
-  private static func insertUserInfoDialog(
-    messages: [CHMessage],
-    userChat: CHUserChat) -> [CHMessage] {
-    let dialogType : DialogType =
-      mainStore.state.guest.ghost
-        ? .UserName : .PhoneNumber
-    let msg = CHMessage(chatId:userChat.id,
-      message: "",
-      type: .UserInfoDialog,
-      dialogType: dialogType)
-    return messages + [msg]
-  }
-  
   private static func getUserMessage(msg: String, userChat: CHUserChat?) -> CHMessage {
     return CHMessage(chatId:userChat?.id ?? "dummy", message:msg, type: .UserMessage)
   }

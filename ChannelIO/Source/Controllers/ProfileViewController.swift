@@ -48,29 +48,10 @@ final class ProfileViewController: BaseViewController {
   let headerView = ProfileHeaderView()
   let deleteSubject = PublishSubject<Any?>()
   let disposeBag = DisposeBag()
-  var userInfoModel = [String]()
-
-  var guest: CHGuest?
   
-  var panGestureRecognizer: UIPanGestureRecognizer? = nil
-  var originalPosition: CGPoint?
-  var currentPositionTouched: CGPoint?
-  
-  var userName:String = "" {
-    didSet {
-      if self.guest is CHVeil || self.userName != "" {
-        self.userInfoModel.append("username")
-      }
-    }
-  }
-  
-  var phoneNumber:String = "" {
-    didSet {
-      if self.guest is CHVeil || self.phoneNumber != "" {
-        self.userInfoModel.append("phonenumber")
-      }
-    }
-  }
+  //var panGestureRecognizer: UIPanGestureRecognizer? = nil
+  //var originalPosition: CGPoint?
+  //var currentPositionTouched: CGPoint?
   
   var hideOptions = false
   var showCompleted = false
@@ -87,45 +68,8 @@ final class ProfileViewController: BaseViewController {
     self.footerView.addSubview(self.logoImageView)
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.footerView)
-//    TODO: drag to dismiss
-//    self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(dismissAction(_:)))
-//    self.view.addGestureRecognizer(self.panGestureRecognizer!)
   }
 
-  @objc func dismissAction(_ panGesture: UIPanGestureRecognizer) {
-    let translation = panGesture.translation(in: self.navigationController?.view)
-    
-    if panGesture.state == .began {
-      originalPosition = CGPoint(x: 0, y: 20)
-      currentPositionTouched = panGesture.location(in: self.navigationController?.view)
-    } else if panGesture.state == .changed {
-      self.navigationController?.view.frame.origin = CGPoint(
-        x: 0,
-        y: translation.y > 0 ? translation.y : 0
-      )
-    } else if panGesture.state == .ended {
-      let velocity = panGesture.velocity(in: view)
-      
-      if velocity.y >= 1500 || translation.y > self.view.frame.size.height * 0.2 {
-        UIView.animate(withDuration: 0.2
-          , animations: {
-            self.navigationController?.view.frame.origin = CGPoint(
-              x: 0,
-              y: self.navigationController?.view.frame.size.height ?? 0
-            )
-        }, completion: { (isCompleted) in
-          if isCompleted {
-            self.dismiss(animated: false, completion: nil)
-          }
-        })
-      } else {
-        UIView.animate(withDuration: 0.2, animations: {
-          self.navigationController?.view.origin = self.originalPosition!
-        })
-      }
-    }
-  }
-  
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     mainStore.subscribe(self)
@@ -326,18 +270,17 @@ extension ProfileViewController : StoreSubscriber {
   func newState(state: AppState) {
     self.title = CHAssets.localized("ch.settings.title")
     
-    self.guest = state.guest    
+    let height:CGFloat = state.channel.homepageUrl != "" || state.channel.phoneNumber != "" ? 180 : 110
+    self.headerView.frame = CGRect(
+      x: 0, y: 0,
+      width: self.tableView.width,
+      height: height
+    )
     self.headerView.configure(
       plugin: state.plugin,
       channel: state.channel
     )
 
-    if let guest = self.guest {
-      self.userInfoModel.removeAll()
-      self.userName = guest.ghost ? "" : guest.name
-      self.phoneNumber = guest.mobileNumber ?? ""
-    }
-    
     let showCompleted = state.userChatsState.showCompletedChats
     if self.showCompleted != showCompleted {
       self.showCompleted = showCompleted
