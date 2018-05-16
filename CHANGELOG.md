@@ -8,6 +8,7 @@
 
 ## Bug fixes
 * Fixed unexpected behavior when homepage and/or phoneNumber is missing in ProfileView
+* Fixed scrollView behavior when input field is selected
 
 # 3.0.6 (May 11, 2018)
 * Resolved carthage dependencies conflicts

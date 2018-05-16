@@ -177,6 +177,7 @@ class ProfileExtendableView: BaseView {
       )
       height += Metric.footerBottom
     }
+    height += 3 //off value
     return height
   }
 }

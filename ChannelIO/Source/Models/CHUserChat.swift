@@ -109,13 +109,22 @@ extension CHUserChat {
     return UserChatPromise.done(userChatId: self.id, rating: rating)
   }
   
-  func readAll() {
-    _ = UserChatPromise.setMessageReadAll(userChatId: self.id)
-      .subscribe(onNext: { (_) in
-        self.readAllManually()
-      }, onError: { (error) in
+  func readAll() -> Observable<Bool> {
+    return Observable.create({ (subscriber) in
+      let signal = UserChatPromise.setMessageReadAll(userChatId: self.id)
+        .subscribe(onNext: { (_) in
+          self.readAllManually()
+          subscriber.onNext(true)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          subscriber.onNext(false)
+          subscriber.onCompleted()
+        })
       
-      })
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
   }
   
   func readAllManually() {

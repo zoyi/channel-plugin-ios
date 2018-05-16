@@ -91,9 +91,10 @@ class ProfileCell : WebPageMessageCell {
   }
   
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
-    let height = super.cellHeight(fits: width, viewModel: viewModel) + 20
-    return height + ProfileExtendableView.viewHeight(
+    var height = super.cellHeight(fits: width, viewModel: viewModel) + 20
+    height += ProfileExtendableView.viewHeight(
       fit: width - Metric.viewLeading - Metric.viewTrailing,
       model: viewModel)
+    return height
   }
 }

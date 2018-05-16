@@ -17,18 +17,18 @@ final class CountryCodePickerView : BaseView {
   var pickedCode = "" {
     didSet {
       let index = self.countries.index { (country) -> Bool in
-        return country.dial == self.pickedCode
+        return country.code == self.pickedCode
       }
-      if index != nil {
-        self.selectedCode = self.pickedCode
-        self.pickerView.selectRow(index!, inComponent: 0, animated: false)
+      if let index = index {
+        self.pickerView.selectRow(index, inComponent: 0, animated: false)
+        self.selectedIndex = index
       }
     }
   }
   
-  var selectedCode = ""
+  var selectedIndex = 0
   
-  var submitSubject = PublishSubject<String>()
+  var submitSubject = PublishSubject<(String, String)>()
   var cancelSubject = PublishSubject<Any?>()
   
   let actionView = UIView()
@@ -52,7 +52,7 @@ final class CountryCodePickerView : BaseView {
     $0.backgroundColor = CHColors.gray.withAlphaComponent(0.5)
   }
   
-  static func presentCodePicker(with code: String) -> Observable<String?> {
+  static func presentCodePicker(with code: String) -> Observable<(String?, String?)> {
     return Observable.create({ (subscriber) in
       var controller = CHUtils.getTopController()
       if let navigation = controller?.navigationController {
@@ -63,13 +63,13 @@ final class CountryCodePickerView : BaseView {
 
       pickerView.pickedCode = code
       pickerView.showPicker(onView: (controller?.view)!,animated: true)
-      let submitSignal = pickerView.signalForSubmit().subscribe(onNext: { (countryCode) in
-        subscriber.onNext(countryCode)
+      let submitSignal = pickerView.signalForSubmit().subscribe(onNext: { (code, dial) in
+        subscriber.onNext((code, dial))
         subscriber.onCompleted()
       })
       
       let cancelSignal = pickerView.signalForCancel().subscribe(onNext: { (_) in
-        subscriber.onNext(nil)
+        subscriber.onNext((nil, nil))
         subscriber.onCompleted()
       })
       
@@ -102,8 +102,10 @@ final class CountryCodePickerView : BaseView {
     }).disposed(by: self.disposeBeg)
     
     self.submitButton.signalForClick().subscribe(onNext: { [weak self] (event) in
-      guard let code = self?.selectedCode else { return }
-      self?.submitSubject.onNext(code)
+      guard let index = self?.selectedIndex else { return }
+      guard let country = self?.countries[index] else { return }
+      
+      self?.submitSubject.onNext((country.code, country.dial))
       self?.submitSubject.onCompleted()
         
       self?.removePicker(animated: true)
@@ -148,7 +150,7 @@ final class CountryCodePickerView : BaseView {
     }
   }
   
-  func signalForSubmit() -> Observable<String> {
+  func signalForSubmit() -> Observable<(String, String)> {
     return self.submitSubject.asObservable()
   }
   
@@ -201,12 +203,11 @@ extension CountryCodePickerView : UIPickerViewDelegate {
   func pickerView(_ pickerView: UIPickerView,
                   titleForRow row: Int,
                   forComponent component: Int) -> String? {
-    //let countryName = Assets.localized("ch.mobile_verification.country." + self.countries[row].code.lowercased())
     return "\(self.countries[row].name)  +\(self.countries[row].dial)"
   }
   
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    self.selectedCode = self.countries[row].dial
+    self.selectedIndex = row
   }
 }
 

@@ -110,7 +110,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     self.chatManager.reset()
-    self.chatManager.willDisppear()
+    self.chatManager.willDisappear()
     mainStore.unsubscribe(self)
   }
 

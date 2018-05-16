@@ -151,7 +151,7 @@ class ChatStatusDefaultView : BaseView {
     self.multiAvatarView.snp.makeConstraints { [weak self] (make) in
       make.trailing.equalToSuperview().inset(20)
       make.top.equalToSuperview().inset(10)
-      make.leading.equalTo((self?.statusDescLabel.snp.trailing)!).offset(18)
+      make.leading.equalTo((self?.statusDescLabel.snp.trailing)!).offset(12)
     }
     
     self.divider.snp.makeConstraints { [weak self] (make) in

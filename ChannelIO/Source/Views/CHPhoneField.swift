@@ -181,7 +181,7 @@ extension CHPhoneField {
         pickerView.showPicker(onView: (controller?.view)!,animated: true)
         
         pickerView.signalForSubmit()
-          .subscribe(onNext: { (code) in
+          .subscribe(onNext: { (name, code) in
             self?.code = code
             self?.countryLabel.text =  "+" + code
           }).disposed(by: (self?.disposeBeg)!)

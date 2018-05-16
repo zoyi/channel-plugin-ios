@@ -29,7 +29,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     static let avatarWidth = 24.f
     static let avatarRightPadding = 6.f
     static let bubbleLeftMargin = 40.f
-    static let usernameHeight = 15.f
+    static let usernameHeight = 16.f
     static let cellTopPaddingOfContinous = 3.f
     static let cellTopPaddingDefault = 16.f
     static let messageCellMinMargin = 65.f

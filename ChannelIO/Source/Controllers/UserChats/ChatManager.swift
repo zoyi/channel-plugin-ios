@@ -114,7 +114,7 @@ class ChatManager {
       .rx.notification(Notification.Name.UIApplicationWillResignActive)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
-        self?.willDisppear()
+        self?.willDisappear()
       }
   }
   
@@ -462,7 +462,9 @@ extension ChatManager {
     
     self.isRequstingReadAll = true
     
-    self.chat?.readAll()
+    self.chat?.readAll().subscribe(onNext: { [weak self] (completed) in
+      self?.isRequstingReadAll = false
+    }).disposed(by: self.disposeBag)
   }
   
   func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
@@ -503,7 +505,7 @@ extension ChatManager {
     WsService.shared.join(chatId: self.chatId)
   }
   
-  func willDisppear() {
+  func willDisappear() {
     self.sendTyping(isStop: true)
     self.requestReadAll()
     self.disposeSignals()

@@ -59,9 +59,10 @@ final class PhoneActionView: BaseView, Actionable {
   }
   
   var didFocus = false
-  let disposeBeg = DisposeBag()
   var userGeoInfo: GeoIPInfo?
+  var currentCountryCode: String = ""
   
+  let disposeBeg = DisposeBag()
   //MARK: Init
   
   override func initialize() {
@@ -104,6 +105,8 @@ final class PhoneActionView: BaseView, Actionable {
         if let countryCode = CHUtils.getCountryDialCode(countryCode: geoInfo.country) {
           self?.countryLabel.text = "+" + countryCode
         }
+        self?.phoneField.defaultRegion = geoInfo.country
+        self?.currentCountryCode = geoInfo.country
       }, onError: { [weak self] (error) in
         self?.countryLabel.text = Constants.defaultDailCode
       }).disposed(by: self.disposeBeg)
@@ -111,17 +114,21 @@ final class PhoneActionView: BaseView, Actionable {
     self.countryCodeView.signalForClick().subscribe(onNext: { [weak self] (value) in
       let firstResponder = UIResponder.slk_currentFirst()
       UIApplication.shared.sendAction(#selector(UIApplication.resignFirstResponder), to: nil, from: nil, for: nil)
-      var code = (self?.countryLabel.text ?? "")
-      code.remove(at: code.startIndex)
+      let code = self?.currentCountryCode ?? ""
         
       CountryCodePickerView.presentCodePicker(with: code)
-        .subscribe(onNext: { (newCode) in
-          if let newCode = newCode {
-            self?.countryLabel.text =  "+" + newCode
+        .subscribe(onNext: { (code, dial) in
+          if let dial = dial {
+            self?.countryLabel.text =  "+" + dial
           }
           if firstResponder == self?.phoneField {
             self?.phoneField.becomeFirstResponder()
           }
+          if let code = code {
+            self?.currentCountryCode = code
+            self?.phoneField.defaultRegion = code
+          }
+          
         }).disposed(by: (self?.disposeBeg)!)
       }).disposed(by: self.disposeBeg)
     
@@ -179,6 +186,7 @@ extension PhoneActionView {
       do {
         let phKit = PhoneNumberKit()
         let phoneNumber = try phKit.parse(value)
+        
         self.countryLabel.text = "\(phoneNumber.countryCode)"
         self.phoneField.text = "\(phoneNumber.nationalNumber)"
       }

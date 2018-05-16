@@ -40,11 +40,11 @@ public class ChannelPluginSettings: NSObject, NSCoding {
       }
     }
     set {
-      if locale == .english {
+      if newValue == .english {
         self.appLocale = .english
-      } else if locale == .korean {
+      } else if newValue == .korean {
         self.appLocale = .korean
-      } else if locale == .japanese {
+      } else if newValue == .japanese {
         self.appLocale = .japanese
       } else {
         self.appLocale = nil
@@ -53,6 +53,10 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   }
   
   var appLocale: CHLocaleString? = nil
+  
+  @objc override public init() {
+    super.init()
+  }
   
   @objc public init(
     pluginKey: String,
@@ -70,7 +74,15 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     self.hideDefaultLauncher = hideDefaultLauncher
     self.hideDefaultInAppPush = hideDefaultInAppPush
     self.enabledTrackDefaultEvent = enabledTrackDefaultEvent
-    self.locale = locale
+    
+    let deviceLocale = CHUtils.getLocale()
+    if deviceLocale == .japanese {
+      self.locale = .japanese
+    } else if deviceLocale == .korean {
+      self.locale = .korean
+    } else {
+      self.locale = .english
+    }
   }
   
   required convenience public init(coder aDecoder: NSCoder) {
