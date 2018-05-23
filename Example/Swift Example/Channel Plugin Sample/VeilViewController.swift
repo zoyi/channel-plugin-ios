@@ -48,11 +48,12 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "f6747e65-d3d0-4177-b2eb-13b9ff21c2e1"
+      pluginKey = "52eb6f27-38c7-476d-ad92-83e6299b7e07" //"06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true
-    ChannelIO.boot(with: settings) { completion in
+    settings.hideDefaultLauncher = true
+    ChannelIO.boot(with: settings) { (completion, guest) in
       
     }
   }

@@ -1,3 +1,10 @@
+# 3.1.2 (May 22, 2018)
+## Updates
+* Added Guest as parameter in boot completion block
+
+## Bug fixes
+* Fixed default launcher button visibility
+
 # 3.1.0 (May 16, 2018)
 ## Updates
 * Renamed Guest to Profile

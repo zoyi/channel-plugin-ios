@@ -110,14 +110,14 @@ public final class ChannelIO: NSObject {
   @objc public class func boot(
     with settings: ChannelPluginSettings,
     profile: Profile? = nil,
-    completion: ((ChannelPluginCompletionStatus) -> Void)? = nil) {
+    completion: ((ChannelPluginCompletionStatus, Guest?) -> Void)? = nil) {
     ChannelIO.prepare()
     ChannelIO.settings = settings
     ChannelIO.profile = profile
     
     if settings.pluginKey == "" {
       mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
-      completion?(.notInitialized)
+      completion?(.notInitialized, nil)
       return
     }
     
@@ -127,8 +127,6 @@ public final class ChannelIO: NSObject {
       return ChannelIO.checkInChannel(profile: profile)
     }
     .subscribe(onNext: { (_) in
-      completion?(.success)
-      
       if !settings.hideDefaultLauncher &&
         !mainStore.state.plugin.mobileHideButton &&
         !mainStore.state.channel.shouldHideDefaultButton {
@@ -137,24 +135,25 @@ public final class ChannelIO: NSObject {
       
       ChannelIO.registerPushToken()
       PrefStore.setChannelPluginSettings(pluginSetting: settings)
+      completion?(.success, Guest(with: mainStore.state.guest))
     }, onError: { error in
       let code = (error as NSError).code
       if code == -1001 {
         dlog("network timeout")
         mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
-        completion?(.networkTimeout)
+        completion?(.networkTimeout, nil)
       } else if code == CHErrorCode.versionError.rawValue {
         dlog("version is not compatiable. please update sdk version")
         mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
-        completion?(.notAvailableVersion)
+        completion?(.notAvailableVersion, nil)
       } else if code == CHErrorCode.serviceBlockedError.rawValue {
         dlog("require payment. free plan is not eligible to use SDK")
         mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
-        completion?(.requirePayment)
+        completion?(.requirePayment, nil)
       } else {
         dlog("unknown")
         mainStore.dispatch(UpdateCheckinState(payload: .unknown))
-        completion?(.unknown)
+        completion?(.unknown, nil)
       }
     }).disposed(by: disposeBeg)
   }
@@ -301,14 +300,9 @@ public final class ChannelIO: NSObject {
    *  - parameter chatId: a String user chat id. Will open new chat if chat id is invalid
    *  - parameter completion: a closure to signal completion state
    */
-  @objc public class func openChat(with chatId: String? = nil, completion: ((Bool) -> Void)? = nil) {
-    guard ChannelIO.isValidStatus else {
-      completion?(false)
-      return
-    }
-    
+  @objc public class func openChat(with chatId: String? = nil) {
+    guard ChannelIO.isValidStatus else { return }
     ChannelIO.showUserChat(userChatId: chatId)
-    completion?(true)
   }
   
   /**
@@ -393,7 +387,7 @@ public final class ChannelIO: NSObject {
       settings.userId = userId
     }
     
-    ChannelIO.boot(with: settings, profile: profile) { (status) in
+    ChannelIO.boot(with: settings, profile: profile) { (status, guest) in
       if status == .success {
         let userChatId = userInfo["chatId"] as! String
         ChannelIO.showUserChat(userChatId:userChatId)

@@ -178,22 +178,3 @@ extension CHUserChat: Equatable {
   }
 }
 
-/**
- *  Public push chat model
- */
-
-@objc
-public class PushEvent: NSObject {
-  @objc public let chatId: String
-  @objc public let message: String
-  @objc public let senderName: String
-  @objc public let senderAvatarUrl: String
-  
-  init(with pushData: CHPush?) {
-    self.chatId = pushData?.userChat?.id ?? ""
-    self.message = pushData?.message?.message ?? ""
-    self.senderName = pushData?.manager?.name ?? ""
-    self.senderAvatarUrl = pushData?.manager?.avatarUrl ?? ""
-  }
-}
-

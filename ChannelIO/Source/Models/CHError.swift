@@ -40,12 +40,13 @@ enum CHErrorDomain: String {
   case channelPlugin = "ChannelPlugin"
 }
 
-class CHError: Error {
-  var domain: CHErrorDomain = .pluginPromise
-  var code: CHErrorCode = .unknownError
+class CHError: NSError {
   init(domain: CHErrorDomain, code: CHErrorCode) {
-    self.domain = domain
-    self.code = code
+    super.init(domain: domain.rawValue, code: code.rawValue, userInfo: nil)
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 }
 

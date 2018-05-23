@@ -229,19 +229,6 @@ class UserChatsViewController: BaseViewController {
   }
   
   func showUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
-    //let controller = UserChatRouter.createModule(userChatId: userChatId)
-    
-    //signalFor new chat
-    //signalFor profile
-//    self.showNewChat = true
-//
-//    controller.presenter?.readyToDisplay()?.subscribe(onNext: { [weak self] _ in
-//      self?.showNewChat = false
-//      self?.shouldHideTable = false
-//      self?.navigationController?.pushViewController(controller, animated: animated)
-//      dlog("got following managers")
-//    }).disposed(by: self.disposeBag)
-//
     let controller = UserChatViewController()
     if let userChatId = userChatId {
       controller.userChatId = userChatId

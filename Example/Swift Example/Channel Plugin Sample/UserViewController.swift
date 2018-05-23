@@ -44,7 +44,7 @@ class UserViewController : UIViewController {
     settings.userId = self.idField.text
     settings.debugMode = true
     
-    ChannelIO.boot(with: settings, profile: profile) { (completion) in
+    ChannelIO.boot(with: settings, profile: profile) { (completion, guest) in
       switch completion {
       case .success:
         break
