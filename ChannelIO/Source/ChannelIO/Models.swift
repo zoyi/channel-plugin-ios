@@ -25,11 +25,11 @@ public class PushEvent: NSObject {
 
 @objc
 public class Guest: NSObject {
-  @objc public var id = ""
-  @objc public var name = ""
-  @objc public var avatarUrl: String?
-  @objc public var profile: [String : Any]?
-  @objc public var alert = 0
+  @objc public let id: String
+  @objc public let name: String
+  @objc public let avatarUrl: String?
+  @objc public let profile: [String : Any]?
+  @objc public let alert: Int
   
   init(with guest: CHGuest) {
     self.id = guest.id
