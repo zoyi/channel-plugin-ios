@@ -280,7 +280,7 @@ public final class ChannelIO: NSObject {
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  @objc public class func close(animated: Bool) {
+  @objc public class func close(animated: Bool, completion: (() -> Void)? = nil) {
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation != nil else { return }
     
@@ -291,6 +291,7 @@ public final class ChannelIO: NSObject {
 
       ChannelIO.baseNavigation?.removeFromParentViewController()
       ChannelIO.baseNavigation = nil
+      completion?()
     })
   }
   
@@ -300,9 +301,9 @@ public final class ChannelIO: NSObject {
    *  - parameter chatId: a String user chat id. Will open new chat if chat id is invalid
    *  - parameter completion: a closure to signal completion state
    */
-  @objc public class func openChat(with chatId: String? = nil) {
+  @objc public class func openChat(with chatId: String? = nil, animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
-    ChannelIO.showUserChat(userChatId: chatId)
+    ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
   
   /**

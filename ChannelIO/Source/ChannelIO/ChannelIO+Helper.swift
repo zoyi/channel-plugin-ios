@@ -112,7 +112,7 @@ extension ChannelIO {
     }
   }
   
-  internal class func showUserChat(userChatId: String?) {
+  internal class func showUserChat(userChatId: String?, animated: Bool = true) {
     guard let topController = CHUtils.getTopController() else {
       return
     }
@@ -142,7 +142,7 @@ extension ChannelIO {
       let controller = MainNavigationController(rootViewController: userChatsController)
       ChannelIO.baseNavigation = controller
       
-      topController.present(controller, animated: true, completion: nil)
+      topController.present(controller, animated: animated, completion: nil)
     }
   }
   

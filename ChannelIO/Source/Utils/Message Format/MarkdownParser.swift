@@ -89,7 +89,7 @@ open class MarkdownParser {
         let parsed = parse(NSAttributedString(string: token))
         attributedString.replaceCharacters(in: range, with: parsed)
         location += parsed.string.utf16.count
-      } else if index % 2 == 1 && token != "" && (index != tokens.count - 1) {
+      } else if index % 2 == 1 && (index != tokens.count - 1) {
         let startPart = NSRange(location: range.location, length: 3)
         let endPart = NSRange(location: range.location + token.count + 3, length: 3)
         attributedString.deleteCharacters(in: endPart)

@@ -1,3 +1,12 @@
+# 3.1.3 (June 1, 2018)
+## Updates
+* Added completion callback parameter in `close:` method
+* Added animated parameter in `openChat:`
+* Updated Guest property to immutable
+
+## Bug fixes
+* Fixed edge cases in message formating
+ 
 # 3.1.2 (May 22, 2018)
 ## Updates
 * Added Guest as parameter in boot completion block

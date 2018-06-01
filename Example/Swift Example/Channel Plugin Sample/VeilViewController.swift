@@ -40,7 +40,11 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   func onClickChatLink(url: URL) -> Bool {
-    return true
+    ChannelIO.close(animated: true, completion: {
+      let viewController = UIViewController()
+      self.navigationController?.pushViewController(viewController, animated: true)
+    })
+    return false
   }
   
   @IBAction func onClickBoot() {
@@ -52,7 +56,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true
-    settings.hideDefaultLauncher = true
+
     ChannelIO.boot(with: settings) { (completion, guest) in
       
     }
