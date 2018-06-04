@@ -625,6 +625,12 @@ extension UserChatViewController {
       pickerController.showsCancelButton = true
       pickerController.maxSelectableCount = max
       pickerController.assetType = assetType
+      pickerController.assetGroupTypes = [
+        .smartAlbumUserLibrary,
+        .smartAlbumFavorites,
+        .smartAlbumVideos,
+        .albumRegular]
+    
       pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
         func uploadImage(_ userChatId: String, requestBot: Bool = false) {
           let messages = assets.map({ (asset) -> CHMessage in
