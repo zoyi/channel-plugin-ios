@@ -15,6 +15,22 @@ enum NavigationItemAlign {
   case center
 }
 
+class CHNavigationBar: UINavigationBar {
+  override func layoutSubviews() {
+    super.layoutSubviews()
+
+    if #available(iOS 11, *){
+      self.layoutMargins = UIEdgeInsets.zero
+      for subview in self.subviews {
+        if String(describing: subview.classForCoder).contains("ContentView") {
+          //let oldEdges = subview.layoutMargins
+          subview.layoutMargins = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
+        }
+      }
+    }
+  }
+}
+
 class NavigationItem: UIBarButtonItem {
   public var actionHandler: (() -> Void)?
   
@@ -30,11 +46,15 @@ class NavigationItem: UIBarButtonItem {
     button.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
     button.setTitle(text, for: .normal)
     button.imageView?.tintColor = textColor
-    button.frame = CGRect(x: 0, y: 0, width: 44, height: 40)
     button.setTitleColor(textColor, for: .normal)
     if fitToSize {
       button.sizeToFit()
     }
+    
+    button.widthAnchor.constraint(equalToConstant: 44).isActive = true
+    button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    button.translatesAutoresizingMaskIntoConstraints = false
+    
     self.init(customView: button)
     button.addTarget(self, action: #selector(barButtonItemPressed), for: .touchUpInside)
     self.actionHandler = actionHandler

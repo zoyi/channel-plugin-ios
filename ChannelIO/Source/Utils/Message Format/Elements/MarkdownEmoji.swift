@@ -10,7 +10,7 @@ import UIKit
 
 open class MarkdownEmoji: MarkdownCommonElement {
   
-  fileprivate static let regex = "(:)(.+?)(\\1)"
+  fileprivate static let regex = "(:)([a-zA-Z0-9_+-]+)(\\1)"
   
   open var font: UIFont?
   open var color: UIColor?

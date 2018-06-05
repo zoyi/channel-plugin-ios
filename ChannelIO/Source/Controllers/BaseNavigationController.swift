@@ -18,10 +18,16 @@ class BaseNavigationController: UINavigationController {
   }
 
   override init(rootViewController: UIViewController) {
-    super.init(rootViewController: rootViewController)
+    super.init(navigationBarClass: CHNavigationBar.self, toolbarClass: nil)
+    self.setViewControllers([rootViewController], animated: false)
     self.setup()
   }
 
+  override init(navigationBarClass: AnyClass?, toolbarClass: AnyClass?) {
+    super.init(navigationBarClass: navigationBarClass, toolbarClass: toolbarClass)
+    self.setup()
+  }
+  
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }

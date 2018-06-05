@@ -31,7 +31,6 @@ target 'ChannelIO' do
   pod 'Then'
   pod 'HexColors'
   pod 'CHNavBar'
-  pod 'UINavigationItem+Margin'
 
   target 'ChannelIOTests' do
     inherit! :search_paths

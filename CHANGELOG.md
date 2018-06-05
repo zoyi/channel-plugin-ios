@@ -1,3 +1,9 @@
+# 3.1.4 (June 6, 2018)
+## Bug fixes
+* Removed UINavigationItem+Margin due to iOS 11 bug
+* Fixed NavigationItem margin properly
+* Fixed emoji regex 
+
 # 3.1.3 (June 1, 2018)
 ## Updates
 * Added completion callback parameter in `close:` method

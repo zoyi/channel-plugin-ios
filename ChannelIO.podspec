@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ChannelIO'
-  s.version          = '3.1.3'
+  s.version          = '3.1.4'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -54,5 +54,4 @@ Pod::Spec.new do |s|
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit'
   s.dependency 'CHNavBar'
-  s.dependency 'UINavigationItem+Margin'
 end

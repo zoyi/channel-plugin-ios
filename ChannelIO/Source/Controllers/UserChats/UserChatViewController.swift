@@ -17,7 +17,6 @@ import CHSlackTextViewController
 import Alamofire
 import CHNavBar
 import AVKit
-import UINavigationItem_Margin
 
 final class UserChatViewController: BaseSLKTextViewController {
 
@@ -313,7 +312,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     let tintColor = mainStore.state.plugin.textUIColor
     
     if showSetting {
-      self.navigationItem.leftMargin = 0
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "settings"),
         textColor: tintColor,
@@ -323,10 +321,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     } else {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
-      
-      self.navigationItem.leftMargin = alert == 0 ? 0 : 16
-      self.navigationItem.rightMargin = 0
-      
+
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "back"),
         text: alertCount,
@@ -339,7 +334,6 @@ final class UserChatViewController: BaseSLKTextViewController {
         })
     }
 
-    self.navigationItem.rightMargin = 0
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
       textColor: tintColor,
@@ -347,6 +341,13 @@ final class UserChatViewController: BaseSLKTextViewController {
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         ChannelIO.close(animated: true)
       })
+    
+    //inefficient, but workaround to fix iOS 11 layoutMargin
+    if let bar = self.navigationController?.navigationBar,
+      bar.subviews[2].layoutMargins != UIEdgeInsets.zero {
+      bar.setNeedsLayout()
+      bar.layoutIfNeeded()
+    }
   }
   
   fileprivate func resetUserChat() -> Observable<String?>? {
