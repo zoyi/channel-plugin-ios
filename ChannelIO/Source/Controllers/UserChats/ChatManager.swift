@@ -281,6 +281,10 @@ extension ChatManager {
       self.delegate?.updateInputBar(state: .normal);
     }
   }
+  
+  func sendAction(messageId: String, key: String) {
+    
+  }
 }
 
 extension ChatManager {

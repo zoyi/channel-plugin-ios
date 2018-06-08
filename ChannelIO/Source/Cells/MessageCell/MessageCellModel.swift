@@ -38,6 +38,9 @@ protocol MessageCellModelType {
   var profileItems: [CHProfileItem] { get set }
   var currentIndex: Int { get set }
   var totalCount: Int { get set }
+  var shouldDisplayActions: Bool { get set }
+  var shouldDisplaySelectedAction: Bool { get set }
+  var selectedActionText: String { get set }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -64,6 +67,10 @@ struct MessageCellModel: MessageCellModelType {
   var profileItems: [CHProfileItem]
   var currentIndex: Int
   var totalCount: Int
+  
+  var shouldDisplayActions: Bool
+  var shouldDisplaySelectedAction: Bool
+  var selectedActionText: String = ""
   
   init(message: CHMessage, previous: CHMessage?) {
     let channel = mainStore.state.channel
@@ -93,6 +100,7 @@ struct MessageCellModel: MessageCellModelType {
     self.progress = message.progress
     self.isFailed = message.state == .Failed
     
+    //profileBot
     self.profileItems = message.profileBot ?? []
     if let index = self.profileItems.index(where: { (profileItem) -> Bool in
       return profileItem.value == nil
@@ -102,6 +110,16 @@ struct MessageCellModel: MessageCellModelType {
       self.currentIndex = self.profileItems.count - 1
     }
     self.totalCount = self.profileItems.count //max 4
+    
+    //actionable 
+    if let form = message.form {
+      self.shouldDisplayActions = form.inputs.filter({ $0.selected == true }).count == 0
+      self.shouldDisplaySelectedAction = form.inputs.filter({ $0.selected == true }).count > 0
+      self.selectedActionText = form.inputs.filter({ $0.selected == true }).first?.value?.getMessage() ?? ""
+    } else {
+      self.shouldDisplayActions = false
+      self.shouldDisplaySelectedAction = false
+    }
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

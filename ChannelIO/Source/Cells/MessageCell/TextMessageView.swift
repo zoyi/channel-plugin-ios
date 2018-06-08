@@ -73,7 +73,7 @@ class TextMessageView : BaseView {
       make.bottom.equalToSuperview().inset(Metric.topBottomPadding)
     })
   }
-
+  
   func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
 

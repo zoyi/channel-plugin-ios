@@ -166,6 +166,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: TypingIndicatorCell.self)
     self.tableView.register(cellType: WatermarkCell.self)
     self.tableView.register(cellType: ProfileCell.self)
+    self.tableView.register(cellType: ActionableMessageCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -851,6 +852,10 @@ extension UserChatViewController {
       return cell
     case .Profile:
       let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
+    case .Actionable:
+      let cell: ActionableMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
     default: //remote

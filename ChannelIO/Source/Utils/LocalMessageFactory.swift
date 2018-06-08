@@ -8,22 +8,6 @@
 
 import UIKit
 
-enum MessageType {
-  case Default
-  case WelcomeMessage
-  case DateDivider
-  case UserInfoDialog
-  case NewAlertMessage
-  case UserMessage
-  case SatisfactionFeedback
-  case SatisfactionCompleted
-  case Log
-  case WebPage
-  case Media
-  case File
-  case Profile
-}
-
 struct LocalMessageFactory {
   
   static func generate(

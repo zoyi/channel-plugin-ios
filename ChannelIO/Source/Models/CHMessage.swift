@@ -17,6 +17,23 @@ enum SendingState {
   case New, Sent, Failed
 }
 
+enum MessageType {
+  case Default
+  case WelcomeMessage
+  case DateDivider
+  case UserInfoDialog
+  case NewAlertMessage
+  case UserMessage
+  case SatisfactionFeedback
+  case SatisfactionCompleted
+  case Log
+  case WebPage
+  case Media
+  case File
+  case Profile
+  case Actionable
+}
+
 struct CHMessage: ModelType {
   // ModelType
   var id = ""
@@ -30,6 +47,7 @@ struct CHMessage: ModelType {
   var requestId: String?
   var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
+  var form: CHForm? = nil
   var createdAt: Date
 
   var readableDate: String {
@@ -153,6 +171,7 @@ extension CHMessage: Mappable {
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
     profileBot  <- map["profileBot"]
+    form        <- map["form"]
     
     if self.log != nil {
       messageType = .Log
@@ -164,7 +183,9 @@ extension CHMessage: Mappable {
       messageType = .Profile
     } else if self.webPage != nil {
       messageType = .WebPage
-    }  else {
+    } else if self.form != nil {
+      messageType = .Actionable
+    } else {
       messageType = .Default
     }
   }
