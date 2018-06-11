@@ -167,6 +167,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: WatermarkCell.self)
     self.tableView.register(cellType: ProfileCell.self)
     self.tableView.register(cellType: ActionableMessageCell.self)
+    self.tableView.register(cellType: ActionedMessageCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -184,7 +185,6 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   fileprivate func initDwifft() {
     self.tableView.reloadData()
-    //self.tableView.scrollToBottom(false)
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
       tableView: self.tableView,
       initialRows: self.messages,
@@ -519,15 +519,19 @@ extension UserChatViewController: StoreSubscriber {
       let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
       let viewModel = MessageCellModel(message: lastMessage, previous: previous)
       if lastMessage.messageType == .WebPage {
-        offset.y += WebPageMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+        offset.y += WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Media {
-        offset.y += MediaMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+        offset.y += MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .File {
-        offset.y += FileMessageCell.cellHeight(fits: 0, viewModel: viewModel)
+        offset.y += FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
         offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width - 52, viewModel: viewModel)
+      } else if lastMessage.messageType == .Actionable && viewModel.shouldDisplayActions {
+        offset.y += ActionableMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      } else if lastMessage.messageType == .Actioned {
+        offset.y += ActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else {
-        offset.y += MessageCell.cellHeight(fits: 0, viewModel: viewModel)
+        offset.y += MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       }
       
       self.tableView.contentOffset = offset
@@ -726,7 +730,7 @@ extension UserChatViewController {
       indexPath.row == self.messages.count - 1 ?
         self.messages[indexPath.row] :
         self.messages[indexPath.row + 1]
-    let viewModel = MessageCellModel(message: message, previous: previousMessage)
+    let viewModel = MessageCellModel(message: message, previous: previousMessage, indexPath: indexPath)
     switch message.messageType {
     case .DateDivider:
       return DateCell.cellHeight()
@@ -799,8 +803,11 @@ extension UserChatViewController {
       indexPath.row == self.messages.count - 1 ?
         self.messages[indexPath.row] :
         self.messages[indexPath.row + 1]
-    let viewModel = MessageCellModel(message: message, previous: previousMessage)
-    
+    let viewModel = MessageCellModel(
+      message: message,
+      previous: previousMessage,
+      indexPath: indexPath)
+
     switch message.messageType {
     case .NewAlertMessage:
       let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
@@ -870,13 +877,15 @@ extension UserChatViewController {
         return cell
       }
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
+    case .Actioned:
+      let cell: ActionedMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel)
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
+      cell.configure(viewModel, presenter: self.chatManager)
       return cell
     }
   }
@@ -997,14 +1006,6 @@ extension UserChatViewController : UIDocumentInteractionControllerDelegate {
     return UIViewController()
   }
 }
-
-//extension UserChatViewController : CHNavigationDelegate {
-//  func willPopViewController(willShow: UIViewController) {
-//    if self.userChatId != nil {
-//      self.requestReadAll()
-//    }
-//  }
-//}
 
 extension UserChatViewController : SLKInputBarViewDelegate {
   func barStateDidChange(_ state: SLKInputBarState) {

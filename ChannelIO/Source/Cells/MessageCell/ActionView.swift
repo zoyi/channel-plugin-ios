@@ -16,6 +16,8 @@ enum ActionAlignment {
   case right
 }
 
+typealias ActionKey = String
+
 class ActionButton: UIButton {
   var value: CHi18n? = nil
   var key: String = ""
@@ -32,10 +34,20 @@ class ActionButton: UIButton {
     }
   }
   
+  override var isSelected: Bool {
+    didSet {
+      self.backgroundColor = isHighlighted ? selectedColor : UIColor.white
+    }
+  }
+  
+  struct Metric {
+    static let topBottomMargin = 10.f
+    static let sideMargin = 12.f
+  }
+  
   struct Constant {
     static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
   }
-  
   
   required init(input: CHInput) {
     super.init(frame: CGRect.zero)
@@ -43,10 +55,12 @@ class ActionButton: UIButton {
     self.key = input.key
     
     let text = self.value?.getMessage() ?? ""
+    self.setTitle(text, for: .normal)
+    self.titleLabel?.lineBreakMode = .byTruncatingTail
     self.titleLabel?.numberOfLines = 2
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
     self.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-    self.setTitle(text, for: .normal)
+    self.titleLabel?.preferredMaxLayoutWidth = Constant.maxWidth
     self.setTitleColor(CHColors.dark80, for: .normal)
  
     self.layer.cornerRadius = 15.f
@@ -58,8 +72,9 @@ class ActionButton: UIButton {
       font: UIFont.systemFont(ofSize: 15),
       maximumNumberOfLines: 2)
     
-    self.width = size.width + 24
-    self.height = size.height + 20
+    self.frame = CGRect(x: 0, y: 0,
+        width: size.width + Metric.sideMargin * 2,
+        height: size.height + Metric.topBottomMargin * 2)
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -75,6 +90,12 @@ class ActionView: BaseView {
   
   struct Constant {
     static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
+  }
+  
+  struct Metric {
+    static let itemBetweenMargin = 4.f
+    static let topBottomMargin = 10.f
+    static let sideMargin = 12.f
   }
   
   override func initialize() {
@@ -112,16 +133,15 @@ class ActionView: BaseView {
     
     //layouts them based on width
     var cx = 0.f, cy = 0.f, rowCount = 0, totalCount = 0
-    let maxWidth = UIScreen.main.bounds.width - 75.f
     var lastRowCount = 0
+    var lastButton: ActionButton!
     
     for (index, button) in self.buttons.enumerated() {
       rowCount += 1
       totalCount += 1
-      if maxWidth < cx + button.width {
-        cy += button.height + 4.f
-        cx = 0.f
-        button.origin = CGPoint(x: cx, y: cy)
+      if Constant.maxWidth < cx + button.width {
+        let calcualtedY = lastButton.origin.y + lastButton.frame.height + 4.f
+        button.origin = CGPoint(x: 0.f, y: calcualtedY)
         
         if self.alignment == .right {
           let buttons = Array(self.buttons[totalCount-rowCount..<index])
@@ -129,12 +149,16 @@ class ActionView: BaseView {
         }
         
         lastRowCount = rowCount - 1
-        rowCount = 0
+        rowCount = 1
+        cx = button.width + 4.f
+        cy += button.height + 4.f
       } else {
         button.origin = CGPoint(x: cx, y: cy)
         cx += button.width + 4.f
         lastRowCount = rowCount
       }
+      
+      lastButton = button
     }
     
     if self.alignment == .right {
@@ -144,7 +168,8 @@ class ActionView: BaseView {
   }
   
   private func realignItemsToRight(buttons: [ActionButton]) {
-    let leftOverMargin =  UIScreen.main.bounds.width - 10 - (buttons.last?.origin.x ?? 0) - (buttons.last?.width ?? 0)
+    let leftOverMargin =  UIScreen.main.bounds.width - 10 -
+      (buttons.last?.origin.x ?? 0) - (buttons.last?.width ?? 0)
     guard  leftOverMargin > 0 else { return }
     
     for button in buttons {
@@ -165,18 +190,19 @@ class ActionView: BaseView {
         font: UIFont.systemFont(ofSize: 15),
         maximumNumberOfLines: 2) ?? CGSize.zero
       
-      if index == 0 {
-        cy = size.height + 20.f + 4.f
+      if Constant.maxWidth < cx + size.width {
+        cy += size.height + Metric.topBottomMargin * 2 + Metric.itemBetweenMargin
+        cx = size.width + Metric.sideMargin * 2 + Metric.itemBetweenMargin
+      } else {
+        cx += size.width + Metric.sideMargin * 2 + Metric.itemBetweenMargin
       }
       
-      if Constant.maxWidth < cx + size.width { //not fit
-        cy += size.height + 20.f + 4.f
-        cx = 0.f //default
-      } else {
-        cx += size.width + 4.f
+      if index == inputs.count - 1 {
+        cy += size.height + Metric.topBottomMargin * 2
       }
     }
-    return cy + 3
+    
+    return cy
   }
 }
 

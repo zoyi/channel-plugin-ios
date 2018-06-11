@@ -282,8 +282,15 @@ extension ChatManager {
     }
   }
   
-  func sendAction(messageId: String?, key: String?) {
+  func submitForm(messageId: String?, key: String?) {
     guard let messageId = messageId, let key = key else { return }
+    
+    let message = messageSelector(state: mainStore.state, id: messageId)
+    message?.submit(keys: [key]).subscribe(onNext: { (message) in
+      mainStore.dispatch(UpdateMessage(payload: message))
+    }, onError: { (error) in
+      
+    }).disposed(by: self.disposeBag)
   }
 }
 

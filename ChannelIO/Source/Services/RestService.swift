@@ -52,6 +52,8 @@ enum RestRouter: URLRequestConvertible {
   case RequestProfileBot(String, String)
   case UpdateProfileItem(String, ParametersType)
   
+  case SubmitForm(String, ParametersType)
+  
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -69,13 +71,15 @@ enum RestRouter: URLRequestConvertible {
   }
   //#endif
   typealias ParametersType = Parameters
- 
+  static let queue = DispatchQueue(label: "com.zoyi.channel.restapi", qos: .background, attributes: .concurrent)
+  
   var method: HTTPMethod {
     switch self {
     case .GetPluginConfiguration, .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot, .RequestProfileBot,
-         .UpdateProfileItem:
+         .UpdateProfileItem,
+         .SubmitForm:
       return .post
     case .GetChannelAvatar, .GetCurrentGuest,
          .GetMessages, .GetScripts, .GetScript,
@@ -153,6 +157,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
     case .UpdateProfileItem(let messageId, _):
       return "/app/messages/\(messageId)/profile_bot"
+    case .SubmitForm(let messageId, _):
+      return "/app/messages/\(messageId)/form"
     }
   }
   
@@ -217,7 +223,8 @@ enum RestRouter: URLRequestConvertible {
          .DoneUserChat(_, let params),
          .SendEvent(let params),
          .CreateUserChat(_, let params),
-         .UpdateProfileItem(_, let params):
+         .UpdateProfileItem(_, let params),
+         .SubmitForm(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetScripts, .GetScript,

@@ -40,7 +40,6 @@ protocol MessageCellModelType {
   var totalCount: Int { get set }
   var pluginColor: UIColor { get }
   var shouldDisplayActions: Bool { get set }
-  var shouldDisplaySelectedAction: Bool { get set }
   var selectedActionText: String { get set }
 }
 
@@ -71,13 +70,12 @@ struct MessageCellModel: MessageCellModelType {
   var totalCount: Int
   
   var shouldDisplayActions: Bool
-  var shouldDisplaySelectedAction: Bool
   var selectedActionText: String = ""
   
-  init(message: CHMessage, previous: CHMessage?) {
+  init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
-    let isContinuous = message.isContinue(previous: previous)
+    let isContinuous = message.isContinue(previous: previous) && previous?.form == nil
     let clipType = MessageCellModel.getClipType(message: message)
     let createdByMe = message.entity is CHUser || message.entity is CHVeil
 
@@ -116,13 +114,10 @@ struct MessageCellModel: MessageCellModelType {
     
     //actionable 
     if let form = message.form {
-      self.shouldDisplayActions = form.inputs.filter({ $0.selected == true }).count == 0 &&
-        userChatSelector(state: mainStore.state, userChatId: message.chatId)?.lastMessageId == message.id
-      self.shouldDisplaySelectedAction = form.inputs.filter({ $0.selected == true }).count > 0
+      self.shouldDisplayActions = form.inputs.filter({ $0.selected == true }).count == 0 && indexPath?.row == 0
       self.selectedActionText = form.inputs.filter({ $0.selected == true }).first?.value?.getMessage() ?? ""
     } else {
       self.shouldDisplayActions = false
-      self.shouldDisplaySelectedAction = false
     }
   }
 

@@ -13,13 +13,18 @@ class ActionableMessageCell: MessageCell {
   let actionView = ActionView()
   var messageId = ""
   
+  struct Metric {
+    static let top = 16.f
+    static let trailing = 10.f
+  }
+  
   override func initialize() {
     super.initialize()
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key) in
-      self?.presenter?.sendAction(messageId: self?.messageId, key: key)
+      self?.presenter?.submitForm(messageId: self?.messageId, key: key)
     }).disposed(by: self.disposeBag)
   }
   
@@ -27,10 +32,10 @@ class ActionableMessageCell: MessageCell {
     super.setLayouts()
     
     self.actionView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(16)
+      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.top)
       
       make.leading.equalToSuperview()
-      make.trailing.equalToSuperview().inset(10)
+      make.trailing.equalToSuperview().inset(Metric.trailing)
       make.bottom.equalToSuperview()
     }
   }
@@ -43,9 +48,7 @@ class ActionableMessageCell: MessageCell {
   
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
-    if !viewModel.shouldDisplayActions && !viewModel.shouldDisplaySelectedAction {
-      return height
-    }
-    return height + 16.f + ActionView.viewHeight(fits: width, inputs: viewModel.message.form?.inputs ?? [])
+    return height + Metric.top + ActionView.viewHeight(
+      fits: width, inputs: viewModel.message.form?.inputs ?? [])
   }
 }

@@ -76,7 +76,7 @@ class TextMessageView : BaseView {
   }
   
   func configure(_ viewModel: MessageCellModelType, text: String) {
-    self.backgroundColor = viewModel.bubbleBackgroundColor
+    self.backgroundColor = viewModel.pluginColor
     self.corners =  [.topLeft, .bottomRight, .bottomLeft]
     
     self.messageView.text = text
@@ -119,7 +119,7 @@ class TextMessageView : BaseView {
   
   //MARK: layout
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
-    var viewHeight : CGFloat = 0.0
+    var viewHeight: CGFloat = 0.0
 
     if let message = viewModel.message.messageV2 {
       let extraPadding: CGFloat = message.string.guessLanguage() == "日本語" ? 40 : 0
@@ -130,6 +130,16 @@ class TextMessageView : BaseView {
       viewHeight += Metric.topBottomPadding * 2
     }
 
+    return viewHeight
+  }
+  
+  class func viewHeight(fits width: CGFloat, text: String) -> CGFloat {
+    var viewHeight: CGFloat = 0.f
+    viewHeight += text.height(
+      fits: width - Metric.leftRightPadding * 2,
+      font: UIFont.systemFont(ofSize: 15))
+    viewHeight += Metric.topBottomPadding * 2
+    
     return viewHeight
   }
 }

@@ -267,6 +267,10 @@ extension CHMessage {
     return UserChatPromise.updateMessageProfile(messageId: self.id, key: key, value: value)
   }
   
+  func submit(keys: [String]) -> Observable<CHMessage> {
+    return UserChatPromise.submitForm(messageId: self.id, keys: keys)
+  }
+  
   func send() -> Observable<CHMessage> {
     if self.file != nil {
       if let mimeType = self.file?.mimeType {
