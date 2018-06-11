@@ -32,6 +32,7 @@ enum MessageType {
   case File
   case Profile
   case Actionable
+  case Actioned
 }
 
 struct CHMessage: ModelType {
@@ -183,8 +184,8 @@ extension CHMessage: Mappable {
       messageType = .Profile
     } else if self.webPage != nil {
       messageType = .WebPage
-    } else if self.form != nil {
-      messageType = .Actionable
+    } else if let form = self.form {
+      messageType = form.inputs.filter({ $0.selected == true }).count == 0 ? .Actionable : .Actioned
     } else {
       messageType = .Default
     }

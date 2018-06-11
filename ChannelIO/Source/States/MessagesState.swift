@@ -10,7 +10,7 @@ import ReSwift
 
 struct MessagesState: StateType {
   var messageDictionary: [String:CHMessage] = [:]
-  var msgQueue = [CHMessage]()
+  var formQueue: [String:CHMessage] = [:]
   
   func findBy(type: MessageType) -> [CHMessage]? {
     return self.messageDictionary.filter({$1.messageType == type}).map({ $1 })
@@ -51,6 +51,7 @@ struct MessagesState: StateType {
         self.messageDictionary.removeValue(forKey: k)
       }
     }
+    self.formQueue = [:]
     return self
   }
   
@@ -74,6 +75,10 @@ struct MessagesState: StateType {
       } else {
         self.messageDictionary[message.id] = message
       }
+      
+      if message.form != nil {
+        self.formQueue[message.id] = message
+      }
     }
     return self
   }
@@ -88,7 +93,18 @@ struct MessagesState: StateType {
     if message.requestId != nil {
       self.messageDictionary[message.requestId!] = nil
     }
+    
+    for (key, message) in self.formQueue {
+      var updated = message
+      updated.messageType = .Default
+      self.messageDictionary[key] = updated
+    }
+    
     self.messageDictionary[message.id] = message
+    if message.form != nil {
+      self.formQueue[message.id] = message
+    }
+    
     return self
   }
 }

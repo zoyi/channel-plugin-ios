@@ -52,7 +52,8 @@ class TextMessageView : BaseView {
   }
 
   var viewModel: MessageCellModelType?
-
+  var corners: UIRectCorner = [.allCorners]
+  
   //MARK: init
 
   override func initialize() {
@@ -74,9 +75,26 @@ class TextMessageView : BaseView {
     })
   }
   
+  func configure(_ viewModel: MessageCellModelType, text: String) {
+    self.backgroundColor = viewModel.bubbleBackgroundColor
+    self.corners =  [.topLeft, .bottomRight, .bottomLeft]
+    
+    self.messageView.text = text
+    self.messageView.textColor = viewModel.textColor
+    self.messageView.linkTextAttributes = [
+      NSAttributedStringKey.foregroundColor.rawValue: viewModel.textColor,
+      NSAttributedStringKey.underlineStyle.rawValue: 1]
+  }
+  
   func configure(_ viewModel: MessageCellModelType) {
-    self.viewModel = viewModel
-
+    if viewModel.isContinuous == true {
+      self.corners = [.allCorners]
+    } else if viewModel.createdByMe == true {
+      self.corners = [.topLeft, .bottomRight, .bottomLeft]
+    } else {
+      self.corners = [.topRight, .bottomRight, .bottomLeft]
+    }
+    
     self.backgroundColor = viewModel.bubbleBackgroundColor
     self.isHidden = viewModel.message.isEmpty()
     
@@ -96,14 +114,7 @@ class TextMessageView : BaseView {
   
   override func updateConstraints() {
     super.updateConstraints()
-    
-    if self.viewModel?.isContinuous == true {
-      self.roundCorners(corners: [.allCorners], radius: Constant.cornerRadius)
-    } else if self.viewModel?.createdByMe == true {
-      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
-    } else {
-      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
-    }
+    self.roundCorners(corners: self.corners, radius: Constant.cornerRadius)
   }
   
   //MARK: layout

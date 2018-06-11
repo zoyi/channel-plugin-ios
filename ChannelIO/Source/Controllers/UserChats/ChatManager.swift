@@ -282,8 +282,8 @@ extension ChatManager {
     }
   }
   
-  func sendAction(messageId: String, key: String) {
-    
+  func sendAction(messageId: String?, key: String?) {
+    guard let messageId = messageId, let key = key else { return }
   }
 }
 

@@ -393,6 +393,9 @@ extension UserChatViewController: StoreSubscriber {
     
     self.fetchChatIfNeeded()
     
+    if userChat?.lastMessageId != self.userChat?.lastMessageId {
+      self.tableView.reloadData()
+    }
     self.userChat = userChat
     self.chatManager.chat = userChat
     self.channel = state.channel
@@ -743,9 +746,15 @@ extension UserChatViewController {
       return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .Profile:
       return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+    case .Actionable:
+      if viewModel.shouldDisplayActions {
+        return ActionableMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      }
+      return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .Actioned:
+      return ActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
-      let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-      return calSize
+      return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     }
   }
 
@@ -855,8 +864,14 @@ extension UserChatViewController {
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
     case .Actionable:
-      let cell: ActionableMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
+      if viewModel.shouldDisplayActions {
+        let cell: ActionableMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        return cell
+      }
+      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.presenter = self.chatManager
+      cell.configure(viewModel)
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)

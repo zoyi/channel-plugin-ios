@@ -38,6 +38,7 @@ protocol MessageCellModelType {
   var profileItems: [CHProfileItem] { get set }
   var currentIndex: Int { get set }
   var totalCount: Int { get set }
+  var pluginColor: UIColor { get }
   var shouldDisplayActions: Bool { get set }
   var shouldDisplaySelectedAction: Bool { get set }
   var selectedActionText: String { get set }
@@ -63,6 +64,7 @@ struct MessageCellModel: MessageCellModelType {
   let messageType: MessageType
   let progress: CGFloat
   let isFailed: Bool
+  let pluginColor: UIColor
   
   var profileItems: [CHProfileItem]
   var currentIndex: Int
@@ -95,6 +97,7 @@ struct MessageCellModel: MessageCellModelType {
     self.file = message.file
     self.createdByMe = createdByMe
     self.isContinuous = isContinuous
+    self.pluginColor = UIColor(plugin.color)!
     
     self.messageType = message.messageType
     self.progress = message.progress
@@ -113,7 +116,8 @@ struct MessageCellModel: MessageCellModelType {
     
     //actionable 
     if let form = message.form {
-      self.shouldDisplayActions = form.inputs.filter({ $0.selected == true }).count == 0
+      self.shouldDisplayActions = form.inputs.filter({ $0.selected == true }).count == 0 &&
+        userChatSelector(state: mainStore.state, userChatId: message.chatId)?.lastMessageId == message.id
       self.shouldDisplaySelectedAction = form.inputs.filter({ $0.selected == true }).count > 0
       self.selectedActionText = form.inputs.filter({ $0.selected == true }).first?.value?.getMessage() ?? ""
     } else {

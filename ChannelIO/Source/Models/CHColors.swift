@@ -44,6 +44,7 @@ struct CHColors {
   static let white40 = UIColor("#ffffff66")!
   static let dark5 = UIColor("#1521280c")!
   static let dark20 = UIColor("#15212833")!
+  static let dark80 = UIColor("#516378cc")!
   static let silver = UIColor("#c0c9d0")!
   static let paleGrey20 = UIColor("#eaeff4")!
   static let brightSkyBlue = UIColor("#00c3ff")!
