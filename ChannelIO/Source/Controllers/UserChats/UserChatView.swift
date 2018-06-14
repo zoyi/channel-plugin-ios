@@ -331,7 +331,7 @@ extension UserChatView {
   }
   
   func display(typers: [CHEntity]) {
-    let indexPath = IndexPath(row: 0, section: self.channel.servicePlan == "free" ? 1 : 0)
+    let indexPath = IndexPath(row: 0, section: self.channel.servicePlan == .free ? 1 : 0)
     if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let typingCell = self.typingCell {
       typingCell.configure(typingUsers: self.chatManager.typers)
     }
@@ -642,16 +642,16 @@ extension UserChatView {
 
 extension UserChatView {
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return self.channel.servicePlan == "free" ? 3 : 2
+    return self.channel.servicePlan == .free ? 3 : 2
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if section == 1 {
-      return self.channel.servicePlan == "free" ? 1 : self.messages.count
+      return self.channel.servicePlan == .free ? 1 : self.messages.count
     } else if section == 2 {
-      return self.channel.servicePlan == "free" ? self.messages.count : 0
+      return self.channel.servicePlan == .free ? self.messages.count : 0
     }
     return 0
   }
@@ -661,7 +661,7 @@ extension UserChatView {
       return 40
     }
 
-    if indexPath.section == 1 && self.channel.servicePlan == "free" {
+    if indexPath.section == 1 && self.channel.servicePlan == .free {
       return 40
     }
 
@@ -696,7 +696,7 @@ extension UserChatView {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
-    if section == 0 && self.channel.servicePlan == "free" {
+    if section == 0 && self.channel.servicePlan == .free {
       let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
       _ = cell.signalForClick().subscribe { _ in
         let channel = mainStore.state.channel
@@ -709,7 +709,7 @@ extension UserChatView {
       }
       cell.transform = tableView.transform
       return cell
-    } else if section == 0 || (section == 1 && self.channel.servicePlan == "free") {
+    } else if section == 0 || (section == 1 && self.channel.servicePlan == .free) {
       let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
       cell.transform = tableView.transform
       return cell
@@ -924,36 +924,6 @@ extension UserChatView : SLKInputBarViewDelegate {
     }
   }
 }
-
-//extension UserChatView: ChatDelegate {
-//  func update(for element: ChatElement) {
-//    switch element {
-//    case .typing(_, _):
-//      let indexPath = IndexPath(row: 0, section: self.channel.servicePlan == "free" ? 1 : 0)
-//      if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true,
-//        let typingCell = self.typingCell {
-//        typingCell.configure(typingUsers: self.chatManager.typers)
-//      }
-//    case .photos(let urls):
-//      self.photoUrls = urls
-//      self.photoBrowser?.reloadData()
-//    default:
-//      break
-//    }
-//  }
-//
-//  func showError() {
-//    if self.shyNavBarManager.isExpanded() {
-//      self.shyNavBarManager.contract(false)
-//    }
-//    self.chatManager.didChatLoaded = false
-//    self.errorToastView.show(animated: true)
-//  }
-//
-//  func hideError() {
-//    self.errorToastView.hide(animated: true)
-//  }
-//}
 
 extension UserChatView : TLYShyNavBarManagerDelegate {
   func shyNavBarManagerTransforming(_ shyNavBarManager: TLYShyNavBarManager!, progress: CGFloat) {

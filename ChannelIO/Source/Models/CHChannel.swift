@@ -30,6 +30,12 @@ struct SortableWorkingTime {
   let order: Int
 }
 
+enum ServicePlanType: String {
+  case free = "free"
+  case startup = "startup"
+  case pro = "pro"
+}
+
 struct CHChannel: CHEntity {
   // ModelType
   var id = ""
@@ -46,7 +52,7 @@ struct CHChannel: CHEntity {
   var lunchTime: TimeRange?
   var phoneNumber: String = ""
   var requestGuestInfo = true
-  var servicePlan = ""
+  var servicePlan: ServicePlanType = .startup
   var serviceBlocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
@@ -105,7 +111,7 @@ struct CHChannel: CHEntity {
   }
   
   var shouldBlock: Bool {
-    return self.serviceBlocked || self.servicePlan == "free"
+    return self.serviceBlocked || self.servicePlan == .free
   }
   
   var shouldHideDefaultButton: Bool {

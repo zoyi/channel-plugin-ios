@@ -31,12 +31,20 @@ class ActionButton: UIButton {
   override open var isHighlighted: Bool {
     didSet {
       self.backgroundColor = isHighlighted ? selectedColor : UIColor.white
-    }
-  }
-  
-  override var isSelected: Bool {
-    didSet {
-      self.backgroundColor = isHighlighted ? selectedColor : UIColor.white
+      if isHighlighted {
+        self.layer.shadowColor = CHColors.dark50.cgColor
+        self.layer.shadowOpacity = 0.2
+        self.layer.shadowOffset = CGSize(width: 0, height: 2)
+        self.layer.shadowRadius = 4
+        self.layer.borderWidth = 0
+      } else {
+        self.layer.shadowColor = UIColor.clear.cgColor
+        self.layer.shadowOpacity = 0
+        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+        self.layer.shadowRadius = 0
+        self.layer.borderWidth = 1
+        self.layer.borderColor = CHColors.dark50.cgColor
+      }
     }
   }
   
@@ -61,11 +69,11 @@ class ActionButton: UIButton {
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
     self.titleLabel?.font = UIFont.systemFont(ofSize: 15)
     self.titleLabel?.preferredMaxLayoutWidth = Constant.maxWidth
-    self.setTitleColor(CHColors.dark80, for: .normal)
+    self.setTitleColor(CHColors.dark50, for: .normal)
  
     self.layer.cornerRadius = 15.f
     self.layer.borderWidth = 1.f
-    self.layer.borderColor = CHColors.dark80.cgColor
+    self.layer.borderColor = CHColors.dark50.cgColor
     
     let size = text.size(
       fits: CGSize(width: Constant.maxWidth, height: 10000),

@@ -326,7 +326,7 @@ public final class ChannelIO: NSObject {
       "os": "\(UIDevice.current.systemName)_\(UIDevice.current.systemVersion)",
       "screenWidth": UIScreen.main.bounds.width,
       "screenHeight": UIScreen.main.bounds.height,
-      "plan": mainStore.state.channel.servicePlan
+      "plan": mainStore.state.channel.servicePlan.rawValue
     ])
   }
   
