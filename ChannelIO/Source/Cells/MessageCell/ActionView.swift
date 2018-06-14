@@ -132,37 +132,33 @@ class ActionView: BaseView {
     }
     
     //layouts them based on width
-    var cx = 0.f, cy = 0.f, rowCount = 0, totalCount = 0
-    var lastRowCount = 0
+    var cx = 0.f, cy = 0.f
+    var firstRowIndex = 0
     var lastButton: ActionButton!
     
     for (index, button) in self.buttons.enumerated() {
-      rowCount += 1
-      totalCount += 1
       if Constant.maxWidth < cx + button.width {
         let calcualtedY = lastButton.origin.y + lastButton.frame.height + 4.f
         button.origin = CGPoint(x: 0.f, y: calcualtedY)
         
         if self.alignment == .right {
-          let buttons = Array(self.buttons[totalCount-rowCount..<index])
+          let buttons = Array(self.buttons[firstRowIndex..<index])
           self.realignItemsToRight(buttons: buttons)
         }
-        
-        lastRowCount = rowCount - 1
-        rowCount = 1
+
         cx = button.width + 4.f
         cy += button.height + 4.f
+        firstRowIndex = index
       } else {
         button.origin = CGPoint(x: cx, y: cy)
         cx += button.width + 4.f
-        lastRowCount = rowCount
       }
       
       lastButton = button
     }
     
     if self.alignment == .right {
-      let buttons = Array(self.buttons[totalCount-lastRowCount..<self.buttons.count])
+      let buttons = Array(self.buttons[firstRowIndex..<self.buttons.count])
       self.realignItemsToRight(buttons: buttons)
     }
   }
@@ -190,19 +186,22 @@ class ActionView: BaseView {
         font: UIFont.systemFont(ofSize: 15),
         maximumNumberOfLines: 2) ?? CGSize.zero
       
-      if Constant.maxWidth < cx + size.width {
-        cy += size.height + Metric.topBottomMargin * 2 + Metric.itemBetweenMargin
-        cx = size.width + Metric.sideMargin * 2 + Metric.itemBetweenMargin
+      let width = size.width + Metric.sideMargin * 2
+      let height = size.height + Metric.topBottomMargin * 2
+      
+      if Constant.maxWidth < cx + width {
+        cy += height + Metric.itemBetweenMargin
+        cx = width  + Metric.itemBetweenMargin
       } else {
-        cx += size.width + Metric.sideMargin * 2 + Metric.itemBetweenMargin
+        cx += width + Metric.itemBetweenMargin
       }
       
       if index == inputs.count - 1 {
-        cy += size.height + Metric.topBottomMargin * 2
+        cy += height
       }
     }
     
-    return cy
+    return cy 
   }
 }
 
