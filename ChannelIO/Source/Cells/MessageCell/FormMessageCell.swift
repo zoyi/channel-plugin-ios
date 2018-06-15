@@ -1,5 +1,5 @@
 //
-//  ActionableMessageCell.swift
+//  FormMessageCell.swift
 //  ChannelIO
 //
 //  Created by Haeun Chung on 08/06/2018.
@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-class ActionableMessageCell: MessageCell {
+class FormMessageCell: MessageCell {
   let actionView = ActionView()
   var messageId = ""
   

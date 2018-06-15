@@ -31,7 +31,7 @@ enum MessageType {
   case Media
   case File
   case Profile
-  case Actionable
+  case Form
   case Actioned
 }
 
@@ -115,9 +115,11 @@ extension CHMessage: Mappable {
        id: String? = nil) {
     let now = Date()
     let requestId = "\(now.timeIntervalSince1970 * 1000)"
+    let trimmedMessage = message.trimmingCharacters(in: .newlines)
+    
     self.id = id ?? requestId
-    self.message = message
-    self.messageV2 = CustomMessageTransform.markdown.parse(message)
+    self.message = trimmedMessage
+    self.messageV2 = CustomMessageTransform.markdown.parse(trimmedMessage)
     self.requestId = requestId
     self.chatId = chatId
     self.createdAt = createdAt ?? now
@@ -131,6 +133,8 @@ extension CHMessage: Mappable {
   init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(now.timeIntervalSince1970 * 1000)"
+    let trimmedMessage = message.trimmingCharacters(in: .newlines)
+    
     self.id = requestId
     self.chatType = "UserChat"
     self.chatId = chatId
@@ -141,8 +145,8 @@ extension CHMessage: Mappable {
     self.state = .New
     self.messageType = messageType
     self.progress = 1
-    self.message = self.format(message: message)
-    self.messageV2 = CustomMessageTransform.markdown.parse(self.message ?? "")
+    self.message = self.format(message: trimmedMessage)
+    self.messageV2 = CustomMessageTransform.markdown.parse(trimmedMessage)
   }
   
   init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset) {
@@ -185,7 +189,7 @@ extension CHMessage: Mappable {
     } else if self.webPage != nil {
       messageType = .WebPage
     } else if let form = self.form {
-      messageType = form.inputs.filter({ $0.selected == true }).count == 0 ? .Actionable : .Actioned
+      messageType = form.inputs.filter({ $0.selected == true }).count == 0 ? .Form : .Actioned
     } else {
       messageType = .Default
     }

@@ -46,6 +46,7 @@ final class PhoneActionView: BaseView, Actionable {
     $0.font = UIFont.systemFont(ofSize: 18)
     $0.textColor = CHColors.dark
     $0.textAlignment = .center
+    $0.text = ""
   }
   
   let arrowDownView = UIImageView().then {
@@ -102,7 +103,8 @@ final class PhoneActionView: BaseView, Actionable {
         mainStore.dispatch(GetCountryCodes(payload: countries))
         return UtilityPromise.getGeoIP()
       }.subscribe(onNext: { [weak self] (geoInfo) in
-        if let countryCode = CHUtils.getCountryDialCode(countryCode: geoInfo.country) {
+        if let countryCode = CHUtils.getCountryDialCode(countryCode: geoInfo.country),
+          let text = self?.countryLabel.text, text == "" {
           self?.countryLabel.text = "+" + countryCode
         }
         self?.phoneField.defaultRegion = geoInfo.country
@@ -187,7 +189,7 @@ extension PhoneActionView {
         let phKit = PhoneNumberKit()
         let phoneNumber = try phKit.parse(value)
         
-        self.countryLabel.text = "\(phoneNumber.countryCode)"
+        self.countryLabel.text = "+\(phoneNumber.countryCode)"
         self.phoneField.text = "\(phoneNumber.nationalNumber)"
       }
       catch {

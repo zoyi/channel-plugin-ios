@@ -166,8 +166,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: TypingIndicatorCell.self)
     self.tableView.register(cellType: WatermarkCell.self)
     self.tableView.register(cellType: ProfileCell.self)
-    self.tableView.register(cellType: ActionableMessageCell.self)
-    self.tableView.register(cellType: ActionedMessageCell.self)
+    self.tableView.register(cellType: FormMessageCell.self)
+    self.tableView.register(cellType: FormActionedMessageCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -533,10 +533,10 @@ extension UserChatViewController: StoreSubscriber {
         offset.y += FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
         offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width - 52, viewModel: viewModel)
-      } else if lastMessage.messageType == .Actionable && viewModel.shouldDisplayActions {
-        offset.y += ActionableMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      } else if lastMessage.messageType == .Form && viewModel.shouldDisplayForm {
+        offset.y += FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Actioned {
-        offset.y += ActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+        offset.y += FormActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       }
@@ -757,13 +757,13 @@ extension UserChatViewController {
       return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .Profile:
       return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-    case .Actionable:
-      if viewModel.shouldDisplayActions {
-        return ActionableMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .Form:
+      if viewModel.shouldDisplayForm {
+        return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       }
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     case .Actioned:
-      return ActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return FormActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     }
@@ -877,9 +877,9 @@ extension UserChatViewController {
       let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
-    case .Actionable:
-      if viewModel.shouldDisplayActions {
-        let cell: ActionableMessageCell = tableView.dequeueReusableCell(for: indexPath)
+    case .Form:
+      if viewModel.shouldDisplayForm {
+        let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         return cell
       }
@@ -887,7 +887,7 @@ extension UserChatViewController {
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
     case .Actioned:
-      let cell: ActionedMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      let cell: FormActionedMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel)
       return cell
     default: //remote

@@ -1,5 +1,5 @@
 //
-//  ActionedMessageCell.swift
+//  FormActionedMessageCell.swift
 //  ChannelIO
 //
 //  Created by Haeun Chung on 11/06/2018.
@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-class ActionedMessageCell: MessageCell {
+class FormActionedMessageCell: MessageCell {
   let actionedMessageView = TextMessageView()
   
   override func initialize() {

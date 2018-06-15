@@ -128,7 +128,7 @@ class ChatManager {
           self?.removeTimer(with: person)
           self?.delegate?.update(for: .typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
         }
-        self?.shouldRedrawProfileBot = true
+        self?.shouldRedrawProfileBot = message.profileBot?.count != 0
 //        let messages = messagesSelector(state: mainStore.state, userChatId: s.chatId)
 //        s.delegate?.updateFor(element: .messages(obj: messages))
       })

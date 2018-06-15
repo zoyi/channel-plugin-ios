@@ -39,7 +39,7 @@ protocol MessageCellModelType {
   var currentIndex: Int { get set }
   var totalCount: Int { get set }
   var pluginColor: UIColor { get }
-  var shouldDisplayActions: Bool { get set }
+  var shouldDisplayForm: Bool { get set }
   var selectedActionText: String { get set }
 }
 
@@ -69,7 +69,7 @@ struct MessageCellModel: MessageCellModelType {
   var currentIndex: Int
   var totalCount: Int
   
-  var shouldDisplayActions: Bool
+  var shouldDisplayForm: Bool
   var selectedActionText: String = ""
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
@@ -114,10 +114,10 @@ struct MessageCellModel: MessageCellModelType {
     
     //actionable 
     if let form = message.form {
-      self.shouldDisplayActions = form.inputs.filter({ $0.selected == true }).count == 0 && indexPath?.row == 0
+      self.shouldDisplayForm = form.inputs.filter({ $0.selected == true }).count == 0 && indexPath?.row == 0
       self.selectedActionText = form.inputs.filter({ $0.selected == true }).first?.value?.getMessage() ?? ""
     } else {
-      self.shouldDisplayActions = false
+      self.shouldDisplayForm = false
     }
   }
 
