@@ -15,7 +15,7 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false) -> [CHUserCh
       return m1Last.createdAt > m2Last.createdAt
     }
     return c1.updatedAt! > c2.updatedAt!
-  }.filter ({ $0.state != "removed" && $0.lastMessageId != nil })
+  }.filter ({ $0.state != "removed" && $0.appMessageId != nil })
   
   if !showCompleted {
     userChats = userChats.filter({ (userChat) in
@@ -40,9 +40,9 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false) -> [CHUserCh
       followedBy: userChat.followedBy,
       hostId: userChat.hostId,
       hostType: userChat.hostType,
-      lastMessageId: userChat.lastMessageId,
+      appMessageId: userChat.appMessageId,
       resolutionTime: userChat.resolutionTime,
-      lastMessage: state.messagesState.findBy(id: userChat.lastMessageId),
+      lastMessage: state.messagesState.findBy(id: userChat.appMessageId),
       session: state.sessionsState.findBy(userChatId: userChat.id),
       lastTalkedHost: personSelector(state: state, personType: userChat.hostType, personId: userChat.hostId),
       channel: state.channel
@@ -71,9 +71,9 @@ func userChatSelector(state: AppState, userChatId: String?) -> CHUserChat? {
     followedBy: userChat.followedBy,
     hostId: userChat.hostId,
     hostType: userChat.hostType,
-    lastMessageId: userChat.lastMessageId,
+    appMessageId: userChat.appMessageId,
     resolutionTime: userChat.resolutionTime,
-    lastMessage: state.messagesState.findBy(id: userChat.lastMessageId),
+    lastMessage: state.messagesState.findBy(id: userChat.appMessageId),
     session: state.sessionsState.findBy(userChatId: userChat.id),
     lastTalkedHost: personSelector(state: state, personType: userChat.hostType, personId: userChat.hostId),
     channel: state.channel

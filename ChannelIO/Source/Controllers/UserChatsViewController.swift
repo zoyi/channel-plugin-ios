@@ -344,15 +344,9 @@ extension UserChatsViewController: UIScrollViewDelegate {
     if self.scrollOffset < yOffset && self.scrollOffset > 0 &&
       yOffset < scrollView.contentSize.height - scrollView.bounds.height {
       self.hidePlusButton()
-    } else if self.scrollOffset > yOffset &&
-      self.scrollOffset < scrollView.contentSize.height {
-      self.showPlusButton()
     }
     
-    //if close to bottom show watermark
-    //else hide
     self.scrollOffset = yOffset
-    
     self.showWatermarkIfNeeded()
   }
   
@@ -364,6 +358,14 @@ extension UserChatsViewController: UIScrollViewDelegate {
     if yOffset >= triggerPoint && self.nextSeq != 0{
       self.fetchUserChats()
     }
+  }
+  
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    self.showPlusButton()
+  }
+  
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    self.showPlusButton()
   }
 }
 

@@ -235,6 +235,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     }).disposed(by: self.disposeBag)
     
     self.navigationItem.titleView = titleView
+    if let previousTitleView = self.titleView {
+      titleView.isExpanded = previousTitleView.isExpanded
+    }
     self.titleView = titleView
     
     self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -277,6 +280,10 @@ final class UserChatViewController: BaseSLKTextViewController {
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
+    }
+    
+    if let expanded = self.titleView?.isExpanded, expanded {
+      self.shyNavBarManager.expand(false)
     }
   }
 
@@ -393,7 +400,7 @@ extension UserChatViewController: StoreSubscriber {
     
     self.fetchChatIfNeeded()
     
-    if userChat?.lastMessageId != self.userChat?.lastMessageId {
+    if userChat?.appMessageId != self.userChat?.appMessageId {
       self.tableView.reloadData()
     }
     self.userChat = userChat

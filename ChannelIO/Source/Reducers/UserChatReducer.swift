@@ -14,12 +14,8 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   //TODO: refactor action name 
   //like.. SuccessGetUserChat
   case let action as GetUserChats:
-    //state?.error = nil
     state?.nextSeq = action.payload["next"] as! Int64
     return state?.upsert(userChats: (action.payload["userChats"] as? [CHUserChat]) ?? []) ?? UserChatsState()
-  //case let action as FailedGetUserChats:
-  //  state?.error = action.error
-  //  return state ?? UserChatsState()
   case let action as GetUserChat:
     let userChat = action.payload.userChat
     return state?.upsert(userChat: userChat) ?? UserChatsState()
@@ -47,6 +43,8 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
       state?.showCompletedChats = show
     }
     return state ?? UserChatsState()
+  case _ as CheckInSuccess:
+    return UserChatsState()
   case _ as CheckOutSuccess:
     return UserChatsState()
   default:

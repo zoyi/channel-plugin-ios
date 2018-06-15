@@ -29,7 +29,7 @@ struct CHUserChat: ModelType {
   var hostId: String?
   var hostType: String?
   
-  var lastMessageId: String?
+  var appMessageId: String?
   var resolutionTime: Int = 0
   
   var readableUpdatedAt: String {
@@ -71,7 +71,7 @@ extension CHUserChat: Mappable {
     resolvedAt       <- (map["resolvedAt"], CustomDateTransform())
     updatedAt        <- (map["updatedAt"], CustomDateTransform())
     followedBy       <- map["followedBy"]
-    lastMessageId    <- map["lastMessageId"]
+    appMessageId     <- map["appMessageId"]
     hostId           <- map["hostId"]
     hostType         <- map["hostType"]
     

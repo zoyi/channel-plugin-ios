@@ -34,10 +34,18 @@ struct UserChatsState: StateType {
     return self
   }
   
+  mutating func removeAll() -> UserChatsState {
+    self.userChats = [:]
+    self.nextSeq = 0
+    self.currentUserChatId = ""
+    self.lastMessages = [:]
+    return self
+  }
+  
   mutating func upsert(userChat: CHUserChat?) -> UserChatsState {
     guard let userChat = userChat else { return self }
     self.userChats[userChat.id] = userChat
-    if let lastId = userChat.lastMessageId {
+    if let lastId = userChat.appMessageId {
       self.lastMessages[lastId] = lastId
     }
     
