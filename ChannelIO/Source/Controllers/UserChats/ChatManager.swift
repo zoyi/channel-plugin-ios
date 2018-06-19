@@ -227,13 +227,15 @@ extension ChatManager {
 }
 
 extension ChatManager {
-  func sendMessage(userChatId: String, text: String) -> Observable<CHMessage?> {
+  func sendMessage(userChatId: String, text: String, originId: String? = nil, key: String? = nil) -> Observable<CHMessage?> {
     return Observable.create({ (subscriber) in
       let me = mainStore.state.guest
       var message = CHMessage(chatId: userChatId, guest: me, message: text)
+      if let originId = originId, let key = key {
+        message.submit = CHSubmit(id: originId, key: key)
+      }
       
       mainStore.dispatch(CreateMessage(payload: message))
-      //self.scrollToBottom(false)
       
       let signal = message.send().subscribe(onNext: { [weak self] (updated) in
         dlog("Message has been sent successfully")
@@ -282,12 +284,12 @@ extension ChatManager {
     }
   }
   
-  func submitForm(messageId: String?, key: String?) {
-    guard let messageId = messageId, let key = key else { return }
+  func submitForm(originId: String?, key: String?, value: String?) {
+    guard let originId = originId, let key = key, let value = value else { return }
     
-    let message = messageSelector(state: mainStore.state, id: messageId)
-    message?.submit(keys: [key]).subscribe(onNext: { (message) in
-      mainStore.dispatch(UpdateMessage(payload: message))
+    self.sendMessage(userChatId: self.chatId, text: value, originId: originId, key: key)
+      .subscribe(onNext: { (message) in
+      
     }, onError: { (error) in
       
     }).disposed(by: self.disposeBag)

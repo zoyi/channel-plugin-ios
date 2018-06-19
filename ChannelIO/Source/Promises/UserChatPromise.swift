@@ -253,14 +253,19 @@ struct UserChatPromise {
   static func createMessage(
     userChatId: String,
     message: String,
-    requestId: String) -> Observable<CHMessage> {
+    requestId: String,
+    submit: CHSubmit? = nil) -> Observable<CHMessage> {
     return Observable.create { subscriber in
-      let params = [
-        "body": [
-          "message": message,
-          "requestId": requestId
-        ]
+      var params = [
+        "body": [String: AnyObject]()
       ]
+      
+      params["body"]?["message"] = message as AnyObject?
+      params["body"]?["requestId"] = requestId as AnyObject?
+      
+      if let submit = submit {
+        params["body"]?["submit"] = submit as AnyObject?
+      }
       
       let req = Alamofire.request(RestRouter.CreateMessage(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)

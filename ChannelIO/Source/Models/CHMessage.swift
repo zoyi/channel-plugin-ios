@@ -32,7 +32,20 @@ enum MessageType {
   case File
   case Profile
   case Form
-  case Actioned
+}
+
+struct CHSubmit {
+  var id: String = ""
+  var key: String = ""
+}
+
+extension CHSubmit: Mappable {
+  init?(map: Map) { }
+  
+  mutating func mapping(map: Map) {
+    id        <- map["id"]
+    key       <- map["key"]
+  }
 }
 
 struct CHMessage: ModelType {
@@ -49,6 +62,7 @@ struct CHMessage: ModelType {
   var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
   var form: CHForm? = nil
+  var submit: CHSubmit? = nil
   var createdAt: Date
 
   var readableDate: String {
@@ -177,6 +191,7 @@ extension CHMessage: Mappable {
     botOption   <- map["botOption"]
     profileBot  <- map["profileBot"]
     form        <- map["form"]
+    submit      <- map["submit"]
     
     if self.log != nil {
       messageType = .Log
@@ -188,8 +203,8 @@ extension CHMessage: Mappable {
       messageType = .Profile
     } else if self.webPage != nil {
       messageType = .WebPage
-    } else if let form = self.form {
-      messageType = form.inputs.filter({ $0.selected == true }).count == 0 ? .Form : .Actioned
+    } else if self.form != nil {
+      messageType = .Form
     } else {
       messageType = .Default
     }
@@ -330,7 +345,8 @@ extension CHMessage {
       let disposable = UserChatPromise.createMessage(
         userChatId: self.chatId,
         message: self.message ?? "",
-        requestId: self.requestId!).subscribe(onNext: { (message) in
+        requestId: self.requestId!,
+        submit: self.submit).subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)

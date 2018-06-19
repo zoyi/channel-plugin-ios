@@ -9,9 +9,20 @@
 import Foundation
 import ObjectMapper
 
+enum FormOptionKey: String {
+  case disableToManager
+}
+
+enum FormType : String {
+  case select
+  case button
+}
+
 struct CHForm {
-  var type: String = ""
+  var type: FormType = .select
   var inputs: [CHInput] = []
+  var closed: Bool = false
+  var option: [FormOptionKey: Bool] = [:]
 }
 
 extension CHForm: Mappable {
@@ -20,13 +31,14 @@ extension CHForm: Mappable {
   mutating func mapping(map: Map) {
     type        <- map["type"]
     inputs      <- map["inputs"]
+    option      <- map["option"]
+    closed      <- map["closed"]
   }
 }
 
 struct CHInput {
   var key: String = ""
   var value: CHi18n? = nil
-  var selected: Bool? = nil
 }
 
 extension CHInput: Mappable {
@@ -35,6 +47,5 @@ extension CHInput: Mappable {
   mutating func mapping(map: Map) {
     key         <- map["key"]
     value       <- map["value"]
-    selected    <- map["selected"]
   }
 }

@@ -16,7 +16,7 @@ enum ActionAlignment {
   case right
 }
 
-typealias ActionKey = String
+typealias SubmitForm = (String, String)
 
 class ActionButton: UIButton {
   var value: CHi18n? = nil
@@ -94,7 +94,7 @@ class ActionView: BaseView {
   var buttons: [ActionButton] = []
   var contentView = UIView()
   var alignment: ActionAlignment = .right
-  var actionSubject = PublishSubject<ActionKey>()
+  var actionSubject = PublishSubject<SubmitForm>()
   
   struct Constant {
     static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
@@ -135,7 +135,7 @@ class ActionView: BaseView {
       self.contentView.addSubview(button)
       self.buttons.append(button)
       _ = button.signalForClick().subscribe(onNext: { [weak self] (_) in
-        self?.actionSubject.onNext(button.key)
+        self?.actionSubject.onNext((button.key, button.value?.getMessage() ?? ""))
       })
     }
     
@@ -181,7 +181,7 @@ class ActionView: BaseView {
     }
   }
 
-  func observeAction() -> Observable<ActionKey> {
+  func observeAction() -> Observable<SubmitForm> {
     return self.actionSubject.asObservable()
   }
   

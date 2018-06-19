@@ -73,7 +73,6 @@
 		656C98501FC6A4200064F53E /* ChatStatusFollowedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984F1FC6A4200064F53E /* ChatStatusFollowedView.swift */; };
 		656FBFAB20CA51E50062C6A9 /* FormMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */; };
 		656FBFAF20CA53B60062C6A9 /* CHForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAE20CA53B50062C6A9 /* CHForm.swift */; };
-		656FBFB120CE0D720062C6A9 /* FormActionedMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFB020CE0D720062C6A9 /* FormActionedMessageCell.swift */; };
 		656FBFB320CE16980062C6A9 /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFB220CE16980062C6A9 /* ActionView.swift */; };
 		659001312068CD200054B353 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001302068CD1F0054B353 /* MarkdownParser.swift */; };
 		659001432068CD7D0054B353 /* MarkdownCodeEscaping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001352068CD7D0054B353 /* MarkdownCodeEscaping.swift */; };
@@ -350,7 +349,6 @@
 		656C984F1FC6A4200064F53E /* ChatStatusFollowedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusFollowedView.swift; sourceTree = "<group>"; };
 		656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormMessageCell.swift; sourceTree = "<group>"; };
 		656FBFAE20CA53B50062C6A9 /* CHForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHForm.swift; sourceTree = "<group>"; };
-		656FBFB020CE0D720062C6A9 /* FormActionedMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormActionedMessageCell.swift; sourceTree = "<group>"; };
 		656FBFB220CE16980062C6A9 /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
 		659001302068CD1F0054B353 /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		659001352068CD7D0054B353 /* MarkdownCodeEscaping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownCodeEscaping.swift; sourceTree = "<group>"; };
@@ -1133,7 +1131,6 @@
 				65CB1415206A02F200E456B5 /* WebPageMessageView.swift */,
 				656FBFB220CE16980062C6A9 /* ActionView.swift */,
 				656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */,
-				656FBFB020CE0D720062C6A9 /* FormActionedMessageCell.swift */,
 			);
 			path = MessageCell;
 			sourceTree = "<group>";
@@ -1584,7 +1581,6 @@
 				65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */,
 				655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */,
 				659001492068CD7D0054B353 /* MarkdownCode.swift in Sources */,
-				656FBFB120CE0D720062C6A9 /* FormActionedMessageCell.swift in Sources */,
 				659793A61FA716CB00840F6A /* BaseView.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,
 				659001442068CD7D0054B353 /* MarkdownEscaping.swift in Sources */,

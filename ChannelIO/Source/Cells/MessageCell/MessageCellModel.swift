@@ -112,13 +112,8 @@ struct MessageCellModel: MessageCellModelType {
     }
     self.totalCount = self.profileItems.count //max 4
     
-    //actionable 
-    if let form = message.form {
-      self.shouldDisplayForm = form.inputs.filter({ $0.selected == true }).count == 0 && indexPath?.row == 0
-      self.selectedActionText = form.inputs.filter({ $0.selected == true }).first?.value?.getMessage() ?? ""
-    } else {
-      self.shouldDisplayForm = false
-    }
+    //form : select
+    self.shouldDisplayForm = message.form != nil && indexPath?.row == 0
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

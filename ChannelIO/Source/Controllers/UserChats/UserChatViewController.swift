@@ -167,7 +167,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: WatermarkCell.self)
     self.tableView.register(cellType: ProfileCell.self)
     self.tableView.register(cellType: FormMessageCell.self)
-    self.tableView.register(cellType: FormActionedMessageCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -535,8 +534,6 @@ extension UserChatViewController: StoreSubscriber {
         offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width - 52, viewModel: viewModel)
       } else if lastMessage.messageType == .Form && viewModel.shouldDisplayForm {
         offset.y += FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-      } else if lastMessage.messageType == .Actioned {
-        offset.y += FormActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       }
@@ -762,8 +759,6 @@ extension UserChatViewController {
         return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       }
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-    case .Actioned:
-      return FormActionedMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     }
@@ -885,10 +880,6 @@ extension UserChatViewController {
       }
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
-      return cell
-    case .Actioned:
-      let cell: FormActionedMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel)
       return cell
     default: //remote
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)

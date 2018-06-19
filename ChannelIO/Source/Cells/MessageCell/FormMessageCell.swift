@@ -23,8 +23,8 @@ class FormMessageCell: MessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
-      .subscribe(onNext: { [weak self] (key) in
-      self?.presenter?.submitForm(messageId: self?.messageId, key: key)
+      .subscribe(onNext: { [weak self] (key, value) in
+      self?.presenter?.submitForm(originId: self?.messageId, key: key, value: value)
     }).disposed(by: self.disposeBag)
   }
   
