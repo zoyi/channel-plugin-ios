@@ -111,7 +111,7 @@ class TextMessageView : BaseView {
     var viewHeight : CGFloat = 0.0
 
     if let message = viewModel.message.messageV2 {
-      let extraPadding: CGFloat = message.string.guessLanguage() == "日本語" ? 40 : 0
+      let extraPadding: CGFloat = 5.f //message.string.guessLanguage() == "日本語" ? 40 : 0
       var range = NSRange(location:0, length: message.string.count)
       viewHeight += message.string.height(
         fits: width - extraPadding - Metric.leftRightPadding * 2,

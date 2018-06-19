@@ -60,8 +60,6 @@ class ChatManager {
   
   fileprivate var messageDispose: Disposable?
   fileprivate var typingDispose: Disposable?
-  fileprivate var notiDispose: Disposable?
-  fileprivate var dispearDispose: Disposable?
   
   var typers: [CHEntity] {
     get {
@@ -81,6 +79,8 @@ class ChatManager {
     self.chat = userChatSelector(
       state: mainStore.state,
       userChatId: id)
+    
+    self.observeAppState()
   }
   
   fileprivate func observeSocketEvents() {
@@ -88,34 +88,27 @@ class ChatManager {
     self.observeChatEvents()
     self.observeSessionEvents()
     self.observeTypingEvents()
-    self.observeAppState()
   }
   
   fileprivate func disposeSignals() {
     self.messageDispose?.dispose()
-    self.notiDispose?.dispose()
     self.typingDispose?.dispose()
-    self.dispearDispose?.dispose()
   }
   
   fileprivate func observeAppState() {
-    self.notiDispose = NotificationCenter.default
+    NotificationCenter.default
       .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
-        if self?.chatId == "" {
-          self?.didFetchInfo = false
-        }
-        self?.didChatLoaded = false
         self?.willAppear()
-      }
+      }.disposed(by: self.disposeBag)
     
-    self.dispearDispose = NotificationCenter.default
+    NotificationCenter.default
       .rx.notification(Notification.Name.UIApplicationWillResignActive)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.willDisappear()
-      }
+      }.disposed(by: self.disposeBag)
   }
   
   fileprivate func observeMessageEvents() {
@@ -135,7 +128,16 @@ class ChatManager {
   }
   
   fileprivate func observeChatEvents() { }
-  fileprivate func observeSessionEvents() { }
+  fileprivate func observeSessionEvents() {
+    _ = WsService.shared.joined()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (chatId) in
+      if self?.chatId == "" {
+        self?.didFetchInfo = false
+      }
+      self?.didChatLoaded = false
+    })
+  }
   
   fileprivate func observeTypingEvents() {
     self.typingDispose = WsService.shared.typingSubject
@@ -276,9 +278,9 @@ extension ChatManager {
   func profileIsFocus(focus: Bool) {
     self.profileIsFocus = focus
     if focus {
-      self.delegate?.updateInputBar(state: .disabled);
+      self.delegate?.updateInputBar(state: .disabled)
     } else {
-      self.delegate?.updateInputBar(state: .normal);
+      self.delegate?.updateInputBar(state: .normal)
     }
   }
 }
@@ -328,6 +330,9 @@ extension ChatManager {
       let signal = CHUserChat.get(userChatId: s.chatId)
         .subscribe(onNext: { (response) in
           self?.didChatLoaded = true
+          //due to message update step were not desirable
+          var response = response
+          response.message = nil
           mainStore.dispatch(GetUserChat(payload: response))
         
           self?.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)

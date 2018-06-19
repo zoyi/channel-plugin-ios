@@ -80,7 +80,7 @@ class UserChatsViewController: BaseViewController {
     
     self.initTableView()
     self.initActions()
-    //self.initNotifications()
+    self.initNotifications()
     
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     self.fetchUserChats(isInit: true, showIndicator: true)
@@ -104,7 +104,9 @@ class UserChatsViewController: BaseViewController {
     NotificationCenter.default.rx
       .notification(NSNotification.Name.UIApplicationDidBecomeActive)
       .subscribe(onNext: { [weak self] (_) in
-        self?.fetchUserChats(isInit: true)
+        if let controller = CHUtils.getTopController(), controller == self {
+          self?.fetchUserChats(isInit: true, showIndicator: true, isReload: true)
+        }
       }).disposed(by: self.disposeBag)
   }
   
@@ -436,14 +438,14 @@ extension UserChatsViewController: UITableViewDelegate {
 }
 
 extension UserChatsViewController {
-  func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false) {
+  func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false, isReload: Bool = true) {
     UserChatPromise.getChats(
       since: isInit ? nil : self.nextSeq,
       limit: 30, sortOrder: "DESC",
       showCompleted: self.showCompleted)
       .subscribe(onNext: { [weak self] (data) in
         self?.didLoad = true
-        self?.showChatIfNeeded(data["userChats"] as? [CHUserChat])
+        self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
 
         mainStore.dispatch(GetUserChats(payload: data))
         //SVProgressHUD.dismiss()
@@ -482,12 +484,12 @@ extension UserChatsViewController {
     }
   }
   
-  func showChatIfNeeded(_ userChats: [CHUserChat]?) {
+  func showChatIfNeeded(_ userChats: [CHUserChat]?, isReload: Bool = false) {
     if self.showNewChat  {
       self.showUserChat(animated: false)
     } else if let userChatId = self.goToUserChatId {
       self.showUserChat(userChatId: userChatId, animated: false)
-    } else if let userChats = userChats {
+    } else if let userChats = userChats, !isReload {
       if userChats.count == 0 {
         self.shouldHideTable = true
         self.showUserChat(animated: false)
