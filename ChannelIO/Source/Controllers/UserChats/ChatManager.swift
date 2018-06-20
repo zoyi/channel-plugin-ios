@@ -448,7 +448,6 @@ extension ChatManager {
           self?.didLoad = true
           self?.state = .chatReady
           self?.delegate?.readyToDisplay()
-          self?.requestReadAll()
         }
       }).disposed(by: self.disposeBag)
   }

@@ -438,7 +438,7 @@ extension UserChatsViewController: UITableViewDelegate {
 }
 
 extension UserChatsViewController {
-  func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false, isReload: Bool = true) {
+  func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false, isReload: Bool = false) {
     UserChatPromise.getChats(
       since: isInit ? nil : self.nextSeq,
       limit: 30, sortOrder: "DESC",
@@ -489,6 +489,7 @@ extension UserChatsViewController {
       self.showUserChat(animated: false)
     } else if let userChatId = self.goToUserChatId {
       self.showUserChat(userChatId: userChatId, animated: false)
+      self.goToUserChatId = nil
     } else if let userChats = userChats, !isReload {
       if userChats.count == 0 {
         self.shouldHideTable = true
@@ -497,8 +498,6 @@ extension UserChatsViewController {
         self.shouldHideTable = true
         self.showUserChat(userChatId: userChats[0].id, animated: false)
       }
-    } else if let userChatId = self.goToUserChatId {
-      self.showUserChat(userChatId: userChatId, animated: false)
     }
   }
 }

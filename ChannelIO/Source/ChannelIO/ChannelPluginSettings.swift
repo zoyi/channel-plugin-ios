@@ -110,7 +110,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     aCoder.encode(self.hideDefaultLauncher, forKey: "hideDefaultLauncher")
     aCoder.encode(self.hideDefaultInAppPush, forKey: "hideDefaultInAppPush")
     aCoder.encode(self.enabledTrackDefaultEvent, forKey: "enabledTrackDefaultEvent")
-    aCoder.encode(self.appLocale?.rawValue, forKey: "locale")
+    aCoder.encode(self.locale.rawValue, forKey: "locale")
   }
   
   @discardableResult

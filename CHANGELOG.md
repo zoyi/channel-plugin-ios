@@ -1,3 +1,8 @@
+# 3.1.6 (June 22, 2018)
+## Bug fixes
+* Fixed a crash when app was launched by push notification
+* Fixed opening new chat logic 
+
 # 3.1.5 (June 19, 2018)
 ## Bug fixes
 * Fixed a bug that messages were not sync when app became active
