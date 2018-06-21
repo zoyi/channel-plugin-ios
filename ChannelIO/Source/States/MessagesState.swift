@@ -97,7 +97,7 @@ struct MessagesState: StateType {
     //when CreateMessage happens, all form should be treated as normal text
     for (key, message) in self.formQueue {
       var updated = message
-      //updated.messageType = updated.form?.inputs.filter({ $0.selected == true }).count == 0 ? .Default : .Actioned
+      updated.messageType = .Default
       self.messageDictionary[key] = updated
     }
     

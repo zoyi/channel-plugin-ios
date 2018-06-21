@@ -129,8 +129,6 @@ class ChatManager {
           self?.delegate?.update(for: .typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
         }
         self?.shouldRedrawProfileBot = message.profileBot?.count != 0
-//        let messages = messagesSelector(state: mainStore.state, userChatId: s.chatId)
-//        s.delegate?.updateFor(element: .messages(obj: messages))
       })
   }
   
@@ -286,7 +284,7 @@ extension ChatManager {
   
   func submitForm(originId: String?, key: String?, value: String?) {
     guard let originId = originId, let key = key, let value = value else { return }
-    
+
     self.sendMessage(userChatId: self.chatId, text: value, originId: originId, key: key)
       .subscribe(onNext: { (message) in
       

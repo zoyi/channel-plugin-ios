@@ -264,7 +264,7 @@ struct UserChatPromise {
       params["body"]?["requestId"] = requestId as AnyObject?
       
       if let submit = submit {
-        params["body"]?["submit"] = submit as AnyObject?
+        params["body"]?["submit"] = submit.toJSON() as AnyObject?
       }
       
       let req = Alamofire.request(RestRouter.CreateMessage(userChatId, params as RestRouter.ParametersType))
