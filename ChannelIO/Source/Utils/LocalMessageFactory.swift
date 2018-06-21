@@ -98,7 +98,7 @@ struct LocalMessageFactory {
     
     var position = -1
     for (index, message) in messages.enumerated() {
-      if message.createdAt <= lastReadAt {
+      if Int(message.createdAt.timeIntervalSince1970) <= Int(lastReadAt.timeIntervalSince1970) {
         break
       }
       
