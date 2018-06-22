@@ -113,6 +113,7 @@ class WsService {
   let eventSubject = PublishSubject<(WsServiceType, Any?)>()
   let readySubject = PublishSubject<String>()
   let typingSubject = PublishSubject<CHTypingEntity>()
+  let joinSubject = PublishSubject<String>()
   let messageOnCreateSubject = PublishSubject<CHMessage>()
  
   //MARK: Private properties
@@ -172,6 +173,10 @@ class WsService {
   
   func mOnCreate() -> PublishSubject<CHMessage> {
     return self.messageOnCreateSubject
+  }
+  
+  func joined() -> PublishSubject<String> {
+    return self.joinSubject
   }
   
   //MARK: Socket functionalities
@@ -448,11 +453,12 @@ fileprivate extension WsService {
   }
   
   fileprivate func onJoined() {
-    self.socket?.on(CHSocketResponse.joined.value) { (data, ack) in
+    self.socket?.on(CHSocketResponse.joined.value) { [weak self] (data, ack) in
       dlog("socket joined: \(data)")
       
-      guard let userChatId = data.get(index: 0) else { return }
-      mainStore.dispatchOnMain(JoinedUserChat(payload: userChatId as! String))
+      guard let userChatId = data.get(index: 0) as? String else { return }
+      self?.joinSubject.onNext(userChatId)
+      mainStore.dispatchOnMain(JoinedUserChat(payload: userChatId))
     }
   }
   

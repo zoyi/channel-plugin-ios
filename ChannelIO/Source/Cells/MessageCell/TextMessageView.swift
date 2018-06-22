@@ -52,8 +52,7 @@ class TextMessageView : BaseView {
   }
 
   var viewModel: MessageCellModelType?
-  var corners: UIRectCorner = [.allCorners]
-  
+
   //MARK: init
 
   override func initialize() {
@@ -74,27 +73,10 @@ class TextMessageView : BaseView {
       make.bottom.equalToSuperview().inset(Metric.topBottomPadding)
     })
   }
-  
-  func configure(_ viewModel: MessageCellModelType, text: String) {
-    self.backgroundColor = viewModel.pluginColor
-    self.corners =  [.topLeft, .bottomRight, .bottomLeft]
-    
-    self.messageView.text = text
-    self.messageView.textColor = viewModel.textColor
-    self.messageView.linkTextAttributes = [
-      NSAttributedStringKey.foregroundColor.rawValue: viewModel.textColor,
-      NSAttributedStringKey.underlineStyle.rawValue: 1]
-  }
-  
+
   func configure(_ viewModel: MessageCellModelType) {
-    if viewModel.isContinuous == true {
-      self.corners = [.allCorners]
-    } else if viewModel.createdByMe == true {
-      self.corners = [.topLeft, .bottomRight, .bottomLeft]
-    } else {
-      self.corners = [.topRight, .bottomRight, .bottomLeft]
-    }
-    
+    self.viewModel = viewModel
+
     self.backgroundColor = viewModel.bubbleBackgroundColor
     self.isHidden = viewModel.message.isEmpty()
     
@@ -114,32 +96,29 @@ class TextMessageView : BaseView {
   
   override func updateConstraints() {
     super.updateConstraints()
-    self.roundCorners(corners: self.corners, radius: Constant.cornerRadius)
+    
+    if self.viewModel?.isContinuous == true {
+      self.roundCorners(corners: [.allCorners], radius: Constant.cornerRadius)
+    } else if self.viewModel?.createdByMe == true {
+      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+    } else {
+      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+    }
   }
   
   //MARK: layout
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
-    var viewHeight: CGFloat = 0.0
+    var viewHeight : CGFloat = 0.0
 
     if let message = viewModel.message.messageV2 {
-      //let extraPadding: CGFloat = message.string.guessLanguage() == "日本語" ? 40 : 0
-      var range = NSRange(location:0, length: message.string.utf16.count)
+      let extraPadding: CGFloat = 5.f //message.string.guessLanguage() == "日本語" ? 40 : 0
+      var range = NSRange(location:0, length: message.string.count)
       viewHeight += message.string.height(
-        fits: width - Metric.leftRightPadding * 2 - 5,
+        fits: width - extraPadding - Metric.leftRightPadding * 2,
         attributes:  message.attributes(at: 0, effectiveRange: &range))
       viewHeight += Metric.topBottomPadding * 2
     }
 
-    return viewHeight
-  }
-  
-  class func viewHeight(fits width: CGFloat, text: String) -> CGFloat {
-    var viewHeight: CGFloat = 0.f
-    viewHeight += text.height(
-      fits: width - Metric.leftRightPadding * 2,
-      font: UIFont.systemFont(ofSize: 15))
-    viewHeight += Metric.topBottomPadding * 2
-    
     return viewHeight
   }
 }

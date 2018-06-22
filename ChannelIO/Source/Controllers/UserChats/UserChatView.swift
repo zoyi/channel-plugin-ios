@@ -432,9 +432,9 @@ extension UserChatView {
           self?.chatManager.fetchMessages()
           self?.scrollToBottom(false)
           dlog("fetched chat info")
-          }, onError: { [weak self] error in
-            dlog("failed to fetch chat info - \(error.localizedDescription)")
-            self?.navigationController?.popViewController(animated: true)
+        }, onError: { [weak self] error in
+          dlog("failed to fetch chat info - \(error.localizedDescription)")
+          self?.navigationController?.popViewController(animated: true)
         }).disposed(by: self.disposeBag)
     }
   }
