@@ -62,15 +62,6 @@ class PrefStore {
     UserDefaults.standard.synchronize()
   }
   
-  static func setPushSoundOption(on: Bool) {
-    UserDefaults.standard.set(on, forKey: PUSH_OPTION_KEY)
-    UserDefaults.standard.synchronize()
-  }
-  
-  static func getPushSoundOption() -> Bool {
-    return UserDefaults.standard.bool(forKey: PUSH_OPTION_KEY)
-  }
-  
   static func setVisibilityOfClosedUserChat(on: Bool) {
     UserDefaults.standard.set(on, forKey: VISIBLE_CLOSED_USERCHAT_KEY)
     UserDefaults.standard.synchronize()

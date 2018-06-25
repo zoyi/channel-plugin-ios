@@ -209,18 +209,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       cell.selectionStyle = .none
       cell.configure(title: CHAssets.localized("ch.settings.show_closed_chat"), isOn: isOn)
       return cell
-    case (ProfileSection.action.rawValue,
-          ActionRow.soundOption.rawValue):
-      let cell = SwitchCell()
-      let isOn = PrefStore.getPushSoundOption()
-      cell.switchSignal.subscribe { event in
-        if let isOn = event.element {
-          PrefStore.setPushSoundOption(on: isOn)
-        }
-      }.disposed(by: self.disposeBag)
-      cell.selectionStyle = .none
-      cell.configure(title: CHAssets.localized("ch.settings.enable_chat_sound_vibrate"), isOn: isOn)
-      return cell
     default:
       return  UITableViewCell()
     }
