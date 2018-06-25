@@ -20,6 +20,7 @@ class FormMessageCell: MessageCell {
   
   override func initialize() {
     super.initialize()
+    self.contentView.superview?.clipsToBounds = false
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()

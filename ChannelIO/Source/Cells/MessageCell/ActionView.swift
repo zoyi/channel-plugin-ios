@@ -33,7 +33,7 @@ class ActionButton: UIButton {
       self.backgroundColor = isHighlighted ? selectedColor : UIColor.white
       if isHighlighted {
         self.layer.shadowColor = CHColors.dark50.cgColor
-        self.layer.shadowOpacity = 0.2
+        self.layer.shadowOpacity = 0.8
         self.layer.shadowOffset = CGSize(width: 0, height: 2)
         self.layer.shadowRadius = 4
         self.layer.borderWidth = 0
@@ -108,6 +108,7 @@ class ActionView: BaseView {
   
   override func initialize() {
     super.initialize()
+    
     self.addSubview(self.contentView)
   }
   
@@ -209,7 +210,7 @@ class ActionView: BaseView {
       }
     }
     
-    return cy 
+    return cy
   }
 }
 

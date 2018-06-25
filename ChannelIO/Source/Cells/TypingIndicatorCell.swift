@@ -30,6 +30,7 @@ final class TypingIndicatorCell: BaseTableViewCell, Reusable {
       self.typingImageView.image = UIImage.sd_animatedGIF(with: data)
     }
     
+    self.backgroundColor = UIColor.clear
     self.contentView.addSubview(self.multiAvatarView)
     self.contentView.addSubview(self.personCountLabel)
     self.contentView.addSubview(self.typingImageView)
