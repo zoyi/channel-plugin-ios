@@ -49,8 +49,10 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
   func showNewChat(with text: String, from view: UINavigationController?) {
     view?.popViewController(animated: false, completion: {
       let controller = UserChatRouter.createModule(userChatId: nil)
-      _ = controller.presenter?.readyToDisplay()?.subscribe(onNext: { _ in
-        view?.pushViewController(controller, animated: false)
+      _ = controller.presenter?.readyToDisplay()?.subscribe(onNext: { ready in
+        if ready {
+          view?.pushViewController(controller, animated: false)
+        }
       })
     })
   }

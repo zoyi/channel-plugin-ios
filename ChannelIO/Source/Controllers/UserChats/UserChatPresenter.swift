@@ -31,22 +31,20 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       .subscribe (onNext: { [weak self] chatEvent in
         switch chatEvent {
         case .messages(let messages, _):
-          self?.userChat?.readAll()
+          //self?.userChat?.readAll()
           self?.view?.display(messages: messages)
-          break
         case .manager(_):
           break
         case .chat(let chat):
           self?.refreshChat()
-          if chat?.isResolved() == true {
-            //display resolved
-          } else if chat?.isClosed() == true {
-            //display closed
-          }
-          break
+//          if chat?.isResolved() == true {
+//            //self.view?.updateInputField(userChat: self?.userChat, updatedUserChat: chat)
+//            //display resolved
+//          } else if chat?.isClosed() == true {
+//            //display closed
+//          }
         case .typing(let typers, _):
           self?.view?.display(typers: typers)
-          break
         default:
           break
         }
@@ -61,6 +59,43 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   func cleanDataSource() {
     self.interactor?.unsunbscribeDataSource()
     self.interactor?.sendTyping(isStop: true)
+  }
+  
+  func reload() {
+    
+  }
+  
+//  func resetUserChat() -> Observable<String?> {
+//    return Observable.create({ [weak self] (subscribe) in
+//      //guard let s = self else { return Disposables.create() }
+//      self?.nextSeq = ""
+//      var signal: Disposable?
+//      
+//      if let chatId = self?.chatId, chatId != "" {
+//        signal = self?.fetchChat().subscribe(onNext: { _ in
+//          mainStore.dispatch(RemoveMessages(payload: chatId))
+//          subscribe.onNext(chatId)
+//        }, onError: { error in
+//          subscribe.onError(error)
+//        })
+//      } else {
+//        signal = self?.createChat().subscribe(onNext: { chatId in
+//          subscribe.onNext(chatId)
+//        }, onError: { error in
+//          subscribe.onError(error)
+//        })
+//      }
+//      
+//      return Disposables.create {
+//        signal?.dispose()
+//      }
+//    })
+//  }
+//  
+
+  //presenter
+  private func isNewChat(with current: CHUserChat?, nextUserChat: CHUserChat?) -> Bool {
+    return self.userChat == nil && nextUserChat == nil
   }
 }
 
@@ -81,8 +116,6 @@ extension UserChatPresenter {
         interactor.send(messages: messages).subscribe(onNext: { (_) in
           
         }, onError: { (error) in
-          
-        }, onCompleted: {
           
         }).disposed(by: (self?.disposeBag)!)
       } else {
@@ -152,7 +185,7 @@ extension UserChatPresenter {
       from: view,
       dataSource: self.interactor as! MWPhotoBrowserDelegate)
   }
-  
+
   func didClickOnWeb(with url: String?, from view: UIViewController?) {
     guard let url = URL(string: url ?? "") else { return }
     UIApplication.shared.openURL(url)
@@ -171,7 +204,7 @@ extension UserChatPresenter {
     self.router?.presentSettings(from: view)
   }
   
-  func readyToDisplay() -> Observable<Any?>? {
+  func readyToDisplay() -> Observable<Bool>? {
     return self.interactor?.readyToPresent()
   }
 
@@ -180,7 +213,7 @@ extension UserChatPresenter {
     self.interactor?.fetchMessages()
   }
   
-  func send(text: String, assets: [DKAsset]) {
+  func didClickOnRightButton(text: String, assets: [DKAsset]) {
     guard let interactor = self.interactor else { return }
     guard let chatId = self.userChatId else { return }
     let guest = mainStore.state.guest
@@ -214,6 +247,22 @@ extension UserChatPresenter {
       //open new chat if text
       //self.newChatSubject.onNext(self.textView.text)
     }
+  }
+  
+  func didClickOnMessageButton(originId: String?, key: String?, value: String?) {
+    guard let originId = originId, let key = key, let value = value else { return }
+    guard let interactor = self.interactor else { return }
+    
+    interactor.send(text: value, originId: originId, key: key)
+      .subscribe(onNext: { [weak self] (message) in
+      self?.view?.display(messages: [])
+    }, onError: { [weak self] (error) in
+      self?.view?.display(error: error, visible: true)
+    }).disposed(by: self.disposeBag)
+  }
+  
+  func send(text: String, assets: [DKAsset]) {
+
   }
   
   func sendTyping(isStop: Bool) {

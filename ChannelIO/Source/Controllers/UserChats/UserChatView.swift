@@ -7,11 +7,9 @@
 //
 
 import UIKit
-import CHDwifft
 import ReSwift
 import RxSwift
 import DKImagePickerController
-import CHPhotoBrowser
 import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire
@@ -31,8 +29,8 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   var userChat: CHUserChat?
 
   var preloadText: String = ""
-  var isFetching = false
-  var isRequstingReadAll = false
+  //var isFetching = false
+  //var isRequstingReadAll = false
 
   var photoUrls = [String]()
 
@@ -42,8 +40,8 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   var createdFeedbackComplete = false
 
   var disposeBag = DisposeBag()
-  var photoBrowser : MWPhotoBrowser? = nil
-  var chatManager : ChatManager!
+  //var photoBrowser : MWPhotoBrowser? = nil
+  //var chatManager : ChatManager!
 
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
@@ -147,26 +145,18 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     self.typingCell = cell
   }
 
-  func initNavigationViews(
-    with userChat: CHUserChat?,
-    channel: CHChannel,
-    plugin: CHPlugin,
-    guest: CHGuest,
-    textColor: UIColor,
-    managers: [CHManager],
-    showSetting: Bool) {
-    self.userChat = userChat
-    //TODO: take this out from redux
-
+  func initNavigationViews(with info: UserChatInfo, guest: CHGuest) {
+    self.userChat = info.userChat
+    
     self.setNavItems(
-      showSetting: showSetting,
-      currentUserChat: userChat,
+      showSetting: info.showSettings,
+      currentUserChat: info.userChat,
       guest: guest,
-      textColor: textColor
+      textColor: info.textColor
     )
 
-    self.initNavigationTitle(with: userChat, channel: channel, plugin: plugin)
-    self.initNavigationExtension(with: userChat, channel: channel, plugin: plugin, managers: managers)
+    self.initNavigationTitle(with: info.userChat, channel: info.channel, plugin: info.plugin)
+    self.initNavigationExtension(with: info.userChat, channel: info.channel, plugin: info.plugin, managers: info.managers)
   }
   
   func initNavigationTitle(with userChat: CHUserChat?, channel: CHChannel, plugin: CHPlugin) {
@@ -239,12 +229,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-        WsService.shared.connect()
-        _ = self?.resetUserChat()?.subscribe({ (event) in
-          if event.element != nil  {
-            self?.chatManager.fetchMessages()
-          }
-        })
+        self?.presenter?.reload()
       }).disposed(by: self.disposeBag)
 
     self.view.addSubview(self.newMessageView)
@@ -294,31 +279,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
       }
     )
   }
-
-  fileprivate func resetUserChat() -> Observable<String?>? {
-    self.createdFeedback = false
-    self.createdFeedbackComplete = false
-
-    return self.chatManager.resetUserChat()
-  }
-
-  fileprivate func sendMessage(userChatId: String, text: String) {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: userChatId, guest: me, message: text)
-
-    mainStore.dispatch(CreateMessage(payload: message))
-    self.scrollToBottom(false)
-
-    message.send().subscribe(onNext: { [weak self] (updated) in
-      dlog("Message has been sent successfully")
-      self?.chatManager.sendTyping(isStop: true)
-      mainStore.dispatch(CreateMessage(payload: updated))
-      }, onError: { (error) in
-        dlog("Message has been failed to send")
-        message.state = .Failed
-        mainStore.dispatch(CreateMessage(payload: message))
-    }).disposed(by: self.disposeBag)
-  }
 }
 
 //protocol
@@ -333,12 +293,16 @@ extension UserChatView {
   func display(typers: [CHEntity]) {
     let indexPath = IndexPath(row: 0, section: self.channel.servicePlan == .free ? 1 : 0)
     if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let typingCell = self.typingCell {
-      typingCell.configure(typingUsers: self.chatManager.typers)
+      typingCell.configure(typingUsers: typers)
     }
   }
   
   func display(error: Error?, visible: Bool) {
-    //dispay error
+    if error != nil && visible {
+      self.errorToastView.show(animated: true)
+    } else {
+      self.errorToastView.hide(animated: true)
+    }
   }
   
   func displayNewBanner() {
@@ -348,14 +312,7 @@ extension UserChatView {
   func setChatInfo(info: UserChatInfo) {
     self.userChat = info.userChat
     
-    self.initNavigationViews(
-      with: info.userChat,
-      channel: info.channel,
-      plugin: info.plugin,
-      guest: mainStore.state.guest,
-      textColor: info.textColor,
-      managers: info.managers,
-      showSetting: info.showSettings)
+    self.initNavigationViews(with: info, guest: mainStore.state.guest)
   }
   
   func updateInputField(userChat: CHUserChat?, updatedUserChat: CHUserChat?) {
@@ -366,91 +323,8 @@ extension UserChatView {
     
   }
 }
-// MARK: - StoreSubscriber
-
-//  func newState(state: AppState) {
-//    let messages = messagesSelector(state: state, userChatId: self.userChatId)
-//    self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
-//
-//    //saved contentOffset
-//    let offset = self.tableView.contentOffset
-//    let hasNewMessage = self.chatManager.hasNewMessage(current: self.messages, updated: messages)
-//
-//    //message only needs to be replace if count is differe
-//    self.messages = messages
-//    //fixed contentOffset
-//    self.tableView.layoutIfNeeded()
-//
-//    // Photo - is this scalable? or doesn't need to care at this moment?
-//    self.photoUrls = self.messages.reversed()
-//      .filter({ $0.file?.isPreviewable == true })
-//      .map({ (message) -> String in
-//        return message.file?.url ?? ""
-//      })
-//
-//    let userChat = userChatSelector(state: state, userChatId: self.userChatId)
-//
-//    self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
-//    self.updateInputFieldIfNeeded(userChat: self.userChat, nextUserChat: userChat)
-//    self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
-//    self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
-//    self.showErrorIfNeeded(state: state)
-//
-//    self.fetchWelcomeInfoIfNeeded()
-//    self.fetchChatIfNeeded()
-//
-//    self.userChat = userChat
-//    self.chatManager.chat = userChat
-//    self.channel = state.channel
-//  }
-//
-//
-//  func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
-//    if (self.userChat?.isReadyOrOpen() == true && nextUserChat?.isReadyOrOpen() == false)
-//      || self.channel.isDiff(from: state.channel) {
-//      //self.initNavigationViews()
-//    }
-//
-//    let userChats = userChatsSelector(
-//      state: mainStore.state,
-//      showCompleted: mainStore.state.userChatsState.showCompletedChats
-//    )
-//
-//    self.setNavItems(
-//      showSetting: userChats.count == 0,
-//      currentUserChat: nextUserChat,
-//      guest: state.guest,
-//      textColor: state.plugin.textUIColor
-//    )
-//  }
 
 extension UserChatView {
-  func fetchChatIfNeeded() {
-    if self.chatManager.needToFetchChat() == true {
-      self.chatManager.fetchChat()
-        .subscribe(onNext: { [weak self] (event) in
-          self?.chatManager.fetchMessages()
-          self?.scrollToBottom(false)
-          dlog("fetched chat info")
-        }, onError: { [weak self] error in
-          dlog("failed to fetch chat info - \(error.localizedDescription)")
-          self?.navigationController?.popViewController(animated: true)
-        }).disposed(by: self.disposeBag)
-    }
-  }
-
-  func showErrorIfNeeded(state: AppState) {
-    let socketState = state.socketState.state
-
-    if socketState == .reconnecting {
-      self.chatManager.state = .waitingSocket
-    } else if socketState == .disconnected {
-      //self.showError()
-    } else {
-      //self.hideError()
-    }
-  }
-
   func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
@@ -465,8 +339,8 @@ extension UserChatView {
         CHAssets.localized("ch.chat.removed.title") :
         CHAssets.localized("ch.review.complete.title")
       self.textView.isEditable = false
-    } else if (!self.channel.allowNewChat && !channel.allowNewChat) &&
-      self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
+    } else if (!self.channel.allowNewChat && !channel.allowNewChat) {
+      //self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.textInputbar.barState = .disabled
       self.textInputbar.hideAllButtons()
       self.textView.isEditable = false
@@ -483,22 +357,6 @@ extension UserChatView {
 
       self.textView.isEditable = true
       self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
-    }
-  }
-
-  //presenter
-  func showFeedbackIfNeeded(_ userChat: CHUserChat?, lastMessage: CHMessage?) {
-    guard let newUserChat = userChat else { return }
-    //it only trigger once if previous state is following and new state is resolved
-    if newUserChat.isResolved() &&
-      //lastMessage?.log?.action == "resolve" &&
-      !self.createdFeedback {
-      self.createdFeedback = true
-      mainStore.dispatch(CreateFeedback())
-    } else if newUserChat.isClosed() &&
-      !self.createdFeedbackComplete {
-      self.createdFeedbackComplete = true
-      mainStore.dispatch(CreateCompletedFeedback())
     }
   }
 
@@ -545,11 +403,6 @@ extension UserChatView {
       animated: animated
     )
   }
-
-  //presenter
-  private func isNewChat(with current: CHUserChat?, nextUserChat: CHUserChat?) -> Bool {
-    return userChat == nil && nextUserChat == nil
-  }
 }
 
 // MARK: - SLKTextViewController
@@ -566,38 +419,8 @@ extension UserChatView {
 
     self.textView.refreshFirstResponder()
     let msg = self.textView.text!
-    self.presenter?.send(text: msg, assets: [])
-    
-    //move this logic into presenter
-//    if let userChat = self.userChat,
-//      userChat.isActive() {
-//      if let userChatId = self.userChatId {
-//        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
-//          
-//          }.disposed(by: self.disposeBag)
-//      }
-//    } else if self.userChat == nil {
-//      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
-//        guard let s = self else {
-//          return Observable.just(nil)
-//        }
-//        s.userChatId = chatId
-//        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
-//      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
-//        guard let s = self else {
-//          return Observable.just(nil)
-//        }
-//        return s.chatManager.requestProfileBot(chatId: s.userChatId)
-//      }).subscribe(onNext: { (completed) in
-//        
-//      }, onError: { [weak self] (error) in
-//        self?.chatManager.state = .chatNotLoaded
-//      }).disposed(by: self.disposeBag)
-//    } else {
-//      mainStore.dispatch(RemoveMessages(payload: userChatId))
-//      self.newChatSubject.onNext(self.textView.text)
-//    }
-//    
+    //self.presenter?.send(text: msg, assets: [])
+    self.presenter?.didClickOnRightButton(text: msg, assets: [])
     self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
   }
@@ -607,17 +430,8 @@ extension UserChatView {
     return true
   }
 
-  private func updatePhotoUrls(messages: [CHMessage]) {
-    self.photoUrls = messages.filter({ $0.file?.isPreviewable == true })
-      .map({ (message) -> String in
-        return message.file?.url ?? ""
-      })
-
-    self.photoBrowser?.reloadData()
-  }
-
   override func textViewDidChange(_ textView: UITextView) {
-    self.chatManager.sendTyping(isStop: textView.text == "")
+    //self.chatManager.sendTyping(isStop: textView.text == "")
   }
 }
 
@@ -625,16 +439,17 @@ extension UserChatView {
 
 extension UserChatView {
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let yOffset = scrollView.contentOffset.y
-    let triggerPoint = yOffset + UIScreen.main.bounds.height * 1.5
-    if triggerPoint > scrollView.contentSize.height && self.chatManager.canLoadMore() {
-      self.chatManager.fetchMessages()
-    }
-
-    if yOffset < 100 &&
-      !self.newMessageView.isHidden {
-      self.newMessageView.hide(animated: false)
-    }
+    //fetch messages
+//    let yOffset = scrollView.contentOffset.y
+//    let triggerPoint = yOffset + UIScreen.main.bounds.height * 1.5
+//    if triggerPoint > scrollView.contentSize.height && self.chatManager.canLoadMore() {
+//      self.chatManager.fetchMessages()
+//    }
+//
+//    if yOffset < 100 &&
+//      !self.newMessageView.isHidden {
+//      self.newMessageView.hide(animated: false)
+//    }
   }
 }
 
@@ -722,7 +537,7 @@ extension UserChatView {
 
   func cellForTyping(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if let typingCell = self.typingCell {
-      typingCell.configure(typingUsers: self.chatManager.typers)
+      typingCell.configure(typingUsers: [])
       typingCell.transform = tableView.transform
       return typingCell
     }
@@ -793,19 +608,6 @@ extension UserChatView {
   }
 }
 
-// MARK: MWPhotoBrowser
-
-//interactor
-extension UserChatView: MWPhotoBrowserDelegate {
-  func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
-    return UInt(self.photoUrls.count)
-  }
-
-  func photoBrowser(_ photoBrowser: MWPhotoBrowser!, photoAt index: UInt) -> MWPhotoProtocol! {
-    return MWPhoto(url: URL(string: self.photoUrls[Int(index)]))
-  }
-}
-
 
 // MARK: Clip handlers
 
@@ -816,92 +618,6 @@ extension UserChatView {
 
   func signalForNewChat() -> Observable<Any?> {
     return self.newChatSubject
-  }
-
-  //presenter
-  func didImageTapped(message: CHMessage) {
-    let imgUrl = message.file?.url
-    self.photoBrowser = MWPhotoBrowser(delegate: self)
-    self.photoBrowser?.enableSwipeToDismiss = true
-
-    let navigation = MainNavigationController(rootViewController: self.photoBrowser!)
-    navigation.modalPresentationStyle = .overCurrentContext
-
-    if let index = self.photoUrls.index(of: imgUrl ?? "") {
-      self.dismissKeyboard(true)
-      self.photoBrowser?.setCurrentPhotoIndex(UInt(index))
-
-      self.present(navigation, animated: true, completion: nil)
-      //_ = self.navigationController?.pushViewController(self.photoBrowser!, animated: true)
-    }
-  }
-
-  //presenter
-  func didFileTapped(message: CHMessage) {
-    guard let url = message.file?.url else { return }
-
-    if let localUrl = message.file?.localUrl,
-      message.file?.downloaded == true {
-      self.showDocumentController(url: localUrl)
-      return
-    }
-
-    SVProgressHUD.showProgress(0)
-
-    let destination = DownloadRequest
-      .suggestedDownloadDestination(for: .documentDirectory, in: .userDomainMask)
-
-    Alamofire.download(url, to: destination)
-      .downloadProgress{ (download) in
-        SVProgressHUD.showProgress(Float(download.fractionCompleted))
-      }
-      .validate(statusCode: 200..<300)
-      .response{ [weak self] (response) in
-        SVProgressHUD.dismiss()
-
-        let directoryURL = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        let pathURL = URL(fileURLWithPath: directoryURL, isDirectory: true)
-        guard let fileName = response.response?.suggestedFilename else { return }
-        let fileURL = pathURL.appendingPathComponent(fileName)
-
-        var message = message
-        message.file?.downloaded = true
-        message.file?.localUrl = fileURL
-        mainStore.dispatch(UpdateMessage(payload: message))
-
-        self?.showDocumentController(url: fileURL)
-    }
-  }
-
-  //router
-  func showDocumentController(url: URL) {
-    let docController = UIDocumentInteractionController(url: url)
-    docController.delegate = self
-
-    if !docController.presentPreview(animated: true) {
-      docController.presentOptionsMenu(from: self.view.bounds, in: self.view, animated: true)
-    }
-  }
-
-  //presenter
-  func didWebPageTapped(message: CHMessage) {
-    guard let url = URL(string:message.webPage?.url ?? "") else { return }
-    let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
-    if shouldHandle == true || shouldHandle == nil {
-      url.openWithUniversal()
-    }
-  }
-}
-
-// MARK: UIDocumentInteractionControllerDelegate methods
-
-//move to router
-extension UserChatView : UIDocumentInteractionControllerDelegate {
-  func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
-    if let controller = CHUtils.getTopController() {
-      return controller
-    }
-    return UIViewController()
   }
 }
 

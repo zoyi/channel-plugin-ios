@@ -46,7 +46,8 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   fileprivate var notiDispose: Disposable?
   fileprivate var chatDispose: Disposable?
   fileprivate var eventDispose: Disposable?
-
+  fileprivate var joinDispose: Disposable?
+  
   var typingSubject = PublishSubject<([CHEntity], Bool)>()
   var chatEventSubject = PublishSubject<ChatEvent>()
   var sendSubject = PublishSubject<CHMessage>()
@@ -66,17 +67,31 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   }
   
   init(userChatId: String = "") {
+    super.init()
+    
     self.userChatId = userChatId
+    self.observeAppState()
+  }
+  
+  func willAppear() {
+    self.state = .chatJoining
+    self.subscribeDataSource()
+    self.joinSocket()
+  }
+  
+  func willDisppear() {
+    self.sendTyping(isStop: true)
+    self.requestReadAll()
+    self.unsunbscribeDataSource()
+    self.leaveSocket()
   }
   
   func subscribeDataSource() {
     mainStore.subscribe(self)
-    self.observeAppState()
     self.observeChatEvents()
     self.observeTypingEvents()
     self.observeMessageEvents()
     self.observeSessionEvents()
-    self.joinSocket()
   }
   
   func unsunbscribeDataSource() {
@@ -86,22 +101,26 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
     self.notiDispose?.dispose()
     self.chatDispose?.dispose()
     self.eventDispose?.dispose()
-    self.leaveSocket()
+    self.joinDispose?.dispose()
   }
   
   func refreshUserChat() {
     
   }
   
-  func readyToPresent() -> Observable<Any?> {
+  func readyToPresent() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = CHManager.getRecentFollowers()
+      let signal = Observable.zip(CHPlugin.get(with: mainStore.state.plugin.id), CHManager.getRecentFollowers())
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (managers) in
+        .subscribe(onNext: { (info, managers) in
           mainStore.dispatch(UpdateFollowingManagers(payload: managers))
-          subscriber.onNext(nil)
-          dlog("got following managers")
-        }, onError: { (error) in
+          mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
+          
+          dlog("ready to present")
+          
+          subscriber.onNext(true)
+          subscriber.onCompleted()
+        }, onError: { error in
           subscriber.onError(error)
           dlog("error getting following managers: \(error.localizedDescription)")
         })
@@ -123,15 +142,19 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
 
 extension UserChatInteractor {
   func observeAppState() {
-    self.notiDispose = NotificationCenter.default
+    NotificationCenter.default
       .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
-        if self?.userChatId == "" {
-          self?.didFetchInfo = false
-        }
-        self?.didChatLoaded = false
-      }
+        self?.willAppear()
+      }.disposed(by: self.disposeBag)
+    
+    NotificationCenter.default
+      .rx.notification(Notification.Name.UIApplicationWillResignActive)
+      .observeOn(MainScheduler.instance)
+      .subscribe { [weak self] _ in
+        self?.willDisppear()
+      }.disposed(by: self.disposeBag)
   }
   
   fileprivate func observeMessageEvents() {
@@ -155,6 +178,12 @@ extension UserChatInteractor {
   }
   
   fileprivate func observeChatEvents() {
+    self.joinDispose = WsService.shared.joined()
+      .subscribe(onNext: { [weak self] (chatId) in
+        //reload chat
+        //reload messages
+      })
+    
     self.chatDispose = WsService.shared.eventSubject
       .takeUntil(self.rx.deallocated)
       .filter({ (type, data) -> Bool in
@@ -165,6 +194,8 @@ extension UserChatInteractor {
       .subscribe(onNext: { [weak self] (type, data) in
         let chat = userChatSelector(state: mainStore.state, userChatId: self?.userChatId)
         self?.chatEventSubject.onNext(.chat(obj: chat))
+        
+        //generate feedback message if needed
       })
   }
   
@@ -248,13 +279,24 @@ extension UserChatInteractor {
           self?.didLoad = true
           self?.state = .chatReady
           //self?.delegate?.readyToDisplay()
-          self?.requestReadAll()
+          //self?.requestReadAll()
         }
       }).disposed(by: self.disposeBag)
   }
   
+//  func showFeedbackIfNeeded(_ userChat: CHUserChat?, lastMessage: CHMessage?) {
+//    guard let newUserChat = userChat else { return }
+//    //it only trigger once if previous state is following and new state is resolved
+//    if newUserChat.isResolved() {
+//      mainStore.dispatch(CreateFeedback())
+//    } else if newUserChat.isClosed()
+//      mainStore.dispatch(CreateCompletedFeedback())
+//    }
+//  }
+
   func fetchChat() -> Observable<CHUserChat> {
     return Observable.create({ (subscriber) in
+      //generate feedback message if needed
       return Disposables.create()
     })
   }
@@ -268,25 +310,13 @@ extension UserChatInteractor {
   func requestReadAll() {
     guard !self.isRequstingReadAll else { return }
     
-    if self.userChat?.session == nil {
-      return
-    }
-    
-    if self.userChat?.session?.unread == 0 &&
-      self.userChat?.session?.alert == 0 {
-      return
-    }
-    
-    self.userChat?.readAll()
+    self.userChat?.readAll().subscribe(onNext: { [weak self] (completed) in
+      self?.isRequstingReadAll = false
+    }, onError: { [weak self] (error) in
+      self?.isRequstingReadAll = false
+    }).disposed(by: self.disposeBag)
   }
-  
-  func readAllManually() {
-    guard var session = self.userChat?.session else { return }
-    session.unread = 0
-    session.alert = 0
-    mainStore.dispatch(UpdateSession(payload: session))
-  }
-  
+
   func send(text: String, assets: [DKAsset])  {
     let me = mainStore.state.guest
     var message = CHMessage(chatId: self.userChatId, guest: me, message: text)
@@ -314,7 +344,7 @@ extension UserChatInteractor {
     })
   }
   
-  func send(text: String) -> Observable<CHMessage> {
+  func send(text: String, originId: String? = nil, key: String? = nil) -> Observable<CHMessage> {
     return Observable.create({ (subscribe) -> Disposable in
       return Disposables.create()
     })
@@ -371,10 +401,6 @@ extension UserChatInteractor {
   }
 }
 
-//custom dialogs
-extension UserChatInteractor {
-
-}
 
 //
 extension UserChatInteractor: StoreSubscriber {
@@ -412,6 +438,20 @@ extension UserChatInteractor: StoreSubscriber {
     //self.userChat = userChat
     //self.chatManager.chat = userChat
     //self.channel = state.channel
+    self.showErrorIfNeeded(state: state)
+  }
+  
+  func showErrorIfNeeded(state: AppState) {
+    let socketState = state.socketState.state
+
+    if socketState == .reconnecting {
+      self.state = .waitingSocket
+    } else if socketState == .disconnected {
+      self.chatEventSubject.onNext(.error(obj: nil))
+      //self.showError()
+    } else {
+      //self.hideError()
+    }
   }
   
   func updateMessages() {
@@ -424,10 +464,7 @@ extension UserChatInteractor: StoreSubscriber {
 
 extension UserChatInteractor {
   public func sendTyping(isStop: Bool) {
-    WsService.shared.sendTyping(
-      chat: self.userChat,
-      isStop: isStop
-    )
+    WsService.shared.sendTyping(chat: self.userChat, isStop: isStop)
   }
   
   fileprivate func addTimer(with person: CHEntity, delay: TimeInterval) {
@@ -482,6 +519,16 @@ extension UserChatInteractor {
   }
 }
 
+//interactor
+//extension UserChatView: MWPhotoBrowserDelegate {
+//  func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
+//    return UInt(self.photoUrls.count)
+//  }
+//
+//  func photoBrowser(_ photoBrowser: MWPhotoBrowser!, photoAt index: UInt) -> MWPhotoProtocol! {
+//    return MWPhoto(url: URL(string: self.photoUrls[Int(index)]))
+//  }
+//}
 
 extension UserChatInteractor: MWPhotoBrowserDelegate {
   func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {

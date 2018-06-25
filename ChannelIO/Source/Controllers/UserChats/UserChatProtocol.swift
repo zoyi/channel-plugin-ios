@@ -51,17 +51,19 @@ protocol UserChatViewProtocol: class {
 }
 
 protocol UserChatPresenterProtocol: class {
-  weak var view: UserChatViewProtocol? { get set }
+  var view: UserChatViewProtocol? { get set }
   var interactor: UserChatInteractorProtocol? { get set }
   var router: UserChatRouterProtocol? { get set }
   
   func fetchMessages()
   
+  func didClickOnRightButton(text: String, assets: [DKAsset])
   func send(text: String, assets: [DKAsset])
   func sendTyping(isStop: Bool)
   
   func didClickOnFeedback(rating: String, from view: UIViewController?)
   
+  func didClickOnMessageButton(originId: String?, key: String?, value: String?)
   func didClickOnOption(from view: UIViewController?)
   func didClickOnManager(from view: UIViewController?)
   func didClickOnFile(with message: CHMessage?, from view: UIViewController?)
@@ -73,14 +75,15 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnNewChat(with text: String, from view: UINavigationController?)
   func didClickOnSettings(from view: UIViewController?)
   
-  func readyToDisplay() -> Observable<Any?>?
+  func reload()
+  func readyToDisplay() -> Observable<Bool>?
   func viewDidLoad()
   func prepareDataSource()
   func cleanDataSource()
 }
 
 protocol UserChatInteractorProtocol: class {
-  weak var presenter: UserChatPresenterProtocol? { get set }
+  var presenter: UserChatPresenterProtocol? { get set }
   
   var userChat: CHUserChat? { get set }
   var userChatId: String { get set }
@@ -89,7 +92,7 @@ protocol UserChatInteractorProtocol: class {
   var shouldFetchChat: Bool { get }
   var shouldRefreshChat: Bool { get }
   
-  func readyToPresent() -> Observable<Any?>
+  func readyToPresent() -> Observable<Bool>
   func refreshUserChat()
   func subscribeDataSource()
   func unsunbscribeDataSource()
@@ -105,7 +108,7 @@ protocol UserChatInteractorProtocol: class {
   func translate(for message: CHMessage)
   func sendFeedback(rating: String)
   
-  func send(text: String) -> Observable<CHMessage>
+  func send(text: String, originId: String?, key: String?) -> Observable<CHMessage>
   func send(assets: [DKAsset]) -> Observable<[CHMessage]>
   func send(messages: [CHMessage]) -> Observable<Any?>
   func send(message: CHMessage?) -> Observable<CHMessage?>
