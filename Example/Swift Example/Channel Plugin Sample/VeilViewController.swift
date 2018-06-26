@@ -63,10 +63,10 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   func onClickChatLink(url: URL) -> Bool {
-    ChannelIO.close(animated: true, completion: {
-      let viewController = UIViewController()
-      self.navigationController?.pushViewController(viewController, animated: true)
-    })
+//    ChannelIO.close(animated: true, completion: {
+//      let viewController = UIViewController()
+//      self.navigationController?.pushViewController(viewController, animated: true)
+//    })
     return false
   }
   

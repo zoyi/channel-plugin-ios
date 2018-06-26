@@ -24,7 +24,7 @@ class CHNavigationBar: UINavigationBar {
       for subview in self.subviews {
         if String(describing: subview.classForCoder).contains("ContentView") {
           //let oldEdges = subview.layoutMargins
-          subview.layoutMargins = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
+          subview.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 4)
         }
       }
     }
@@ -51,7 +51,18 @@ class NavigationItem: UIBarButtonItem {
       button.sizeToFit()
     }
     
-    button.widthAnchor.constraint(equalToConstant: 44).isActive = true
+    if alignment == .left {
+      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -20, bottom: 0, right: 0)
+      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    } else if alignment == .right {
+      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -20)
+      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    } else {
+      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
+      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    button.widthAnchor.constraint(equalToConstant: 50).isActive = true
     button.heightAnchor.constraint(equalToConstant: 40).isActive = true
     button.translatesAutoresizingMaskIntoConstraints = false
     

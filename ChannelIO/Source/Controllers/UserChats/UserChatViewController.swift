@@ -62,6 +62,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   var typingCell: TypingIndicatorCell!
+  var profileCell: ProfileCell!
+  
   var profileIndexPath: IndexPath?
   
   var titleView : NavigationTitleView? = nil
@@ -178,6 +180,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     let cell = TypingIndicatorCell()
     cell.configure(typingUsers: [])
     self.typingCell = cell
+    
+    let profileCell = ProfileCell()
+    self.profileCell = profileCell
   }
 
   // MARK: - Helper methods
@@ -270,9 +275,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
     
     self.shyNavBarManager.extensionView = view
+    self.shyNavBarManager.triggerExtensionAtTop = true
     self.shyNavBarManager.delegate = self
     self.shyNavBarManager.isInverted = true
-    self.shyNavBarManager.triggerExtensionAtTop = true
     self.shyNavBarManager.expansionResistance = 0
     
     view.snp.makeConstraints { (make) in
@@ -333,6 +338,7 @@ final class UserChatViewController: BaseSLKTextViewController {
         image: CHAssets.getImage(named: "back"),
         text: alertCount,
         fitToSize: alert != 0,
+        alignment: alert == 0 ? .left : .center,
         textColor: tintColor,
         actionHandler: { [weak self] in
           self?.shyNavBarManager.disable = true
@@ -842,6 +848,7 @@ extension UserChatViewController {
       return cell
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.presenter = self.chatManager
       cell.configure(viewModel)
       return cell
     case .WebPage:
@@ -869,9 +876,8 @@ extension UserChatViewController {
       }.disposed(by: self.disposeBag)
       return cell
     case .Profile:
-      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
+      self.profileCell.configure(viewModel, presenter: self.chatManager)
+      return self.profileCell
     case .Form:
       if viewModel.shouldDisplayForm {
         let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -1040,9 +1046,6 @@ extension UserChatViewController: ChatDelegate {
     case .profile(_):
       self.textView.becomeFirstResponder()
       self.tableView.reloadData()
-      if let indexPath = self.profileIndexPath {
-        self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-      }
     default:
       break
     }

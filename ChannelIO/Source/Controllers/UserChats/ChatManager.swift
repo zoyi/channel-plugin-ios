@@ -44,6 +44,7 @@ class ChatManager {
   var didFetchInfo = false
   var didChatLoaded = false
   var didLoad = false
+  //var chatNewlyCreated = false
   var state: ChatState = .idle
   var shouldRedrawProfileBot = true
   var profileIsFocus = false
@@ -127,14 +128,14 @@ class ChatManager {
   
   fileprivate func observeChatEvents() { }
   fileprivate func observeSessionEvents() {
-    _ = WsService.shared.joined()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (chatId) in
-      if self?.chatId == "" {
-        self?.didFetchInfo = false
-      }
-      self?.didChatLoaded = false
-    })
+//    _ = WsService.shared.joined()
+//      .observeOn(MainScheduler.instance)
+//      .subscribe(onNext: { [weak self] (chatId) in
+//        if self?.chatNewlyCreated == false {
+//          self?.chatNewlyCreated = false
+//          self?.didChatLoaded = false
+//        }
+//    })
   }
   
   fileprivate func observeTypingEvents() {
@@ -383,7 +384,7 @@ extension ChatManager {
           mainStore.dispatch(CreateSession(payload: session))
           mainStore.dispatch(CreateUserChat(payload: userChat))
           WsService.shared.join(chatId: userChat.id)
-          
+          //self?.chatNewlyCreated = true
           self?.didChatLoaded = true
           self?.chatId = userChat.id
           
