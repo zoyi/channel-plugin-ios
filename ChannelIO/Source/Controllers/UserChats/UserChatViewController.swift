@@ -72,6 +72,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   var profileSubject = PublishSubject<Any?>()
   
   deinit {
+    self.chatManager.cleanup()
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
   }
   
@@ -104,14 +105,12 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    self.chatManager.willAppear()
     mainStore.subscribe(self)
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    self.chatManager.reset()
-    self.chatManager.willDisappear()
+    self.chatManager.requestReadAll()
     mainStore.unsubscribe(self)
   }
 
@@ -121,6 +120,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       state: mainStore.state,
       userChatId: self.userChatId)
     self.chatManager.delegate = self
+    self.chatManager.prepare()
   }
   
   // MARK: - Helper methods

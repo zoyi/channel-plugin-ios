@@ -161,6 +161,7 @@ extension CHChannel: Mappable {
     expectedResponseDelay   <- map["expectedResponseDelay"]
     timeZone                <- map["timeZone"]
     servicePlan             <- map["servicePlan"]
+    serviceBlocked          <- map["serviceBlocked"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden
     trial                   <- map["trial"]

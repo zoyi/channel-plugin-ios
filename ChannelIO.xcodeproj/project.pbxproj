@@ -29,6 +29,8 @@
 		22634860209DC83C0072801B /* ChannelIOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2263485F209DC83B0072801B /* ChannelIOTests.swift */; };
 		22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A20FB81FE22A54006C81F3 /* BotActions.swift */; };
 		22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */; };
+		22AE76B220E341CB00C18355 /* Mute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AE76B120E341CB00C18355 /* Mute.swift */; };
+		22AE76B920E347C700C18355 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 22AE76B820E347C700C18355 /* mute.caf */; };
 		22F0ED9220B53C55008924C1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F0ED9120B53C55008924C1 /* Models.swift */; };
 		650D7C351E724AD7007DE358 /* LocalMessageFactorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */; };
 		650D7C3B1E72546B007DE358 /* MessagesStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C3A1E72546B007DE358 /* MessagesStateTests.swift */; };
@@ -299,6 +301,8 @@
 		2263485F209DC83B0072801B /* ChannelIOTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelIOTests.swift; sourceTree = "<group>"; };
 		22A20FB81FE22A54006C81F3 /* BotActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotActions.swift; sourceTree = "<group>"; };
 		22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveTypingAvatarsView.swift; sourceTree = "<group>"; };
+		22AE76B120E341CB00C18355 /* Mute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mute.swift; sourceTree = "<group>"; };
+		22AE76B820E347C700C18355 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = mute.caf; path = Assets/mute.caf; sourceTree = "<group>"; };
 		22F0ED9120B53C55008924C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		2D031DBBCA1028953145D1B6 /* Pods-ChannelIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIO.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChannelIO/Pods-ChannelIO.debug.xcconfig"; sourceTree = "<group>"; };
 		3042303E08BB985C3D1774FE /* Pods_ChannelIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChannelIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -703,6 +707,7 @@
 		652AE20E1E81482F00B7484C /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				22AE76B820E347C700C18355 /* mute.caf */,
 				65CB14002069190D00E456B5 /* emoji_map.json */,
 				65CB14012069190E00E456B5 /* ringtone.mp3 */,
 				652AE2131E81485D00B7484C /* Localizable.strings */,
@@ -861,6 +866,7 @@
 				659792B81FA7167A00840F6A /* PrefStore.swift */,
 				6593788320B26ABC00230248 /* Notifications.swift */,
 				222086B71FBAAD37002CFA88 /* CHAnimations.swift */,
+				22AE76B120E341CB00C18355 /* Mute.swift */,
 			);
 			name = Utils;
 			path = Source/Utils;
@@ -1266,6 +1272,7 @@
 				652AE2111E81485D00B7484C /* Localizable.strings in Resources */,
 				14DFAC681E4A189D00130119 /* Images.xcassets in Resources */,
 				651A58871E88E3970042A59F /* countryInfo.json in Resources */,
+				22AE76B920E347C700C18355 /* mute.caf in Resources */,
 				65CB14022069190E00E456B5 /* emoji_map.json in Resources */,
 				65CB14032069190E00E456B5 /* ringtone.mp3 in Resources */,
 			);
@@ -1590,6 +1597,7 @@
 				659793B51FA716CB00840F6A /* NewMessageBannerView.swift in Sources */,
 				659793B61FA716CB00840F6A /* ChatNotificationViewModel.swift in Sources */,
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
+				22AE76B220E341CB00C18355 /* Mute.swift in Sources */,
 				659793B71FA716CB00840F6A /* ChatNotificationView.swift in Sources */,
 				659793B81FA716CB00840F6A /* CHAvatar.swift in Sources */,
 				659793BD1FA716CB00840F6A /* CHPhoneField.swift in Sources */,

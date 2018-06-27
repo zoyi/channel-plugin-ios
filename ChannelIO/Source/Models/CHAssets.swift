@@ -1,4 +1,4 @@
-//
+ //
 //  Assets.swift
 //  CHPlugin
 //
@@ -69,6 +69,18 @@ class CHAssets {
     let pushSound = NSURL(fileURLWithPath: Bundle(for:self).path(forResource: "ringtone", ofType: "mp3")!)
     var soundId: SystemSoundID = 0
     AudioServicesCreateSystemSoundID(pushSound, &soundId)
-    AudioServicesPlaySystemSound(soundId)
+    
+    Mute.shared.checkInterval = 0.5
+    Mute.shared.alwaysNotify = true
+    Mute.shared.isPaused = false
+    Mute.shared.schedulePlaySound()
+    Mute.shared.notify = { m in
+      if !m {
+        AudioServicesPlaySystemSound(soundId)
+      } else {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+      }
+      Mute.shared.isPaused = true
+    }
   }
 }

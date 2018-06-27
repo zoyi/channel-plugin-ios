@@ -44,7 +44,7 @@ class ChatManager {
   var didFetchInfo = false
   var didChatLoaded = false
   var didLoad = false
-  //var chatNewlyCreated = false
+  var chatNewlyCreated = false
   var state: ChatState = .idle
   var shouldRedrawProfileBot = true
   var profileIsFocus = false
@@ -101,14 +101,14 @@ class ChatManager {
       .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
-        self?.willAppear()
+        self?.prepare()
       }.disposed(by: self.disposeBag)
     
     NotificationCenter.default
       .rx.notification(Notification.Name.UIApplicationWillResignActive)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
-        self?.willDisappear()
+        self?.cleanup()
       }.disposed(by: self.disposeBag)
   }
   
@@ -128,14 +128,13 @@ class ChatManager {
   
   fileprivate func observeChatEvents() { }
   fileprivate func observeSessionEvents() {
-//    _ = WsService.shared.joined()
-//      .observeOn(MainScheduler.instance)
-//      .subscribe(onNext: { [weak self] (chatId) in
-//        if self?.chatNewlyCreated == false {
-//          self?.chatNewlyCreated = false
-//          self?.didChatLoaded = false
-//        }
-//    })
+    _ = WsService.shared.joined()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (chatId) in
+        if self?.chatNewlyCreated == false {
+          self?.didChatLoaded = false
+        }
+    })
   }
   
   fileprivate func observeTypingEvents() {
@@ -199,6 +198,7 @@ extension ChatManager {
   }
   
   public func reset() {
+    self.didChatLoaded = false
     self.timeStorage.forEach { (k, t) in
       t.invalidate()
     }
@@ -383,10 +383,10 @@ extension ChatManager {
             let session = chatResponse.session else { return }
           mainStore.dispatch(CreateSession(payload: session))
           mainStore.dispatch(CreateUserChat(payload: userChat))
-          WsService.shared.join(chatId: userChat.id)
-          //self?.chatNewlyCreated = true
+          self?.chatNewlyCreated = true
           self?.didChatLoaded = true
           self?.chatId = userChat.id
+          self?.prepare()
           
           subscriber.onNext(userChat.id)
           subscriber.onCompleted()
@@ -515,13 +515,15 @@ extension ChatManager {
 }
 
 extension ChatManager {
-  func willAppear() {
+  func prepare() {
+    guard self.chatId != "" else { return }
     self.state = .chatJoining
     self.observeSocketEvents()
     WsService.shared.join(chatId: self.chatId)
   }
   
-  func willDisappear() {
+  func cleanup() {
+    self.reset()
     self.sendTyping(isStop: true)
     self.requestReadAll()
     self.disposeSignals()
