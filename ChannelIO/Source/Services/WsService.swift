@@ -217,17 +217,14 @@ class WsService {
     but we intend to use it for only one userChat
   */
   func join(chatId: String?) {
-    guard let chatId = chatId else { return }
-    guard chatId != "" else { return }
+    guard let chatId = chatId, chatId != "" else { return }
     
     self.currentChatId = chatId
-    
     self.socket?.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
   }
   
   func leave(chatId: String?) {
-    guard let chatId = chatId else { return }
-    guard chatId != "" else { return }
+    guard let chatId = chatId, chatId != "" else { return }
     
     self.currentChatId = ""
     self.socket?.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
@@ -317,8 +314,8 @@ fileprivate extension WsService {
       mainStore.dispatchOnMain(SocketReady())
       dlog("socket ready")
       
-      if self?.currentChatId != "" {
-        self?.join(chatId: self?.currentChatId)
+      if let chatId = self?.currentChatId {
+        self?.join(chatId: chatId)
       }
     }
   }

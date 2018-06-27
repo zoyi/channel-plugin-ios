@@ -14,7 +14,6 @@ import DKImagePickerController
 import CHPhotoBrowser
 import SVProgressHUD
 import CHSlackTextViewController
-import Alamofire
 import CHNavBar
 import AVKit
 
@@ -72,7 +71,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   var profileSubject = PublishSubject<Any?>()
   
   deinit {
-    self.chatManager.cleanup()
+    self.chatManager?.prepareToLeave()
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
   }
   
@@ -110,7 +109,7 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    self.chatManager.requestReadAll()
+    self.chatManager?.requestReadAll()
     mainStore.unsubscribe(self)
   }
 
@@ -119,8 +118,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.chatManager.chat = userChatSelector(
       state: mainStore.state,
       userChatId: self.userChatId)
+    self.chatManager.viewController = self
     self.chatManager.delegate = self
-    self.chatManager.prepare()
+    self.chatManager.prepareToChat()
   }
   
   // MARK: - Helper methods
@@ -141,7 +141,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.textInputbar.autoHideRightButton = false
     self.textInputbar.signalForClick()
       .subscribe { [weak self] (_) in
-      if self?.textInputbar.barState == .disabled && self?.chatManager.profileIsFocus == false {
+      if self?.textInputbar.barState == .disabled && self?.chatManager?.profileIsFocus == false {
         return
       }
       self?.shyNavBarManager.contract(true)
@@ -298,12 +298,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-        WsService.shared.connect()
-        _ = self?.resetUserChat()?.subscribe({ (event) in
-          if event.element != nil  {
-            self?.chatManager.fetchMessages()
-          }
-        })
+        self?.createdFeedback = false
+        self?.createdFeedbackComplete = false
+        self?.chatManager?.reconnect()
       }).disposed(by: self.disposeBag)
     
     self.view.addSubview(self.newMessageView)
@@ -361,13 +358,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       bar.setNeedsLayout()
       bar.layoutIfNeeded()
     }
-  }
-  
-  fileprivate func resetUserChat() -> Observable<String?>? {
-    self.createdFeedback = false
-    self.createdFeedbackComplete = false
-    
-    return self.chatManager.resetUserChat()
   }
 }
 
@@ -499,13 +489,10 @@ extension UserChatViewController: StoreSubscriber {
   func showFeedbackIfNeeded(_ userChat: CHUserChat?, lastMessage: CHMessage?) {
     guard let newUserChat = userChat else { return }
     //it only trigger once if previous state is following and new state is resolved
-    if newUserChat.isResolved() &&
-      //lastMessage?.log?.action == "resolve" &&
-      !self.createdFeedback {
+    if newUserChat.isResolved() && !self.createdFeedback {
       self.createdFeedback = true
       mainStore.dispatch(CreateFeedback())
-    } else if newUserChat.isClosed() &&
-      !self.createdFeedbackComplete {
+    } else if newUserChat.isClosed() && !self.createdFeedbackComplete {
       self.createdFeedbackComplete = true
       mainStore.dispatch(CreateCompletedFeedback())
     }
@@ -537,7 +524,7 @@ extension UserChatViewController: StoreSubscriber {
       } else if lastMessage.messageType == .File {
         offset.y += FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
-        offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width - 52, viewModel: viewModel)
+        offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width, viewModel: viewModel)
       } else if lastMessage.messageType == .Form && viewModel.shouldDisplayForm {
         offset.y += FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else {
@@ -831,14 +818,8 @@ extension UserChatViewController {
     case .SatisfactionFeedback:
       let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
       cell.signalForFeedback()
-        .subscribe(onNext: { [weak self] (response) in
-          if let userChat = self?.userChat  {
-            userChat.feedback(rating: response)
-              .observeOn(MainScheduler.instance)
-              .subscribe (onNext: { (response) in
-                mainStore.dispatch(GetUserChat(payload: response))
-              }).disposed(by: (self?.disposeBag)!)
-          }
+        .subscribe(onNext: { [weak self] (rating) in
+          self?.chatManager?.didProvideFeedback(with: rating)
         }).disposed(by: self.disposeBag)
       return cell
     case .SatisfactionCompleted:
@@ -856,7 +837,7 @@ extension UserChatViewController {
       cell.presenter = self.chatManager
       cell.configure(viewModel)
       cell.webView.signalForClick().subscribe{ [weak self] _ in
-        self?.didWebPageTapped(message: message)
+        self?.chatManager?.didClickOnWebPage(with: message)
       }.disposed(by: self.disposeBag)
       return cell
     case .Media:
@@ -872,12 +853,13 @@ extension UserChatViewController {
       cell.presenter = self.chatManager
       cell.configure(viewModel)
       cell.fileView.signalForClick().subscribe { [weak self] _ in
-        self?.didFileTapped(message: message)
+        self?.chatManager?.didClickOnFile(with: message)
       }.disposed(by: self.disposeBag)
       return cell
     case .Profile:
-      self.profileCell.configure(viewModel, presenter: self.chatManager)
-      return self.profileCell
+      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
     case .Form:
       if viewModel.shouldDisplayForm {
         let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -924,8 +906,7 @@ extension UserChatViewController {
     self.photoBrowser = MWPhotoBrowser(delegate: self)
     self.photoBrowser?.enableSwipeToDismiss = true
     
-    let navigation = MainNavigationController(rootViewController: self.photoBrowser!)
-    navigation.useDefault = true
+    let navigation = UINavigationController(rootViewController: self.photoBrowser!)
     navigation.modalPresentationStyle = .overCurrentContext
     
     if let index = self.photoUrls.index(of: imgUrl ?? "") {
@@ -934,80 +915,6 @@ extension UserChatViewController {
       
       self.present(navigation, animated: true, completion: nil)
     }
-  }
-  
-  func didFileTapped(message: CHMessage) {
-    guard let url = message.file?.url else { return }
-    
-    if message.file?.category == "video" {
-      let moviePlayer = AVPlayerViewController()
-      let player = AVPlayer(url: URL(string: url)!)
-      moviePlayer.player = player
-      moviePlayer.modalPresentationStyle = .overFullScreen
-      moviePlayer.modalTransitionStyle = .crossDissolve
-      self.present(moviePlayer, animated: true, completion: nil)
-      return
-    }
-    
-    if let localUrl = message.file?.localUrl,
-      message.file?.downloaded == true {
-      self.showDocumentController(url: localUrl)
-      return
-    }
-
-    SVProgressHUD.showProgress(0)
-    
-    let destination = DownloadRequest
-      .suggestedDownloadDestination(for: .documentDirectory, in: .userDomainMask)
-    
-      Alamofire.download(url, to: destination)
-      .downloadProgress{ (download) in
-        SVProgressHUD.showProgress(Float(download.fractionCompleted))
-      }
-      .validate(statusCode: 200..<300)
-      .response{ [weak self] (response) in
-        SVProgressHUD.dismiss()
-        
-        let directoryURL = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        let pathURL = URL(fileURLWithPath: directoryURL, isDirectory: true)
-        guard let fileName = response.response?.suggestedFilename else { return }
-        let fileURL = pathURL.appendingPathComponent(fileName)
-        
-        var message = message
-        message.file?.downloaded = true
-        message.file?.localUrl = fileURL
-        mainStore.dispatch(UpdateMessage(payload: message))
-        
-        self?.showDocumentController(url: fileURL)
-      }
-  }
-  
-  func showDocumentController(url: URL) {
-    let docController = UIDocumentInteractionController(url: url)
-    docController.delegate = self
-    
-    if !docController.presentPreview(animated: true) {
-      docController.presentOptionsMenu(from: self.view.bounds, in: self.view, animated: true)
-    }
-  }
-
-  func didWebPageTapped(message: CHMessage) {
-    guard let url = URL(string:message.webPage?.url ?? "") else { return }
-    let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
-    if shouldHandle == true || shouldHandle == nil {
-      url.openWithUniversal()
-    }
-  }
-}
-
-// MARK: UIDocumentInteractionControllerDelegate methods
-
-extension UserChatViewController : UIDocumentInteractionControllerDelegate {
-  func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
-    if let controller = CHUtils.getTopController() {
-      return controller
-    }
-    return UIViewController()
   }
 }
 
@@ -1059,7 +966,7 @@ extension UserChatViewController: ChatDelegate {
     if self.shyNavBarManager.isExpanded() {
       self.shyNavBarManager.contract(false)
     }
-    self.chatManager.didChatLoaded = false
+    self.chatManager?.didChatLoaded = false
     self.errorToastView.show(animated: true)
   }
   

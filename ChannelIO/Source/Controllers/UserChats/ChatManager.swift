@@ -10,6 +10,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 import CHSlackTextViewController
+import SVProgressHUD
+import Alamofire
+import AVKit
 
 enum ChatElement {
   case photos(obj: [String])
@@ -29,7 +32,7 @@ protocol ChatDelegate : class {
   func hideError()
 }
 
-class ChatManager {
+class ChatManager: NSObject {
   var chatId = ""
   var chatType = ""
   var chat: CHUserChat? = nil {
@@ -50,7 +53,7 @@ class ChatManager {
   var profileIsFocus = false
   
   let disposeBag = DisposeBag()
-
+  
   fileprivate var welcomedAt = Date()
   fileprivate var typingPersons = [CHEntity]()
   fileprivate var timeStorage = [String: Timer]()
@@ -69,12 +72,15 @@ class ChatManager {
   }
   
   weak var delegate: ChatDelegate? = nil
+  weak var viewController: UIViewController? = nil
   
   deinit {
     dlog("Destroyed chatManager")
   }
   
   init(id: String?, type: String = "UserChat"){
+    super.init()
+    
     self.chatId = id ?? ""
     self.chatType = type
     self.chat = userChatSelector(
@@ -101,14 +107,14 @@ class ChatManager {
       .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
-        self?.prepare()
+        self?.prepareToChat()
       }.disposed(by: self.disposeBag)
     
     NotificationCenter.default
       .rx.notification(Notification.Name.UIApplicationWillResignActive)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
-        self?.cleanup()
+        self?.prepareToLeave()
       }.disposed(by: self.disposeBag)
   }
   
@@ -197,8 +203,7 @@ extension ChatManager {
     }
   }
   
-  public func reset() {
-    self.didChatLoaded = false
+  public func clearTyping() {
     self.timeStorage.forEach { (k, t) in
       t.invalidate()
     }
@@ -386,7 +391,7 @@ extension ChatManager {
           self?.chatNewlyCreated = true
           self?.didChatLoaded = true
           self?.chatId = userChat.id
-          self?.prepare()
+          self?.prepareToChat()
           
           subscriber.onNext(userChat.id)
           subscriber.onCompleted()
@@ -402,35 +407,76 @@ extension ChatManager {
     })
   }
   
+  func didClickOnWebPage(with message: CHMessage) {
+    guard let url = URL(string:message.webPage?.url ?? "") else { return }
+    let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
+    if shouldHandle == true || shouldHandle == nil {
+      url.openWithUniversal()
+    }
+  }
+  
+  func didClickOnFile(with message: CHMessage) {
+    guard let url = message.file?.url else { return }
+    
+    if message.file?.category == "video" {
+      let moviePlayer = AVPlayerViewController()
+      let player = AVPlayer(url: URL(string: url)!)
+      moviePlayer.player = player
+      moviePlayer.modalPresentationStyle = .overFullScreen
+      moviePlayer.modalTransitionStyle = .crossDissolve
+      self.viewController?.present(moviePlayer, animated: true, completion: nil)
+      return
+    }
+    
+    if let localUrl = message.file?.localUrl,
+      message.file?.downloaded == true {
+      self.showDocumentController(url: localUrl)
+      return
+    }
+    
+    SVProgressHUD.showProgress(0)
+    
+    let destination = DownloadRequest
+      .suggestedDownloadDestination(for: .documentDirectory, in: .userDomainMask)
+    
+    Alamofire.download(url, to: destination)
+      .downloadProgress{ (download) in
+        SVProgressHUD.showProgress(Float(download.fractionCompleted))
+      }
+      .validate(statusCode: 200..<300)
+      .response{ [weak self] (response) in
+        SVProgressHUD.dismiss()
+        
+        let directoryURL = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let pathURL = URL(fileURLWithPath: directoryURL, isDirectory: true)
+        guard let fileName = response.response?.suggestedFilename else { return }
+        let fileURL = pathURL.appendingPathComponent(fileName)
+        
+        var message = message
+        message.file?.downloaded = true
+        message.file?.localUrl = fileURL
+        mainStore.dispatch(UpdateMessage(payload: message))
+        
+        self?.showDocumentController(url: fileURL)
+    }
+  }
+  
+  func didProvideFeedback(with rating: String) {
+    self.chat?.feedback(rating: rating)
+      .observeOn(MainScheduler.instance)
+      .subscribe (onNext: { (response) in
+        mainStore.dispatch(GetUserChat(payload: response))
+      }).disposed(by: self.disposeBag)
+  }
+  
   func requestProfileBot(chatId: String?) -> Observable<Bool?> {
     return PluginPromise.requestProfileBot(pluginId: mainStore.state.plugin.id, chatId: chatId)
   }
   
-  func resetUserChat() -> Observable<String?> {
-    return Observable.create({ [weak self] (subscribe) in
-      //guard let s = self else { return Disposables.create() }
-      self?.nextSeq = ""
-      var signal: Disposable?
-      
-      if let chatId = self?.chatId, chatId != "" {
-        signal = self?.fetchChat().subscribe(onNext: { _ in
-          mainStore.dispatch(RemoveMessages(payload: chatId))
-          subscribe.onNext(chatId)
-        }, onError: { error in
-          subscribe.onError(error)
-        })
-      } else {
-        signal = self?.createChat().subscribe(onNext: { chatId in
-          subscribe.onNext(chatId)
-        }, onError: { error in
-          subscribe.onError(error)
-        })
-      }
-      
-      return Disposables.create {
-        signal?.dispose()
-      }
-    })
+  func reconnect() {
+    self.nextSeq = ""
+    self.didChatLoaded = false
+    WsService.shared.connect()
   }
   
   func fetchMessages() {
@@ -515,16 +561,16 @@ extension ChatManager {
 }
 
 extension ChatManager {
-  func prepare() {
+  func prepareToChat() {
     guard self.chatId != "" else { return }
     self.state = .chatJoining
     self.observeSocketEvents()
     WsService.shared.join(chatId: self.chatId)
   }
   
-  func cleanup() {
-    self.reset()
+  func prepareToLeave() {
     self.sendTyping(isStop: true)
+    self.clearTyping()
     self.requestReadAll()
     self.disposeSignals()
     WsService.shared.leave(chatId: self.chatId)
@@ -556,6 +602,28 @@ extension ChatManager {
     }
     
     return false
+  }
+}
+
+extension ChatManager : UIDocumentInteractionControllerDelegate {
+  func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
+    if let controller = CHUtils.getTopController() {
+      return controller
+    }
+    return UIViewController()
+  }
+  
+  func showDocumentController(url: URL) {
+    guard let viewController = self.viewController else { return }
+    
+    let docController = UIDocumentInteractionController(url: url)
+    docController.delegate = self
+    
+    if !docController.presentPreview(animated: true) {
+      docController.presentOptionsMenu(
+        from: viewController.view.bounds,
+        in: viewController.view, animated: true)
+    }
   }
 }
 

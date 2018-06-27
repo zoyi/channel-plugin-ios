@@ -154,7 +154,7 @@ extension CHUserChat {
 
 extension CHUserChat {
   func isActive() -> Bool {
-    return self.state != "closed" && self.state != "resolved"
+    return self.state != "closed" && self.state != "resolved" && self.state != "removed"
   }
   
   func isClosed() -> Bool {
