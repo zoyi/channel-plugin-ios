@@ -9,6 +9,8 @@
 import Foundation
 import SnapKit
 
+let placeHolder = UITextView()
+
 class TextMessageView : BaseView {
 
   //MARK: Constant
@@ -46,6 +48,7 @@ class TextMessageView : BaseView {
     $0.isScrollEnabled = false
     $0.isEditable = false
     $0.isSelectable = true
+    
     $0.dataDetectorTypes = UIDataDetectorTypes.link
     $0.textContainer.lineFragmentPadding = 0
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
@@ -87,7 +90,7 @@ class TextMessageView : BaseView {
     }
     
     self.messageView.textColor = viewModel.createdByMe ? viewModel.textColor : Color.message
-    //self.messageView.tintColor = viewModel.createdByMe ? viewModel.textColor : UIColor.blue
+
     let linkColor = viewModel.createdByMe ? viewModel.textColor : CHColors.cobalt
     self.messageView.linkTextAttributes = [
       NSAttributedStringKey.foregroundColor.rawValue: linkColor,
@@ -109,16 +112,20 @@ class TextMessageView : BaseView {
   //MARK: layout
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
-
+    
     if let message = viewModel.message.messageV2 {
-      let extraPadding: CGFloat = 5.f //message.string.guessLanguage() == "日本語" ? 40 : 0
-      var range = NSRange(location:0, length: message.string.count)
-      viewHeight += message.string.height(
-        fits: width - extraPadding - Metric.leftRightPadding * 2,
-        attributes:  message.attributes(at: 0, effectiveRange: &range))
-      viewHeight += Metric.topBottomPadding * 2
+//      let extraPadding: CGFloat = 5.f //message.string.guessLanguage() == "日本語" ? 40 : 0
+//      var range = NSRange(location:0, length: message.string.count)
+//      viewHeight += message.string.height(
+//        fits: width - extraPadding - Metric.leftRightPadding * 2,
+//        attributes:  message.attributes(at: 0, effectiveRange: &range))
+      placeHolder.frame = CGRect(x: 0, y: 0, width: width - Metric.leftRightPadding * 2, height: CGFloat.greatestFiniteMagnitude)
+      placeHolder.textContainer.lineFragmentPadding = 0
+      placeHolder.attributedText = message
+      placeHolder.sizeToFit()
+      
+      viewHeight += placeHolder.size.height + 6.f
     }
-
     return viewHeight
   }
 }

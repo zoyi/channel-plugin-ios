@@ -110,7 +110,8 @@ open class MarkdownParser {
     let attributedString = NSMutableAttributedString(attributedString: markdown)
     
     let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineBreakMode = .byWordWrapping
+   
+    paragraphStyle.lineBreakMode = markdown.string.guessLanguage() == "日本語" ? .byCharWrapping : .byWordWrapping
     paragraphStyle.alignment = .left
     paragraphStyle.minimumLineHeight = 20
     
