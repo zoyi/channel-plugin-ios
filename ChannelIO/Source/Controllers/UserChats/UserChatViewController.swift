@@ -560,18 +560,18 @@ extension UserChatViewController {
 
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.camera"), style: .default) { [weak self] _ in
-      self?.presentPicker(type: .camera)
-    })
+        self?.chatManager?.presentCameraPicker(from: self)
+      })
 
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { [weak self] _ in
-      self?.presentPicker(type: .photo, max: 20)
-    })
+        self?.chatManager?.presentPicker(type: .photo, max: 20, from: self)
+      })
 
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.chat.resend.cancel"), style: .cancel) { _ in
-      //nothing
-    })
+
+      })
 
     self.navigationController?.present(alertView, animated: true, completion: nil)
   }
@@ -621,49 +621,7 @@ extension UserChatViewController {
     // TODO: check if responder is equal to our text field
     return true
   }
-
-  private func presentPicker(
-    type: DKImagePickerControllerSourceType,
-    max: Int = 0,
-    assetType: DKImagePickerControllerAssetType = .allAssets) {
-      let pickerController = DKImagePickerController()
-      pickerController.sourceType = type
-      pickerController.showsCancelButton = true
-      pickerController.maxSelectableCount = max
-      pickerController.assetType = assetType
-      pickerController.assetGroupTypes = [
-        .smartAlbumUserLibrary,
-        .smartAlbumFavorites,
-        .smartAlbumVideos,
-        .albumRegular]
-    
-      pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
-        func uploadImage(_ userChatId: String, requestBot: Bool = false) {
-          let messages = assets.map({ (asset) -> CHMessage in
-            return CHMessage(chatId: userChatId, guest:  mainStore.state.guest, asset: asset)
-          })
-          
-          messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
-          //TODO: rather create array of signal and trigger in order
-          self?.chatManager.sendMessageRecursively(
-            allMessages: messages, currentIndex: 0, requestBot: requestBot
-          )
-        }
-        
-        if let userChatId = self?.userChatId {
-          uploadImage(userChatId)
-        } else {
-          _ = self?.chatManager.createChat().subscribe(onNext: { [weak self] (chatId) in
-            self?.userChatId = chatId
-            uploadImage(chatId, requestBot:true)
-          }, onError: { [weak self] (error) in
-            self?.chatManager.state = .chatNotLoaded
-          })
-        }
-      }
-      self.present(pickerController, animated: true, completion: nil)
-  }
-
+  
   private func updatePhotoUrls(messages: [CHMessage]) {
     self.photoUrls = messages.filter({ $0.file?.isPreviewable == true })
       .map({ (message) -> String in

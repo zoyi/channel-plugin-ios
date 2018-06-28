@@ -163,11 +163,15 @@ extension CHMessage: Mappable {
     self.messageV2 = CustomMessageTransform.markdown.parse(trimmedMessage)
   }
   
-  init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset) {
+  init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset? = nil, image: UIImage? = nil) {
     self.init(chatId: chatId, guest: guest, message: message, messageType: .Media)
-    self.file = CHFile(imageAsset: asset)
+    if let image = image {
+      self.file = CHFile(imageData: image)
+    } else if let asset = asset {
+      self.file = CHFile(imageAsset: asset)
+    }
+    
     self.messageType = self.file?.mimeType == .image || self.file?.mimeType == .gif ? .Media : .File
-
     self.progress = 0
   }
   
@@ -384,22 +388,33 @@ extension CHMessage {
   
   private func sendImage() -> Observable<CHMessage> {
     return Observable.create({ (subscriber) in
-      guard let file = self.file, let asset = file.asset else {
+      guard let file = self.file, file.image else {
         subscriber.onError(CHErrorPool.sendFileError)
         return Disposables.create()
       }
       
       var signal: Disposable?
-      asset.fetchOriginalImage(false, completeBlock: { (image, info) in
-        signal = self.send(
-          data: UIImageJPEGRepresentation(image!, 1.0),
-          fileName: "Channel_Photo_\(Date().fullDateString()).png",
-          mimeType: file.mimeType).subscribe(onNext: { (message) in
+      let fileName = "Channel_Photo_\(Date().fullDateString()).png"
+      if let asset = file.asset {
+        asset.fetchOriginalImage(false, completeBlock: { (image, info) in
+          signal = self.send(data: UIImageJPEGRepresentation(image!, 1.0),fileName: fileName, mimeType: file.mimeType)
+            .subscribe(onNext: { (message) in
+              subscriber.onNext(message)
+              subscriber.onCompleted()
+            }, onError: { (error) in
+              subscriber.onError(error)
+            })
+          })
+      } else if let image = file.imageData {
+        signal = self.send(data: UIImageJPEGRepresentation(image, 1.0), fileName: fileName, mimeType: file.mimeType)
+          .subscribe(onNext: { (message) in
             subscriber.onNext(message)
+            subscriber.onCompleted()
           }, onError: { (error) in
             subscriber.onError(error)
           })
-      })
+      }
+
       return Disposables.create {
         signal?.dispose()
       }

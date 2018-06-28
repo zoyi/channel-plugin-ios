@@ -13,6 +13,7 @@ import CHSlackTextViewController
 import SVProgressHUD
 import Alamofire
 import AVKit
+import DKImagePickerController
 
 enum ChatElement {
   case photos(obj: [String])
@@ -279,6 +280,44 @@ extension ChatManager {
       mainStore.dispatch(CreateMessage(payload: message!))
       self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
     }).disposed(by: self.disposeBag)
+  }
+  
+  func sendImage(imageData: UIImage) {
+    let message = CHMessage(chatId: self.chatId, guest: mainStore.state.guest, image: imageData)
+    mainStore.dispatch(CreateMessage(payload: message))
+    
+    if self.chatId != "" {
+      self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
+    } else {
+      self.createChat().subscribe(onNext: { [weak self] (chatId) in
+        self?.chatId = chatId
+        self?.sendMessageRecursively(allMessages: [message], currentIndex: 0, requestBot: true)
+      }, onError: { [weak self] (error) in
+        self?.state = .chatNotLoaded
+      }).disposed(by: self.disposeBag)
+    }
+  }
+  
+  func sendImages(assets: [DKAsset]) {
+    if self.chatId != "" {
+      self.uploadImages(assets: assets)
+    } else {
+      self.createChat().subscribe(onNext: { [weak self] (chatId) in
+        self?.chatId = chatId
+        self?.uploadImages(assets: assets, requestBot: true)
+      }, onError: { [weak self] (error) in
+        self?.state = .chatNotLoaded
+      }).disposed(by: self.disposeBag)
+    }
+  }
+  
+  private func uploadImages(assets: [DKAsset], requestBot: Bool = false) {
+    let messages = assets.map({ (asset) -> CHMessage in
+      return CHMessage(chatId: self.chatId, guest: mainStore.state.guest, asset: asset)
+    })
+    
+    messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
+    self.sendMessageRecursively(allMessages: messages, currentIndex: 0, requestBot: requestBot)
   }
   
   func profileIsFocus(focus: Bool) {
@@ -648,5 +687,43 @@ extension ChatManager {
     })
     
     CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
+  }
+}
+
+//routing
+extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+  func presentPicker(
+    type: DKImagePickerControllerSourceType,
+    max: Int = 0,
+    assetType: DKImagePickerControllerAssetType = .allAssets,
+    from view: UIViewController?) {
+    let pickerController = DKImagePickerController()
+    pickerController.sourceType = type
+    pickerController.showsCancelButton = true
+    pickerController.maxSelectableCount = max
+    pickerController.assetType = assetType
+    pickerController.assetGroupTypes = [
+      .smartAlbumUserLibrary,
+      .smartAlbumFavorites,
+      .smartAlbumVideos,
+      .albumRegular]
+    
+    pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
+      self?.sendImages(assets: assets)
+    }
+    view?.present(pickerController, animated: true, completion: nil)
+  }
+  
+  func presentCameraPicker(from view: UIViewController?) {
+    let controller = UIImagePickerController()
+    controller.sourceType = .camera
+    controller.delegate = self
+    view?.present(controller, animated: true, completion: nil)
+  }
+  
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    let capturedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+    self.sendImage(imageData: capturedImage.normalizedImage())
+    picker.dismiss(animated: true, completion: nil)
   }
 }

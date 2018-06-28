@@ -72,11 +72,11 @@ class MediaMessageView : BaseView {
       self.indicatorView.startAnimating()
     }
     
-    if file.asset != nil && message.progress != 1.0 {
+    if let asset = file.asset, message.progress != 1.0 {
       self.indicatorView.isHidden = true
       self.progressView.isHidden = false
       
-      file.asset?.fetchOriginalImageWithCompleteBlock({
+      asset.fetchOriginalImageWithCompleteBlock({
         [weak self] (image, info) in
 
         self?.imageView.alpha = 0.4
@@ -87,6 +87,14 @@ class MediaMessageView : BaseView {
       //change to delegation to update ui rather using redux
       self.progressView.setProgress(message.progress, animated: false)
       
+    } else if let image = file.imageData, message.progress != 1.0 {
+      self.indicatorView.isHidden = true
+      self.progressView.isHidden = false
+      self.imageView.alpha = 0.4
+      self.imageView.image = image
+      self.placeholder = image
+      
+      self.progressView.setProgress(message.progress, animated: false)
     } else {
       self.indicatorView.isHidden = false
       self.progressView.isHidden = true
@@ -150,6 +158,8 @@ class MediaMessageView : BaseView {
       asset.fetchOriginalImage(true, completeBlock: { (image, info) in
         size = getThumbnailImageSize(imageSize: image?.size ?? CGSize.zero)
       })
+    } else if let image = viewModel.file?.imageData {
+      size = getThumbnailImageSize(imageSize: image.size)
     }
 
     return size

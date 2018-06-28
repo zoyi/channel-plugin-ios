@@ -42,6 +42,7 @@ struct CHFile {
   //local
   var rawData: Data?
   var asset: DKAsset?
+  var imageData: UIImage?
   var downloaded: Bool = false
   var localUrl: URL?
   var fileUrl: URL?
@@ -49,6 +50,8 @@ struct CHFile {
   var mimeType: Mimetype? {
     if let identifier = self.asset?.originalAsset?.value(forKey: "uniformTypeIdentifier") as? String {
       return CHFile.convertToMimetype(from: identifier)
+    } else if self.imageData != nil {
+      return .image
     }
     return nil
   }
@@ -105,6 +108,12 @@ struct CHFile {
         self.category = ""
       }
     }
+  }
+  
+  init(imageData: UIImage) {
+    self.imageData = imageData
+    self.image = true
+    self.category = "image"
   }
   
   static func convertToMimetype(from name: String) -> Mimetype {
