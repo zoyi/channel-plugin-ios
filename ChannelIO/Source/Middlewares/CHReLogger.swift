@@ -12,7 +12,7 @@ let loggingMiddleware: Middleware<Any> = { dispatch, getState in
   return { next in
     return { action in
       let actionName = type(of: action)
-      print("[REDUX]: \(actionName)")
+      dlog("[REDUX]: \(actionName)")
       return next(action)
     }
   }

@@ -11,7 +11,6 @@ import RxSwift
 import SnapKit
 
 final class ChatNotificationView : BaseView {
-  var clickSubject = PublishSubject<CHPush>()
   var topLayoutGuide: UILayoutSupport?
   
   // MARK: Constants
@@ -27,7 +26,7 @@ final class ChatNotificationView : BaseView {
     static let nameTopMargin = 12.f
     static let nameLeftMargin = 8.f
     static let timestampTopMargin = 0.f
-    static let closeSide = 40.f
+    static let closeSide = 44.f
     static let messageTopMargin = 3.f
     static let messageRightMargin = 29.f
     static let messageBotMargin = 12.f
@@ -102,27 +101,27 @@ final class ChatNotificationView : BaseView {
   override func setLayouts() {
     super.setLayouts()
     
-    self.nameLabel.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview().inset(22)
+    self.avatarView.snp.makeConstraints { (make) in
+      make.centerY.equalToSuperview()
+      make.size.equalTo(CGSize(width: Metric.avatarSide, height: Metric.avatarSide))
+      make.leading.equalToSuperview().offset(14)
+    }
+    
+    self.nameLabel.snp.makeConstraints { [weak self] (make) in
+      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(12)
       make.top.equalToSuperview().inset(13)
     }
 
-    self.messageLabel.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview().inset(22)
+    self.messageLabel.snp.makeConstraints { [weak self] (make) in
+      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(12)
       make.bottom.equalToSuperview().inset(15)
-    }
-    
-    self.avatarView.snp.makeConstraints { [weak self] (make) in
-      make.centerY.equalToSuperview()
-      make.size.equalTo(CGSize(width: Metric.avatarSide, height: Metric.avatarSide))
-      make.leading.greaterThanOrEqualTo((self?.messageLabel.snp.trailing)!).offset(5)
-      make.leading.greaterThanOrEqualTo((self?.nameLabel.snp.trailing)!).offset(5)
+      make.trailing.equalToSuperview().inset(15)
     }
     
     self.closeView.snp.makeConstraints { [weak self] (make) in
       make.size.equalTo(CGSize(width:Metric.closeSide, height:Metric.closeSide))
-      make.centerY.equalToSuperview()
-      make.leading.equalTo((self?.avatarView.snp.trailing)!)
+      make.top.equalToSuperview()
+      make.leading.greaterThanOrEqualTo((self?.nameLabel.snp.trailing)!).offset(5)
       make.trailing.equalToSuperview()
     }
   }
@@ -147,11 +146,5 @@ final class ChatNotificationView : BaseView {
     }
    
     super.updateConstraints()
-  }
-  
-  // MARK: Signals 
-  
-  func onClick() -> Observable<CHPush> {
-    return clickSubject
   }
 }

@@ -1,3 +1,16 @@
+# 3.2.0 (June 29, 2018)
+## New 
+* Added actionable message type
+
+## Updates
+* Handled long press on link 
+* In-app push vibration when a phone is on silent
+* Improved camera feature 
+* Updated in-app push notification view layout
+
+## Bug fixes
+* Fixed bubble text line height calculation
+
 # 3.1.6 (June 22, 2018)
 ## Bug fixes
 * Fixed a crash when app was launched by push notification
