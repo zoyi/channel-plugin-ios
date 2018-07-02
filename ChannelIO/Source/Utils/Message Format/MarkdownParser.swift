@@ -38,7 +38,8 @@ open class MarkdownParser {
   /// Enables or disables detection of URLs even without Markdown format
   open var automaticLinkDetectionEnabled: Bool = true
   open let font: UIFont
-
+  let emojiFont: UIFont = UIFont.systemFont(ofSize: 36)
+  
   // MARK: Initializer
   public init(font: UIFont = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize),
               automaticLinkDetectionEnabled: Bool = true,
@@ -103,21 +104,27 @@ open class MarkdownParser {
         location += parsed.string.utf16.count
       }
     }
+
     return attributedString
   }
 
   open func parse(_ markdown: NSAttributedString) -> NSAttributedString {
     let attributedString = NSMutableAttributedString(attributedString: markdown)
-    
+
     let paragraphStyle = NSMutableParagraphStyle()
-   
-    paragraphStyle.lineBreakMode = markdown.string.guessLanguage() == "日本語" ? .byCharWrapping : .byWordWrapping
+    paragraphStyle.lineBreakMode = attributedString.string.guessLanguage() == "日本語" ? .byCharWrapping : .byWordWrapping
     paragraphStyle.alignment = .left
     paragraphStyle.minimumLineHeight = 20
     
-    attributedString.addAttributes(
-      [NSAttributedStringKey.font: font, NSAttributedStringKey.paragraphStyle:paragraphStyle],
-      range: NSRange(location: 0, length: attributedString.length))
+    if attributedString.string.containsOnlyEmoji && attributedString.string.count <= 5 {
+      attributedString.addAttributes(
+        [NSAttributedStringKey.font: self.emojiFont, NSAttributedStringKey.paragraphStyle:paragraphStyle],
+        range: NSRange(location: 0, length: attributedString.length))
+    } else {
+      attributedString.addAttributes(
+        [NSAttributedStringKey.font: self.font, NSAttributedStringKey.paragraphStyle:paragraphStyle],
+        range: NSRange(location: 0, length: attributedString.length))
+    }
     
     var elements: [MarkdownElement] = escapingElements
     elements.append(contentsOf: defaultElements)
