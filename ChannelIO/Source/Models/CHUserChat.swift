@@ -17,7 +17,6 @@ struct CHUserChat: ModelType {
   var personType: String = ""
   var personId: String = ""
   var channelId: String = ""
-  var bindFromId: String = ""
   var state: String = ""
   var review: String = ""
   var createdAt: Date?
@@ -62,14 +61,13 @@ extension CHUserChat: Mappable {
     personType       <- map["personType"]
     personId         <- map["personId"]
     channelId        <- map["channelId"]
-    bindFromId       <- map["bindFromId"]
     state            <- map["state"]
     review           <- map["review"]
     createdAt        <- (map["createdAt"], CustomDateTransform())
     openedAt         <- (map["openedAt"], CustomDateTransform())
     followedAt       <- (map["followedAt"], CustomDateTransform())
     resolvedAt       <- (map["resolvedAt"], CustomDateTransform())
-    updatedAt        <- (map["updatedAt"], CustomDateTransform())
+    updatedAt        <- (map["appUpdatedAt"], CustomDateTransform())
     followedBy       <- map["followedBy"]
     appMessageId     <- map["appMessageId"]
     hostId           <- map["hostId"]
