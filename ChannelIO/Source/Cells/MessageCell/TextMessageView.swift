@@ -143,8 +143,8 @@ extension TextMessageView : UITextViewDelegate {
                 shouldInteractWith URL: URL,
                 in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
     if interaction == .invokeDefaultAction {
-      let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
-      if shouldhandle == true || shouldhandle == nil {
+      let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
+      if handled == false || handled == nil {
         URL.openWithUniversal()
       }
       return false
