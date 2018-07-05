@@ -105,6 +105,15 @@ open class MarkdownParser {
       }
     }
 
+    if attributedString.string.containsOnlyEmoji {
+      let paragraphStyle = NSMutableParagraphStyle()
+      paragraphStyle.alignment = .left
+      paragraphStyle.minimumLineHeight = 20
+      attributedString.addAttributes(
+        [NSAttributedStringKey.font: self.emojiFont, NSAttributedStringKey.paragraphStyle:paragraphStyle],
+        range: NSRange(location: 0, length: attributedString.length))
+    }
+    
     return attributedString
   }
 
@@ -116,15 +125,9 @@ open class MarkdownParser {
     paragraphStyle.alignment = .left
     paragraphStyle.minimumLineHeight = 20
     
-    if attributedString.string.containsOnlyEmoji && attributedString.string.count <= 5 {
-      attributedString.addAttributes(
-        [NSAttributedStringKey.font: self.emojiFont, NSAttributedStringKey.paragraphStyle:paragraphStyle],
-        range: NSRange(location: 0, length: attributedString.length))
-    } else {
-      attributedString.addAttributes(
-        [NSAttributedStringKey.font: self.font, NSAttributedStringKey.paragraphStyle:paragraphStyle],
-        range: NSRange(location: 0, length: attributedString.length))
-    }
+    attributedString.addAttributes(
+      [NSAttributedStringKey.font: self.font, NSAttributedStringKey.paragraphStyle:paragraphStyle],
+      range: NSRange(location: 0, length: attributedString.length))
     
     var elements: [MarkdownElement] = escapingElements
     elements.append(contentsOf: defaultElements)

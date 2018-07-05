@@ -1,4 +1,4 @@
-# 3.2.1 (July 05, 2018)
+# 3.2.2 (July 05, 2018)
 ## Updates
 * Enlarged emoji if text contains only emoji
 * Added view parameter for `show:`
