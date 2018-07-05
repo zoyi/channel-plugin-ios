@@ -47,7 +47,6 @@ public final class ChannelIO: NSObject {
     return mainStore.state.checkinState.status == .success
   }
   
-  internal static var launchView : LaunchView?
   internal static var chatNotificationView: ChatNotificationView?
   internal static var baseNavigation: BaseNavigationController?
   internal static var subscriber : CHPluginSubscriber?
@@ -69,14 +68,10 @@ public final class ChannelIO: NSObject {
   class CHPluginSubscriber : StoreSubscriber {
     func newState(state: AppState) {
       self.handleBadgeDelegate(state.guest.alert)
-      if let launchView = ChannelIO.launchView {
-        let viewModel = LaunchViewModel(
-          plugin: state.plugin, guest: state.guest
-        )
-        launchView.configure(viewModel)
-      }
-      
       self.handlePush(push: state.push)
+      
+      let viewModel = LaunchViewModel(plugin: state.plugin, guest: state.guest)
+      NotificationCenter.default.post(name: Notification.Name.Channel.updateBadge, object: nil, userInfo: ["model": viewModel])
     }
     
     func handlePush (push: CHPush?) {
@@ -204,7 +199,9 @@ public final class ChannelIO: NSObject {
    */
   @objc public class func show(on view: UIView? = nil, animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
-    guard ChannelIO.launchView == nil else { return }
+    guard ChannelIO.getLauncherView() == nil else { return }
+    //check if current view contains launcher if so return
+    //guard ChannelIO.launchView == nil else { return }
     guard let topController = CHUtils.getTopController() else { return }
     let displayView = view ?? topController.view
     ChannelIO.showLauncher(on: displayView, animated: animated)
@@ -219,8 +216,7 @@ public final class ChannelIO: NSObject {
   internal class func showLauncher(on view:UIView?, animated: Bool) {
     guard let view = view else { return }
     guard ChannelIO.isValidStatus else { return }
-    
-    ChannelIO.hide(animated: false)
+    //ChannelIO.hide(animated: false)
     
     let launchView = LaunchView()
     if #available(iOS 11.0, *) {
@@ -239,7 +235,7 @@ public final class ChannelIO: NSObject {
         ChannelIO.open(animated: true)
       }).disposed(by: disposeBeg)
     
-    ChannelIO.launchView = launchView
+    //ChannelIO.launchView = launchView
   }
   
   /**
@@ -249,10 +245,11 @@ public final class ChannelIO: NSObject {
    */
   @objc public class func hide(animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
-    guard ChannelIO.launchView != nil else { return }
-    
-    ChannelIO.launchView?.remove(animated: animated)
-    ChannelIO.launchView = nil
+
+    NotificationCenter.default.post(
+      name: Notification.Name.Channel.dismissLaunchers,
+      object: nil,
+      userInfo: ["animated": animated])
   }
   
   /** 

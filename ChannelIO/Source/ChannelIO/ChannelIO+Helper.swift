@@ -201,6 +201,10 @@ extension ChannelIO {
     }
   }
   
+  internal class func getLauncherView() -> UIView? {
+    return UIApplication.shared.keyWindow?.viewWithTag(LaunchView.tagId)
+  }
+  
   internal class func hideNotification() {
     guard ChannelIO.chatNotificationView != nil else { return }
     

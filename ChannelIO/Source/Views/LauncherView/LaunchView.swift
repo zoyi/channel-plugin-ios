@@ -13,6 +13,7 @@ import SnapKit
 
 final class LaunchView : BaseView {
   // MARK: Constant
+  static let tagId = 0xDEADBEF
   
   struct Metric {
     static var xMargin = 24.f
@@ -27,7 +28,7 @@ final class LaunchView : BaseView {
   // MARK: Properties 
   
   let badgeView = Badge()
-
+  let disposeBag = DisposeBag()
   let buttonView = UIButton().then {
     $0.layer.cornerRadius = Metric.viewSize/2.f
     $0.layer.shadowColor = UIColor.black.cgColor
@@ -42,8 +43,29 @@ final class LaunchView : BaseView {
   
   override func initialize() {
     super.initialize()
+    self.tag = LaunchView.tagId
     self.addSubview(self.buttonView)
     self.addSubview(self.badgeView)
+    
+    NotificationCenter.default.rx
+      .notification(Notification.Name.Channel.updateBadge, object: nil)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (notification) in
+        if let model = notification.userInfo?["model"] as? LaunchViewModel {
+          self?.configure(model)
+        }
+      }).disposed(by: self.disposeBag)
+    
+    NotificationCenter.default.rx
+      .notification(Notification.Name.Channel.dismissLaunchers, object: nil)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (notification) in
+        if let animated = notification.userInfo?["animated"] as? Bool {
+          self?.remove(animated: aniamted)
+        } else {
+          self?.removeFromSuperview()
+        }
+      }).disposed(by: self.disposeBag)
   }
   
   func configure(_ viewModel: LaunchViewModelType) {
