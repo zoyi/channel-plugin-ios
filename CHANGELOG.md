@@ -1,3 +1,11 @@
+# 3.2.1 (July 05, 2018)
+## Updates
+* Enlarged emoji if text contains only emoji
+* Added view parameter for `show:`
+
+## Bug fixes
+* Return proper value for `onClickChatLink`
+
 # 3.2.0 (June 29, 2018)
 ## New 
 * Added actionable message type
