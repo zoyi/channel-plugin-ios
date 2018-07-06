@@ -11,12 +11,13 @@ import NVActivityIndicatorView
 import M13ProgressSuite
 import DKImagePickerController
 import SnapKit
+import SDWebImage
 
 class MediaMessageView : BaseView {
 
   //MARK: properties
   
-  let imageView = UIImageView()
+  let imageView = FLAnimatedImageView()
   var placeholder: UIImage?
   
   static var imageMaxSize: CGSize = {
