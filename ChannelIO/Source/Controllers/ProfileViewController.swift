@@ -23,6 +23,7 @@ private enum UserInfoRow: Int {
 
 private enum ActionRow: Int {
   case languageOption
+  case translateOption
   case closedChats
   case soundOption
 }
@@ -31,7 +32,7 @@ final class ProfileViewController: BaseViewController {
   struct Constant {
     static let sectionCount = 2
     static let userInfoCount = 2
-    static let actionCount = 2
+    static let actionCount = 3
   }
   
   let tableView = UITableView()
@@ -197,14 +198,21 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       
       return cell
     case (ProfileSection.action.rawValue,
+          ActionRow.translateOption.rawValue):
+      let cell = SwitchCell()
+      let isOn = mainStore.state.userChatsState.showTranslation
+      cell.switchSignal.subscribe { event in
+        mainStore.dispatch(UpdateVisibilityOfTranslation(show: event.element!))
+      }.disposed(by: self.disposeBag)
+      cell.selectionStyle = .none
+      cell.configure(title: CHAssets.localized("메세지 번역 표시"), isOn: isOn)
+      return cell
+    case (ProfileSection.action.rawValue,
           ActionRow.closedChats.rawValue):
       let cell = SwitchCell()
       let isOn = mainStore.state.userChatsState.showCompletedChats
       cell.switchSignal.subscribe { event in
-        PrefStore.setVisibilityOfClosedUserChat(on: event.element!)
-        mainStore.dispatch(
-          UpdateVisibilityOfCompletedChats(show: event.element)
-        )
+        mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: event.element))
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
       cell.configure(title: CHAssets.localized("ch.settings.show_closed_chat"), isOn: isOn)
@@ -220,7 +228,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
           ActionRow.languageOption.rawValue):
       let controller = LanguageOptionViewController()
       self.navigationController?.pushViewController(controller, animated: true)
-      break
     default:
       break
     }

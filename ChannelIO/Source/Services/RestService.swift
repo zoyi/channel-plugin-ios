@@ -53,6 +53,7 @@ enum RestRouter: URLRequestConvertible {
   case UpdateProfileItem(String, ParametersType)
   
   case SubmitForm(String, ParametersType)
+  case Translate(String, ParametersType)
   
   var baseURL: String {
     get {
@@ -87,7 +88,7 @@ enum RestRouter: URLRequestConvertible {
          .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetFollowingManager,
-         .GetPlugin:
+         .GetPlugin, .Translate:
       return .get
     case .UpdateGuest, .SetMessagesReadAll,
          .CloseUserChat, .RemoveUserChat,
@@ -159,6 +160,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/messages/\(messageId)/profile_bot"
     case .SubmitForm(let messageId, _):
       return "/app/messages/\(messageId)/form"
+    case .Translate(let messageId, _):
+      return "/app/messages/\(messageId)/translate"
     }
   }
   
@@ -224,7 +227,8 @@ enum RestRouter: URLRequestConvertible {
          .SendEvent(let params),
          .CreateUserChat(_, let params),
          .UpdateProfileItem(_, let params),
-         .SubmitForm(_, let params):
+         .SubmitForm(_, let params),
+         .Translate(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetScripts, .GetScript,

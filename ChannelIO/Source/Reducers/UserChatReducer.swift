@@ -11,8 +11,6 @@ import ReSwift
 func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState {
   var state = state
   switch action {
-  //TODO: refactor action name 
-  //like.. SuccessGetUserChat
   case let action as GetUserChats:
     state?.nextSeq = action.payload["next"] as! Int64
     return state?.upsert(userChats: (action.payload["userChats"] as? [CHUserChat]) ?? []) ?? UserChatsState()
@@ -41,6 +39,13 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   case let action as UpdateVisibilityOfCompletedChats:
     if let show = action.show {
       state?.showCompletedChats = show
+      PrefStore.setVisibilityOfClosedUserChat(on: show)
+    }
+    return state ?? UserChatsState()
+  case let action as UpdateVisibilityOfTranslation:
+    if let show = action.show {
+      state?.showTranslation = show
+      PrefStore.setVisibilityOfTranslation(on: show)
     }
     return state ?? UserChatsState()
   case _ as CheckInSuccess:

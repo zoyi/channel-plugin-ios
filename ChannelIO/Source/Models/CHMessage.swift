@@ -34,24 +34,20 @@ enum MessageType {
   case Form
 }
 
-struct CHSubmit {
-  var id: String = ""
-  var key: String = ""
-}
-
-extension CHSubmit: Mappable {
-  init?(map: Map) { }
+enum CHMessageTranslateState {
+  case none
+  case loading
+  case failed
   
-  mutating func mapping(map: Map) {
-    id        <- map["id"]
-    key       <- map["key"]
-  }
+  case original
+  case translated
 }
 
 struct CHMessage: ModelType {
   // ModelType
   var id = ""
   // Message
+  var channelId = ""
   var chatType = ""
   var chatId = ""
   var personType = ""
@@ -65,6 +61,11 @@ struct CHMessage: ModelType {
   var submit: CHSubmit? = nil
   var createdAt: Date
 
+  var language: String = ""
+  
+  var translateState: CHMessageTranslateState = .none
+  var translatedText: NSAttributedString? = nil
+  
   var readableDate: String {
     let updateComponents = Calendar.current.dateComponents([.year, .month, .day], from: self.createdAt)
     guard let year = updateComponents.year else { return "" }
@@ -181,6 +182,7 @@ extension CHMessage: Mappable {
   
   mutating func mapping(map: Map) {
     id          <- map["id"]
+    channelId   <- map["channelId"]
     chatType    <- map["chatType"]
     chatId      <- map["chatId"]
     personType  <- map["personType"]
@@ -196,6 +198,7 @@ extension CHMessage: Mappable {
     profileBot  <- map["profileBot"]
     form        <- map["form"]
     submit      <- map["submit"]
+    language    <- map["language"]
     
     if self.log != nil {
       messageType = .Log
@@ -472,6 +475,12 @@ extension CHMessage {
       }
     })
   }
+  
+  func translate(to language: String) -> Observable<String?> {
+    return UserChatPromise.translate(
+      messageId: self.id,
+      language: language)
+  }
 }
 
 extension CHMessage: Equatable {}
@@ -483,5 +492,6 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
     lhs.file?.downloaded == rhs.file?.downloaded &&
     lhs.state == rhs.state &&
     lhs.webPage == rhs.webPage &&
-    lhs.message == rhs.message
+    lhs.message == rhs.message &&
+    lhs.translateState == rhs.translateState
 }

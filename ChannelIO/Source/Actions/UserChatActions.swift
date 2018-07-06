@@ -65,6 +65,10 @@ struct UpdateVisibilityOfCompletedChats: Action {
   public let show: Bool? 
 }
 
+struct UpdateVisibilityOfTranslation: Action {
+  public let show: Bool?
+}
+
 struct UserChatActions {
   static func openAgreement() {
     let locale = CHUtils.getLocale() ?? .korean

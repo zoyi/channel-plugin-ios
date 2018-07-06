@@ -434,4 +434,31 @@ struct UserChatPromise {
       }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
+  
+  static func translate(messageId: String, language: String) -> Observable<String?> {
+    return Observable.create({ (subscriber) in
+      let params = [
+        "query": [
+          "language": language
+        ]
+      ]
+      let req = Alamofire.request(RestRouter.Translate(messageId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { (response) in
+          switch response.result {
+          case .success(let data):
+            let json = SwiftyJSON.JSON(data)
+            let text = json["text"].string
+            
+            subscriber.onNext(text)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+        })
+      return Disposables.create {
+        req.cancel()
+      }
+    }).subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+  }
 }

@@ -248,6 +248,7 @@
 		65CB1433206A02F200E456B5 /* UserChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141D206A02F200E456B5 /* UserChatCell.swift */; };
 		65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141E206A02F200E456B5 /* UserChatCellModel.swift */; };
 		65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1420206A02F200E456B5 /* WatermarkCell.swift */; };
+		65EAE11320EF468500D501FC /* TranslateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EAE11220EF468500D501FC /* TranslateView.swift */; };
 		DCC49F0A108DACC9BFC099B9 /* Pods_CHPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 941B21CFD296106169AF80C3 /* Pods_CHPluginTests.framework */; };
 		E29716873DA93AF29BB46118 /* Pods_ChannelIOTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7580C3CDEA3355C7B50D9382 /* Pods_ChannelIOTests.framework */; };
 /* End PBXBuildFile section */
@@ -526,6 +527,7 @@
 		65CB141D206A02F200E456B5 /* UserChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatCell.swift; sourceTree = "<group>"; };
 		65CB141E206A02F200E456B5 /* UserChatCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatCellModel.swift; sourceTree = "<group>"; };
 		65CB1420206A02F200E456B5 /* WatermarkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatermarkCell.swift; sourceTree = "<group>"; };
+		65EAE11220EF468500D501FC /* TranslateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateView.swift; sourceTree = "<group>"; };
 		7580C3CDEA3355C7B50D9382 /* Pods_ChannelIOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChannelIOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D758F40EFD6FB632F31F612 /* Pods-ChannelIOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIOTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChannelIOTests/Pods-ChannelIOTests.debug.xcconfig"; sourceTree = "<group>"; };
 		941B21CFD296106169AF80C3 /* Pods_CHPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1137,6 +1139,7 @@
 				65CB1415206A02F200E456B5 /* WebPageMessageView.swift */,
 				656FBFB220CE16980062C6A9 /* ActionView.swift */,
 				656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */,
+				65EAE11220EF468500D501FC /* TranslateView.swift */,
 			);
 			path = MessageCell;
 			sourceTree = "<group>";
@@ -1527,6 +1530,7 @@
 				655A280320B2699700935C1F /* ProfileItemBaseView.swift in Sources */,
 				655A280520B2699700935C1F /* ProfileTextView.swift in Sources */,
 				659793831FA716CB00840F6A /* DataTransferObject.swift in Sources */,
+				65EAE11320EF468500D501FC /* TranslateView.swift in Sources */,
 				659793841FA716CB00840F6A /* ModelType.swift in Sources */,
 				659793861FA716CB00840F6A /* EventPromise.swift in Sources */,
 				222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */,

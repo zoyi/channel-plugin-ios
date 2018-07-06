@@ -41,6 +41,8 @@ protocol MessageCellModelType {
   var pluginColor: UIColor { get }
   var shouldDisplayForm: Bool { get set }
   var selectedActionText: String { get set }
+  var translateState: CHMessageTranslateState { get set }
+  var canTranslate: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -71,6 +73,9 @@ struct MessageCellModel: MessageCellModelType {
   
   var shouldDisplayForm: Bool
   var selectedActionText: String = ""
+  
+  var canTranslate: Bool = false
+  var translateState: CHMessageTranslateState = .original
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
@@ -114,6 +119,9 @@ struct MessageCellModel: MessageCellModelType {
     
     //form : select
     self.shouldDisplayForm = message.form != nil && indexPath?.row == 0
+    
+    self.canTranslate = message.language != "" && message.language != CHUtils.getLocale()?.rawValue && PrefStore.getVisibilityOfTranslation()
+    self.translateState = message.translateState
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

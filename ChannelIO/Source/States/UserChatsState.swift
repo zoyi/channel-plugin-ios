@@ -14,6 +14,7 @@ struct UserChatsState: StateType {
   var currentUserChatId = ""
   var lastMessages: [String:String] = [:]
   var showCompletedChats = PrefStore.getVisibilityOfClosedUserChat()
+  var showTranslation = PrefStore.getVisibilityOfTranslation()
   
   func findBy(id: String?) -> CHUserChat? {
     guard id != nil else { return nil }

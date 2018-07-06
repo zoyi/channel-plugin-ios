@@ -183,3 +183,5 @@
 "ch.profile_form.placeholder" = "ご入力ください";
 "ch.common.open" = "オープン";
 "ch.common.cancel" = "キャンセル";
+"undo_translate" = "元のテキスト";
+"show_translate" = "翻訳を見る";

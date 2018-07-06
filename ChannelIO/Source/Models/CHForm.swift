@@ -49,3 +49,17 @@ extension CHInput: Mappable {
     value       <- map["value"]
   }
 }
+
+struct CHSubmit {
+  var id: String = ""
+  var key: String = ""
+}
+
+extension CHSubmit: Mappable {
+  init?(map: Map) { }
+  
+  mutating func mapping(map: Map) {
+    id        <- map["id"]
+    key       <- map["key"]
+  }
+}

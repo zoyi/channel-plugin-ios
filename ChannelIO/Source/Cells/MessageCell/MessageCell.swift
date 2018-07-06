@@ -33,6 +33,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     static let cellTopPaddingOfContinous = 3.f
     static let cellTopPaddingDefault = 16.f
     static let messageCellMinMargin = 65.f
+    static let translateViewTop = 4.f
   }
 
   let avatarView = AvatarView().then {
@@ -53,7 +54,7 @@ class MessageCell: BaseTableViewCell, Reusable {
   }
   
   let textMessageView = TextMessageView()
-
+  let translateView = TranslateView()
   let resendButtonView = UIButton().then {
     $0.isHidden = true
     $0.setImage(CHAssets.getImage(named: "resend"), for: .normal)
@@ -69,13 +70,19 @@ class MessageCell: BaseTableViewCell, Reusable {
     self.contentView.addSubview(self.usernameLabel)
     self.contentView.addSubview(self.timestampLabel)
     self.contentView.addSubview(self.textMessageView)
+    self.contentView.addSubview(self.translateView)
     self.contentView.addSubview(self.resendButtonView)
 
     self.resendButtonView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-      self?.presenter?.didClickOnRetry(for: self?.viewModel?.message)
-      self?.resendButtonView.isHidden = true
-    }).disposed(by :self.disposeBag)
+        self?.presenter?.didClickOnRetry(for: self?.viewModel?.message)
+        self?.resendButtonView.isHidden = true
+      }).disposed(by :self.disposeBag)
+    
+    self.translateView.signalForClick()
+      .subscribe(onNext: { [weak self] _ in
+        self?.presenter?.didClickOnTranslate(for: self?.viewModel?.message)
+      }).disposed(by: self.disposeBag)
   }
 
   // MARK: Configuring
@@ -94,7 +101,8 @@ class MessageCell: BaseTableViewCell, Reusable {
     
     self.textMessageView.configure(viewModel)
     self.resendButtonView.isHidden = !viewModel.isFailed
-
+    self.translateView.configure(with: viewModel)
+    
     self.layoutViews()
     self.textMessageView.updateConstraints()
   }
@@ -114,6 +122,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     
     self.textMessageView.configure(viewModel)
     self.resendButtonView.isHidden = !viewModel.isFailed
+    self.translateView.configure(with: viewModel)
     
     self.layoutViews()
     self.textMessageView.updateConstraints()
@@ -145,6 +154,11 @@ class MessageCell: BaseTableViewCell, Reusable {
       make.top.equalTo((self?.usernameLabel.snp.bottom)!).offset(4)
     })
     
+    self.translateView.snp.makeConstraints { [weak self] (make) in
+      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.translateViewTop)
+      make.leading.equalTo((self?.textMessageView.snp.leading)!)
+    }
+    
     self.resendButtonView.snp.remakeConstraints({ [weak self] (make) in
       make.size.equalTo(CGSize(width: 40, height: 40))
       make.bottom.equalTo((self?.textMessageView.snp.bottom)!)
@@ -168,6 +182,10 @@ class MessageCell: BaseTableViewCell, Reusable {
     //bubble height
     if viewModel.message.messageV2?.string != "" {
       viewHeight += TextMessageView.viewHeight(fits: bubbleMaxWidth, viewModel: viewModel)
+    }
+    
+    if viewModel.canTranslate {
+      viewHeight += 20
     }
     
     return viewHeight

@@ -15,6 +15,7 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
     .map({
       return CHMessage(
         id: $0.id,
+        channelId: $0.channelId,
         chatType: $0.chatType,
         chatId: $0.chatId,
         personType: $0.personType,
@@ -27,6 +28,9 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
         form: $0.form,
         submit: $0.submit,
         createdAt: $0.createdAt,
+        language: $0.language,
+        translateState: $0.translateState,
+        translatedText: $0.translatedText,
         file: $0.file,
         webPage: $0.webPage,
         log: $0.log,
@@ -51,6 +55,7 @@ func messageSelector(state: AppState, id: String) -> CHMessage? {
     .map({
       return CHMessage(
         id: $0.id,
+        channelId: $0.channelId,
         chatType: $0.chatType,
         chatId: $0.chatId,
         personType: $0.personType,
@@ -63,6 +68,9 @@ func messageSelector(state: AppState, id: String) -> CHMessage? {
         form: $0.form,
         submit: $0.submit,
         createdAt: $0.createdAt,
+        language: $0.language,
+        translateState: $0.translateState,
+        translatedText: $0.translatedText,
         file: $0.file,
         webPage: $0.webPage,
         log: $0.log,

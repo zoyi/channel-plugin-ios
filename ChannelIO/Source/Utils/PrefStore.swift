@@ -15,6 +15,7 @@ class PrefStore {
   static let PUSH_OPTION_KEY = "CHPlugin_PushOption"
   static let VISIBLE_CLOSED_USERCHAT_KEY = "CHPlugin_visible_closed_userchat"
   static let CHANNEL_PLUGIN_SETTINGS_KEY = "CHPlugin_settings"
+  static let VISIBLE_TRANSLATION = "CHPlugin_visible_translation"
   
   static func getCurrentChannelId() -> String? {
     return UserDefaults.standard.string(forKey: CHANNEL_ID_KEY)
@@ -69,6 +70,18 @@ class PrefStore {
   
   static func getVisibilityOfClosedUserChat() -> Bool {
     return UserDefaults.standard.bool(forKey: VISIBLE_CLOSED_USERCHAT_KEY)
+  }
+  
+  static func setVisibilityOfTranslation(on: Bool) {
+    UserDefaults.standard.set(on, forKey: VISIBLE_TRANSLATION)
+    UserDefaults.standard.synchronize()
+  }
+  
+  static func getVisibilityOfTranslation() -> Bool {
+    if let visible = UserDefaults.standard.object(forKey: VISIBLE_TRANSLATION) as? Bool {
+      return visible
+    }
+    return true
   }
   
   static func setChannelPluginSettings(pluginSetting: ChannelPluginSettings) {

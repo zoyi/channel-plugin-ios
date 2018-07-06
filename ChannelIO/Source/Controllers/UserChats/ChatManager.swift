@@ -688,6 +688,36 @@ extension ChatManager {
     
     CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
   }
+  
+  func didClickOnTranslate(for message: CHMessage?) {
+    guard var message = message else { return }
+    if message.translateState == .original && message.translatedText != nil {
+      message.translateState = .translated
+      mainStore.dispatch(UpdateMessage(payload: message))
+      return
+    } else if message.translateState == .translated {
+      message.translateState = .original
+      mainStore.dispatch(UpdateMessage(payload: message))
+      return
+    }
+    
+    message.translateState = .loading
+    mainStore.dispatch(UpdateMessage(payload: message))
+    
+    guard let language = CHUtils.getLocale()?.rawValue else { return }
+    
+    message.translate(to: language)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (text) in
+        guard let text = text else { return }
+        message.translatedText = CustomMessageTransform.markdown.parse(text)
+        message.translateState = .translated
+        mainStore.dispatch(UpdateMessage(payload: message))
+      }, onError: { (error) in
+        message.translateState = .failed
+        mainStore.dispatch(UpdateMessage(payload: message))
+      }).disposed(by: self.disposeBag)
+  }
 }
 
 //routing

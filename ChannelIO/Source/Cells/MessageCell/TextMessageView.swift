@@ -9,6 +9,8 @@
 import Foundation
 import SnapKit
 
+let placeHolder = UITextView()
+
 class TextMessageView : BaseView {
   //MARK: Constant
 
@@ -77,7 +79,11 @@ class TextMessageView : BaseView {
     self.backgroundColor = viewModel.bubbleBackgroundColor
     self.isHidden = viewModel.message.isEmpty()
     
-    if let attributedText = viewModel.message.messageV2 {
+    if viewModel.translateState == .translated {
+      if let translated = self.viewModel?.message.translatedText {
+        self.messageView.attributedText = translated
+      }
+    } else if let attributedText = viewModel.message.messageV2 {
       self.messageView.attributedText = attributedText
     } else {
       self.messageView.text = viewModel.message.message
@@ -105,9 +111,16 @@ class TextMessageView : BaseView {
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
     if let message = viewModel.message.messageV2 {
-      viewHeight += message.height(fits: width - Metric.leftRightPadding * 2)
-      viewHeight += Metric.topBottomPadding * 2
+      placeHolder.frame = CGRect(x: 0, y: 0, width: width - Metric.leftRightPadding * 2, height: CGFloat.greatestFiniteMagnitude)
+      placeHolder.textContainer.lineFragmentPadding = 0
+      placeHolder.attributedText = message
+      placeHolder.sizeToFit()
+      
+      viewHeight += placeHolder.size.height + 6.f
+//      viewHeight += message.height(fits: width - Metric.leftRightPadding * 2)
+//      viewHeight += Metric.topBottomPadding * 2
     }
+    
     return viewHeight
   }
 }
