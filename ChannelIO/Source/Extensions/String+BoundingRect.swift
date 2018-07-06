@@ -40,6 +40,18 @@ extension String {
   }
 }
 
+extension NSAttributedString {
+  func size(fits width: CGFloat) -> CGRect {
+    let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+    let rect = self.boundingRect(with: size, options: [.usesFontLeading, .usesLineFragmentOrigin], context: nil)
+    return snap(rect)
+  }
+  
+  func height(fits width: CGFloat) -> CGFloat {
+    return self.size(fits: width).height
+  }
+}
+
 func snap(_ x: CGFloat) -> CGFloat {
   let scale = UIScreen.main.scale
   return ceil(x * scale) / scale

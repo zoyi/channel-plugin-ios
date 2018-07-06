@@ -61,7 +61,7 @@ final class LaunchView : BaseView {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (notification) in
         if let animated = notification.userInfo?["animated"] as? Bool {
-          self?.remove(animated: aniamted)
+          self?.remove(animated: animated)
         } else {
           self?.removeFromSuperview()
         }
