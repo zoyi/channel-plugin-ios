@@ -79,7 +79,7 @@ open class MarkdownParser {
   }
 
   // MARK: Parsing
-  open func parse(_ markdown: String) -> NSAttributedString {
+  open func parse(_ markdown: String) -> (NSAttributedString?, Bool) {
     let tokens = markdown.components(separatedBy: "```")
     let attributedString = NSMutableAttributedString(string: markdown)
 
@@ -105,7 +105,8 @@ open class MarkdownParser {
       }
     }
 
-    if attributedString.string.containsOnlyEmoji {
+    let onlyEmoji = attributedString.string.containsOnlyEmoji
+    if onlyEmoji {
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .left
       paragraphStyle.minimumLineHeight = 20
@@ -114,7 +115,7 @@ open class MarkdownParser {
         range: NSRange(location: 0, length: attributedString.length))
     }
     
-    return attributedString
+    return (attributedString, onlyEmoji)
   }
 
   open func parse(_ markdown: NSAttributedString) -> NSAttributedString {

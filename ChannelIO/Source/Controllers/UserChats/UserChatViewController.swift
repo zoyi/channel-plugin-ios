@@ -366,6 +366,8 @@ final class UserChatViewController: BaseSLKTextViewController {
 extension UserChatViewController: StoreSubscriber {
 
   func newState(state: AppState) {
+    self.userChatId = self.chatManager.chatId
+    
     let messages = messagesSelector(state: state, userChatId: self.userChatId)
     self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
     

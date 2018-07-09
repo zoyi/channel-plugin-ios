@@ -183,3 +183,4 @@
 "ch.common.cancel" = "취소";
 "undo_translate" = "원문보기";
 "show_translate" = "번역보기";
+"ch.settings.show_translation" = "메세지 번역 보기";

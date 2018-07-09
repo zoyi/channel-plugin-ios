@@ -29,7 +29,7 @@ class WebPageMessageCell: MessageCell {
     self.webView.snp.makeConstraints { [weak self] (make) in
       make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3)
       self?.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
-      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.messageCellMinMargin).constraint
+      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.messageLeftMinMargin).constraint
     }
     
     self.resendButtonView.snp.remakeConstraints { [weak self] (make) in
@@ -45,9 +45,9 @@ class WebPageMessageCell: MessageCell {
     
     if viewModel.createdByMe == true {
       self.rightConstraint?.update(inset: Metric.cellRightPadding)
-      self.leftConstraint?.update(inset: Metric.messageCellMinMargin)
+      self.leftConstraint?.update(inset: Metric.messageLeftMinMargin)
     } else {
-      self.rightConstraint?.update(inset: Metric.messageCellMinMargin)
+      self.rightConstraint?.update(inset: Metric.messageRightMinMargin)
       self.leftConstraint?.update(inset: Metric.bubbleLeftMargin)
     }
   }

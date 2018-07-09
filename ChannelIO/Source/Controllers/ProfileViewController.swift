@@ -205,7 +205,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         mainStore.dispatch(UpdateVisibilityOfTranslation(show: event.element!))
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
-      cell.configure(title: CHAssets.localized("메세지 번역 표시"), isOn: isOn)
+      cell.configure(title: CHAssets.localized("ch.settings.show_translation"), isOn: isOn)
       return cell
     case (ProfileSection.action.rawValue,
           ActionRow.closedChats.rawValue):

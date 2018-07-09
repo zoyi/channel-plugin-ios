@@ -119,6 +119,7 @@ struct CHMessage: ModelType {
 
   var progress: CGFloat = 1
   //var isRemote = true
+  var onlyEmoji: Bool = false
 }
 
 extension CHMessage: Mappable {
@@ -134,7 +135,7 @@ extension CHMessage: Mappable {
     
     self.id = id ?? requestId
     self.message = trimmedMessage
-    self.messageV2 = CustomMessageTransform.markdown.parse(trimmedMessage)
+    (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
     self.requestId = requestId
     self.chatId = chatId
     self.createdAt = createdAt ?? now
@@ -161,7 +162,7 @@ extension CHMessage: Mappable {
     self.messageType = messageType
     self.progress = 1
     self.message = self.format(message: trimmedMessage)
-    self.messageV2 = CustomMessageTransform.markdown.parse(trimmedMessage)
+    (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
   }
   
   init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset? = nil, image: UIImage? = nil) {
@@ -188,7 +189,6 @@ extension CHMessage: Mappable {
     personType  <- map["personType"]
     personId    <- map["personId"]
     message     <- map["message"]
-    messageV2   <- (map["messageV2"], CustomMessageTransform())
     requestId   <- map["requestId"]
     file        <- map["file"]
     webPage     <- map["webPage"]
@@ -199,6 +199,9 @@ extension CHMessage: Mappable {
     form        <- map["form"]
     submit      <- map["submit"]
     language    <- map["language"]
+    
+    let msgv2 = map["messageV2"].currentValue as? String ?? ""
+    (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
     if self.log != nil {
       messageType = .Log

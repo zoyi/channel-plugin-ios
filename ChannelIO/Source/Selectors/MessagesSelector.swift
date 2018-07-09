@@ -37,7 +37,8 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
         entity: personSelector(state: state, personType: $0.personType, personId: $0.personId),
         state: $0.state,
         messageType: $0.messageType,
-        progress: $0.progress
+        progress: $0.progress,
+        onlyEmoji: $0.onlyEmoji
       )
     }).sorted(by: { (m1, m2) -> Bool in
       return m1.createdAt > m2.createdAt
@@ -77,7 +78,8 @@ func messageSelector(state: AppState, id: String) -> CHMessage? {
         entity: personSelector(state: state, personType: $0.personType, personId: $0.personId),
         state: $0.state,
         messageType: $0.messageType,
-        progress: $0.progress
+        progress: $0.progress,
+        onlyEmoji: $0.onlyEmoji
       )
     })
   

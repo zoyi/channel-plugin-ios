@@ -10,15 +10,20 @@ import Foundation
 import SnapKit
 
 let placeHolder = UITextView()
+  .then {
+    $0.textContainer.lineFragmentPadding = 0
+    $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+  }
 
 class TextMessageView : BaseView {
-  //MARK: Constant
-
   struct Metric {
     static let topBottomPadding = 10.f
     static let leftRightPadding = 12.f
     static let actionLabelTopMargin = 10.f
     static let actionLabelTopBottomPadding = 10.f
+    
+    static let minimalTopBottomPadding = 2.f
+    static let minimalLeftRightPadding = 5.f
   }
 
   struct Constant {
@@ -54,7 +59,12 @@ class TextMessageView : BaseView {
   }
 
   var viewModel: MessageCellModelType?
-
+  
+  var topConstraint: Constraint?
+  var leadingConstraint: Constraint?
+  var trailingConstraint: Constraint?
+  var bottomConstraint: Constraint?
+  
   override func initialize() {
     super.initialize()
     self.messageView.delegate = self
@@ -66,18 +76,31 @@ class TextMessageView : BaseView {
   override func setLayouts() {
     super.setLayouts()
 
-    self.messageView.snp.makeConstraints({ (make) in
-      make.leading.equalToSuperview().inset(Metric.leftRightPadding)
-      make.top.equalToSuperview().inset(Metric.topBottomPadding)
-      make.trailing.equalToSuperview().inset(Metric.leftRightPadding)
-      make.bottom.equalToSuperview().inset(Metric.topBottomPadding)
+    self.messageView.snp.makeConstraints({ [weak self] (make) in
+      self?.leadingConstraint = make.leading.equalToSuperview().inset(Metric.leftRightPadding).constraint
+      self?.topConstraint = make.top.equalToSuperview().inset(Metric.topBottomPadding).constraint
+      self?.trailingConstraint = make.trailing.equalToSuperview().inset(Metric.leftRightPadding).constraint
+      self?.bottomConstraint = make.bottom.equalToSuperview().inset(Metric.topBottomPadding).constraint
     })
   }
 
   func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
-    self.backgroundColor = viewModel.bubbleBackgroundColor
+    self.backgroundColor = viewModel.message.onlyEmoji == true ?
+      UIColor.clear : viewModel.bubbleBackgroundColor
     self.isHidden = viewModel.message.isEmpty()
+    
+    if !viewModel.message.onlyEmoji {
+      self.leadingConstraint?.update(inset: Metric.leftRightPadding)
+      self.trailingConstraint?.update(inset: Metric.leftRightPadding)
+      self.topConstraint?.update(inset: Metric.topBottomPadding)
+      self.bottomConstraint?.update(inset: Metric.topBottomPadding)
+    } else {
+      self.leadingConstraint?.update(inset: Metric.minimalLeftRightPadding)
+      self.trailingConstraint?.update(inset: Metric.minimalLeftRightPadding)
+      self.topConstraint?.update(inset: Metric.minimalTopBottomPadding)
+      self.bottomConstraint?.update(inset: Metric.minimalTopBottomPadding)
+    }
     
     if viewModel.translateState == .translated {
       if let translated = self.viewModel?.message.translatedText {
@@ -111,12 +134,19 @@ class TextMessageView : BaseView {
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
     if let message = viewModel.message.messageV2 {
-      placeHolder.frame = CGRect(x: 0, y: 0, width: width - Metric.leftRightPadding * 2, height: CGFloat.greatestFiniteMagnitude)
+      let maxWidth = !viewModel.message.onlyEmoji ?
+        width - Metric.leftRightPadding * 2 :
+        width - Metric.minimalLeftRightPadding * 2
+      
+      let topBottomPadding = viewModel.message.onlyEmoji ?
+        Metric.minimalTopBottomPadding * 2 : Metric.topBottomPadding * 2
+      
+      placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
       placeHolder.textContainer.lineFragmentPadding = 0
       placeHolder.attributedText = message
       placeHolder.sizeToFit()
       
-      viewHeight += placeHolder.size.height + 6.f
+      viewHeight += placeHolder.size.height + topBottomPadding
 //      viewHeight += message.height(fits: width - Metric.leftRightPadding * 2)
 //      viewHeight += Metric.topBottomPadding * 2
     }

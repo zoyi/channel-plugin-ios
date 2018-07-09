@@ -77,7 +77,7 @@ final class ErrorToastView: BaseView {
       }
     })
 
-    self.titleLabel.snp.remakeConstraints { (make) in
+    self.titleLabel.snp.remakeConstraints { [weak self] (make) in
       make.center.equalToSuperview()
     }
 

@@ -46,7 +46,8 @@ struct CustomMessageTransform: TransformType {
   
   func transformFromJSON(_ value: Any?) -> NSAttributedString? {
     if let message = value as? String {
-      return CustomMessageTransform.markdown.parse(message)
+      let parsed = CustomMessageTransform.markdown.parse(message)
+      return parsed.0
     }
     return nil
   }

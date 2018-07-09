@@ -274,7 +274,7 @@ extension ChatManager {
     message?.send().subscribe(onNext: { [weak self] (updated) in
       message?.state = .Sent
       mainStore.dispatch(CreateMessage(payload: updated))
-      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
+      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1, requestBot: requestBot)
     }, onError: { [weak self] (error) in
       message?.state = .Failed
       mainStore.dispatch(CreateMessage(payload: message!))
@@ -710,7 +710,7 @@ extension ChatManager {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (text) in
         guard let text = text else { return }
-        message.translatedText = CustomMessageTransform.markdown.parse(text)
+        (message.translatedText, _) = CustomMessageTransform.markdown.parse(text)
         message.translateState = .translated
         mainStore.dispatch(UpdateMessage(payload: message))
       }, onError: { (error) in

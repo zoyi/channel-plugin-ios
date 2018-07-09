@@ -139,9 +139,9 @@ class CHUtils {
   
   class func bootQueryParams() -> [String: Any] {
     var params = [String :Any]()
-    params["platform"] = "iOS"
-    params["version"] = Bundle(for: ChannelIO.self).infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    params["adId"] = ASIdentifierManager.shared().advertisingIdentifier
+    params["sysProfile.platform"] = "iOS"
+    params["sysProfile.version"] = Bundle(for: ChannelIO.self).infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+    params["sysProfile.adId"] = ASIdentifierManager.shared().advertisingIdentifier
     return params
   }
 }

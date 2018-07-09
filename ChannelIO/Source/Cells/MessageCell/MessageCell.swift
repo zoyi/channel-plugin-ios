@@ -26,16 +26,21 @@ class MessageCell: BaseTableViewCell, Reusable {
   struct Metric {
     static let cellRightPadding = 10.f
     static let cellLeftPadding = 10.f
+    static let messageLeftMinMargin = 107.f
+    static let messageRightMinMargin = 74.f
+    static let messageTop = 4.f
     static let avatarWidth = 24.f
     static let avatarRightPadding = 6.f
     static let bubbleLeftMargin = 40.f
     static let usernameHeight = 16.f
+    static let usernameLeading = 8.f
+    static let timestampLeading = 6.f
     static let cellTopPaddingOfContinous = 3.f
     static let cellTopPaddingDefault = 16.f
-    static let messageCellMinMargin = 65.f
     static let translateViewTop = 4.f
+    static let translateViewLeading = 12.f
   }
-
+  
   let avatarView = AvatarView().then {
     $0.showBorder = false
     $0.showOnline = false 
@@ -85,7 +90,7 @@ class MessageCell: BaseTableViewCell, Reusable {
       }).disposed(by: self.disposeBag)
   }
 
-  // MARK: Configuring  
+  // MARK: Configuring
   func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
     self.presenter = presenter 
     self.viewModel = viewModel
@@ -119,25 +124,25 @@ class MessageCell: BaseTableViewCell, Reusable {
     })
     
     self.usernameLabel.snp.makeConstraints({ [weak self] (make) in
-      make.left.equalTo((self?.avatarView.snp.right)!).offset(8)
+      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metric.usernameLeading)
       make.top.equalTo((self?.avatarView.snp.top)!)
       make.height.equalTo(Metric.usernameHeight)
     })
     
     self.timestampLabel.snp.makeConstraints({ [weak self] (make) in
-      make.left.equalTo((self?.usernameLabel.snp.right)!).offset(6)
+      make.left.equalTo((self?.usernameLabel.snp.right)!).offset(Metric.timestampLeading)
       make.centerY.equalTo((self?.usernameLabel)!)
     })
     
     self.textMessageView.snp.makeConstraints({ [weak self] (make) in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
-      make.right.lessThanOrEqualToSuperview().inset(Metric.messageCellMinMargin)
-      make.top.equalTo((self?.usernameLabel.snp.bottom)!).offset(4)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
+      make.top.equalTo((self?.usernameLabel.snp.bottom)!).offset(Metric.messageTop)
     })
     
     self.translateView.snp.makeConstraints { [weak self] (make) in
       make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.translateViewTop)
-      make.leading.equalTo((self?.textMessageView.snp.leading)!)
+      make.leading.equalTo((self?.textMessageView.snp.leading)!).offset(Metric.translateViewLeading)
     }
     
     self.resendButtonView.snp.remakeConstraints({ [weak self] (make) in
@@ -157,10 +162,9 @@ class MessageCell: BaseTableViewCell, Reusable {
     }
 
     let bubbleMaxWidth = viewModel.createdByMe ?
-      width - Metric.messageCellMinMargin - Metric.cellRightPadding :
-      width - Metric.messageCellMinMargin - Metric.bubbleLeftMargin
+      width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
+      width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
 
-    //bubble height
     if viewModel.message.messageV2?.string != "" {
       viewHeight += TextMessageView.viewHeight(fits: bubbleMaxWidth, viewModel: viewModel)
     }
@@ -193,7 +197,7 @@ extension MessageCell {
   
   func layoutCoutinuousByMe() {
     self.textMessageView.snp.remakeConstraints({ [weak self] (make) in
-      make.left.greaterThanOrEqualToSuperview().inset(Metric.messageCellMinMargin)
+      make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
       if self?.textMessageView.messageView.text == "" {
         make.top.equalToSuperview()
@@ -215,7 +219,7 @@ extension MessageCell {
     })
     
     self.textMessageView.snp.remakeConstraints({ [weak self] (make) in
-      make.left.greaterThanOrEqualToSuperview().inset(Metric.messageCellMinMargin)
+      make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
       make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(4)
     })
@@ -241,7 +245,7 @@ extension MessageCell {
     
     self.textMessageView.snp.remakeConstraints({ (make) in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
-      make.right.lessThanOrEqualToSuperview().inset(Metric.messageCellMinMargin)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.messageRightMinMargin)
       make.top.equalToSuperview().inset(Metric.cellTopPaddingOfContinous)
     })
   }
@@ -266,7 +270,7 @@ extension MessageCell {
     
     self.textMessageView.snp.remakeConstraints({ [weak self] (make) in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
-      make.right.lessThanOrEqualToSuperview().inset(Metric.messageCellMinMargin)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.messageRightMinMargin)
       make.top.equalTo((self?.usernameLabel.snp.bottom)!).offset(4)
     })
   }

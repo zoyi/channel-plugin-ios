@@ -183,3 +183,4 @@ Press the button below to refresh.";
 "ch.common.cancel" = "Cancel";
 "undo_translate" = "See Original";
 "show_translate" = "See Translation";
+"ch.settings.show_translation" = "Show message translation";
