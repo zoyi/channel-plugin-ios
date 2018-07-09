@@ -1,3 +1,11 @@
+# 3.2.3 (July 10, 2018)
+# New
+* Added message translation
+ 
+## Updates
+* Fixed GIF display on chat
+* Refactored launcher view logics
+
 # 3.2.2 (July 05, 2018)
 ## Updates
 * Enlarged emoji if text contains only emoji

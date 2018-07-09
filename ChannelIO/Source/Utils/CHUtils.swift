@@ -9,6 +9,7 @@
 import Foundation
 import SwiftyJSON
 import ObjectMapper
+import AdSupport
 
 class CHUtils {
   class func getTopController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
@@ -133,6 +134,15 @@ class CHUtils {
     }
     
     return durationText
+  }
+  
+  
+  class func bootQueryParams() -> [String: Any] {
+    var params = [String :Any]()
+    params["platform"] = "iOS"
+    params["version"] = Bundle(for: ChannelIO.self).infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+    params["adId"] = ASIdentifierManager.shared().advertisingIdentifier
+    return params
   }
 }
 

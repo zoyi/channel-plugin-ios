@@ -39,20 +39,7 @@ class WebPageMessageCell: MessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType) {
-    super.configure(viewModel)
-    self.webView.configure(message: viewModel)
-    
-    if viewModel.createdByMe == true {
-      self.rightConstraint?.update(inset: Metric.cellRightPadding)
-      self.leftConstraint?.update(inset: Metric.messageCellMinMargin)
-    } else {
-      self.rightConstraint?.update(inset: Metric.messageCellMinMargin)
-      self.leftConstraint?.update(inset: Metric.bubbleLeftMargin)
-    }
-  }
-  
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager?) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.webView.configure(message: viewModel)
     

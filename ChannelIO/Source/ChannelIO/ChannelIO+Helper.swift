@@ -69,6 +69,7 @@ extension ChannelIO {
       }
 
       var params = [String: Any]()
+      params["query"] = CHUtils.bootQueryParams()
       if let profile = profile {
         params["body"] = profile.generateParams()
       }

@@ -45,8 +45,8 @@ class FileMessageCell: MessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType) {
-    super.configure(viewModel)
+  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+    super.configure(viewModel, presenter: presenter)
     self.fileView.configure(message: viewModel)
     
     if viewModel.isContinuous {

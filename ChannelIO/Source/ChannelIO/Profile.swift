@@ -7,10 +7,6 @@
 //
 import Foundation
 
-import Foundation
-
-import Foundation
-
 @objc
 public class Profile : NSObject {
   var name = ""

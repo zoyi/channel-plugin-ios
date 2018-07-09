@@ -42,7 +42,6 @@ class TranslateView: BaseView {
   }
   
   func configure(with viewModel: MessageCellModelType) {
-    self.isHidden = viewModel.canTranslate != true
     self.translateLabel.isHidden = viewModel.translateState == .loading
     
     if viewModel.translateState == .loading {

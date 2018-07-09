@@ -54,8 +54,8 @@ class MediaMessageCell: MessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType) {
-    super.configure(viewModel)
+  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+    super.configure(viewModel, presenter: presenter)
     self.mediaView.configure(message: viewModel, isThumbnail: true)
     
     let size = MediaMessageView.viewSize(fits: self.width, viewModel: viewModel)

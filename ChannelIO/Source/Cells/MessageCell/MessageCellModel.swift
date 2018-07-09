@@ -42,7 +42,7 @@ protocol MessageCellModelType {
   var shouldDisplayForm: Bool { get set }
   var selectedActionText: String { get set }
   var translateState: CHMessageTranslateState { get set }
-  var canTranslate: Bool { get }
+  var showTranslation: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -74,7 +74,7 @@ struct MessageCellModel: MessageCellModelType {
   var shouldDisplayForm: Bool
   var selectedActionText: String = ""
   
-  var canTranslate: Bool = false
+  var showTranslation: Bool = false
   var translateState: CHMessageTranslateState = .original
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
@@ -120,7 +120,11 @@ struct MessageCellModel: MessageCellModelType {
     //form : select
     self.shouldDisplayForm = message.form != nil && indexPath?.row == 0
     
-    self.canTranslate = message.language != "" && message.language != CHUtils.getLocale()?.rawValue && PrefStore.getVisibilityOfTranslation()
+    self.showTranslation =
+      message.language != "" &&
+      message.language != CHUtils.getLocale()?.rawValue &&
+      mainStore.state.userChatsState.showTranslation &&
+      !createdByMe
     self.translateState = message.translateState
   }
 

@@ -85,28 +85,7 @@ class MessageCell: BaseTableViewCell, Reusable {
       }).disposed(by: self.disposeBag)
   }
 
-  // MARK: Configuring
-
-  func configure(_ viewModel: MessageCellModelType) {
-    self.viewModel = viewModel
-    
-    self.usernameLabel.text = viewModel.name
-    self.usernameLabel.isHidden = viewModel.usernameIsHidden
-    
-    self.timestampLabel.text = viewModel.timestamp
-    self.timestampLabel.isHidden = viewModel.timestampIsHidden
-    
-    self.avatarView.configure(viewModel.avatarEntity)
-    self.avatarView.isHidden = viewModel.avatarIsHidden
-    
-    self.textMessageView.configure(viewModel)
-    self.resendButtonView.isHidden = !viewModel.isFailed
-    self.translateView.configure(with: viewModel)
-    
-    self.layoutViews()
-    self.textMessageView.updateConstraints()
-  }
-  
+  // MARK: Configuring  
   func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
     self.presenter = presenter 
     self.viewModel = viewModel
@@ -122,7 +101,9 @@ class MessageCell: BaseTableViewCell, Reusable {
     
     self.textMessageView.configure(viewModel)
     self.resendButtonView.isHidden = !viewModel.isFailed
+    
     self.translateView.configure(with: viewModel)
+    self.translateView.isHidden = !viewModel.showTranslation
     
     self.layoutViews()
     self.textMessageView.updateConstraints()
@@ -184,7 +165,7 @@ class MessageCell: BaseTableViewCell, Reusable {
       viewHeight += TextMessageView.viewHeight(fits: bubbleMaxWidth, viewModel: viewModel)
     }
     
-    if viewModel.canTranslate {
+    if viewModel.showTranslation {
       viewHeight += 20
     }
     
