@@ -66,7 +66,7 @@ class TranslateView: BaseView {
       self.labelLeadingConstraint?.update(inset: 8)
       self.translateLabel.text = CHAssets.localized("undo_translate")
       self.translateLoader.stopAnimating()
-    } else if viewModel.translateState == .original {
+    } else {
       self.arrowImageView.isHidden = true
       self.labelLeadingConstraint?.update(inset: 0)
       self.translateLabel.text = CHAssets.localized("show_translate")

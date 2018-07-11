@@ -126,11 +126,12 @@ extension ChannelIO {
       //do nothing
     } else if topController is UserChatsViewController {
       let userChatsController = topController as! UserChatsViewController
-      userChatsController.showUserChat(userChatId: userChatId)
+      userChatsController.goToUserChatId = userChatId
     } else if topController is UserChatViewController {
       topController.navigationController?.popViewController(animated: false, completion: {
         let userChatsController = CHUtils.getTopController() as! UserChatsViewController
-        userChatsController.showUserChat(userChatId: userChatId)
+        userChatsController.goToUserChatId = userChatId
+        //userChatsController.showUserChat(userChatId: userChatId)
       })
     } else {
       let userChatsController = UserChatsViewController()

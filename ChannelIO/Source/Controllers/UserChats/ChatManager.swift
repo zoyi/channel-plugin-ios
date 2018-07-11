@@ -108,6 +108,7 @@ class ChatManager: NSObject {
       .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
+        self?.didChatLoaded = false
         self?.prepareToChat()
       }.disposed(by: self.disposeBag)
     

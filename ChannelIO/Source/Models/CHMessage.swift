@@ -35,7 +35,6 @@ enum MessageType {
 }
 
 enum CHMessageTranslateState {
-  case none
   case loading
   case failed
   
@@ -63,7 +62,7 @@ struct CHMessage: ModelType {
 
   var language: String = ""
   
-  var translateState: CHMessageTranslateState = .none
+  var translateState: CHMessageTranslateState = .original
   var translatedText: NSAttributedString? = nil
   
   var readableDate: String {
