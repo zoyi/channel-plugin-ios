@@ -39,3 +39,36 @@ public class Guest: NSObject {
     self.alert = guest.alert
   }
 }
+
+@objc
+public class LauncherConfig: NSObject, NSCoding {
+  @objc public let position: LauncherPosition
+  @objc public let xMargin: Float
+  @objc public let yMargin: Float
+  
+  public init(position: LauncherPosition, xMargin: Float, yMargin: Float) {
+    self.position = position
+    self.xMargin = xMargin
+    self.yMargin = yMargin
+  }
+  
+  required convenience public init(coder aDecoder: NSCoder) {
+    let position = LauncherPosition(rawValue: aDecoder.decodeInteger(forKey: "position")) ?? .right
+    let xMargin = aDecoder.decodeFloat(forKey: "xMargin")
+    let yMargin = aDecoder.decodeFloat(forKey: "yMargin")
+    
+    self.init(position: position, xMargin: xMargin, yMargin: yMargin)
+  }
+ 
+  public func encode(with aCoder: NSCoder) {
+    aCoder.encode(self.position.rawValue, forKey: "position")
+    aCoder.encode(self.xMargin, forKey: "xMargin")
+    aCoder.encode(self.yMargin, forKey: "yMargin")
+  }
+}
+
+@objc
+public enum LauncherPosition: Int {
+  case right
+  case left
+}

@@ -5,6 +5,10 @@
 ## Updates
 * Fixed GIF display on chat
 * Refactored launcher view logics
+* Added default launcher position config in ChannelPluginSettings
+
+## Bug fixes
+* Fixed message sync when plugin launched from push notification
 
 # 3.2.2 (July 05, 2018)
 ## Updates

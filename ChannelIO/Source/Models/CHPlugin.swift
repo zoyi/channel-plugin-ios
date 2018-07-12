@@ -20,6 +20,7 @@ struct CHPlugin: ModelType {
   var mobileHideButton = false
   var botName = ""
   
+  var mobilePosition = "right"
   var welcomeNamedI18n: CHi18n?
   var welcomeI18n: CHi18n?
   

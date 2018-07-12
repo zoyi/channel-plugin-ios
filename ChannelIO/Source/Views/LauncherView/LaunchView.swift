@@ -18,6 +18,7 @@ final class LaunchView : BaseView {
   struct Metric {
     static var xMargin = 24.f
     static var yMargin = 24.f
+    static var position = LauncherPosition.right
     
     static let viewSize = 54.f
     static let badgeViewTopMargin = -3.f
@@ -36,7 +37,6 @@ final class LaunchView : BaseView {
     $0.layer.shadowOffset = CGSize(width: 0, height: 3)
     $0.layer.shadowRadius = 5
     $0.layer.borderWidth = 1
-    //$0.setImage(Assets.getImage(named: "balloon")?.withRenderingMode(.alwaysTemplate), for: .normal)
   }
   
   var layoutGuide: UILayoutGuide? = nil
@@ -71,16 +71,14 @@ final class LaunchView : BaseView {
   func configure(_ viewModel: LaunchViewModelType) {
     Metric.xMargin = viewModel.xMargin
     Metric.yMargin = viewModel.yMargin
-
+    Metric.position = viewModel.position
+    
     self.buttonView.backgroundColor = UIColor(viewModel.bgColor)
     self.buttonView.layer.borderColor = UIColor(viewModel.borderColor)?.cgColor
-    if viewModel.iconColor == UIColor.white {
-      self.buttonView.setImage(CHAssets.getImage(named: "balloonWhite"), for: .normal)
-    } else {
-      self.buttonView.setImage(CHAssets.getImage(named: "balloonBlack"), for: .normal)
-    }
     
-    //self.buttonView.imageView?.tintColor = viewModel.iconColor
+    let imageName = viewModel.iconColor == UIColor.white ? "balloonWhite" : "balloonBlack"
+    self.buttonView.setImage(CHAssets.getImage(named: imageName), for: .normal)
+
     self.badgeView.configure(viewModel.badge)
     self.badgeView.isHidden = viewModel.badge == 0
 
@@ -91,7 +89,13 @@ final class LaunchView : BaseView {
   override func updateConstraints() {
     self.snp.remakeConstraints ({ [weak self] (make) in
       make.size.equalTo(CGSize(width:Metric.viewSize, height:Metric.viewSize))
-      make.right.equalToSuperview().inset(Metric.xMargin)
+      
+      if Metric.position == LauncherPosition.right {
+        make.right.equalToSuperview().inset(Metric.xMargin)
+      } else if Metric.position == LauncherPosition.left {
+        make.left.equalToSuperview().inset(Metric.xMargin)
+      }
+      
       if #available(iOS 11.0, *) {
         make.bottom.equalTo((self?.layoutGuide?.snp.bottom)!).offset(-Metric.yMargin)
       } else {
@@ -107,7 +111,6 @@ final class LaunchView : BaseView {
       make.height.equalTo(Metric.badgeViewHeight)
       make.top.equalToSuperview().inset(Metric.badgeViewTopMargin)
       make.centerX.equalTo((self?.snp.right)!).offset(-5)
-      //make.right.equalToSuperview().inset(Metric.badgeViewRightMargin)
     }
     
     super.updateConstraints()

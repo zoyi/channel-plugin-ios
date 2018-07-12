@@ -16,6 +16,7 @@ protocol LaunchViewModelType {
   var borderColor: String { get }
   var badge: Int { get }
   var iconColor: UIColor { get }
+  var position: LauncherPosition { get }
 }
 
 struct LaunchViewModel: LaunchViewModelType {
@@ -25,10 +26,19 @@ struct LaunchViewModel: LaunchViewModelType {
   var borderColor = ""
   var badge = 0
   var iconColor = UIColor.white
-
-  init(plugin: CHPlugin, guest: CHGuest? = nil) {
-    self.xMargin = CGFloat(plugin.mobileMarginX)
-    self.yMargin = CGFloat(plugin.mobileMarginY)
+  var position = LauncherPosition.right
+  
+  init(plugin: CHPlugin, guest: CHGuest? = nil, config: LauncherConfig? = nil) {
+    if let config = config {
+      self.position = config.position
+      self.xMargin = CGFloat(config.xMargin)
+      self.yMargin = CGFloat(config.yMargin)
+    } else {
+      self.position = .right
+      self.xMargin = 30
+      self.yMargin = 30
+    }
+ 
     self.bgColor = plugin.color
     self.borderColor = plugin.borderColor
     self.iconColor = (plugin.textColor == "white") ? UIColor.white : UIColor.black

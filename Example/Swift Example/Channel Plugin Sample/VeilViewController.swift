@@ -79,7 +79,9 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true
-
+    settings.launcherConfig = LauncherConfig(
+      position: .left, xMargin: 100, yMargin: 200
+    )
     ChannelIO.boot(with: settings) { (completion, guest) in
       
     }

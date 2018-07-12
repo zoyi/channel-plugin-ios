@@ -69,8 +69,8 @@ public final class ChannelIO: NSObject {
     func newState(state: AppState) {
       self.handleBadgeDelegate(state.guest.alert)
       self.handlePush(push: state.push)
-      
-      let viewModel = LaunchViewModel(plugin: state.plugin, guest: state.guest)
+      let config: LauncherConfig? = PrefStore.getChannelPluginSettings()?.launcherConfig
+      let viewModel = LaunchViewModel(plugin: state.plugin, guest: state.guest, config: config)
       NotificationCenter.default.post(name: Notification.Name.Channel.updateBadge, object: nil, userInfo: ["model": viewModel])
     }
     
@@ -122,14 +122,14 @@ public final class ChannelIO: NSObject {
       return ChannelIO.checkInChannel(profile: profile)
     }
     .subscribe(onNext: { (_) in
+      PrefStore.setChannelPluginSettings(pluginSetting: settings)
+      ChannelIO.registerPushToken()
+      
       if !settings.hideDefaultLauncher &&
-        !mainStore.state.plugin.mobileHideButton &&
         !mainStore.state.channel.shouldHideDefaultButton {
         ChannelIO.showLauncher(on: controller?.view, animated: true)
       }
       
-      ChannelIO.registerPushToken()
-      PrefStore.setChannelPluginSettings(pluginSetting: settings)
       completion?(.success, Guest(with: mainStore.state.guest))
     }, onError: { error in
       let code = (error as NSError).code
@@ -224,7 +224,9 @@ public final class ChannelIO: NSObject {
     }
     
     let viewModel = LaunchViewModel(
-      plugin: mainStore.state.plugin, guest: mainStore.state.guest
+      plugin: mainStore.state.plugin,
+      guest: mainStore.state.guest,
+      config: PrefStore.getChannelPluginSettings()?.launcherConfig
     )
     
     launchView.show(onView: view, animated: animated)
