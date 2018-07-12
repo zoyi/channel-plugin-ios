@@ -14,12 +14,6 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
   case let action as GetUserChats:
     let messages = (action.payload["messages"] as? [CHMessage]) ?? []
     return state?.upsert(messages: messages) ?? MessagesState()
-  case let action as CreateUserChat:
-    if var msg = state?.findBy(type: .WelcomeMessage)?.first {
-      msg.chatId = action.payload.id
-      return state?.replace(message: msg) ?? MessagesState()
-    }
-    return state ?? MessagesState()
   case let action as GetUserChat:
     let message = action.payload.message
     return state?.insert(message: message) ?? MessagesState()
