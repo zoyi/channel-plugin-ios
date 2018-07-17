@@ -9,14 +9,14 @@
 import Foundation
 
 protocol ChatNotificationViewModelType {
-  var message: String? { get }
+  var message: NSAttributedString? { get }
   var name: String? { get }
   var timestamp: String? { get }
   var avatar: CHEntity? { get }
 }
 
 struct ChatNotificationViewModel: ChatNotificationViewModelType {
-  var message: String?
+  var message: NSAttributedString?
   var name: String?
   var timestamp: String?
   var avatar: CHEntity?
@@ -33,7 +33,17 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
       self.avatar = push.bot
     }
     
-    self.message = push.message?.lastMessage ?? ""
+    if let logMessage = push.message?.logMessage {
+      let attributedText = NSMutableAttributedString(string: logMessage)
+      attributedText.addAttributes(
+        [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14),
+         NSAttributedStringKey.foregroundColor: CHColors.charcoalGrey],
+        range: NSRange(location: 0, length: logMessage.count))
+      self.message = attributedText
+    } else {
+      self.message = push.message?.messageV2
+    }
+
     self.timestamp = push.message?.readableCreatedAt
   }
 }

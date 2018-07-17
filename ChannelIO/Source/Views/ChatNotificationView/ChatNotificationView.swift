@@ -18,9 +18,9 @@ final class ChatNotificationView : BaseView {
     static let sideMargin = 12.f
     static let topMargin = 10.f
     static let boxHeight = 68.f
-    static let viewTopMargin = 8.f
-    static let viewSideMargin = 10.f
-    static let avatarSide = 38.f
+    static let viewTopMargin = 20.f
+    static let viewSideMargin = 14.f
+    static let avatarSide = 46.f
     static let avatarTopMargin = 10.f
     static let avatarLeftMargin = 8.f
     static let nameTopMargin = 12.f
@@ -35,32 +35,39 @@ final class ChatNotificationView : BaseView {
   
   struct Font {
     static let messageLabel = UIFont.systemFont(ofSize: 14)
-    static let nameLabel = UIFont.boldSystemFont(ofSize: 12)
+    static let nameLabel = UIFont.boldSystemFont(ofSize: 13)
+    static let timestampLabel = UIFont.systemFont(ofSize: 11)
   }
   
   struct Color {
     static let border = CHColors.white.cgColor
     static let messageLabel = CHColors.charcoalGrey
     static let nameLabel = CHColors.charcoalGrey
+    static let timeLabel = CHColors.warmGrey
   }
   
   struct Constant {
     static let titleLabelNumberOfLines = 1
-    static let messageLabelNumberOfLines = 1
+    static let messageLabelNumberOfLines = 4
     static let timestampLabelNumberOfLines = 1
     static let nameLabelNumberOfLines = 1
     static let cornerRadius = 8.f
     static let shadowColor = CHColors.dark.cgColor
     static let shadowOffset = CGSize(width: 0.f, height: 5.f)
-    static let shadowBlur = 15.f
+    static let shadowBlur = 20.f
     static let shadowOpacity = 0.4.f
   }
 
   // MARK: Properties
-  let messageLabel = UILabel().then {
+  let messageView = UITextView().then {
+    $0.isScrollEnabled = false
+    $0.isEditable = false
     $0.font = Font.messageLabel
     $0.textColor = Color.messageLabel
-    $0.numberOfLines = Constant.messageLabelNumberOfLines
+    $0.linkTextAttributes = [
+      NSAttributedStringKey.foregroundColor.rawValue: CHColors.cobalt,
+      NSAttributedStringKey.underlineStyle.rawValue: 0
+    ]
   }
   
   let nameLabel = UILabel().then {
@@ -69,8 +76,14 @@ final class ChatNotificationView : BaseView {
     $0.numberOfLines = Constant.nameLabelNumberOfLines
   }
   
+  let timestampLabel = UILabel().then {
+    $0.font = Font.timestampLabel
+    $0.textColor = Color.timeLabel
+  }
+  
   let avatarView = AvatarView().then {
-    $0.showBorder = false
+    $0.showBorder = true
+    $0.borderColor = UIColor.white
   }
   
   let closeView = UIImageView().then {
@@ -82,8 +95,6 @@ final class ChatNotificationView : BaseView {
   override func initialize() {
     super.initialize()
     
-    self.layer.borderColor = CHColors.darkTwo.cgColor
-    self.layer.borderWidth = 1.f
     self.backgroundColor = CHColors.white
     
     self.layer.cornerRadius = Constant.cornerRadius
@@ -92,8 +103,14 @@ final class ChatNotificationView : BaseView {
     self.layer.shadowRadius = Constant.shadowBlur
     self.layer.shadowOpacity = Float(Constant.shadowOpacity)
     
+    self.avatarView.layer.shadowColor = CHColors.dark10.cgColor
+    self.avatarView.layer.shadowOffset = CGSize(width: 0.f, height: 2.f)
+    self.avatarView.layer.shadowRadius = 4
+    self.avatarView.layer.shadowOpacity = Float(Constant.shadowOpacity)
+    
     self.addSubview(self.nameLabel)
-    self.addSubview(self.messageLabel)
+    self.addSubview(self.messageView)
+    self.addSubview(self.timestampLabel)
     self.addSubview(self.avatarView)
     self.addSubview(self.closeView)
   }
@@ -102,39 +119,45 @@ final class ChatNotificationView : BaseView {
     super.setLayouts()
     
     self.avatarView.snp.makeConstraints { (make) in
-      make.centerY.equalToSuperview()
       make.size.equalTo(CGSize(width: Metric.avatarSide, height: Metric.avatarSide))
       make.leading.equalToSuperview().offset(14)
+      make.top.equalToSuperview().inset(-12)
     }
     
     self.nameLabel.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(12)
-      make.top.equalToSuperview().inset(13)
+      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(8)
+      make.top.equalToSuperview().inset(16)
     }
 
-    self.messageLabel.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(12)
-      make.bottom.equalToSuperview().inset(15)
-      make.trailing.equalToSuperview().inset(15)
+    self.timestampLabel.snp.makeConstraints { [weak self] (make) in
+      make.leading.equalTo((self?.nameLabel.snp.trailing)!).offset(6)
+      make.centerY.equalTo((self?.nameLabel.snp.centerY)!)
+    }
+    
+    self.messageView.snp.makeConstraints { (make) in
+      make.leading.equalToSuperview().inset(14)
+      make.top.equalToSuperview().inset(45)
+      make.bottom.equalToSuperview().inset(18)
+      make.trailing.equalToSuperview().inset(14)
     }
     
     self.closeView.snp.makeConstraints { [weak self] (make) in
       make.size.equalTo(CGSize(width:Metric.closeSide, height:Metric.closeSide))
       make.top.equalToSuperview()
-      make.leading.greaterThanOrEqualTo((self?.nameLabel.snp.trailing)!).offset(5)
+      make.leading.greaterThanOrEqualTo((self?.timestampLabel.snp.trailing)!).offset(5)
       make.trailing.equalToSuperview()
     }
   }
   
   func configure(_ viewModel: ChatNotificationViewModelType) {
-    self.messageLabel.text = viewModel.message
+    self.messageView.attributedText = viewModel.message
     self.nameLabel.text = viewModel.name
     self.avatarView.configure(viewModel.avatar)
+    self.timestampLabel.text = viewModel.timestamp
   }
   
   override func updateConstraints() {
     self.snp.makeConstraints { [weak self] (make) in
-      make.height.equalTo(Metric.boxHeight)
       if let top = self?.topLayoutGuide {
         make.top.equalTo(top.snp.bottom).offset(Metric.viewTopMargin)
       } else {
