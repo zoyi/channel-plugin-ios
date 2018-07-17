@@ -115,7 +115,8 @@ class WsService {
   let typingSubject = PublishSubject<CHTypingEntity>()
   let joinSubject = PublishSubject<String>()
   let messageOnCreateSubject = PublishSubject<CHMessage>()
- 
+  let errorSubject = PublishSubject<Any?>()
+  
   //MARK: Private properties
   fileprivate var socket: SocketIOClient?
   fileprivate var manager: SocketManager?
@@ -177,6 +178,10 @@ class WsService {
   
   func joined() -> PublishSubject<String> {
     return self.joinSubject
+  }
+  
+  func error() -> Observable<Any?> {
+    return self.errorSubject.asObserver()
   }
   
   //MARK: Socket functionalities
@@ -526,6 +531,7 @@ fileprivate extension WsService {
   fileprivate func onDisconnect() {
     self.socket?.on(CHSocketResponse.disconnect.value) { (data, ack) in
       dlog("socket disconnected")
+      self.errorSubject.onNext(nil)
       mainStore.dispatchOnMain(SocketDisconnected())
     }
   }
@@ -533,6 +539,7 @@ fileprivate extension WsService {
   fileprivate func onError() {
     self.socket?.on(CHSocketResponse.error.value) { (data, ack) in
       dlog("socket error with data: \(data)")
+      self.errorSubject.onNext(nil)
       mainStore.dispatchOnMain(SocketDisconnected())
     }
   }

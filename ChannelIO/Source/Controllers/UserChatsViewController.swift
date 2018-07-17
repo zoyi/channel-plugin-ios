@@ -50,7 +50,9 @@ class UserChatsViewController: BaseViewController {
   let watermarkView = WatermarkView().then {
     $0.alpha = 0
   }
-  let errorToastView = ErrorToastView()
+  let errorToastView = ErrorToastView().then {
+    $0.isHidden = true
+  }
   let plusButton = NewChatView()
   
   var showCompleted = false
@@ -108,11 +110,18 @@ class UserChatsViewController: BaseViewController {
           self?.fetchUserChats(isInit: true, showIndicator: true, isReload: true)
         }
       }).disposed(by: self.disposeBag)
+    
+    WsService.shared.error()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (_) in
+        self?.errorToastView.show(animated: true)
+      }).disposed(by: self.disposeBag)
   }
   
   func initActions() {
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe { [weak self] _ in
+        self?.errorToastView.hide(animated: true)
         self?.nextSeq = nil
         self?.fetchUserChats(isInit: true, showIndicator: true)
         WsService.shared.connect()
@@ -263,8 +272,10 @@ class UserChatsViewController: BaseViewController {
         self?.showNewChat = false
         self?.shouldHideTable = false
         dlog("got following managers")
-      }, onError: { (error) in
+      }, onError: { [weak self] (error) in
         dlog("error getting following managers: \(error.localizedDescription)")
+        self?.showNewChat = false
+        self?.errorToastView.show(animated: true)
       }).disposed(by: self.disposeBag)
   }
 
@@ -318,13 +329,6 @@ extension UserChatsViewController: StoreSubscriber {
       borderColor: state.plugin.borderColor,
       tintColor: state.plugin.textColor)
    
-    if state.socketState.state == .disconnected ||
-      state.socketState.state == .reconnecting {
-      self.errorToastView.show(animated: true)
-    } else {
-      self.errorToastView.hide(animated: true)
-    }
-    
     // fetch data
     let showCompleted = state.userChatsState.showCompletedChats
     if self.showCompleted != showCompleted {
@@ -335,7 +339,6 @@ extension UserChatsViewController: StoreSubscriber {
     
     self.showWatermarkIfNeeded()
   }
-
 }
 
 // MARK: UIScrollView Delegate
@@ -441,10 +444,15 @@ extension UserChatsViewController: UITableViewDelegate {
 
 extension UserChatsViewController {
   func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false, isReload: Bool = false) {
+    if showIndicator {
+      SVProgressHUD.show()
+    }
+    
     UserChatPromise.getChats(
       since: isInit ? nil : self.nextSeq,
       limit: 30, sortOrder: "DESC",
       showCompleted: self.showCompleted)
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
         self?.didLoad = true
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
@@ -455,10 +463,11 @@ extension UserChatsViewController {
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.show(animated:true)
         self?.didLoad = true
-        //SVProgressHUD.dismiss()
-        //mainStore.dispatch(FailedGetUserChats(error: error))
+
+        SVProgressHUD.dismiss()
+        mainStore.dispatch(FailedGetUserChats(error: error))
       }, onCompleted: {
-        //SVProgressHUD.dismiss()
+        SVProgressHUD.dismiss()
         dlog("Get UserChats complete")
       }).disposed(by: self.disposeBag)
   }

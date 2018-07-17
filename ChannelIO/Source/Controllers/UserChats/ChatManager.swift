@@ -613,6 +613,9 @@ extension ChatManager {
     self.clearTyping()
     self.requestReadAll()
     self.disposeSignals()
+  }
+  
+  func leave() {
     WsService.shared.leave(chatId: self.chatId)
   }
 

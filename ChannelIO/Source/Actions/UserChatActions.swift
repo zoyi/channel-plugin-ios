@@ -12,9 +12,9 @@ struct GetUserChats: Action {
   public let payload: [String: Any?]
 }
 
-//struct FailedGetUserChats: Action {
-//  public let error: Error
-//}
+struct FailedGetUserChats: Action {
+  public let error: Error
+}
 
 struct GetMessages: Action {
   public let payload: [String: Any]

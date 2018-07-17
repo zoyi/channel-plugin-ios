@@ -72,6 +72,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   deinit {
     self.chatManager?.prepareToLeave()
+    self.chatManager?.leave()
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
   }
   
