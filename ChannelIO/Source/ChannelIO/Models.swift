@@ -42,9 +42,9 @@ public class Guest: NSObject {
 
 @objc
 public class LauncherConfig: NSObject, NSCoding {
-  @objc public let position: LauncherPosition
-  @objc public let xMargin: Float
-  @objc public let yMargin: Float
+  @objc public var position: LauncherPosition = .right
+  @objc public var xMargin: Float = 20
+  @objc public var yMargin: Float = 20
   
   public init(position: LauncherPosition, xMargin: Float, yMargin: Float) {
     self.position = position

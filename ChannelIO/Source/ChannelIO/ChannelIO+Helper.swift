@@ -193,7 +193,6 @@ extension ChannelIO {
     // create a sound ID, in this case its the tweet sound.
     // to play sound
     CHAssets.playPushSound()
-    
     mainStore.dispatch(RemovePush())
   }
   

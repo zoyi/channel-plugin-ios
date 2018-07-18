@@ -27,7 +27,7 @@ class WebPageMessageCell: MessageCell {
   override func setLayouts() {
     super.setLayouts()
     self.webView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3)
+      self?.topConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3).constraint
       self?.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
       self?.leftConstraint = make.left.equalToSuperview().inset(Metric.messageLeftMinMargin).constraint
     }
@@ -50,6 +50,8 @@ class WebPageMessageCell: MessageCell {
       self.rightConstraint?.update(inset: Metric.messageRightMinMargin)
       self.leftConstraint?.update(inset: Metric.bubbleLeftMargin)
     }
+    
+    self.topConstraint?.update(offset: viewModel.showTranslation ? 20 : 3)
   }
   
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {

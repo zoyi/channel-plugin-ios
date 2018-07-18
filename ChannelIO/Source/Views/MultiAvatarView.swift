@@ -9,8 +9,6 @@
 import UIKit
 import SnapKit
 
-import ManualLayout
-
 final class MultiAvatarView: NeverClearView {
 
   // MARK: Constants

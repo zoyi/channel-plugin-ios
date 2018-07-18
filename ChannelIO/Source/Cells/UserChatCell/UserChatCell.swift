@@ -156,12 +156,4 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   class func height(fits width: CGFloat, viewModel: UserChatCellModelType) -> CGFloat {
     return Metric.cellHeight
   }
-
-  override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-    let avatarColor = self.avatarView.initialLabel.backgroundColor
-    super.setHighlighted(highlighted, animated: animated)
-    if highlighted {
-      self.avatarView.initialLabel.backgroundColor = avatarColor
-    }
-  }
 }

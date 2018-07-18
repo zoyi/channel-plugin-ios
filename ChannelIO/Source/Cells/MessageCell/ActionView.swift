@@ -146,21 +146,21 @@ class ActionView: BaseView {
     var lastButton: ActionButton!
     
     for (index, button) in self.buttons.enumerated() {
-      if Constant.maxWidth < cx + button.width {
-        let calcualtedY = lastButton.origin.y + lastButton.frame.height + 4.f
-        button.origin = CGPoint(x: 0.f, y: calcualtedY)
+      if Constant.maxWidth < cx + button.frame.width {
+        let calcualtedY = lastButton.frame.origin.y + lastButton.frame.height + 4.f
+        button.frame.origin = CGPoint(x: 0.f, y: calcualtedY)
         
         if self.alignment == .right {
           let buttons = Array(self.buttons[firstRowIndex..<index])
           self.realignItemsToRight(buttons: buttons)
         }
 
-        cx = button.width + 4.f
-        cy += button.height + 4.f
+        cx = button.frame.width + 4.f
+        cy += button.frame.height + 4.f
         firstRowIndex = index
       } else {
-        button.origin = CGPoint(x: cx, y: cy)
-        cx += button.width + 4.f
+        button.frame.origin = CGPoint(x: cx, y: cy)
+        cx += button.frame.width + 4.f
       }
       
       lastButton = button
@@ -174,7 +174,7 @@ class ActionView: BaseView {
   
   private func realignItemsToRight(buttons: [ActionButton]) {
     let leftOverMargin =  UIScreen.main.bounds.width - 10 -
-      (buttons.last?.origin.x ?? 0) - (buttons.last?.width ?? 0)
+      (buttons.last?.frame.origin.x ?? 0) - (buttons.last?.frame.width ?? 0)
     guard  leftOverMargin > 0 else { return }
     
     for button in buttons {

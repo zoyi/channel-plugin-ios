@@ -81,6 +81,7 @@ class CHAssets {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
       }
       Mute.shared.isPaused = true
+      Mute.shared.alwaysNotify = false
     }
   }
 }

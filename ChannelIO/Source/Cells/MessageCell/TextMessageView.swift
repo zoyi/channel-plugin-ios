@@ -19,9 +19,6 @@ class TextMessageView : BaseView {
   struct Metric {
     static let topBottomPadding = 10.f
     static let leftRightPadding = 12.f
-    static let actionLabelTopMargin = 10.f
-    static let actionLabelTopBottomPadding = 10.f
-    
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
   }

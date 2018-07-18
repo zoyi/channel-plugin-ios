@@ -86,7 +86,7 @@ struct CHMessage: ModelType {
     return String(format:"%d:%02d %@", hours, minutes, suffix)
   }
   
-  var lastMessage: String? {
+  var logMessage: String? {
     if self.file?.isPreviewable == true {
       return CHAssets.localized("ch.notification.upload_image.description")
     } else if self.file != nil {
@@ -94,7 +94,7 @@ struct CHMessage: ModelType {
     } else if self.log != nil && self.log?.action == "resolve" {
       return CHAssets.localized("ch.review.require.preview")
     }
-    return self.messageV2?.string
+    return nil
   }
   
   var isWelcome: Bool {

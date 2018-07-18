@@ -10,8 +10,6 @@ import UIKit
 import SDWebImage
 import SnapKit
 
-import ManualLayout
-
 class AvatarView: NeverClearView {
 
   // MARK: Constants
@@ -20,24 +18,12 @@ class AvatarView: NeverClearView {
     static let borderWidth = 2.f
   }
 
-  struct Font {
-    static let initialLabel = UIFont.boldSystemFont(ofSize: 15)
-  }
-
   struct Color {
     static let initialLabel = CHColors.white
     static let border = CHColors.white.cgColor
   }
 
   // MARK: Properties
-
-  let initialLabel = UILabel().then {
-    $0.font = Font.initialLabel
-    $0.textColor = Color.initialLabel
-    $0.textAlignment = .center
-    $0.layer.masksToBounds = true
-  }
-
   let avatarImageView = UIImageView().then {
     $0.clipsToBounds = true
     $0.backgroundColor = UIColor.white
@@ -94,9 +80,20 @@ class AvatarView: NeverClearView {
   override func initialize() {
     super.initialize()
 
-    self.addSubview(self.initialLabel)
     self.addSubview(self.avatarImageView)
     self.addSubview(self.onlineView)
+    
+    self.avatarImageView.snp.makeConstraints { (make) in
+      make.edges.equalToSuperview().inset(1)
+    }
+    
+    self.onlineView.layer.cornerRadius = 6
+    self.onlineView.snp.makeConstraints { [weak self] (make) in
+      make.bottom.equalTo((self?.avatarImageView.snp.bottom)!)
+      make.right.equalTo((self?.avatarImageView.snp.right)!).offset(2)
+      make.height.equalTo(12)
+      make.width.equalTo(12)
+    }
   }
 
   // MARK: Configuring
@@ -111,7 +108,6 @@ class AvatarView: NeverClearView {
         self.avatarImageView.image = CHAssets.getImage(named: url)
       }
       self.avatarImageView.isHidden = false
-      self.initialLabel.isHidden = true
     }
     
     if let manager = avatar as? CHManager, manager.online && self.showOnline {
@@ -125,25 +121,7 @@ class AvatarView: NeverClearView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    
-    self.layer.cornerRadius =  !self.showOnline ? self.height / 2 : 0
-    
-    self.initialLabel.top = 0
-    self.initialLabel.left = 0
-    self.initialLabel.width = self.width
-    self.initialLabel.height = self.height
-    self.initialLabel.layer.cornerRadius = self.height / 2
-    
-    self.avatarImageView.top = 0
-    self.avatarImageView.left = 0
-    self.avatarImageView.width = self.width
-    self.avatarImageView.height = self.height
-    self.avatarImageView.layer.cornerRadius = self.height / 2
-    
-    self.onlineView.bottom = self.avatarImageView.bottom
-    self.onlineView.right = self.avatarImageView.right + 2
-    self.onlineView.width = 12
-    self.onlineView.height = 12
-    self.onlineView.layer.cornerRadius = 6
+    self.layer.cornerRadius = !self.showOnline ? self.frame.size.height / 2 : 0
+    self.avatarImageView.layer.cornerRadius = self.frame.size.height / 2
   }
 }
