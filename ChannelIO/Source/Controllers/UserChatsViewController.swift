@@ -458,11 +458,10 @@ extension UserChatsViewController {
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
 
         mainStore.dispatch(GetUserChats(payload: data))
-        //SVProgressHUD.dismiss()
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.show(animated:true)
-        self?.didLoad = true
+        self?.didLoad = false
 
         SVProgressHUD.dismiss()
         mainStore.dispatch(FailedGetUserChats(error: error))

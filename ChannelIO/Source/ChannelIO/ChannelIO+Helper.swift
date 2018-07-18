@@ -157,8 +157,7 @@ extension ChannelIO {
       .registerPushToken(channelId: channelId, token: pushToken)
       .subscribe(onNext: { (result) in
         dlog("register token success")
-      }
-      ,onError:{ error in
+      }, onError:{ error in
         dlog("register token failed")
       }).disposed(by: disposeBeg)
   }
@@ -189,9 +188,7 @@ extension ChannelIO {
       }.disposed(by: self.disposeBeg)
     
     self.chatNotificationView = notificationView
-    
-    // create a sound ID, in this case its the tweet sound.
-    // to play sound
+
     CHAssets.playPushSound()
     mainStore.dispatch(RemovePush())
   }

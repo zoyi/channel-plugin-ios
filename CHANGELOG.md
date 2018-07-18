@@ -1,3 +1,11 @@
+# 3.2.4 (July 18, 2018)
+# Update
+* Updated in-app push notification design
+* Refactored push and guest update logics
+
+# Bug fixes
+* Fixed blocked user UX
+
 # 3.2.3 (July 10, 2018)
 # New
 * Added message translation
