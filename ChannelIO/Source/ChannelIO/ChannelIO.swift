@@ -197,14 +197,12 @@ public final class ChannelIO: NSObject {
    *   - parameter on: a view that launcher button will be displayed, default is nil and will display on current view
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  @objc public class func show(on view: UIView? = nil, animated: Bool) {
+  @objc public class func show(animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.getLauncherView() == nil else { return }
-    //check if current view contains launcher if so return
-    //guard ChannelIO.launchView == nil else { return }
+
     guard let topController = CHUtils.getTopController() else { return }
-    let displayView = view ?? topController.view
-    ChannelIO.showLauncher(on: displayView, animated: animated)
+    ChannelIO.showLauncher(on: topController.view, animated: animated)
   }
   
   /**
@@ -216,8 +214,7 @@ public final class ChannelIO: NSObject {
   internal class func showLauncher(on view:UIView?, animated: Bool) {
     guard let view = view else { return }
     guard ChannelIO.isValidStatus else { return }
-    //ChannelIO.hide(animated: false)
-    
+
     let launchView = LaunchView()
     if #available(iOS 11.0, *) {
       launchView.layoutGuide = view.safeAreaLayoutGuide
