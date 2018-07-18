@@ -64,6 +64,8 @@ final class ChatNotificationView : BaseView {
     $0.isEditable = false
     $0.font = Font.messageLabel
     $0.textColor = Color.messageLabel
+    $0.textContainer.maximumNumberOfLines = 10
+    $0.textContainer.lineBreakMode = .byTruncatingTail
     $0.linkTextAttributes = [
       NSAttributedStringKey.foregroundColor.rawValue: CHColors.cobalt,
       NSAttributedStringKey.underlineStyle.rawValue: 0
