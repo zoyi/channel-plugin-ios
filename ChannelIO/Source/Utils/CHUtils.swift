@@ -141,7 +141,9 @@ class CHUtils {
     var params = [String :Any]()
     params["sysProfile.platform"] = "iOS"
     params["sysProfile.version"] = Bundle(for: ChannelIO.self).infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    params["sysProfile.adId"] = ASIdentifierManager.shared().advertisingIdentifier
+    if ASIdentifierManager.shared().isAdvertisingTrackingEnabled {
+      params["sysProfile.adId"] = ASIdentifierManager.shared().advertisingIdentifier
+    }
     return params
   }
 }
