@@ -5,6 +5,7 @@
 
 # Bug fixes
 * Fixed blocked user UX
+* Fixed settings unarchived error
 
 # 3.2.3 (July 10, 2018)
 # New

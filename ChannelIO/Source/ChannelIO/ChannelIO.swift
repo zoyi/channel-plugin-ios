@@ -69,7 +69,7 @@ public final class ChannelIO: NSObject {
     func newState(state: AppState) {
       self.handleBadgeDelegate(state.guest.alert)
       self.handlePush(push: state.push)
-      let config: LauncherConfig? = PrefStore.getChannelPluginSettings()?.launcherConfig
+      let config: LauncherConfig? = ChannelIO.settings?.launcherConfig
       let viewModel = LaunchViewModel(plugin: state.plugin, guest: state.guest, config: config)
       NotificationCenter.default.post(name: Notification.Name.Channel.updateBadge, object: nil, userInfo: ["model": viewModel])
     }
@@ -223,7 +223,7 @@ public final class ChannelIO: NSObject {
     let viewModel = LaunchViewModel(
       plugin: mainStore.state.plugin,
       guest: mainStore.state.guest,
-      config: PrefStore.getChannelPluginSettings()?.launcherConfig
+      config: ChannelIO.settings?.launcherConfig
     )
     
     launchView.show(onView: view, animated: animated)
