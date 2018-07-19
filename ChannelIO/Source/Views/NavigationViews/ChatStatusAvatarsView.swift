@@ -66,6 +66,10 @@ class ChatStatusAvatarsView: BaseView {
   override func setLayouts() {
     super.setLayouts()
 
+    self.snp.makeConstraints { [weak self] (make) in
+      self?.widthConstraint = make.width.equalTo(46).constraint
+    }
+
     self.firstAvatarView.snp.remakeConstraints { [weak self] (make) in
       guard let s = self else { return }
       make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize)).priority(750)
@@ -105,6 +109,7 @@ class ChatStatusAvatarsView: BaseView {
       self.secondLeadingConstraint?.deactivate()
       self.secondTrailingContraint?.activate()
       self.thirdLeadingConstraint?.deactivate()
+      self.widthConstraint?.update(offset: self.avatarSize)
       self.layoutOneAvatar()
     } else if persons.count == 2 {
       self.firstAvatarView.configure(persons[0])
@@ -113,6 +118,7 @@ class ChatStatusAvatarsView: BaseView {
       self.secondLeadingConstraint?.activate()
       self.secondTrailingContraint?.activate()
       self.thirdLeadingConstraint?.deactivate()
+      self.widthConstraint?.update(offset: self.avatarSize * 2 - self.coverMargin)
       self.layoutTwoAvatars()
     } else if persons.count >= 3 {
       self.firstAvatarView.configure(persons[0])
@@ -122,6 +128,7 @@ class ChatStatusAvatarsView: BaseView {
       self.secondLeadingConstraint?.activate()
       self.secondTrailingContraint?.deactivate()
       self.thirdLeadingConstraint?.activate()
+      self.widthConstraint?.update(offset: self.avatarSize * 3 - self.coverMargin * 2)
       self.layoutThreeAvatars()
     }
   }
