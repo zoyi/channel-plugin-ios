@@ -110,6 +110,8 @@ final class ChatNotificationView : BaseView {
     self.avatarView.layer.shadowRadius = 4
     self.avatarView.layer.shadowOpacity = Float(Constant.shadowOpacity)
     
+    self.messageView.delegate = self
+    
     self.addSubview(self.nameLabel)
     self.addSubview(self.messageView)
     self.addSubview(self.timestampLabel)
@@ -171,5 +173,29 @@ final class ChatNotificationView : BaseView {
     }
    
     super.updateConstraints()
+  }
+}
+
+extension ChatNotificationView : UITextViewDelegate {
+  func textView(_ textView: UITextView,
+                shouldInteractWith URL: URL,
+                in characterRange: NSRange) -> Bool {
+    let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
+    return shouldhandle == true || shouldhandle == nil
+  }
+  
+  @available(iOS 10.0, *)
+  func textView(_ textView: UITextView,
+                shouldInteractWith URL: URL,
+                in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+    if interaction == .invokeDefaultAction {
+      let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
+      if handled == false || handled == nil {
+        URL.openWithUniversal()
+      }
+      return false
+    }
+    
+    return true
   }
 }
