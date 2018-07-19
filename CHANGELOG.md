@@ -2,6 +2,7 @@
 # Update
 * Updated in-app push notification design
 * Refactored push and guest update logics
+* Showed closed user chats by default
 
 # Bug fixes
 * Fixed blocked user UX

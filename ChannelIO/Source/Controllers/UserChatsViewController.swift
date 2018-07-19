@@ -83,6 +83,7 @@ class UserChatsViewController: BaseViewController {
     self.initTableView()
     self.initActions()
     self.initNotifications()
+    self.setDefaultNavItems()
     
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     self.fetchUserChats(isInit: true, showIndicator: true)
@@ -153,7 +154,6 @@ class UserChatsViewController: BaseViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    self.setDefaultNavItems()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -334,7 +334,7 @@ extension UserChatsViewController: StoreSubscriber {
     if self.showCompleted != showCompleted {
       self.showCompleted = showCompleted
       self.nextSeq = nil
-      self.fetchUserChats(isInit: true, showIndicator: true)
+      self.fetchUserChats(isInit: true, showIndicator: true, isReload: true)
     }
     
     self.showWatermarkIfNeeded()
