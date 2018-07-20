@@ -63,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
   }
   
   func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    let deviceTokenString: String = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+    NSLog("Device Token : %@", deviceTokenString)
     ChannelIO.initPushToken(deviceToken: deviceToken)
   }
   

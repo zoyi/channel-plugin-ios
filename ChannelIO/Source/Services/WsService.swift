@@ -353,6 +353,12 @@ fileprivate extension WsService {
         guard let message = Mapper<CHMessage>()
           .map(JSONObject: json["entity"].object) else { return }
         guard message.isWelcome == false else { return }
+        
+        if let bot = Mapper<CHBot>()
+          .map(JSONObject: json["refers"]["bot"].object) {
+          mainStore.dispatchOnMain(GetBot(payload: bot))
+        }
+        
         self?.messageOnCreateSubject.onNext(message)
         mainStore.dispatchOnMain(CreateMessage(payload: message))
         self?.eventSubject.onNext((type, message))
