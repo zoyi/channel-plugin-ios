@@ -450,7 +450,7 @@ extension ChatManager {
   func didClickOnWebPage(with message: CHMessage) {
     guard let url = URL(string:message.webPage?.url ?? "") else { return }
     let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
-    if shouldHandle == true || shouldHandle == nil {
+    if shouldHandle == false || shouldHandle == nil {
       url.openWithUniversal()
     }
   }

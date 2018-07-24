@@ -1,3 +1,7 @@
+# 3.2.5 
+# Bug fixes
+* Fixed condition to handle link for delegate
+
 # 3.2.4 (July 18, 2018)
 # Update
 * Updated in-app push notification design
