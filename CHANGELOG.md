@@ -1,3 +1,7 @@
+# 3.2.6
+# Update
+* Removed AdSupport
+
 # 3.2.5 
 # Bug fixes
 * Fixed condition to handle link for delegate

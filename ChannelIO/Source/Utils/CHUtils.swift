@@ -9,7 +9,6 @@
 import Foundation
 import SwiftyJSON
 import ObjectMapper
-import AdSupport
 
 class CHUtils {
   class func getTopController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
@@ -140,10 +139,8 @@ class CHUtils {
   class func bootQueryParams() -> [String: Any] {
     var params = [String :Any]()
     params["sysProfile.platform"] = "iOS"
-    params["sysProfile.version"] = Bundle(for: ChannelIO.self).infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    if ASIdentifierManager.shared().isAdvertisingTrackingEnabled {
-      params["sysProfile.adId"] = ASIdentifierManager.shared().advertisingIdentifier
-    }
+    params["sysProfile.version"] = Bundle(for: ChannelIO.self)
+      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     return params
   }
 }
