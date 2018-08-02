@@ -57,7 +57,6 @@ PODS:
   - SwiftDate (4.5.1)
   - SwiftyJSON (4.1.0)
   - Then (2.3.0)
-  - "UINavigationItem+Margin (2.1.1)"
 
 DEPENDENCIES:
   - Alamofire (~> 4.0)
@@ -87,10 +86,9 @@ DEPENDENCIES:
   - SwiftDate
   - SwiftyJSON
   - Then
-  - "UINavigationItem+Margin"
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Alamofire
     - CGFloatLiteral
     - CHDwifft
@@ -123,7 +121,6 @@ SPEC REPOS:
     - SwiftDate
     - SwiftyJSON
     - Then
-    - "UINavigationItem+Margin"
 
 SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
@@ -158,8 +155,7 @@ SPEC CHECKSUMS:
   SwiftDate: 7b56d42a221f582047287deb256b23fc5ed49a60
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   Then: ee21c97b85ff6062b9b0080c9abb1eea46743345
-  "UINavigationItem+Margin": 7368d506fb2f7daa0c0489846cc8c2384ab1ab6d
 
-PODFILE CHECKSUM: 8e96c309cab01b67fafbebb4108a566b44993dcd
+PODFILE CHECKSUM: 00f93b18ccf9a2740353baf9b7814c51f1b109d2
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

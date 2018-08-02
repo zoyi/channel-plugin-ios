@@ -108,7 +108,7 @@ class UserChatsViewController: BaseViewController {
       .notification(NSNotification.Name.UIApplicationDidBecomeActive)
       .subscribe(onNext: { [weak self] (_) in
         if let controller = CHUtils.getTopController(), controller == self {
-          self?.fetchUserChats(isInit: true, showIndicator: true, isReload: true)
+          self?.fetchUserChats(isInit: true, showIndicator: false, isReload: true)
         }
       }).disposed(by: self.disposeBag)
     
@@ -248,14 +248,12 @@ class UserChatsViewController: BaseViewController {
     self.showNewChat = true
 
     controller.preloadText = text
-    controller.signalForNewChat()
-      .subscribe { [weak self] event in
-        self?.navigationController?.popViewController(
-          animated: true, completion: {
-            let text = event.element as! String
-            self?.showUserChat(text: text, animated: true)
-        })
-      }.disposed(by: self.disposeBag)
+    controller.signalForNewChat().subscribe (onNext: { [weak self] text in
+      let text = text as? String ?? ""
+      self?.navigationController?.popViewController(animated: true, completion: {
+        self?.showUserChat(text: text, animated: true)
+      })
+    }).disposed(by: self.disposeBag)
 
     controller.signalForProfile().subscribe { [weak self] _ in
       self?.showProfileView()

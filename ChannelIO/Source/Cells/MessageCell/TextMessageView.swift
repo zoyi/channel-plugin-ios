@@ -50,7 +50,7 @@ class TextMessageView : BaseView {
     $0.isEditable = false
     $0.isSelectable = true
     
-    $0.dataDetectorTypes = UIDataDetectorTypes.link
+    $0.dataDetectorTypes = [.link, .phoneNumber]
     $0.textContainer.lineFragmentPadding = 0
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
   }
@@ -157,7 +157,13 @@ extension TextMessageView : UITextViewDelegate {
                 shouldInteractWith URL: URL,
                 in characterRange: NSRange) -> Bool {
     let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
-    return shouldhandle == true || shouldhandle == nil
+    let scheme = URL.scheme ?? ""
+    switch scheme {
+    case "tel":
+      return true
+    default:
+      return shouldhandle == true || shouldhandle == nil
+    }
   }
   
   @available(iOS 10.0, *)
@@ -165,11 +171,17 @@ extension TextMessageView : UITextViewDelegate {
                 shouldInteractWith URL: URL,
                 in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
     if interaction == .invokeDefaultAction {
-      let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
-      if handled == false || handled == nil {
-        URL.openWithUniversal()
+      let scheme = URL.scheme ?? ""
+      switch scheme {
+      case "tel":
+        return true
+      default:
+        let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
+        if handled == false || handled == nil {
+          URL.openWithUniversal()
+        }
+        return false
       }
-      return false
     }
     
     return true

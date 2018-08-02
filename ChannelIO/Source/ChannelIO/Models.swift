@@ -41,6 +41,12 @@ public class Guest: NSObject {
 }
 
 @objc
+public enum LauncherPosition: Int {
+  case right
+  case left
+}
+
+@objc
 public class LauncherConfig: NSObject, NSCoding {
   @objc public var position: LauncherPosition = .right
   @objc public var xMargin: Float = 20
@@ -65,10 +71,4 @@ public class LauncherConfig: NSObject, NSCoding {
     aCoder.encode(self.xMargin, forKey: "xMargin")
     aCoder.encode(self.yMargin, forKey: "yMargin")
   }
-}
-
-@objc
-public enum LauncherPosition: Int {
-  case right
-  case left
 }

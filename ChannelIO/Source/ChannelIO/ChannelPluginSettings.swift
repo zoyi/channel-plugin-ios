@@ -102,13 +102,20 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   }
   
   required convenience public init(coder aDecoder: NSCoder) {
-    let pluginKey = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.pluginKey) as! String
-    let userId = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.userId) as? String
-    let debugMode = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.debugMode)
-    let launcherConfig = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.launcherConfig) as? LauncherConfig
-    let hideDefaultLauncher = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultLauncher)
-    let hideDefaultInAppPush = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultInAppPush)
-    let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.enabledTrackDefaultEvent)
+    //remove legacy key later
+    let pluginKey = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.pluginKey) as? String ??
+      aDecoder.decodeObject(forKey: "pluginKey") as? String ?? ""
+    let userId = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.userId) as? String ??
+      aDecoder.decodeObject(forKey: "userId") as? String
+    let debugMode = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.debugMode) || aDecoder.decodeBool(forKey: "debugMode")
+    let launcherConfig = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.launcherConfig) as? LauncherConfig ??
+      aDecoder.decodeObject(forKey: "launcherConfig") as? LauncherConfig
+    let hideDefaultLauncher = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultLauncher) ||
+      aDecoder.decodeBool(forKey: "hideDefaultLauncher")
+    let hideDefaultInAppPush = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultInAppPush) ||
+      aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
+    let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.enabledTrackDefaultEvent) ||
+      aDecoder.decodeBool(forKey: "enabledTrackDefaultEvent")
     let locale = CHLocale(rawValue: aDecoder.decodeInteger(forKey: ChannelPluginSettingKey.locale)) ?? .korean
     
     self.init(pluginKey: pluginKey,

@@ -1,3 +1,9 @@
+# 3.2.7 (August 1, 2018)
+# Update
+* Removed install objc header option from build option
+* Handled phone number in text 
+* Supported settings' legacy keys
+
 # 3.2.6
 # Update
 * Removed AdSupport
