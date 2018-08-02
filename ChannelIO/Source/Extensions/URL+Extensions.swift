@@ -8,29 +8,28 @@
 
 import Foundation
 import UIKit
+import SafariServices
 
 extension URL {
   func openWithUniversal() {
     guard UIApplication.shared.canOpenURL(self) else { return }
-    
     if #available(iOS 10.0, *) {
       UIApplication.shared.open(self, options: [UIApplicationOpenURLOptionUniversalLinksOnly:true]) { (completed) in
         if !completed {
-          UIApplication.shared.open(self, options: [:]) { (completed) in }
+          let controller = SFSafariViewController(url: self)
+          CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
         }
       }
     } else {
-      UIApplication.shared.openURL(self)
+      let controller = SFSafariViewController(url: self)
+      CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
     }
   }
-  
+
   func open() {
     guard UIApplication.shared.canOpenURL(self) else { return }
     
-    if #available(iOS 10.0, *) {
-      UIApplication.shared.open(self, options: [:], completionHandler: nil)
-    } else {
-      UIApplication.shared.openURL(self)
-    }
+    let controller = SFSafariViewController(url: self)
+    CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
   }
 }

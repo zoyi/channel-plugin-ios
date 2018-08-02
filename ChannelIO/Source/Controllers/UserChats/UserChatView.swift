@@ -519,7 +519,7 @@ extension UserChatView {
         let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
 
         if let url = URL(string: urlString) {
-          url.open()
+          url.openWithUniversal()
         }
       }
       cell.transform = tableView.transform
