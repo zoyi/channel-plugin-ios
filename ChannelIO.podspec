@@ -24,7 +24,12 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/zoyi/channel-plugin-ios.git', :tag => s.version.to_s }
   s.ios.deployment_target = '9.0'
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0.0' }
-
+  
+  s.script_phase = {
+    :name => 'ChannelIO Emoji Sync',
+    :script => '${PODS_TARGET_SRCROOT}/setup.sh',
+    :execution_position => :before_compile
+  }
   s.source_files = 'ChannelIO/Source/**/*'
   s.resources = 'ChannelIO/Assets/*'
   s.frameworks = 'SystemConfiguration', 'CoreTelephony', 'CoreLocation', 'WebKit'

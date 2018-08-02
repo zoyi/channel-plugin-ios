@@ -57,12 +57,12 @@ class CHUtils {
   }
   
   class func emojiMap() -> [String: String] {
-    if let path = CHAssets.getPath(name: "emoji_map", type: "json") {
+    if let path = CHAssets.getPath(name: "emojis", type: "json") {
       do {
         let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
         let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
-        if let jsonResult = jsonResult as? Dictionary<String, String> {
-          return jsonResult
+        if let jsonResult = jsonResult as? Dictionary<String, Array<Any?>> {
+          return CHUtils.parseEmojiIntoMap(dict: jsonResult)
         }
       } catch {
         return [:]
@@ -70,6 +70,21 @@ class CHUtils {
     }
     
     return [:]
+  }
+  
+  class func parseEmojiIntoMap(dict: Dictionary<String, Array<Any?>>) -> [String: String] {
+    var maps: [String: String] = [:]
+    for emojis in dict.values {
+      for each in emojis {
+        if let each = each as? Dictionary<String, Any> {
+          let key = each["n"] as? String ?? ""
+          let value = each["c"] as? String ?? ""
+          maps[key] = value
+        }
+      }
+    }
+    
+    return maps
   }
   
   class func getUrlForUTM(source: String, content: String) -> String {
