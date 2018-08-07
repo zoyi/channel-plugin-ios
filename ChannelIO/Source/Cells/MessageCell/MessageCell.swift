@@ -57,6 +57,11 @@ class MessageCell: BaseTableViewCell, Reusable {
     $0.textColor = Color.timestamp
   }
   
+  let titleLabel = UILabel().then {
+    $0.textColor = CHColors.charcoalGrey
+    $0.font = UIFont.boldSystemFont(ofSize: 16)
+  }
+  
   let textMessageView = TextMessageView()
   let translateView = TranslateView()
   let resendButtonView = UIButton().then {
@@ -65,6 +70,7 @@ class MessageCell: BaseTableViewCell, Reusable {
   }
 
   var viewModel: MessageCellModelType?
+  var titleHeightConstraint: Constraint? = nil
   // MARK: Initializing
 
   override func initialize() {
@@ -73,6 +79,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     self.contentView.addSubview(self.avatarView)
     self.contentView.addSubview(self.usernameLabel)
     self.contentView.addSubview(self.timestampLabel)
+    self.contentView.addSubview(self.titleLabel)
     self.contentView.addSubview(self.textMessageView)
     self.contentView.addSubview(self.translateView)
     self.contentView.addSubview(self.resendButtonView)
@@ -133,10 +140,16 @@ class MessageCell: BaseTableViewCell, Reusable {
       make.centerY.equalTo((self?.usernameLabel)!)
     })
     
-    self.textMessageView.snp.makeConstraints({ [weak self] (make) in
+    self.titleLabel.snp.makeConstraints { [weak self] (make) in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
       make.right.lessThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.top.equalTo((self?.usernameLabel.snp.bottom)!).offset(Metric.messageTop)
+    }
+    
+    self.textMessageView.snp.makeConstraints({ [weak self] (make) in
+      make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
+      make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metric.messageTop)
     })
     
     self.translateView.snp.makeConstraints { [weak self] (make) in
@@ -195,10 +208,11 @@ extension MessageCell {
   }
   
   func layoutCoutinuousByMe() {
-    self.textMessageView.snp.remakeConstraints({ [weak self] (make) in
+    self.titleLabel.snp.remakeConstraints({ [weak self] (make) in
       make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
-      if self?.textMessageView.messageView.text == "" {
+      if self?.titleLabel.text == "" {
+        make.height.equalTo(0)
         make.top.equalToSuperview()
       } else {
         make.top.equalToSuperview().inset(Metric.cellTopPaddingOfContinous)
@@ -217,10 +231,15 @@ extension MessageCell {
       make.top.equalTo((self?.avatarView.snp.top)!)
     })
     
-    self.textMessageView.snp.remakeConstraints({ [weak self] (make) in
+    self.titleLabel.snp.remakeConstraints({ [weak self] (make) in
       make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
-      make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(4)
+      if self?.titleLabel.text == "" {
+        make.height.equalTo(0)
+        make.top.equalTo((self?.timestampLabel.snp.bottom)!)
+      } else {
+        make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(4)
+      }
     })
   }
   
@@ -242,10 +261,15 @@ extension MessageCell {
       make.centerY.equalTo((self?.usernameLabel)!)
     })
     
-    self.textMessageView.snp.remakeConstraints({ (make) in
+    self.titleLabel.snp.remakeConstraints({ [weak self] (make) in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
       make.right.lessThanOrEqualToSuperview().inset(Metric.messageRightMinMargin)
-      make.top.equalToSuperview().inset(Metric.cellTopPaddingOfContinous)
+      if self?.titleLabel.text == "" {
+        make.height.equalTo(0)
+        make.top.equalToSuperview()
+      } else {
+        make.top.equalToSuperview().inset(Metric.cellTopPaddingOfContinous)
+      }
     })
   }
   
@@ -267,10 +291,15 @@ extension MessageCell {
       make.centerY.equalTo((self?.usernameLabel)!)
     })
     
-    self.textMessageView.snp.remakeConstraints({ [weak self] (make) in
+    self.titleLabel.snp.remakeConstraints({ [weak self] (make) in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
       make.right.lessThanOrEqualToSuperview().inset(Metric.messageRightMinMargin)
-      make.top.equalTo((self?.usernameLabel.snp.bottom)!).offset(4)
+      if self?.titleLabel.text == "" {
+        make.height.equalTo(0)
+        make.top.equalTo((self?.usernameLabel.snp.bottom)!)
+      } else {
+        make.top.equalTo((self?.usernameLabel.snp.bottom)!).offset(4)
+      }
     })
   }
 }

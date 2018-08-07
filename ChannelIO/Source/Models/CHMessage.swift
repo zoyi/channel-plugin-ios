@@ -44,13 +44,14 @@ enum CHMessageTranslateState {
 
 struct CHMessage: ModelType {
   // ModelType
-  var id = ""
+  var id: String = ""
   // Message
-  var channelId = ""
-  var chatType = ""
-  var chatId = ""
-  var personType = ""
-  var personId = ""
+  var channelId: String = ""
+  var chatType: String = ""
+  var chatId: String = ""
+  var personType: String = ""
+  var personId: String = ""
+  var title: String = ""
   var message: String?
   var messageV2: NSAttributedString?
   var requestId: String?
@@ -187,6 +188,7 @@ extension CHMessage: Mappable {
     chatId      <- map["chatId"]
     personType  <- map["personType"]
     personId    <- map["personId"]
+    title       <- map["title"]
     message     <- map["message"]
     requestId   <- map["requestId"]
     file        <- map["file"]
