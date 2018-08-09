@@ -10,6 +10,11 @@ import Foundation
 import ObjectMapper
 import RxSwift
 
+enum ReviewType: String {
+  case like
+  case dislike
+}
+
 struct CHUserChat: ModelType {
   // ModelType
   var id = ""
@@ -103,8 +108,12 @@ extension CHUserChat {
     return UserChatPromise.remove(userChatId: self.id)
   }
   
-  func feedback(rating: String) -> Observable<ChatResponse> {
-    return UserChatPromise.done(userChatId: self.id, rating: rating)
+  func close(closeMessageId: String) -> Observable<CHUserChat> {
+    return UserChatPromise.close(userChatId: self.id, formId: closeMessageId)
+  }
+  
+  func review(reviewMessageId: String, rating: ReviewType) -> Observable<CHUserChat> {
+    return UserChatPromise.review(userChatId: self.id, formId: reviewMessageId, rating: rating)
   }
   
   func read_all() {

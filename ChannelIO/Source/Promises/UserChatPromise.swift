@@ -115,42 +115,64 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func done(userChatId: String, rating: String) -> Observable<ChatResponse> {
+  static func close(userChatId: String, formId: String) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
-      var params: [String:[String:String]] = [:]
-      if rating != "" {
-        params = ["query": [
-          "review": rating
-        ]]
-      }
-      
-      Alamofire.request(RestRouter.DoneUserChat(
-          userChatId, params as RestRouter.ParametersType)
-        )
+      let params = ["query":["formId": formId]]
+      let req = Alamofire.request(RestRouter.CloseUserChat(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            guard let chatResponse = Mapper<ChatResponse>()
-              .map(JSONObject: json.object) else {
-                subscriber.onError(CHErrorPool.chatResponseParseError)
-                break
+            guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["userChat"].object) else {
+              subscriber.onError(CHErrorPool.userChatParseError)
+              break
             }
             
-            subscriber.onNext(chatResponse)
+            subscriber.onNext(userChat)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+      }
+      return Disposables.create {
+        req.cancel()
+      }
+    }
+  }
+  
+  static func review(userChatId: String, formId: String, rating: ReviewType) -> Observable<CHUserChat> {
+    return Observable.create { subscriber in
+      let params = [
+        "body":["review": rating.rawValue],
+        "query":["formId": formId]
+      ]
+      let req = Alamofire.request(RestRouter.ReviewUserChat(userChatId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
+        .responseJSON { response in
+          switch response.result {
+          case .success(let data):
+            let json = JSON(data)
+            guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["userChat"].object) else {
+              subscriber.onError(CHErrorPool.userChatParseError)
+              break
+            }
+            
+            subscriber.onNext(userChat)
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)
           }
         }
-      return Disposables.create()
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+      return Disposables.create {
+        req.cancel()
+      }
+    }
   }
-  
+
   static func remove(userChatId: String) -> Observable<Any?> {
     return Observable.create { subscriber in
-      Alamofire.request(RestRouter.RemoveUserChat(userChatId))
+      let req = Alamofire.request(RestRouter.RemoveUserChat(userChatId))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
           if response.response?.statusCode == 200 {
@@ -160,33 +182,9 @@ struct UserChatPromise {
             subscriber.onError(CHErrorPool.userChatRemoveError)
           }
         }
-      return Disposables.create()
-      }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
-  }
-  
-  @available(*, deprecated)
-  static func close(userChatId: String) -> Observable<ChatResponse> {
-    return Observable.create { subscriber in
-      Alamofire.request(RestRouter.CloseUserChat(userChatId))
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
-          switch response.result {
-          case .success(let data):
-            let json = JSON(data)
-            guard let chatResponse = Mapper<ChatResponse>()
-              .map(JSONObject: json.object) else {
-              subscriber.onError(CHErrorPool.chatResponseParseError)
-              break
-            }
-            
-            subscriber.onNext(chatResponse)
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(error)
-          }
-          
-        })
-      return Disposables.create()
+      return Disposables.create {
+        req.cancel()
+      }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   

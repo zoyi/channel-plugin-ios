@@ -16,6 +16,8 @@ enum FormOptionKey: String {
 enum FormType : String {
   case select
   case button
+  case chatSolve
+  case chatClose
 }
 
 struct CHForm {

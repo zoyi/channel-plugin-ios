@@ -391,13 +391,13 @@ extension UserChatInteractor {
   }
   
   func sendFeedback(rating: String) {
-    self.userChat?.feedback(rating: rating)
-      .observeOn(MainScheduler.instance)
-      .subscribe (onNext: { (response) in
-        mainStore.dispatch(GetUserChat(payload: response))
-        let chat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-        self.chatEventSubject.onNext(.chat(obj: chat))
-      }).disposed(by: self.disposeBag)
+//    self.userChat?.feedback(rating: rating)
+//      .observeOn(MainScheduler.instance)
+//      .subscribe (onNext: { (response) in
+//        mainStore.dispatch(GetUserChat(payload: response))
+//        let chat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
+//        self.chatEventSubject.onNext(.chat(obj: chat))
+//      }).disposed(by: self.disposeBag)
   }
 }
 

@@ -24,14 +24,16 @@ enum MessageType {
   case UserInfoDialog
   case NewAlertMessage
   case UserMessage
-  case SatisfactionFeedback
-  case SatisfactionCompleted
+//  case SatisfactionFeedback
+//  case SatisfactionCompleted
   case Log
   case WebPage
   case Media
   case File
   case Profile
   case Form
+  case ChatSolve
+  case ChatClose
 }
 
 enum CHMessageTranslateState {

@@ -31,12 +31,12 @@ struct LocalMessageFactory {
         return [msg] + messages
       }
       return messages
-    case .SatisfactionFeedback:
-      let msg = feedBack()
-      return [msg] + messages
-    case .SatisfactionCompleted:
-      let msg = feedbackCompleted()
-      return [msg] + messages
+//    case .SatisfactionFeedback:
+//      let msg = feedBack()
+//      return [msg] + messages
+//    case .SatisfactionCompleted:
+//      let msg = feedbackCompleted()
+//      return [msg] + messages
     default:
       return messages
     }

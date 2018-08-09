@@ -47,13 +47,13 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
       userChat: nil
     )
     return state?.upsert(messages: [msg.first!]) ?? MessagesState()
-  case _ as CreateFeedback:
-    let msg = LocalMessageFactory.generate(type: .SatisfactionFeedback)
-    return state?.upsert(messages: msg) ?? MessagesState()
-  case _ as CreateCompletedFeedback:
-    let msg = LocalMessageFactory.generate(type: .SatisfactionCompleted)
-    _ = state?.remove(userChatId: "feedback_dummy")
-    return state?.upsert(messages: msg) ?? MessagesState()
+//  case _ as CreateFeedback:
+//    let msg = LocalMessageFactory.generate(type: .SatisfactionFeedback)
+//    return state?.upsert(messages: msg) ?? MessagesState()
+//  case _ as CreateCompletedFeedback:
+//    let msg = LocalMessageFactory.generate(type: .SatisfactionCompleted)
+//    _ = state?.remove(userChatId: "feedback_dummy")
+//    return state?.upsert(messages: msg) ?? MessagesState()
   case let action as GetPush:
     guard let msg = action.payload.message else {
       return state ?? MessagesState()

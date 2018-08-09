@@ -501,11 +501,23 @@ extension ChatManager {
     }
   }
   
-  func didProvideFeedback(with rating: String) {
-    self.chat?.feedback(rating: rating)
+  func onClickCloseChat() {
+    self.chat?.close(closeMessageId: "")
       .observeOn(MainScheduler.instance)
-      .subscribe (onNext: { (response) in
-        mainStore.dispatch(GetUserChat(payload: response))
+      .subscribe(onNext: { (chat) in
+        mainStore.dispatch(UpdateUserChat(payload: chat))
+      }, onError: { (error) in
+        
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func didProvideFeedback(with rating: String) {
+    self.chat?.review(reviewMessageId: "", rating: .like)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (chat) in
+        mainStore.dispatch(UpdateUserChat(payload: chat))
+      }, onError: { (error) in
+        
       }).disposed(by: self.disposeBag)
   }
   

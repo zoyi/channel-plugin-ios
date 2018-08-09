@@ -163,8 +163,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: MessageCell.self)
     self.tableView.register(cellType: NewMessageDividerCell.self)
     self.tableView.register(cellType: DateCell.self)
-    self.tableView.register(cellType: SatisfactionFeedbackCell.self)
-    self.tableView.register(cellType: SatisfactionCompleteCell.self)
+//    self.tableView.register(cellType: SatisfactionFeedbackCell.self)
+//    self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
     self.tableView.register(cellType: WatermarkCell.self)
@@ -392,7 +392,7 @@ extension UserChatViewController: StoreSubscriber {
     
     self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
     self.updateInputFieldIfNeeded(userChat: self.userChat, nextUserChat: userChat)
-    self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
+    //self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     self.showErrorIfNeeded(state: state)
     
@@ -492,13 +492,13 @@ extension UserChatViewController: StoreSubscriber {
   func showFeedbackIfNeeded(_ userChat: CHUserChat?, lastMessage: CHMessage?) {
     guard let newUserChat = userChat else { return }
     //it only trigger once if previous state is following and new state is resolved
-    if newUserChat.isResolved() && !self.createdFeedback {
-      self.createdFeedback = true
-      mainStore.dispatch(CreateFeedback())
-    } else if newUserChat.isClosed() && !self.createdFeedbackComplete {
-      self.createdFeedbackComplete = true
-      mainStore.dispatch(CreateCompletedFeedback())
-    }
+//    if newUserChat.isResolved() && !self.createdFeedback {
+//      self.createdFeedback = true
+//      mainStore.dispatch(CreateFeedback())
+//    } else if newUserChat.isClosed() && !self.createdFeedbackComplete {
+//      self.createdFeedbackComplete = true
+//      mainStore.dispatch(CreateCompletedFeedback())
+//    }
   }
   
   func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
@@ -694,10 +694,10 @@ extension UserChatViewController {
       return DateCell.cellHeight()
     case .NewAlertMessage:
       return NewMessageDividerCell.cellHeight()
-    case .SatisfactionFeedback:
-      return SatisfactionFeedbackCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //158 + 16
-    case .SatisfactionCompleted:
-      return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
+//    case .SatisfactionFeedback:
+//      return SatisfactionFeedbackCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //158 + 16
+//    case .SatisfactionCompleted:
+//      return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
     case .Log:
       return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
     case .Media:
@@ -776,18 +776,18 @@ extension UserChatViewController {
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
       return cell
-    case .SatisfactionFeedback:
-      let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.signalForFeedback()
-        .subscribe(onNext: { [weak self] (rating) in
-          self?.chatManager?.didProvideFeedback(with: rating)
-        }).disposed(by: self.disposeBag)
-      return cell
-    case .SatisfactionCompleted:
-      let cell: SatisfactionCompleteCell = tableView.dequeueReusableCell(for: indexPath)
-      let chat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-      cell.configure(review: chat?.review, duration: chat?.resolutionTime)
-      return cell
+//    case .SatisfactionFeedback:
+//      let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
+//      cell.signalForFeedback()
+//        .subscribe(onNext: { [weak self] (rating) in
+//          self?.chatManager?.didProvideFeedback(with: rating)
+//        }).disposed(by: self.disposeBag)
+//      return cell
+//    case .SatisfactionCompleted:
+//      let cell: SatisfactionCompleteCell = tableView.dequeueReusableCell(for: indexPath)
+//      let chat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
+//      cell.configure(review: chat?.review, duration: chat?.resolutionTime)
+//      return cell
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.presenter = self.chatManager
@@ -825,6 +825,19 @@ extension UserChatViewController {
       if viewModel.shouldDisplayForm {
         let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
+        cell.actionView.observeAction().subscribe(onNext: { [weak self] (key, value) in
+          //
+          if let type = viewModel.message.form?.type {
+            if type == .chatSolve {
+              
+            } else if type == .chatClose {
+              
+            } else {
+               self?.chatManager.submitForm(originId: viewModel.message.id, key: key, value: value)
+            }
+          }
+         
+        }).disposed(by: self.disposeBag)
         return cell
       }
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)

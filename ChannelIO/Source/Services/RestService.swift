@@ -32,9 +32,9 @@ enum RestRouter: URLRequestConvertible {
   case GetUserChats(ParametersType)
   case CreateUserChat(String, ParametersType)
   case GetUserChat(String)
-  case CloseUserChat(String)
   case RemoveUserChat(String)
-  case DoneUserChat(String, ParametersType)
+  case CloseUserChat(String, ParametersType)
+  case ReviewUserChat(String, ParametersType)
   case GetMessages(String, ParametersType)
   case CreateMessage(String, ParametersType)
   case UploadFile(String, ParametersType)
@@ -91,8 +91,7 @@ enum RestRouter: URLRequestConvertible {
          .GetPlugin, .Translate:
       return .get
     case .UpdateGuest, .SetMessagesReadAll,
-         .CloseUserChat, .RemoveUserChat,
-         .DoneUserChat:
+         .RemoveUserChat,.CloseUserChat, .ReviewUserChat:
       return .put
     case .UnregisterToken:
       return .delete
@@ -126,12 +125,12 @@ enum RestRouter: URLRequestConvertible {
       return "/app/plugins/\(pluginId)/user_chats"
     case .GetUserChat(let userChatId):
       return "/app/user_chats/\(userChatId)"
-    case .CloseUserChat(let userChatId):
-      return "/app/user_chats/\(userChatId)/close"
     case .RemoveUserChat(let userChatId):
       return "/app/user_chats/\(userChatId)/remove"
-    case .DoneUserChat(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/done"
+    case .CloseUserChat(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/close"
+    case .ReviewUserChat(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/review"
     case .GetMessages(let userChatId, _):
       return "/app/user_chats/\(userChatId)/messages"
     case .CreateMessage(let userChatId, _):
@@ -223,12 +222,13 @@ enum RestRouter: URLRequestConvertible {
          .UpdateGuest(let params), .GetMessages(_, let params),
          .CreateMessage(_, let params), .UploadFile(_, let params),
          .GetUserChats(let params), .RegisterToken(let params),
-         .DoneUserChat(_, let params),
          .SendEvent(let params),
          .CreateUserChat(_, let params),
          .UpdateProfileItem(_, let params),
          .SubmitForm(_, let params),
-         .Translate(_, let params):
+         .Translate(_, let params),
+         .CloseUserChat(_, let params),
+         .ReviewUserChat(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetScripts, .GetScript,
