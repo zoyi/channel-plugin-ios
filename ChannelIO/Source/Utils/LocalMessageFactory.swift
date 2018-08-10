@@ -9,7 +9,6 @@
 import UIKit
 
 struct LocalMessageFactory {
-  
   static func generate(
     type: MessageType,
     messages: [CHMessage] = [],
@@ -31,12 +30,6 @@ struct LocalMessageFactory {
         return [msg] + messages
       }
       return messages
-//    case .SatisfactionFeedback:
-//      let msg = feedBack()
-//      return [msg] + messages
-//    case .SatisfactionCompleted:
-//      let msg = feedbackCompleted()
-//      return [msg] + messages
     default:
       return messages
     }
@@ -122,26 +115,6 @@ struct LocalMessageFactory {
 
   private static func getUserMessage(msg: String, userChat: CHUserChat?) -> CHMessage {
     return CHMessage(chatId:userChat?.id ?? "dummy", message:msg, type: .UserMessage)
-  }
-  
-  private static func feedBack() -> CHMessage {
-    let date = Calendar.current.date(byAdding: .second, value: 100, to: Date())
-    return CHMessage(
-      chatId: "feedback_dummy",
-      message: "",
-      type: .SatisfactionFeedback,
-      createdAt: date,
-      id: "feedback_dummy")
-  }
-  
-  private static func feedbackCompleted() -> CHMessage {
-    let date = Calendar.current.date(byAdding: .second, value: 100, to: Date())
-    return CHMessage(
-      chatId: "completed_dummy",
-      message: "",
-      type: .SatisfactionCompleted,
-      createdAt: date,
-      id: "feedback_dummy")
   }
 }
 

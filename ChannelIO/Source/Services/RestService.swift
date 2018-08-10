@@ -194,11 +194,11 @@ enum RestRouter: URLRequestConvertible {
     }
     
     if let url = parameters?["url"] as? ParametersType {
-      request = try URLEncoding.default.encode(urlRequest, with: url)
+      request = try URLEncoding.default.encode(request, with: url)
     }
     
     if let query = parameters?["query"] as? ParametersType {
-      request = try CustomQueryEncoding().encode(urlRequest, with: query)
+      request = try CustomQueryEncoding().encode(request, with: query)
     }
     
     if let paths = parameters?["paths"] as? [String] {

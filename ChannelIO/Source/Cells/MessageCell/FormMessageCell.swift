@@ -22,6 +22,11 @@ class FormMessageCell: MessageCell {
     super.initialize()
     self.contentView.superview?.clipsToBounds = false
     self.contentView.addSubview(self.actionView)
+    
+    self.actionView.observeAction()
+      .subscribe(onNext: { [weak self] (key, value) in
+        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+      }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {

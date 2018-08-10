@@ -28,8 +28,11 @@ struct UserChatPromise {
       if since != nil {
         params["query"]?["since"] = since
       }
+
       if showCompleted {
-        params["query"]?["states"] = ["open","ready","following","resolved","closed"]
+        params["query"]?["states"] = ["open","ready","following","holding","solved","closed"]
+      } else {
+        params["query"]?["states"] = ["open","ready","following","holding","solved"]
       }
       
       Alamofire.request(RestRouter.GetUserChats(params as RestRouter.ParametersType))
@@ -144,9 +147,10 @@ struct UserChatPromise {
   static func review(userChatId: String, formId: String, rating: ReviewType) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
       let params = [
-        "body":["review": rating.rawValue],
+        "url":["review": rating.rawValue],
         "query":["formId": formId]
       ]
+      
       let req = Alamofire.request(RestRouter.ReviewUserChat(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
@@ -163,7 +167,7 @@ struct UserChatPromise {
           case .failure(let error):
             subscriber.onError(error)
           }
-        }
+      }
       return Disposables.create {
         req.cancel()
       }

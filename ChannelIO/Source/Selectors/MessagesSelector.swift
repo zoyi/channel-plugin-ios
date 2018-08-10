@@ -10,6 +10,8 @@ import Foundation
 import ReSwift
 
 func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
+  guard let userChatId = userChatId else { return [] }
+  
   let messages: [CHMessage] = state.messagesState
     .findBy(userChatId: userChatId)
     .map({
@@ -51,7 +53,9 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
     userChat: nil)
 }
 
-func messageSelector(state: AppState, id: String) -> CHMessage? {
+func messageSelector(state: AppState, id: String?) -> CHMessage? {
+  guard let id = id else { return nil }
+  
   let message: CHMessage! = state.messagesState
     .findBy(id: id)
     .map({

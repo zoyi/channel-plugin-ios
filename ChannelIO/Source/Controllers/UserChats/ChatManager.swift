@@ -235,7 +235,7 @@ extension ChatManager {
 }
 
 extension ChatManager {
-  func sendMessage(userChatId: String, text: String, originId: String? = nil, key: String? = nil) -> Observable<CHMessage?> {
+  func sendMessage(userChatId: String, text: String, originId: String? = nil, key: String? = nil, local: Bool = false) -> Observable<CHMessage?> {
     return Observable.create({ (subscriber) in
       let me = mainStore.state.guest
       var message = CHMessage(chatId: userChatId, guest: me, message: text)
@@ -244,6 +244,10 @@ extension ChatManager {
       }
       
       mainStore.dispatch(CreateMessage(payload: message))
+      
+      if local {
+        return Disposables.create()
+      }
       
       let signal = message.send().subscribe(onNext: { [weak self] (updated) in
         dlog("Message has been sent successfully")
@@ -330,15 +334,40 @@ extension ChatManager {
     }
   }
   
-  func submitForm(originId: String?, key: String?, value: String?) {
-    guard let originId = originId, let key = key, let value = value else { return }
-
-    self.sendMessage(userChatId: self.chatId, text: value, originId: originId, key: key)
-      .subscribe(onNext: { (message) in
-      
-    }, onError: { (error) in
-      
-    }).disposed(by: self.disposeBag)
+  func onClickFormOption(originId: String?, key: String?, value: String?) {
+    guard let origin = messageSelector(state: mainStore.state, id: originId),
+      let key = key, let value = value else { return }
+    
+    if let type = origin.form?.type {
+      if type == .solve && key == "close" {
+        UserChatPromise.close(userChatId: self.chatId, formId: origin.id)
+          .subscribe(onNext: { (chat) in
+            mainStore.dispatch(UpdateUserChat(payload:chat))
+          }, onError: { (error) in
+          
+          }).disposed(by: self.disposeBag)
+      } else if type == .solve && key == "reopen" {
+        self.sendMessage(userChatId: self.chatId, text: value, local: true).subscribe().disposed(by: self.disposeBag)
+        if var updatedChat = userChatSelector(state: mainStore.state, userChatId: self.chatId) {
+          updatedChat.state = "following"
+          mainStore.dispatch(UpdateUserChat(payload: updatedChat))
+        }
+      } else if type == .close {
+        UserChatPromise.review(userChatId: self.chatId, formId: origin.id, rating: ReviewType(rawValue: key)!)
+          .subscribe(onNext: { (chat) in
+            mainStore.dispatch(UpdateUserChat(payload:chat))
+          }, onError: { (error) in
+            
+          }).disposed(by: self.disposeBag)
+      } else if type == .select {
+        self.sendMessage(userChatId: self.chatId, text: value, originId: origin.id, key: key)
+          .subscribe(onNext: { (message) in
+            
+          }, onError: { (error) in
+            
+          }).disposed(by: self.disposeBag)
+      }
+    }
   }
 }
 

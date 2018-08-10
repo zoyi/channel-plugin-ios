@@ -161,15 +161,11 @@ extension CHUserChat {
 
 extension CHUserChat {
   func isActive() -> Bool {
-    return self.state != "closed" && self.state != "resolved" && self.state != "removed"
+    return self.state != "closed" && self.state != "solved" && self.state != "removed"
   }
   
   func isClosed() -> Bool {
     return self.state == "closed"
-  }
-  
-  func isResolved() -> Bool {
-    return self.state == "resolved"
   }
   
   func isRemoved() -> Bool {
@@ -177,7 +173,7 @@ extension CHUserChat {
   }
   
   func isCompleted() -> Bool {
-    return self.state == "closed" || self.state == "resolved" || self.state == "removed"
+    return self.state == "closed" || self.state == "solved" || self.state == "removed"
   }
   
   func isReadyOrOpen() -> Bool {
@@ -189,7 +185,7 @@ extension CHUserChat {
   }
   
   func isEngaged() -> Bool {
-    return self.state == "resolved" || self.state == "closed" || self.state == "following"
+    return self.state == "solved" || self.state == "closed" || self.state == "following"
   }
 }
 

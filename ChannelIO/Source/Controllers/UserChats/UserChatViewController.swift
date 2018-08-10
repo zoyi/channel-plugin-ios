@@ -59,6 +59,26 @@ final class UserChatViewController: BaseSLKTextViewController {
   var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
+  var newChatButton = UIButton(type: .system).then {
+    $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
+    $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
+    $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
+    $0.tintColor = mainStore.state.plugin.textUIColor
+    
+    $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 20)
+    $0.imageEdgeInsets = UIEdgeInsets(top:0, left: -14, bottom: 0, right: 0)
+    
+    $0.backgroundColor = UIColor(mainStore.state.plugin.color)
+    
+    $0.layer.borderColor = UIColor(mainStore.state.plugin.borderColor)?.cgColor
+    $0.layer.cornerRadius = 23
+    $0.layer.shadowColor = CHColors.dark.cgColor
+    $0.layer.shadowOpacity = 0.2
+    $0.layer.shadowOffset = CGSize(width: 0, height: 2)
+    $0.layer.shadowRadius = 3
+    $0.layer.borderWidth = 1
+    $0.isHidden = true
+  }
   
   var typingCell: TypingIndicatorCell!
   var profileCell: ProfileCell!
@@ -95,6 +115,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initTableView()
     self.initInputViews()
     self.initViews()
+    self.initNewChatButton()
     
     //new user chat
     if self.userChatId == nil {
@@ -122,6 +143,25 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.chatManager.viewController = self
     self.chatManager.delegate = self
     self.chatManager.prepareToChat()
+  }
+  
+  fileprivate func initNewChatButton() {
+    self.view.addSubview(self.newChatButton)
+    self.newChatButton.signalForClick()
+      .subscribe(onNext: { [weak self] (_) in
+        mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+        self?.newChatSubject.onNext(nil)
+      }).disposed(by: self.disposeBag)
+    
+    self.newChatButton.snp.makeConstraints { [weak self] (make) in
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15)
+      } else {
+        make.bottom.equalToSuperview().inset(15)
+      }
+      make.centerX.equalToSuperview()
+      make.height.equalTo(46)
+    }
   }
   
   // MARK: - Helper methods
@@ -163,8 +203,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: MessageCell.self)
     self.tableView.register(cellType: NewMessageDividerCell.self)
     self.tableView.register(cellType: DateCell.self)
-//    self.tableView.register(cellType: SatisfactionFeedbackCell.self)
-//    self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
     self.tableView.register(cellType: WatermarkCell.self)
@@ -392,7 +430,6 @@ extension UserChatViewController: StoreSubscriber {
     
     self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
     self.updateInputFieldIfNeeded(userChat: self.userChat, nextUserChat: userChat)
-    //self.showFeedbackIfNeeded(userChat, lastMessage: messages.first)
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     self.showErrorIfNeeded(state: state)
     
@@ -458,23 +495,12 @@ extension UserChatViewController: StoreSubscriber {
     let channel = mainStore.state.channel
 
     if nextUserChat?.isCompleted() == true {
-      self.textInputbar.barState = .disabled
-      self.textInputbar.hideLeftButton()
-      self.alwaysEnableRightButton = true
-      self.rightButton.setImage(nil, for: .normal)
-      self.rightButton.setImage(nil, for: .disabled)
-      self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
-      self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
-      self.textView.placeholder = nextUserChat?.isRemoved() == true ?
-        CHAssets.localized("ch.chat.removed.title") :
-        CHAssets.localized("ch.review.complete.title")
-      self.textView.isEditable = false
-    } else if (!self.channel.allowNewChat && !channel.allowNewChat) &&
-      self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
-      self.textInputbar.barState = .disabled
-      self.textInputbar.hideAllButtons()
-      self.textView.isEditable = false
-      self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder.disabled_new_chat")
+      self.setTextInputbarHidden(true, animated: false)
+      self.adjustBottomMargin(60)
+      self.newChatButton.isHidden = false
+    } else if (!channel.allowNewChat && !self.channel.allowNewChat) && self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
+      self.setTextInputbarHidden(true, animated: false)
+      self.newChatButton.isHidden = true
     } else if !self.chatManager.profileIsFocus {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
@@ -486,19 +512,10 @@ extension UserChatViewController: StoreSubscriber {
       
       self.textView.isEditable = true
       self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
+      self.setTextInputbarHidden(false, animated: false)
+      self.adjustBottomMargin(0)
+      self.newChatButton.isHidden = true
     }
-  }
-  
-  func showFeedbackIfNeeded(_ userChat: CHUserChat?, lastMessage: CHMessage?) {
-    guard let newUserChat = userChat else { return }
-    //it only trigger once if previous state is following and new state is resolved
-//    if newUserChat.isResolved() && !self.createdFeedback {
-//      self.createdFeedback = true
-//      mainStore.dispatch(CreateFeedback())
-//    } else if newUserChat.isClosed() && !self.createdFeedbackComplete {
-//      self.createdFeedbackComplete = true
-//      mainStore.dispatch(CreateCompletedFeedback())
-//    }
   }
   
   func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
@@ -611,9 +628,6 @@ extension UserChatViewController {
       }, onError: { [weak self] (error) in
         self?.chatManager.state = .chatNotLoaded
       }).disposed(by: self.disposeBag)
-    } else {
-      mainStore.dispatch(RemoveMessages(payload: userChatId))
-      self.newChatSubject.onNext(self.textView.text)
     }
     
     self.shyNavBarManager.contract(true)
@@ -694,10 +708,6 @@ extension UserChatViewController {
       return DateCell.cellHeight()
     case .NewAlertMessage:
       return NewMessageDividerCell.cellHeight()
-//    case .SatisfactionFeedback:
-//      return SatisfactionFeedbackCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //158 + 16
-//    case .SatisfactionCompleted:
-//      return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
     case .Log:
       return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
     case .Media:
@@ -776,18 +786,6 @@ extension UserChatViewController {
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
       return cell
-//    case .SatisfactionFeedback:
-//      let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
-//      cell.signalForFeedback()
-//        .subscribe(onNext: { [weak self] (rating) in
-//          self?.chatManager?.didProvideFeedback(with: rating)
-//        }).disposed(by: self.disposeBag)
-//      return cell
-//    case .SatisfactionCompleted:
-//      let cell: SatisfactionCompleteCell = tableView.dequeueReusableCell(for: indexPath)
-//      let chat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-//      cell.configure(review: chat?.review, duration: chat?.resolutionTime)
-//      return cell
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.presenter = self.chatManager
@@ -825,19 +823,6 @@ extension UserChatViewController {
       if viewModel.shouldDisplayForm {
         let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
-        cell.actionView.observeAction().subscribe(onNext: { [weak self] (key, value) in
-          //
-          if let type = viewModel.message.form?.type {
-            if type == .chatSolve {
-              
-            } else if type == .chatClose {
-              
-            } else {
-               self?.chatManager.submitForm(originId: viewModel.message.id, key: key, value: value)
-            }
-          }
-         
-        }).disposed(by: self.disposeBag)
         return cell
       }
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)

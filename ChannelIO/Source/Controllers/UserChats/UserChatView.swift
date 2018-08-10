@@ -127,8 +127,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     self.tableView.register(cellType: MessageCell.self)
     self.tableView.register(cellType: NewMessageDividerCell.self)
     self.tableView.register(cellType: DateCell.self)
-//    self.tableView.register(cellType: SatisfactionFeedbackCell.self)
-//    self.tableView.register(cellType: SatisfactionCompleteCell.self)
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
     self.tableView.register(cellType: WatermarkCell.self)
@@ -491,10 +489,6 @@ extension UserChatView {
       return DateCell.cellHeight()
     case .NewAlertMessage:
       return NewMessageDividerCell.cellHeight()
-    case .SatisfactionFeedback:
-      return SatisfactionFeedbackCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //158 + 16
-    case .SatisfactionCompleted:
-      return SatisfactionCompleteCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) //104 + 16
     case .Log:
       return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
    case .Media:
@@ -564,17 +558,6 @@ extension UserChatView {
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
       return cell
-//    case .SatisfactionFeedback:
-//      let cell: SatisfactionFeedbackCell = tableView.dequeueReusableCell(for: indexPath)
-//      cell.signalForFeedback().subscribe(onNext: { [weak self] (response) in
-//        self?.presenter?.didClickOnFeedback(rating: response, from: self)
-//      }).disposed(by: self.disposeBag)
-//      return cell
-//    case .SatisfactionCompleted:
-//      let cell: SatisfactionCompleteCell = tableView.dequeueReusableCell(for: indexPath)
-//      let chat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-//      cell.configure(review: chat?.review, duration: chat?.resolutionTime)
-//      return cell
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel)

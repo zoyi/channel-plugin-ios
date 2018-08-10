@@ -67,7 +67,8 @@ class ActionButton: UIButton {
     self.titleLabel?.lineBreakMode = .byTruncatingTail
     self.titleLabel?.numberOfLines = 2
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-    self.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+    self.titleLabel?.font = input.value?.getMessage()?.containsOnlyEmoji == true ?
+      UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15)
     self.titleLabel?.preferredMaxLayoutWidth = Constant.maxWidth
     self.setTitleColor(CHColors.dark50, for: .normal)
  

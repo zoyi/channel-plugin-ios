@@ -29,17 +29,13 @@ struct UserChatCellModel: UserChatCellModelType {
   
   init(userChat: CHUserChat) {
     self.title = userChat.name
-    if userChat.state == "resolved" {
-      self.lastMessage = CHAssets.localized("ch.review.require.preview")
-    } else if userChat.state == "closed" {
-      self.lastMessage = CHAssets.localized("ch.review.complete.preview")
-    } else if let logMessage = userChat.lastMessage?.logMessage {
+    if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
       self.lastMessage = userChat.lastMessage?.messageV2?.string ?? ""
     }
 
-    self.timestamp = userChat.state == "resolved" ?
+    self.timestamp = userChat.state == "solved" ?
       (userChat.resolvedAt?.readableTimeStamp() ?? "") :
       userChat.readableUpdatedAt
     self.avatar = userChat.lastTalkedHost ?? mainStore.state.channel

@@ -138,7 +138,7 @@
 "ch.review.complete.preview" = "상담 리뷰가 완료되었습니다.";
 "ch.review.complete.time.hour" = "시간";
 "ch.review.complete.time.minute" = "분";
-"ch.chat.start_new_chat" = "새 대화 시작";
+"ch.chat.start_new_chat" = "새 대화하기";
 "ch.message_input.placeholder.disabled" = "상담이 완료되었습니다.";
 "ch.review.complete.resolution" = "상담시간:";
 "ch.review.title.preview" = "상담 리뷰하기";
