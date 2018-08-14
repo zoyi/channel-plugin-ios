@@ -146,7 +146,7 @@
 "ch.review.title.preview" = "問合せ評価";
 "ch.message.preview_close" = "閉じる";
 "ch.review.cancel" = "評価をキャンセルしました";
-"ch.log.resolved" = "問合せが完了しました";
+"ch.log.closed" = "問合せが完了しました";
 "ch.button_confirm" = "確認";
 "ch.error.description" = "データのロードに失敗しました\
 下のボタンを押して、ページを更新してください";

@@ -441,6 +441,10 @@ extension UserChatViewController: StoreSubscriber {
     self.userChat = userChat
     self.chatManager.chat = userChat
     self.channel = state.channel
+    
+//    let calculatedHeight = self.tableView.visibleCells.map({ $0.height }).reduce(0) { total, number in total + number }
+//    let maxHeight = UIScreen.main.bounds.height - 64 - 50
+//    self.tableView.contentInset = UIEdgeInsets(top: maxHeight - calculatedHeight, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
   }
 
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
@@ -496,7 +500,7 @@ extension UserChatViewController: StoreSubscriber {
 
     if nextUserChat?.isCompleted() == true {
       self.setTextInputbarHidden(true, animated: false)
-      self.adjustBottomMargin(60)
+      self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = false
     } else if (!channel.allowNewChat && !self.channel.allowNewChat) && self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.setTextInputbarHidden(true, animated: false)

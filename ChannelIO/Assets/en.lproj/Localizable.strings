@@ -144,7 +144,7 @@ Please rate our service.";
 "ch.review.title.preview" = "Review";
 "ch.message.preview_close" = "Close";
 "ch.review.cancel" = "Canceled Review.";
-"ch.log.resolved" = "The chat is now resolved.";
+"ch.log.closed" = "The chat is now closed.";
 "ch.button_confirm" = "Confirm";
 "ch.error.description" = "Failed to load data.\
 Press the button below to refresh.";

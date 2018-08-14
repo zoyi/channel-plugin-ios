@@ -144,7 +144,7 @@
 "ch.review.title.preview" = "상담 리뷰하기";
 "ch.message.preview_close" = "닫기";
 "ch.review.cancel" = "리뷰를 취소하였습니다.";
-"ch.log.resolved" = "상담이 완료되었습니다.";
+"ch.log.closed" = "상담이 완료되었습니다.";
 "ch.button_confirm" = "확인";
 "ch.error.description" = "데이터를 불러오는데 실패했습니다.\
 아래 버튼을 눌러 새로고침 해주세요.";

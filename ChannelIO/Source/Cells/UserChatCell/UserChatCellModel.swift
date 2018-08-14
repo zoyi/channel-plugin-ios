@@ -29,7 +29,9 @@ struct UserChatCellModel: UserChatCellModelType {
   
   init(userChat: CHUserChat) {
     self.title = userChat.name
-    if let logMessage = userChat.lastMessage?.logMessage {
+    if userChat.state == "closed" {
+      self.lastMessage = CHAssets.localized("ch.review.complete.preview")
+    } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
       self.lastMessage = userChat.lastMessage?.messageV2?.string ?? ""
