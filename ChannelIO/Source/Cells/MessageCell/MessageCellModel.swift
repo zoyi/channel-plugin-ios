@@ -80,7 +80,7 @@ struct MessageCellModel: MessageCellModelType {
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
-    let isContinuous = message.isContinue(previous: previous) && previous?.form == nil
+    let isContinuous = message.isContinue(previous: previous) && previous?.form == nil && message.form == nil
     let clipType = MessageCellModel.getClipType(message: message)
     let createdByMe = message.entity is CHUser || message.entity is CHVeil
 

@@ -4,3 +4,6 @@ Example/ObjectiveC_Example/Pods
 Example/ObjectiveC_Example/Podfile.lock
 Example/Swift_Example/Carthage
 Example/ObjectiveC_Example/Carthage
+ChannelIO.xcworkspace/xcuserdata/haeunchung.xcuserdatad/*
+Example/Swift_Example/Channel Plugin Sample.xcworkspace/xcuserdata/*
+Example/ObjectiveC_Example/Channel Plugin Sample objc.xcworkspace/xcuredata/*

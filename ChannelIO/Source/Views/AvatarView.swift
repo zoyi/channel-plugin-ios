@@ -122,6 +122,6 @@ class AvatarView: NeverClearView {
   override func layoutSubviews() {
     super.layoutSubviews()
     self.layer.cornerRadius = !self.showOnline ? self.frame.size.height / 2 : 0
-    self.avatarImageView.layer.cornerRadius = self.frame.size.height / 2
+    self.avatarImageView.layer.cornerRadius = (self.frame.size.height - 2) / 2
   }
 }

@@ -29,7 +29,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     static let messageLeftMinMargin = 107.f
     static let messageRightMinMargin = 74.f
     static let messageTop = 4.f
-    static let avatarWidth = 24.f
+    static let avatarWidth = 26.f
     static let avatarRightPadding = 6.f
     static let bubbleLeftMargin = 40.f
     static let usernameHeight = 16.f
@@ -44,7 +44,7 @@ class MessageCell: BaseTableViewCell, Reusable {
   let avatarView = AvatarView().then {
     $0.showBorder = false
     $0.showOnline = false
-    $0.layer.cornerRadius = 12.f
+    $0.layer.cornerRadius = 13.f
   }
   
   let usernameLabel = UILabel().then {

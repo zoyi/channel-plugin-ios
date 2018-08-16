@@ -18,6 +18,7 @@ enum ActionAlignment {
 
 typealias SubmitForm = (String, String)
 
+//make it more user friendly with uicontrol
 class ActionButton: UIButton {
   var value: CHi18n? = nil
   var key: String = ""
