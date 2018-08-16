@@ -118,7 +118,7 @@ struct MessageCellModel: MessageCellModelType {
     self.totalCount = self.profileItems.count //max 4
     
     //form : select
-    self.shouldDisplayForm = message.form != nil && indexPath?.row == 0
+    self.shouldDisplayForm = message.form != nil && indexPath?.row == 0 && message.form?.closed == false
     
     self.showTranslation =
       message.language != "" &&

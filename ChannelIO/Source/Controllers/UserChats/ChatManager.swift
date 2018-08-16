@@ -335,7 +335,7 @@ extension ChatManager {
   }
   
   func onClickFormOption(originId: String?, key: String?, value: String?) {
-    guard let origin = messageSelector(state: mainStore.state, id: originId),
+    guard var origin = messageSelector(state: mainStore.state, id: originId),
       let key = key, let value = value else { return }
     
     if let type = origin.form?.type {
@@ -347,7 +347,8 @@ extension ChatManager {
           
           }).disposed(by: self.disposeBag)
       } else if type == .solve && key == "reopen" {
-        self.sendMessage(userChatId: self.chatId, text: value, local: true).subscribe().disposed(by: self.disposeBag)
+        origin.form?.closed = true
+        mainStore.dispatch(UpdateMessage(payload: origin))
         if var updatedChat = userChatSelector(state: mainStore.state, userChatId: self.chatId) {
           updatedChat.state = "following"
           mainStore.dispatch(UpdateUserChat(payload: updatedChat))

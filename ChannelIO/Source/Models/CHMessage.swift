@@ -495,5 +495,6 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
     lhs.state == rhs.state &&
     lhs.webPage == rhs.webPage &&
     lhs.message == rhs.message &&
-    lhs.translateState == rhs.translateState
+    lhs.translateState == rhs.translateState &&
+    lhs.form?.closed == rhs.form?.closed
 }

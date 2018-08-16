@@ -498,10 +498,12 @@ extension UserChatViewController: StoreSubscriber {
   func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
-    if nextUserChat?.isCompleted() == true {
+    if nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = false
+    } else if nextUserChat?.isSolved() == true {
+      self.setTextInputbarHidden(true, animated: false)
     } else if (!channel.allowNewChat && !self.channel.allowNewChat) && self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.setTextInputbarHidden(true, animated: false)
       self.newChatButton.isHidden = true
@@ -517,8 +519,6 @@ extension UserChatViewController: StoreSubscriber {
       self.textView.isEditable = true
       self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
       self.setTextInputbarHidden(false, animated: false)
-      self.adjustBottomMargin(0)
-      self.newChatButton.isHidden = true
     }
   }
   

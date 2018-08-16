@@ -172,6 +172,10 @@ extension CHUserChat {
     return self.state == "removed"
   }
   
+  func isSolved() -> Bool {
+    return self.state == "solved"
+  }
+  
   func isCompleted() -> Bool {
     return self.state == "closed" || self.state == "solved" || self.state == "removed"
   }
