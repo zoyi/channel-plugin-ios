@@ -162,19 +162,15 @@ struct PluginPromise {
             let json = SwiftyJSON.JSON(data)
             var result:[String: Any] = [String: Any]()
             
-            result["user"] = Mapper<CHUser>()
-              .map(JSONObject: json["user"].object)
-            result["veil"] = Mapper<CHVeil>()
-              .map(JSONObject: json["veil"].object)
+            result["user"] = Mapper<CHUser>().map(JSONObject: json["user"].object)
+            result["veil"] = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
             if result["user"] == nil && result["veil"] == nil {
               subscriber.onError(CHErrorPool.pluginParseError)
               break
             }
             
-            result["channel"] = Mapper<CHChannel>()
-              .map(JSONObject: json["channel"].object)
-            result["plugin"] = Mapper<CHPlugin>()
-              .map(JSONObject: json["plugin"].object)
+            result["channel"] = Mapper<CHChannel>().map(JSONObject: json["channel"].object)
+            result["plugin"] = Mapper<CHPlugin>().map(JSONObject: json["plugin"].object)
             if result["channel"] == nil || result["plugin"] == nil {
               subscriber.onError(CHErrorPool.pluginParseError)
               break

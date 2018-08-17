@@ -24,7 +24,7 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
   case let action as DeleteSession:
     return state?.remove(session: action.payload) ?? SessionsState()
   case _ as CheckOutSuccess:
-    return SessionsState()
+    return state?.clear() ?? SessionsState()
   default:
     return state ?? SessionsState()
   }

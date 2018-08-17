@@ -13,6 +13,8 @@ func countryCodeReducer(action: Action, state: CountryCodeState?) -> CountryCode
   switch action {
   case let action as GetCountryCodes:
     return state?.insert(codes: action.payload) ?? CountryCodeState()
+  case _  as CheckOutSuccess:
+    return state?.clear() ?? CountryCodeState()
   default:
     return state ?? CountryCodeState()
   }

@@ -53,8 +53,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     }
     return state?.upsert(messages: [msg]) ?? MessagesState()
   case _ as CheckOutSuccess:
-    state?.messageDictionary = [:]
-    return MessagesState()
+    return state?.clear() ?? MessagesState()
   default:
     return state ?? MessagesState()
   }

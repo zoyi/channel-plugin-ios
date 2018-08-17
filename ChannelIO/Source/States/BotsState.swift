@@ -35,4 +35,9 @@ struct BotsState: StateType {
     bots.forEach({ self.botDictionary[$0.id] = $0 })
     return self
   }
+  
+  mutating func clear() -> BotsState {
+    self.botDictionary.removeAll()
+    return self
+  }
 }

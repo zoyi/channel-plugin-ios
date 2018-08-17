@@ -31,4 +31,9 @@ struct SessionsState: StateType {
     sessions.forEach({ self.sessions[$0.id] = $0 })
     return self
   }
+  
+  mutating func clear() -> SessionsState {
+    self.sessions.removeAll()
+    return self
+  }
 }

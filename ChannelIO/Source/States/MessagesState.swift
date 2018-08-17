@@ -108,4 +108,10 @@ struct MessagesState: StateType {
     
     return self
   }
+  
+  mutating func clear() -> MessagesState {
+    self.messageDictionary.removeAll()
+    self.formQueue.removeAll()
+    return self
+  }
 }

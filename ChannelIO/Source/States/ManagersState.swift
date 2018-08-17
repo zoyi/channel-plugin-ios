@@ -36,4 +36,10 @@ struct ManagersState: StateType {
     return self
   }
   
+  mutating func clear() -> ManagersState {
+    self.managerDictionary.removeAll()
+    self.followingManagers.removeAll()
+    return self
+  }
+  
 }

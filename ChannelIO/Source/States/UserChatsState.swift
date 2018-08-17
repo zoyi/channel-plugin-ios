@@ -35,11 +35,11 @@ struct UserChatsState: StateType {
     return self
   }
   
-  mutating func removeAll() -> UserChatsState {
-    self.userChats = [:]
+  mutating func clear() -> UserChatsState {
+    self.userChats.removeAll()
     self.nextSeq = 0
     self.currentUserChatId = ""
-    self.lastMessages = [:]
+    self.lastMessages.removeAll()
     return self
   }
   

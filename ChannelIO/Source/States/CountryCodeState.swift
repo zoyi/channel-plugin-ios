@@ -15,4 +15,9 @@ struct CountryCodeState: StateType {
     self.codes = codes
     return self
   }
+  
+  mutating func clear() -> CountryCodeState {
+    self.codes.removeAll()
+    return self
+  }
 }

@@ -48,10 +48,8 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
       PrefStore.setVisibilityOfTranslation(on: show)
     }
     return state ?? UserChatsState()
-  case _ as CheckInSuccess:
-    return UserChatsState()
   case _ as CheckOutSuccess:
-    return UserChatsState()
+    return state?.clear() ?? UserChatsState()
   default:
     return state ?? UserChatsState()
   }
