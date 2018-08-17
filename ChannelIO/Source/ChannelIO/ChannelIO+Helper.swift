@@ -98,11 +98,11 @@ extension ChannelIO {
         
           ChannelIO.sendDefaultEvent(.boot)
           
-          WsService.shared.ready().subscribe(onNext: { _ in
+          WsService.shared.ready().take(1).subscribe(onNext: { _ in
             subscriber.onNext(data)
             subscriber.onCompleted()
           }).disposed(by: self.disposeBeg)
-          
+
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {

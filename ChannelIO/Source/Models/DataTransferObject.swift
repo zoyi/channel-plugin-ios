@@ -50,7 +50,7 @@ extension GeoIPInfo : Mappable {
   }
 }
 
-struct CHCountry {
+struct CHCountry: Codable {
   var name = ""
   var code = ""
   var dial = ""

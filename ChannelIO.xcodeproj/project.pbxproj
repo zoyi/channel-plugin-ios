@@ -69,6 +69,7 @@
 		655A280420B2699700935C1F /* CompleteActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655A27FB20B2699700935C1F /* CompleteActionView.swift */; };
 		655A280520B2699700935C1F /* ProfileTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655A27FC20B2699700935C1F /* ProfileTextView.swift */; };
 		655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655A27FD20B2699700935C1F /* ProfileExtendableView.swift */; };
+		655D89C92126754F00ACE89B /* emojis.json in Resources */ = {isa = PBXBuildFile; fileRef = 655D89C82126754E00ACE89B /* emojis.json */; };
 		656A8F381E72B4C000A8FE3B /* MessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05FB1E4EDA00001DE109 /* MessageTests.swift */; };
 		656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */; };
 		656C984E1FC6A3F10064F53E /* ChatStatusDefaultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984D1FC6A3F10064F53E /* ChatStatusDefaultView.swift */; };
@@ -121,7 +122,6 @@
 		659793561FA716CB00840F6A /* BaseSLKTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C31FA7167B00840F6A /* BaseSLKTextViewController.swift */; };
 		659793571FA716CB00840F6A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C41FA7167B00840F6A /* BaseViewController.swift */; };
 		659793581FA716CB00840F6A /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C51FA7167B00840F6A /* MainNavigationController.swift */; };
-		659793591FA716CB00840F6A /* ProfileEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C61FA7167B00840F6A /* ProfileEditViewController.swift */; };
 		6597935A1FA716CB00840F6A /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C71FA7167B00840F6A /* ProfileViewController.swift */; };
 		6597935B1FA716CB00840F6A /* UserChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C81FA7167B00840F6A /* UserChatsViewController.swift */; };
 		6597935C1FA716CB00840F6A /* UserChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C91FA7167B00840F6A /* UserChatViewController.swift */; };
@@ -223,7 +223,6 @@
 		65C4A75F1E49AC78006D7CD5 /* UserChatPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C4A75E1E49AC78006D7CD5 /* UserChatPromiseTests.swift */; };
 		65C4A7631E4AB3D0006D7CD5 /* ScriptPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C4A7621E4AB3D0006D7CD5 /* ScriptPromiseTests.swift */; };
 		65C4A7651E4AB3E4006D7CD5 /* GuestPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C4A7641E4AB3E4006D7CD5 /* GuestPromiseTests.swift */; };
-		65CB14022069190E00E456B5 /* emoji_map.json in Resources */ = {isa = PBXBuildFile; fileRef = 65CB14002069190D00E456B5 /* emoji_map.json */; };
 		65CB14032069190E00E456B5 /* ringtone.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 65CB14012069190E00E456B5 /* ringtone.mp3 */; };
 		65CB14052069E2B800E456B5 /* UserChatInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB14042069E2B800E456B5 /* UserChatInteractor.swift */; };
 		65CB14072069E41900E456B5 /* UserChatRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB14062069E41900E456B5 /* UserChatRouter.swift */; };
@@ -349,6 +348,7 @@
 		655A27FB20B2699700935C1F /* CompleteActionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompleteActionView.swift; sourceTree = "<group>"; };
 		655A27FC20B2699700935C1F /* ProfileTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileTextView.swift; sourceTree = "<group>"; };
 		655A27FD20B2699700935C1F /* ProfileExtendableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileExtendableView.swift; sourceTree = "<group>"; };
+		655D89C82126754E00ACE89B /* emojis.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = emojis.json; path = Assets/emojis.json; sourceTree = "<group>"; };
 		656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTitleView.swift; sourceTree = "<group>"; };
 		656C984D1FC6A3F10064F53E /* ChatStatusDefaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusDefaultView.swift; sourceTree = "<group>"; };
 		656C984F1FC6A4200064F53E /* ChatStatusFollowedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusFollowedView.swift; sourceTree = "<group>"; };
@@ -410,7 +410,6 @@
 		659792C31FA7167B00840F6A /* BaseSLKTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSLKTextViewController.swift; sourceTree = "<group>"; };
 		659792C41FA7167B00840F6A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		659792C51FA7167B00840F6A /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
-		659792C61FA7167B00840F6A /* ProfileEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditViewController.swift; sourceTree = "<group>"; };
 		659792C71FA7167B00840F6A /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		659792C81FA7167B00840F6A /* UserChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatsViewController.swift; sourceTree = "<group>"; };
 		659792C91FA7167B00840F6A /* UserChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatViewController.swift; sourceTree = "<group>"; };
@@ -502,7 +501,6 @@
 		65C4A75E1E49AC78006D7CD5 /* UserChatPromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatPromiseTests.swift; sourceTree = "<group>"; };
 		65C4A7621E4AB3D0006D7CD5 /* ScriptPromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptPromiseTests.swift; sourceTree = "<group>"; };
 		65C4A7641E4AB3E4006D7CD5 /* GuestPromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuestPromiseTests.swift; sourceTree = "<group>"; };
-		65CB14002069190D00E456B5 /* emoji_map.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = emoji_map.json; path = Assets/emoji_map.json; sourceTree = "<group>"; };
 		65CB14012069190E00E456B5 /* ringtone.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = ringtone.mp3; path = Assets/ringtone.mp3; sourceTree = "<group>"; };
 		65CB14042069E2B800E456B5 /* UserChatInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatInteractor.swift; sourceTree = "<group>"; };
 		65CB14062069E41900E456B5 /* UserChatRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatRouter.swift; sourceTree = "<group>"; };
@@ -710,7 +708,7 @@
 			isa = PBXGroup;
 			children = (
 				22AE76B820E347C700C18355 /* mute.caf */,
-				65CB14002069190D00E456B5 /* emoji_map.json */,
+				655D89C82126754E00ACE89B /* emojis.json */,
 				65CB14012069190E00E456B5 /* ringtone.mp3 */,
 				652AE2131E81485D00B7484C /* Localizable.strings */,
 				650D7C311E716DBF007DE358 /* countryInfo.json */,
@@ -895,7 +893,6 @@
 				659792C31FA7167B00840F6A /* BaseSLKTextViewController.swift */,
 				659792C41FA7167B00840F6A /* BaseViewController.swift */,
 				659792C51FA7167B00840F6A /* MainNavigationController.swift */,
-				659792C61FA7167B00840F6A /* ProfileEditViewController.swift */,
 				659792C71FA7167B00840F6A /* ProfileViewController.swift */,
 				659792C81FA7167B00840F6A /* UserChatsViewController.swift */,
 				6549CFAF207B691C000091D2 /* LanguageOptionViewController.swift */,
@@ -1272,11 +1269,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				655D89C92126754F00ACE89B /* emojis.json in Resources */,
 				652AE2111E81485D00B7484C /* Localizable.strings in Resources */,
 				14DFAC681E4A189D00130119 /* Images.xcassets in Resources */,
 				651A58871E88E3970042A59F /* countryInfo.json in Resources */,
 				22AE76B920E347C700C18355 /* mute.caf in Resources */,
-				65CB14022069190E00E456B5 /* emoji_map.json in Resources */,
 				65CB14032069190E00E456B5 /* ringtone.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1450,7 +1447,6 @@
 				656FBFAF20CA53B60062C6A9 /* CHForm.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
 				659793581FA716CB00840F6A /* MainNavigationController.swift in Sources */,
-				659793591FA716CB00840F6A /* ProfileEditViewController.swift in Sources */,
 				6597935A1FA716CB00840F6A /* ProfileViewController.swift in Sources */,
 				6590FA932068C85A0054B353 /* UserChatView.swift in Sources */,
 				6597935B1FA716CB00840F6A /* UserChatsViewController.swift in Sources */,

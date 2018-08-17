@@ -16,22 +16,13 @@ enum EPType: String {
 }
 
 enum RestRouter: URLRequestConvertible {
-  case GetPluginConfiguration(String, ParametersType)
   case Boot(String, ParametersType)
   case GetPlugin(String)
   
-  case GetChannelAvatar(String)
-  case UpdateGuest(ParametersType)
   case GetCurrentGuest
-  case GetChannelManager(String)
-  
-  //case GetMessage(String, ParametersType)
-  case GetScripts(String)
-  case GetScript(String, String)
-  
   case GetUserChats(ParametersType)
-  case CreateUserChat(String, ParametersType)
   case GetUserChat(String)
+  case CreateUserChat(String, ParametersType)
   case RemoveUserChat(String)
   case CloseUserChat(String, ParametersType)
   case ReviewUserChat(String, ParametersType)
@@ -41,9 +32,9 @@ enum RestRouter: URLRequestConvertible {
   case SetMessagesReadAll(String)
   
   case RegisterToken(ParametersType)
+  case UnregisterToken(String)
   case CheckVersion
   case GetGeoIP
-  case UnregisterToken(String)
   
   case SendEvent(ParametersType)
   case GetCountryCodes
@@ -51,8 +42,7 @@ enum RestRouter: URLRequestConvertible {
   
   case RequestProfileBot(String, String)
   case UpdateProfileItem(String, ParametersType)
-  
-  case SubmitForm(String, ParametersType)
+
   case Translate(String, ParametersType)
   
   var baseURL: String {
@@ -76,21 +66,19 @@ enum RestRouter: URLRequestConvertible {
   
   var method: HTTPMethod {
     switch self {
-    case .GetPluginConfiguration, .CreateMessage,
+    case .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot, .RequestProfileBot,
-         .UpdateProfileItem,
-         .SubmitForm:
+         .UpdateProfileItem:
       return .post
-    case .GetChannelAvatar, .GetCurrentGuest,
-         .GetMessages, .GetScripts, .GetScript,
-         .GetUserChat, .GetChannelManager, .GetUserChats,
-         .CheckVersion, .GetGeoIP,
+    case .GetCurrentGuest,
+         .GetMessages, .GetUserChat,
+         .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetFollowingManager,
          .GetPlugin, .Translate:
       return .get
-    case .UpdateGuest, .SetMessagesReadAll,
+    case .SetMessagesReadAll,
          .RemoveUserChat,.CloseUserChat, .ReviewUserChat:
       return .put
     case .UnregisterToken:
@@ -101,24 +89,12 @@ enum RestRouter: URLRequestConvertible {
   // MARK: Paths
   var path: String {
     switch self {
-    case .GetPluginConfiguration(let apiKey, _):
-      return "/app/plugins/\(apiKey)/check_in"
     case .Boot(let pluginKey, _):
       return "/app/plugins/\(pluginKey)/boot"
-    case .GetChannelAvatar(let channelId):
-      return "/app/channels/\(channelId)/avatar"
-    case .UpdateGuest:
-      return "/app/guests"
     case .GetCurrentGuest:
       return "/app/guests/me"
-    case .GetChannelManager(let managerId):
-      return "/app/managers/\(managerId)"
     case .GetPlugin(let pluginId):
       return "/app/plugins/\(pluginId)"
-    case .GetScript(let pluginId, let scriptKey):
-      return "/app/plugins/\(pluginId)/scripts/\(scriptKey)"
-    case .GetScripts(let pluginId):
-      return "/app/plugins/\(pluginId)/scripts"
     case .GetUserChats:
       return "/app/user_chats"
     case .CreateUserChat(let pluginId, _):
@@ -157,8 +133,6 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
     case .UpdateProfileItem(let messageId, _):
       return "/app/messages/\(messageId)/profile_bot"
-    case .SubmitForm(let messageId, _):
-      return "/app/messages/\(messageId)/form"
     case .Translate(let messageId, _):
       return "/app/messages/\(messageId)/translate"
     }
@@ -218,20 +192,18 @@ enum RestRouter: URLRequestConvertible {
     urlRequest.httpMethod = method.rawValue
     
     switch self {
-    case .GetPluginConfiguration(_, let params), .Boot(_, let params),
-         .UpdateGuest(let params), .GetMessages(_, let params),
+    case .Boot(_, let params),
+         .GetMessages(_, let params),
          .CreateMessage(_, let params), .UploadFile(_, let params),
          .GetUserChats(let params), .RegisterToken(let params),
          .SendEvent(let params),
          .CreateUserChat(_, let params),
          .UpdateProfileItem(_, let params),
-         .SubmitForm(_, let params),
          .Translate(_, let params),
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
-         .GetScripts, .GetScript,
          .SetMessagesReadAll,
          .GetCountryCodes,
          .GetFollowingManager,

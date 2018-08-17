@@ -42,46 +42,5 @@ struct GuestPromise {
       return Disposables.create()
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
-  
-  static func update(user: CHGuest) -> Observable<(CHGuest?, Any?)> {
-    //assert input is either user or veil
-    assert(user is CHUser || user is CHVeil)
-    return Observable.create { subscriber in
-      var params = [
-        "body": [String:AnyObject?]()
-      ]
-      params["body"]?["name"] = user.name as AnyObject?
-      params["body"]?["mobileNumber"] = user.mobileNumber as AnyObject?
-      
-      request(RestRouter.UpdateGuest(params as RestRouter.ParametersType))
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
-          switch response.result {
-          case .success(let data):
-            let json:JSON = JSON(data)
-
-            let veil:CHVeil? = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-            let user:CHUser? = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            if veil == nil && user == nil {
-              subscriber.onNext((nil,CHErrorPool.guestParseError))
-              break
-            }
-            
-            user != nil ? subscriber.onNext((user!, nil)) : subscriber.onNext((veil!, nil))
-            subscriber.onCompleted()
-            break
-          case .failure(let error):
-            if let data = response.data {
-              CRToastManager.dismissAllNotifications(false)
-              CRToastManager.showErrorFromData(data)
-            }
-            subscriber.onNext((nil,error))
-            break
-          }
-        })
-      return Disposables.create()
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
-  }
- 
 }
 

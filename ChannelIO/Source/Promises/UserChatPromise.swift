@@ -403,40 +403,6 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func submitForm(messageId: String, keys: [String]) -> Observable<CHMessage> {
-    return Observable.create { subscriber in      
-      let params = [
-        "body": keys.reduce([String:Bool](), { (dict, key) in
-          var dict = dict
-          dict[key] = true
-          return dict
-        })
-      ]
-      
-      let req = Alamofire.request(RestRouter.SubmitForm(messageId, params as RestRouter.ParametersType))
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { (response) in
-          switch response.result {
-          case .success(let data):
-            let json = JSON(data)
-            guard let message = Mapper<CHMessage>()
-              .map(JSONObject: json["message"].object) else {
-                subscriber.onError(CHErrorPool.messageParseError)
-                break
-            }
-            
-            subscriber.onNext(message)
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(error)
-          }
-        })
-      return Disposables.create {
-        req.cancel()
-      }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
-  }
-  
   static func translate(messageId: String, language: String) -> Observable<String?> {
     return Observable.create({ (subscriber) in
       let params = [

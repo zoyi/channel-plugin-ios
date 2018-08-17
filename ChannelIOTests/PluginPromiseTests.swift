@@ -16,19 +16,7 @@ class PluginPromiseTests: QuickSpec {
   
   override func spec() {
     describe("Plugin promise") {
-      it("should return a response with valid data") {
-        waitUntil (timeout: 30) { done in
-          let promise = PluginPromise
-            .getPluginConfiguration(apiKey: "52eb6f27-38c7-476d-ad92-83e6299b7e07", params: [:])
-          _ = promise.subscribe(onNext: { (data) in
-
-          }, onError: { error in
-            expect(error).to(beNil())
-          }, onCompleted: {
-            done()
-          })
-        }
-      }
+    
     }
   }
   

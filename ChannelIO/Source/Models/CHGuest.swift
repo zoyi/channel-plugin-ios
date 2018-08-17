@@ -29,11 +29,6 @@ extension CHGuest {
 }
 
 extension CHGuest {
-  func update() -> Observable<(CHGuest?, Any?)> {
-    //ideally intercept and apply result
-    return GuestPromise.update(user: self)
-  }
-  
   func getWelcome() -> String? {
     if self.named {
       return mainStore.state.plugin.welcomeNamedI18n?.getMessage()?.replace("${name}", withString: self.name)
