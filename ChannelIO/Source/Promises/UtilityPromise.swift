@@ -42,6 +42,12 @@ struct UtilityPromise {
   
   static func getCountryCodes() -> Observable<[CHCountry]> {
     return Observable.create { subscriber in
+      if mainStore.state.countryCodeState.codes.count != 0 {
+        let countries = mainStore.state.countryCodeState.codes
+        subscriber.onNext(countries)
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
       
       Alamofire
         .request(RestRouter.GetCountryCodes)

@@ -149,14 +149,52 @@ class CHUtils {
     
     return durationText
   }
-  
-  
+
   class func bootQueryParams() -> [String: Any] {
     var params = [String :Any]()
     params["sysProfile.platform"] = "iOS"
     params["sysProfile.version"] = Bundle(for: ChannelIO.self)
       .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     return params
+  }
+  
+  @discardableResult
+  class func saveToDisk<T: Encodable>(with name: String, object: T) -> Bool {
+    var data:Data?
+    do {
+      data = try JSONEncoder().encode(object)
+      guard let data = data else { return false }
+      let fm = FileManager.default
+      let url1 = try fm.url(
+        for:.applicationSupportDirectory,
+        in:[.userDomainMask],
+        appropriateFor:nil, create:true)
+      let url2 = url1.appendingPathComponent(name)
+      try data.write(to:url2)
+      return true
+    } catch {
+      return false
+    }
+  }
+  
+  class func readFromDisk<T: Decodable>(with name: String, type: T.Type) -> Any? {
+    do {
+      let fm = FileManager.default
+      let decoder = JSONDecoder()
+      let url1 = try fm.url(
+        for:.applicationSupportDirectory,
+        in:[.userDomainMask],
+        appropriateFor:nil, create:true)
+      let url2 = url1.appendingPathComponent(name)
+
+      if let data = try? Data(contentsOf: url2),
+        let object = try? decoder.decode(type, from: data) {
+        return object
+      }
+      return nil
+    } catch {
+      return nil
+    }
   }
 }
 
