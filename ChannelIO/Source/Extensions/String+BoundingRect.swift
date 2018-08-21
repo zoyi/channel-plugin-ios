@@ -41,14 +41,29 @@ extension String {
 }
 
 extension NSAttributedString {
-  func size(fits width: CGFloat) -> CGRect {
-    let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+  func boundingRect(fits size: CGSize) -> CGRect {
     let rect = self.boundingRect(with: size, options: [.usesFontLeading, .usesLineFragmentOrigin], context: nil)
     return snap(rect)
   }
   
-  func height(fits width: CGFloat) -> CGFloat {
-    return self.size(fits: width).height
+  func size(fits size: CGSize, maximumNumberOfLines: Int = 0) -> CGSize {
+    if self.string == "" {
+      return CGSize.zero
+    }
+    
+    var size = self.boundingRect(fits: size).size
+    let attributes = self.attributes(at: 0, effectiveRange: nil)
+   
+    if let font = attributes[NSAttributedStringKey.font] as? UIFont, maximumNumberOfLines > 0 {
+      size.height = min(size.height, CGFloat(maximumNumberOfLines) * font.lineHeight)
+    }
+    
+    return size
+  }
+  
+  func height(fits width: CGFloat, maximumNumberOfLines: Int = 0) -> CGFloat {
+    let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+    return self.size(fits: size, maximumNumberOfLines: maximumNumberOfLines).height
   }
 }
 

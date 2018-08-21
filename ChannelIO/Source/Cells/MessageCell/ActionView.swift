@@ -20,8 +20,8 @@ typealias SubmitForm = (String, String)
 
 //make it more user friendly with uicontrol`
 class ActionButton: UIButton {
-  var value: CHi18n? = nil
   var key: String = ""
+  var value: CHi18n? = nil
   var selectedColor: UIColor? = nil
   var selectedTextColor: UIColor? = nil {
     didSet {
@@ -63,13 +63,19 @@ class ActionButton: UIButton {
     self.value = input.value
     self.key = input.key
     
+//    let (parsedText, onlyEmoji) = CustomMessageTransform.markdown.parse(self.value)
+//    let font = onlyEmoji ? UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15)
+    
     let text = self.value?.getMessage() ?? ""
     self.setTitle(text, for: .normal)
+    
+    //self.setAttributedTitle(self.value, for: .normal)
     self.titleLabel?.lineBreakMode = .byTruncatingTail
     self.titleLabel?.numberOfLines = 2
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
     self.titleLabel?.font = input.value?.getMessage()?.containsOnlyEmoji == true ?
       UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15)
+//    self.titleLabel?.font = font
     self.titleLabel?.preferredMaxLayoutWidth = Constant.maxWidth
     self.setTitleColor(CHColors.dark50, for: .normal)
  
@@ -77,6 +83,9 @@ class ActionButton: UIButton {
     self.layer.borderWidth = 1.f
     self.layer.borderColor = CHColors.dark50.cgColor
     
+//    let size = self.value?.size(
+//      fits: CGSize(width: Constant.maxWidth, height: 10000),
+//      maximumNumberOfLines: 2) ?? CGSize.zero
     let size = text.size(
       fits: CGSize(width: Constant.maxWidth, height: 10000),
       font: UIFont.systemFont(ofSize: 15),

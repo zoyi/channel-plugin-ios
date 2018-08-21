@@ -16,6 +16,7 @@ import SVProgressHUD
 import CHSlackTextViewController
 import CHNavBar
 import AVKit
+import SnapKit
 
 final class UserChatViewController: BaseSLKTextViewController {
 
@@ -79,6 +80,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     $0.layer.borderWidth = 1
     $0.isHidden = true
   }
+  var isAnimating = false
+  var newChatBottomConstraint: Constraint? = nil
   
   var typingCell: TypingIndicatorCell!
   var profileCell: ProfileCell!
@@ -501,7 +504,7 @@ extension UserChatViewController: StoreSubscriber {
     if nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
-      self.newChatButton.isHidden = false
+      self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
     } else if nextUserChat?.isSolved() == true {
       self.setTextInputbarHidden(true, animated: false)
     } else if (!channel.allowNewChat && !self.channel.allowNewChat) && self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
@@ -667,9 +670,63 @@ extension UserChatViewController {
       self.chatManager.fetchMessages()
     }
     
-    if yOffset < 100 &&
-      !self.newMessageView.isHidden {
+    if yOffset < 100 && !self.newMessageView.isHidden {
       self.newMessageView.hide(animated: false)
+    } else
+      
+    if yOffset > 100 {
+      self.hideNewChatButton()
+    }
+  }
+  
+  override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    guard scrollView.contentOffset.y < 100 && self.userChat?.isClosed() == true else { return }
+    self.showNewChatButton()
+  }
+
+  override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    guard scrollView.contentOffset.y < 100 && self.userChat?.isClosed() == true else { return }
+    self.showNewChatButton()
+  }
+}
+
+extension UserChatViewController {
+  fileprivate func showNewChatButton() {
+    guard !self.isAnimating else { return }
+    self.isAnimating = true
+    
+    self.newChatButton.isHidden = false
+    
+    if #available(iOS 11.0, *) {
+      self.newChatBottomConstraint?.update(offset: -15)
+    } else {
+      self.newChatBottomConstraint?.update(inset: 15)
+    }
+    UIView.animate(withDuration: 0.3, animations: {
+      self.view.layoutIfNeeded()
+    }) { (completed) in
+      self.isAnimating = false
+    }
+  }
+  
+  fileprivate func hideNewChatButton() {
+    if self.newChatButton.isHidden || self.isAnimating {
+      return
+    }
+    self.isAnimating = true
+    
+    let margin = -24 - self.newChatButton.height
+    if #available(iOS 11.0, *) {
+      self.newChatBottomConstraint?.update(offset: -margin)
+    } else {
+      self.newChatBottomConstraint?.update(inset: margin)
+    }
+    
+    UIView.animate(withDuration: 0.3, animations: {
+      self.view.layoutIfNeeded()
+    }) { (completed) in
+      self.newChatButton.isHidden = true
+      self.isAnimating = false
     }
   }
 }
