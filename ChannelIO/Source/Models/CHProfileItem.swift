@@ -13,7 +13,7 @@ struct CHProfileItem {
   var id            : String = ""
   var key           : String = ""
   var type          : String = ""
-  var nameI18n      : CHi18n? = nil
+  var name          : String = ""
   var value         : Any? = nil
   
   var fieldType     : ProfileInputType = .text
@@ -23,11 +23,11 @@ extension CHProfileItem: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    id        <- map["id"]
-    key       <- map["key"]
-    type      <- map["type"]
-    nameI18n  <- map["nameI18n"]
-    value     <- map["value"]
+    id              <- map["id"]
+    key             <- map["key"]
+    type            <- map["type"]
+    name            <- map["name"]
+    value           <- map["value"]
     
     if key == "mobileNumber" {
       fieldType = .mobileNumber
@@ -49,6 +49,6 @@ func ==(lhs: CHProfileItem, rhs: CHProfileItem) -> Bool {
   
   return lhs.id == rhs.id &&
     lhs.key == rhs.key &&
-    lhs.nameI18n == rhs.nameI18n &&
+    lhs.name == rhs.name &&
     lv == hv
 }

@@ -55,7 +55,7 @@ class ProfileItemBaseView: BaseView {
     }).disposed(by: self.disposeBag)
     
     self.fieldView?.signalForText().subscribe(onNext: { [weak self] (text) in
-      self?.setTitle(with: self?.item?.nameI18n?.getMessage())
+      self?.setTitle(with: self?.item?.name)
     }).disposed(by: self.disposeBag)
     
     self.fieldView?.signalForAction().subscribe(onNext: { [weak self] (value) in
@@ -100,7 +100,7 @@ class ProfileItemBaseView: BaseView {
     self.model = model
     self.index = index
 
-    self.titleLabel.text = self.item?.nameI18n?.getMessage()
+    self.titleLabel.text = self.item?.name
     
     let current = "\(index + 1)"
     let currentText = current.addFont(

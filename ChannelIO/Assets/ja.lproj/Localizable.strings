@@ -140,7 +140,7 @@
 "ch.review.complete.preview" = "問合せの評価が終了しました";
 "ch.review.complete.time.hour" = "時間";
 "ch.review.complete.time.minute" = "分";
-"ch.chat.start_new_chat" = "新しい会話を始める";
+"ch.chat.reopen" = "新しいチャット";
 "ch.message_input.placeholder.disabled" = "問合せが完了しました";
 "ch.review.complete.resolution" = "問合せ時間：";
 "ch.review.title.preview" = "問合せ評価";

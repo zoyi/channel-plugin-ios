@@ -40,8 +40,9 @@ extension CHForm: Mappable {
 
 struct CHInput {
   var key: String = ""
-  var value: CHi18n? = nil
   var text: NSAttributedString? = nil
+  
+  var onlyEmoji: Bool = false
 }
 
 extension CHInput: Mappable {
@@ -49,9 +50,8 @@ extension CHInput: Mappable {
   
   mutating func mapping(map: Map) {
     key         <- map["key"]
-    value       <- map["value"]
-//    let rawText = map["value"].currentValue as? String ?? ""
-//    (text, _) = CustomMessageTransform.markdown.parse(rawText)
+    let rawText = map["text"].currentValue as? String ?? ""
+    (text, onlyEmoji) = CustomMessageTransform.markdown.parse(rawText)
   }
 }
 

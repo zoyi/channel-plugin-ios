@@ -138,7 +138,7 @@ Please rate our service.";
 "ch.review.complete.preview" = "This chat is now resolved.";
 "ch.review.complete.time.hour" = "h";
 "ch.review.complete.time.minute" = "m";
-"ch.chat.start_new_chat" = "Start a new chat";
+"ch.chat.reopen" = "New chat";
 "ch.message_input.placeholder.disabled" = "The chat is now resolved.";
 "ch.review.complete.resolution" = "Chat duration:";
 "ch.review.title.preview" = "Review";

@@ -62,7 +62,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   var newChatButton = UIButton(type: .system).then {
     $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
-    $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
+    $0.setTitle(CHAssets.localized("ch.chat.reopen"), for: .normal)
     $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
     $0.tintColor = mainStore.state.plugin.textUIColor
     
@@ -158,9 +158,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.newChatButton.snp.makeConstraints { [weak self] (make) in
       if #available(iOS 11.0, *) {
-        make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15)
+        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15).constraint
       } else {
-        make.bottom.equalToSuperview().inset(15)
+        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(15).constraint
       }
       make.centerX.equalToSuperview()
       make.height.equalTo(46)

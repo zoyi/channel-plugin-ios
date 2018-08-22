@@ -233,8 +233,6 @@ public final class ChannelIO: NSObject {
       .subscribe(onNext: { _ in
         ChannelIO.open(animated: true)
       }).disposed(by: disposeBeg)
-    
-    //ChannelIO.launchView = launchView
   }
   
   /**

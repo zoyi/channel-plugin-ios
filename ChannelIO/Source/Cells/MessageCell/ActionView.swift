@@ -21,7 +21,7 @@ typealias SubmitForm = (String, String)
 //make it more user friendly with uicontrol`
 class ActionButton: UIButton {
   var key: String = ""
-  var value: CHi18n? = nil
+  var text: NSAttributedString? = nil
   var selectedColor: UIColor? = nil
   var selectedTextColor: UIColor? = nil {
     didSet {
@@ -60,22 +60,18 @@ class ActionButton: UIButton {
   
   required init(input: CHInput) {
     super.init(frame: CGRect.zero)
-    self.value = input.value
+    self.text = input.text
     self.key = input.key
     
-//    let (parsedText, onlyEmoji) = CustomMessageTransform.markdown.parse(self.value)
-//    let font = onlyEmoji ? UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15)
-    
-    let text = self.value?.getMessage() ?? ""
-    self.setTitle(text, for: .normal)
-    
-    //self.setAttributedTitle(self.value, for: .normal)
+    self.text = self.text?.addFont(
+      input.onlyEmoji ? UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15),
+      color: CHColors.dark50,
+      on: NSRange(location:0, length: input.text?.length ?? 0))
+  
+    self.setAttributedTitle(self.text, for: .normal)
     self.titleLabel?.lineBreakMode = .byTruncatingTail
     self.titleLabel?.numberOfLines = 2
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-    self.titleLabel?.font = input.value?.getMessage()?.containsOnlyEmoji == true ?
-      UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15)
-//    self.titleLabel?.font = font
     self.titleLabel?.preferredMaxLayoutWidth = Constant.maxWidth
     self.setTitleColor(CHColors.dark50, for: .normal)
  
@@ -83,13 +79,10 @@ class ActionButton: UIButton {
     self.layer.borderWidth = 1.f
     self.layer.borderColor = CHColors.dark50.cgColor
     
-//    let size = self.value?.size(
-//      fits: CGSize(width: Constant.maxWidth, height: 10000),
-//      maximumNumberOfLines: 2) ?? CGSize.zero
-    let size = text.size(
+
+    let size = self.text?.size(
       fits: CGSize(width: Constant.maxWidth, height: 10000),
-      font: UIFont.systemFont(ofSize: 15),
-      maximumNumberOfLines: 2)
+      maximumNumberOfLines: 2) ?? CGSize.zero
     
     self.frame = CGRect(x: 0, y: 0,
         width: size.width + Metric.sideMargin * 2,
@@ -147,7 +140,7 @@ class ActionView: BaseView {
       self.contentView.addSubview(button)
       self.buttons.append(button)
       _ = button.signalForClick().subscribe(onNext: { [weak self] (_) in
-        self?.actionSubject.onNext((button.key, button.value?.getMessage() ?? ""))
+        self?.actionSubject.onNext((button.key, button.text?.string ?? ""))
       })
     }
     
@@ -201,9 +194,8 @@ class ActionView: BaseView {
     var cx = 0.f, cy = 0.f
 
     for (index, input) in inputs.enumerated() {
-      let size = input.value?.getMessage()?.size(
+      let size = input.text?.size(
         fits: CGSize(width: Constant.maxWidth, height: 10000),
-        font: UIFont.systemFont(ofSize: 15),
         maximumNumberOfLines: 2) ?? CGSize.zero
       
       let width = size.width + Metric.sideMargin * 2
