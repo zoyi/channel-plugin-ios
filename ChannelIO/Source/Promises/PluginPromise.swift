@@ -152,15 +152,19 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func boot(pluginKey: String, params: [String: Any]) -> Observable<[String: Any]> {
-    return Observable.create({ (subscriber) in
+  static func boot(pluginKey: String, params: CHParam) -> Observable<[String: Any]> {
+    return Observable.create({ (subscriber) in      
+      let params = [
+        "body": params
+      ]
+      
       let req = Alamofire.request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            var result:[String: Any] = [String: Any]()
+            var result = [String: Any]()
             
             result["user"] = Mapper<CHUser>().map(JSONObject: json["user"].object)
             result["veil"] = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
@@ -175,15 +179,14 @@ struct PluginPromise {
               subscriber.onError(CHErrorPool.pluginParseError)
               break
             }
-            
+
+            result["guestKey"] = response.response?.allHeaderFields["X-Guest-JWT"]
             result["veilId"] = json["veilId"].string
             
             subscriber.onNext(result)
             subscriber.onCompleted()
-            break
           case .failure(let error):
             subscriber.onError(error)
-            break
           }
         })
       

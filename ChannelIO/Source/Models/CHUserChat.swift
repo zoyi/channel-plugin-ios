@@ -100,8 +100,8 @@ extension CHUserChat {
       showCompleted: showCompleted)
   }
   
-  static func create(pluginId: String, timeStamp: Date?) -> Observable<ChatResponse>{
-    return UserChatPromise.createChat(pluginId: pluginId, timeStamp: timeStamp)
+  static func create(pluginId: String) -> Observable<ChatResponse>{
+    return UserChatPromise.createChat(pluginId: pluginId)
   }
   
   func remove() -> Observable<Any?> {

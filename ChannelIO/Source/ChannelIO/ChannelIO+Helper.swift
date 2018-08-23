@@ -67,18 +67,17 @@ extension ChannelIO {
         subscriber.onError(CHErrorPool.pluginKeyError)
         return Disposables.create()
       }
-
-      var params = [String: Any]()
-      params["query"] = CHUtils.bootQueryParams()
-      if let profile = profile {
-        params["body"] = profile.generateParams()
-      }
       
       if let userId = settings.userId, userId != "" {
         PrefStore.setCurrentUserId(userId: userId)
       } else {
         PrefStore.clearCurrentUserId()
       }
+      
+      let params = BootParamBuilder()
+        .with(profile: profile)
+        .with(sysProfile: nil, includeDefault: true)
+        .build()
       
       PluginPromise
         .boot(pluginKey: settings.pluginKey, params: params)

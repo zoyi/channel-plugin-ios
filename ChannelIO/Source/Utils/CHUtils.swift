@@ -150,14 +150,6 @@ class CHUtils {
     return durationText
   }
 
-  class func bootQueryParams() -> [String: Any] {
-    var params = [String :Any]()
-    params["sysProfile.platform"] = "iOS"
-    params["sysProfile.version"] = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    return params
-  }
-  
   @discardableResult
   class func saveToDisk<T: Encodable>(with name: String, object: T) -> Bool {
     var data:Data?

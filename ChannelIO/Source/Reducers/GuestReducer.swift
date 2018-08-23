@@ -12,6 +12,9 @@ func guestReducer(action: Action, guest: CHGuest?) -> CHGuest {
   var guest = guest
   switch action {
   case let action as CheckInSuccess:
+    if let key = action.payload["guestKey"] as? String {
+      PrefStore.setCurrentGuestKey(key)
+    }
     if let user = action.payload["user"] as? CHUser {
       PrefStore.setCurrentUserId(userId: user.id)
       return user

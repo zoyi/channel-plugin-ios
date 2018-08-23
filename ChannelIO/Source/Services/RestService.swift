@@ -22,7 +22,7 @@ enum RestRouter: URLRequestConvertible {
   case GetCurrentGuest
   case GetUserChats(ParametersType)
   case GetUserChat(String)
-  case CreateUserChat(String, ParametersType)
+  case CreateUserChat(String)
   case RemoveUserChat(String)
   case CloseUserChat(String, ParametersType)
   case ReviewUserChat(String, ParametersType)
@@ -90,14 +90,14 @@ enum RestRouter: URLRequestConvertible {
   var path: String {
     switch self {
     case .Boot(let pluginKey, _):
-      return "/app/plugins/\(pluginKey)/boot"
+      return "/app/plugins/\(pluginKey)/boot/v2"
     case .GetCurrentGuest:
       return "/app/guests/me"
     case .GetPlugin(let pluginId):
       return "/app/plugins/\(pluginId)"
     case .GetUserChats:
       return "/app/user_chats"
-    case .CreateUserChat(let pluginId, _):
+    case .CreateUserChat(let pluginId):
       return "/app/plugins/\(pluginId)/user_chats"
     case .GetUserChat(let userChatId):
       return "/app/user_chats/\(userChatId)"
@@ -140,16 +140,8 @@ enum RestRouter: URLRequestConvertible {
   
   func addAuthHeaders(request: URLRequest) -> URLRequest {
     var req = request
-    if let channelId = PrefStore.getCurrentChannelId() {
-      req.setValue(channelId, forHTTPHeaderField: "X-Channel-Id")
-    }
-  
-    if let veilId = PrefStore.getCurrentVeilId() {
-      req.setValue(veilId, forHTTPHeaderField: "X-Veil-Id")
-    }
-    
-    if let userId = PrefStore.getCurrentUserId() {
-      req.setValue(userId, forHTTPHeaderField: "X-User-Id")
+    if let key = PrefStore.getCurrentGuestKey() {
+      req.setValue(key, forHTTPHeaderField: "X-Guest-JWT")
     }
     
     if let locale = CHUtils.getLocale() {
@@ -197,7 +189,6 @@ enum RestRouter: URLRequestConvertible {
          .CreateMessage(_, let params), .UploadFile(_, let params),
          .GetUserChats(let params), .RegisterToken(let params),
          .SendEvent(let params),
-         .CreateUserChat(_, let params),
          .UpdateProfileItem(_, let params),
          .Translate(_, let params),
          .CloseUserChat(_, let params),
@@ -207,7 +198,8 @@ enum RestRouter: URLRequestConvertible {
          .SetMessagesReadAll,
          .GetCountryCodes,
          .GetFollowingManager,
-         .RequestProfileBot:
+         .RequestProfileBot,
+         .CreateUserChat:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

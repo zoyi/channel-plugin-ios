@@ -16,6 +16,7 @@ class PrefStore {
   static let VISIBLE_CLOSED_USERCHAT_KEY = "CHPlugin_visible_closed_userchat"
   static let CHANNEL_PLUGIN_SETTINGS_KEY = "CHPlugin_settings"
   static let VISIBLE_TRANSLATION = "CHPlugin_visible_translation"
+  static let GUEST_KEY = "CHPlugin_x_guest_key"
   
   static func getCurrentChannelId() -> String? {
     return UserDefaults.standard.string(forKey: CHANNEL_ID_KEY)
@@ -35,14 +36,14 @@ class PrefStore {
   }
   
   static func setCurrentVeilId(veilId: String?) {
-    if veilId != nil {
+    if let veilId = veilId {
       UserDefaults.standard.set(veilId, forKey: VEIL_ID_KEY)
       UserDefaults.standard.synchronize()
     }
   }
   
   static func setCurrentUserId(userId: String?) {
-    if userId != nil {
+    if let userId = userId {
       UserDefaults.standard.set(userId, forKey: USER_ID_KEY)
       UserDefaults.standard.synchronize()
     }
@@ -105,10 +106,27 @@ class PrefStore {
     UserDefaults.standard.synchronize()
   }
   
+  static func setCurrentGuestKey(_ key: String?) {
+    if let key = key {
+      UserDefaults.standard.set(key, forKey: GUEST_KEY)
+      UserDefaults.standard.synchronize()
+    }
+  }
+  
+  static func getCurrentGuestKey() -> String? {
+    return UserDefaults.standard.string(forKey: GUEST_KEY)
+  }
+  
+  static func clearCurrentGuestKey() {
+    UserDefaults.standard.removeObject(forKey: GUEST_KEY)
+    UserDefaults.standard.synchronize()
+  }
+  
   static func clearAllLocalData() {
     PrefStore.clearCurrentUserId()
     PrefStore.clearCurrentVeilId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()
+    PrefStore.clearCurrentGuestKey()
   }
 }

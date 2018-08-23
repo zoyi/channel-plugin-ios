@@ -55,7 +55,6 @@ class ChatManager: NSObject {
   
   let disposeBag = DisposeBag()
   
-  fileprivate var welcomedAt = Date()
   fileprivate var typingPersons = [CHEntity]()
   fileprivate var timeStorage = [String: Timer]()
   fileprivate var animateTyping = false
@@ -450,9 +449,7 @@ extension ChatManager {
         pluginId = mainStore.state.plugin.id
       }
       
-      let signal = CHUserChat.create(
-        pluginId: pluginId,
-        timeStamp: self?.welcomedAt)
+      let signal = CHUserChat.create(pluginId: pluginId)
         .subscribe(onNext: { (chatResponse) in
           guard let userChat = chatResponse.userChat,
             let session = chatResponse.session else { return }

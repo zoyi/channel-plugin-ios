@@ -66,14 +66,10 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func createChat(pluginId: String, timeStamp: Date?) -> Observable<ChatResponse> {
+  static func createChat(pluginId: String) -> Observable<ChatResponse> {
     return Observable.create { subscriber in
-      let params = ["query": [
-        "welcomedAt": timeStamp?.getMicroseconds() ?? 0
-        ]
-      ]
-      
-      Alamofire.request(RestRouter.CreateUserChat(pluginId, params as RestRouter.ParametersType))
+
+      Alamofire.request(RestRouter.CreateUserChat(pluginId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {

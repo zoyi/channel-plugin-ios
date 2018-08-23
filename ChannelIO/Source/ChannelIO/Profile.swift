@@ -44,29 +44,4 @@ public class Profile : NSObject {
     self.property[propertyKey] = value
     return self
   }
-  
-  internal func generateParams() -> [String: Any] {
-    var params = [String: Any]()
-    if self.name != "" {
-      params["name"] = self.name
-    }
-
-    if self.email != "" {
-      params["email"] = self.email
-    }
-
-    if self.mobileNumber != "" {
-      params["mobileNumber"] = self.mobileNumber
-    }
-    
-    if self.avatarUrl != "" {
-      params["avatarUrl"] = self.avatarUrl
-    }
-    
-    if self.property.count != 0 {
-      params["property"] = self.property
-    }
-    
-    return params
-  }
 }
