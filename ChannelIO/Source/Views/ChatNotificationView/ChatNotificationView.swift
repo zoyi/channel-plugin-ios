@@ -161,7 +161,7 @@ final class ChatNotificationView : BaseView {
   }
   
   override func updateConstraints() {
-    self.snp.makeConstraints { [weak self] (make) in
+    self.snp.remakeConstraints { [weak self] (make) in
       if let top = self?.topLayoutGuide {
         make.top.equalTo(top.snp.bottom).offset(Metric.viewTopMargin)
       } else {

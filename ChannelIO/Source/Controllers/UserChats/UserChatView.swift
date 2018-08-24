@@ -297,9 +297,9 @@ extension UserChatView {
   
   func display(error: Error?, visible: Bool) {
     if error != nil && visible {
-      self.errorToastView.show(animated: true)
+      self.errorToastView.display(animated: true)
     } else {
-      self.errorToastView.hide(animated: true)
+      self.errorToastView.dismiss(animated: true)
     }
   }
   

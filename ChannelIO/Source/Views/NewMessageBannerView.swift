@@ -59,36 +59,4 @@ final class NewMessageBannerView : BaseView {
       make.trailing.equalToSuperview().inset(20)
     }
   }
-  
-  func show(animated: Bool) {
-    if !self.isHidden {
-      return
-    }
-    
-    self.isHidden = false
-    if animated {
-      self.alpha = 0
-      UIView.animate(withDuration: 0.3) { [weak self] in
-        self?.alpha = 1
-      }
-    }
-  }
-  
-  func hide(animated: Bool) {
-    if self.isHidden {
-      return
-    }
-    
-    if animated {
-      self.alpha = 1
-      UIView.animate(withDuration: 0.3, animations: { [weak self] in
-        self?.alpha = 0
-        }, completion: { [weak self] (completed) in
-          self?.isHidden = true
-      })
-    } else {
-      self.isHidden = true
-    }
-  }
-  
 }

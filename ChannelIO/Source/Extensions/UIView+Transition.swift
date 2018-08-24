@@ -16,8 +16,8 @@ enum UIViewTransition : Int {
 }
 
 extension UIView {
-  func show(onView: UIView, animated: Bool) {
-    onView.addSubview(self)
+  func insert(on view: UIView, animated: Bool) {
+    view.addSubview(self)
     
     if !animated {
       return
@@ -41,6 +41,31 @@ extension UIView {
       self.alpha = 0
     }) { (completed) in
       self.removeFromSuperview()
+    }
+  }
+  
+  func show(animated: Bool) {
+    if self.superview == nil {
+      return
+    }
+    
+    if !animated {
+      self.alpha = 1
+    }
+    
+    UIView.animate(withDuration: 0.5) {
+      self.alpha = 1
+    }
+  }
+  
+  func hide(animated: Bool) {
+    if !animated {
+      self.alpha = 0
+      return
+    }
+    
+    UIView.animate(withDuration: 0.5) {
+      self.alpha = 0
     }
   }
 }

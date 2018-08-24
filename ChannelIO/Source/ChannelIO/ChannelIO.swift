@@ -62,16 +62,18 @@ public final class ChannelIO: NSObject {
 
   internal static var settings: ChannelPluginSettings? = nil
   internal static var profile: Profile? = nil
-  
+  internal static var launcherView: LauncherView? = nil
 
   // MARK: StoreSubscriber
   class CHPluginSubscriber : StoreSubscriber {
+    //refactor into two selectors
     func newState(state: AppState) {
       self.handleBadgeDelegate(state.guest.alert)
       self.handlePush(push: state.push)
       let config: LauncherConfig? = ChannelIO.settings?.launcherConfig
-      let viewModel = LaunchViewModel(plugin: state.plugin, guest: state.guest, config: config)
-      NotificationCenter.default.post(name: Notification.Name.Channel.updateBadge, object: nil, userInfo: ["model": viewModel])
+      let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest, config: config)
+      
+      ChannelIO.launcherView?.configure(viewModel)
     }
     
     func handlePush (push: CHPush?) {
@@ -116,7 +118,9 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    let controller = CHUtils.getTopController()
+    if let launcherView = ChannelIO.launcherView {
+      launcherView.show(animated: true)
+    }
     
     PluginPromise.checkVersion().flatMap { (event) in
       return ChannelIO.checkInChannel(profile: profile)
@@ -124,11 +128,6 @@ public final class ChannelIO: NSObject {
     .subscribe(onNext: { (_) in
       PrefStore.setChannelPluginSettings(pluginSetting: settings)
       ChannelIO.registerPushToken()
-      
-      if !settings.hideDefaultLauncher &&
-        !mainStore.state.channel.shouldHideDefaultButton {
-        ChannelIO.showLauncher(on: controller?.view, animated: true)
-      }
       
       completion?(.success, Guest(with: mainStore.state.guest))
     }, onError: { error in
@@ -194,45 +193,31 @@ public final class ChannelIO: NSObject {
    *   Show channel launcher on application
    *   location of the view can be customized in Channel Desk
    *
-   *   - parameter on: a view that launcher button will be displayed, default is nil and will display on current view
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
   @objc public class func show(animated: Bool) {
-    guard ChannelIO.isValidStatus else { return }
-    guard ChannelIO.getLauncherView() == nil else { return }
-
-    guard let topController = CHUtils.getTopController() else { return }
-    ChannelIO.showLauncher(on: topController.view, animated: animated)
-  }
-  
-  /**
-   *   Show channel launcher on a specific view
-   *
-   *   - parameter on: view where laucher will be displayed
-   *   - parameter animated: if true, the view is being added to the window using an animation
-   */
-  internal class func showLauncher(on view:UIView?, animated: Bool) {
-    guard let view = view else { return }
-    guard ChannelIO.isValidStatus else { return }
-
-    let launchView = LaunchView()
+    guard let view = UIApplication.shared.keyWindow else { return }
+    
+    let launchView = LauncherView()
     if #available(iOS 11.0, *) {
       launchView.layoutGuide = view.safeAreaLayoutGuide
     }
     
-    let viewModel = LaunchViewModel(
+    let viewModel = LauncherViewModel(
       plugin: mainStore.state.plugin,
       guest: mainStore.state.guest,
       config: ChannelIO.settings?.launcherConfig
     )
     
-    launchView.show(onView: view, animated: animated)
+    launchView.insert(on: view, animated: animated)
     launchView.configure(viewModel)
     
-    launchView.buttonView.signalForClick()
-      .subscribe(onNext: { _ in
-        ChannelIO.open(animated: true)
-      }).disposed(by: disposeBeg)
+    launchView.buttonView.signalForClick().subscribe(onNext: { _ in
+      guard ChannelIO.isValidStatus else { return }
+      ChannelIO.open(animated: true)
+    }).disposed(by: disposeBeg)
+    
+    ChannelIO.launcherView = launchView
   }
   
   /**
@@ -241,12 +226,8 @@ public final class ChannelIO: NSObject {
    *  - parameter animated: if true, the view is being added to the window using an animation
    */
   @objc public class func hide(animated: Bool) {
-    guard ChannelIO.isValidStatus else { return }
-
-    NotificationCenter.default.post(
-      name: Notification.Name.Channel.dismissLaunchers,
-      object: nil,
-      userInfo: ["animated": animated])
+    ChannelIO.launcherView?.remove(animated: animated)
+    ChannelIO.launcherView = nil
   }
   
   /** 
@@ -323,6 +304,15 @@ public final class ChannelIO: NSObject {
       "screenHeight": UIScreen.main.bounds.height,
       "plan": mainStore.state.channel.servicePlan.rawValue
     ])
+  }
+  
+  /**
+   *  Check whether channel is currently operating
+   *
+   *  - return: ture if a channel is in operating hour, otherwise false
+   */
+  @objc public class func isOperating() -> Bool {
+    return false //calculate channel working time...
   }
   
   /**

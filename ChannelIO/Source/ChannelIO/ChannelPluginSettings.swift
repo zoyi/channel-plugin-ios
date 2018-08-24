@@ -34,6 +34,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc public var launcherConfig: LauncherConfig?
   
   /* true if default launcher button not to be displayed. Default is false */
+  @available(*, deprecated: 4.0, message: "This has been deprecated. Boot will not show launcher automatically after 4.0")
   @objc public var hideDefaultLauncher: Bool = false
   
   /* true if default in-app push notification not to be displayed. Default is false */
@@ -164,6 +165,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   }
   
   @discardableResult
+  @available(*, deprecated: 4.0, message: "This has been deprecated. Boot will not show launcher automatically after 4.0")
   @objc public func set(hideDefaultLauncher: Bool) -> ChannelPluginSettings {
     self.hideDefaultLauncher = hideDefaultLauncher
     return self

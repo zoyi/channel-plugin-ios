@@ -204,8 +204,8 @@
 		659793BE1FA716CB00840F6A /* CHTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793251FA7167C00840F6A /* CHTextField.swift */; };
 		659793BF1FA716CB00840F6A /* CountryCodePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793261FA7167C00840F6A /* CountryCodePickerView.swift */; };
 		659793C31FA716CB00840F6A /* ErrorToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597932B1FA7167C00840F6A /* ErrorToastView.swift */; };
-		659793C41FA716CB00840F6A /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597932D1FA7167C00840F6A /* LaunchView.swift */; };
-		659793C51FA716CB00840F6A /* LaunchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597932E1FA7167C00840F6A /* LaunchViewModel.swift */; };
+		659793C41FA716CB00840F6A /* LauncherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597932D1FA7167C00840F6A /* LauncherView.swift */; };
+		659793C51FA716CB00840F6A /* LauncherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6597932E1FA7167C00840F6A /* LauncherViewModel.swift */; };
 		659793C61FA716CB00840F6A /* MultiAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793301FA7167C00840F6A /* MultiAvatarView.swift */; };
 		659793C71FA716CB00840F6A /* NavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793311FA7167C00840F6A /* NavigationItem.swift */; };
 		659793C81FA716CB00840F6A /* NewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793321FA7167C00840F6A /* NewChatView.swift */; };
@@ -476,8 +476,8 @@
 		659793251FA7167C00840F6A /* CHTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHTextField.swift; sourceTree = "<group>"; };
 		659793261FA7167C00840F6A /* CountryCodePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodePickerView.swift; sourceTree = "<group>"; };
 		6597932B1FA7167C00840F6A /* ErrorToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorToastView.swift; sourceTree = "<group>"; };
-		6597932D1FA7167C00840F6A /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
-		6597932E1FA7167C00840F6A /* LaunchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModel.swift; sourceTree = "<group>"; };
+		6597932D1FA7167C00840F6A /* LauncherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherView.swift; sourceTree = "<group>"; };
+		6597932E1FA7167C00840F6A /* LauncherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherViewModel.swift; sourceTree = "<group>"; };
 		659793301FA7167C00840F6A /* MultiAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiAvatarView.swift; sourceTree = "<group>"; };
 		659793311FA7167C00840F6A /* NavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationItem.swift; sourceTree = "<group>"; };
 		659793321FA7167C00840F6A /* NewChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatView.swift; sourceTree = "<group>"; };
@@ -1060,8 +1060,8 @@
 		6597932C1FA7167C00840F6A /* LauncherView */ = {
 			isa = PBXGroup;
 			children = (
-				6597932D1FA7167C00840F6A /* LaunchView.swift */,
-				6597932E1FA7167C00840F6A /* LaunchViewModel.swift */,
+				6597932D1FA7167C00840F6A /* LauncherView.swift */,
+				6597932E1FA7167C00840F6A /* LauncherViewModel.swift */,
 			);
 			path = LauncherView;
 			sourceTree = "<group>";
@@ -1616,8 +1616,8 @@
 				659793BF1FA716CB00840F6A /* CountryCodePickerView.swift in Sources */,
 				659793C31FA716CB00840F6A /* ErrorToastView.swift in Sources */,
 				659EAE7F1FDFC31F00041E1E /* ChatManager.swift in Sources */,
-				659793C41FA716CB00840F6A /* LaunchView.swift in Sources */,
-				659793C51FA716CB00840F6A /* LaunchViewModel.swift in Sources */,
+				659793C41FA716CB00840F6A /* LauncherView.swift in Sources */,
+				659793C51FA716CB00840F6A /* LauncherViewModel.swift in Sources */,
 				65C0FFDA2003099F005FD3F2 /* WatermarkView.swift in Sources */,
 				659793C61FA716CB00840F6A /* MultiAvatarView.swift in Sources */,
 				659793C71FA716CB00840F6A /* NavigationItem.swift in Sources */,

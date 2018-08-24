@@ -77,7 +77,7 @@ final class ErrorToastView: BaseView {
       }
     })
 
-    self.titleLabel.snp.remakeConstraints { [weak self] (make) in
+    self.titleLabel.snp.remakeConstraints { (make) in
       make.center.equalToSuperview()
     }
 
@@ -91,7 +91,7 @@ final class ErrorToastView: BaseView {
     super.updateConstraints()
   }
   
-  func show(animated: Bool) {
+  func display(animated: Bool) {
     if !self.isHidden {
       return
     }
@@ -103,7 +103,7 @@ final class ErrorToastView: BaseView {
     }
   }
   
-  func hide(animated: Bool) {
+  func dismiss(animated: Bool) {
     if self.isHidden {
       return
     }

@@ -990,11 +990,11 @@ extension UserChatViewController: ChatDelegate {
       self.shyNavBarManager.contract(false)
     }
     self.chatManager?.didChatLoaded = false
-    self.errorToastView.show(animated: true)
+    self.errorToastView.display(animated: true)
   }
   
   func hideError() {
-    self.errorToastView.hide(animated: true)
+    self.errorToastView.dismiss(animated: true)
   }
   
   func readyToDisplay() {

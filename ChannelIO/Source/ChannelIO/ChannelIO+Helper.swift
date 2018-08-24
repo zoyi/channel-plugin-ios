@@ -173,20 +173,20 @@ extension ChannelIO {
     
     let notificationViewModel = ChatNotificationViewModel(push: push)
     notificationView.configure(notificationViewModel)
-    notificationView.show(onView: topController.view, animated: true)
+    notificationView.insert(on: topController.view, animated: true)
     
     notificationView.signalForClick()
       .subscribe(onNext: { (event) in
-        self.hideNotification()
-        self.showUserChat(userChatId: push.userChat?.id)
+        ChannelIO.hideNotification()
+        ChannelIO.showUserChat(userChatId: push.userChat?.id)
       }).disposed(by: self.disposeBeg)
     
     notificationView.closeView.signalForClick()
       .subscribe { (event) in
-        self.hideNotification()
+        ChannelIO.hideNotification()
       }.disposed(by: self.disposeBeg)
     
-    self.chatNotificationView = notificationView
+    ChannelIO.chatNotificationView = notificationView
 
     CHAssets.playPushSound()
     mainStore.dispatch(RemovePush())
@@ -197,11 +197,7 @@ extension ChannelIO {
       ChannelIO.track(eventName: event.rawValue, eventProperty: property)
     }
   }
-  
-  internal class func getLauncherView() -> UIView? {
-    return UIApplication.shared.keyWindow?.viewWithTag(LaunchView.tagId)
-  }
-  
+    
   internal class func hideNotification() {
     guard ChannelIO.chatNotificationView != nil else { return }
     

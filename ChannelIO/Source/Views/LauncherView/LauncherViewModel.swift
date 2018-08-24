@@ -1,5 +1,5 @@
 //
-//  LaunchViewModel.swift
+//  LauncherViewModel.swift
 //  CHPlugin
 //
 //  Created by 이수완 on 2017. 3. 2..
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-protocol LaunchViewModelType {
+protocol LauncherViewModelType {
   var xMargin: CGFloat { get }
   var yMargin: CGFloat { get }
   var bgColor: String { get }
@@ -19,7 +19,7 @@ protocol LaunchViewModelType {
   var position: LauncherPosition { get }
 }
 
-struct LaunchViewModel: LaunchViewModelType {
+struct LauncherViewModel: LauncherViewModelType {
   var xMargin = 24.f
   var yMargin = 24.f
   var bgColor = "#00A6FF"

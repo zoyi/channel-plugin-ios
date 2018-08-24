@@ -115,14 +115,14 @@ class UserChatsViewController: BaseViewController {
     WsService.shared.error()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
-        self?.errorToastView.show(animated: true)
+        self?.errorToastView.display(animated: true)
       }).disposed(by: self.disposeBag)
   }
   
   func initActions() {
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe { [weak self] _ in
-        self?.errorToastView.hide(animated: true)
+        self?.errorToastView.dismiss(animated: true)
         self?.nextSeq = nil
         self?.fetchUserChats(isInit: true, showIndicator: true)
         WsService.shared.connect()
@@ -273,7 +273,7 @@ class UserChatsViewController: BaseViewController {
       }, onError: { [weak self] (error) in
         dlog("error getting following managers: \(error.localizedDescription)")
         self?.showNewChat = false
-        self?.errorToastView.show(animated: true)
+        self?.errorToastView.display(animated: true)
       }).disposed(by: self.disposeBag)
   }
 
@@ -458,7 +458,7 @@ extension UserChatsViewController {
         mainStore.dispatch(GetUserChats(payload: data))
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
-        self?.errorToastView.show(animated:true)
+        self?.errorToastView.display(animated:true)
         self?.didLoad = false
 
         SVProgressHUD.dismiss()
