@@ -504,7 +504,7 @@ extension UserChatViewController: StoreSubscriber {
   func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
-    if nextUserChat?.isClosed() == true {
+    if nextUserChat?.isClosed() == true || nextUserChat?.isRemoved() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
