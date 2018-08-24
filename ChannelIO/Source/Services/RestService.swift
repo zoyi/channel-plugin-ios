@@ -29,7 +29,7 @@ enum RestRouter: URLRequestConvertible {
   case GetMessages(String, ParametersType)
   case CreateMessage(String, ParametersType)
   case UploadFile(String, ParametersType)
-  case SetMessagesReadAll(String)
+  case SetMessagesRead(String, ParametersType)
   
   case RegisterToken(ParametersType)
   case UnregisterToken(String)
@@ -78,8 +78,10 @@ enum RestRouter: URLRequestConvertible {
          .GetFollowingManager,
          .GetPlugin, .Translate:
       return .get
-    case .SetMessagesReadAll,
-         .RemoveUserChat,.CloseUserChat, .ReviewUserChat:
+    case .SetMessagesRead,
+         .RemoveUserChat,
+         .CloseUserChat,
+         .ReviewUserChat:
       return .put
     case .UnregisterToken:
       return .delete
@@ -113,8 +115,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/messages"
     case .UploadFile(let userChatId, _):
       return "/app/user_chats/\(userChatId)/messages/file"
-    case .SetMessagesReadAll(let userChatId):
-      return "/app/user_chats/\(userChatId)/messages/read_all"
+    case .SetMessagesRead(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/messages/read"
     case .RegisterToken:
       return "/app/device_tokens"
     case .CheckVersion:
@@ -192,10 +194,10 @@ enum RestRouter: URLRequestConvertible {
          .UpdateProfileItem(_, let params),
          .Translate(_, let params),
          .CloseUserChat(_, let params),
-         .ReviewUserChat(_, let params):
+         .ReviewUserChat(_, let params),
+         .SetMessagesRead(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
-         .SetMessagesReadAll,
          .GetCountryCodes,
          .GetFollowingManager,
          .RequestProfileBot,

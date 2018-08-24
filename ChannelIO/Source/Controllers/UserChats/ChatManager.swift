@@ -589,23 +589,19 @@ extension ChatManager {
       }).disposed(by: self.disposeBag)
   }
   
-  func requestReadAll() {
+  func requestRead(at message: CHMessage? = nil) {
     guard !self.isRequstingReadAll else { return }
-    
-    if self.chat?.session == nil {
-      return
-    }
-    
-    if self.chat?.session?.unread == 0 &&
-      self.chat?.session?.alert == 0 {
-      return
-    }
+    guard let message = message else { return }
+    guard let session = self.chat?.session else { return }
+    guard session.unread != 0 || session.alert != 0 else { return }
     
     self.isRequstingReadAll = true
     
-    self.chat?.readAll().subscribe(onNext: { [weak self] (completed) in
-      self?.isRequstingReadAll = false
-    }).disposed(by: self.disposeBag)
+    self.chat?.read(at: message)
+      .debounce(1, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (completed) in
+        self?.isRequstingReadAll = false
+      }).disposed(by: self.disposeBag)
   }
   
   func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
@@ -650,7 +646,6 @@ extension ChatManager {
   func prepareToLeave() {
     self.sendTyping(isStop: true)
     self.clearTyping()
-    self.requestReadAll()
     self.disposeSignals()
   }
   

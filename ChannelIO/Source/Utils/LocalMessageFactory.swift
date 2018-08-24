@@ -85,7 +85,7 @@ struct LocalMessageFactory {
     messages: [CHMessage],
     userChat: CHUserChat) -> [CHMessage] {
     guard let session = userChat.session else { return messages }
-    guard let lastReadAt = session.lastReadAt else { return messages }
+    guard let lastReadAt = session.readAt else { return messages }
     
     var newMessages = messages
     

@@ -19,7 +19,8 @@ struct CHSession: ModelType {
   var personId = ""
   var unread = 0
   var alert = 0
-  var lastReadAt: Date? = nil
+  var readAt: Date? = nil
+  var postedAt: Date? = nil
 }
 
 extension CHSession: Mappable {
@@ -34,6 +35,7 @@ extension CHSession: Mappable {
     personId    <- map["personId"]
     unread      <- map["unread"]
     alert       <- map["alert"]
-    lastReadAt  <- (map["lastReadAt"], CustomDateTransform())
+    readAt      <- (map["readAt"], CustomDateTransform())
+    postedAt    <- (map["postedAt"], CustomDateTransform())
   }
 }

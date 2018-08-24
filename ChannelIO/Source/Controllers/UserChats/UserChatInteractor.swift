@@ -81,7 +81,6 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   
   func willDisppear() {
     self.sendTyping(isStop: true)
-    self.requestReadAll()
     self.unsunbscribeDataSource()
     self.leaveSocket()
   }
@@ -307,10 +306,11 @@ extension UserChatInteractor {
     })
   }
   
-  func requestReadAll() {
+  func requestRead(at message: CHMessage?) {
+    guard let message = message else { return }
     guard !self.isRequstingReadAll else { return }
     
-    self.userChat?.readAll().subscribe(onNext: { [weak self] (completed) in
+    self.userChat?.read(at: message).subscribe(onNext: { [weak self] (completed) in
       self?.isRequstingReadAll = false
     }, onError: { [weak self] (error) in
       self?.isRequstingReadAll = false

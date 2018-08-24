@@ -134,7 +134,6 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    self.chatManager?.requestReadAll()
     mainStore.unsubscribe(self)
   }
 
@@ -416,6 +415,10 @@ extension UserChatViewController: StoreSubscriber {
     //saved contentOffset
     let offset = self.tableView.contentOffset
     let hasNewMessage = self.chatManager.hasNewMessage(current: self.messages, updated: messages)
+    
+    if hasNewMessage {
+      self.chatManager?.requestRead(at: messages.first)
+    }
     
     //message only needs to be replace if count is differe
     self.messages = messages

@@ -116,16 +116,12 @@ extension CHUserChat {
     return UserChatPromise.review(userChatId: self.id, formId: reviewMessageId, rating: rating)
   }
   
-  func read_all() {
-    if self.session == nil {
-      return
-    }
+  func read(at message: CHMessage?) {
+    guard let message = message else { return }
+    guard let session = self.session else { return }
+    guard session.unread != 0 || session.alert != 0 else { return }
     
-    if self.session?.unread == 0 && self.session?.alert == 0 {
-      return
-    }
-    
-    _ = UserChatPromise.setMessageReadAll(userChatId: self.id)
+    _ = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
       .subscribe(onNext: { (_) in
         self.readAllManually()
       }, onError: { (error) in
@@ -133,9 +129,9 @@ extension CHUserChat {
       })
   }
   
-  func readAll() -> Observable<Bool> {
+  func read(at message: CHMessage) -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = UserChatPromise.setMessageReadAll(userChatId: self.id)
+      let signal = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
         .subscribe(onNext: { (_) in
           self.readAllManually()
           subscriber.onNext(true)

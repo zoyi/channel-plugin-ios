@@ -268,7 +268,7 @@ class UserChatPromiseTests: QuickSpec {
     describe("read all") {
       it("normal"){
         waitUntil(timeout:30) { done in
-          _ = UserChatPromise.setMessageReadAll(userChatId: userChatId)
+          _ = UserChatPromise.setMessageRead(userChatId: userChatId)
             .subscribe(onNext: { (data) in
               
             }, onError: { (error) in
@@ -282,7 +282,7 @@ class UserChatPromiseTests: QuickSpec {
       
       it("invalid chat id") {
         waitUntil(timeout:30) { done in
-          _ = UserChatPromise.setMessageReadAll(userChatId: "+123.x")
+          _ = UserChatPromise.setMessageRead(userChatId: "+123.x")
             .subscribe(onNext: { (data) in
               
             }, onError: { (error) in
