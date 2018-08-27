@@ -394,8 +394,8 @@ final class UserChatViewController: BaseSLKTextViewController {
       })
     
     //inefficient, but workaround to fix iOS 11 layoutMargin
-    if let bar = self.navigationController?.navigationBar,
-      bar.subviews[2].layoutMargins != UIEdgeInsets.zero {
+    if let bar = self.navigationController?.navigationBar {
+    //  bar.subviews[2].layoutMargins != UIEdgeInsets.zero {
       bar.setNeedsLayout()
       bar.layoutIfNeeded()
     }
@@ -435,7 +435,7 @@ extension UserChatViewController: StoreSubscriber {
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     
     self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
-    self.updateInputFieldIfNeeded(userChat: self.userChat, nextUserChat: userChat)
+    self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat)
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     self.showErrorIfNeeded(state: state)
     
@@ -501,10 +501,12 @@ extension UserChatViewController: StoreSubscriber {
     }
   }
   
-  func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
+  func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
-    if nextUserChat?.isClosed() == true || nextUserChat?.isRemoved() == true {
+    if nextUserChat?.isRemoved() == true {
+      _ = self.navigationController?.popViewController(animated: true)
+    } else if nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100

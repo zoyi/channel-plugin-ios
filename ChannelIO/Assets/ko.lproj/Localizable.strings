@@ -116,7 +116,7 @@
 "ch.settings.my_info" = "내 정보 및 설정";
 "ch.settings.name_placeholder" = "이름 입력";
 "ch.settings.phone_number_placeholder" = "휴대폰번호 입력";
-"ch.settings.show_closed_chat" = "완료된 상담 보기";
+"ch.settings.show_closed_chat" = "종료된 상담 보기";
 "ch.settings.close_chat" = "대화 삭제하기";
 "ch.settings.edit.name_label" = "이름 입력하기";
 "ch.settings.edit.name_placeholder" = "성함을 입력해주세요.";

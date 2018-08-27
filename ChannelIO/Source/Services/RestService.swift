@@ -142,7 +142,7 @@ enum RestRouter: URLRequestConvertible {
   
   func addAuthHeaders(request: URLRequest) -> URLRequest {
     var req = request
-    var headers = [String: String]()
+    var headers = req.allHTTPHeaderFields ?? [String: String]()
     
     if let key = PrefStore.getCurrentGuestKey() {
       headers["X-Guest-Jwt"] = key
@@ -152,9 +152,18 @@ enum RestRouter: URLRequestConvertible {
       headers["X-Locale"] = locale.rawValue
     }
     
-    let cookies = HTTPCookie.requestHeaderFields(with: HTTPCookieStorage.shared.cookies ?? [])
-    req.allHTTPHeaderFields = headers.merging(cookies) { $1 } 
+    let now = Date()
+    let cookies = HTTPCookieStorage.shared.cookies?
+      .filter({ (cookie) -> Bool in
+        if let expDate = cookie.expiresDate, expDate > now {
+          return true
+        }  else {
+          HTTPCookieStorage.shared.deleteCookie(cookie)
+          return false
+        }
+    }) ?? []
     
+    req.allHTTPHeaderFields = headers.merging(HTTPCookie.requestHeaderFields(with: cookies)) { $1 }
     return req
   }
   
@@ -189,6 +198,7 @@ enum RestRouter: URLRequestConvertible {
     
     var urlRequest = URLRequest(url: url.appendingPathComponent(path))
     urlRequest.httpMethod = method.rawValue
+    urlRequest.timeoutInterval = 5
     
     switch self {
     case .Boot(_, let params),
@@ -212,7 +222,6 @@ enum RestRouter: URLRequestConvertible {
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     }
     
-    urlRequest.timeoutInterval = 5
     return urlRequest
   }
 }

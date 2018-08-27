@@ -211,22 +211,6 @@ extension ChannelIO {
     ChannelIO.chatNotificationView?.remove(animated: true)
     ChannelIO.chatNotificationView = nil
   }
-  
-  @objc public class func shutdown() {
-    ChannelIO.launcherView?.hide(animated: false)
-    ChannelIO.close(animated: false)
-    ChannelIO.hideNotification()
-    
-    PluginPromise.unregisterPushToken()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { _ in
-        dlog("shutdown success")
-        mainStore.dispatch(CheckOutSuccess())
-        WsService.shared.disconnect()
-      }, onError: { (error) in
-        dlog("shutdown fail")
-      }).disposed(by: disposeBeg)
-  }
 }
 
 extension ChannelIO {

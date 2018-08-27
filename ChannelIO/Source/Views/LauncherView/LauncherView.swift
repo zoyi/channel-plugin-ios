@@ -13,7 +13,7 @@ import SnapKit
 
 final class LauncherView : BaseView {
   // MARK: Constant
-  static let tagId = 0xDEADBEEF
+  static let tagId = 0xDEADBEE
   
   struct Metric {
     static var xMargin = 24.f

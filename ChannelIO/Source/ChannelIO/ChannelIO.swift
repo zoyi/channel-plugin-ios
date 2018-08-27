@@ -212,11 +212,9 @@ public final class ChannelIO: NSObject {
       config: ChannelIO.settings?.launcherConfig
     )
     
-    if launcherView.superview == nil {
-      launcherView.insert(on: view, animated: animated)
-    } else {
+    launcherView.superview == nil ?
+      launcherView.insert(on: view, animated: animated) :
       launcherView.show(animated: animated)
-    }
     
     launcherView.configure(viewModel)
     launcherView.buttonView.signalForClick().subscribe(onNext: { _ in

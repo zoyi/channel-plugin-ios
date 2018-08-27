@@ -26,6 +26,7 @@ extension UIView {
       gesture.numberOfTapsRequired = 1
       gesture.cancelsTouchesInView = true
 
+      self?.gestureRecognizers = self?.gestureRecognizers?.filter{ !$0.isKind(of: ClickGesture.self) }
       self?.addGestureRecognizer(gesture)
       
       return Disposables.create() {
