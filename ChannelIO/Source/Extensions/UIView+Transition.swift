@@ -48,6 +48,7 @@ extension UIView {
     if self.superview == nil {
       return
     }
+    self.isHidden = false
     
     if !animated {
       self.alpha = 1

@@ -154,9 +154,9 @@ struct PluginPromise {
   
   static func boot(pluginKey: String, params: CHParam) -> Observable<[String: Any]> {
     return Observable.create({ (subscriber) in      
-      let params = [
-        "body": params
-      ]
+//      let params = [
+//        "body": params
+//      ]
       
       let req = Alamofire.request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
@@ -180,7 +180,7 @@ struct PluginPromise {
               break
             }
 
-            result["guestKey"] = response.response?.allHeaderFields["X-Guest-JWT"]
+            result["guestKey"] = response.response?.allHeaderFields["X-Guest-Jwt"]
             result["veilId"] = json["veilId"].string
             
             subscriber.onNext(result)

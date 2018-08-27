@@ -14,8 +14,6 @@ extension ChannelIO {
   internal class func prepare() {
     if let subscriber = ChannelIO.subscriber {
       mainStore.unsubscribe(subscriber)
-      ChannelIO.hide(animated: false)
-      ChannelIO.close(animated: false)
     }
     
     let toastOptions:[AnyHashable: Any] = [
@@ -28,7 +26,9 @@ extension ChannelIO {
       kCRToastFontKey: UIFont.boldSystemFont(ofSize: 13)
     ]
     
+    ChannelIO.shutdown()
     ChannelIO.initWebsocket()
+    
     let subscriber = CHPluginSubscriber()
     mainStore.subscribe(subscriber)
     ChannelIO.subscriber = subscriber
@@ -74,10 +74,16 @@ extension ChannelIO {
         PrefStore.clearCurrentUserId()
       }
       
-      let params = BootParamBuilder()
-        .with(profile: profile)
-        .with(sysProfile: nil, includeDefault: true)
-        .build()
+      var params = [String: Any]()
+      params["query"] = CHUtils.bootQueryParams()
+      if let profile = profile {
+        params["body"] = profile.generateParams()
+      }
+      
+//      let params = BootParamBuilder()
+//        .with(profile: profile)
+//        .with(sysProfile: nil, includeDefault: true)
+//        .build()
       
       PluginPromise
         .boot(pluginKey: settings.pluginKey, params: params)
@@ -204,6 +210,22 @@ extension ChannelIO {
     mainStore.dispatch(RemovePush())
     ChannelIO.chatNotificationView?.remove(animated: true)
     ChannelIO.chatNotificationView = nil
+  }
+  
+  @objc public class func shutdown() {
+    ChannelIO.launcherView?.hide(animated: false)
+    ChannelIO.close(animated: false)
+    ChannelIO.hideNotification()
+    
+    PluginPromise.unregisterPushToken()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { _ in
+        dlog("shutdown success")
+        mainStore.dispatch(CheckOutSuccess())
+        WsService.shared.disconnect()
+      }, onError: { (error) in
+        dlog("shutdown fail")
+      }).disposed(by: disposeBeg)
   }
 }
 

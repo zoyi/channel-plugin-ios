@@ -92,7 +92,7 @@ enum RestRouter: URLRequestConvertible {
   var path: String {
     switch self {
     case .Boot(let pluginKey, _):
-      return "/app/plugins/\(pluginKey)/boot/v2"
+      return "/app/plugins/\(pluginKey)/boot"
     case .GetCurrentGuest:
       return "/app/guests/me"
     case .GetPlugin(let pluginId):
@@ -142,13 +142,18 @@ enum RestRouter: URLRequestConvertible {
   
   func addAuthHeaders(request: URLRequest) -> URLRequest {
     var req = request
+    var headers = [String: String]()
+    
     if let key = PrefStore.getCurrentGuestKey() {
-      req.setValue(key, forHTTPHeaderField: "X-Guest-JWT")
+      headers["X-Guest-Jwt"] = key
     }
     
     if let locale = CHUtils.getLocale() {
-      req.setValue(locale.rawValue, forHTTPHeaderField: "X-Locale")
+      headers["X-Locale"] = locale.rawValue
     }
+    
+    let cookies = HTTPCookie.requestHeaderFields(with: HTTPCookieStorage.shared.cookies ?? [])
+    req.allHTTPHeaderFields = headers.merging(cookies) { $1 } 
     
     return req
   }
@@ -210,6 +215,4 @@ enum RestRouter: URLRequestConvertible {
     urlRequest.timeoutInterval = 5
     return urlRequest
   }
-
 }
-

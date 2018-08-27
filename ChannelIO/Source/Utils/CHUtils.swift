@@ -188,6 +188,14 @@ class CHUtils {
       return nil
     }
   }
+  
+  class func bootQueryParams() -> [String: Any] {
+    var params = [String :Any]()
+    params["sysProfile.platform"] = "iOS"
+    params["sysProfile.version"] = Bundle(for: ChannelIO.self)
+      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+    return params
+  }
 }
 
 typealias dispatchClosure = () -> Void

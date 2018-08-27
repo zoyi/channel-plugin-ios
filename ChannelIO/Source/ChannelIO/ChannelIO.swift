@@ -63,7 +63,8 @@ public final class ChannelIO: NSObject {
   internal static var settings: ChannelPluginSettings? = nil
   internal static var profile: Profile? = nil
   internal static var launcherView: LauncherView? = nil
-
+  internal static var launcherVisible: Bool = false
+  
   // MARK: StoreSubscriber
   class CHPluginSubscriber : StoreSubscriber {
     //refactor into two selectors
@@ -118,10 +119,6 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    if let launcherView = ChannelIO.launcherView {
-      launcherView.show(animated: true)
-    }
-    
     PluginPromise.checkVersion().flatMap { (event) in
       return ChannelIO.checkInChannel(profile: profile)
     }
@@ -129,6 +126,9 @@ public final class ChannelIO: NSObject {
       PrefStore.setChannelPluginSettings(pluginSetting: settings)
       ChannelIO.registerPushToken()
       
+      if ChannelIO.launcherVisible {
+        ChannelIO.show(animated: true)
+      }
       completion?(.success, Guest(with: mainStore.state.guest))
     }, onError: { error in
       let code = (error as NSError).code
@@ -174,7 +174,7 @@ public final class ChannelIO: NSObject {
    *   Call this method when user terminate session or logout
    */
   @objc public class func shutdown() {
-    ChannelIO.hide(animated: false)
+    ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.close(animated: false)
     ChannelIO.hideNotification()
     
@@ -191,16 +191,19 @@ public final class ChannelIO: NSObject {
   
   /**
    *   Show channel launcher on application
-   *   location of the view can be customized in Channel Desk
+   *   location of the view can be customized with LauncherConfig property in ChannelPluginSettings
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
   @objc public class func show(animated: Bool) {
     guard let view = UIApplication.shared.keyWindow else { return }
+    ChannelIO.launcherVisible = true
+    guard ChannelIO.isValidStatus else { return }
     
-    let launchView = LauncherView()
+    let launcherView = ChannelIO.launcherView ?? LauncherView()
+  
     if #available(iOS 11.0, *) {
-      launchView.layoutGuide = view.safeAreaLayoutGuide
+      launcherView.layoutGuide = view.safeAreaLayoutGuide
     }
     
     let viewModel = LauncherViewModel(
@@ -209,15 +212,19 @@ public final class ChannelIO: NSObject {
       config: ChannelIO.settings?.launcherConfig
     )
     
-    launchView.insert(on: view, animated: animated)
-    launchView.configure(viewModel)
+    if launcherView.superview == nil {
+      launcherView.insert(on: view, animated: animated)
+    } else {
+      launcherView.show(animated: animated)
+    }
     
-    launchView.buttonView.signalForClick().subscribe(onNext: { _ in
+    launcherView.configure(viewModel)
+    launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
       guard ChannelIO.isValidStatus else { return }
       ChannelIO.open(animated: true)
     }).disposed(by: disposeBeg)
     
-    ChannelIO.launcherView = launchView
+    ChannelIO.launcherView = launcherView
   }
   
   /**
@@ -226,8 +233,8 @@ public final class ChannelIO: NSObject {
    *  - parameter animated: if true, the view is being added to the window using an animation
    */
   @objc public class func hide(animated: Bool) {
-    ChannelIO.launcherView?.remove(animated: animated)
-    ChannelIO.launcherView = nil
+    ChannelIO.launcherView?.hide(animated: animated)
+    ChannelIO.launcherVisible = false
   }
   
   /** 
@@ -240,6 +247,7 @@ public final class ChannelIO: NSObject {
     guard !mainStore.state.uiState.isChannelVisible else { return }
     guard let topController = CHUtils.getTopController() else { return }
     
+    ChannelIO.launcherView?.isHidden = true
     ChannelIO.delegate?.willOpenMessenger?()
     ChannelIO.sendDefaultEvent(.open)
     mainStore.dispatch(ChatListIsVisible())
@@ -264,7 +272,11 @@ public final class ChannelIO: NSObject {
     ChannelIO.baseNavigation?.dismiss(
       animated: animated, completion: {
       mainStore.dispatch(ChatListIsHidden())
-
+      
+      //ChannelIO.launcherView?.isHidden = false
+      if ChannelIO.launcherVisible {
+        ChannelIO.launcherView?.show(animated: true)
+      }
       ChannelIO.baseNavigation?.removeFromParentViewController()
       ChannelIO.baseNavigation = nil
       completion?()
