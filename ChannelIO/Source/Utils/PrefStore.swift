@@ -13,7 +13,7 @@ class PrefStore {
   static let VEIL_ID_KEY = "CHPlugin_VeilId"
   static let USER_ID_KEY = "CHPlugin_UserId"
   static let PUSH_OPTION_KEY = "CHPlugin_PushOption"
-  static let VISIBLE_CLOSED_USERCHAT_KEY = "CHPlugin_visible_closed_userchat"
+  static let VISIBLE_CLOSED_USERCHAT_KEY = "CHPlugin_visibility_of_userchat"
   static let CHANNEL_PLUGIN_SETTINGS_KEY = "CHPlugin_settings"
   static let VISIBLE_TRANSLATION = "CHPlugin_visible_translation"
   static let GUEST_KEY = "CHPlugin_x_guest_key"
@@ -73,7 +73,7 @@ class PrefStore {
     if let closed = UserDefaults.standard.object(forKey: VISIBLE_CLOSED_USERCHAT_KEY) as? Bool {
       return closed
     }
-    return true
+    return false
   }
   
   static func setVisibilityOfTranslation(on: Bool) {

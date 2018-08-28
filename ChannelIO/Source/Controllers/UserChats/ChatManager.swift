@@ -45,6 +45,8 @@ class ChatManager: NSObject {
     }
   }
   
+  var guest: CHGuest? = nil
+  
   var didFetchInfo = false
   var didChatLoaded = false
   var didLoad = false
@@ -81,13 +83,20 @@ class ChatManager: NSObject {
   init(id: String?, type: String = "UserChat"){
     super.init()
     
-    self.chatId = id ?? ""
     self.chatType = type
+    self.setChatEntities(with: id)
+    self.observeAppState()
+  }
+  
+  fileprivate func setChatEntities(with chatId: String?) {
+    self.chatId = chatId ?? ""
     self.chat = userChatSelector(
       state: mainStore.state,
-      userChatId: id)
-    
-    self.observeAppState()
+      userChatId: chatId)
+    self.guest = personSelector(
+      state: mainStore.state,
+      personType: self.chat?.personType,
+      personId: self.chat?.personId) as? CHGuest
   }
   
   fileprivate func observeSocketEvents() {
@@ -294,7 +303,6 @@ extension ChatManager {
       self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
     } else {
       self.createChat().subscribe(onNext: { [weak self] (chatId) in
-        self?.chatId = chatId
         self?.sendMessageRecursively(allMessages: [message], currentIndex: 0, requestBot: true)
       }, onError: { [weak self] (error) in
         self?.state = .chatNotLoaded
@@ -307,7 +315,6 @@ extension ChatManager {
       self.uploadImages(assets: assets)
     } else {
       self.createChat().subscribe(onNext: { [weak self] (chatId) in
-        self?.chatId = chatId
         self?.uploadImages(assets: assets, requestBot: true)
       }, onError: { [weak self] (error) in
         self?.state = .chatNotLoaded
@@ -449,24 +456,22 @@ extension ChatManager {
         pluginId = mainStore.state.plugin.id
       }
       
-      let signal = CHUserChat.create(pluginId: pluginId)
-        .subscribe(onNext: { (chatResponse) in
-          guard let userChat = chatResponse.userChat,
-            let session = chatResponse.session else { return }
-          mainStore.dispatch(CreateSession(payload: session))
-          mainStore.dispatch(CreateUserChat(payload: userChat))
-          self?.chatNewlyCreated = true
-          self?.didChatLoaded = true
-          self?.chatId = userChat.id
-          self?.prepareToChat()
-          
-          subscriber.onNext(userChat.id)
-          subscriber.onCompleted()
-        }, onError: { [weak self] (error) in
-          self?.didChatLoaded = false
-          self?.state = .chatNotLoaded
-          subscriber.onError(error)
-        })
+      let signal = CHUserChat.create(pluginId: pluginId).subscribe(onNext: { (chatResponse) in
+        guard let userChat = chatResponse.userChat, let session = chatResponse.session else { return }
+        mainStore.dispatch(CreateSession(payload: session))
+        mainStore.dispatch(CreateUserChat(payload: userChat))
+        self?.chatNewlyCreated = true
+        self?.didChatLoaded = true
+        self?.setChatEntities(with: userChat.id)
+        self?.prepareToChat()
+        
+        subscriber.onNext(userChat.id)
+        subscriber.onCompleted()
+      }, onError: { [weak self] (error) in
+        self?.didChatLoaded = false
+        self?.state = .chatNotLoaded
+        subscriber.onError(error)
+      })
       
       return Disposables.create {
         signal.dispose()
@@ -591,13 +596,12 @@ extension ChatManager {
   
   func requestRead(at message: CHMessage? = nil) {
     guard !self.isRequstingReadAll else { return }
-    guard let message = message else { return }
-    guard let session = self.chat?.session else { return }
-    guard session.unread != 0 || session.alert != 0 else { return }
+    guard let chat = self.chat, let message = message else { return }
+    guard message.entity as? CHGuest == nil else { return }
     
     self.isRequstingReadAll = true
-    
-    self.chat?.read(at: message)
+  
+    chat.read(at: message)
       .debounce(1, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (completed) in
         self?.isRequstingReadAll = false
