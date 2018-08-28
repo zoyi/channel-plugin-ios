@@ -199,6 +199,7 @@ public final class ChannelIO: NSObject {
     guard let view = UIApplication.shared.keyWindow else { return }
     ChannelIO.launcherVisible = true
     guard ChannelIO.isValidStatus else { return }
+    guard ChannelIO.baseNavigation == nil else { return }
     
     let launcherView = ChannelIO.launcherView ?? LauncherView()
   

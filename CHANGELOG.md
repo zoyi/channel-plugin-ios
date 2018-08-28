@@ -1,3 +1,15 @@
+# 4.0.0 (August 31, 2018)
+# Deprecated
+* ChannelPluginSetting's hideDefaultLauncher property has been deprecated
+
+# Update
+* Users now will be asked to close chat
+* Web link will be opened in application instead default browser
+* Updated internal APIs related to session and read
+* Cached country data locally 
+* `boot:` will not show launcher automatically
+* `show:` and `hide:` is visibility control property for launcher and it appears globally over application
+
 # 3.2.7 (August 1, 2018)
 # Update
 * Removed install objc header option from build option
