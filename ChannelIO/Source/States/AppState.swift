@@ -29,6 +29,7 @@ struct AppState: StateType {
   case english
   case korean
   case japanese
+  case device
 }
 
 enum CHLocaleString: String {

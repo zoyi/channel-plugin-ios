@@ -34,7 +34,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc public var launcherConfig: LauncherConfig?
   
   /* true if default launcher button not to be displayed. Default is false */
-  @available(*, deprecated: 4.0, message: "This has been deprecated. Boot will not show launcher automatically after 4.0")
+  @available(*, deprecated)
   @objc public var hideDefaultLauncher: Bool = false
   
   /* true if default in-app push notification not to be displayed. Default is false */
@@ -81,7 +81,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     hideDefaultLauncher: Bool = false,
     hideDefaultInAppPush: Bool = false,
     enabledTrackDefaultEvent: Bool = true,
-    locale: CHLocale = .korean) {
+    locale: CHLocale = .device) {
     super.init()
     
     self.pluginKey = pluginKey
@@ -92,13 +92,17 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     self.hideDefaultInAppPush = hideDefaultInAppPush
     self.enabledTrackDefaultEvent = enabledTrackDefaultEvent
 
-    let deviceLocale = CHUtils.getLocale()
-    if deviceLocale == .japanese {
-      self.locale = .japanese
-    } else if deviceLocale == .korean {
-      self.locale = .korean
+    if locale == .device {
+      let deviceLocale = CHUtils.getLocale()
+      if deviceLocale == .japanese {
+        self.locale = .japanese
+      } else if deviceLocale == .korean {
+        self.locale = .korean
+      } else {
+        self.locale = .english
+      }
     } else {
-      self.locale = .english
+      self.locale = locale
     }
   }
   
@@ -117,7 +121,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
       aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
     let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.enabledTrackDefaultEvent) ||
       aDecoder.decodeBool(forKey: "enabledTrackDefaultEvent")
-    let locale = CHLocale(rawValue: aDecoder.decodeInteger(forKey: ChannelPluginSettingKey.locale)) ?? .korean
+    let locale = CHLocale(rawValue: aDecoder.decodeInteger(forKey: ChannelPluginSettingKey.locale)) ?? .device
     
     self.init(pluginKey: pluginKey,
       userId: userId,
@@ -165,7 +169,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   }
   
   @discardableResult
-  @available(*, deprecated: 4.0, message: "This has been deprecated. Boot will not show launcher automatically after 4.0")
+  @available(*, deprecated)
   @objc public func set(hideDefaultLauncher: Bool) -> ChannelPluginSettings {
     self.hideDefaultLauncher = hideDefaultLauncher
     return self
