@@ -452,9 +452,10 @@ extension UserChatViewController: StoreSubscriber {
 //    let maxHeight = UIScreen.main.bounds.height - 64 - 50
 //    self.tableView.contentInset = UIEdgeInsets(top: maxHeight - calculatedHeight, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
   }
-
+  
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
-    if (self.userChat?.isReadyOrOpen() == true && nextUserChat?.isReadyOrOpen() == false) ||
+    if (CHUserChat.becomeActive(current: self.userChat, next: nextUserChat) ||
+      CHUserChat.becomeOpen(current: self.userChat, next: nextUserChat)) ||
       self.channel.isDiff(from: state.channel) ||
       self.currentLocale != state.settings?.appLocale {
       self.currentLocale = state.settings?.appLocale

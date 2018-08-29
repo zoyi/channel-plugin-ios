@@ -29,6 +29,7 @@ struct CHUserChat: ModelType {
   var updatedAt: Date?
   var followedAt: Date?
   var resolvedAt: Date?
+  var closedAt: Date?
   var followedBy: String = ""
   var hostId: String?
   var hostType: String?
@@ -72,6 +73,7 @@ extension CHUserChat: Mappable {
     openedAt         <- (map["openedAt"], CustomDateTransform())
     followedAt       <- (map["followedAt"], CustomDateTransform())
     resolvedAt       <- (map["resolvedAt"], CustomDateTransform())
+    closedAt         <- (map["closedAt"], CustomDateTransform())
     updatedAt        <- (map["appUpdatedAt"], CustomDateTransform())
     followedBy       <- map["followedBy"]
     appMessageId     <- map["appMessageId"]
@@ -186,6 +188,16 @@ extension CHUserChat {
   
   func isEngaged() -> Bool {
     return self.state == "solved" || self.state == "closed" || self.state == "following"
+  }
+  
+  static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
+    guard let current = current, let next = next else { return false }
+    return current.isReadyOrOpen() && !next.isReadyOrOpen()
+  }
+  
+  static func becomeOpen(current: CHUserChat?, next: CHUserChat?) -> Bool {
+    guard let current = current, let next = next else { return false }
+    return current.isSolved() && next.isReadyOrOpen()
   }
 }
 

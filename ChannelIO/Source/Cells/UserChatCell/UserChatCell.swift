@@ -142,13 +142,6 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     
     self.messageLabel.textColor = viewModel.isClosed ?
       CHColors.blueyGrey :  Color.messageLabel
-
-  }
-
-  // MARK: Layout
-
-  override func layoutSubviews() {
-    super.layoutSubviews()
   }
 
   // MARK: Cell Height
