@@ -42,16 +42,16 @@
     [self.usernameField resignFirstResponder];
     [self.pluginKeyField resignFirstResponder];
     
-    Guest *guest = [[Guest alloc] init];
-    [guest setWithMobileNumber:self.phoneField.text];
-    [guest setWithId:self.idField.text];
-    [guest setWithName:self.usernameField.text];
+    Profile *profile = [[Profile alloc] init];
+    [profile setWithMobileNumber:self.phoneField.text];
+    [profile setWithName:self.usernameField.text];
 
     ChannelPluginSettings *settings = [[ChannelPluginSettings alloc] init];
     [settings setPluginKey:self.pluginKeyField.text];
-    
-    [ChannelIO bootWith:settings guest:guest completion:^(ChannelPluginCompletionStatus status) {
-      
+    [settings setUserId:self.idField.text];
+
+    [ChannelIO bootWith:settings profile:profile completion:^(ChannelPluginCompletionStatus status, Guest *guest) {
+
     }];
 }
 

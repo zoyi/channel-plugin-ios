@@ -33,7 +33,7 @@
   ChannelPluginSettings *settings = [[ChannelPluginSettings alloc] init];
   [settings setPluginKey:self.pluginKeyField.text];
   
-  [ChannelIO bootWith:settings guest:nil completion:^(ChannelPluginCompletionStatus status) {
+  [ChannelIO bootWith:settings profile:nil completion:^(ChannelPluginCompletionStatus status, Guest* guest) {
     
   }];
 }
