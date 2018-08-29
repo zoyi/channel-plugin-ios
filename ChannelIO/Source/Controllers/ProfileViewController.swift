@@ -139,9 +139,10 @@ final class ProfileViewController: BaseViewController {
   }
   
   func initViews() {
-    let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as! String
-    self.versionLabel.text = "v\(version)"
+    if let version = Bundle(for: ChannelIO.self)
+      .infoDictionary?["CFBundleShortVersionString"] as? String {
+      self.versionLabel.text = "v\(version)"
+    }
   }
   
   func handleActions() {

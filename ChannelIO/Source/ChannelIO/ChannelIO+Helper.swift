@@ -84,7 +84,10 @@ extension ChannelIO {
         .boot(pluginKey: settings.pluginKey, params: params)
         .subscribe(onNext: { (data) in
           var data = data
-          let channel = data["channel"] as! CHChannel
+          guard let channel = data["channel"] as? CHChannel else {
+            subscriber.onError(CHErrorPool.unknownError)
+            return
+          }
           if channel.shouldBlock && !channel.trial {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
@@ -124,14 +127,11 @@ extension ChannelIO {
     if let userChatViewController = topController as? UserChatViewController,
       userChatViewController.userChatId == userChatId {
       //do nothing
-    } else if topController is UserChatsViewController {
-      let userChatsController = topController as! UserChatsViewController
-      userChatsController.goToUserChatId = userChatId
-    } else if topController is UserChatViewController {
+    } else if let controller = topController as? UserChatsViewController {
+      controller.goToUserChatId = userChatId
+    } else if let controller = topController as? UserChatsViewController {
       topController.navigationController?.popViewController(animated: false, completion: {
-        let userChatsController = CHUtils.getTopController() as! UserChatsViewController
-        userChatsController.goToUserChatId = userChatId
-        //userChatsController.showUserChat(userChatId: userChatId)
+        controller.goToUserChatId = userChatId
       })
     } else {
       let userChatsController = UserChatsViewController()

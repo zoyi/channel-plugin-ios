@@ -474,8 +474,8 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.leaved.value) { (data, ack) in
       dlog("socket leaved: \(data)")
       
-      guard let userChatId = data.get(index: 0) else { return }
-      mainStore.dispatchOnMain(LeavedUserChat(payload: userChatId as! String))
+      guard let userChatId = data.get(index: 0) as? String else { return }
+      mainStore.dispatchOnMain(LeavedUserChat(payload: userChatId))
     }
   }
   
