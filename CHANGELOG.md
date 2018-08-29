@@ -10,6 +10,10 @@
 * `boot:` will not show launcher automatically
 * `show:` and `hide:` is visibility control property for launcher and it appears globally over application
 
+# 3.2.8 (August 28, 2018)
+# Bug fixes 
+* Fixed crash caused by string forced unwrapping
+
 # 3.2.7 (August 1, 2018)
 # Update
 * Removed install objc header option from build option

@@ -304,7 +304,7 @@ public final class ChannelIO: NSObject {
     guard let settings = ChannelIO.settings else { return }
     
     let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as! String
+      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
     ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: [
       "pluginId": settings.pluginKey,
@@ -333,24 +333,21 @@ public final class ChannelIO: NSObject {
    *   - parameter userInfo: a Dictionary contains push information
    */
   @objc public class func isChannelPushNotification(_ userInfo:[AnyHashable: Any]) -> Bool {
-    guard let provider = userInfo["provider"] else { return false }
-    
-    let isCorrectProvider = provider as! String == CHConstants.channelio
-    
+    guard let provider = userInfo["provider"] as? String, provider  == CHConstants.channelio else { return false }
+    guard let personType = userInfo["personType"] as? String else { return false }
+    guard let personId = userInfo["personId"] as? String else { return false }
+    guard let pushChannelId = userInfo["channelId"] as? String else { return false }
+
     let userId = PrefStore.getCurrentUserId() ?? ""
     let veilId = PrefStore.getCurrentVeilId() ?? ""
     let channelId = PrefStore.getCurrentChannelId() ?? ""
     
-    let personType = userInfo["personType"] as! String
-    let personId = userInfo["personId"] as! String
-    let pushChannelId = userInfo["channelId"] as! String
-    
     if personType == "User" {
-      return personId == userId && pushChannelId == channelId && isCorrectProvider
+      return personId == userId && pushChannelId == channelId
     }
     
     if personType == "Veil" {
-      return personId == veilId && pushChannelId == channelId && isCorrectProvider
+      return personId == veilId && pushChannelId == channelId
     }
     
     return false
@@ -367,10 +364,10 @@ public final class ChannelIO: NSObject {
    */
   @objc public class func handlePushNotification(_ userInfo:[AnyHashable : Any]) {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
-
+    guard let userChatId = userInfo["chatId"] as? String else { return }
+    
     //check if checkin 
     if ChannelIO.isValidStatus {
-      let userChatId = userInfo["chatId"] as! String
       ChannelIO.showUserChat(userChatId:userChatId)
       return
     }
@@ -386,7 +383,6 @@ public final class ChannelIO: NSObject {
     
     ChannelIO.boot(with: settings, profile: profile) { (status, guest) in
       if status == .success {
-        let userChatId = userInfo["chatId"] as! String
         ChannelIO.showUserChat(userChatId:userChatId)
       }
     }
