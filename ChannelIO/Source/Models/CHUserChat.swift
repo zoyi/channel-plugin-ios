@@ -91,15 +91,8 @@ extension CHUserChat {
     return UserChatPromise.getChat(userChatId: userChatId)
   }
   
-  static func getChats(
-    since: Int64?=nil,
-    sortOrder: String,
-    showCompleted: Bool = false) -> Observable<[String: Any?]> {
-    return UserChatPromise.getChats(
-      since: since,
-      limit: 30,
-      sortOrder: sortOrder,
-      showCompleted: showCompleted)
+  static func getChats(since: Int64?=nil, showCompleted: Bool = false) -> Observable<[String: Any?]> {
+    return UserChatPromise.getChats(since: since, limit: 30, showCompleted: showCompleted)
   }
   
   static func create(pluginId: String) -> Observable<ChatResponse>{

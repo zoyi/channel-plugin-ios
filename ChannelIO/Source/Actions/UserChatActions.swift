@@ -48,6 +48,8 @@ struct DeleteUserChats: Action {
   public let payload: [String]
 }
 
+struct DeleteUserChatsAll: Action {}
+
 struct JoinedUserChat: Action {
   public let payload: String
 }

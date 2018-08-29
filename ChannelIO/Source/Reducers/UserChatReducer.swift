@@ -25,6 +25,8 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
     return state?.remove(userChatId: action.payload) ?? UserChatsState()
   case let action as DeleteUserChats:
     return state?.remove(userChatIds: action.payload) ?? UserChatsState()
+  case _ as DeleteUserChatsAll:
+    return state?.clear() ?? UserChatsState()
   case let action as JoinedUserChat:
     state?.currentUserChatId = action.payload
     return state ?? UserChatsState()

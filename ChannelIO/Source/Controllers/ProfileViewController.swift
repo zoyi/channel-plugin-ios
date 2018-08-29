@@ -289,10 +289,7 @@ extension ProfileViewController : StoreSubscriber {
   func fetchUserChats(_ showCompleted: Bool) {
     SVProgressHUD.show()
     
-    UserChatPromise.getChats(
-      since: nil,
-      limit: 30, sortOrder: "DESC",
-      showCompleted: showCompleted)
+    UserChatPromise.getChats(since: nil, limit: 30, showCompleted: showCompleted)
       .subscribe(onNext: { (data) in
         mainStore.dispatch(GetUserChats(payload: data))
       }, onError: { [weak self] error in

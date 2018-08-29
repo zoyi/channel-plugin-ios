@@ -13,28 +13,17 @@ import SwiftyJSON
 import ObjectMapper
 
 struct UserChatPromise {
-  static func getChats(
-    since:Int64?=nil,
-    limit:Int,
-    sortOrder:String,
-    showCompleted: Bool = false) -> Observable<[String: Any?]> {
+  static func getChats(since:Int64?=nil, limit:Int, showCompleted: Bool = false) -> Observable<[String: Any?]> {
     return Observable.create { subscriber in
       var params = ["query": [
           "limit": limit,
-          "sortOrder":sortOrder,
-          "sortField": "updatedAt"
+          "includeClosed": showCompleted
         ]
       ]
       if since != nil {
         params["query"]?["since"] = since
       }
 
-      if showCompleted {
-        params["query"]?["states"] = ["open","ready","following","holding","solved","closed"]
-      } else {
-        params["query"]?["states"] = ["open","ready","following","holding","solved"]
-      }
-      
       Alamofire.request(RestRouter.GetUserChats(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in

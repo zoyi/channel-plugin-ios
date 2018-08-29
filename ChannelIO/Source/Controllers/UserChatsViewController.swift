@@ -446,16 +446,16 @@ extension UserChatsViewController {
       SVProgressHUD.show()
     }
     
-    UserChatPromise.getChats(
-      since: isInit ? nil : self.nextSeq,
-      limit: 30, sortOrder: "DESC",
-      showCompleted: self.showCompleted)
+    UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
         self?.didLoad = true
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
 
         mainStore.dispatch(GetUserChats(payload: data))
+        if let userChats = data["userChats"] as? [CHUserChat], userChats.count == 0 && isInit {
+          mainStore.dispatch(DeleteUserChatsAll())
+        }
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.display(animated:true)
