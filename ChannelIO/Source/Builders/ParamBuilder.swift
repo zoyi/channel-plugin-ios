@@ -93,6 +93,6 @@ class BootParamBuilder: ParamBuilder {
     if let sysProfile = self.buildSysProps() {
       data[ParamKey.sysProfile] = sysProfile
     }
-    return data
+    return ["body": data]
   }
 }

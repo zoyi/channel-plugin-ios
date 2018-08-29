@@ -32,7 +32,7 @@ enum RestRouter: URLRequestConvertible {
   case SetMessagesRead(String, ParametersType)
   
   case RegisterToken(ParametersType)
-  case UnregisterToken(String)
+  case UnregisterToken(String, ParametersType)
   case CheckVersion
   case GetGeoIP
   
@@ -92,7 +92,7 @@ enum RestRouter: URLRequestConvertible {
   var path: String {
     switch self {
     case .Boot(let pluginKey, _):
-      return "/app/plugins/\(pluginKey)/boot"
+      return "/app/plugins/\(pluginKey)/boot/v2"
     case .GetCurrentGuest:
       return "/app/guests/me"
     case .GetPlugin(let pluginId):
@@ -123,7 +123,7 @@ enum RestRouter: URLRequestConvertible {
       return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
     case .GetGeoIP:
       return "/geoip"
-    case .UnregisterToken(let key):
+    case .UnregisterToken(let key, _):
       return "/app/device_tokens/ios/\(key)"
     case .SendEvent:
       return "/app/events"
@@ -189,6 +189,15 @@ enum RestRouter: URLRequestConvertible {
       }
     }
     
+    if let headers = parameters?["headers"] as? ParametersType, var req = try? request.asURLRequest() {
+      for (key, val) in headers {
+        if let value = val as? String, value != "" {
+          req.setValue(value, forHTTPHeaderField: key)
+        }
+      }
+      request = req
+    }
+    
     return request as! URLRequest
   }
   
@@ -210,7 +219,8 @@ enum RestRouter: URLRequestConvertible {
          .Translate(_, let params),
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params),
-         .SetMessagesRead(_, let params):
+         .SetMessagesRead(_, let params),
+         .UnregisterToken(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,

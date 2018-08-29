@@ -49,10 +49,12 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func unregisterPushToken() -> Observable<Any?> {
+  static func unregisterPushToken(guestToken: String) -> Observable<Any?> {
     return Observable.create { subscriber in
+      let params = ["headers":["X-Guest-Jwt": guestToken]]
+      
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
-      let req = Alamofire.request(RestRouter.UnregisterToken(key))
+      let req = Alamofire.request(RestRouter.UnregisterToken(key, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           if response.response?.statusCode == 200 {
@@ -154,10 +156,6 @@ struct PluginPromise {
   
   static func boot(pluginKey: String, params: CHParam) -> Observable<[String: Any]> {
     return Observable.create({ (subscriber) in      
-//      let params = [
-//        "body": params
-//      ]
-      
       let req = Alamofire.request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in

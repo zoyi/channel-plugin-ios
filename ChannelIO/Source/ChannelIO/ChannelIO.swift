@@ -174,21 +174,18 @@ public final class ChannelIO: NSObject {
    *   Call this method when user terminate session or logout
    */
   @objc public class func shutdown() {
-    ChannelIO.launcherView?.hide(animated: false)
-    ChannelIO.close(animated: false)
-    ChannelIO.hideNotification()
+    let guestToken = PrefStore.getCurrentGuestKey() ?? ""
+    ChannelIO.reset()
     
-    PluginPromise.unregisterPushToken()
+    PluginPromise.unregisterPushToken(guestToken: guestToken)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { _ in
         dlog("shutdown success")
-        mainStore.dispatch(CheckOutSuccess())
-        WsService.shared.disconnect()
       }, onError: { (error) in
         dlog("shutdown fail")
       }).disposed(by: disposeBeg)
   }
-  
+    
   /**
    *   Show channel launcher on application
    *   location of the view can be customized with LauncherConfig property in ChannelPluginSettings

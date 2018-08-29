@@ -11,6 +11,14 @@ import CRToast
 import SVProgressHUD
 
 extension ChannelIO {
+  internal class func reset() {
+    ChannelIO.launcherView?.hide(animated: false)
+    ChannelIO.close(animated: false)
+    ChannelIO.hideNotification()
+    mainStore.dispatch(CheckOutSuccess())
+    WsService.shared.disconnect()
+  }
+  
   internal class func prepare() {
     if let subscriber = ChannelIO.subscriber {
       mainStore.unsubscribe(subscriber)
@@ -26,7 +34,7 @@ extension ChannelIO {
       kCRToastFontKey: UIFont.boldSystemFont(ofSize: 13)
     ]
     
-    ChannelIO.shutdown()
+    ChannelIO.reset()
     ChannelIO.initWebsocket()
     
     let subscriber = CHPluginSubscriber()
@@ -74,16 +82,16 @@ extension ChannelIO {
         PrefStore.clearCurrentUserId()
       }
       
-      var params = [String: Any]()
-      params["query"] = CHUtils.bootQueryParams()
-      if let profile = profile {
-        params["body"] = profile.generateParams()
-      }
+//      var params = [String: Any]()
+//      params["query"] = CHUtils.bootQueryParams()
+//      if let profile = profile {
+//        params["body"] = profile.generateParams()
+//      }
       
-//      let params = BootParamBuilder()
-//        .with(profile: profile)
-//        .with(sysProfile: nil, includeDefault: true)
-//        .build()
+      let params = BootParamBuilder()
+        .with(profile: profile)
+        .with(sysProfile: nil, includeDefault: true)
+        .build()
       
       PluginPromise
         .boot(pluginKey: settings.pluginKey, params: params)
