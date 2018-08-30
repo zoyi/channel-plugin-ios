@@ -561,6 +561,9 @@ extension ChatManager {
     self.nextSeq = ""
     self.didChatLoaded = false
     WsService.shared.connect()
+    GuestPromise.getCurrent().subscribe(onNext: { (user) in
+      mainStore.dispatch(UpdateGuest(payload: user))
+    }).disposed(by: self.disposeBag)
   }
   
   func fetchMessages() {
@@ -600,7 +603,7 @@ extension ChatManager {
     guard message.entity as? CHGuest == nil else { return }
     
     self.isRequstingReadAll = true
-  
+
     chat.read(at: message)
       .debounce(1, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (completed) in

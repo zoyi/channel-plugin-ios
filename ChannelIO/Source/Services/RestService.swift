@@ -20,6 +20,7 @@ enum RestRouter: URLRequestConvertible {
   case GetPlugin(String)
   
   case GetCurrentGuest
+  case TouchGuest
   case GetUserChats(ParametersType)
   case GetUserChat(String)
   case CreateUserChat(String)
@@ -71,7 +72,7 @@ enum RestRouter: URLRequestConvertible {
          .SendEvent, .Boot, .RequestProfileBot,
          .UpdateProfileItem:
       return .post
-    case .GetCurrentGuest,
+    case .GetCurrentGuest, .TouchGuest,
          .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
@@ -95,6 +96,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/plugins/\(pluginKey)/boot/v2"
     case .GetCurrentGuest:
       return "/app/guests/me"
+    case .TouchGuest:
+      return "/app/guests/touch"
     case .GetPlugin(let pluginId):
       return "/app/plugins/\(pluginId)"
     case .GetUserChats:

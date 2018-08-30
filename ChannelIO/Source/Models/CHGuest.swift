@@ -40,4 +40,8 @@ extension CHGuest {
   static func getCurrent() -> Observable<CHGuest> {
     return GuestPromise.getCurrent()
   }
+  
+  static func touch() -> Observable<CHGuest> {
+    return GuestPromise.touch()
+  }
 }
