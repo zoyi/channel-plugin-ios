@@ -112,7 +112,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.view.backgroundColor = UIColor.white
   
     self.initManagers()
-    self.initNavigationViews()
+    self.initNavigationViews(with: self.userChat)
     self.initSLKTextView()
     self.initTypingCell()
     self.initTableView()
@@ -240,7 +240,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
   }
 
-  fileprivate func initNavigationViews() {
+  fileprivate func initNavigationViews(with userChat: CHUserChat? = nil) {
     self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
     //TODO: take this out from redux
     let userChats = userChatsSelector(
@@ -250,20 +250,20 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.setNavItems(
       showSetting: userChats.count == 0,
-      currentUserChat: self.userChat,
+      currentUserChat: userChat ?? self.userChat,
       guest: mainStore.state.guest,
       textColor: mainStore.state.plugin.textUIColor
     )
     
-    self.initNavigationTitle()
-    self.initNavigationExtension()
+    self.initNavigationTitle(with: userChat ?? self.userChat)
+    self.initNavigationExtension(with: userChat ?? self.userChat)
   }
   
-  func initNavigationTitle() {
+  func initNavigationTitle(with userChat: CHUserChat? = nil) {
     let titleView = NavigationTitleView()
     titleView.configure(
       channel: mainStore.state.channel,
-      userChat: self.userChat,
+      userChat: userChat,
       plugin: mainStore.state.plugin)
     
     titleView.translatesAutoresizingMaskIntoConstraints = false
@@ -289,19 +289,21 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.navigationController?.navigationBar.shadowImage = UIImage()
   }
   
-  func initNavigationExtension() {
+  func initNavigationExtension(with userChat: CHUserChat? = nil) {
     let view: UIView!
-    if self.userChat?.isOpen() == true || self.userChat == nil {
+    let userChat = userChat ?? self.userChat
+    
+    if userChat?.lastTalkedHost == nil {
       view = ChatStatusViewFactory.createDefaultExtensionView(
         fit: self.view.bounds.width,
-        userChat: self.userChat,
+        userChat: userChat,
         channel: mainStore.state.channel,
         plugin: mainStore.state.plugin,
         managers: mainStore.state.managersState.followingManagers)
     } else {
       view = ChatStatusViewFactory.createFollowedExtensionView(
         fit: self.view.bounds.width,
-        userChat: self.userChat,
+        userChat: userChat,
         channel: mainStore.state.channel,
         plugin: mainStore.state.plugin)
     }
@@ -309,7 +311,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.shyNavBarManager.scrollView = self.tableView
     self.shyNavBarManager.stickyNavigationBar = true
     self.shyNavBarManager.fadeBehavior = .subviews
-    if let state = self.userChat?.state, state != "ready" &&
+    if let state = userChat?.state, state != "ready" &&
       self.shyNavBarManager.extensionView == nil || !self.shyNavBarManager.isExpanded() {
       self.titleView?.isExpanded = false
       self.shyNavBarManager.hideExtension = true
@@ -447,20 +449,15 @@ extension UserChatViewController: StoreSubscriber {
     self.userChat = userChat
     self.chatManager.chat = userChat
     self.channel = state.channel
-    
-//    let calculatedHeight = self.tableView.visibleCells.map({ $0.height }).reduce(0) { total, number in total + number }
-//    let maxHeight = UIScreen.main.bounds.height - 64 - 50
-//    self.tableView.contentInset = UIEdgeInsets(top: maxHeight - calculatedHeight, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
   }
   
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
-    if (CHUserChat.becomeActive(current: self.userChat, next: nextUserChat) ||
-      CHUserChat.becomeOpen(current: self.userChat, next: nextUserChat)) ||
-      self.channel.isDiff(from: state.channel) ||
-      self.currentLocale != state.settings?.appLocale {
-      self.currentLocale = state.settings?.appLocale
-      self.initNavigationViews()
-      //replace welcome with updated locale only if user chat has not been created
+    if self.userChat?.hostId != nextUserChat?.hostId {
+      self.initNavigationViews(with: nextUserChat)
+    } else if self.channel.isDiff(from: state.channel) {
+      self.initNavigationViews(with: nextUserChat)
+    } else if self.currentLocale != state.settings?.appLocale {
+      self.initNavigationViews(with: nextUserChat)
     }
     
     let userChats = userChatsSelector(

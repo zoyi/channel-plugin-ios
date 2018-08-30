@@ -64,8 +64,13 @@ final class ChatNotificationView : BaseView {
     $0.isEditable = false
     $0.font = Font.messageLabel
     $0.textColor = Color.messageLabel
-    $0.textContainer.maximumNumberOfLines = 10
+    $0.textContainer.maximumNumberOfLines = 3
     $0.textContainer.lineBreakMode = .byTruncatingTail
+    
+    $0.dataDetectorTypes = [.link, .phoneNumber]
+    $0.textContainer.lineFragmentPadding = 0
+    $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+    
     $0.linkTextAttributes = [
       NSAttributedStringKey.foregroundColor.rawValue: CHColors.cobalt,
       NSAttributedStringKey.underlineStyle.rawValue: 0
@@ -81,6 +86,7 @@ final class ChatNotificationView : BaseView {
   let timestampLabel = UILabel().then {
     $0.font = Font.timestampLabel
     $0.textColor = Color.timeLabel
+    $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
   
   let avatarView = AvatarView().then {
@@ -93,6 +99,9 @@ final class ChatNotificationView : BaseView {
     $0.contentMode = UIViewContentMode.center
     $0.layer.shadowOpacity = 0
   }
+  
+  let chatSignal = PublishSubject<Any?>()
+  let disposeBag = DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -117,6 +126,16 @@ final class ChatNotificationView : BaseView {
     self.addSubview(self.timestampLabel)
     self.addSubview(self.avatarView)
     self.addSubview(self.closeView)
+    
+    self.signalForClick().subscribe(onNext: { [weak self] (_) in
+      self?.chatSignal.onNext(nil)
+      self?.chatSignal.onCompleted()
+    }).disposed(by: self.disposeBag)
+    
+    self.messageView.signalForClick().subscribe(onNext: { [weak self] (_) in
+      self?.chatSignal.onNext(nil)
+      self?.chatSignal.onCompleted()
+    }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -138,9 +157,9 @@ final class ChatNotificationView : BaseView {
       make.centerY.equalTo((self?.nameLabel.snp.centerY)!)
     }
     
-    self.messageView.snp.makeConstraints { (make) in
+    self.messageView.snp.makeConstraints { [weak self] (make) in
       make.leading.equalToSuperview().inset(14)
-      make.top.equalToSuperview().inset(45)
+      make.top.equalTo((self?.nameLabel.snp.bottom)!).offset(12)
       make.bottom.equalToSuperview().inset(18)
       make.trailing.equalToSuperview().inset(14)
     }
@@ -174,6 +193,10 @@ final class ChatNotificationView : BaseView {
    
     super.updateConstraints()
   }
+  
+  func signalForChat() -> Observable<Any?> {
+    return self.chatSignal.asObservable()
+  }
 }
 
 extension ChatNotificationView : UITextViewDelegate {
@@ -183,7 +206,7 @@ extension ChatNotificationView : UITextViewDelegate {
     let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
     return shouldhandle == true || shouldhandle == nil
   }
-  
+
   @available(iOS 10.0, *)
   func textView(_ textView: UITextView,
                 shouldInteractWith URL: URL,
@@ -199,3 +222,4 @@ extension ChatNotificationView : UITextViewDelegate {
     return true
   }
 }
+

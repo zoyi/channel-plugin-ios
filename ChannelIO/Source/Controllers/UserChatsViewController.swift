@@ -73,8 +73,8 @@ class UserChatsViewController: BaseViewController {
     
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.emptyView)
-    self.view.addSubview(self.plusButton)
     self.view.addSubview(self.watermarkView)
+    self.view.addSubview(self.plusButton)
     
     self.errorToastView.topLayoutGuide = self.topLayoutGuide
     self.errorToastView.containerView = self.view
@@ -120,29 +120,29 @@ class UserChatsViewController: BaseViewController {
   }
   
   func initActions() {
-    self.errorToastView.refreshImageView.signalForClick()
-      .subscribe { [weak self] _ in
-        self?.errorToastView.dismiss(animated: true)
-        self?.nextSeq = nil
-        self?.fetchUserChats(isInit: true, showIndicator: true)
-        WsService.shared.connect()
-      }.disposed(by: self.disposeBag)
+    self.errorToastView.refreshImageView.signalForClick().subscribe { [weak self] _ in
+      self?.errorToastView.dismiss(animated: true)
+      self?.nextSeq = nil
+      self?.fetchUserChats(isInit: true, showIndicator: true)
+      WsService.shared.connect()
+      _ = GuestPromise.touch().subscribe(onNext: { (guest) in
+        mainStore.dispatch(UpdateGuest(payload: guest))
+      })
+    }.disposed(by: self.disposeBag)
     
-    self.plusButton.signalForClick()
-      .subscribe { [weak self] _ in
-        self?.showUserChat()
-      }.disposed(by: self.disposeBag)
+    self.plusButton.signalForClick().subscribe { [weak self] _ in
+      self?.showUserChat()
+    }.disposed(by: self.disposeBag)
     
-    self.watermarkView.signalForClick()
-      .subscribe{ _ in
-        let channel = mainStore.state.channel
-        let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-        let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
-        
-        if let url = URL(string: urlString) {
-          url.open()
-        }
-      }.disposed(by: self.disposeBag)
+    self.watermarkView.signalForClick().subscribe{ _ in
+      let channel = mainStore.state.channel
+      let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+      let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
+      
+      if let url = URL(string: urlString) {
+        url.open()
+      }
+    }.disposed(by: self.disposeBag)
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -183,10 +183,14 @@ class UserChatsViewController: BaseViewController {
       self?.plusBottomConstraint = make.bottom.equalToSuperview().inset(24).constraint
     }
     
-    self.watermarkView.snp.makeConstraints { (make) in
+    self.watermarkView.snp.makeConstraints { [weak self] (make) in
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.bottom.equalToSuperview()
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!)
+      } else {
+        make.bottom.equalToSuperview()
+      }
       make.height.equalTo(40)
     }
   }

@@ -134,6 +134,7 @@ extension ChannelIO {
       return
     }
     
+    ChannelIO.launcherView?.isHidden = true
     ChannelIO.sendDefaultEvent(.open)
     mainStore.dispatch(ChatListIsVisible())
     
@@ -189,7 +190,7 @@ extension ChannelIO {
     notificationView.configure(notificationViewModel)
     notificationView.insert(on: topController.view, animated: true)
     
-    notificationView.signalForClick()
+    notificationView.signalForChat()
       .subscribe(onNext: { (event) in
         ChannelIO.hideNotification()
         ChannelIO.showUserChat(userChatId: push.userChat?.id)
@@ -259,13 +260,14 @@ extension ChannelIO {
   }
   
   @objc internal class func connectWebsocket() {
+    guard self.isValidStatus else { return }
+    _ = GuestPromise.touch().subscribe(onNext: { (guest) in
+      mainStore.dispatch(UpdateGuest(payload: guest))
+    })
     WsService.shared.connect()
   }
   
   @objc internal class func appBecomeActive(_ application: UIApplication) {
-    guard self.isValidStatus else { return }
-    _ = GuestPromise.getCurrent().subscribe(onNext: { (user) in
-      mainStore.dispatch(UpdateGuest(payload: user))
-    })
+
   }
 }

@@ -193,7 +193,7 @@ public final class ChannelIO: NSObject {
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
   @objc public class func show(animated: Bool) {
-    guard let view = UIApplication.shared.keyWindow else { return }
+    guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
     ChannelIO.launcherVisible = true
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation == nil else { return }

@@ -118,8 +118,8 @@ final class ProfileHeaderView : BaseView {
       self.contactViews.addButton(
         baseColor: plugin.textUIColor,
         image: CHAssets.getImage(named: "phone")) {
-          guard let url = URL(string: "tel://\(phoneNumber)") else { return }
-          url.open()
+          guard let url = URL(string: "tel://\(phoneNumber)"), UIApplication.shared.canOpenURL(url) else { return }
+          UIApplication.shared.openURL(url)
         }
     }
     
