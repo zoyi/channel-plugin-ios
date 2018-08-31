@@ -17,20 +17,26 @@ protocol ParamBuilder {
 class BootParamBuilder: ParamBuilder {
   var data = [String: Any]()
   
+  var userId: String? = nil
   var profile: Profile?
   var sysProfile: [String: Any]?
   var includeDefaultSysProfile = false
   
   struct ParamKey {
-    static let setKey = "$set"
-    static let setOnceKey = "$setOnce"
     static let profile = "profile"
-    static let sysProfile = "sysProperties"
+    static let sysProfile = "sysProfile"
+    static let userId = "userId"
   }
   
   @discardableResult
   func with(profile: Profile?) -> BootParamBuilder {
     self.profile = profile
+    return self
+  }
+  
+  @discardableResult
+  func with(userId: String?) -> BootParamBuilder {
+    self.userId = userId
     return self
   }
   
@@ -93,6 +99,11 @@ class BootParamBuilder: ParamBuilder {
     if let sysProfile = self.buildSysProps() {
       data[ParamKey.sysProfile] = sysProfile
     }
+    
+    if let userId = self.userId {
+      data[ParamKey.userId] = userId
+    }
+    
     return ["body": data]
   }
 }

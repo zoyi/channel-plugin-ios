@@ -177,8 +177,16 @@ struct PluginPromise {
               subscriber.onError(CHErrorPool.pluginParseError)
               break
             }
+            
+            //swift bug, header should be case insensitive
+            if let headers = response.response?.allHeaderFields {
+              let tupleArray = headers.map { (key: AnyHashable, value: Any) in
+                return ((key as? String)?.lowercased() ?? "", value)
+              }
+              let caseInsensitiveHeaders = Dictionary(uniqueKeysWithValues: tupleArray)
+              result["guestKey"] = caseInsensitiveHeaders["x-guest-jwt"]
+            }
 
-            result["guestKey"] = response.response?.allHeaderFields["X-Guest-Jwt"]
             result["veilId"] = json["veilId"].string
             
             subscriber.onNext(result)

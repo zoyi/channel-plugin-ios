@@ -81,14 +81,9 @@ extension ChannelIO {
       } else {
         PrefStore.clearCurrentUserId()
       }
-      
-//      var params = [String: Any]()
-//      params["query"] = CHUtils.bootQueryParams()
-//      if let profile = profile {
-//        params["body"] = profile.generateParams()
-//      }
-      
+
       let params = BootParamBuilder()
+        .with(userId: settings.userId)
         .with(profile: profile)
         .with(sysProfile: nil, includeDefault: true)
         .build()
