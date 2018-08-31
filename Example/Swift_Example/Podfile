@@ -6,5 +6,5 @@ target 'Channel Plugin Sample' do
   use_frameworks!
 
   # Pods for Channel Plugin Sample
-  pod 'ChannelIO', :path => '../..'
+  pod 'ChannelIO'
 end

@@ -43,7 +43,7 @@ Pod::Spec.new do |s|
   s.dependency 'ReSwift'
   s.dependency 'RxSwift', '~> 4.0'
   s.dependency 'RxCocoa', '~> 4.0'
-  s.dependency 'ObjectMapper'
+  s.dependency 'ObjectMapper', '~> 3.3'
   s.dependency 'NVActivityIndicatorView'
   s.dependency 'CHDwifft'
   s.dependency 'DKImagePickerController'

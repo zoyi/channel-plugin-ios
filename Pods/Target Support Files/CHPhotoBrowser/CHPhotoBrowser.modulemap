@@ -1,6 +1,0 @@
-framework module CHPhotoBrowser {
-  umbrella header "CHPhotoBrowser-umbrella.h"
-
-  export *
-  module * { export * }
-}

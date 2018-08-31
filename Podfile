@@ -26,7 +26,6 @@ target 'ChannelIO' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'SnapKit'
-  pod 'SwiftDate'
   pod 'SwiftyJSON'
   pod 'Then'
   pod 'HexColors'
