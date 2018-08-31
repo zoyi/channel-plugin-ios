@@ -522,6 +522,7 @@ fileprivate extension WsService {
   fileprivate func onUnauthorized() {
     self.socket?.on(CHSocketResponse.unauthorized.value) { (data, ack) in
       dlog("unauthorized")
+      self.errorSubject.onNext(nil)
     }
   }
   
@@ -552,28 +553,7 @@ fileprivate extension WsService {
   
   fileprivate func emitAuth() {
     dlog("socket submitting auth")
-    guard let channelId = PrefStore.getCurrentChannelId() else {
-        //authentication cannot be completed due to missing data
-        //mainStore.dispatchOnMain(WsError())
-        return
-    }
-    
-    let userId = PrefStore.getCurrentUserId()
-    let veilId = PrefStore.getCurrentVeilId()
-    if userId == nil  && veilId == nil {
-      //error
-      return
-    }
-    
-    let guestId = (userId ?? "").isEmpty ? veilId : userId
-    let guestType = (userId ?? "").isEmpty ? "Veil" : "User"
-    
-    let submission = [
-      "type": "Plugin",
-      "channelId": channelId,
-      "guestId":  guestId,
-      "guestType": guestType
-    ]
-    self.socket?.emit("authentication", submission)
+    guard let jwt = PrefStore.getCurrentGuestKey() else { return }
+    self.socket?.emit("authentication", ["jwt":jwt])
   }
 }
