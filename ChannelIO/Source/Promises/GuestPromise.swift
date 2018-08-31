@@ -16,7 +16,7 @@ import CRToast
 struct GuestPromise {
   static func touch() -> Observable<CHGuest> {
     return Observable.create { subscriber in
-      Alamofire.request(RestRouter.GetCurrentGuest)
+      Alamofire.request(RestRouter.TouchGuest)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {

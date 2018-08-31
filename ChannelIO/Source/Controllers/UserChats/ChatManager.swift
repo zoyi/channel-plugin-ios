@@ -561,7 +561,8 @@ extension ChatManager {
     self.nextSeq = ""
     self.didChatLoaded = false
     WsService.shared.connect()
-    GuestPromise.getCurrent().subscribe(onNext: { (user) in
+    
+    GuestPromise.touch().subscribe(onNext: { (user) in
       mainStore.dispatch(UpdateGuest(payload: user))
     }).disposed(by: self.disposeBag)
   }

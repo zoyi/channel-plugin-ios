@@ -6,6 +6,7 @@
 * Users now will be asked to close chat
 * Web link will be opened in application instead default browser
 * Updated internal APIs related to session and read
+* Cleared all data properly on `shutdown`
 * Cached country data locally 
 * `boot:` will not show launcher automatically
 * `show:` and `hide:` is visibility control property for launcher and it appears globally over application
