@@ -161,6 +161,8 @@ extension TextMessageView : UITextViewDelegate {
     switch scheme {
     case "tel":
       return true
+    case "mailto":
+      return true
     default:
       return shouldhandle == true || shouldhandle == nil
     }
@@ -174,6 +176,8 @@ extension TextMessageView : UITextViewDelegate {
       let scheme = URL.scheme ?? ""
       switch scheme {
       case "tel":
+        return true
+      case "mailto":
         return true
       default:
         let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
