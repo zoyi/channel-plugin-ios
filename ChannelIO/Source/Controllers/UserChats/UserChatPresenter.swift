@@ -35,7 +35,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           self?.view?.display(messages: messages)
         case .manager(_):
           break
-        case .chat(let chat):
+        case .chat(_):
           self?.refreshChat()
 //          if chat?.isResolved() == true {
 //            //self.view?.updateInputField(userChat: self?.userChat, updatedUserChat: chat)

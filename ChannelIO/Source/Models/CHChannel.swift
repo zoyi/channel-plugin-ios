@@ -103,7 +103,7 @@ struct CHChannel: CHEntity {
       return SortableWorkingTime(value: timeStr, order: order)
     }).sorted(by: { (wt, otherWt) -> Bool in
       return wt.order < otherWt.order
-    }).filter({ $0.value != "" }).flatMap({ (wt) -> String? in
+    }).filter({ $0.value != "" }).compactMap({ (wt) -> String? in
       return wt.value
     }).joined(separator: "\n")
     

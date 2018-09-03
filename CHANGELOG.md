@@ -1,3 +1,8 @@
+# 4.0.1 (Sept 3, 2018)
+# Bug fixes
+* Remove warnings 
+* Fixed email link behavior
+
 # 4.0.0 (August 31, 2018)
 # Deprecated
 * ChannelPluginSetting's hideDefaultLauncher property has been deprecated

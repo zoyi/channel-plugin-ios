@@ -178,7 +178,7 @@ extension UserChatInteractor {
   
   fileprivate func observeChatEvents() {
     self.joinDispose = WsService.shared.joined()
-      .subscribe(onNext: { [weak self] (chatId) in
+      .subscribe(onNext: { (chatId) in
         //reload chat
         //reload messages
       })

@@ -44,7 +44,6 @@ extension UIDevice {
     case "iPad5,1", "iPad5,2":                      return "iPad Mini 4"
     case "iPad6,7", "iPad6,8":                      return "iPad Pro"
     case "AppleTV5,3":                              return "Apple TV"
-    case "i386", "x86_64":                          return "Simulator"
     default:                                        return identifier
     }
   }
