@@ -158,6 +158,7 @@ enum RestRouter: URLRequestConvertible {
     let now = Date()
     let cookies = HTTPCookieStorage.shared.cookies?
       .filter({ (cookie) -> Bool in
+        guard cookie.domain.hasSuffix("channel.io") else { return false }
         if let expDate = cookie.expiresDate, expDate > now {
           return true
         }  else {

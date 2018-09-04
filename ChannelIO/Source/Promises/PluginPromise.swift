@@ -179,6 +179,7 @@ struct PluginPromise {
             }
             
             //swift bug, header should be case insensitive
+            //TODO: move to request extension
             if let headers = response.response?.allHeaderFields {
               let tupleArray = headers.map { (key: AnyHashable, value: Any) in
                 return ((key as? String)?.lowercased() ?? "", value)

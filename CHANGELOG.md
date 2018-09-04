@@ -1,3 +1,7 @@
+# 4.0.2 (Sept 4, 2018)
+# Bug fixes
+* Fixed unintentionally delete cookie 
+
 # 4.0.1 (Sept 3, 2018)
 # Bug fixes
 * Remove warnings 
