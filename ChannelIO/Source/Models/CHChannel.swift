@@ -111,7 +111,7 @@ struct CHChannel: CHEntity {
   }
   
   var shouldBlock: Bool {
-    return self.serviceBlocked || self.servicePlan == .free
+    return self.serviceBlocked || self.servicePlan != .pro
   }
   
   var shouldHideDefaultButton: Bool {
