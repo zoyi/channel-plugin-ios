@@ -1,6 +1,0 @@
-framework module Pods_Channel_Plugin_Sample {
-  umbrella header "Pods-Channel Plugin Sample-umbrella.h"
-
-  export *
-  module * { export * }
-}
