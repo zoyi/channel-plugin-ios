@@ -11,12 +11,13 @@ import CHDwifft
 import ReSwift
 import RxSwift
 import DKImagePickerController
-import CHPhotoBrowser
 import SVProgressHUD
 import CHSlackTextViewController
 import CHNavBar
 import AVKit
 import SnapKit
+import Lightbox
+import SDWebImage
 
 final class UserChatViewController: BaseSLKTextViewController {
 
@@ -50,7 +51,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   var createdFeedbackComplete = false
   
   var disposeBag = DisposeBag()
-  var photoBrowser : MWPhotoBrowser? = nil
   var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
   
@@ -119,7 +119,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initInputViews()
     self.initViews()
     self.initNewChatButton()
-    
+    self.initPhotoViewer()
     //new user chat
     if self.userChatId == nil {
        mainStore.dispatchOnMain(InsertWelcome())
@@ -358,6 +358,24 @@ final class UserChatViewController: BaseSLKTextViewController {
         self?.newMessageView.hide(animated: true)
         self?.scrollToBottom(false)
       }).disposed(by: self.disposeBag)
+  }
+  
+  fileprivate func initPhotoViewer() {
+    LightboxConfig.hideStatusBar = false
+    LightboxConfig.loadImage = { imageView, URL, completion in
+      SDWebImageManager.shared().loadImage(with: URL, options: .queryDataWhenInMemory, progress: { (m, max, url) in
+
+      }, completed: { (image, data, error, cache, completed, url) in
+        if let gif = UIImage.sd_animatedGIF(with: data), gif.isGIF() {
+          imageView.image = gif
+          completion?(gif)
+        } else {
+          imageView.image = image
+          completion?(image)
+        }
+      })
+    }
+    LightboxConfig.CloseButton.text = CHAssets.localized("ch.button_close")
   }
   
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
@@ -654,8 +672,6 @@ extension UserChatViewController {
       .map({ (message) -> String in
         return message.file?.url ?? ""
       })
-    
-    self.photoBrowser?.reloadData()
   }
   
   override func textViewDidChange(_ textView: UITextView) {
@@ -900,19 +916,6 @@ extension UserChatViewController {
   }
 }
 
-// MARK: MWPhotoBrowser
-
-extension UserChatViewController: MWPhotoBrowserDelegate {
-  func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
-    return UInt(self.photoUrls.count)
-  }
-  
-  func photoBrowser(_ photoBrowser: MWPhotoBrowser!, photoAt index: UInt) -> MWPhotoProtocol! {
-    return MWPhoto(url: URL(string: self.photoUrls[Int(index)]))
-  }
-}
-
-
 // MARK: Clip handlers 
 
 extension UserChatViewController {
@@ -926,18 +929,19 @@ extension UserChatViewController {
   
   func didImageTapped(message: CHMessage) {
     let imgUrl = message.file?.url
-    self.photoBrowser = MWPhotoBrowser(delegate: self)
-    self.photoBrowser?.enableSwipeToDismiss = true
-    
-    let navigation = UINavigationController(rootViewController: self.photoBrowser!)
-    navigation.modalPresentationStyle = .overCurrentContext
-    
+    var startIndex = 0
     if let index = self.photoUrls.index(of: imgUrl ?? "") {
-      self.dismissKeyboard(true)
-      self.photoBrowser?.setCurrentPhotoIndex(UInt(index))
-      
-      self.present(navigation, animated: true, completion: nil)
+      startIndex = index
     }
+    
+    let images = self.photoUrls.map { (url) -> LightboxImage in
+      return LightboxImage(imageURL: URL(string: url)!)
+    }
+
+    let controller = LightboxController(images:images, startIndex: startIndex)
+    controller.dynamicBackground = true
+
+    self.present(controller, animated: true, completion: nil)
   }
 }
 
@@ -972,7 +976,6 @@ extension UserChatViewController: ChatDelegate {
       }
     case .photos(let urls):
       self.photoUrls = urls
-      self.photoBrowser?.reloadData()
     case .profile(_):
       self.textView.becomeFirstResponder()
       self.tableView.reloadData()

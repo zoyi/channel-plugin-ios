@@ -9,25 +9,24 @@
 import UIKit
 import RxSwift
 import DKImagePickerController
-import CHPhotoBrowser
 import AVKit
 
 class UserChatRouter: NSObject, UserChatRouterProtocol {
-  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate) {
-    guard let url = url else { return }
-    let index = photoUrls.index { (photoUrl) -> Bool in
-      return photoUrl.absoluteString == url.absoluteString
-    }
-    
-    let browser = MWPhotoBrowser(delegate: dataSource)
-    browser?.zoomPhotosToFill = false
-    
-    let navigation = MainNavigationController(rootViewController: browser!)
-    if index != nil {
-      browser?.setCurrentPhotoIndex(UInt(index!))
-    }
-    view?.present(navigation, animated: true, completion: nil)
-  }
+//  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate) {
+//    guard let url = url else { return }
+//    let index = photoUrls.index { (photoUrl) -> Bool in
+//      return photoUrl.absoluteString == url.absoluteString
+//    }
+//
+//    let browser = MWPhotoBrowser(delegate: dataSource)
+//    browser?.zoomPhotosToFill = false
+//
+//    let navigation = MainNavigationController(rootViewController: browser!)
+//    if index != nil {
+//      browser?.setCurrentPhotoIndex(UInt(index!))
+//    }
+//    view?.present(navigation, animated: true, completion: nil)
+//  }
   
   func presentVideoPlayer(with url: URL?, from view: UIViewController?) {
     guard let url = url else { return }

@@ -7,6 +7,7 @@ target 'ChannelIO' do
 
   # Pods for CHPlugin
   pod 'CHPhotoBrowser'
+  pod 'Lightbox'
   pod 'CHSlackTextViewController'
   pod 'MGSwipeTableCell'
   pod 'M13ProgressSuite'

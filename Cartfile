@@ -15,10 +15,10 @@ github "socketio/socket.io-client-swift" ~> 13.1.0
 github "zoyi/SlackTextViewController"
 github "MortimerGoro/MGSwipeTableCell" ~> 1.5.6
 github "Marxon13/M13ProgressSuite" ~> 1.2.9
-github "zoyi/MWPhotoBrowser"
 github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit"
 github "rs/SDWebImage" ~> 4.3.0
 github "devxoul/CGFloatLiteral" ~> 0.2
 github "intoxicated/TLYShyNavBar"
+github "hyperoslo/Lightbox"

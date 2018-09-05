@@ -10,7 +10,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import ReSwift
-import CHPhotoBrowser
 import DKImagePickerController
 
 class UserChatInteractor: NSObject, UserChatInteractorProtocol {
@@ -529,14 +528,3 @@ extension UserChatInteractor {
 //    return MWPhoto(url: URL(string: self.photoUrls[Int(index)]))
 //  }
 //}
-
-extension UserChatInteractor: MWPhotoBrowserDelegate {
-  func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
-    return UInt(self.photoUrls.count)
-  }
-  
-  func photoBrowser(_ photoBrowser: MWPhotoBrowser!, photoAt index: UInt) -> MWPhotoProtocol! {
-    return MWPhoto(url: self.photoUrls[Int(index)] as URL)
-  }
-}
-

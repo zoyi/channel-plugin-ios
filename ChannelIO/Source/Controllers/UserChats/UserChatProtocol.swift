@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 import DKImagePickerController
-import CHPhotoBrowser
 
 enum ChatEvent {
   case messages(obj: [CHMessage], next: String)
@@ -120,7 +119,7 @@ protocol UserChatInteractorProtocol: class {
 protocol UserChatRouterProtocol: class {
   static func createModule(userChatId: String?) -> UserChatView
   
-  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate)
+  //func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate)
   func presentVideoPlayer(with url: URL?, from view: UIViewController?)
   func presentSettings(from view: UIViewController?)
   func pushFileView(with url: URL?, from view: UIViewController?)

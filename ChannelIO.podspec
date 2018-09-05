@@ -53,9 +53,11 @@ Pod::Spec.new do |s|
   s.dependency 'CHSlackTextViewController'
   s.dependency 'MGSwipeTableCell'
   s.dependency 'M13ProgressSuite'
-  s.dependency 'CHPhotoBrowser'
+  s.dependency 'Lightbox'
   s.dependency 'SVProgressHUD'
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit'
   s.dependency 'CHNavBar'
+  s.dependency 'SDWebImage'
+  s.dependency 'SDWebImage/GIF'
 end

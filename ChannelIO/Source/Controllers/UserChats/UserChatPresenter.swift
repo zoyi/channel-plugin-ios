@@ -9,7 +9,6 @@
 import RxSwift
 import DKImagePickerController
 import UIKit
-import CHPhotoBrowser
 import SVProgressHUD
 
 class UserChatPresenter: NSObject, UserChatPresenterProtocol {
@@ -179,11 +178,7 @@ extension UserChatPresenter {
   }
   
   func didClickOnImage(with url: URL?, from view: UIViewController?) {
-    self.router?.presentImageViewer(
-      with: url,
-      photoUrls: self.interactor?.photoUrls ?? [],
-      from: view,
-      dataSource: self.interactor as! MWPhotoBrowserDelegate)
+
   }
 
   func didClickOnWeb(with url: String?, from view: UIViewController?) {
