@@ -414,11 +414,11 @@ final class UserChatViewController: BaseSLKTextViewController {
       })
     
     //inefficient, but workaround to fix iOS 11 layoutMargin
-    if let bar = self.navigationController?.navigationBar {
-    //  bar.subviews[2].layoutMargins != UIEdgeInsets.zero {
-      bar.setNeedsLayout()
-      bar.layoutIfNeeded()
-    }
+//    if let bar = self.navigationController?.navigationBar {
+//      bar.subviews[2].layoutMargins != UIEdgeInsets.zero {
+//      bar.setNeedsLayout()
+//      bar.layoutIfNeeded()
+//    }
   }
 }
 

@@ -1,3 +1,11 @@
+# 4.1.0 
+# Updates
+* `boot:` will not show launcher automatically
+* `show:` and `hide:` is visibility control property for launcher and it appears globally over application
+* Changed image viewer framework
+* Displayed watermark for startup
+* Updated Cartfile 
+
 # 4.0.2 (Sept 4, 2018)
 # Bug fixes
 * Fixed unintentionally delete cookie 
@@ -17,8 +25,6 @@
 * Updated internal APIs related to session and read
 * Cleared all data properly on `shutdown`
 * Cached country data locally 
-* `boot:` will not show launcher automatically
-* `show:` and `hide:` is visibility control property for launcher and it appears globally over application
 
 # 3.2.8 (August 28, 2018)
 # Bug fixes 
