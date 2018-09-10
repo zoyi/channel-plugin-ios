@@ -70,7 +70,7 @@ class BootParamBuilder: ParamBuilder {
     if profile.property.count != 0 {
       params["property"] = profile.property
     }
-    return [ParamKey.profile:params]
+    return params
   }
   
   private func buildSysProps() -> [String: Any]? {
@@ -87,7 +87,7 @@ class BootParamBuilder: ParamBuilder {
     params["version"] = Bundle(for: ChannelIO.self)
       .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
-    return [ParamKey.sysProfile:params]
+    return params
   }
   
   func build() -> CHParam {

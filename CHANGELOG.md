@@ -1,9 +1,10 @@
-# 4.1.1
+# 4.1.2
 # Updates
 * Refactored channel properties 
 
 # Bug fixes 
 * Fixed unable to boot for startup
+* Fixed boot params 
 
 # 4.1.0 
 # Updates
