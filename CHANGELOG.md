@@ -1,3 +1,10 @@
+# 4.1.1
+# Updates
+* Refactored channel properties 
+
+# Bug fixes 
+* Fixed unable to boot for startup
+
 # 4.1.0 
 # Updates
 * `boot:` will not show launcher automatically

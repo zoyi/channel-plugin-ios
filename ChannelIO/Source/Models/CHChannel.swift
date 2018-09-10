@@ -110,7 +110,11 @@ struct CHChannel: CHEntity {
     return  workingTime ?? "unknown"
   }
   
-  var shouldBlock: Bool {
+  var locked: Bool {
+    return self.serviceBlocked || self.servicePlan == .free
+  }
+  
+  var showWatermark: Bool {
     return self.serviceBlocked || self.servicePlan != .pro
   }
   

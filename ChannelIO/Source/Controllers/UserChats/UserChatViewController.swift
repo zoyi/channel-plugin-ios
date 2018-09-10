@@ -233,7 +233,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
       tableView: self.tableView,
       initialRows: self.messages,
-      sectionIndex: self.channel.shouldBlock ? 2 : 1
+      sectionIndex: self.channel.showWatermark ? 2 : 1
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
     self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
@@ -754,16 +754,16 @@ extension UserChatViewController {
 
 extension UserChatViewController {
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return self.channel.shouldBlock ? 3 : 2
+    return self.channel.showWatermark ? 3 : 2
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if section == 1 {
-      return self.channel.shouldBlock ? 1 : self.messages.count
+      return self.channel.showWatermark ? 1 : self.messages.count
     } else if section == 2 {
-      return self.channel.shouldBlock ? self.messages.count : 0
+      return self.channel.showWatermark ? self.messages.count : 0
     }
     return 0
   }
@@ -773,7 +773,7 @@ extension UserChatViewController {
       return 40
     }
     
-    if indexPath.section == 1 && self.channel.shouldBlock {
+    if indexPath.section == 1 && self.channel.showWatermark {
       return 40
     }
     
@@ -810,7 +810,7 @@ extension UserChatViewController {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
-    if section == 0 && self.channel.shouldBlock {
+    if section == 0 && self.channel.showWatermark {
       let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
       _ = cell.signalForClick().subscribe { _ in
         let channel = mainStore.state.channel
@@ -823,7 +823,7 @@ extension UserChatViewController {
       }
       cell.transform = tableView.transform
       return cell
-    } else if section == 0 || (section == 1 && self.channel.shouldBlock) {
+    } else if section == 0 || (section == 1 && self.channel.showWatermark) {
       let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
       cell.transform = tableView.transform
       return cell
@@ -969,7 +969,7 @@ extension UserChatViewController: ChatDelegate {
   func update(for element: ChatElement) {
     switch element {
     case .typing(_, _):
-      let indexPath = IndexPath(row: 0, section: self.channel.shouldBlock ? 1 : 0)
+      let indexPath = IndexPath(row: 0, section: self.channel.showWatermark ? 1 : 0)
       if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true,
         let typingCell = self.typingCell {
         typingCell.configure(typingUsers: self.chatManager.typers)

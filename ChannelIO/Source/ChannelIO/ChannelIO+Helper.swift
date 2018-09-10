@@ -96,7 +96,7 @@ extension ChannelIO {
             subscriber.onError(CHErrorPool.unknownError)
             return
           }
-          if channel.shouldBlock && !channel.trial {
+          if channel.locked && !channel.trial {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }
