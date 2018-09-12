@@ -1,6 +1,7 @@
 # 4.1.3
 # Bug fixes
 * Fixed launcher button inconsistently appears on random position
+* Fixed possible force unwrapped crash in message model
 
 # 4.1.2
 # Updates

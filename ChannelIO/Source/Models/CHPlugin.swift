@@ -26,9 +26,9 @@ struct CHPlugin: ModelType {
   
   var textUIColor: UIColor! {
     if self.textColor == "white" {
-      return UIColor.white
+      return CHColors.white
     } else {
-      return UIColor.black
+      return CHColors.black
     }
   }
 }

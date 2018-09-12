@@ -83,7 +83,7 @@ struct MessageCellModel: MessageCellModelType {
     let isContinuous = message.isContinue(previous: previous) &&
       previous?.form == nil && previous?.profileBot == nil &&
       message.form == nil
-    
+    let pluginColor = UIColor(plugin.color) ?? UIColor.white
     let clipType = MessageCellModel.getClipType(message: message)
     let createdByMe = message.entity is CHUser || message.entity is CHVeil
 
@@ -93,8 +93,8 @@ struct MessageCellModel: MessageCellModelType {
     self.message = message
     self.avatarEntity = message.entity ?? channel
     self.avatarIsHidden = createdByMe || isContinuous
-    self.bubbleBackgroundColor = createdByMe ? UIColor(plugin.color)! : CHColors.lightGray
-    self.textColor = plugin.textColor == "white" ? CHColors.white : CHColors.black
+    self.bubbleBackgroundColor = createdByMe ? pluginColor : CHColors.lightGray
+    self.textColor = plugin.textUIColor
     self.usernameIsHidden = createdByMe || isContinuous
     self.imageIsHidden = (clipType != ClipType.Image)
     self.fileIsHidden = (clipType != ClipType.File)
@@ -103,7 +103,7 @@ struct MessageCellModel: MessageCellModelType {
     self.file = message.file
     self.createdByMe = createdByMe
     self.isContinuous = isContinuous
-    self.pluginColor = UIColor(plugin.color)!
+    self.pluginColor = pluginColor
     
     self.messageType = message.messageType
     self.progress = message.progress

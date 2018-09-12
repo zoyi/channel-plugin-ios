@@ -780,9 +780,12 @@ extension UserChatViewController {
     let message = self.messages[indexPath.row]
     let previousMessage: CHMessage? =
       indexPath.row == self.messages.count - 1 ?
-        self.messages[indexPath.row] :
-        self.messages[indexPath.row + 1]
-    let viewModel = MessageCellModel(message: message, previous: previousMessage, indexPath: indexPath)
+        nil : self.messages[indexPath.row + 1]
+    let viewModel = MessageCellModel(
+      message: message,
+      previous: previousMessage,
+      indexPath: indexPath)
+    
     switch message.messageType {
     case .DateDivider:
       return DateCell.cellHeight()
