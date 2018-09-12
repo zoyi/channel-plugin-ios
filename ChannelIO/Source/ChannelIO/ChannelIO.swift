@@ -71,8 +71,7 @@ public final class ChannelIO: NSObject {
     func newState(state: AppState) {
       self.handleBadgeDelegate(state.guest.alert)
       self.handlePush(push: state.push)
-      let config: LauncherConfig? = ChannelIO.settings?.launcherConfig
-      let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest, config: config)
+      let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
       
       ChannelIO.launcherView?.configure(viewModel)
     }
@@ -199,20 +198,35 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.baseNavigation == nil else { return }
     
     let launcherView = ChannelIO.launcherView ?? LauncherView()
-  
-    if #available(iOS 11.0, *) {
-      launcherView.layoutGuide = view.safeAreaLayoutGuide
-    }
-    
+
     let viewModel = LauncherViewModel(
       plugin: mainStore.state.plugin,
-      guest: mainStore.state.guest,
-      config: ChannelIO.settings?.launcherConfig
+      guest: mainStore.state.guest
     )
+    
+    let xMargin = ChannelIO.settings?.launcherConfig?.xMargin ?? 24
+    let yMargin = ChannelIO.settings?.launcherConfig?.yMargin ?? 24
+    let position = ChannelIO.settings?.launcherConfig?.position ?? .right
     
     launcherView.superview == nil ?
       launcherView.insert(on: view, animated: animated) :
       launcherView.show(animated: animated)
+    
+    launcherView.snp.remakeConstraints ({ (make) in
+      make.size.equalTo(CGSize(width:54.f, height:54.f))
+      
+      if position == LauncherPosition.right {
+        make.right.equalToSuperview().inset(xMargin)
+      } else if position == LauncherPosition.left {
+        make.left.equalToSuperview().inset(xMargin)
+      }
+      
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-yMargin)
+      } else {
+        make.bottom.equalToSuperview().inset(yMargin)
+      }
+    })
     
     launcherView.configure(viewModel)
     launcherView.buttonView.signalForClick().subscribe(onNext: { _ in

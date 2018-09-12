@@ -1,3 +1,7 @@
+# 4.1.3
+# Bug fixes
+* Fixed launcher button inconsistently appears on random position
+
 # 4.1.2
 # Updates
 * Refactored channel properties 

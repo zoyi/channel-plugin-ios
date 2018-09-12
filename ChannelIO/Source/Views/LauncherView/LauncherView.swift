@@ -16,11 +16,6 @@ final class LauncherView : BaseView {
   static let tagId = 0xDEADBEE
   
   struct Metric {
-    static var xMargin = 24.f
-    static var yMargin = 24.f
-    static var position = LauncherPosition.right
-    
-    static let viewSize = 54.f
     static let badgeViewTopMargin = -3.f
     static let badgeViewRightMargin = -3.f
     static let badgeViewHeight = 22.f
@@ -31,7 +26,7 @@ final class LauncherView : BaseView {
   let badgeView = Badge()
   let disposeBag = DisposeBag()
   let buttonView = UIButton().then {
-    $0.layer.cornerRadius = Metric.viewSize/2.f
+    $0.layer.cornerRadius = 27.f
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOpacity = 0.3
     $0.layer.shadowOffset = CGSize(width: 0, height: 3)
@@ -48,10 +43,6 @@ final class LauncherView : BaseView {
   }
   
   func configure(_ viewModel: LauncherViewModelType) {
-    Metric.xMargin = viewModel.xMargin
-    Metric.yMargin = viewModel.yMargin
-    Metric.position = viewModel.position
-    
     self.buttonView.backgroundColor = UIColor(viewModel.bgColor)
     self.buttonView.layer.borderColor = UIColor(viewModel.borderColor)?.cgColor
     
@@ -60,38 +51,19 @@ final class LauncherView : BaseView {
 
     self.badgeView.configure(viewModel.badge)
     self.badgeView.isHidden = viewModel.badge == 0
-
-    self.setNeedsLayout()
-    self.layoutIfNeeded()
   }
 
-  override func updateConstraints() {
-    self.snp.remakeConstraints ({ [weak self] (make) in
-      make.size.equalTo(CGSize(width:Metric.viewSize, height:Metric.viewSize))
-      
-      if Metric.position == LauncherPosition.right {
-        make.right.equalToSuperview().inset(Metric.xMargin)
-      } else if Metric.position == LauncherPosition.left {
-        make.left.equalToSuperview().inset(Metric.xMargin)
-      }
-      
-      if #available(iOS 11.0, *) {
-        make.bottom.equalTo((self?.layoutGuide?.snp.bottom)!).offset(-Metric.yMargin)
-      } else {
-        make.bottom.equalToSuperview().inset(Metric.yMargin)
-      }
-    })
+  override func setLayouts() {
+    super.setLayouts()
     
-    self.buttonView.snp.remakeConstraints { (make) in
-      make.edges.equalTo(0)
+    self.buttonView.snp.makeConstraints { (make) in
+      make.edges.equalToSuperview()
     }
-
-    self.badgeView.snp.remakeConstraints { [weak self] (make) in
+    
+    self.badgeView.snp.makeConstraints { [weak self] (make) in
       make.height.equalTo(Metric.badgeViewHeight)
       make.top.equalToSuperview().inset(Metric.badgeViewTopMargin)
       make.centerX.equalTo((self?.snp.right)!).offset(-5)
     }
-    
-    super.updateConstraints()
   }
 }
