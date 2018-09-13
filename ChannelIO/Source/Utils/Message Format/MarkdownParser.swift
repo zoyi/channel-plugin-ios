@@ -15,19 +15,19 @@ open class MarkdownParser {
   fileprivate var defaultElements: [MarkdownElement]
   fileprivate var unescapingElements: [MarkdownElement]
 
-  open var customElements: [MarkdownElement]
+  public var customElements: [MarkdownElement]
 
   // MARK: Basic Elements
-  open let quote: MarkdownQuote
-  open let link: MarkdownLink
-  open let automaticLink: MarkdownAutomaticLink
-  open let bold: MarkdownBold
-  open let italic: MarkdownItalic
-  open let boldItalic: MarkdownBoldItalic
-  open let header: MarkdownHeader
-  open let code: MarkdownCode
-  open let emoji: MarkdownEmoji
-  open let mention: MarkdownMention
+  public let quote: MarkdownQuote
+  public let link: MarkdownLink
+  public let automaticLink: MarkdownAutomaticLink
+  public let bold: MarkdownBold
+  public let italic: MarkdownItalic
+  public let boldItalic: MarkdownBoldItalic
+  public let header: MarkdownHeader
+  public let code: MarkdownCode
+  public let emoji: MarkdownEmoji
+  public let mention: MarkdownMention
   
   // MARK: Escaping Elements
   fileprivate var codeEscaping = MarkdownCodeEscaping()
@@ -36,8 +36,8 @@ open class MarkdownParser {
 
   // MARK: Configuration
   /// Enables or disables detection of URLs even without Markdown format
-  open var automaticLinkDetectionEnabled: Bool = true
-  open let font: UIFont
+  public var automaticLinkDetectionEnabled: Bool = true
+  public let font: UIFont
   let emojiFont: UIFont = UIFont.systemFont(ofSize: 40)
   
   // MARK: Initializer

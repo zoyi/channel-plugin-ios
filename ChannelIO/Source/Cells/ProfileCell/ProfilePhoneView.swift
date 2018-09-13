@@ -23,9 +23,6 @@ class ProfilePhoneView: ProfileItemBaseView, ProfileContentProtocol {
     get {
       return self.phoneView
     }
-    set {
-      self.fieldView = phoneView
-    }
   }
   
   override func initialize() {

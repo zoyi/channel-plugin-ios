@@ -35,7 +35,11 @@ class ProfileItemBaseView: BaseView {
     $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
   
-  var fieldView: Actionable? = nil
+  var fieldView: Actionable? {
+    get {
+      return nil
+    }
+  }
   var model: MessageCellModelType?
   var index: Int = 0
   var item: CHProfileItem?

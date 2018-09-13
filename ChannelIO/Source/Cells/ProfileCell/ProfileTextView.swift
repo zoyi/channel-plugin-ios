@@ -33,9 +33,6 @@ class ProfileTextView: ProfileItemBaseView, ProfileContentProtocol {
     get {
       return self.textView
     }
-    set {
-      self.fieldView = textView
-    }
   }
   
   override func initialize() {

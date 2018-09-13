@@ -32,7 +32,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     
-    if self.isMovingFromParentViewController {
+    if self.isMovingFromParent {
       ChannelIO.shutdown()
     }
   }

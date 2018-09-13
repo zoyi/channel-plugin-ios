@@ -24,9 +24,6 @@ class ProfileCompletionView: ProfileItemBaseView, ProfileContentProtocol {
     get {
       return self.contentView
     }
-    set {
-      self.fieldView = contentView
-    }
   }
   
   override func initialize() {
