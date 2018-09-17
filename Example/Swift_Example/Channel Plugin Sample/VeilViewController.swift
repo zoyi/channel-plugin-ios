@@ -32,7 +32,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     
-    if self.isMovingFromParent {
+    if self.isMovingFromParentViewController {
       ChannelIO.shutdown()
     }
   }
@@ -54,6 +54,10 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
 //    let gesture = UITapGestureRecognizer(target: self, action: #selector(didClickOnPush))
 //    gesture.numberOfTapsRequired = 1
 //    self.customPushView.addGestureRecognizer(gesture)
+  }
+  
+  func onChangeBadge(count: Int) {
+    print("badge called \(count)")
   }
   
   @objc func didClickOnPush() {

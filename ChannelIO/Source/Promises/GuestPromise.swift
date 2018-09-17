@@ -42,34 +42,5 @@ struct GuestPromise {
       return Disposables.create()
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
-  
-  static func getCurrent() -> Observable<CHGuest> {
-    return Observable.create { subscriber in
-      Alamofire.request(RestRouter.GetCurrentGuest)
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
-          switch response.result {
-          case .success(let data):
-            let json:JSON = JSON(data)
-
-            let user:CHUser? = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            let veil:CHVeil? = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-          
-            if user == nil && veil == nil {
-              subscriber.onError(CHErrorPool.guestParseError)
-            } else {
-              user == nil ? subscriber.onNext(veil!) : subscriber.onNext(user!)
-              subscriber.onCompleted()
-            }
-            break
-          case .failure(let error):
-            subscriber.onError(error)
-            break
-          }
-        })
-
-      return Disposables.create()
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
-  }
 }
 

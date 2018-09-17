@@ -1,3 +1,7 @@
+# 4.1.4
+# Bug fixes
+* Fixed onChangeBadge didn't get called properly 
+
 # 4.1.3
 # Bug fixes
 * Fixed launcher button inconsistently appears on random position
