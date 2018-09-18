@@ -121,6 +121,7 @@ public final class ChannelIO: NSObject {
     PluginPromise.checkVersion().flatMap { (event) in
       return ChannelIO.checkInChannel(profile: profile)
     }
+    .observeOn(MainScheduler.instance)
     .subscribe(onNext: { (_) in
       PrefStore.setChannelPluginSettings(pluginSetting: settings)
       ChannelIO.registerPushToken()
@@ -197,44 +198,46 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation == nil else { return }
     
-    let launcherView = ChannelIO.launcherView ?? LauncherView()
-
-    let viewModel = LauncherViewModel(
-      plugin: mainStore.state.plugin,
-      guest: mainStore.state.guest
-    )
-    
-    let xMargin = ChannelIO.settings?.launcherConfig?.xMargin ?? 24
-    let yMargin = ChannelIO.settings?.launcherConfig?.yMargin ?? 24
-    let position = ChannelIO.settings?.launcherConfig?.position ?? .right
-    
-    launcherView.superview == nil ?
-      launcherView.insert(on: view, animated: animated) :
-      launcherView.show(animated: animated)
-    
-    launcherView.snp.remakeConstraints ({ (make) in
-      make.size.equalTo(CGSize(width:54.f, height:54.f))
+    dispatch {
+      let launcherView = ChannelIO.launcherView ?? LauncherView()
       
-      if position == LauncherPosition.right {
-        make.right.equalToSuperview().inset(xMargin)
-      } else if position == LauncherPosition.left {
-        make.left.equalToSuperview().inset(xMargin)
-      }
+      let viewModel = LauncherViewModel(
+        plugin: mainStore.state.plugin,
+        guest: mainStore.state.guest
+      )
       
-      if #available(iOS 11.0, *) {
-        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-yMargin)
-      } else {
-        make.bottom.equalToSuperview().inset(yMargin)
-      }
-    })
-    
-    launcherView.configure(viewModel)
-    launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
-      guard ChannelIO.isValidStatus else { return }
-      ChannelIO.open(animated: true)
-    }).disposed(by: disposeBeg)
-    
-    ChannelIO.launcherView = launcherView
+      let xMargin = ChannelIO.settings?.launcherConfig?.xMargin ?? 24
+      let yMargin = ChannelIO.settings?.launcherConfig?.yMargin ?? 24
+      let position = ChannelIO.settings?.launcherConfig?.position ?? .right
+      
+      launcherView.superview == nil ?
+        launcherView.insert(on: view, animated: animated) :
+        launcherView.show(animated: animated)
+      
+      launcherView.snp.remakeConstraints ({ (make) in
+        make.size.equalTo(CGSize(width:54.f, height:54.f))
+        
+        if position == LauncherPosition.right {
+          make.right.equalToSuperview().inset(xMargin)
+        } else if position == LauncherPosition.left {
+          make.left.equalToSuperview().inset(xMargin)
+        }
+        
+        if #available(iOS 11.0, *) {
+          make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-yMargin)
+        } else {
+          make.bottom.equalToSuperview().inset(yMargin)
+        }
+      })
+      
+      launcherView.configure(viewModel)
+      launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
+        guard ChannelIO.isValidStatus else { return }
+        ChannelIO.open(animated: true)
+      }).disposed(by: disposeBeg)
+      
+      ChannelIO.launcherView = launcherView
+    }
   }
   
   /**
@@ -257,16 +260,18 @@ public final class ChannelIO: NSObject {
     guard !mainStore.state.uiState.isChannelVisible else { return }
     guard let topController = CHUtils.getTopController() else { return }
     
-    ChannelIO.launcherView?.isHidden = true
-    ChannelIO.delegate?.willOpenMessenger?()
-    ChannelIO.sendDefaultEvent(.open)
-    mainStore.dispatch(ChatListIsVisible())
+    dispatch {
+      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.delegate?.willOpenMessenger?()
+      ChannelIO.sendDefaultEvent(.open)
+      mainStore.dispatch(ChatListIsVisible())
 
-    let userChatsController = UserChatsViewController()
-    let controller = MainNavigationController(rootViewController: userChatsController)
-    ChannelIO.baseNavigation = controller
-  
-    topController.present(controller, animated: animated, completion: nil)
+      let userChatsController = UserChatsViewController()
+      let controller = MainNavigationController(rootViewController: userChatsController)
+      ChannelIO.baseNavigation = controller
+
+      topController.present(controller, animated: animated, completion: nil)
+    }
   }
 
   /**
@@ -278,19 +283,21 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation != nil else { return }
     
-    ChannelIO.delegate?.willCloseMessenger?()
-    ChannelIO.baseNavigation?.dismiss(
-      animated: animated, completion: {
-      mainStore.dispatch(ChatListIsHidden())
-      
-      //ChannelIO.launcherView?.isHidden = false
-      if ChannelIO.launcherVisible {
-        ChannelIO.launcherView?.show(animated: true)
-      }
-      ChannelIO.baseNavigation?.removeFromParentViewController()
-      ChannelIO.baseNavigation = nil
-      completion?()
-    })
+    dispatch {
+      ChannelIO.delegate?.willCloseMessenger?()
+      ChannelIO.baseNavigation?.dismiss(
+        animated: animated, completion: {
+        mainStore.dispatch(ChatListIsHidden())
+        
+        //ChannelIO.launcherView?.isHidden = false
+        if ChannelIO.launcherVisible {
+          ChannelIO.launcherView?.show(animated: true)
+        }
+        ChannelIO.baseNavigation?.removeFromParentViewController()
+        ChannelIO.baseNavigation = nil
+        completion?()
+      })
+    }
   }
   
   /**

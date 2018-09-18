@@ -12,11 +12,13 @@ import SVProgressHUD
 
 extension ChannelIO {
   internal class func reset() {
-    ChannelIO.launcherView?.hide(animated: false)
-    ChannelIO.close(animated: false)
-    ChannelIO.hideNotification()
-    mainStore.dispatch(CheckOutSuccess())
-    WsService.shared.disconnect()
+    dispatch {
+      ChannelIO.launcherView?.hide(animated: false)
+      ChannelIO.close(animated: false)
+      ChannelIO.hideNotification()
+      mainStore.dispatch(CheckOutSuccess())
+      WsService.shared.disconnect()
+    }
   }
   
   internal class func prepare() {
@@ -90,6 +92,7 @@ extension ChannelIO {
       
       PluginPromise
         .boot(pluginKey: settings.pluginKey, params: params)
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (data) in
           var data = data
           guard let channel = data["channel"] as? CHChannel else {
@@ -129,31 +132,33 @@ extension ChannelIO {
       return
     }
     
-    ChannelIO.launcherView?.isHidden = true
-    ChannelIO.sendDefaultEvent(.open)
-    mainStore.dispatch(ChatListIsVisible())
-    
-    if let userChatViewController = topController as? UserChatViewController,
-      userChatViewController.userChatId == userChatId {
-      //do nothing
-    } else if let controller = topController as? UserChatsViewController {
-      controller.goToUserChatId = userChatId
-    } else if let controller = topController as? UserChatsViewController {
-      topController.navigationController?.popViewController(animated: false, completion: {
+    dispatch {
+      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.sendDefaultEvent(.open)
+      mainStore.dispatch(ChatListIsVisible())
+      
+      if let userChatViewController = topController as? UserChatViewController,
+        userChatViewController.userChatId == userChatId {
+        //do nothing
+      } else if let controller = topController as? UserChatsViewController {
         controller.goToUserChatId = userChatId
-      })
-    } else {
-      let userChatsController = UserChatsViewController()
-      userChatsController.showNewChat = userChatId == nil
-      userChatsController.shouldHideTable = true
-      if let userChatId = userChatId {
-        userChatsController.goToUserChatId = userChatId
+      } else if let controller = topController as? UserChatsViewController {
+        topController.navigationController?.popViewController(animated: false, completion: {
+          controller.goToUserChatId = userChatId
+        })
+      } else {
+        let userChatsController = UserChatsViewController()
+        userChatsController.showNewChat = userChatId == nil
+        userChatsController.shouldHideTable = true
+        if let userChatId = userChatId {
+          userChatsController.goToUserChatId = userChatId
+        }
+        
+        let controller = MainNavigationController(rootViewController: userChatsController)
+        ChannelIO.baseNavigation = controller
+        
+        topController.present(controller, animated: animated, completion: nil)
       }
-      
-      let controller = MainNavigationController(rootViewController: userChatsController)
-      ChannelIO.baseNavigation = controller
-      
-      topController.present(controller, animated: animated, completion: nil)
     }
   }
   
@@ -185,13 +190,17 @@ extension ChannelIO {
     notificationView.configure(notificationViewModel)
     notificationView.insert(on: topController.view, animated: true)
     
-    notificationView.signalForChat()
+    notificationView
+      .signalForChat()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (event) in
         ChannelIO.hideNotification()
         ChannelIO.showUserChat(userChatId: push.userChat?.id)
       }).disposed(by: self.disposeBeg)
     
-    notificationView.closeView.signalForClick()
+    notificationView.closeView
+      .signalForClick()
+      .observeOn(MainScheduler.instance)
       .subscribe { (event) in
         ChannelIO.hideNotification()
       }.disposed(by: self.disposeBeg)
@@ -211,9 +220,11 @@ extension ChannelIO {
   internal class func hideNotification() {
     guard ChannelIO.chatNotificationView != nil else { return }
     
-    mainStore.dispatch(RemovePush())
-    ChannelIO.chatNotificationView?.remove(animated: true)
-    ChannelIO.chatNotificationView = nil
+    dispatch {
+      mainStore.dispatch(RemovePush())
+      ChannelIO.chatNotificationView?.remove(animated: true)
+      ChannelIO.chatNotificationView = nil
+    }
   }
 }
 
@@ -256,7 +267,9 @@ extension ChannelIO {
   
   @objc internal class func connectWebsocket() {
     guard self.isValidStatus else { return }
-    _ = GuestPromise.touch().subscribe(onNext: { (guest) in
+    _ = GuestPromise.touch()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (guest) in
       mainStore.dispatch(UpdateGuest(payload: guest))
     })
     WsService.shared.connect()

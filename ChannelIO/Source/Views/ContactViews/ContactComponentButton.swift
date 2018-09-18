@@ -30,7 +30,9 @@ class ContactComponentButton: BaseButton {
     self.setImage(image, for: .normal)
     self.setImage(image, for: .highlighted)
     
-    self.signalForClick().subscribe { [weak self] (_) in
+    self.signalForClick()
+      .observeOn(MainScheduler.instance)
+      .subscribe { [weak self] (_) in
       self?.action?()
     }.disposed(by: self.disposeBag)
   }
