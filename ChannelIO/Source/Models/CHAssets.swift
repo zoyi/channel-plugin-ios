@@ -23,13 +23,13 @@ class CHAssets {
     return Bundle(for: self).path(forResource: name, ofType: type)
   }
   
-  class func getData(named: String) -> Data? {
+  class func getData(named: String, type: String) -> Data? {
     let bundle = Bundle(for: self)
     if #available(iOS 9.0, *) {
       return NSDataAsset(name: named, bundle: bundle)?.data
     } else {
       do {
-        guard let url = try bundle.path(forResource: "typing", ofType: "gif")?.asURL() else {
+        guard let url = try bundle.path(forResource: named, ofType: type)?.asURL() else {
           return nil
         }
         return try Data(contentsOf: url)

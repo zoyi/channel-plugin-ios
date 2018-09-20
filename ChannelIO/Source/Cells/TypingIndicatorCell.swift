@@ -26,7 +26,7 @@ final class TypingIndicatorCell: BaseTableViewCell, Reusable {
   override func initialize() {
     super.initialize()
     
-    if let data = CHAssets.getData(named: "typing") {
+    if let data = CHAssets.getData(named: "typing", type: "gif") {
       self.typingImageView.image = UIImage.sd_animatedGIF(with: data)
     }
     
