@@ -1,6 +1,8 @@
-# 4.1.4
+# 4.1.5
 # Bug fixes
 * Fixed onChangeBadge didn't get called properly 
+* Fixed `profile` fields sync
+* Ensured all UI updates on main thread
 
 # 4.1.3
 # Bug fixes

@@ -86,7 +86,12 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     settings.launcherConfig = LauncherConfig(
       position: .left, xMargin: 100, yMargin: 200
     )
-    ChannelIO.boot(with: settings) { (completion, guest) in
+    
+    let profile = Profile()
+    profile.set(propertyKey: "Coin", value: 212)
+    profile.set(propertyKey: "age", value:1231231)
+    profile.set(name: "TESTER")
+    ChannelIO.boot(with: settings, profile: profile) { (completion, guest) in
       
     }
   }

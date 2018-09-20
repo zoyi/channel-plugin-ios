@@ -67,10 +67,8 @@ class BootParamBuilder: ParamBuilder {
       params["avatarUrl"] = profile.avatarUrl
     }
     
-    if profile.property.count != 0 {
-      params["property"] = profile.property
-    }
-    return params
+    let merged = params.merging(profile.property, uniquingKeysWith: { (first, _) in first })
+    return merged
   }
   
   private func buildSysProps() -> [String: Any]? {
