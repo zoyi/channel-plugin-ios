@@ -25,7 +25,7 @@ class MainNavigationController: BaseNavigationController {
     didSet {
       if useDefault {
         self.navigationBar.barTintColor = nil
-        self.navigationBar.titleTextAttributes =  [NSAttributedStringKey.foregroundColor: UIColor.white]
+        self.navigationBar.titleTextAttributes =  [.foregroundColor: UIColor.white]
         self.navigationBar.isTranslucent = false
         self.statusBarStyle = .lightContent
         self.setNeedsStatusBarAppearanceUpdate()
@@ -81,7 +81,7 @@ extension MainNavigationController: StoreSubscriber {
       
       // Title Color
       let titleColor = state.plugin.textColor == "white" ? UIColor.white : UIColor.black
-      self.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: titleColor]
+      self.navigationBar.titleTextAttributes = [.foregroundColor: titleColor]
       
       // Status bar color
       self.statusBarStyle = state.plugin.textColor == "white" ? .lightContent : .default

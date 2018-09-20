@@ -39,7 +39,7 @@ final class LogCell : BaseTableViewCell, Reusable {
   override func setLayouts() {
     super.setLayouts()
     self.container.snp.remakeConstraints { (make) in
-      make.edges.equalToSuperview().inset(UIEdgeInsetsMake(6, 0, 6, 0))
+      make.edges.equalToSuperview().inset(UIEdgeInsets(top:6, left:0, bottom:6, right:0))
     }
     
     self.titleLabel.snp.remakeConstraints { (make) in

@@ -236,8 +236,8 @@ final class UserChatViewController: BaseSLKTextViewController {
       sectionIndex: self.channel.showWatermark ? 2 : 1
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
-    self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
-    self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
+    self.diffCalculator?.insertionAnimation = .none
+    self.diffCalculator?.deletionAnimation = .none
   }
 
   fileprivate func initNavigationViews(with userChat: CHUserChat? = nil) {
@@ -588,7 +588,7 @@ extension UserChatViewController: StoreSubscriber {
   fileprivate func scrollToBottom(_ animated: Bool) {
     self.tableView.scrollToRow(
       at: IndexPath(row:0, section:0),
-      at: UITableViewScrollPosition.bottom,
+      at: .bottom,
       animated: animated
     )
   }

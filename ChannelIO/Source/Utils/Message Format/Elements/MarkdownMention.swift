@@ -58,7 +58,7 @@ open class MarkdownMention: MarkdownCommonElement, MarkdownCommonLexElement {
     }
     
     guard let url = URL(string: link) ?? URL(string: encodedLink) else { return }
-    attributedString.addAttribute(NSAttributedStringKey.link, value: url, range: range)
+    attributedString.addAttribute(.link, value: url, range: range)
   }
   
   open func addAttributes(_ attributedString: NSMutableAttributedString, range: NSRange) {

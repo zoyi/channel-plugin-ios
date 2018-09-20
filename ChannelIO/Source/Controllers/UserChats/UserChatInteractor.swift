@@ -141,14 +141,14 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
 extension UserChatInteractor {
   func observeAppState() {
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
+      .rx.notification(UIApplication.willEnterForegroundNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.willAppear()
       }.disposed(by: self.disposeBag)
     
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationWillResignActive)
+      .rx.notification(UIApplication.willResignActiveNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.willDisppear()

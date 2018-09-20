@@ -26,7 +26,7 @@ class WebPageMessageView : BaseView {
   }
   
   let thumbnailImageView = UIImageView().then {
-    $0.contentMode = UIViewContentMode.scaleAspectFill
+    $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
   }
   

@@ -19,7 +19,7 @@ extension UIButton {
       top: 0.0, left: -imageSize.width,
       bottom: -(imageSize.height + spacing), right: 0.0)
     let labelString = NSString(string: text)
-    let titleSize = labelString.size(withAttributes: [NSAttributedStringKey.font: font])
+    let titleSize = labelString.size(withAttributes: [.font: font])
     self.imageEdgeInsets = UIEdgeInsets(
       top: -(titleSize.height + spacing), left: 0.0,
       bottom: 0.0, right: -titleSize.width)

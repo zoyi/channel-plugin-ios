@@ -236,28 +236,28 @@ extension ChannelIO {
       .addObserver(
         self,
         selector: #selector(self.disconnectWebsocket),
-        name: NSNotification.Name.UIApplicationWillResignActive,
+        name: UIApplication.willResignActiveNotification,
         object: nil)
     
     NotificationCenter.default
       .addObserver(
         self,
         selector: #selector(self.disconnectWebsocket),
-        name: NSNotification.Name.UIApplicationWillTerminate,
+        name: UIApplication.willTerminateNotification,
         object: nil)
     
     NotificationCenter.default
       .addObserver(
         self,
         selector: #selector(self.connectWebsocket),
-        name: NSNotification.Name.UIApplicationDidBecomeActive,
+        name: UIApplication.didBecomeActiveNotification,
         object: nil)
     
     NotificationCenter.default
       .addObserver(
         self,
         selector: #selector(self.appBecomeActive(_:)),
-        name: Notification.Name.UIApplicationWillEnterForeground,
+        name: UIApplication.willEnterForegroundNotification,
         object: nil)
   }
   

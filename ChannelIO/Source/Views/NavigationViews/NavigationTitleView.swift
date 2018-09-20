@@ -186,7 +186,7 @@ class NavigationTitleView : BaseView {
   }
   
   override var intrinsicContentSize: CGSize {
-    return UILayoutFittingExpandedSize
+    return UIView.layoutFittingExpandedSize
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {

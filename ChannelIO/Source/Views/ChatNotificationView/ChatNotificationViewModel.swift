@@ -35,10 +35,11 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
     
     if let logMessage = push.message?.logMessage {
       let attributedText = NSMutableAttributedString(string: logMessage)
-      attributedText.addAttributes(
-        [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14),
-         NSAttributedStringKey.foregroundColor: CHColors.charcoalGrey],
-        range: NSRange(location: 0, length: logMessage.count))
+      attributedText.addAttributes([
+        .font: UIFont.systemFont(ofSize: 14),
+        .foregroundColor: CHColors.charcoalGrey
+      ],
+      range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
     } else {
       self.message = push.message?.messageV2

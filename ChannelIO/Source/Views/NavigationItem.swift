@@ -73,22 +73,22 @@ class NavigationItem: UIBarButtonItem {
   
   convenience init(
     title: String?,
-    style: UIBarButtonItemStyle,
+    style: UIBarButtonItem.Style,
     textColor: UIColor = CHColors.defaultTint,
     actionHandler: (() -> Void)?) {
     
     self.init(title: title, style: style, target: nil, action: #selector(barButtonItemPressed))
     self.target = self
     self.actionHandler = actionHandler
-    self.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:textColor], for: .normal)
+    self.setTitleTextAttributes([.foregroundColor:textColor], for: .normal)
     
     let disableColor = textColor.withAlphaComponent(0.3)
-    self.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:disableColor], for: .disabled)
+    self.setTitleTextAttributes([.foregroundColor:disableColor], for: .disabled)
   }
   
   convenience init(
     image: UIImage?,
-    style: UIBarButtonItemStyle,
+    style: UIBarButtonItem.Style,
     actionHandler: (() -> Void)?) {
     
     self.init(image: image, style: style, target: nil, action: #selector(barButtonItemPressed))

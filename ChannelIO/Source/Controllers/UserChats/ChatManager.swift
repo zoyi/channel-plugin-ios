@@ -113,7 +113,7 @@ class ChatManager: NSObject {
   
   fileprivate func observeAppState() {
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
+      .rx.notification(UIApplication.willEnterForegroundNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.didChatLoaded = false
@@ -121,7 +121,7 @@ class ChatManager: NSObject {
       }.disposed(by: self.disposeBag)
     
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationWillResignActive)
+      .rx.notification(UIApplication.willResignActiveNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.prepareToLeave()
@@ -773,17 +773,22 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     max: Int = 0,
     assetType: DKImagePickerControllerAssetType = .allAssets,
     from view: UIViewController?) {
-    let pickerController = DKImagePickerController()
+    
+    let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
+    groupDataManagerConfiguration.fetchLimit = 10
+    groupDataManagerConfiguration.assetGroupTypes = [
+      .smartAlbumUserLibrary,
+      .smartAlbumFavorites,
+      .smartAlbumVideos,
+      .albumRegular
+    ]
+    let groupDataManager = DKImageGroupDataManager(configuration: groupDataManagerConfiguration)
+    
+    let pickerController = DKImagePickerController(groupDataManager: groupDataManager)
     pickerController.sourceType = type
     pickerController.showsCancelButton = true
     pickerController.maxSelectableCount = max
     pickerController.assetType = assetType
-    pickerController.assetGroupTypes = [
-      .smartAlbumUserLibrary,
-      .smartAlbumFavorites,
-      .smartAlbumVideos,
-      .albumRegular]
-    
     pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
       self?.sendImages(assets: assets)
     }
@@ -797,8 +802,8 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     view?.present(controller, animated: true, completion: nil)
   }
   
-  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-    let capturedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    let capturedImage = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
     self.sendImage(imageData: capturedImage.normalizedImage())
     picker.dismiss(animated: true, completion: nil)
   }

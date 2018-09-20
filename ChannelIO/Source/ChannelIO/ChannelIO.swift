@@ -293,7 +293,7 @@ public final class ChannelIO: NSObject {
         if ChannelIO.launcherVisible {
           ChannelIO.launcherView?.show(animated: true)
         }
-        ChannelIO.baseNavigation?.removeFromParentViewController()
+        ChannelIO.baseNavigation?.removeFromParent()
         ChannelIO.baseNavigation = nil
         completion?()
       })

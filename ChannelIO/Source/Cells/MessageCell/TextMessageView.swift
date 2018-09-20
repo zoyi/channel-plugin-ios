@@ -112,8 +112,8 @@ class TextMessageView : BaseView {
     self.messageView.textColor = viewModel.createdByMe ? viewModel.textColor : Color.message
     let linkColor = viewModel.createdByMe ? viewModel.textColor : CHColors.cobalt
     self.messageView.linkTextAttributes = [
-      NSAttributedStringKey.foregroundColor.rawValue: linkColor,
-      NSAttributedStringKey.underlineStyle.rawValue: 1]
+      .foregroundColor: linkColor,
+      .underlineStyle: 1]
   }
   
   override func updateConstraints() {

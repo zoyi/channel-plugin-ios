@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ChannelIO'
-  s.version          = '4.1.5'
+  s.version          = '4.1.6'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -30,34 +30,62 @@ Pod::Spec.new do |s|
   #}
   s.source_files = 'ChannelIO/Source/**/*'
   s.resources = 'ChannelIO/Assets/*'
-  s.swift_version = '4.0'
+  s.default_subspec = 'Core'
+  s.swift_version = '4.2'
 
   s.frameworks = 'SystemConfiguration', 'CoreTelephony', 'CoreLocation', 'WebKit'
- 
-  s.dependency 'Reusable'
-  s.dependency 'SnapKit'
-  s.dependency 'ManualLayout'
-  s.dependency 'HexColors'
-  s.dependency 'SwiftyJSON'
-  s.dependency 'Then'
-  s.dependency 'ReSwift'
-  s.dependency 'RxSwift', '~> 4.0'
-  s.dependency 'RxCocoa', '~> 4.0'
-  s.dependency 'ObjectMapper', '~> 3.3'
-  s.dependency 'NVActivityIndicatorView'
-  s.dependency 'CHDwifft'
-  s.dependency 'DKImagePickerController', '~> 3.8.1'
-  s.dependency 'Alamofire'
-  s.dependency 'CGFloatLiteral'
-  s.dependency 'Socket.IO-Client-Swift', '~> 13.1.0' 
-  s.dependency 'CHSlackTextViewController'
-  s.dependency 'MGSwipeTableCell'
-  s.dependency 'M13ProgressSuite'
-  s.dependency 'Lightbox'
-  s.dependency 'SVProgressHUD'
-  s.dependency 'CRToast'
-  s.dependency 'PhoneNumberKit'
-  s.dependency 'CHNavBar'
-  s.dependency 'SDWebImage'
-  s.dependency 'SDWebImage/GIF'
+
+  s.subspec 'Core' do |core|
+    core.dependency 'ChannelIO/Model'
+    core.dependency 'ChannelIO/Network'
+    core.dependency 'ChannelIO/Image'
+    core.dependency 'ChannelIO/Reactive'
+    core.dependency 'ChannelIO/Utils'
+    core.dependency 'ChannelIO/UI'
+  end 
+  
+  s.subspec 'Model' do |model|
+    model.dependency 'ReSwift'
+  end
+
+  s.subspec 'Network' do |network|
+    network.dependency 'Alamofire'
+    network.dependency 'Socket.IO-Client-Swift', '~> 13.1.0'
+    network.dependency 'SwiftyJSON'
+    network.dependency 'ObjectMapper', '~> 3.3'
+  end
+
+  s.subspec 'Image' do |image|
+    image.dependency 'Lightbox'
+    image.dependency 'SDWebImage'
+    image.dependency 'SDWebImage/GIF'
+    image.dependency 'DKImagePickerController'
+  end 
+
+  s.subspec 'Reactive' do |reactive|
+    reactive.dependency 'RxSwift', '~> 4.0'
+    reactive.dependency 'RxCocoa', '~> 4.0'
+  end
+
+  s.subspec 'Utils' do |utils|
+    utils.dependency 'Reusable'
+    utils.dependency 'Then'
+    utils.dependency 'SVProgressHUD'
+    utils.dependency 'M13ProgressSuite'
+    utils.dependency 'PhoneNumberKit'
+    utils.dependency 'NVActivityIndicatorView'
+    utils.dependency 'HexColors'
+    utils.dependency 'CHDwifft'
+    utils.dependency 'CGFloatLiteral'
+  end
+
+  s.subspec 'UI' do |ui|
+    ui.dependency 'MGSwipeTableCell'
+    ui.dependency 'SnapKit'
+    ui.dependency 'ManualLayout'
+    ui.dependency 'CRToast'
+    ui.dependency 'CHSlackTextViewController'
+    ui.dependency 'CHNavBar'
+  end
+>>>>>>> 59df8ba... swift 4.2 migration
 end

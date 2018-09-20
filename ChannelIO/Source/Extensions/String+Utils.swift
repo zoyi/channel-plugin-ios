@@ -12,8 +12,8 @@ extension NSAttributedString {
   func addFont(_ font: UIFont, color: UIColor, on range: NSRange) -> NSAttributedString {
     let attributedText = NSMutableAttributedString(attributedString: self)
     attributedText.addAttributes([
-      NSAttributedStringKey.foregroundColor: color,
-      NSAttributedStringKey.font: font], range: range)
+      .foregroundColor: color,
+      .font: font], range: range)
     return attributedText
   }
   
@@ -28,8 +28,8 @@ extension String {
   func addFont(_ font: UIFont, color: UIColor, on range: NSRange) -> NSMutableAttributedString {
     let attributedText = NSMutableAttributedString(string: self)
     attributedText.addAttributes([
-      NSAttributedStringKey.foregroundColor: color,
-      NSAttributedStringKey.font: font], range: range)
+      .foregroundColor: color,
+      .font: font], range: range)
     return attributedText
   }
   

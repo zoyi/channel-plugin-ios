@@ -95,7 +95,7 @@ open class MarkdownParser {
         let endPart = NSRange(location: range.location + token.count + 3, length: 3)
         attributedString.deleteCharacters(in: endPart)
         attributedString.deleteCharacters(in: startPart)
-        attributedString.addAttributes([NSAttributedStringKey.font: self.font], range: range)
+        attributedString.addAttributes([.font: self.font], range: range)
         location += range.length
       } else if index == tokens.count - 1 && token != "" {
         let parsed = parse(NSAttributedString(string: token))
@@ -111,7 +111,7 @@ open class MarkdownParser {
       paragraphStyle.alignment = .left
       paragraphStyle.minimumLineHeight = 20
       attributedString.addAttributes(
-        [NSAttributedStringKey.font: self.emojiFont, NSAttributedStringKey.paragraphStyle:paragraphStyle],
+        [.font: self.emojiFont, .paragraphStyle:paragraphStyle],
         range: NSRange(location: 0, length: attributedString.length))
     }
     
@@ -127,7 +127,7 @@ open class MarkdownParser {
     paragraphStyle.minimumLineHeight = 20
     
     attributedString.addAttributes(
-      [NSAttributedStringKey.font: self.font, NSAttributedStringKey.paragraphStyle:paragraphStyle],
+      [.font: self.font, .paragraphStyle:paragraphStyle],
       range: NSRange(location: 0, length: attributedString.length))
     
     var elements: [MarkdownElement] = escapingElements

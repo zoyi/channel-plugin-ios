@@ -72,8 +72,8 @@ final class ChatNotificationView : BaseView {
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
     
     $0.linkTextAttributes = [
-      NSAttributedStringKey.foregroundColor.rawValue: CHColors.cobalt,
-      NSAttributedStringKey.underlineStyle.rawValue: 0
+      .foregroundColor: CHColors.cobalt,
+      .underlineStyle: 0
     ]
   }
   
@@ -96,7 +96,7 @@ final class ChatNotificationView : BaseView {
   
   let closeView = UIImageView().then {
     $0.image = CHAssets.getImage(named: "cancelSmall")
-    $0.contentMode = UIViewContentMode.center
+    $0.contentMode = .center
     $0.layer.shadowOpacity = 0
   }
   

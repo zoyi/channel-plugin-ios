@@ -24,7 +24,7 @@ extension UIView {
     }
     
     self.alpha = 0
-    UIView.transition(with: self, duration: 0.5, options: UIViewAnimationOptions.curveEaseOut, animations: {
+    UIView.transition(with: self, duration: 0.5, options: .curveEaseOut, animations: {
       self.alpha = 1
     }) { (completed) in
       
@@ -37,7 +37,7 @@ extension UIView {
       return
     }
     
-    UIView.transition(with: self, duration: 0.5, options: UIViewAnimationOptions.curveEaseOut, animations: {
+    UIView.transition(with: self, duration: 0.5, options: .curveEaseOut, animations: {
       self.alpha = 0
     }) { (completed) in
       self.removeFromSuperview()
@@ -75,9 +75,9 @@ extension UIView {
   func fadeTransition(_ duration:CFTimeInterval) {
     let animation = CATransition()
     animation.timingFunction = CAMediaTimingFunction(name:
-      kCAMediaTimingFunctionEaseInEaseOut)
-    animation.type = kCATransitionFade
+      .easeInEaseOut)
+    animation.type = .fade
     animation.duration = duration
-    layer.add(animation, forKey: kCATransitionFade)
+    layer.add(animation, forKey: CATransitionType.fade.rawValue)
   }
 }

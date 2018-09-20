@@ -1,3 +1,8 @@
+# 4.1.6
+# Updates
+* Swift 4.2 migration
+* Depdendencies migration
+
 # 4.1.5
 # Bug fixes
 * Fixed onChangeBadge didn't get called properly 

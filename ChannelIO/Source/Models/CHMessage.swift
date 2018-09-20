@@ -12,6 +12,7 @@ import RxSwift
 import DKImagePickerController
 import MobileCoreServices
 import AVFoundation
+import Photos
 
 enum SendingState {
   case New, Sent, Failed
@@ -324,7 +325,7 @@ extension CHMessage {
       
       var signal: Disposable?
       if let asset = file.asset, let mimeType = file.mimeType {
-        asset.fetchAVAsset(nil, completeBlock: { (asset, info) in
+        asset.fetchAVAsset(options: nil, completeBlock: { (asset, info) in
           if let asset = asset as? AVURLAsset {
             let data = try! Data(contentsOf: asset.url)
             signal = self.send(data: data, fileName: "Channel_File", mimeType: mimeType)
@@ -371,7 +372,7 @@ extension CHMessage {
       }
       
       var signal: Disposable?
-      asset.fetchImageDataForAsset(false, completeBlock: { (rawData, info) in
+      asset.fetchImageData(options: nil, completeBlock: { (rawData, info) in
         signal = self.send(
           data: rawData,
           fileName: "Channel_Gif_Photo_\(Date().fullDateString()).gif",
@@ -380,7 +381,8 @@ extension CHMessage {
           }, onError: { (error) in
             subscriber.onError(error)
           })
-      })
+        })
+
       return Disposables.create {
         signal?.dispose()
       }
@@ -397,8 +399,8 @@ extension CHMessage {
       var signal: Disposable?
       let fileName = "Channel_Photo_\(Date().fullDateString()).png"
       if let asset = file.asset {
-        asset.fetchOriginalImage(false, completeBlock: { (image, info) in
-          signal = self.send(data: UIImageJPEGRepresentation(image!, 1.0),fileName: fileName, mimeType: file.mimeType)
+        asset.fetchOriginalImage(options: nil, completeBlock: { (image, info) in
+          signal = self.send(data: image!.jpegData(compressionQuality: 1.0),fileName: fileName, mimeType: file.mimeType)
             .subscribe(onNext: { (message) in
               subscriber.onNext(message)
               subscriber.onCompleted()
@@ -407,7 +409,7 @@ extension CHMessage {
             })
           })
       } else if let image = file.imageData {
-        signal = self.send(data: UIImageJPEGRepresentation(image, 1.0), fileName: fileName, mimeType: file.mimeType)
+        signal = self.send(data: image.jpegData(compressionQuality:1.0), fileName: fileName, mimeType: file.mimeType)
           .subscribe(onNext: { (message) in
             subscriber.onNext(message)
             subscriber.onCompleted()
@@ -430,7 +432,7 @@ extension CHMessage {
       }
       
       var signal: Disposable?
-      asset.fetchAVAsset(nil, completeBlock: { (asset, info) in
+      asset.fetchAVAsset(options: nil, completeBlock: { (asset, info) in
         if let asset = asset as? AVURLAsset {
           let data = try! Data(contentsOf: asset.url)
           signal = self.send(

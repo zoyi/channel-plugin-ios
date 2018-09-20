@@ -99,13 +99,13 @@ class UserChatsViewController: BaseViewController {
       tableView: self.tableView, initialRows: self.userChats
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
-    self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
-    self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
+    self.diffCalculator?.insertionAnimation = .none
+    self.diffCalculator?.deletionAnimation = .none
   }
   
   func initNotifications() {
     NotificationCenter.default.rx
-      .notification(NSNotification.Name.UIApplicationDidBecomeActive)
+      .notification(UIApplication.didBecomeActiveNotification)
       .subscribe(onNext: { [weak self] (_) in
         if let controller = CHUtils.getTopController(), controller == self {
           self?.fetchUserChats(isInit: true, showIndicator: false, isReload: true)

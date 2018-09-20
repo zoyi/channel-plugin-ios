@@ -36,7 +36,7 @@ class ProfileExtendableView: BaseView {
     paragraph.lineBreakMode = .byCharWrapping
     
     attrText?.addAttribute(
-      NSAttributedStringKey.paragraphStyle,
+      .paragraphStyle,
       value: paragraph,
       range: NSRange(location:0, length: text.count))
     
@@ -170,10 +170,7 @@ class ProfileExtendableView: BaseView {
       let font = UIFont.systemFont(ofSize: 11)
       height += CHAssets.localized("ch.agreement").height(
         fits: width - Metric.footerLeading - Metric.footerTrailing,
-        attributes: [
-          NSAttributedStringKey.font: font,
-          NSAttributedStringKey.paragraphStyle: paragraph
-        ]
+        attributes: [ .font: font, .paragraphStyle: paragraph ]
       )
       height += Metric.footerBottom
     }

@@ -14,7 +14,7 @@ extension URL {
   func openWithUniversal() {
     guard UIApplication.shared.canOpenURL(self) else { return }
     if #available(iOS 10.0, *) {
-      UIApplication.shared.open(self, options: [UIApplicationOpenURLOptionUniversalLinksOnly:true]) { (completed) in
+      UIApplication.shared.open(self, options: [UIApplication.OpenExternalURLOptionsKey.universalLinksOnly:true]) { (completed) in
         if !completed {
           let controller = SFSafariViewController(url: self)
           CHUtils.getTopController()?.present(controller, animated: true, completion: nil)

@@ -39,7 +39,7 @@ final class CHPhoneField: BaseView {
   }
   
   let arrowDownView = UIImageView().then {
-    $0.contentMode = UIViewContentMode.center
+    $0.contentMode = .center
     $0.image = CHAssets.getImage(named: "dropdownTriangle")
   }
   
