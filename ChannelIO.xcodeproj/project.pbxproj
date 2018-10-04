@@ -249,8 +249,6 @@
 		65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141E206A02F200E456B5 /* UserChatCellModel.swift */; };
 		65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1420206A02F200E456B5 /* WatermarkCell.swift */; };
 		65EAE11320EF468500D501FC /* TranslateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EAE11220EF468500D501FC /* TranslateView.swift */; };
-		DCC49F0A108DACC9BFC099B9 /* Pods_CHPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 941B21CFD296106169AF80C3 /* Pods_CHPluginTests.framework */; };
-		E29716873DA93AF29BB46118 /* Pods_ChannelIOTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7580C3CDEA3355C7B50D9382 /* Pods_ChannelIOTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -526,10 +524,7 @@
 		65CB141E206A02F200E456B5 /* UserChatCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatCellModel.swift; sourceTree = "<group>"; };
 		65CB1420206A02F200E456B5 /* WatermarkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatermarkCell.swift; sourceTree = "<group>"; };
 		65EAE11220EF468500D501FC /* TranslateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateView.swift; sourceTree = "<group>"; };
-		7580C3CDEA3355C7B50D9382 /* Pods_ChannelIOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChannelIOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D758F40EFD6FB632F31F612 /* Pods-ChannelIOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIOTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChannelIOTests/Pods-ChannelIOTests.debug.xcconfig"; sourceTree = "<group>"; };
-		941B21CFD296106169AF80C3 /* Pods_CHPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CAB172C860090B9E300CFCA4 /* Pods_CHPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -560,8 +555,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				14D2AA7E1E24AE07006FEE22 /* ChannelIO.framework in Frameworks */,
-				DCC49F0A108DACC9BFC099B9 /* Pods_CHPluginTests.framework in Frameworks */,
-				E29716873DA93AF29BB46118 /* Pods_ChannelIOTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -585,10 +578,7 @@
 				142147841E56D75B004C9FAD /* CoreLocation.framework */,
 				142147821E56D756004C9FAD /* CoreTelephony.framework */,
 				142147801E56D74F004C9FAD /* SystemConfiguration.framework */,
-				CAB172C860090B9E300CFCA4 /* Pods_CHPlugin.framework */,
-				941B21CFD296106169AF80C3 /* Pods_CHPluginTests.framework */,
 				3042303E08BB985C3D1774FE /* Pods_ChannelIO.framework */,
-				7580C3CDEA3355C7B50D9382 /* Pods_ChannelIOTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
