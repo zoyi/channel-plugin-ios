@@ -58,6 +58,6 @@ Pod::Spec.new do |s|
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit'
   s.dependency 'CHNavBar'
-  s.dependency 'SDWebImage'
+  s.dependency 'SDWebImage', '~> 4.4.2'
   s.dependency 'SDWebImage/GIF'
 end

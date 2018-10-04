@@ -6,7 +6,6 @@ target 'ChannelIO' do
   use_frameworks!
 
   # Pods for CHPlugin
-  pod 'CHPhotoBrowser'
   pod 'Lightbox'
   pod 'CHSlackTextViewController'
   pod 'MGSwipeTableCell'
@@ -31,6 +30,8 @@ target 'ChannelIO' do
   pod 'Then'
   pod 'HexColors'
   pod 'CHNavBar'
+  pod 'SDWebImage'
+  pod 'SDWebImage/GIF'
 
   target 'ChannelIOTests' do
     inherit! :search_paths
