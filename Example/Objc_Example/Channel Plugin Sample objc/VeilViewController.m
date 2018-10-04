@@ -31,7 +31,7 @@
 
 - (IBAction)didClickOnBoot:(id)sender {
   ChannelPluginSettings *settings = [[ChannelPluginSettings alloc] init];
-  [settings setPluginKey:self.pluginKeyField.text];
+  [settings setPluginKey:@"06ccfc12-a9fd-4c68-b364-5d19f81a60dd"];
   
   [ChannelIO bootWith:settings profile:nil completion:^(ChannelPluginCompletionStatus status, Guest* guest) {
     
