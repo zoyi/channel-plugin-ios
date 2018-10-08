@@ -21,4 +21,4 @@ github "marmelroy/PhoneNumberKit" ~> 2.5.0
 github "rs/SDWebImage" ~> 4.3.0
 github "devxoul/CGFloatLiteral" ~> 0.2
 github "intoxicated/TLYShyNavBar"
-github "hyperoslo/Lightbox" == 2.1.2
+github "hyperoslo/Lightbox" ~> 2.3.0
