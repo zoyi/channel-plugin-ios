@@ -1,4 +1,7 @@
 # 4.1.7
+# Updates
+* react-native support with carthage
+
 # Bug fixes
 * Fixed carthage installation issue
 * Fixed dependencies version
