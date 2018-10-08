@@ -1,3 +1,9 @@
+# 4.1.7
+# Bug fixes
+* Fixed carthage installation issue
+* Fixed dependencies version
+* Fixed to set locale properly
+
 # 4.1.5
 # Bug fixes
 * Fixed onChangeBadge didn't get called properly 

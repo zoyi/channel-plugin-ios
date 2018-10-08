@@ -1,24 +1,24 @@
-github "AliSoftware/Reusable"
-github "zoyi/SnapKit"
+github "ReactiveX/RxSwift" ~> 4.3.0
+github "AliSoftware/Reusable" ~> 4.0
+github "SnapKit/SnapKit" ~> 4.0
 github "isair/ManualLayout"
-github "mRs-/HexColors"
-github "SwiftyJSON/SwiftyJSON"
+github "mRs-/HexColors" ~> 6.0
+github "SwiftyJSON/SwiftyJSON" ~> 4.0
 github "intoxicated/Then"
-github "ReSwift/ReSwift"
-github "ReactiveX/RxSwift" ~> 4.0
+github "ReSwift/ReSwift" ~> 4.0
 github "Hearst-DD/ObjectMapper" ~> 3.3
-github "ninjaprox/NVActivityIndicatorView"
+github "ninjaprox/NVActivityIndicatorView" ~> 4.4.0
 github "zoyi/Dwifft"
 github "Alamofire/Alamofire" ~> 4.5
-github "zhangao0086/DKImagePickerController"
+github "zhangao0086/DKImagePickerController" ~> 3.8.1
 github "socketio/socket.io-client-swift" ~> 13.1.0
 github "zoyi/SlackTextViewController"
 github "MortimerGoro/MGSwipeTableCell" ~> 1.5.6
 github "Marxon13/M13ProgressSuite" ~> 1.2.9
 github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
-github "marmelroy/PhoneNumberKit"
+github "marmelroy/PhoneNumberKit" ~> 2.5.0
 github "rs/SDWebImage" ~> 4.3.0
 github "devxoul/CGFloatLiteral" ~> 0.2
 github "intoxicated/TLYShyNavBar"
-github "hyperoslo/Lightbox"
+github "hyperoslo/Lightbox" == 2.1.2
