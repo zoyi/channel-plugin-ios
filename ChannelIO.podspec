@@ -53,7 +53,7 @@ Pod::Spec.new do |s|
   s.dependency 'CHSlackTextViewController'
   s.dependency 'MGSwipeTableCell'
   s.dependency 'M13ProgressSuite'
-  s.dependency 'Lightbox', '2.3.0'
+  s.dependency 'Lightbox', '2.1.2'
   s.dependency 'SVProgressHUD'
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit', '~> 2.5.0'

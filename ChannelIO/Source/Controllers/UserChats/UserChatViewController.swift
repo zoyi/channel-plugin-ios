@@ -187,6 +187,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       if self?.textInputbar.barState == .disabled && self?.chatManager?.profileIsFocus == false {
         return
       }
+      self?.titleView?.isExpanded = false
       self?.shyNavBarManager.contract(true)
       self?.presentKeyboard(self?.menuAccesoryView == nil)
     }.disposed(by: self.disposeBag)
