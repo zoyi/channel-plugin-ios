@@ -61,12 +61,11 @@ class NavigationItem: UIBarButtonItem {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
       button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
-    
-    button.widthAnchor.constraint(equalToConstant: 50).isActive = true
-    button.heightAnchor.constraint(equalToConstant: 40).isActive = true
-    button.translatesAutoresizingMaskIntoConstraints = false
-    
+
+    button.frame.size = CGSize(width: 50, height: 40)
+    button.frame.origin = CGPoint(x: -16, y: 0)
     self.init(customView: button)
+    
     button.addTarget(self, action: #selector(barButtonItemPressed), for: .touchUpInside)
     self.actionHandler = actionHandler
   }
@@ -88,10 +87,16 @@ class NavigationItem: UIBarButtonItem {
   
   convenience init(
     image: UIImage?,
+    tintColor: UIColor? = nil,
     style: UIBarButtonItemStyle,
     actionHandler: (() -> Void)?) {
     
-    self.init(image: image, style: style, target: nil, action: #selector(barButtonItemPressed))
+    var itemImage: UIImage? = image
+    if let tintColor = tintColor {
+      itemImage = image?.withRenderingMode(.alwaysTemplate).tint(with:tintColor)
+    }
+    
+    self.init(image: itemImage, style: style, target: nil, action: #selector(barButtonItemPressed))
     self.target = self
     self.actionHandler = actionHandler
   }

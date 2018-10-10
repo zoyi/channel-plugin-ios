@@ -1,3 +1,7 @@
+# 4.1.8
+# Bug fixes
+* Fixed navigation item layout for iOS 9
+
 # 4.1.7
 # Updates
 * react-native support with carthage

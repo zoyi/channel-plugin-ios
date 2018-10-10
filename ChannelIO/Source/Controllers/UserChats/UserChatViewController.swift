@@ -385,7 +385,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     if showSetting {
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "settings"),
-        textColor: tintColor,
+        tintColor: tintColor,
+        style: .plain,
         actionHandler: { [weak self] in
           self?.profileSubject.onNext(nil)
         })
@@ -393,22 +394,35 @@ final class UserChatViewController: BaseSLKTextViewController {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
 
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "back"),
-        text: alertCount,
-        fitToSize: alert != 0,
-        alignment: alert == 0 ? .left : .center,
-        textColor: tintColor,
-        actionHandler: { [weak self] in
-          self?.shyNavBarManager.disable = true
-          mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-          _ = self?.navigationController?.popViewController(animated: true)
-        })
+      if alert == 0 {
+        self.navigationItem.leftBarButtonItem = NavigationItem(
+          image: CHAssets.getImage(named: "back"),
+          tintColor: tintColor,
+          style: .plain,
+          actionHandler: { [weak self] in
+            self?.shyNavBarManager.disable = true
+            mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+            _ = self?.navigationController?.popViewController(animated: true)
+          })
+      } else {
+        self.navigationItem.leftBarButtonItem = NavigationItem(
+          image: CHAssets.getImage(named: "back"),
+          text: alertCount,
+          fitToSize: true,
+          alignment: .left,
+          textColor: tintColor,
+          actionHandler: { [weak self] in
+            self?.shyNavBarManager.disable = true
+            mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+            _ = self?.navigationController?.popViewController(animated: true)
+          })
+      }
     }
 
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      textColor: tintColor,
+      tintColor: tintColor,
+      style: .plain,
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         ChannelIO.close(animated: true)

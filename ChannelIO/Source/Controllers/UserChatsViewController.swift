@@ -200,13 +200,16 @@ class UserChatsViewController: BaseViewController {
     let tintColor = mainStore.state.plugin.textUIColor
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      textColor: tintColor,
+      tintColor: tintColor,
+      style: .plain,
       actionHandler: {
         ChannelIO.close(animated: true)
       })
+    
     self.navigationItem.leftBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "settings"),
-      textColor: tintColor,
+      tintColor: tintColor,
+      style: .plain,
       actionHandler: { [weak self] in
         self?.showProfileView()
       })

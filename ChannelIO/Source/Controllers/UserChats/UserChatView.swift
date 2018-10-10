@@ -249,7 +249,8 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     if showSetting {
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "settings"),
-        textColor: tintColor,
+        tintColor: tintColor,
+        style: .plain,
         actionHandler: { [weak self] in
           self?.profileSubject.onNext(nil)
       })
@@ -270,7 +271,8 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      textColor: tintColor,
+      tintColor: tintColor,
+      style: .plain,
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         ChannelIO.close(animated: true)

@@ -45,8 +45,8 @@ class LanguageOptionViewController: BaseViewController {
     self.title = CHAssets.localized("ch.language")
     self.navigationItem.leftBarButtonItem = NavigationItem(
       image:  CHAssets.getImage(named: "back"),
-      alignment: .left,
-      textColor: mainStore.state.plugin.textUIColor,
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
       actionHandler: { [weak self] in
         _ = self?.navigationController?.popViewController(animated: true)
       })
