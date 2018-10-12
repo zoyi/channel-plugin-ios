@@ -1,4 +1,7 @@
 # 4.1.9
+# Updates 
+* Updated models to make compatible with react native
+
 # Bug fixes
 * Fixed in-app push notification leak 
 
