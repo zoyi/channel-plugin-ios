@@ -181,34 +181,35 @@ extension ChannelIO {
       return
     }
     
-    ChannelIO.hideNotification()
-    
-    let notificationView = ChatNotificationView()
-    notificationView.topLayoutGuide = topController.topLayoutGuide
-    
-    let notificationViewModel = ChatNotificationViewModel(push: push)
-    notificationView.configure(notificationViewModel)
-    notificationView.insert(on: topController.view, animated: true)
-    
-    notificationView
-      .signalForChat()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (event) in
-        ChannelIO.hideNotification()
-        ChannelIO.showUserChat(userChatId: push.userChat?.id)
-      }).disposed(by: self.disposeBeg)
-    
-    notificationView.closeView
-      .signalForClick()
-      .observeOn(MainScheduler.instance)
-      .subscribe { (event) in
-        ChannelIO.hideNotification()
-      }.disposed(by: self.disposeBeg)
-    
-    ChannelIO.chatNotificationView = notificationView
-
-    CHAssets.playPushSound()
-    mainStore.dispatch(RemovePush())
+    dispatch {
+      ChannelIO.hideNotification()
+      
+      let notificationView = ChatNotificationView()
+      notificationView.topLayoutGuide = topController.topLayoutGuide
+      
+      let notificationViewModel = ChatNotificationViewModel(push: push)
+      notificationView.configure(notificationViewModel)
+      notificationView.insert(on: topController.view, animated: true)
+      
+      notificationView
+        .signalForChat()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (event) in
+          ChannelIO.hideNotification()
+          ChannelIO.showUserChat(userChatId: push.userChat?.id)
+        }).disposed(by: self.disposeBeg)
+      
+      notificationView.closeView
+        .signalForClick()
+        .observeOn(MainScheduler.instance)
+        .subscribe { (event) in
+          ChannelIO.hideNotification()
+        }.disposed(by: self.disposeBeg)
+      
+      ChannelIO.chatNotificationView = notificationView
+      CHAssets.playPushSound()
+      mainStore.dispatch(RemovePush())
+    }
   }
   
   internal class func sendDefaultEvent(_ event: CHDefaultEvent, property: [String: Any]? = nil) {
@@ -219,12 +220,9 @@ extension ChannelIO {
     
   internal class func hideNotification() {
     guard ChannelIO.chatNotificationView != nil else { return }
-    
-    dispatch {
-      mainStore.dispatch(RemovePush())
-      ChannelIO.chatNotificationView?.remove(animated: true)
-      ChannelIO.chatNotificationView = nil
-    }
+
+    ChannelIO.chatNotificationView?.remove(animated: true)
+    ChannelIO.chatNotificationView = nil
   }
 }
 

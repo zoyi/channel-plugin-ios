@@ -233,6 +233,7 @@ public final class ChannelIO: NSObject {
       launcherView.configure(viewModel)
       launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
         guard ChannelIO.isValidStatus else { return }
+        ChannelIO.hideNotification()
         ChannelIO.open(animated: true)
       }).disposed(by: disposeBeg)
       

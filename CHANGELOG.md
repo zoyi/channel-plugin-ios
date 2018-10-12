@@ -1,3 +1,7 @@
+# 4.1.9
+# Bug fixes
+* Fixed in-app push notification leak 
+
 # 4.1.8
 # Bug fixes
 * Fixed navigation item layout for iOS 9
