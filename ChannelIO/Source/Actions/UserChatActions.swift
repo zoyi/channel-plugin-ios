@@ -75,7 +75,7 @@ struct UserChatActions {
   static func openAgreement() {
     let locale = CHUtils.getLocale() ?? .korean
     let url = "https://channel.io/" + locale.rawValue +
-      "/terms_user?channel_id=" + mainStore.state.channel.id
+      "/terms_user?plugin_key=" + (mainStore.state.settings?.pluginKey ?? "")
     
     guard let link = URL(string: url) else { return }
     link.open()

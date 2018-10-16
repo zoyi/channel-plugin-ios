@@ -1,44 +1,48 @@
+# 4.1.10
+## Bug fixes
+* Fixed actionable message when context type is other than just text
+
 # 4.1.9
-# Updates 
+## Updates 
 * Updated models to make compatible with react native
 
-# Bug fixes
+## Bug fixes
 * Fixed in-app push notification leak 
 
 # 4.1.8
-# Bug fixes
+## Bug fixes
 * Fixed navigation item layout for iOS 9
 
 # 4.1.7
-# Updates
+## Updates
 * react-native support with carthage
 
-# Bug fixes
+## Bug fixes
 * Fixed carthage installation issue
 * Fixed dependencies version
 * Fixed to set locale properly
 
 # 4.1.5
-# Bug fixes
+## Bug fixes
 * Fixed onChangeBadge didn't get called properly 
 * Fixed `profile` fields sync
 * Ensured all UI updates on main thread
 
 # 4.1.3
-# Bug fixes
+## Bug fixes
 * Fixed launcher button inconsistently appears on random position
 * Fixed possible force unwrapped crash in message model
 
 # 4.1.2
-# Updates
+## Updates
 * Refactored channel properties 
 
-# Bug fixes 
+## Bug fixes 
 * Fixed unable to boot for startup
 * Fixed boot params 
 
 # 4.1.0 
-# Updates
+## Updates
 * `boot:` will not show launcher automatically
 * `show:` and `hide:` is visibility control property for launcher and it appears globally over application
 * Changed image viewer framework
@@ -46,19 +50,19 @@
 * Updated Cartfile 
 
 # 4.0.2 (Sept 4, 2018)
-# Bug fixes
+## Bug fixes
 * Fixed unintentionally delete cookie 
 
 # 4.0.1 (Sept 3, 2018)
-# Bug fixes
+## Bug fixes
 * Remove warnings 
 * Fixed email link behavior
 
 # 4.0.0 (August 31, 2018)
-# Deprecated
+## Deprecated
 * ChannelPluginSetting's hideDefaultLauncher property has been deprecated
 
-# Update
+## Update
 * Users now will be asked to close chat
 * Web link will be opened in application instead default browser
 * Updated internal APIs related to session and read
@@ -66,35 +70,35 @@
 * Cached country data locally 
 
 # 3.2.8 (August 28, 2018)
-# Bug fixes 
+## Bug fixes 
 * Fixed crash caused by string forced unwrapping
 
 # 3.2.7 (August 1, 2018)
-# Update
+## Update
 * Removed install objc header option from build option
 * Handled phone number in text 
 * Supported settings' legacy keys
 
 # 3.2.6
-# Update
+## Update
 * Removed AdSupport
 
 # 3.2.5 
-# Bug fixes
+## Bug fixes
 * Fixed condition to handle link for delegate
 
 # 3.2.4 (July 18, 2018)
-# Update
+## Update
 * Updated in-app push notification design
 * Refactored push and guest update logics
 * Showed closed user chats by default
 
-# Bug fixes
+## Bug fixes
 * Fixed blocked user UX
 * Fixed settings unarchived error
 
 # 3.2.3 (July 10, 2018)
-# New
+## New
 * Added message translation
  
 ## Updates
