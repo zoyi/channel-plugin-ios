@@ -202,20 +202,10 @@ extension CHMessage: Mappable {
     let msgv2 = map["messageV2"].currentValue as? String ?? ""
     (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
-    if self.log != nil {
-      messageType = .Log
-    } else if self.file?.image == true {
-      messageType = .Media
-    } else if self.file != nil {
-      messageType = .File
-    } else if let profiles = self.profileBot, profiles.count != 0 {
-      messageType = .Profile
-    } else if self.webPage != nil {
-      messageType = .WebPage
-    } else if self.form != nil {
+    if self.form != nil {
       messageType = .Form
     } else {
-      messageType = .Default
+      messageType = CHMessage.contextType(self)
     }
   }
   
@@ -226,6 +216,22 @@ extension CHMessage: Mappable {
     filterText = filterText.replacingOccurrences(of: "]", with: "\\]")
     filterText = filterText.replacingOccurrences(of: "[", with: "\\[")
     return filterText
+  }
+  
+  static func contextType(_ message: CHMessage) -> MessageType {
+     if message.log != nil {
+      return .Log
+    } else if message.file?.image == true {
+      return .Media
+    } else if message.file != nil {
+      return .File
+    } else if let profiles = message.profileBot, profiles.count != 0 {
+      return .Profile
+    } else if message.webPage != nil {
+      return .WebPage
+    } else {
+      return .Default
+    }
   }
 }
 

@@ -94,10 +94,12 @@ struct MessagesState: StateType {
       self.messageDictionary[message.requestId!] = nil
     }
     
-    //when CreateMessage happens, all form should be treated as normal text
+    //In order to display smooth message transition when actionable was clicked
+    //actionable message click -> message created -> message update --- default
+    //actioanble message click -> message created (update actionable while created) -- optimize
     for (key, message) in self.formQueue {
       var updated = message
-      updated.messageType = .Default
+      updated.messageType = CHMessage.contextType(message)
       self.messageDictionary[key] = updated
     }
     

@@ -211,6 +211,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: WatermarkCell.self)
     self.tableView.register(cellType: ProfileCell.self)
     self.tableView.register(cellType: FormMessageCell.self)
+    self.tableView.register(cellType: FormWebMessageCell.self)
+    self.tableView.register(cellType: FormMediaMessageCell.self)
+    self.tableView.register(cellType: FormFileMessageCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -818,10 +821,7 @@ extension UserChatViewController {
     case .Profile:
       return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
     case .Form:
-      if viewModel.shouldDisplayForm {
-        return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-      }
-      return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     }
@@ -887,29 +887,29 @@ extension UserChatViewController {
       return cell
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
       return cell
     case .WebPage:
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
       cell.webView.signalForClick().subscribe{ [weak self] _ in
         self?.chatManager?.didClickOnWebPage(with: message)
       }.disposed(by: self.disposeBag)
       return cell
     case .Media:
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
       cell.mediaView.signalForClick().subscribe { [weak self] _ in
         self?.didImageTapped(message: message)
       }.disposed(by: self.disposeBag)
       return cell
     case .File:
       let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
       cell.fileView.signalForClick().subscribe { [weak self] _ in
         self?.chatManager?.didClickOnFile(with: message)
       }.disposed(by: self.disposeBag)
@@ -919,15 +919,48 @@ extension UserChatViewController {
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
     case .Form:
-      if viewModel.shouldDisplayForm {
+      return self.cellForForm(tableView, viewModel: viewModel, cellForRowAt: indexPath)
+    default: //remote
+      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
+    }
+  }
+  
+  func cellForForm(_ tableView: UITableView, viewModel: MessageCellModelType,  cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    if viewModel.shouldDisplayForm {
+      if viewModel.clipType == .Image {
+        let cell: FormMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        return cell
+      } else if viewModel.clipType == .Webpage {
+        let cell: FormWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        return cell
+      } else if viewModel.clipType == .File {
+        let cell: FormFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        return cell
+      } else {
         let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         return cell
       }
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
+    }
+    
+    if viewModel.clipType == .Image {
+      let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
-    default: //remote
+    } else if viewModel.clipType == .Webpage {
+      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
+    } else if viewModel.clipType == .File {
+      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
+    } else {
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
