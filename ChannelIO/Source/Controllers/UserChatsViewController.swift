@@ -13,7 +13,6 @@ import RxSwift
 import SnapKit
 import SVProgressHUD
 import MGSwipeTableCell
-import CGFloatLiteral
 
 class UserChatsViewController: BaseViewController {
 

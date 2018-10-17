@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import HexColors
 
 struct CHColors {
   static let dark = UIColor("#516378")!

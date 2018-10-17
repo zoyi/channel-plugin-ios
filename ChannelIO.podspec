@@ -36,9 +36,7 @@ Pod::Spec.new do |s|
  
   s.dependency 'Reusable', '~> 4.0'
   s.dependency 'SnapKit', '~> 4.0'
-  s.dependency 'HexColors', '~> 6.0'
   s.dependency 'SwiftyJSON', '~> 4.0'
-  s.dependency 'Then'
   s.dependency 'ReSwift', '~> 4.0'
   s.dependency 'RxSwift', '~> 4.0'
   s.dependency 'RxCocoa', '~> 4.0'
@@ -47,7 +45,6 @@ Pod::Spec.new do |s|
   s.dependency 'CHDwifft'
   s.dependency 'DKImagePickerController', '~> 3.8.1'
   s.dependency 'Alamofire', '~> 4.7.1'
-  s.dependency 'CGFloatLiteral'
   s.dependency 'Socket.IO-Client-Swift', '~> 13.1.0' 
   s.dependency 'CHSlackTextViewController'
   s.dependency 'MGSwipeTableCell'

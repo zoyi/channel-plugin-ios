@@ -1,9 +1,7 @@
 github "ReactiveX/RxSwift" ~> 4.3.0
 github "AliSoftware/Reusable" ~> 4.0
 github "SnapKit/SnapKit" ~> 4.0
-github "mRs-/HexColors" ~> 6.0
 github "SwiftyJSON/SwiftyJSON" ~> 4.0
-github "intoxicated/Then"
 github "ReSwift/ReSwift" ~> 4.0
 github "Hearst-DD/ObjectMapper" ~> 3.3
 github "ninjaprox/NVActivityIndicatorView" ~> 4.4.0
@@ -18,6 +16,5 @@ github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit" ~> 2.5.0
 github "rs/SDWebImage" ~> 4.3.0
-github "devxoul/CGFloatLiteral" ~> 0.2
 github "intoxicated/TLYShyNavBar"
 github "hyperoslo/Lightbox" ~> 2.3.0

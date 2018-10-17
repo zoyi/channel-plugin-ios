@@ -6,8 +6,6 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import Then
-
 protocol ModelType: Then {
   var id: String { get }
 }
