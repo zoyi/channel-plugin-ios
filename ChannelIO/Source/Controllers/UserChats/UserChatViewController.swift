@@ -27,6 +27,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     static let messageCellMaxWidth = UIScreen.main.bounds.width
   }
   
+  struct Metric {
+    static let newButtonHeight = 46
+  }
+  
   // MARK: Properties
   var channel: CHChannel = mainStore.state.channel
   var userChatId: String?
@@ -162,7 +166,7 @@ final class UserChatViewController: BaseSLKTextViewController {
         self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(15).constraint
       }
       make.centerX.equalToSuperview()
-      make.height.equalTo(46)
+      make.height.equalTo(Metric.newButtonHeight)
     }
   }
   
@@ -753,7 +757,7 @@ extension UserChatViewController {
     }
     self.isAnimating = true
     
-    let margin = -24 - self.newChatButton.height
+    let margin = -24 - Metric.newButtonHeight //button height
     if #available(iOS 11.0, *) {
       self.newChatBottomConstraint?.update(offset: -margin)
     } else {

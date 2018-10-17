@@ -61,7 +61,7 @@ final class Badge: NeverClearView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    self.layer.cornerRadius = self.height / 2
+    self.layer.cornerRadius = self.frame.size.height / 2
 
     self.label.snp.remakeConstraints { (make) in
       make.width.greaterThanOrEqualTo(Metric.minWidth)

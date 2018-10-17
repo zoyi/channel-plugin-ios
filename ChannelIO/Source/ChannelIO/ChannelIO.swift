@@ -8,7 +8,6 @@
 
 import Foundation
 import CGFloatLiteral
-import ManualLayout
 import Reusable
 import SnapKit
 import Then

@@ -36,7 +36,6 @@ Pod::Spec.new do |s|
  
   s.dependency 'Reusable', '~> 4.0'
   s.dependency 'SnapKit', '~> 4.0'
-  s.dependency 'ManualLayout'
   s.dependency 'HexColors', '~> 6.0'
   s.dependency 'SwiftyJSON', '~> 4.0'
   s.dependency 'Then'

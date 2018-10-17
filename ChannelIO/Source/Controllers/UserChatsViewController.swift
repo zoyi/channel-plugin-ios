@@ -239,7 +239,7 @@ class UserChatsViewController: BaseViewController {
   }
   
   fileprivate func hidePlusButton() {
-    let margin = -24 - self.plusButton.height
+    let margin = -24 - self.plusButton.frame.size.height
     self.plusBottomConstraint?.update(inset: margin)
     UIView.animate(withDuration: 0.3) {
       self.view.layoutIfNeeded()
@@ -419,7 +419,7 @@ extension UserChatsViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     let userChat = self.userChats[indexPath.row]
     let viewModel = UserChatCellModel(userChat: userChat)
-    return UserChatCell.height(fits: tableView.width, viewModel: viewModel)
+    return UserChatCell.height(fits: tableView.frame.size.width, viewModel: viewModel)
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

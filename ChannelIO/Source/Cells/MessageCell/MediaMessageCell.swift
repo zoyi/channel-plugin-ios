@@ -58,7 +58,7 @@ class MediaMessageCell: MessageCell {
     super.configure(viewModel, presenter: presenter)
     self.mediaView.configure(message: viewModel, isThumbnail: true)
     
-    let size = MediaMessageView.viewSize(fits: self.width, viewModel: viewModel)
+    let size = MediaMessageView.viewSize(fits: self.frame.width, viewModel: viewModel)
     self.widthConstraint?.update(offset: size.width)
     self.heightConstraint?.update(offset: size.height)
     

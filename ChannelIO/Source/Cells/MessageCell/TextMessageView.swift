@@ -143,7 +143,7 @@ class TextMessageView : BaseView {
       placeHolder.attributedText = message
       placeHolder.sizeToFit()
       
-      viewHeight += placeHolder.size.height + topBottomPadding
+      viewHeight += placeHolder.frame.size.height + topBottomPadding
 //      viewHeight += message.height(fits: width - Metric.leftRightPadding * 2)
 //      viewHeight += Metric.topBottomPadding * 2
     }

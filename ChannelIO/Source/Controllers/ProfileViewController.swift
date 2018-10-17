@@ -133,7 +133,7 @@ final class ProfileViewController: BaseViewController {
     let height:CGFloat = channel.homepageUrl != "" || channel.phoneNumber != "" ? 180 : 110
     self.headerView.frame = CGRect(
       x: 0, y: 0,
-      width: self.tableView.width,
+      width: self.tableView.frame.width,
       height: height
     )
     self.tableView.tableHeaderView = self.headerView
@@ -270,7 +270,7 @@ extension ProfileViewController : StoreSubscriber {
     let height:CGFloat = state.channel.homepageUrl != "" || state.channel.phoneNumber != "" ? 180 : 110
     self.headerView.frame = CGRect(
       x: 0, y: 0,
-      width: self.tableView.width,
+      width: self.tableView.frame.size.width,
       height: height
     )
     self.headerView.configure(

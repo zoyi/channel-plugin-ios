@@ -147,7 +147,7 @@ extension UserChatRouter : UIDocumentInteractionControllerDelegate {
     
     if !docController.presentPreview(animated: true) {
       docController.presentOptionsMenu(
-        from: view.bounds, in: view.view, animated: true)
+        from: view.view.bounds, in: view.view, animated: true)
     }
   }
   

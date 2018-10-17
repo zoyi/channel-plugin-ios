@@ -45,61 +45,61 @@ final class MultiAvatarView: NeverClearView {
   }
 
   // MARK: Layout
-
-  override func layoutSubviews() {
-    super.layoutSubviews()
-    if self.avatarViews[1].isHidden {
-      self.layoutOneAvatar()
-    } else if self.avatarViews[2].isHidden {
-      self.layoutTwoAvatar()
-    } else {
-      self.layoutThreeAvatar()
-    }
-  }
-
-  private func layoutOneAvatar() {
-    self.avatarViews[0].showBorder = false
-    self.avatarViews[0].top = 0
-    self.avatarViews[0].left = 0
-    self.avatarViews[0].width = self.width
-    self.avatarViews[0].height = self.height
-  }
-
-  private func layoutTwoAvatar() {
-    let width = self.width * 0.77
-
-    self.avatarViews[0].showBorder = true
-    self.avatarViews[0].top = 0
-    self.avatarViews[0].left = 0
-    self.avatarViews[0].width = width
-    self.avatarViews[0].height = width
-
-    self.avatarViews[1].top = self.width - width
-    self.avatarViews[1].left = self.width - width
-    self.avatarViews[1].width = width
-    self.avatarViews[1].height = width
-  }
-
-  private func layoutThreeAvatar() {
-    let width = self.width * 0.55
-
-    self.avatarViews[0].showBorder = true
-    self.avatarViews[0].top = 0
-    self.avatarViews[0].left = 0
-    self.avatarViews[0].width = width
-    self.avatarViews[0].height = width
-
-    self.avatarViews[1].showBorder = true
-    self.avatarViews[1].width = width
-    self.avatarViews[1].height = width
-    self.avatarViews[1].top = (self.height - self.avatarViews[1].height)/2
-    self.avatarViews[1].left = self.width - width
-
-    self.avatarViews[2].showBorder = true
-    self.avatarViews[2].top = self.height - width
-    self.avatarViews[2].left = 0
-    self.avatarViews[2].width = width
-    self.avatarViews[2].height = width
-  }
+//
+//  override func layoutSubviews() {
+//    super.layoutSubviews()
+//    if self.avatarViews[1].isHidden {
+//      self.layoutOneAvatar()
+//    } else if self.avatarViews[2].isHidden {
+//      self.layoutTwoAvatar()
+//    } else {
+//      self.layoutThreeAvatar()
+//    }
+//  }
+//
+//  private func layoutOneAvatar() {
+//    self.avatarViews[0].showBorder = false
+//    self.avatarViews[0].top = 0
+//    self.avatarViews[0].left = 0
+//    self.avatarViews[0].width = self.width
+//    self.avatarViews[0].height = self.height
+//  }
+//
+//  private func layoutTwoAvatar() {
+//    let width = self.width * 0.77
+//
+//    self.avatarViews[0].showBorder = true
+//    self.avatarViews[0].top = 0
+//    self.avatarViews[0].left = 0
+//    self.avatarViews[0].width = width
+//    self.avatarViews[0].height = width
+//
+//    self.avatarViews[1].top = self.width - width
+//    self.avatarViews[1].left = self.width - width
+//    self.avatarViews[1].width = width
+//    self.avatarViews[1].height = width
+//  }
+//
+//  private func layoutThreeAvatar() {
+//    let width = self.width * 0.55
+//
+//    self.avatarViews[0].showBorder = true
+//    self.avatarViews[0].top = 0
+//    self.avatarViews[0].left = 0
+//    self.avatarViews[0].width = width
+//    self.avatarViews[0].height = width
+//
+//    self.avatarViews[1].showBorder = true
+//    self.avatarViews[1].width = width
+//    self.avatarViews[1].height = width
+//    self.avatarViews[1].top = (self.height - self.avatarViews[1].height)/2
+//    self.avatarViews[1].left = self.width - width
+//
+//    self.avatarViews[2].showBorder = true
+//    self.avatarViews[2].top = self.height - width
+//    self.avatarViews[2].left = 0
+//    self.avatarViews[2].width = width
+//    self.avatarViews[2].height = width
+//  }
 }
 

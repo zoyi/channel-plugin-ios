@@ -182,7 +182,7 @@ class ActionView: BaseView {
     guard  leftOverMargin > 0 else { return }
     
     for button in buttons {
-      button.origin = CGPoint(x: button.origin.x + leftOverMargin, y: button.origin.y)
+      button.frame.origin = CGPoint(x: button.frame.origin.x + leftOverMargin, y: button.frame.origin.y)
     }
   }
 
