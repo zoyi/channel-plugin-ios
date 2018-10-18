@@ -1,4 +1,7 @@
 # 4.1.10
+## Updates
+* Removed and merged frameworks (Manuallayout, CGFlaotLiteral, Then, HexColors)
+
 ## Bug fixes
 * Fixed actionable message when context type is other than just text
 
