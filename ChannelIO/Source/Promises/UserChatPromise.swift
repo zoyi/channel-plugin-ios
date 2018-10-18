@@ -78,6 +78,7 @@ struct UserChatPromise {
       return Disposables.create()
     }
   }
+  
   static func getChat(userChatId: String) -> Observable<ChatResponse> {
     return Observable.create { subscriber in
       Alamofire.request(RestRouter.GetUserChat(userChatId))

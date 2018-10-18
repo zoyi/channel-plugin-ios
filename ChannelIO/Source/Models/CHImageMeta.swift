@@ -25,3 +25,12 @@ extension CHImageMeta: Mappable {
     url     <- map["url"]
   }
 }
+
+extension CHImageMeta: Equatable {
+  static func ==(lhs:CHImageMeta, rhs:CHImageMeta) -> Bool {
+    return lhs.url == rhs.url &&
+      lhs.width == rhs.width &&
+      lhs.height == rhs.height
+  }
+}
+
