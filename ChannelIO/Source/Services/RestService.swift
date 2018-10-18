@@ -45,6 +45,11 @@ enum RestRouter: URLRequestConvertible {
 
   case Translate(String, ParametersType)
   
+  case GetSupportBots(String)
+  case GetSupportBotEntry(String)
+  case CreateSupportBotChat(String)
+  case ReplySupportBot(String, ParametersType)
+  
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -69,13 +74,15 @@ enum RestRouter: URLRequestConvertible {
     case .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot, .RequestProfileBot,
-         .UpdateProfileItem, .TouchGuest:
+         .UpdateProfileItem, .TouchGuest,
+         .CreateSupportBotChat, .ReplySupportBot:
       return .post
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetFollowingManager,
-         .GetPlugin, .Translate:
+         .GetPlugin, .Translate,
+         .GetSupportBots, .GetSupportBotEntry:
       return .get
     case .SetMessagesRead,
          .RemoveUserChat,
@@ -136,6 +143,14 @@ enum RestRouter: URLRequestConvertible {
       return "/app/messages/\(messageId)/profile_bot"
     case .Translate(let messageId, _):
       return "/app/messages/\(messageId)/translate"
+    case .GetSupportBots(let pluginId):
+      return "/app/plugins/\(pluginId)/support_bots?mobile=true"
+    case .GetSupportBotEntry(let supportBotId):
+      return "/app/support_bots/\(supportBotId)/entry"
+    case .CreateSupportBotChat(let supportBotId):
+      return "/app/support_bots/\(supportBotId)/user_chats"
+    case .ReplySupportBot(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/support_bots/action"
     }
   }
   
@@ -212,21 +227,27 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .Boot(_, let params),
          .GetMessages(_, let params),
-         .CreateMessage(_, let params), .UploadFile(_, let params),
-         .GetUserChats(let params), .RegisterToken(let params),
+         .CreateMessage(_, let params),
+         .UploadFile(_, let params),
+         .GetUserChats(let params),
+         .RegisterToken(let params),
          .SendEvent(let params),
          .UpdateProfileItem(_, let params),
          .Translate(_, let params),
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params),
          .SetMessagesRead(_, let params),
-         .UnregisterToken(_, let params):
+         .UnregisterToken(_, let params),
+         .ReplySupportBot(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,
          .GetFollowingManager,
          .RequestProfileBot,
-         .CreateUserChat:
+         .CreateUserChat,
+         .GetSupportBots,
+         .GetSupportBotEntry,
+         .CreateSupportBotChat:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

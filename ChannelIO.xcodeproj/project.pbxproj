@@ -114,6 +114,8 @@
 		657AF3F1217845D7001EAA7A /* CHNudge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3EE217845D7001EAA7A /* CHNudge.swift */; };
 		657AF3F3217845D7001EAA7A /* CHTargetCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F0217845D7001EAA7A /* CHTargetCondition.swift */; };
 		657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F421784606001EAA7A /* CHSupportBot.swift */; };
+		657AF3F72178750F001EAA7A /* SupportBotPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F62178750F001EAA7A /* SupportBotPromise.swift */; };
+		657AF3F921787E88001EAA7A /* Alamofire+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */; };
 		659001312068CD200054B353 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001302068CD1F0054B353 /* MarkdownParser.swift */; };
 		659001432068CD7D0054B353 /* MarkdownCodeEscaping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001352068CD7D0054B353 /* MarkdownCodeEscaping.swift */; };
 		659001442068CD7D0054B353 /* MarkdownEscaping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001362068CD7D0054B353 /* MarkdownEscaping.swift */; };
@@ -423,6 +425,8 @@
 		657AF3EE217845D7001EAA7A /* CHNudge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHNudge.swift; sourceTree = "<group>"; };
 		657AF3F0217845D7001EAA7A /* CHTargetCondition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHTargetCondition.swift; sourceTree = "<group>"; };
 		657AF3F421784606001EAA7A /* CHSupportBot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHSupportBot.swift; sourceTree = "<group>"; };
+		657AF3F62178750F001EAA7A /* SupportBotPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportBotPromise.swift; sourceTree = "<group>"; };
+		657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+Extensions.swift"; sourceTree = "<group>"; };
 		659001302068CD1F0054B353 /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		659001352068CD7D0054B353 /* MarkdownCodeEscaping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownCodeEscaping.swift; sourceTree = "<group>"; };
 		659001362068CD7D0054B353 /* MarkdownEscaping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownEscaping.swift; sourceTree = "<group>"; };
@@ -978,6 +982,7 @@
 				659792B11FA7167A00840F6A /* UIView+Transition.swift */,
 				659792B21FA7167A00840F6A /* URL+Extensions.swift */,
 				654BFF4A1FD93CC80028D364 /* ReSwift+Extensions.swift */,
+				657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */,
 			);
 			name = Extensions;
 			path = Source/Extensions;
@@ -1009,6 +1014,7 @@
 				659792BD1FA7167B00840F6A /* PluginPromise.swift */,
 				659792BF1FA7167B00840F6A /* UserChatPromise.swift */,
 				659792C01FA7167B00840F6A /* UtilityPromise.swift */,
+				657AF3F62178750F001EAA7A /* SupportBotPromise.swift */,
 			);
 			name = Promises;
 			path = Source/Promises;
@@ -1558,6 +1564,7 @@
 				6597935B1FA716CB00840F6A /* UserChatsViewController.swift in Sources */,
 				657AF3F1217845D7001EAA7A /* CHNudge.swift in Sources */,
 				6597935C1FA716CB00840F6A /* UserChatViewController.swift in Sources */,
+				657AF3F921787E88001EAA7A /* Alamofire+Extensions.swift in Sources */,
 				6549CFB2207B6C6A000091D2 /* CheckableLabelCell.swift in Sources */,
 				22F094F62176E8A00035C777 /* Then.swift in Sources */,
 				655A280420B2699700935C1F /* CompleteActionView.swift in Sources */,
@@ -1594,6 +1601,7 @@
 				6597936E1FA716CB00840F6A /* CHColors.swift in Sources */,
 				6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */,
 				659001312068CD200054B353 /* MarkdownParser.swift in Sources */,
+				657AF3F72178750F001EAA7A /* SupportBotPromise.swift in Sources */,
 				659793701FA716CB00840F6A /* Profile.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
 				654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */,
