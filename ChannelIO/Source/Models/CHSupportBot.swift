@@ -8,12 +8,37 @@
 
 import Foundation
 import ObjectMapper
+import RxSwift
 
 struct CHSupportBot {
   var id: String = ""
   var channelId: String = ""
   var pluginId: String = ""
   var target: [CHTargetCondition]? = nil
+  
+  static func getBots(with pluginId: String, fetch: Bool) -> Observable<[CHSupportBot]> {
+    return Observable.create({ (subscriber) -> Disposable in
+      var disposable: Disposable?
+      if fetch {
+        disposable = SupportBotPromise.getSupportBots(pluginId: pluginId)
+          .observeOn(MainScheduler.instance)
+          .subscribe(onNext: { (bots) in
+            dlog("fetched support bot")
+            subscriber.onNext(bots)
+            subscriber.onCompleted()
+          }, onError: { (error) in
+            subscriber.onError(error)
+          })
+      } else {
+        subscriber.onNext([])
+        subscriber.onCompleted()
+      }
+      
+      return Disposables.create {
+        disposable?.dispose()
+      }
+    })
+  }
 }
 
 extension CHSupportBot: Mappable {

@@ -13,7 +13,7 @@ import RxSwift
 import ObjectMapper
 
 struct SupportBotPromise {
-  static func requestSupportBots(pluginId: String) -> Observable<[CHSupportBot]?> {
+  static func getSupportBots(pluginId: String) -> Observable<[CHSupportBot]> {
     return Observable.create({ (subscriber) in
       let req = Alamofire.request(RestRouter.GetSupportBots(pluginId))
         .validate(statusCode: 200..<300)
@@ -23,7 +23,7 @@ struct SupportBotPromise {
             let json = SwiftyJSON.JSON(data)
             let supportBots = Mapper<CHSupportBot>().mapArray(JSONObject: json["supportBots"].object)
             
-            subscriber.onNext(supportBots)
+            subscriber.onNext(supportBots ?? [])
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)
@@ -36,7 +36,7 @@ struct SupportBotPromise {
     })
   }
   
-  static func getSupportBotEntry(supportBotId: String) -> Observable<([CHSupportBotContext], [CHSupportBotAction])> {
+  static func getSupportBotEntry(supportBotId: String) -> Observable<([CHSupportBotStep], [CHSupportBotAction])> {
     return Observable.create({ (subscriber) in
       let req = Alamofire.request(RestRouter.GetSupportBotEntry(supportBotId))
         .validate(statusCode: 200..<300)

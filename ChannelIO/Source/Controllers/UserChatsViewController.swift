@@ -246,31 +246,20 @@ class UserChatsViewController: BaseViewController {
   }
   
   func showUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
-    let controller = UserChatViewController()
-    if let userChatId = userChatId {
-      controller.userChatId = userChatId
-    }
-
-    self.showNewChat = true
-
-    controller.preloadText = text
-    controller.signalForNewChat().subscribe (onNext: { [weak self] text in
-      let text = text as? String ?? ""
-      self?.navigationController?.popViewController(animated: true, completion: {
-        self?.showUserChat(text: text, animated: true)
-      })
-    }).disposed(by: self.disposeBag)
-
-    controller.signalForProfile().subscribe { [weak self] _ in
-      self?.showProfileView()
-    }.disposed(by: self.disposeBag)
+    let controller = self.prepareUserChat(userChatId: userChatId, text: text)
     
     //NOTE: Make sure to call onCompleted on observable method to avoid leak
-    Observable.zip(CHPlugin.get(with: mainStore.state.plugin.id), CHManager.getRecentFollowers())
+    let pluginId = mainStore.state.plugin.id
+    let pluginSignal = CHPlugin.get(with: pluginId)
+    let followersSignal = CHManager.getRecentFollowers()
+    let supportBot = CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil)
+    
+    Observable.zip(pluginSignal, followersSignal, supportBot)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (info, managers) in
+      .subscribe(onNext: { [weak self] (info, managers, supportBot) in
         mainStore.dispatch(UpdateFollowingManagers(payload: managers))
         mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
+        //update store with bots
         
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
@@ -282,7 +271,30 @@ class UserChatsViewController: BaseViewController {
         self?.errorToastView.display(animated: true)
       }).disposed(by: self.disposeBag)
   }
-
+  
+  func prepareUserChat(userChatId: String? = nil, text: String = "") -> UserChatViewController {
+    let controller = UserChatViewController()
+    if let userChatId = userChatId {
+      controller.userChatId = userChatId
+    }
+    
+    self.showNewChat = true
+    
+    controller.preloadText = text
+    controller.signalForNewChat().subscribe (onNext: { [weak self] text in
+      let text = text as? String ?? ""
+      self?.navigationController?.popViewController(animated: true, completion: {
+        self?.showUserChat(text: text, animated: true)
+      })
+    }).disposed(by: self.disposeBag)
+    
+    controller.signalForProfile().subscribe { [weak self] _ in
+      self?.showProfileView()
+    }.disposed(by: self.disposeBag)
+    
+    return controller
+  }
+  
   func showProfileView() {
     let controller = ProfileViewController()
     let navigation = MainNavigationController(rootViewController: controller)
