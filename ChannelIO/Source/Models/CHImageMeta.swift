@@ -9,13 +9,13 @@
 import Foundation
 import ObjectMapper
 
-struct CHPreviewThumb {
+struct CHImageMeta {
   var width = 0.0
   var height = 0.0
   var url = ""
 }
 
-extension CHPreviewThumb: Mappable {
+extension CHImageMeta: Mappable {
   init?(map: Map) {
 
   }

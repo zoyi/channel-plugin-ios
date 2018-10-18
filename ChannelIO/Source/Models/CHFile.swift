@@ -33,7 +33,7 @@ struct CHFile {
   var size = 0
   var category = ""
   var image = false
-  var previewThumb: CHPreviewThumb?
+  var previewThumb: CHImageMeta?
 
   var isPreviewable: Bool! {
     return self.image == true && self.previewThumb != nil

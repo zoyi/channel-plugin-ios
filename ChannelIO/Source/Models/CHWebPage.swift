@@ -14,7 +14,7 @@ struct CHWebPage {
   var title: String?
   var description: String?
   var imageUrl: String?
-  var previewThumb: CHPreviewThumb?
+  var previewThumb: CHImageMeta?
 }
 
 extension CHWebPage: Mappable {
