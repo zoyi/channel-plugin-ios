@@ -25,6 +25,16 @@ struct CHForm {
   var inputs: [CHInput] = []
   var closed: Bool = false
   var option: [FormOptionKey: Bool] = [:]
+  
+  static func create(botEntry: CHSupportBotEntryInfo) -> CHForm {
+    var form = CHForm()
+    form.inputs = botEntry.actions.map { (action) in
+      let (text, onlyEmoji) = CustomMessageTransform.markdown.parse(action.text)
+      return CHInput(key: action.key, text: text, onlyEmoji: onlyEmoji)
+    }
+    
+    return form
+  }
 }
 
 extension CHForm: Mappable {

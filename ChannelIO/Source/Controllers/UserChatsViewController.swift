@@ -253,13 +253,28 @@ class UserChatsViewController: BaseViewController {
     let pluginSignal = CHPlugin.get(with: pluginId)
     let followersSignal = CHManager.getRecentFollowers()
     let supportBot = CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil)
+    var pluginBot: CHBot? = nil
     
     Observable.zip(pluginSignal, followersSignal, supportBot)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (info, managers, supportBot) in
+      .flatMap({ (info, managers, supportBots) -> Observable<CHSupportBotEntryInfo> in
         mainStore.dispatch(UpdateFollowingManagers(payload: managers))
         mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
-        //update store with bots
+        
+        pluginBot = info.1
+        mainStore.dispatch(GetSupportBots(payload: supportBots))
+        //evaluation happen here later
+        
+        if let botId = supportBots.first?.id {
+          return SupportBotPromise.getSupportBotEntry(supportBotId: botId)
+        } else {
+          let emptyData = CHSupportBotEntryInfo(step: nil, actions: [])
+          return Observable.just(emptyData)
+        }
+      })
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (entryInfo) in
+        mainStore.dispatch(GetSupportBotEntry(bot: pluginBot, entry: entryInfo))
         
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false

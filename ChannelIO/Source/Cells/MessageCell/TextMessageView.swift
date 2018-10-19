@@ -128,6 +128,17 @@ class TextMessageView : BaseView {
     }
   }
   
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    if self.viewModel?.isContinuous == true {
+      self.roundCorners(corners: [.allCorners], radius: Constant.cornerRadius)
+    } else if self.viewModel?.createdByMe == true {
+      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+    } else {
+      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+    }
+  }
+  
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
     if let message = viewModel.message.messageV2 {
@@ -144,8 +155,6 @@ class TextMessageView : BaseView {
       placeHolder.sizeToFit()
       
       viewHeight += placeHolder.frame.size.height + topBottomPadding
-//      viewHeight += message.height(fits: width - Metric.leftRightPadding * 2)
-//      viewHeight += Metric.topBottomPadding * 2
     }
     
     return viewHeight

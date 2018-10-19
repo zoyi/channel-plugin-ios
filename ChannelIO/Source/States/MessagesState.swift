@@ -11,6 +11,7 @@ import ReSwift
 struct MessagesState: StateType {
   var messageDictionary: [String:CHMessage] = [:]
   var formQueue: [String:CHMessage] = [:]
+  var supportBotEntry: CHMessage?
   
   func findBy(type: MessageType) -> [CHMessage]? {
     return self.messageDictionary.filter({$1.messageType == type}).map({ $1 })
@@ -70,11 +71,11 @@ struct MessagesState: StateType {
   
   mutating func upsert(messages: [CHMessage]) -> MessagesState {
     for message in messages {
-      if let isWelcome = message.botOption?["welcome"], isWelcome {
-        self.messageDictionary["welcome_dummy"] = message
-      } else {
+//      if let isWelcome = message.botOption?["welcome"], isWelcome && message.form == nil {
+//        self.messageDictionary["welcome_dummy"] = message
+//      } else {
         self.messageDictionary[message.id] = message
-      }
+//      }
       
       if message.form != nil {
         self.formQueue[message.id] = message

@@ -243,6 +243,40 @@ extension ChatManager {
 }
 
 extension ChatManager {
+  func isSupporting() -> Bool {
+    return self.chat?.isSupporting() == true || mainStore.state.messagesState.supportBotEntry != nil
+  }
+  
+  func shouldSendMessage(msg: String) -> Observable<CHUserChat?> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      //move this logic into presenter
+      if let chat = self?.chat, chat.isActive() {
+        self?.sendMessage(userChatId: chat.id, text: msg).subscribe().dispose()
+        subscriber.onNext(chat)
+        subscriber.onCompleted()
+      } else {
+        self?.createChat().flatMap({ (chatId) -> Observable<CHMessage?> in
+          guard let s = self else {
+            return Observable.just(nil)
+          }
+          s.chatId = chatId
+          return s.sendMessage(userChatId: chatId, text: msg)
+        }).flatMap({ [weak self] (message) -> Observable<Bool?> in
+          guard let s = self else { return Observable.just(false) }
+          return s.requestProfileBot(chatId: self?.chatId)
+        }).subscribe(onNext: { (completed) in
+          subscriber.onNext(self?.chat)
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        }).disposed(by: self!.disposeBag)
+      }
+      
+      return Disposables.create()
+    })
+  }
+  
   func sendMessage(userChatId: String, text: String, originId: String? = nil, key: String? = nil, local: Bool = false) -> Observable<CHMessage?> {
     return Observable.create({ (subscriber) in
       let me = mainStore.state.guest
@@ -341,16 +375,34 @@ extension ChatManager {
   }
   
   func onClickFormOption(originId: String?, key: String?, value: String?) {
-    guard var origin = messageSelector(state: mainStore.state, id: originId),
-      let key = key, let value = value else { return }
-    
-    if let type = origin.form?.type {
+    if self.isSupporting() {
+      self.createSupportBotChatIfNeeded(originId: originId)
+        .observeOn(MainScheduler.instance)
+        .flatMap({ (chat, message) -> Observable<Any?> in
+        let me = mainStore.state.guest
+        var preMessage = CHMessage(chatId: chat!.id, guest: me, message: value ?? "")
+        if let originId = originId, let key = key {
+          preMessage.submit = CHSubmit(id: originId, key: key)
+        }
+        mainStore.dispatch(CreateMessage(payload: preMessage))
+        return CHSupportBot.reply(with: chat?.id, formId: message?.id, key: key)
+      }) .subscribe(onNext: { (_) in
+        //do nothing
+      }, onError: { (error) in
+        //handle error
+      }).disposed(by: self.disposeBag)
+    } else {
+      guard var origin = messageSelector(state: mainStore.state, id: originId),
+        let type = origin.form?.type,
+        let key = key, let value = value else { return }
+      
       if type == .solve && key == "close" {
         UserChatPromise.close(userChatId: self.chatId, formId: origin.id)
+          .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (chat) in
             mainStore.dispatch(UpdateUserChat(payload:chat))
           }, onError: { (error) in
-          
+            //handle error
           }).disposed(by: self.disposeBag)
       } else if type == .solve && key == "reopen" {
         origin.form?.closed = true
@@ -361,6 +413,7 @@ extension ChatManager {
         }
       } else if type == .close {
         UserChatPromise.review(userChatId: self.chatId, formId: origin.id, rating: ReviewType(rawValue: key)!)
+          .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (chat) in
             mainStore.dispatch(UpdateUserChat(payload:chat))
           }, onError: { (error) in
@@ -368,10 +421,11 @@ extension ChatManager {
           }).disposed(by: self.disposeBag)
       } else if type == .select {
         self.sendMessage(userChatId: self.chatId, text: value, originId: origin.id, key: key)
+          .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (message) in
             
           }, onError: { (error) in
-            
+            //handle error
           }).disposed(by: self.disposeBag)
       }
     }
@@ -444,6 +498,39 @@ extension ChatManager {
     }
   }
   
+  func createSupportBotChatIfNeeded(originId: String? = nil) -> Observable<(CHUserChat?, CHMessage?)> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      var disposable: Disposable?
+      if let chat = self?.chat, let message = messageSelector(state: mainStore.state, id: originId) {
+        subscriber.onNext((chat, message))
+        subscriber.onCompleted()
+      } else if let bot = mainStore.state.botsState.findSupportBot() {
+        disposable =  CHSupportBot.create(with: bot.id)
+          .observeOn(MainScheduler.instance)
+          .subscribe(onNext: { (chatResponse) in
+    
+          self?.chatNewlyCreated = true
+          self?.didChatLoaded = true
+          self?.setChatEntities(with: chatResponse.userChat?.id)
+          self?.prepareToChat()
+          mainStore.dispatch(GetUserChat(payload: chatResponse))
+            
+          subscriber.onNext((chatResponse.userChat, chatResponse.message))
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+          self?.didChatLoaded = false
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        })
+      } else {
+        subscriber.onError(CHErrorPool.unknownError)
+      }
+      return Disposables.create {
+        disposable?.dispose()
+      }
+    })
+  }
+  
   func createChat(pluginId:String = "") -> Observable<String> {
     return Observable.create({ [weak self] (subscriber) in
       if let chatId = self?.chatId, chatId != "" {
@@ -457,15 +544,12 @@ extension ChatManager {
       }
       
       let signal = CHUserChat.create(pluginId: pluginId).subscribe(onNext: { (chatResponse) in
-        guard let userChat = chatResponse.userChat, let session = chatResponse.session else { return }
-        mainStore.dispatch(CreateSession(payload: session))
-        mainStore.dispatch(CreateUserChat(payload: userChat))
         self?.chatNewlyCreated = true
         self?.didChatLoaded = true
-        self?.setChatEntities(with: userChat.id)
+        self?.setChatEntities(with: chatResponse.userChat?.id)
         self?.prepareToChat()
-        
-        subscriber.onNext(userChat.id)
+        mainStore.dispatch(GetUserChat(payload: chatResponse))
+        subscriber.onNext(chatResponse.userChat?.id ?? "")
         subscriber.onCompleted()
       }, onError: { [weak self] (error) in
         self?.didChatLoaded = false

@@ -15,13 +15,12 @@ struct CHSupportBot {
   var channelId: String = ""
   var pluginId: String = ""
   var target: [CHTargetCondition]? = nil
-  
+
   static func getBots(with pluginId: String, fetch: Bool) -> Observable<[CHSupportBot]> {
     return Observable.create({ (subscriber) -> Disposable in
       var disposable: Disposable?
       if fetch {
         disposable = SupportBotPromise.getSupportBots(pluginId: pluginId)
-          .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (bots) in
             dlog("fetched support bot")
             subscriber.onNext(bots)
@@ -38,6 +37,14 @@ struct CHSupportBot {
         disposable?.dispose()
       }
     })
+  }
+  
+  static func reply(with userChatId: String?, formId: String?, key: String?) -> Observable<Any?> {
+    return SupportBotPromise.replySupportBot(userChatId: userChatId, formId: formId, key: key)
+  }
+  
+  static func create(with botId: String) -> Observable<ChatResponse> {
+    return SupportBotPromise.createSupportBotUserChat(supportBotId: botId)
   }
 }
 
@@ -56,7 +63,7 @@ struct CHSupportBotStep {
   var id: String = ""
   var message: String = ""
   var imageMeta: CHImageMeta? = nil
-  var imageUrl: String = ""
+  var imageUrl: String? = nil
 }
 
 extension CHSupportBotStep: Mappable {
@@ -84,4 +91,9 @@ extension CHSupportBotAction: Mappable {
     key           <- map["key"]
     text          <- map["text"]
   }
+}
+
+struct CHSupportBotEntryInfo {
+  let step: CHSupportBotStep?
+  let actions: [CHSupportBotAction]
 }

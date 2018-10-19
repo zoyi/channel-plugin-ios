@@ -86,6 +86,10 @@ struct CHFile {
     }
   }
   
+  init() {
+    
+  }
+  
   init(data: Data, category: String? = nil) {
     self.rawData = data
     self.image = false
@@ -131,6 +135,18 @@ struct CHFile {
     default:
       return .plain
     }
+  }
+  
+  static func create(botStep: CHSupportBotStep) -> CHFile? {
+    if let url = botStep.imageUrl {
+      var file = CHFile()
+      file.url = url
+      file.image = true
+      file.previewThumb = botStep.imageMeta
+      return file
+    }
+
+    return nil
   }
 }
 

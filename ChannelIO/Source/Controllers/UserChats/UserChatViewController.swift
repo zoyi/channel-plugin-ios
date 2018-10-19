@@ -125,8 +125,13 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initNewChatButton()
     self.initPhotoViewer()
     //new user chat
-    if self.userChatId == nil {
-       mainStore.dispatchOnMain(InsertWelcome())
+
+    if mainStore.state.messagesState.supportBotEntry != nil && self.userChatId == nil {
+      self.setTextInputbarHidden(true, animated: false)
+      mainStore.dispatchOnMain(InsertSupportBotEntry())
+      self.readyToDisplay()
+    } else if self.userChatId == nil {
+      mainStore.dispatchOnMain(InsertWelcome())
       self.readyToDisplay()
     }
   }
@@ -490,6 +495,10 @@ extension UserChatViewController: StoreSubscriber {
     self.userChat = userChat
     self.chatManager.chat = userChat
     self.channel = state.channel
+    
+    if let userChat = userChat, userChat.isSupporting() || userChat.isClosed() || userChat.isSolved() {
+      self.setTextInputbarHidden(true, animated: false)
+    }
   }
   
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
@@ -549,7 +558,9 @@ extension UserChatViewController: StoreSubscriber {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
-    } else if nextUserChat?.isSolved() == true {
+    } else if nextUserChat?.isSolved() == true ||
+      nextUserChat?.isSupporting() == true ||
+      mainStore.state.messagesState.supportBotEntry != nil {
       self.setTextInputbarHidden(true, animated: false)
     } else if (!channel.allowNewChat && !self.channel.allowNewChat) && self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.setTextInputbarHidden(true, animated: false)
@@ -655,31 +666,39 @@ extension UserChatViewController {
     let msg = self.textView.text!
     
     //move this logic into presenter
-    if let userChat = self.userChat,
-      userChat.isActive() {
-      if let userChatId = self.userChatId {
-        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
-          
-        }.disposed(by: self.disposeBag)
-      }
-    } else if self.userChat == nil {
-      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
-        guard let s = self else {
-          return Observable.just(nil)
-        }
-        s.userChatId = chatId
-        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
-      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
-        guard let s = self else {
-          return Observable.just(nil)
-        }
-        return s.chatManager.requestProfileBot(chatId: s.userChatId)
-      }).subscribe(onNext: { (completed) in
+//    if let userChat = self.userChat,
+//      userChat.isActive() {
+//      if let userChatId = self.userChatId {
+//        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
+//
+//        }.disposed(by: self.disposeBag)
+//      }
+//    } else if self.userChat == nil {
+//      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
+//        guard let s = self else {
+//          return Observable.just(nil)
+//        }
+//        s.userChatId = chatId
+//        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
+//      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
+//        guard let s = self else {
+//          return Observable.just(nil)
+//        }
+//        return s.chatManager.requestProfileBot(chatId: s.userChatId)
+//      }).subscribe(onNext: { (completed) in
+//
+//      }, onError: { [weak self] (error) in
+//        self?.chatManager.state = .chatNotLoaded
+//      }).disposed(by: self.disposeBag)
+//    }
+    self.chatManager.shouldSendMessage(msg: msg)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (chat) in
+        self?.userChat = chat
+        self?.userChatId = chat?.id
+      }, onError: { (error) in
         
-      }, onError: { [weak self] (error) in
-        self?.chatManager.state = .chatNotLoaded
       }).disposed(by: self.disposeBag)
-    }
     
     self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)

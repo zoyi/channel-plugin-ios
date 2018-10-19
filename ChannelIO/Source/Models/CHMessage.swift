@@ -125,6 +125,8 @@ extension CHMessage: Mappable {
        message: String,
        type: MessageType,
        entity: CHEntity? = nil,
+       form: CHForm? = nil,
+       file: CHFile? = nil,
        createdAt:Date? = Date(),
        id: String? = nil) {
     let now = Date()
@@ -139,6 +141,8 @@ extension CHMessage: Mappable {
     self.createdAt = createdAt ?? now
     self.messageType = type
     self.entity = entity
+    self.form = form
+    self.file = file
     self.personId = entity?.id ?? ""
     self.personType = entity?.kind ?? ""
     self.progress = 1

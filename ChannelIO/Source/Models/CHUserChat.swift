@@ -183,6 +183,10 @@ extension CHUserChat {
     return self.state == "solved" || self.state == "closed" || self.state == "following"
   }
   
+  func isSupporting() -> Bool {
+    return self.state == "supporting"
+  }
+  
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
     return current.isReadyOrOpen() && !next.isReadyOrOpen()

@@ -16,6 +16,11 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     return state?.upsert(messages: messages) ?? MessagesState()
   case let action as GetUserChat:
     let message = action.payload.message
+    if state?.supportBotEntry != nil {
+      // state?.supportBotEntry = nil
+      //_ = state?.removeLocalMessages()
+      return state ?? MessagesState()
+    }
     return state?.insert(message: message) ?? MessagesState()
   case let action as GetMessages:
     var messages = (action.payload["messages"] as? [CHMessage]) ?? []
@@ -52,6 +57,25 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
       return state ?? MessagesState()
     }
     return state?.upsert(messages: [msg]) ?? MessagesState()
+  case let action as GetSupportBotEntry:
+    if let step = action.entry.step {
+      let message = CHMessage(
+        chatId: "support_bot_message_dummy",
+        message: step.message,
+        type: .Form,
+        entity: action.bot,
+        form: CHForm.create(botEntry: action.entry),
+        file: CHFile.create(botStep: step),
+        createdAt: Date(),
+        id: "support_bot_message_dummy")
+      state?.supportBotEntry = message
+    }
+    return state ?? MessagesState()
+  case _ as InsertSupportBotEntry:
+    if let message = state?.supportBotEntry {
+      _ = state?.upsert(messages: [message])
+    }
+    return state ?? MessagesState()
   case _ as CheckOutSuccess:
     return state?.clear() ?? MessagesState()
   default:

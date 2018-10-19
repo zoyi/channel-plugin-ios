@@ -79,7 +79,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
+      pluginKey = "f6747e65-d3d0-4177-b2eb-13b9ff21c2e1"
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true

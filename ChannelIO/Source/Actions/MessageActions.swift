@@ -23,5 +23,7 @@ struct DeleteMessage: Action {
 // local message action
 
 struct InsertWelcome : Action {}
+struct InsertSupportBotEntry: Action {}
+
 //struct CreateFeedback: Action {}
 //struct CreateCompletedFeedback: Action {}

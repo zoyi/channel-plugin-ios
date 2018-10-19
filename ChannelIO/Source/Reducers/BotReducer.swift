@@ -34,6 +34,8 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
       return state?.upsert(bots: [bot]) ?? BotsState()
     }
     return state ?? BotsState()
+  case let action as GetSupportBots:
+    return state?.upsertSupportBots(bots: action.payload) ?? BotsState()
   case _ as CheckOutSuccess:
     return state?.clear() ?? BotsState()
   default:

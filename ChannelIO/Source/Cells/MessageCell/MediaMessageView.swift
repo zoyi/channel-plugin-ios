@@ -100,7 +100,8 @@ class MediaMessageView : BaseView {
       self.indicatorView.isHidden = false
       self.progressView.isHidden = true
       
-      let urlString = isThumbnail ? file.previewThumb?.url ?? "" : file.url
+      var urlString = isThumbnail ? file.previewThumb?.url ?? "" : file.url
+      urlString = urlString == "" ? file.url : urlString
       let url = URL(string: urlString)
       
       if file.asset == nil {

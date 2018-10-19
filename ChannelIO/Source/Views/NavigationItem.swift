@@ -62,7 +62,7 @@ class NavigationItem: UIBarButtonItem {
       button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 
-    button.frame.size = CGSize(width: 50, height: 40)
+    button.frame.size = CGSize(width: 40, height: 40)
     button.frame.origin = CGPoint(x: -16, y: 0)
     self.init(customView: button)
     

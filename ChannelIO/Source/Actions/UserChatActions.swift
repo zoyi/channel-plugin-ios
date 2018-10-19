@@ -8,6 +8,13 @@
 
 import ReSwift
 
+struct FetchedUserChatPrep: Action {
+  public let followers: [CHManager]
+  public let plugin: CHPlugin
+  public let bot: CHBot?
+  public let supportBotEntry: CHSupportBotEntryInfo
+}
+
 struct GetUserChats: Action {
   public let payload: [String: Any?]
 }

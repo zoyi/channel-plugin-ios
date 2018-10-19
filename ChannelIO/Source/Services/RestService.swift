@@ -45,7 +45,7 @@ enum RestRouter: URLRequestConvertible {
 
   case Translate(String, ParametersType)
   
-  case GetSupportBots(String)
+  case GetSupportBots(String, ParametersType)
   case GetSupportBotEntry(String)
   case CreateSupportBotChat(String)
   case ReplySupportBot(String, ParametersType)
@@ -143,8 +143,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/messages/\(messageId)/profile_bot"
     case .Translate(let messageId, _):
       return "/app/messages/\(messageId)/translate"
-    case .GetSupportBots(let pluginId):
-      return "/app/plugins/\(pluginId)/support_bots?mobile=true"
+    case .GetSupportBots(let pluginId, _):
+      return "/app/plugins/\(pluginId)/support_bots"
     case .GetSupportBotEntry(let supportBotId):
       return "/app/support_bots/\(supportBotId)/entry"
     case .CreateSupportBotChat(let supportBotId):
@@ -165,6 +165,8 @@ enum RestRouter: URLRequestConvertible {
     if let locale = CHUtils.getLocale() {
       headers["X-Locale"] = locale.rawValue
     }
+    
+    headers["Accept"] = "application/json"
     
     let now = Date()
     let cookies = HTTPCookieStorage.shared.cookies?
@@ -238,14 +240,14 @@ enum RestRouter: URLRequestConvertible {
          .ReviewUserChat(_, let params),
          .SetMessagesRead(_, let params),
          .UnregisterToken(_, let params),
-         .ReplySupportBot(_, let params):
+         .ReplySupportBot(_, let params),
+         .GetSupportBots(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,
          .GetFollowingManager,
          .RequestProfileBot,
          .CreateUserChat,
-         .GetSupportBots,
          .GetSupportBotEntry,
          .CreateSupportBotChat:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
