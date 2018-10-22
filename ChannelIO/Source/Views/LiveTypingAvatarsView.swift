@@ -63,9 +63,9 @@ class LiveTypingAvatarsView: BaseView {
   override func setLayouts() {
     super.setLayouts()
     
-    self.snp.makeConstraints { [weak self] (make) in
-      self?.widthConstraint = make.width.equalTo(0).constraint
-    }
+//    self.snp.makeConstraints { [weak self] (make) in
+//      self?.widthConstraint = make.width.equalTo(0).constraint
+//    }
     
     self.firstAvatarView.snp.remakeConstraints { [weak self] (make) in
       guard let s = self else { return }
@@ -99,7 +99,7 @@ class LiveTypingAvatarsView: BaseView {
   func configure(persons: [CHEntity]) {
     self.persons = persons
     
-    self.widthConstraint?.deactivate()
+    //self.widthConstraint?.deactivate()
     
     if persons.count == 1 {
       self.firstAvatarView.configure(persons[0])
@@ -134,7 +134,7 @@ class LiveTypingAvatarsView: BaseView {
       self.thirdLeadingConstraint?.deactivate()
       self.layoutTwoAvatars()
     } else {
-      self.widthConstraint?.activate()
+      //self.widthConstraint?.activate()
       self.firstAvatarView.alpha = 0
       self.secondAvatarView.alpha = 0
       self.thirdAvatarView.alpha = 0
