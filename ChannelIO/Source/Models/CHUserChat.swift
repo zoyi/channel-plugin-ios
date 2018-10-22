@@ -187,6 +187,9 @@ extension CHUserChat {
     return self.state == "supporting"
   }
   
+  func shouldHideInput() -> Bool {
+    return self.isSupporting() || self.isSolved()
+  }
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
     return current.isReadyOrOpen() && !next.isReadyOrOpen()

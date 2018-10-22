@@ -247,13 +247,16 @@ extension ChatManager {
     return self.chat?.isSupporting() == true || mainStore.state.messagesState.supportBotEntry != nil
   }
   
-  func shouldSendMessage(msg: String) -> Observable<CHUserChat?> {
+  func processSendMessage(msg: String) -> Observable<CHUserChat?> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
       //move this logic into presenter
       if let chat = self?.chat, chat.isActive() {
-        self?.sendMessage(userChatId: chat.id, text: msg).subscribe().dispose()
-        subscriber.onNext(chat)
-        subscriber.onCompleted()
+        self?.sendMessage(userChatId: chat.id, text: msg).subscribe(onNext: { (msg) in
+          subscriber.onNext(chat)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          subscriber.onError(error)
+        }).disposed(by: self!.disposeBag)
       } else {
         self?.createChat().flatMap({ (chatId) -> Observable<CHMessage?> in
           guard let s = self else {
@@ -278,20 +281,20 @@ extension ChatManager {
   }
   
   func sendMessage(userChatId: String, text: String, originId: String? = nil, key: String? = nil, local: Bool = false) -> Observable<CHMessage?> {
-    return Observable.create({ (subscriber) in
-      let me = mainStore.state.guest
-      var message = CHMessage(chatId: userChatId, guest: me, message: text)
-      if let originId = originId, let key = key {
-        message.submit = CHSubmit(id: originId, key: key)
-      }
+    return Observable.create({ [weak self] (subscriber) in
+      var message = CHMessage.createLocal(
+        userChatId: userChatId, text: text, originId: originId, key: key
+      )
       
       mainStore.dispatch(CreateMessage(payload: message))
       
       if local {
+        subscriber.onNext(message)
+        subscriber.onCompleted()
         return Disposables.create()
       }
       
-      let signal = message.send().subscribe(onNext: { [weak self] (updated) in
+      let signal = message.send().subscribe(onNext: { (updated) in
         dlog("Message has been sent successfully")
         self?.sendTyping(isStop: true)
         mainStore.dispatch(CreateMessage(payload: updated))
@@ -378,16 +381,14 @@ extension ChatManager {
     if self.isSupporting() {
       self.createSupportBotChatIfNeeded(originId: originId)
         .observeOn(MainScheduler.instance)
-        .flatMap({ (chat, message) -> Observable<Any?> in
-        let me = mainStore.state.guest
-        var preMessage = CHMessage(chatId: chat!.id, guest: me, message: value ?? "")
-        if let originId = originId, let key = key {
-          preMessage.submit = CHSubmit(id: originId, key: key)
-        }
-        mainStore.dispatch(CreateMessage(payload: preMessage))
+        .flatMap({ (chat, message) -> Observable<CHMessage> in
+        let localMessage = CHMessage.createLocal(
+          userChatId: chat!.id, text: value ?? "", originId: originId, key: key
+        )
+        mainStore.dispatch(CreateMessage(payload: localMessage))
         return CHSupportBot.reply(with: chat?.id, formId: message?.id, key: key)
-      }) .subscribe(onNext: { (_) in
-        //do nothing
+      }) .subscribe(onNext: { (updated) in
+        mainStore.dispatch(CreateMessage(payload: updated))
       }, onError: { (error) in
         //handle error
       }).disposed(by: self.disposeBag)
@@ -685,7 +686,7 @@ extension ChatManager {
   func requestRead(at message: CHMessage? = nil) {
     guard !self.isRequstingReadAll else { return }
     guard let chat = self.chat, let message = message else { return }
-    guard message.entity as? CHGuest == nil else { return }
+    //guard message.entity as? CHGuest == nil else { return }
     
     self.isRequstingReadAll = true
 

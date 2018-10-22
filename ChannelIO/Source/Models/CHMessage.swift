@@ -283,6 +283,16 @@ extension CHMessage {
 extension CHMessage {
   //TODO: refactor async call into actions 
   //but to do that, it also has to handle errors in redux
+  
+  static func createLocal(userChatId: String, text: String, originId: String? = nil, key: String? = nil) -> CHMessage {
+    let me = mainStore.state.guest
+    var message = CHMessage(chatId: userChatId, guest: me, message: text)
+    if let originId = originId, let key = key {
+      message.submit = CHSubmit(id: originId, key: key)
+    }
+    return message
+  }
+  
   static func getMessages(
     userChatId: String,
     since: String,

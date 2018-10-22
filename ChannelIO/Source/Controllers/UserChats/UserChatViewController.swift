@@ -246,7 +246,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
       tableView: self.tableView,
       initialRows: self.messages,
-      sectionIndex: self.channel.showWatermark ? 2 : 1
+      sectionIndex: self.channel.notAllowToUseSDK ? 2 : 1
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
     self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
@@ -554,15 +554,16 @@ extension UserChatViewController: StoreSubscriber {
 
     if nextUserChat?.isRemoved() == true {
       _ = self.navigationController?.popViewController(animated: true)
-    } else if nextUserChat?.isClosed() == true {
+    } else if userChat?.isClosed() != true && nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
-    } else if nextUserChat?.isSolved() == true ||
-      nextUserChat?.isSupporting() == true ||
-      mainStore.state.messagesState.supportBotEntry != nil {
+      self.scrollToBottom(false)
+    } else if nextUserChat?.shouldHideInput() == true ||
+      (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
       self.setTextInputbarHidden(true, animated: false)
-    } else if (!channel.allowNewChat && !self.channel.allowNewChat) && self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
+    } else if (!channel.allowNewChat && !self.channel.allowNewChat) &&
+      self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.setTextInputbarHidden(true, animated: false)
       self.newChatButton.isHidden = true
     } else if !self.chatManager.profileIsFocus {
@@ -665,33 +666,7 @@ extension UserChatViewController {
     self.textView.refreshFirstResponder()
     let msg = self.textView.text!
     
-    //move this logic into presenter
-//    if let userChat = self.userChat,
-//      userChat.isActive() {
-//      if let userChatId = self.userChatId {
-//        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
-//
-//        }.disposed(by: self.disposeBag)
-//      }
-//    } else if self.userChat == nil {
-//      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
-//        guard let s = self else {
-//          return Observable.just(nil)
-//        }
-//        s.userChatId = chatId
-//        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
-//      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
-//        guard let s = self else {
-//          return Observable.just(nil)
-//        }
-//        return s.chatManager.requestProfileBot(chatId: s.userChatId)
-//      }).subscribe(onNext: { (completed) in
-//
-//      }, onError: { [weak self] (error) in
-//        self?.chatManager.state = .chatNotLoaded
-//      }).disposed(by: self.disposeBag)
-//    }
-    self.chatManager.shouldSendMessage(msg: msg)
+    self.chatManager.processSendMessage(msg: msg)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chat) in
         self?.userChat = chat
@@ -796,16 +771,16 @@ extension UserChatViewController {
 
 extension UserChatViewController {
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return self.channel.showWatermark ? 3 : 2
+    return self.channel.notAllowToUseSDK ? 3 : 2
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if section == 1 {
-      return self.channel.showWatermark ? 1 : self.messages.count
+      return self.channel.notAllowToUseSDK ? 1 : self.messages.count
     } else if section == 2 {
-      return self.channel.showWatermark ? self.messages.count : 0
+      return self.channel.notAllowToUseSDK ? self.messages.count : 0
     }
     return 0
   }
@@ -815,7 +790,7 @@ extension UserChatViewController {
       return 40
     }
     
-    if indexPath.section == 1 && self.channel.showWatermark {
+    if indexPath.section == 1 && self.channel.notAllowToUseSDK {
       return 40
     }
     
@@ -852,7 +827,7 @@ extension UserChatViewController {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
-    if section == 0 && self.channel.showWatermark {
+    if section == 0 && self.channel.notAllowToUseSDK {
       let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
       _ = cell.signalForClick().subscribe { _ in
         let channel = mainStore.state.channel
@@ -865,7 +840,7 @@ extension UserChatViewController {
       }
       cell.transform = tableView.transform
       return cell
-    } else if section == 0 || (section == 1 && self.channel.showWatermark) {
+    } else if section == 0 || (section == 1 && self.channel.notAllowToUseSDK) {
       let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
       cell.transform = tableView.transform
       return cell
@@ -896,6 +871,35 @@ extension UserChatViewController {
       previous: previousMessage,
       indexPath: indexPath)
 
+    if viewModel.shouldDisplayForm {
+      if viewModel.clipType == .Image {
+        let cell: FormMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        cell.mediaView.signalForClick().subscribe { [weak self] _ in
+          self?.didImageTapped(message: viewModel.message)
+          }.disposed(by: self.disposeBag)
+        return cell
+      } else if viewModel.clipType == .Webpage {
+        let cell: FormWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        cell.webView.signalForClick().subscribe{ [weak self] _ in
+          self?.chatManager?.didClickOnWebPage(with: viewModel.message)
+          }.disposed(by: self.disposeBag)
+        return cell
+      } else if viewModel.clipType == .File {
+        let cell: FormFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        cell.fileView.signalForClick().subscribe { [weak self] _ in
+          self?.chatManager?.didClickOnFile(with: viewModel.message)
+          }.disposed(by: self.disposeBag)
+        return cell
+      } else {
+        let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        return cell
+      }
+    }
+    
     switch message.messageType {
     case .NewAlertMessage:
       let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
@@ -908,18 +912,13 @@ extension UserChatViewController {
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
       return cell
-    case .UserMessage:
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      //cell.presenter = self.chatManager
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
     case .WebPage:
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
       //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
       cell.webView.signalForClick().subscribe{ [weak self] _ in
         self?.chatManager?.didClickOnWebPage(with: message)
-      }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
       return cell
     case .Media:
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -927,7 +926,7 @@ extension UserChatViewController {
       cell.configure(viewModel, presenter: self.chatManager)
       cell.mediaView.signalForClick().subscribe { [weak self] _ in
         self?.didImageTapped(message: message)
-      }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
       return cell
     case .File:
       let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
@@ -935,55 +934,13 @@ extension UserChatViewController {
       cell.configure(viewModel, presenter: self.chatManager)
       cell.fileView.signalForClick().subscribe { [weak self] _ in
         self?.chatManager?.didClickOnFile(with: message)
-      }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
       return cell
     case .Profile:
       let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
-    case .Form:
-      return self.cellForForm(tableView, viewModel: viewModel, cellForRowAt: indexPath)
     default: //remote
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
-    }
-  }
-  
-  func cellForForm(_ tableView: UITableView, viewModel: MessageCellModelType,  cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if viewModel.shouldDisplayForm {
-      if viewModel.clipType == .Image {
-        let cell: FormMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.chatManager)
-        return cell
-      } else if viewModel.clipType == .Webpage {
-        let cell: FormWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.chatManager)
-        return cell
-      } else if viewModel.clipType == .File {
-        let cell: FormFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.chatManager)
-        return cell
-      } else {
-        let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.chatManager)
-        return cell
-      }
-    }
-    
-    if viewModel.clipType == .Image {
-      let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
-    } else if viewModel.clipType == .Webpage {
-      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
-    } else if viewModel.clipType == .File {
-      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
-    } else {
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
@@ -1044,7 +1001,7 @@ extension UserChatViewController: ChatDelegate {
   func update(for element: ChatElement) {
     switch element {
     case .typing(_, _):
-      let indexPath = IndexPath(row: 0, section: self.channel.showWatermark ? 1 : 0)
+      let indexPath = IndexPath(row: 0, section: self.channel.notAllowToUseSDK ? 1 : 0)
       if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true,
         let typingCell = self.typingCell {
         typingCell.configure(typingUsers: self.chatManager.typers)

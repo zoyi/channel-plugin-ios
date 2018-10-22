@@ -17,8 +17,6 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
   case let action as GetUserChat:
     let message = action.payload.message
     if state?.supportBotEntry != nil {
-      // state?.supportBotEntry = nil
-      //_ = state?.removeLocalMessages()
       return state ?? MessagesState()
     }
     return state?.insert(message: message) ?? MessagesState()
