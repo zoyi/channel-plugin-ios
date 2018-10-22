@@ -545,7 +545,7 @@ extension UserChatsViewController {
 
 extension UserChatsViewController {
   func showWatermarkIfNeeded() {
-    if !mainStore.state.channel.showWatermark {
+    if !mainStore.state.channel.notAllowToUseSDK {
       return
     }
     

@@ -99,7 +99,9 @@ extension ChannelIO {
             subscriber.onError(CHErrorPool.unknownError)
             return
           }
-          if channel.locked && !channel.trial {
+          
+          //TDB: removed
+          if channel.notAllowToUseSDK && !channel.trial {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }

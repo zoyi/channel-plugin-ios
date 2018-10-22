@@ -30,9 +30,9 @@ struct SortableWorkingTime {
   let order: Int
 }
 
-enum ServicePlanType: String {
-  case free = "free"
-  case startup = "startup"
+enum MessengerPlanType: String {
+  case none = "none"
+  case standard = "standard"
   case pro = "pro"
 }
 
@@ -52,8 +52,8 @@ struct CHChannel: CHEntity {
   var lunchTime: TimeRange?
   var phoneNumber: String = ""
   var requestGuestInfo = true
-  var servicePlan: ServicePlanType = .startup
-  var serviceBlocked = false
+  var messengerPlan: MessengerPlanType = .pro
+  var blocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
   var timeZone = ""
@@ -110,12 +110,8 @@ struct CHChannel: CHEntity {
     return  workingTime ?? "unknown"
   }
   
-  var locked: Bool {
-    return self.serviceBlocked || self.servicePlan == .free
-  }
-  
-  var showWatermark: Bool {
-    return self.serviceBlocked || self.servicePlan != .pro
+  var notAllowToUseSDK: Bool {
+    return self.blocked || self.messengerPlan != .pro
   }
   
   var shouldHideDefaultButton: Bool {
@@ -164,8 +160,8 @@ extension CHChannel: Mappable {
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"]
     timeZone                <- map["timeZone"]
-    servicePlan             <- map["servicePlan"]
-    serviceBlocked          <- map["serviceBlocked"]
+    messengerPlan           <- map["messengerPlan"]
+    blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden
     trial                   <- map["trial"]
