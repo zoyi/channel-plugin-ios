@@ -23,15 +23,23 @@ class ActionButton: UIButton {
   var key: String = ""
   var text: NSAttributedString? = nil
   var selectedColor: UIColor? = nil
+  var onlyEmoji: Bool = false
+  
   var selectedTextColor: UIColor? = nil {
     didSet {
-      self.setTitleColor(selectedTextColor, for: .highlighted)
+      let text = self.text?.addFont(
+        self.onlyEmoji ? UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15),
+        color: selectedTextColor ?? CHColors.dark50,
+        on: NSRange(location:0, length: self.text?.length ?? 0))
+      
+      self.setAttributedTitle(text, for: .highlighted)
     }
   }
   
   override open var isHighlighted: Bool {
     didSet {
       self.backgroundColor = isHighlighted ? selectedColor : UIColor.white
+
       if isHighlighted {
         self.layer.shadowColor = CHColors.dark50.cgColor
         self.layer.shadowOpacity = 0.8
@@ -62,6 +70,7 @@ class ActionButton: UIButton {
     super.init(frame: CGRect.zero)
     self.text = input.text
     self.key = input.key
+    self.onlyEmoji = input.onlyEmoji
     
     self.text = self.text?.addFont(
       input.onlyEmoji ? UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15),
@@ -73,12 +82,10 @@ class ActionButton: UIButton {
     self.titleLabel?.numberOfLines = 2
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
     self.titleLabel?.preferredMaxLayoutWidth = Constant.maxWidth
-    self.setTitleColor(CHColors.dark50, for: .normal)
  
     self.layer.cornerRadius = 15.f
     self.layer.borderWidth = 1.f
     self.layer.borderColor = CHColors.dark50.cgColor
-    
 
     let size = self.text?.size(
       fits: CGSize(width: Constant.maxWidth, height: 10000),
