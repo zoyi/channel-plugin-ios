@@ -95,8 +95,8 @@
 "ch.notification.upload_image.description" = "画像をアップロードしました";
 "ch.button_close" = "閉じる";
 "ch.scripts.out_of_work.default" = "現在担当者が不在です折返しご連絡させて頂きますので、こちらへ担当者宛のメッセージをご入力下さい";
-"ch.agreement" = "会話を続け行くと自動的にチャンネル利用規約に同意することになります";
-"ch.terms_of_service"= "チャンネル利用規約";
+"ch.agreement" = "チャット利用には利用規約及びプライバシーポリシーへの同意が必要となります";
+"ch.terms_of_service"= "利用規約及びプライバシーポリシー";
 "ch.unknown" = "不明";
 "ch.user_chat_managers" = "%s以外%d人";
 "ch.agreement.button" = "利用規約";
