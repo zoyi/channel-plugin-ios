@@ -16,20 +16,21 @@ class WatermarkView : BaseView {
   }
   
   let descLabel = UILabel().then {
-    let channelStr = CHAssets.localized("ch.channel_io")
-    let watermarkStr = CHAssets.localized("ch.watermark") as NSString
-    let attributedString = NSMutableAttributedString(string: watermarkStr as String)
-    attributedString.addAttribute(
-      NSAttributedStringKey.font, value: UIFont.systemFont(ofSize: 11),
-      range: NSRange(location: 0, length: watermarkStr.length))
-    attributedString.addAttribute(
-      NSAttributedStringKey.foregroundColor, value: CHColors.blueyGrey,
-      range: NSRange(location: 0, length: watermarkStr.length))
-    attributedString.addAttribute(
-      NSAttributedStringKey.font, value: UIFont.boldSystemFont(ofSize: 11),
-      range: watermarkStr.range(of: channelStr))
-    $0.attributedText = attributedString
-    $0.textColor = CHColors.blueyGrey
+    let attributes = [
+      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+      NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11)
+    ]
+    
+    let tagAttributes = [StringTagType.bold:[
+      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+      NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11)
+    ]]
+    
+    $0.attributedText = CHAssets.localized(
+      "ch.watermark",
+      attributes: attributes,
+      tags: [.bold],
+      tagAttributes: tagAttributes)
   }
   
   override func initialize() {

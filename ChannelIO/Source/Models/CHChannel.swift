@@ -15,9 +15,7 @@ struct TimeRange {
 }
 
 extension TimeRange : Mappable {
-  init?(map: Map) {
-    
-  }
+  init?(map: Map) { }
   
   mutating func mapping(map: Map) {
     from <- map["from"]
@@ -31,9 +29,21 @@ struct SortableWorkingTime {
 }
 
 enum MessengerPlanType: String {
-  case none = "none"
-  case standard = "standard"
-  case pro = "pro"
+  case none
+  case standard
+  case pro
+}
+
+enum ChannelWorkingType: String {
+  case always
+  case never
+  case custom
+}
+
+enum ChannelAwayOptionType: String {
+  case active
+  case disable
+  case hidden
 }
 
 struct CHChannel: CHEntity {
@@ -57,8 +67,8 @@ struct CHChannel: CHEntity {
   var homepageUrl = ""
   var expectedResponseDelay = ""
   var timeZone = ""
-  var awayOption = ""
-  var workingType = ""
+  var awayOption: ChannelAwayOptionType = .active
+  var workingType: ChannelWorkingType = .always
   var trial = true
   var trialExpiryDate: Date? = nil
   
@@ -115,18 +125,18 @@ struct CHChannel: CHEntity {
   }
   
   var shouldHideDefaultButton: Bool {
-    return self.awayOption == "hidden" && !self.working
+    return self.awayOption == .hidden && !self.working
   }
 
   var allowNewChat: Bool {
-    return self.workingType == "always" ||
-      self.awayOption == "active" ||
-      (self.workingType == "custom" && self.working)
+    return self.workingType == .always ||
+      self.awayOption == .active ||
+      (self.workingType == .custom && self.working)
   }
   
   var shouldShowWorkingTimes: Bool {
     if let workingTime = self.workingTime, workingTime.count != 0 {
-      return self.workingType == "custom" && !self.working
+      return self.workingType == .custom && !self.working
     }
     return false
   }
@@ -158,7 +168,7 @@ extension CHChannel: Mappable {
     lunchTime               <- map["lunchTime"]
     requestGuestInfo        <- map["requestGuestInfo"]
     homepageUrl             <- map["homepageUrl"]
-    expectedResponseDelay   <- map["expectedResponseDelay"]
+    expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
     messengerPlan           <- map["messengerPlan"]
     blocked                 <- map["blocked"]

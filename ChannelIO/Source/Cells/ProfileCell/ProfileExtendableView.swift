@@ -19,28 +19,29 @@ class ProfileExtendableView: BaseView {
   
   var items: [ProfileContentProtocol] = []
   var footerLabel = UILabel().then {
-    let text = CHAssets.localized("ch.agreement")
-    $0.text = text
-    $0.font = UIFont.systemFont(ofSize: 11)
-    $0.textColor = CHColors.blueyGrey
-    $0.textAlignment = .center
     $0.numberOfLines = 0
-    
-    let range = text.range(of: CHAssets.localized("ch.terms_of_service"))
-    let attrText = $0.text?.addFont(
-      UIFont.boldSystemFont(ofSize: 11),
-      color: CHColors.blueyGrey,
-      on: NSRange(range!, in: text))
+
     let paragraph = NSMutableParagraphStyle()
     paragraph.alignment = .center
     paragraph.lineBreakMode = .byCharWrapping
+
+    let attributes = [
+      NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11),
+      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+      NSAttributedStringKey.paragraphStyle: paragraph
+    ]
     
-    attrText?.addAttribute(
-      NSAttributedStringKey.paragraphStyle,
-      value: paragraph,
-      range: NSRange(location:0, length: text.count))
+    let tagAttributes = [StringTagType.bold:[
+      NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11),
+      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+      NSAttributedStringKey.paragraphStyle: paragraph
+    ]]
     
-    $0.attributedText = attrText
+    $0.attributedText = CHAssets.localized(
+      "ch.agreement",
+      attributes: attributes,
+      tags: [.bold],
+      tagAttributes: tagAttributes)
   }
   
   var shouldBecomeFirstResponder = false
@@ -167,14 +168,25 @@ class ProfileExtendableView: BaseView {
       paragraph.alignment = .center
       paragraph.lineBreakMode = .byCharWrapping
 
-      let font = UIFont.systemFont(ofSize: 11)
-      height += CHAssets.localized("ch.agreement").height(
-        fits: width - Metric.footerLeading - Metric.footerTrailing,
-        attributes: [
-          NSAttributedStringKey.font: font,
-          NSAttributedStringKey.paragraphStyle: paragraph
-        ]
-      )
+      let attributes = [
+        NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11),
+        NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+        NSAttributedStringKey.paragraphStyle: paragraph
+      ]
+      
+      let tagAttributes = [StringTagType.bold:[
+        NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11),
+        NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+        NSAttributedStringKey.paragraphStyle: paragraph
+      ]]
+      
+      let text = CHAssets.localized(
+        "ch.agreement",
+        attributes: attributes,
+        tags: [.bold],
+        tagAttributes: tagAttributes)
+      
+      height += text.height(fits: width - Metric.footerLeading - Metric.footerTrailing)
       height += Metric.footerBottom
     }
     height += 3 //off value

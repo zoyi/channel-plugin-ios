@@ -107,9 +107,11 @@ struct UserChatPromise {
   static func close(userChatId: String, formId: String, requestId: String?) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
       let params = [
-        "query":[
-          "formId": formId,
+        "url":[
           "requestId": requestId
+        ],
+        "query":[
+          "formId": formId
         ]
       ]
       let req = Alamofire.request(RestRouter.CloseUserChat(userChatId, params as RestRouter.ParametersType))
@@ -138,10 +140,12 @@ struct UserChatPromise {
   static func review(userChatId: String, formId: String, rating: ReviewType, requestId: String? = nil) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
       let params = [
-        "url":["review": rating.rawValue],
+        "url":[
+          "review": rating.rawValue,
+          "requestId": requestId
+        ],
         "query":[
           "formId": formId,
-          "requestId": requestId
         ]
       ]
       

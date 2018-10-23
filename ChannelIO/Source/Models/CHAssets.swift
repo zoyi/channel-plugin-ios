@@ -65,6 +65,47 @@ class CHAssets {
     }
   }
   
+  class func localized(
+    _ key: String,
+    attributes: [NSAttributedStringKey: Any],
+    tags: [StringTagType],
+    tagAttributes: [StringTagType:[NSAttributedStringKey:Any]]) -> NSAttributedString {
+    var locale = "en"
+    if let settings = mainStore.state.settings, let settingLocale = settings.appLocale?.rawValue {
+      locale = settingLocale
+    }
+    
+    guard let path = Bundle(for: self).path(forResource: locale, ofType: "lproj") else {
+      return NSAttributedString(string: key)
+    }
+    guard let bundle = Bundle.init(path: path) else {
+      return NSAttributedString(string: key)
+    }
+
+    let keyString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    let attributedString = NSMutableAttributedString(string: keyString)
+    let keyNSString = NSString(string: NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: ""))
+    
+    attributedString.addAttributes(attributes, range: NSRange(location: 0, length: keyString.utf16.count))
+    for tag in tags {
+      if let tagStartRange = keyString.range(of: "<\(tag.rawValue)>"),
+        let tagEndRnage = keyString.range(of: "</\(tag.rawValue)>") {
+        let sIndex = keyString.index(before: tagStartRange.upperBound)
+        let eIndex = keyString.index(after: tagEndRnage.lowerBound)
+        let tagContext = keyString[sIndex..<eIndex]
+  
+        if let tAttributes = tagAttributes[tag] {
+          attributedString.addAttributes(tAttributes, range: keyNSString.range(of: String(tagContext)))
+        }
+        
+        attributedString.replaceCharacters(in: NSRange(tagEndRnage, in: keyString), with: "")
+        attributedString.replaceCharacters(in: NSRange(tagStartRange, in: keyString), with: "")
+      }
+    }
+    
+    return attributedString
+  }
+  
   class func playPushSound() {
     let pushSound = NSURL(fileURLWithPath: Bundle(for:self).path(forResource: "ringtone", ofType: "mp3")!)
     var soundId: SystemSoundID = 0

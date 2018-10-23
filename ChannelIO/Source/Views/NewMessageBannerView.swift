@@ -20,7 +20,7 @@ final class NewMessageBannerView : BaseView {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.cobalt
     $0.numberOfLines = 1
-    $0.text = CHAssets.localized("ch.chat.new_message")
+    $0.text = CHAssets.localized("ch.new_message")
   }
   
   override func initialize() {

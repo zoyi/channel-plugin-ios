@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum StringTagType : String {
+  case bold = "b"
+}
+
 extension NSAttributedString {
   func addFont(_ font: UIFont, color: UIColor, on range: NSRange) -> NSAttributedString {
     let attributedText = NSMutableAttributedString(attributedString: self)
@@ -21,6 +25,12 @@ extension NSAttributedString {
     let attributedText = NSMutableAttributedString(attributedString: self)
     attributedText.append(text)
     return attributedText
+  }
+}
+
+extension StringProtocol where Index == String.Index {
+  func nsRange(from range: Range<Index>) -> NSRange {
+    return NSRange(range, in: self)
   }
 }
 

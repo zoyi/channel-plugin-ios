@@ -66,7 +66,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   var newChatButton = UIButton(type: .system).then {
     $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
-    $0.setTitle(CHAssets.localized("ch.chat.reopen"), for: .normal)
+    $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
     $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
     $0.tintColor = mainStore.state.plugin.textUIColor
     
@@ -554,19 +554,19 @@ extension UserChatViewController: StoreSubscriber {
 
     if nextUserChat?.isRemoved() == true {
       _ = self.navigationController?.popViewController(animated: true)
-    } else if userChat?.isClosed() != true && nextUserChat?.isClosed() == true {
+    }
+    else if userChat?.isClosed() != true && nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
       self.scrollToBottom(false)
-    } else if nextUserChat?.shouldHideInput() == true ||
-      (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
-      self.setTextInputbarHidden(true, animated: false)
-    } else if (!channel.allowNewChat && !self.channel.allowNewChat) &&
+    }
+    else if (!channel.allowNewChat && !self.channel.allowNewChat) &&
       self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.setTextInputbarHidden(true, animated: false)
       self.newChatButton.isHidden = true
-    } else if !self.chatManager.profileIsFocus {
+    }
+    else if !self.chatManager.profileIsFocus {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.setTitle("", for: .normal)

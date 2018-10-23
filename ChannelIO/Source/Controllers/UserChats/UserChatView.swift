@@ -333,7 +333,7 @@ extension UserChatView {
       self.textInputbar.hideLeftButton()
       self.rightButton.setImage(nil, for: .normal)
       self.rightButton.setImage(nil, for: .disabled)
-      self.rightButton.setTitle(CHAssets.localized("ch.chat.reopen"), for: .normal)
+      self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
       self.textView.placeholder = nextUserChat?.isRemoved() == true ?
         CHAssets.localized("ch.chat.removed.title") :
