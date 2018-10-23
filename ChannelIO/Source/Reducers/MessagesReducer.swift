@@ -35,7 +35,10 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     _ = state?.removeLocalMessages()
       return state?.remove(userChatId: userChatId) ?? MessagesState()
   case let action as CreateMessage:
-    return state?.replace(message: action.payload) ?? MessagesState()
+    if let message = action.payload {
+      return state?.replace(message: message) ?? MessagesState()
+    }
+    return state ?? MessagesState()
   case let action as DeleteMessage:
     return state?.remove(message: action.payload) ?? MessagesState()
   case let action as UpdateMessage:

@@ -89,7 +89,7 @@ struct SupportBotPromise {
     })
   }
   
-  static func replySupportBot(userChatId: String?, formId: String?, key: String?) -> Observable<CHMessage> {
+  static func replySupportBot(userChatId: String?, formId: String?, key: String?, requestId: String? = nil) -> Observable<CHMessage> {
     return Observable.create({ (subscriber) in
       guard let chatId = userChatId, let formId = formId, let key = key else {
         subscriber.onError(CHErrorPool.unknownError)
@@ -99,7 +99,8 @@ struct SupportBotPromise {
       let params = [
         "query": [
           "formId": formId,
-          "key": key
+          "key": key,
+          "requestId": requestId
         ]
       ]
       

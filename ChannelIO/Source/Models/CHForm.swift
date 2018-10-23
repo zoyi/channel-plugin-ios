@@ -18,6 +18,7 @@ enum FormType : String {
   case button
   case solve = "userChat.solve"
   case close = "userChat.close"
+  case support = "supportBot"
 }
 
 struct CHForm {

@@ -9,7 +9,7 @@
 import ReSwift
 
 struct CreateMessage: Action {
-  public let payload: CHMessage
+  public let payload: CHMessage?
 }
 
 struct UpdateMessage: Action {

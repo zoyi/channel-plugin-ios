@@ -104,9 +104,14 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func close(userChatId: String, formId: String) -> Observable<CHUserChat> {
+  static func close(userChatId: String, formId: String, requestId: String?) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
-      let params = ["query":["formId": formId]]
+      let params = [
+        "query":[
+          "formId": formId,
+          "requestId": requestId
+        ]
+      ]
       let req = Alamofire.request(RestRouter.CloseUserChat(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
@@ -130,11 +135,14 @@ struct UserChatPromise {
     }
   }
   
-  static func review(userChatId: String, formId: String, rating: ReviewType) -> Observable<CHUserChat> {
+  static func review(userChatId: String, formId: String, rating: ReviewType, requestId: String? = nil) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
       let params = [
         "url":["review": rating.rawValue],
-        "query":["formId": formId]
+        "query":[
+          "formId": formId,
+          "requestId": requestId
+        ]
       ]
       
       let req = Alamofire.request(RestRouter.ReviewUserChat(userChatId, params as RestRouter.ParametersType))
@@ -147,6 +155,7 @@ struct UserChatPromise {
               subscriber.onError(CHErrorPool.userChatParseError)
               break
             }
+            
             
             subscriber.onNext(userChat)
             subscriber.onCompleted()

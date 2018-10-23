@@ -39,8 +39,8 @@ struct CHSupportBot {
     })
   }
   
-  static func reply(with userChatId: String?, formId: String?, key: String?) -> Observable<CHMessage> {
-    return SupportBotPromise.replySupportBot(userChatId: userChatId, formId: formId, key: key)
+  static func reply(with userChatId: String?, formId: String?, key: String?, requestId: String? = nil) -> Observable<CHMessage> {
+    return SupportBotPromise.replySupportBot(userChatId: userChatId, formId: formId, key: key, requestId: requestId)
   }
   
   static func create(with botId: String) -> Observable<ChatResponse> {

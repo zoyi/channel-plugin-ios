@@ -103,12 +103,12 @@ extension CHUserChat {
     return UserChatPromise.remove(userChatId: self.id)
   }
   
-  func close(closeMessageId: String) -> Observable<CHUserChat> {
-    return UserChatPromise.close(userChatId: self.id, formId: closeMessageId)
+  func close(mid: String, requestId: String? = nil) -> Observable<CHUserChat> {
+    return UserChatPromise.close(userChatId: self.id, formId: mid, requestId: requestId)
   }
   
-  func review(reviewMessageId: String, rating: ReviewType) -> Observable<CHUserChat> {
-    return UserChatPromise.review(userChatId: self.id, formId: reviewMessageId, rating: rating)
+  func review(mid: String, rating: ReviewType, requestId: String? = nil) -> Observable<CHUserChat> {
+    return UserChatPromise.review(userChatId: self.id, formId: mid, rating: rating, requestId: requestId)
   }
   
   func read(at message: CHMessage?) {

@@ -58,7 +58,7 @@ final class LogCell : BaseTableViewCell, Reusable {
   func configure(message: CHMessage) {
     guard let log = message.log else { return }
     if log.action == "closed" {
-      self.titleLabel.text = CHAssets.localized("ch.log.closed")
+      self.titleLabel.text = CHAssets.localized("ch.log.resolved")
       self.timestampLabel.text = message.createdAt.readableShortString()
     }
     
