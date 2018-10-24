@@ -43,6 +43,16 @@ struct CHSupportBot {
     return SupportBotPromise.replySupportBot(userChatId: userChatId, formId: formId, key: key, requestId: requestId)
   }
   
+  static func reply(with message: CHMessage, formId: String? = nil) -> Observable<CHMessage> {
+    let formId = formId ?? message.submit?.id
+    
+    return SupportBotPromise.replySupportBot(
+      userChatId: message.chatId,
+      formId: formId,
+      key: message.submit?.key,
+      requestId: message.requestId)
+  }
+  
   static func create(with botId: String) -> Observable<ChatResponse> {
     return SupportBotPromise.createSupportBotUserChat(supportBotId: botId)
   }
