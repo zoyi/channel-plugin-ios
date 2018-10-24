@@ -242,16 +242,12 @@ extension ChatManager {
   }
 }
 
-extension ChatManager {
-  func isSupporting() -> Bool {
-    return self.chat?.isSupporting() == true || mainStore.state.messagesState.supportBotEntry != nil
-  }
-  
+extension ChatManager {  
   func processSendMessage(msg: String) -> Observable<CHUserChat?> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
       //move this logic into presenter
       if let chat = self?.chat, chat.isActive() {
-        let message = CHMessage.createLocal(userChatId: self!.chatId, text: msg)
+        let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
         mainStore.dispatch(CreateMessage(payload: message))
         self?.sendMessage(message: message, local: false).subscribe(onNext: { (msg) in
           subscriber.onNext(chat)
@@ -265,7 +261,7 @@ extension ChatManager {
             return Observable.just(nil)
           }
           s.chatId = chatId
-          let message = CHMessage.createLocal(userChatId: self!.chatId, text: msg)
+          let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
           mainStore.dispatch(CreateMessage(payload: message))
           return s.sendMessage(message: message, local: false)
         }).flatMap({ [weak self] (message) -> Observable<Bool?> in
@@ -391,7 +387,7 @@ extension ChatManager {
   }
   
   private func processPostAction(originId: String?, key: String, value: String) {
-    let message = CHMessage.createLocal(userChatId: self.chatId, text: value, originId: originId, key: key)
+    let message = CHMessage.createLocal(chatId: self.chatId, text: value, originId: originId, key: key)
     mainStore.dispatch(CreateMessage(payload: message))
     
     self.sendMessage(message: message, local: false).observeOn(MainScheduler.instance)
@@ -403,13 +399,12 @@ extension ChatManager {
   }
   
   private func processSupportBotAction(originId: String?, key: String?, value: String?) {
-    self.createSupportBotChatIfNeeded(originId: originId).observeOn(MainScheduler.instance)
+    self.createSupportBotChatIfNeeded(originId: originId)
+      .observeOn(MainScheduler.instance)
       .flatMap({ (chat, message) -> Observable<CHMessage> in
-        let localMessage = CHMessage.createLocal(
-          userChatId: chat!.id, text: value ?? "", originId: originId, key: key
-        )
-        mainStore.dispatch(CreateMessage(payload: localMessage))
-        return CHSupportBot.reply(with: chat?.id, formId: message?.id, key: key, requestId: localMessage.requestId)
+        let msg = CHMessage.createLocal(chatId: chat!.id, text: value, originId: originId, key: key)
+        mainStore.dispatch(CreateMessage(payload: msg))
+        return CHSupportBot.reply(with: msg, formId: message?.id)
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (updated) in
@@ -424,10 +419,14 @@ extension ChatManager {
       let type = origin.form?.type,
       let key = key, let value = value else { return }
     
-    if type == .solve && key == "close" {
-      let msg = CHMessage.createLocal(userChatId: self.chatId, text: value, originId: originId, key: key)
+    var msg: CHMessage?
+    if (type == .solve && key == "close") || type == .close {
+      msg = CHMessage.createLocal(chatId: self.chatId, text: value, originId: originId, key: key)
       mainStore.dispatch(CreateMessage(payload: msg))
-      self.chat?.close(mid: origin.id, requestId: msg.requestId)
+    }
+    
+    if type == .solve && key == "close" {
+      self.chat?.close(mid: origin.id, requestId: msg?.requestId)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (chat) in
           mainStore.dispatch(UpdateUserChat(payload:chat))
@@ -438,13 +437,11 @@ extension ChatManager {
       origin.form?.closed = true
       mainStore.dispatch(UpdateMessage(payload: origin))
       if var updatedChat = userChatSelector(state: mainStore.state, userChatId: self.chatId) {
-        updatedChat.state = "following"
+        updatedChat.state = .following
         mainStore.dispatch(UpdateUserChat(payload: updatedChat))
       }
     } else if type == .close {
-      let msg = CHMessage.createLocal(userChatId: self.chatId, text: value, originId: originId, key: key)
-      mainStore.dispatch(CreateMessage(payload: msg))
-      self.chat?.review(mid: origin.id, rating: ReviewType(rawValue: key)!, requestId:msg.requestId)
+      self.chat?.review(mid: origin.id, rating: ReviewType(rawValue: key)!, requestId:msg?.requestId)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (chat) in
           mainStore.dispatch(UpdateUserChat(payload:chat))

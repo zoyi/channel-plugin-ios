@@ -201,7 +201,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     self.shyNavBarManager.scrollView = self.tableView
     self.shyNavBarManager.stickyNavigationBar = true
     self.shyNavBarManager.fadeBehavior = .subviews
-    if let state = userChat?.state, state != "ready" &&
+    if let state = userChat?.state, state != .ready &&
       self.shyNavBarManager.extensionView == nil || !self.shyNavBarManager.isExpanded() {
       self.titleView?.isExpanded = false
       self.shyNavBarManager.hideExtension = true

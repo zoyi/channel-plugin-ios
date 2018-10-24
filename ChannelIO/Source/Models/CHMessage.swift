@@ -130,7 +130,7 @@ extension CHMessage: Mappable {
        createdAt:Date? = Date(),
        id: String? = nil) {
     let now = Date()
-    let requestId = "\(now.timeIntervalSince1970 * 1000)"
+    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = id ?? requestId
@@ -150,7 +150,7 @@ extension CHMessage: Mappable {
   
   init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
-    let requestId = "\(now.timeIntervalSince1970 * 1000)"
+    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = requestId
@@ -284,9 +284,9 @@ extension CHMessage {
   //TODO: refactor async call into actions 
   //but to do that, it also has to handle errors in redux
   
-  static func createLocal(userChatId: String, text: String, originId: String? = nil, key: String? = nil) -> CHMessage {
+  static func createLocal(chatId: String, text: String?, originId: String? = nil, key: String? = nil) -> CHMessage {
     let me = mainStore.state.guest
-    var message = CHMessage(chatId: userChatId, guest: me, message: text)
+    var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
     if let originId = originId, let key = key {
       message.submit = CHSubmit(id: originId, key: key)
     }

@@ -15,6 +15,17 @@ enum ReviewType: String {
   case dislike
 }
 
+enum UserChatState: String {
+  case ready
+  case supporting
+  case open
+  case following
+  case holding
+  case solved
+  case closed
+  case removed
+}
+
 struct CHUserChat: ModelType {
   // ModelType
   var id = ""
@@ -22,7 +33,7 @@ struct CHUserChat: ModelType {
   var personType: String = ""
   var personId: String = ""
   var channelId: String = ""
-  var state: String = ""
+  var state: UserChatState = .ready
   var review: String = ""
   var createdAt: Date?
   var openedAt: Date?
@@ -152,39 +163,39 @@ extension CHUserChat {
 
 extension CHUserChat {
   func isActive() -> Bool {
-    return self.state != "closed" && self.state != "solved" && self.state != "removed"
+    return self.state != .closed && self.state != .solved && self.state != .removed
   }
   
   func isClosed() -> Bool {
-    return self.state == "closed"
+    return self.state == .closed
   }
   
   func isRemoved() -> Bool {
-    return self.state == "removed"
+    return self.state == .removed
   }
   
   func isSolved() -> Bool {
-    return self.state == "solved"
+    return self.state == .solved
   }
   
   func isCompleted() -> Bool {
-    return self.state == "closed" || self.state == "solved" || self.state == "removed"
+    return self.state == .closed || self.state == .solved || self.state == .removed
   }
   
   func isReadyOrOpen() -> Bool {
-    return self.state == "ready" || self.state == "open"
+    return self.state == .ready || self.state == .open
   }
   
   func isOpen() -> Bool {
-    return self.state == "open"
+    return self.state == .open
   }
   
   func isEngaged() -> Bool {
-    return self.state == "solved" || self.state == "closed" || self.state == "following"
+    return self.state == .solved || self.state == .closed || self.state == .following
   }
   
   func isSupporting() -> Bool {
-    return self.state == "supporting"
+    return self.state == .supporting
   }
   
   func shouldHideInput() -> Bool {

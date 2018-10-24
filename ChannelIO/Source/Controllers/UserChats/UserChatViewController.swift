@@ -324,7 +324,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.shyNavBarManager.scrollView = self.tableView
     self.shyNavBarManager.stickyNavigationBar = true
     self.shyNavBarManager.fadeBehavior = .subviews
-    if let state = userChat?.state, state != "ready" &&
+    if let state = userChat?.state, state != .ready &&
       self.shyNavBarManager.extensionView == nil || !self.shyNavBarManager.isExpanded() {
       self.titleView?.isExpanded = false
       self.shyNavBarManager.hideExtension = true
@@ -560,6 +560,10 @@ extension UserChatViewController: StoreSubscriber {
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
       self.scrollToBottom(false)
+    }
+    else if nextUserChat?.shouldHideInput() == true ||
+      (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
+      self.setTextInputbarHidden(true, animated: false)
     }
     else if (!channel.allowNewChat && !self.channel.allowNewChat) &&
       self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
