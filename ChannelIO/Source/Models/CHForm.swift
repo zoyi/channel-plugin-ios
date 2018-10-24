@@ -29,6 +29,7 @@ struct CHForm {
   
   static func create(botEntry: CHSupportBotEntryInfo) -> CHForm {
     var form = CHForm()
+    form.type = .support
     form.inputs = botEntry.actions.map { (action) in
       let (text, onlyEmoji) = CustomMessageTransform.markdown.parse(action.text)
       return CHInput(key: action.key, text: text, onlyEmoji: onlyEmoji)

@@ -20,16 +20,17 @@ class WatermarkView : BaseView {
       NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
       NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11)
     ]
-    
-    let tagAttributes = [StringTagType.bold:[
-      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-      NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11)
-    ]]
+
+    let tagAttributes = [
+      StringTagType.bold:[
+        NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+        NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11)
+      ]
+    ]
     
     $0.attributedText = CHAssets.localized(
       "ch.watermark",
       attributes: attributes,
-      tags: [.bold],
       tagAttributes: tagAttributes)
   }
   

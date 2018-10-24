@@ -25,22 +25,30 @@ class ProfileExtendableView: BaseView {
     paragraph.alignment = .center
     paragraph.lineBreakMode = .byCharWrapping
 
-    let attributes = [
-      NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11),
-      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-      NSAttributedStringKey.paragraphStyle: paragraph
+    let attributes: [NSAttributedStringKey: Any] = [
+      .font: UIFont.systemFont(ofSize: 11),
+      .foregroundColor: CHColors.blueyGrey,
+      .paragraphStyle: paragraph
     ]
     
-    let tagAttributes = [StringTagType.bold:[
-      NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11),
-      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-      NSAttributedStringKey.paragraphStyle: paragraph
-    ]]
+//    TODO: refactor idea
+//    let tagsAttributes: [CHStringTagAttribute] = [
+//      CHStringTagAttribute
+//        .tag(.bold).font(11).color(.blueyGrey)
+//        .alignment(.center).lineBreak(.byCharWrapping)
+//    ]
+    
+    let tagAttributes: [StringTagType: [NSAttributedStringKey: Any]] = [
+      .bold:[
+        .font: UIFont.boldSystemFont(ofSize: 11),
+        .foregroundColor: CHColors.blueyGrey,
+        .paragraphStyle: paragraph
+      ]
+    ]
     
     $0.attributedText = CHAssets.localized(
       "ch.agreement",
       attributes: attributes,
-      tags: [.bold],
       tagAttributes: tagAttributes)
   }
   
@@ -174,16 +182,17 @@ class ProfileExtendableView: BaseView {
         NSAttributedStringKey.paragraphStyle: paragraph
       ]
       
-      let tagAttributes = [StringTagType.bold:[
-        NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11),
-        NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-        NSAttributedStringKey.paragraphStyle: paragraph
-      ]]
+      let tagAttributes = [
+        StringTagType.bold:[
+          NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11),
+          NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
+          NSAttributedStringKey.paragraphStyle: paragraph
+        ]
+      ]
       
       let text = CHAssets.localized(
         "ch.agreement",
         attributes: attributes,
-        tags: [.bold],
         tagAttributes: tagAttributes)
       
       height += text.height(fits: width - Metric.footerLeading - Metric.footerTrailing)

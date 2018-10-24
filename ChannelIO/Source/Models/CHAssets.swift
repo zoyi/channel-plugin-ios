@@ -68,7 +68,6 @@ class CHAssets {
   class func localized(
     _ key: String,
     attributes: [NSAttributedStringKey: Any],
-    tags: [StringTagType],
     tagAttributes: [StringTagType:[NSAttributedStringKey:Any]]) -> NSAttributedString {
     var locale = "en"
     if let settings = mainStore.state.settings, let settingLocale = settings.appLocale?.rawValue {
@@ -87,17 +86,14 @@ class CHAssets {
     let keyNSString = NSString(string: NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: ""))
     
     attributedString.addAttributes(attributes, range: NSRange(location: 0, length: keyString.utf16.count))
-    for tag in tags {
+    for (tag, attrs) in tagAttributes {
       if let tagStartRange = keyString.range(of: "<\(tag.rawValue)>"),
         let tagEndRnage = keyString.range(of: "</\(tag.rawValue)>") {
         let sIndex = keyString.index(before: tagStartRange.upperBound)
         let eIndex = keyString.index(after: tagEndRnage.lowerBound)
         let tagContext = keyString[sIndex..<eIndex]
   
-        if let tAttributes = tagAttributes[tag] {
-          attributedString.addAttributes(tAttributes, range: keyNSString.range(of: String(tagContext)))
-        }
-        
+        attributedString.addAttributes(attrs, range: keyNSString.range(of: String(tagContext)))
         attributedString.replaceCharacters(in: NSRange(tagEndRnage, in: keyString), with: "")
         attributedString.replaceCharacters(in: NSRange(tagStartRange, in: keyString), with: "")
       }
