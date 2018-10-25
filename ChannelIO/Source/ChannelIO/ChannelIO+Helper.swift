@@ -37,8 +37,7 @@ extension ChannelIO {
     ]
     
     ChannelIO.reset()
-    ChannelIO.initWebsocket()
-    
+  
     let subscriber = CHPluginSubscriber()
     mainStore.subscribe(subscriber)
     ChannelIO.subscriber = subscriber
@@ -229,43 +228,40 @@ extension ChannelIO {
 }
 
 extension ChannelIO {
-  internal class func initWebsocket() {
+  internal class func addNotificationObservers() {
     NotificationCenter.default.removeObserver(self)
     
-    NotificationCenter.default
-      .addObserver(
-        self,
-        selector: #selector(self.disconnectWebsocket),
-        name: NSNotification.Name.UIApplicationWillResignActive,
-        object: nil)
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(self.enterBackground),
+      name: NSNotification.Name.UIApplicationWillResignActive,
+      object: nil)
     
-    NotificationCenter.default
-      .addObserver(
-        self,
-        selector: #selector(self.disconnectWebsocket),
-        name: NSNotification.Name.UIApplicationWillTerminate,
-        object: nil)
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(self.enterBackground),
+      name: NSNotification.Name.UIApplicationWillTerminate,
+      object: nil)
     
-    NotificationCenter.default
-      .addObserver(
-        self,
-        selector: #selector(self.connectWebsocket),
-        name: NSNotification.Name.UIApplicationDidBecomeActive,
-        object: nil)
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(self.enterForeground),
+      name: NSNotification.Name.UIApplicationDidBecomeActive,
+      object: nil)
     
-    NotificationCenter.default
-      .addObserver(
-        self,
-        selector: #selector(self.appBecomeActive(_:)),
-        name: Notification.Name.UIApplicationWillEnterForeground,
-        object: nil)
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(self.appBecomeActive(_:)),
+      name: Notification.Name.UIApplicationWillEnterForeground,
+      object: nil)
   }
   
-  @objc internal class func disconnectWebsocket() {
+  @objc internal class func enterBackground() {
     WsService.shared.disconnect()
+    ChannelIO.willBecomeActive = false
   }
   
-  @objc internal class func connectWebsocket() {
+  @objc internal class func enterForeground() {
     guard self.isValidStatus else { return }
     _ = GuestPromise.touch()
       .observeOn(MainScheduler.instance)
@@ -276,6 +272,6 @@ extension ChannelIO {
   }
   
   @objc internal class func appBecomeActive(_ application: UIApplication) {
-
+    ChannelIO.willBecomeActive = true
   }
 }

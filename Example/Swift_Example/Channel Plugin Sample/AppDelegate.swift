@@ -15,11 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
   var window: UIWindow?
 
-
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     
     registerForRemoteNotification(application)
+    ChannelIO.initialize(application)
     return true
   }
 
@@ -76,7 +76,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                               withCompletionHandler completionHandler: @escaping () -> Void) {
     let userInfo = response.notification.request.content.userInfo
     ChannelIO.handlePushNotification(userInfo)
-    
     completionHandler()
   }
   
@@ -96,7 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                    didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
     print("aa \(userInfo)")
-    completionHandler(.noData)
+    ChannelIO.handlePushNotification(userInfo) {
+      completionHandler(.noData)
+    }
   }
 
 }

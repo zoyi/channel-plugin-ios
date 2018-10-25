@@ -61,6 +61,7 @@ public final class ChannelIO: NSObject {
   internal static var profile: Profile? = nil
   internal static var launcherView: LauncherView? = nil
   internal static var launcherVisible: Bool = false
+  internal static var willBecomeActive: Bool = false
   
   // MARK: StoreSubscriber
   class CHPluginSubscriber : StoreSubscriber {
@@ -92,6 +93,15 @@ public final class ChannelIO: NSObject {
   
   // MARK: Public
 
+  /**
+   * Initialize ChannelIO
+   *
+   * - parameter application: application instance
+   */
+  @objc public class func initialize(_ application: UIApplication) {
+    ChannelIO.addNotificationObservers()
+  }
+  
   /**
    *   Boot ChannelIO
    *
@@ -377,19 +387,26 @@ public final class ChannelIO: NSObject {
    *   plugin worked properly
    *
    *   - parameter userInfo: a Dictionary contains push information
+   *   - parameter completion: closure that will get called when completed
    */
-  @objc public class func handlePushNotification(_ userInfo:[AnyHashable : Any]) {
+  @objc public class func handlePushNotification(_ userInfo:[AnyHashable : Any], completion: (() -> Void)? = nil) {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
     guard let userChatId = userInfo["chatId"] as? String else { return }
     
-    //check if checkin 
     if ChannelIO.isValidStatus {
-      ChannelIO.showUserChat(userChatId:userChatId)
+      if ChannelIO.willBecomeActive {
+        ChannelIO.showUserChat(userChatId:userChatId)
+        completion?()
+      } else {
+        //call receive api and call completion
+      }
+    
       return
     }
     
     guard let settings = PrefStore.getChannelPluginSettings() else {
       dlog("ChannelPluginSetting is missing")
+      completion?()
       return
     }
     
@@ -398,9 +415,15 @@ public final class ChannelIO: NSObject {
     }
     
     ChannelIO.boot(with: settings, profile: profile) { (status, guest) in
+      if !ChannelIO.willBecomeActive { //not tap and signal server to acknowledgement
+        //call receive api and call completion
+        return
+      }
+      
       if status == .success {
         ChannelIO.showUserChat(userChatId:userChatId)
       }
+      completion?()
     }
   }
 }
