@@ -19,7 +19,11 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     if state?.supportBotEntry != nil {
       return state ?? MessagesState()
     }
-    return state?.insert(message: message) ?? MessagesState()
+    //insert only if local dummy is not exist
+    if state?.findBy(id: "welcome_dummy") == nil {
+       return state?.insert(message: message) ?? MessagesState()
+    }
+    return state ?? MessagesState()
   case let action as GetMessages:
     var messages = (action.payload["messages"] as? [CHMessage]) ?? []
     let userChatId = messages.first?.chatId ?? ""
