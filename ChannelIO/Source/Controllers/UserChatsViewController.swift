@@ -58,6 +58,7 @@ class UserChatsViewController: BaseViewController {
   var didLoad = false
   var showNewChat = false
   var shouldHideTable = false
+  var isShowingChat = false
   var goToUserChatId: String? = nil
   
   struct Metric {
@@ -116,10 +117,17 @@ class UserChatsViewController: BaseViewController {
       .subscribe(onNext: { [weak self] (_) in
         self?.errorToastView.display(animated: true)
       }).disposed(by: self.disposeBag)
+    
+    WsService.shared.ready()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (_) in
+        self?.errorToastView.dismiss(animated: true)
+      }).disposed(by: self.disposeBag)
   }
   
   func initActions() {
-    self.errorToastView.refreshImageView.signalForClick().subscribe { [weak self] _ in
+    self.errorToastView.refreshImageView.signalForClick()
+      .subscribe { [weak self] _ in
       self?.errorToastView.dismiss(animated: true)
       self?.nextSeq = nil
       self?.fetchUserChats(isInit: true, showIndicator: true)
@@ -246,6 +254,9 @@ class UserChatsViewController: BaseViewController {
   }
   
   func showUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
+    guard !self.isShowingChat else { return }
+    self.isShowingChat = true
+    
     let controller = self.prepareUserChat(userChatId: userChatId, text: text)
     
     //NOTE: Make sure to call onCompleted on observable method to avoid leak
@@ -278,11 +289,13 @@ class UserChatsViewController: BaseViewController {
         
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
+        self?.isShowingChat = false
         self?.shouldHideTable = false
         dlog("got following managers")
       }, onError: { [weak self] (error) in
         dlog("error getting following managers: \(error.localizedDescription)")
         self?.showNewChat = false
+        self?.isShowingChat = false
         self?.errorToastView.display(animated: true)
       }).disposed(by: self.disposeBag)
   }

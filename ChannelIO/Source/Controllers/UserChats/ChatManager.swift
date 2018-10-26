@@ -60,9 +60,12 @@ class ChatManager: NSObject {
   fileprivate var typingPersons = [CHEntity]()
   fileprivate var timeStorage = [String: Timer]()
   fileprivate var animateTyping = false
+  fileprivate var nextSeq = ""
+  
+  fileprivate var isRequestingAction = false
   fileprivate var isFetching = false
   fileprivate var isRequstingReadAll = false
-  fileprivate var nextSeq = ""
+  
   
   fileprivate var messageDispose: Disposable?
   fileprivate var typingDispose: Disposable?
@@ -399,6 +402,9 @@ extension ChatManager {
   }
   
   private func processSupportBotAction(originId: String?, key: String?, value: String?) {
+    guard !self.isRequestingAction else { return }
+    self.isRequestingAction = true
+    
     self.createSupportBotChatIfNeeded(originId: originId)
       .observeOn(MainScheduler.instance)
       .flatMap({ (chat, message) -> Observable<CHMessage> in
@@ -407,9 +413,11 @@ extension ChatManager {
         return CHSupportBot.reply(with: msg, formId: message?.id)
       })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (updated) in
+      .subscribe(onNext: { [weak self] (updated) in
+        self?.isRequestingAction = false
         mainStore.dispatch(CreateMessage(payload: updated))
-      }, onError: { (error) in
+      }, onError: { [weak self] (error) in
+        self?.isRequestingAction = false
         //handle error
       }).disposed(by: self.disposeBag)
   }
