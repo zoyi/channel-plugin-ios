@@ -274,6 +274,7 @@ class UserChatsViewController: BaseViewController {
         
         pluginBot = info.1
         mainStore.dispatch(GetSupportBots(payload: supportBots))
+        //target evaluate (supportBots) -> bot? 
         //evaluation happen here later
         
         if let botId = supportBots.first?.id {

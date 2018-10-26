@@ -30,6 +30,7 @@ enum RestRouter: URLRequestConvertible {
   case CreateMessage(String, ParametersType)
   case UploadFile(String, ParametersType)
   case SetMessagesRead(String, ParametersType)
+  case SendPushAck(String)
   
   case RegisterToken(ParametersType)
   case UnregisterToken(String, ParametersType)
@@ -75,7 +76,8 @@ enum RestRouter: URLRequestConvertible {
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot, .RequestProfileBot,
          .UpdateProfileItem, .TouchGuest,
-         .CreateSupportBotChat, .ReplySupportBot:
+         .CreateSupportBotChat, .ReplySupportBot,
+         .SendPushAck:
       return .post
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
@@ -151,6 +153,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/support_bots/\(supportBotId)/user_chats"
     case .ReplySupportBot(let userChatId, _):
       return "/app/user_chats/\(userChatId)/support_bots/action"
+    case .SendPushAck(let userChatId):
+      return "/app/user_chats/\(userChatId)/received"
     }
   }
   
@@ -249,7 +253,8 @@ enum RestRouter: URLRequestConvertible {
          .RequestProfileBot,
          .CreateUserChat,
          .GetSupportBotEntry,
-         .CreateSupportBotChat:
+         .CreateSupportBotChat,
+         .SendPushAck:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

@@ -398,7 +398,11 @@ public final class ChannelIO: NSObject {
         ChannelIO.showUserChat(userChatId:userChatId)
         completion?()
       } else {
-        //call receive api and call completion
+        PluginPromise.sendPushAck(chatId: userChatId).subscribe(onNext: { (completed) in
+          completion?()
+        }, onError: { (error) in
+          completion?()
+        }).disposed(by: self.disposeBeg)
       }
     
       return
@@ -416,7 +420,11 @@ public final class ChannelIO: NSObject {
     
     ChannelIO.boot(with: settings, profile: profile) { (status, guest) in
       if !ChannelIO.willBecomeActive { //not tap and signal server to acknowledgement
-        //call receive api and call completion
+        PluginPromise.sendPushAck(chatId: userChatId).subscribe(onNext: { (completed) in
+          completion?()
+        }, onError: { (error) in
+          completion?()
+        }).disposed(by: self.disposeBeg)
         return
       }
       
