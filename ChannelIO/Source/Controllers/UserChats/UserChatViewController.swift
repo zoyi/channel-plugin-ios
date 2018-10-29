@@ -50,10 +50,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       self.diffCalculator?.rows = self.messages
     }
   }
-  
-  var createdFeedback = false
-  var createdFeedbackComplete = false
-  
+
   var disposeBag = DisposeBag()
   var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
@@ -354,8 +351,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-        self?.createdFeedback = false
-        self?.createdFeedbackComplete = false
         self?.chatManager?.reconnect()
       }).disposed(by: self.disposeBag)
     
@@ -526,14 +521,15 @@ extension UserChatViewController: StoreSubscriber {
   func fetchChatIfNeeded() {
     if self.chatManager.needToFetchChat() == true {
       self.chatManager.fetchChat()
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (event) in
-        self?.chatManager.fetchMessages()
-        self?.scrollToBottom(false)
-        dlog("fetched chat info")
-      }, onError: { [weak self] error in
-        dlog("failed to fetch chat info - \(error.localizedDescription)")
-        self?.navigationController?.popViewController(animated: true)
-      }).disposed(by: self.disposeBag)
+          self?.chatManager.fetchMessages()
+          self?.scrollToBottom(false)
+          dlog("fetched chat info")
+        }, onError: { [weak self] error in
+          dlog("failed to fetch chat info - \(error.localizedDescription)")
+          self?.navigationController?.popViewController(animated: true)
+        }).disposed(by: self.disposeBag)
     }
   }
   

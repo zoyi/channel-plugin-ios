@@ -36,9 +36,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
   var messages = [CHMessage]()
 
-  var createdFeedback = false
-  var createdFeedbackComplete = false
-
   var disposeBag = DisposeBag()
   //var photoBrowser : MWPhotoBrowser? = nil
   //var chatManager : ChatManager!

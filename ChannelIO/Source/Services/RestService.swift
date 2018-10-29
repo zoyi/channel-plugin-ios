@@ -76,8 +76,7 @@ enum RestRouter: URLRequestConvertible {
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot, .RequestProfileBot,
          .UpdateProfileItem, .TouchGuest,
-         .CreateSupportBotChat, .ReplySupportBot,
-         .SendPushAck:
+         .CreateSupportBotChat, .ReplySupportBot:
       return .post
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
@@ -89,7 +88,8 @@ enum RestRouter: URLRequestConvertible {
     case .SetMessagesRead,
          .RemoveUserChat,
          .CloseUserChat,
-         .ReviewUserChat:
+         .ReviewUserChat,
+         .SendPushAck:
       return .put
     case .UnregisterToken:
       return .delete
@@ -154,7 +154,7 @@ enum RestRouter: URLRequestConvertible {
     case .ReplySupportBot(let userChatId, _):
       return "/app/user_chats/\(userChatId)/support_bots/action"
     case .SendPushAck(let userChatId):
-      return "/app/user_chats/\(userChatId)/received"
+      return "/app/user_chats/\(userChatId)/messages/receive"
     }
   }
   
