@@ -23,7 +23,8 @@ class ProfileExtendableView: BaseView {
 
     let paragraph = NSMutableParagraphStyle()
     paragraph.alignment = .center
-    paragraph.lineBreakMode = .byCharWrapping
+    paragraph.lineBreakMode = CHAssets.localized("ch.agreement").guessLanguage() == "日本語" ?
+      .byCharWrapping : .byWordWrapping
 
     let attributes: [NSAttributedStringKey: Any] = [
       .font: UIFont.systemFont(ofSize: 11),
