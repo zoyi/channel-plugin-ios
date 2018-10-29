@@ -488,7 +488,6 @@ extension UserChatViewController: StoreSubscriber {
       self.tableView.reloadData()
     }
     self.userChat = userChat
-    self.chatManager.chat = userChat
     self.channel = state.channel
     
     if let userChat = userChat, userChat.isSupporting() || userChat.isClosed() || userChat.isSolved() {

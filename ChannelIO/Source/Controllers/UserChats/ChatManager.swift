@@ -37,7 +37,7 @@ class ChatManager: NSObject {
   var chatId = ""
   var chatType = ""
   var chat: CHUserChat? = nil {
-    didSet {
+    willSet {
       if let chat = self.chat {
         self.chatId = chat.id
         self.chatType = "UserChat"
@@ -69,6 +69,7 @@ class ChatManager: NSObject {
   
   fileprivate var messageDispose: Disposable?
   fileprivate var typingDispose: Disposable?
+  fileprivate var chatDispose: Disposable?
   
   var typers: [CHEntity] {
     get {
@@ -112,6 +113,7 @@ class ChatManager: NSObject {
   fileprivate func disposeSignals() {
     self.messageDispose?.dispose()
     self.typingDispose?.dispose()
+    self.messageDispose?.dispose()
   }
   
   fileprivate func observeAppState() {
@@ -145,7 +147,26 @@ class ChatManager: NSObject {
       })
   }
   
-  fileprivate func observeChatEvents() { }
+  fileprivate func observeChatEvents() {
+    self.chatDispose = WsService.shared.eventSubject
+      .filter({ [weak self] (type, data) -> Bool in
+        guard let userChat = data as? CHUserChat else { return false }
+        return type == WsServiceType.UpdateUserChat &&
+          userChat.id == self?.chat?.id &&
+          userChat.personId == self?.chat?.personId
+      })
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (type, data) in
+        guard let newChat = data as? CHUserChat else { return }
+        guard let prevChat = self?.chat else { return }
+        if (prevChat.isReady() || prevChat.isSupporting()) && newChat.isOpen() {
+          self?.requestProfileBot()
+        }
+        mainStore.dispatch(UpdateUserChat(payload: newChat))
+        self?.setChatEntities(with: newChat.id)
+      })
+  }
+  
   fileprivate func observeSessionEvents() {
     _ = WsService.shared.joined()
       .observeOn(MainScheduler.instance)
@@ -245,45 +266,7 @@ extension ChatManager {
   }
 }
 
-extension ChatManager {  
-  func processSendMessage(msg: String) -> Observable<CHUserChat?> {
-    return Observable.create({ [weak self] (subscriber) -> Disposable in
-      //move this logic into presenter
-      if let chat = self?.chat, chat.isActive() {
-        let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-        mainStore.dispatch(CreateMessage(payload: message))
-        self?.sendMessage(message: message, local: false).subscribe(onNext: { (msg) in
-          subscriber.onNext(chat)
-          subscriber.onCompleted()
-        }, onError: { (error) in
-          subscriber.onError(error)
-        }).disposed(by: self!.disposeBag)
-      } else {
-        self?.createChat().flatMap({ (chatId) -> Observable<CHMessage?> in
-          guard let s = self else {
-            return Observable.just(nil)
-          }
-          s.chatId = chatId
-          let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-          mainStore.dispatch(CreateMessage(payload: message))
-          return s.sendMessage(message: message, local: false)
-        }).flatMap({ [weak self] (message) -> Observable<Bool?> in
-          mainStore.dispatch(CreateMessage(payload: message))
-          guard let s = self else { return Observable.just(false) }
-          return s.requestProfileBot(chatId: self?.chatId)
-        }).subscribe(onNext: { (completed) in
-          subscriber.onNext(self?.chat)
-          subscriber.onCompleted()
-        }, onError: { [weak self] (error) in
-          self?.state = .chatNotLoaded
-          subscriber.onError(error)
-        }).disposed(by: self!.disposeBag)
-      }
-      
-      return Disposables.create()
-    })
-  }
-  
+extension ChatManager {
   func sendMessage(message: CHMessage, local: Bool = false) -> Observable<CHMessage?> {
     var message = message
     return Observable.create({ [weak self] (subscriber) in
@@ -311,19 +294,20 @@ extension ChatManager {
     })
   }
   
-  func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int, requestBot: Bool = false) {
-    var message = allMessages.get(index: currentIndex)
-    if message == nil && requestBot {
-      _ = PluginPromise.requestProfileBot(pluginId: mainStore.state.plugin.id, chatId: self.chatId)
-        .subscribe(onNext: { (_) in
+  func requestProfileBot() {
+    PluginPromise.requestProfileBot(pluginId: mainStore.state.plugin.id, chatId: self.chatId)
+      .subscribe(onNext: { (_) in
         
-      })
-    }
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
+    var message = allMessages.get(index: currentIndex)
     
-    message?.send().subscribe(onNext: { [weak self] (updated) in
+    message?.send().observeOn(MainScheduler.instance).subscribe(onNext: { [weak self] (updated) in
       message?.state = .Sent
       mainStore.dispatch(CreateMessage(payload: updated))
-      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1, requestBot: requestBot)
+      self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
     }, onError: { [weak self] (error) in
       message?.state = .Failed
       mainStore.dispatch(CreateMessage(payload: message!))
@@ -331,6 +315,7 @@ extension ChatManager {
     }).disposed(by: self.disposeBag)
   }
   
+  //for image capture on channelIO
   func sendImage(imageData: UIImage) {
     let message = CHMessage(chatId: self.chatId, guest: mainStore.state.guest, image: imageData)
     mainStore.dispatch(CreateMessage(payload: message))
@@ -338,62 +323,89 @@ extension ChatManager {
     if self.chatId != "" {
       self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
     } else {
-      self.createChat().subscribe(onNext: { [weak self] (chatId) in
-        self?.sendMessageRecursively(allMessages: [message], currentIndex: 0, requestBot: true)
-      }, onError: { [weak self] (error) in
-        self?.state = .chatNotLoaded
-      }).disposed(by: self.disposeBag)
+      self.createChat()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { [weak self] (chatId) in
+          self?.sendMessageRecursively(allMessages: [message], currentIndex: 0)
+        }, onError: { [weak self] (error) in
+          self?.state = .chatNotLoaded
+        }).disposed(by: self.disposeBag)
     }
   }
   
+  //fro images from albums
   func sendImages(assets: [DKAsset]) {
     if self.chatId != "" {
-      self.uploadImages(assets: assets)
+      let messages = self.createMessageForImages(assets: assets)
+      self.sendMessageRecursively(allMessages: messages, currentIndex: 0)
     } else {
-      self.createChat().subscribe(onNext: { [weak self] (chatId) in
-        self?.uploadImages(assets: assets, requestBot: true)
-      }, onError: { [weak self] (error) in
-        self?.state = .chatNotLoaded
-      }).disposed(by: self.disposeBag)
+      self.createChat()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { [weak self] (chatId) in
+          let messages = self?.createMessageForImages(assets: assets, requestBot: true) ?? []
+          self?.sendMessageRecursively(allMessages: messages, currentIndex: 0)
+        }, onError: { [weak self] (error) in
+          self?.state = .chatNotLoaded
+        }).disposed(by: self.disposeBag)
     }
   }
   
-  private func uploadImages(assets: [DKAsset], requestBot: Bool = false) {
+  private func createMessageForImages(assets: [DKAsset], requestBot: Bool = false) -> [CHMessage] {
     let messages = assets.map({ (asset) -> CHMessage in
       return CHMessage(chatId: self.chatId, guest: mainStore.state.guest, asset: asset)
     })
     
     messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
-    self.sendMessageRecursively(allMessages: messages, currentIndex: 0, requestBot: requestBot)
+    return messages
   }
-  
-  func profileIsFocus(focus: Bool) {
-    self.profileIsFocus = focus
-    if focus {
-      self.delegate?.updateInputBar(state: .disabled)
-    } else {
-      self.delegate?.updateInputBar(state: .normal)
-    }
-  }
-  
-  func onClickFormOption(originId: String?, key: String?, value: String?) {
-    guard let origin = messageSelector(state: mainStore.state, id: originId),
-      let type = origin.form?.type, let key = key, let value = value else { return }
-    
-    if type == .select {
-      self.processPostAction(originId: originId, key: key, value: value)
-    } else if type == .support {
-      self.processSupportBotAction(originId: originId, key: key, value: value)
-    } else {
-      self.processUserChatAction(originId: originId, key: key, value: value)
-    }
+}
+
+extension ChatManager {  
+  func processSendMessage(msg: String) -> Observable<CHUserChat?> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      //move this logic into presenter
+      if let chat = self?.chat, chat.isActive() {
+        let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
+        mainStore.dispatch(CreateMessage(payload: message))
+        self?.sendMessage(message: message, local: false)
+          .observeOn(MainScheduler.instance)
+          .subscribe(onNext: { (msg) in
+            subscriber.onNext(chat)
+            subscriber.onCompleted()
+          }, onError: { (error) in
+            subscriber.onError(error)
+          }).disposed(by: self!.disposeBag)
+      } else {
+        self?.createChat().observeOn(MainScheduler.instance).flatMap({ (chatId) -> Observable<CHMessage?> in
+          guard let s = self else {
+            return Observable.just(nil)
+          }
+          s.chatId = chatId
+          let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
+          mainStore.dispatch(CreateMessage(payload: message))
+          return s.sendMessage(message: message, local: false)
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext:{ [weak self] (message) in
+          mainStore.dispatch(CreateMessage(payload: message))
+          subscriber.onNext(self?.chat)
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        }).disposed(by: self!.disposeBag)
+      }
+      
+      return Disposables.create()
+    })
   }
   
   private func processPostAction(originId: String?, key: String, value: String) {
     let message = CHMessage.createLocal(chatId: self.chatId, text: value, originId: originId, key: key)
     mainStore.dispatch(CreateMessage(payload: message))
     
-    self.sendMessage(message: message, local: false).observeOn(MainScheduler.instance)
+    self.sendMessage(message: message, local: false)
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (message) in
         mainStore.dispatch(CreateMessage(payload:message))
       }, onError: { (error) in
@@ -499,26 +511,27 @@ extension ChatManager {
     return Observable.create { [weak self] subscriber in
       guard self?.state != .chatLoading else { return Disposables.create() }
       guard let s = self else  { return Disposables.create() }
+      
       self?.state = .chatLoading
       self?.nextSeq = ""
       
       let signal = CHUserChat.get(userChatId: s.chatId)
-        .subscribe(onNext: { (response) in
-          self?.didChatLoaded = true
-          //due to message update step were not desirable
-          var response = response
-          response.message = nil
-          mainStore.dispatch(GetUserChat(payload: response))
-        
-          self?.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
-          subscriber.onNext(response)
-          subscriber.onCompleted()
-          self?.state = .chatLoaded
-        }, onError: { (error) in
-          self?.state = .chatNotLoaded
-          self?.didChatLoaded = false
-          subscriber.onError(error)
-        })
+        .observeOn(MainScheduler.instance).subscribe(onNext: { (response) in
+        self?.didChatLoaded = true
+        self?.state = .chatLoaded
+        //due to message update step were not desirable
+        var response = response
+        response.message = nil
+        mainStore.dispatch(GetUserChat(payload: response))
+      
+        self?.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
+        subscriber.onNext(response)
+        subscriber.onCompleted()
+      }, onError: { (error) in
+        self?.state = .chatNotLoaded
+        self?.didChatLoaded = false
+        subscriber.onError(error)
+      })
       
       return Disposables.create {
         signal.dispose()
@@ -571,7 +584,8 @@ extension ChatManager {
         pluginId = mainStore.state.plugin.id
       }
       
-      let signal = CHUserChat.create(pluginId: pluginId).subscribe(onNext: { (chatResponse) in
+      let signal = CHUserChat.create(pluginId: pluginId)
+        .observeOn(MainScheduler.instance).subscribe(onNext: { (chatResponse) in
         self?.chatNewlyCreated = true
         self?.didChatLoaded = true
         self?.setChatEntities(with: chatResponse.userChat?.id)
@@ -600,7 +614,7 @@ extension ChatManager {
     self.didChatLoaded = false
     WsService.shared.connect()
     
-    GuestPromise.touch().subscribe(onNext: { (user) in
+    GuestPromise.touch().observeOn(MainScheduler.instance).subscribe(onNext: { (user) in
       mainStore.dispatch(UpdateGuest(payload: user))
     }).disposed(by: self.disposeBag)
   }
@@ -612,10 +626,13 @@ extension ChatManager {
     
     // TODO: show loader
     self.isFetching = true
-    CHMessage.getMessages(userChatId: self.chatId,
+    CHMessage.getMessages(
+      userChatId: self.chatId,
       since: self.nextSeq,
       limit: 30,
-      sortOrder: "DESC").subscribe(onNext: { [weak self] (data) in
+      sortOrder: "DESC")
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (data) in
         if let nextSeq = data["next"] {
           self?.nextSeq = nextSeq as! String
         }
@@ -726,9 +743,31 @@ extension ChatManager {
     
     return false
   }
+  
+  func profileIsFocus(focus: Bool) {
+    self.profileIsFocus = focus
+    if focus {
+      self.delegate?.updateInputBar(state: .disabled)
+    } else {
+      self.delegate?.updateInputBar(state: .normal)
+    }
+  }
 }
 
 extension ChatManager {
+  func onClickFormOption(originId: String?, key: String?, value: String?) {
+    guard let origin = messageSelector(state: mainStore.state, id: originId),
+      let type = origin.form?.type, let key = key, let value = value else { return }
+    
+    if type == .select {
+      self.processPostAction(originId: originId, key: key, value: value)
+    } else if type == .support {
+      self.processSupportBotAction(originId: originId, key: key, value: value)
+    } else {
+      self.processUserChatAction(originId: originId, key: key, value: value)
+    }
+  }
+  
   func didClickOnWebPage(with message: CHMessage) {
     guard let url = URL(string:message.webPage?.url ?? "") else { return }
     let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
