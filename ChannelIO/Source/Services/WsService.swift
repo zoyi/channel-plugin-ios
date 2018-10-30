@@ -225,14 +225,18 @@ class WsService {
     guard let chatId = chatId, chatId != "" else { return }
     
     self.currentChatId = chatId
-    self.socket?.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
+    }
   }
   
   func leave(chatId: String?) {
     guard let chatId = chatId, chatId != "" else { return }
     
     self.currentChatId = ""
-    self.socket?.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
+    }
   }
   
   func sendTyping(chat: CHUserChat?, isStop: Bool) {

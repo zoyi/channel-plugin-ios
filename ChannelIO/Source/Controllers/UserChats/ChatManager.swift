@@ -70,6 +70,7 @@ class ChatManager: NSObject {
   fileprivate var messageDispose: Disposable?
   fileprivate var typingDispose: Disposable?
   fileprivate var chatDispose: Disposable?
+  fileprivate var readyDispose: Disposable?
   
   var typers: [CHEntity] {
     get {
@@ -114,6 +115,7 @@ class ChatManager: NSObject {
     self.messageDispose?.dispose()
     self.typingDispose?.dispose()
     self.messageDispose?.dispose()
+    self.readyDispose?.dispose()
   }
   
   fileprivate func observeAppState() {
@@ -546,7 +548,7 @@ extension ChatManager {
         subscriber.onNext((chat, message))
         subscriber.onCompleted()
       } else if let bot = mainStore.state.botsState.findSupportBot() {
-        disposable =  CHSupportBot.create(with: bot.id)
+        disposable = CHSupportBot.create(with: bot.id)
           .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (chatResponse) in
     
@@ -705,7 +707,10 @@ extension ChatManager {
     guard self.chatId != "" else { return }
     self.state = .chatJoining
     self.observeSocketEvents()
-    WsService.shared.join(chatId: self.chatId)
+    
+    self.readyDispose = WsService.shared.ready().subscribe(onNext: { (_) in
+       WsService.shared.join(chatId: self.chatId)
+    })
   }
   
   func prepareToLeave() {
