@@ -386,12 +386,13 @@ struct UserChatPromise {
   
   static func setMessageRead(userChatId: String, at: Date? = nil) -> Observable<Any?> {
     return Observable.create { subscriber in
-      guard let readAt = CustomDateTransform().transformToJSON(at) else {
+      guard let date = at else {
+        subscriber.onError(CHErrorPool.paramError)
         return Disposables.create()
       }
       
       let params: [String: Any] = [
-        "query": [ "at" : readAt ]
+        "query": [ "at" : Int(date.timeIntervalSince1970 * 1000) ]
       ]
       
       let req = Alamofire.request(RestRouter.SetMessagesRead(userChatId, params as RestRouter.ParametersType))

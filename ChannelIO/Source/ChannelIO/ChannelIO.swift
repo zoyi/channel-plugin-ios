@@ -393,18 +393,19 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
     guard let userChatId = userInfo["chatId"] as? String else { return }
     
-    if ChannelIO.isValidStatus {
-      if ChannelIO.willBecomeActive {
-        ChannelIO.showUserChat(userChatId:userChatId)
+    //not tap and signal server to acknowledgement
+    if !ChannelIO.willBecomeActive {
+      PluginPromise.sendPushAck(chatId: userChatId).subscribe(onNext: { (completed) in
         completion?()
-      } else {
-        PluginPromise.sendPushAck(chatId: userChatId).subscribe(onNext: { (completed) in
-          completion?()
-        }, onError: { (error) in
-          completion?()
-        }).disposed(by: self.disposeBeg)
-      }
+      }, onError: { (error) in
+        completion?()
+      }).disposed(by: self.disposeBeg)
+      return
+    }
     
+    if ChannelIO.isValidStatus {
+      ChannelIO.showUserChat(userChatId:userChatId)
+      completion?()
       return
     }
     
@@ -419,15 +420,6 @@ public final class ChannelIO: NSObject {
     }
     
     ChannelIO.boot(with: settings, profile: profile) { (status, guest) in
-      if !ChannelIO.willBecomeActive { //not tap and signal server to acknowledgement
-        PluginPromise.sendPushAck(chatId: userChatId).subscribe(onNext: { (completed) in
-          completion?()
-        }, onError: { (error) in
-          completion?()
-        }).disposed(by: self.disposeBeg)
-        return
-      }
-      
       if status == .success {
         ChannelIO.showUserChat(userChatId:userChatId)
       }

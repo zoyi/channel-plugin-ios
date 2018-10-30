@@ -19,6 +19,7 @@ enum CHErrorCode: Int {
   case chatResponseParseError = 8007
   case messageParseError = 8008
   case geoParseError = 8009
+  case paramError = 8010
   case unregisterError = 9000
   case versionError = 9001
   case userChatRemoveError = 9002
@@ -68,5 +69,6 @@ struct CHErrorPool {
   static let geoParseError = CHError(domain: .utilityPromise, code: .geoParseError)
   static let sendFileError = CHError(domain: .message, code: .sendFileError)
   static let serviceBlockedError = CHError(domain: .channelPlugin, code: .serviceBlockedError)
+  static let paramError = CHError(domain: .channelPlugin, code: .paramError)
 }
 

@@ -64,7 +64,7 @@ class ChatManager: NSObject {
   
   fileprivate var isRequestingAction = false
   fileprivate var isFetching = false
-  fileprivate var isRequstingReadAll = false
+  fileprivate var isRequestingReadAll = false
   
   
   fileprivate var messageDispose: Disposable?
@@ -654,16 +654,18 @@ extension ChatManager {
   }
   
   func requestRead(at message: CHMessage? = nil) {
-    guard !self.isRequstingReadAll else { return }
+    guard !self.isRequestingReadAll else { return }
     guard let chat = self.chat, let message = message else { return }
     //guard message.entity as? CHGuest == nil else { return }
     
-    self.isRequstingReadAll = true
+    self.isRequestingReadAll = true
 
     chat.read(at: message)
       .debounce(1, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (completed) in
-        self?.isRequstingReadAll = false
+        self?.isRequestingReadAll = false
+      }, onError: { [weak self] (error) in
+        self?.isRequestingReadAll = false
       }).disposed(by: self.disposeBag)
   }
   
