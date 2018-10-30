@@ -138,16 +138,22 @@ extension ChannelIO {
       ChannelIO.sendDefaultEvent(.open)
       mainStore.dispatch(ChatListIsVisible())
       
-      if let userChatViewController = topController as? UserChatViewController,
-        userChatViewController.userChatId == userChatId {
-        //do nothing
-      } else if let controller = topController as? UserChatsViewController {
-        controller.goToUserChatId = userChatId
-      } else if let controller = topController as? UserChatsViewController {
-        topController.navigationController?.popViewController(animated: false, completion: {
-          controller.goToUserChatId = userChatId
-        })
-      } else {
+      //chat view but different chatId
+      if let userChatViewController = topController as? UserChatViewController {
+        if userChatViewController.userChatId != userChatId {
+          userChatViewController.navigationController?.popViewController(animated: true, completion: {
+            if let userChatsController = CHUtils.getTopController() as? UserChatsViewController {
+              userChatsController.showUserChat(userChatId: userChatId)
+            }
+          })
+        }
+      }
+      //chat list
+      else if let controller = topController as? UserChatsViewController {
+        controller.showUserChat(userChatId: userChatId)
+      }
+      //no channel views
+      else {
         let userChatsController = UserChatsViewController()
         userChatsController.showNewChat = userChatId == nil
         userChatsController.shouldHideTable = true
