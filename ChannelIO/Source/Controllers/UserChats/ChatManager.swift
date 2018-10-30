@@ -708,6 +708,7 @@ extension ChatManager {
     self.state = .chatJoining
     self.observeSocketEvents()
     
+    WsService.shared.join(chatId: self.chatId)
     self.readyDispose = WsService.shared.ready().subscribe(onNext: { (_) in
        WsService.shared.join(chatId: self.chatId)
     })

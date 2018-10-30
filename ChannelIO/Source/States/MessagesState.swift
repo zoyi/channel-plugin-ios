@@ -71,11 +71,7 @@ struct MessagesState: StateType {
   
   mutating func upsert(messages: [CHMessage]) -> MessagesState {
     for message in messages {
-      self.messageDictionary[message.id] = message
-      
-      if message.form != nil {
-        self.formQueue[message.id] = message
-      }
+      _ = self.insert(message: message)
     }
     return self
   }
@@ -83,6 +79,10 @@ struct MessagesState: StateType {
   mutating func insert(message: CHMessage?) -> MessagesState {
     guard let message = message else { return self }
     self.messageDictionary[message.id] = message
+    
+    if message.form != nil {
+      self.formQueue[message.id] = message
+    }
     return self
   }
 

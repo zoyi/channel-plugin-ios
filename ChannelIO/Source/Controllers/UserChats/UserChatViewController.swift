@@ -607,7 +607,7 @@ extension UserChatViewController: StoreSubscriber {
         offset.y += FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
         offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width, viewModel: viewModel)
-      } else if lastMessage.messageType == .Form && viewModel.shouldDisplayForm {
+      } else if viewModel.shouldDisplayForm {
         offset.y += FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
@@ -899,27 +899,22 @@ extension UserChatViewController {
       }
     }
     
-    switch message.messageType {
-    case .NewAlertMessage:
+    if message.messageType == .NewAlertMessage {
       let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
       return cell
-    case .DateDivider:
+    } else if message.messageType == .DateDivider {
       let cell: DateCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(date: message.message ?? "")
       return cell
-    case .Log:
+    } else if message.messageType == .Log {
       let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(message: message)
       return cell
-    case .WebPage:
-      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      //cell.presenter = self.chatManager
+    } else if message.messageType == .Profile {
+      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
-      cell.webView.signalForClick().subscribe{ [weak self] _ in
-        self?.chatManager?.didClickOnWebPage(with: message)
-        }.disposed(by: self.disposeBag)
       return cell
-    case .Media:
+    } else if viewModel.clipType == .Image {
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
       //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
@@ -927,7 +922,15 @@ extension UserChatViewController {
         self?.didImageTapped(message: message)
         }.disposed(by: self.disposeBag)
       return cell
-    case .File:
+    } else if viewModel.clipType == .Webpage {
+      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
+      cell.webView.signalForClick().subscribe{ [weak self] _ in
+        self?.chatManager?.didClickOnWebPage(with: message)
+        }.disposed(by: self.disposeBag)
+      return cell
+    } else if viewModel.clipType == .File {
       let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
       //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
@@ -935,11 +938,7 @@ extension UserChatViewController {
         self?.chatManager?.didClickOnFile(with: message)
         }.disposed(by: self.disposeBag)
       return cell
-    case .Profile:
-      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
-    default: //remote
+    } else {
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
