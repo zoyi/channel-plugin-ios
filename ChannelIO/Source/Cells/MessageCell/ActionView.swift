@@ -28,7 +28,7 @@ class ActionButton: UIButton {
   var selectedTextColor: UIColor? = nil {
     didSet {
       let text = self.text?.addFont(
-        self.onlyEmoji ? UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15),
+        self.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
         color: selectedTextColor ?? CHColors.dark50,
         on: NSRange(location:0, length: self.text?.length ?? 0))
       
@@ -73,7 +73,7 @@ class ActionButton: UIButton {
     self.onlyEmoji = input.onlyEmoji
     
     self.text = self.text?.addFont(
-      input.onlyEmoji ? UIFont.systemFont(ofSize: 20) : UIFont.systemFont(ofSize: 15),
+      input.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
       color: CHColors.dark50,
       on: NSRange(location:0, length: input.text?.length ?? 0))
   
@@ -88,7 +88,7 @@ class ActionButton: UIButton {
     self.layer.borderColor = CHColors.dark50.cgColor
 
     let size = self.text?.size(
-      fits: CGSize(width: Constant.maxWidth, height: 10000),
+      fits: CGSize(width: Constant.maxWidth - (Metric.sideMargin * 2), height: 10000),
       maximumNumberOfLines: 2) ?? CGSize.zero
     
     self.frame = CGRect(x: 0, y: 0,
@@ -158,8 +158,11 @@ class ActionView: BaseView {
     
     for (index, button) in self.buttons.enumerated() {
       if Constant.maxWidth < cx + button.frame.width {
-        let calcualtedY = lastButton.frame.origin.y + lastButton.frame.height + 4.f
-        button.frame.origin = CGPoint(x: 0.f, y: calcualtedY)
+        let height = lastButton?.frame.origin.y ?? 0.f
+        let y = lastButton?.frame.height ?? 0.f
+        let margin = lastButton != nil ? 4.f : 0.f
+        
+        button.frame.origin = CGPoint(x: 0.f, y: y + height + margin)
         
         if self.alignment == .right {
           let buttons = Array(self.buttons[firstRowIndex..<index])
@@ -167,7 +170,7 @@ class ActionView: BaseView {
         }
 
         cx = button.frame.width + 4.f
-        cy += button.frame.height + 4.f
+        cy = y + height + margin
         firstRowIndex = index
       } else {
         button.frame.origin = CGPoint(x: cx, y: cy)
