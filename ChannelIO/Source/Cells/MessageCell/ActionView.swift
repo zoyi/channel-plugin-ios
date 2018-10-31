@@ -52,7 +52,7 @@ class ActionButton: UIButton {
         self.layer.shadowOffset = CGSize(width: 0, height: 0)
         self.layer.shadowRadius = 0
         self.layer.borderWidth = 1
-        self.layer.borderColor = CHColors.dark.cgColor
+        self.layer.borderColor = CHColors.dark50.cgColor
       }
     }
   }
@@ -76,7 +76,7 @@ class ActionButton: UIButton {
       input.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
       color: CHColors.dark80,
       on: NSRange(location:0, length: input.text?.length ?? 0))
-  
+    
     self.setAttributedTitle(self.text, for: .normal)
     self.titleLabel?.lineBreakMode = .byTruncatingTail
     self.titleLabel?.numberOfLines = 2
@@ -85,8 +85,8 @@ class ActionButton: UIButton {
  
     self.layer.cornerRadius = 15.f
     self.layer.borderWidth = 1.f
-    self.layer.borderColor = CHColors.dark.cgColor
-
+    self.layer.borderColor = CHColors.dark50.cgColor
+    
     let size = self.text?.size(
       fits: CGSize(width: Constant.maxWidth - (Metric.sideMargin * 2), height: 10000),
       maximumNumberOfLines: 2) ?? CGSize.zero
