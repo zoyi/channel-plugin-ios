@@ -98,7 +98,8 @@ public final class ChannelIO: NSObject {
    *
    * - parameter application: application instance
    */
-  @objc public class func initialize(_ application: UIApplication) {
+  @objc
+  public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
   }
   
@@ -111,7 +112,8 @@ public final class ChannelIO: NSObject {
    *   - parameter guest: Guest object
    *   - parameter compeltion: ChannelPluginCompletionStatus indicating status of boot phase
    */
-  @objc public class func boot(
+  @objc
+  public class func boot(
     with settings: ChannelPluginSettings,
     profile: Profile? = nil,
     completion: ((ChannelPluginCompletionStatus, Guest?) -> Void)? = nil) {
@@ -167,7 +169,8 @@ public final class ChannelIO: NSObject {
    *
    *   - parameter deviceToken: a Data that represents device token
    */
-  @objc public class func initPushToken(deviceToken: Data) {
+  @objc
+  public class func initPushToken(deviceToken: Data) {
     let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
     ChannelIO.pushToken = token
     
@@ -180,7 +183,8 @@ public final class ChannelIO: NSObject {
    *   Shutdown ChannelIO
    *   Call this method when user terminate session or logout
    */
-  @objc public class func shutdown() {
+  @objc
+  public class func shutdown() {
     let guestToken = PrefStore.getCurrentGuestKey() ?? ""
     ChannelIO.reset()
     
@@ -199,7 +203,8 @@ public final class ChannelIO: NSObject {
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  @objc public class func show(animated: Bool) {
+  @objc
+  public class func show(animated: Bool) {
     guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
     ChannelIO.launcherVisible = true
     guard ChannelIO.isValidStatus else { return }
@@ -253,7 +258,8 @@ public final class ChannelIO: NSObject {
    *
    *  - parameter animated: if true, the view is being added to the window using an animation
    */
-  @objc public class func hide(animated: Bool) {
+  @objc
+  public class func hide(animated: Bool) {
     ChannelIO.launcherView?.hide(animated: animated)
     ChannelIO.launcherVisible = false
   }
@@ -263,7 +269,8 @@ public final class ChannelIO: NSObject {
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  @objc public class func open(animated: Bool) {
+  @objc
+  public class func open(animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
     guard !mainStore.state.uiState.isChannelVisible else { return }
     guard let topController = CHUtils.getTopController() else { return }
@@ -287,7 +294,8 @@ public final class ChannelIO: NSObject {
    *
    *   - parameter animated: if true, the view is being added to the window using an animation
    */
-  @objc public class func close(animated: Bool, completion: (() -> Void)? = nil) {
+  @objc
+  public class func close(animated: Bool, completion: (() -> Void)? = nil) {
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation != nil else { return }
     
@@ -314,7 +322,8 @@ public final class ChannelIO: NSObject {
    *  - parameter chatId: a String user chat id. Will open new chat if chat id is invalid
    *  - parameter completion: a closure to signal completion state
    */
-  @objc public class func openChat(with chatId: String? = nil, animated: Bool) {
+  @objc
+  public class func openChat(with chatId: String? = nil, animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
@@ -325,7 +334,8 @@ public final class ChannelIO: NSObject {
    *   - parameter eventName: Event name
    *   - parameter eventProperty: a Dictionary contains information about event
    */
-  @objc public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
+  @objc
+  public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
     guard ChannelIO.isValidStatus else { return }
     guard let settings = ChannelIO.settings else { return }
     
@@ -348,7 +358,8 @@ public final class ChannelIO: NSObject {
    *
    *  - return: ture if a channel is in operating hour, otherwise false
    */
-  @objc public class func isOperating() -> Bool {
+  @objc
+  public class func isOperating() -> Bool {
     return false //calculate channel working time...
   }
   
@@ -358,7 +369,8 @@ public final class ChannelIO: NSObject {
    *
    *   - parameter userInfo: a Dictionary contains push information
    */
-  @objc public class func isChannelPushNotification(_ userInfo:[AnyHashable: Any]) -> Bool {
+  @objc
+  public class func isChannelPushNotification(_ userInfo:[AnyHashable: Any]) -> Bool {
     guard let provider = userInfo["provider"] as? String, provider  == CHConstants.channelio else { return false }
     guard let personType = userInfo["personType"] as? String else { return false }
     guard let personId = userInfo["personId"] as? String else { return false }
@@ -389,7 +401,8 @@ public final class ChannelIO: NSObject {
    *   - parameter userInfo: a Dictionary contains push information
    *   - parameter completion: closure that will get called when completed
    */
-  @objc public class func handlePushNotification(_ userInfo:[AnyHashable : Any], completion: (() -> Void)? = nil) {
+  @objc
+  public class func handlePushNotification(_ userInfo:[AnyHashable : Any], completion: (() -> Void)? = nil) {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
     guard let userChatId = userInfo["chatId"] as? String else { return }
     

@@ -1,3 +1,14 @@
+# 4.2
+## New 
+* Added Support bot feature 
+
+## Updates
+* Updated and synced localization
+
+## Bug fixes
+* Fixed to apply alert count properly 
+* Fixed push notification handling edge cases 
+
 # 4.1.10
 ## Updates
 * Removed and merged frameworks (Manuallayout, CGFlaotLiteral, Then, HexColors)

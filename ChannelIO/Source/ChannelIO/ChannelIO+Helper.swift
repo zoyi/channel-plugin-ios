@@ -46,10 +46,7 @@ extension ChannelIO {
     SVProgressHUD.setDefaultStyle(.dark)
   }
   
-  internal class func track(
-    eventName: String,
-    eventProperty: [String: Any]?,
-    sysProperty: [String: Any]?) {
+  internal class func track(eventName: String, eventProperty: [String: Any]?, sysProperty: [String: Any]?) {
     if eventName.utf16.count > 30 || eventName == "" {
       return
     }
@@ -98,8 +95,7 @@ extension ChannelIO {
             subscriber.onError(CHErrorPool.unknownError)
             return
           }
-          
-          //TDB: removed
+
           if channel.notAllowToUseSDK && !channel.trial {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
@@ -172,10 +168,8 @@ extension ChannelIO {
   internal class func registerPushToken() {
     guard let pushToken = ChannelIO.pushToken else { return }
     
-    let channelId = mainStore.state.channel.id
-    
     PluginPromise
-      .registerPushToken(channelId: channelId, token: pushToken)
+      .registerPushToken(channelId: mainStore.state.channel.id, token: pushToken)
       .subscribe(onNext: { (result) in
         dlog("register token success")
       }, onError:{ error in
