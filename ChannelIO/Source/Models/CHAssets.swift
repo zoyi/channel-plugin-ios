@@ -81,7 +81,10 @@ class CHAssets {
       return NSAttributedString(string: key)
     }
 
-    let keyString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    var keyString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    //replace <br /> tag with newline
+    keyString = keyString.replace("<br />", withString: "\n")
+    
     let attributedString = NSMutableAttributedString(string: keyString)
     let keyNSString = NSString(string: NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: ""))
     
@@ -101,6 +104,7 @@ class CHAssets {
     
     return attributedString
   }
+  
   
   class func playPushSound() {
     let pushSound = NSURL(fileURLWithPath: Bundle(for:self).path(forResource: "ringtone", ofType: "mp3")!)
