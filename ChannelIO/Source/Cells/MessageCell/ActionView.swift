@@ -205,7 +205,7 @@ class ActionView: BaseView {
 
     for (index, input) in inputs.enumerated() {
       let size = input.text?.size(
-        fits: CGSize(width: Constant.maxWidth, height: 10000),
+        fits: CGSize(width: Constant.maxWidth - (Metric.sideMargin * 2), height: 10000),
         maximumNumberOfLines: 2) ?? CGSize.zero
       
       let width = size.width + Metric.sideMargin * 2
