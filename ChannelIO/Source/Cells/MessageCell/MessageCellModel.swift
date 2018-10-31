@@ -83,8 +83,8 @@ struct MessageCellModel: MessageCellModelType {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
     let isContinuous = message.isContinue(previous: previous) &&
-      previous?.form == nil && previous?.profileBot?.count == 0 &&
-      message.form == nil
+      previous?.form == nil && previous?.profileBot?.count == 0
+    
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
     let cType = MessageCellModel.getClipType(message: message)
     let createdByMe = message.entity is CHUser || message.entity is CHVeil

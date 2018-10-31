@@ -191,11 +191,11 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       
       let locale = CHUtils.getLocale()
       if locale == .english {
-        cell.titleLabel.text = CHAssets.localized("ch.language.english")
+        cell.titleLabel.text = CHAssets.localized("en")
       } else if locale == .korean {
-        cell.titleLabel.text = CHAssets.localized("ch.language.korean")
+        cell.titleLabel.text = CHAssets.localized("ko")
       } else if locale == .japanese {
-        cell.titleLabel.text = CHAssets.localized("ch.language.japanese")
+        cell.titleLabel.text = CHAssets.localized("ja")
       }
       
       return cell
