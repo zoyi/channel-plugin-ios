@@ -61,7 +61,7 @@ public final class ChannelIO: NSObject {
   internal static var profile: Profile? = nil
   internal static var launcherView: LauncherView? = nil
   internal static var launcherVisible: Bool = false
-  internal static var willBecomeActive: Bool = false
+  internal static var willBecomeActive: Bool = true
   
   // MARK: StoreSubscriber
   class CHPluginSubscriber : StoreSubscriber {
