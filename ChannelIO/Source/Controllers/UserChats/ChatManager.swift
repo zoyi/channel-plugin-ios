@@ -161,7 +161,7 @@ class ChatManager: NSObject {
       .subscribe(onNext: { [weak self] (type, data) in
         guard let newChat = data as? CHUserChat else { return }
         guard let prevChat = self?.chat else { return }
-        if (prevChat.isReady() || prevChat.isSupporting()) && newChat.isOpen() {
+        if prevChat.isReady() && newChat.isOpen() {
           self?.requestProfileBot()
         }
         mainStore.dispatch(UpdateUserChat(payload: newChat))
@@ -448,7 +448,7 @@ extension ChatManager {
     }
     
     if type == .solve && key == "close" {
-      self.chat?.close(mid: origin.id, requestId: msg?.requestId)
+      self.chat?.close(mid: origin.id, requestId: msg?.requestId ?? "")
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (chat) in
           mainStore.dispatch(UpdateUserChat(payload:chat))
@@ -463,7 +463,7 @@ extension ChatManager {
         mainStore.dispatch(UpdateUserChat(payload: updatedChat))
       }
     } else if type == .close {
-      self.chat?.review(mid: origin.id, rating: ReviewType(rawValue: key)!, requestId:msg?.requestId)
+      self.chat?.review(mid: origin.id, rating: ReviewType(rawValue: key)!, requestId:msg?.requestId ?? "")
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (chat) in
           mainStore.dispatch(UpdateUserChat(payload:chat))

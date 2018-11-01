@@ -114,11 +114,11 @@ extension CHUserChat {
     return UserChatPromise.remove(userChatId: self.id)
   }
   
-  func close(mid: String, requestId: String? = nil) -> Observable<CHUserChat> {
+  func close(mid: String, requestId: String = "") -> Observable<CHUserChat> {
     return UserChatPromise.close(userChatId: self.id, formId: mid, requestId: requestId)
   }
   
-  func review(mid: String, rating: ReviewType, requestId: String? = nil) -> Observable<CHUserChat> {
+  func review(mid: String, rating: ReviewType, requestId: String) -> Observable<CHUserChat> {
     return UserChatPromise.review(userChatId: self.id, formId: mid, rating: rating, requestId: requestId)
   }
   

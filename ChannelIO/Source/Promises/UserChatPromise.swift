@@ -104,7 +104,7 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func close(userChatId: String, formId: String, requestId: String?) -> Observable<CHUserChat> {
+  static func close(userChatId: String, formId: String, requestId: String) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
       let params = [
         "url":[
@@ -137,7 +137,7 @@ struct UserChatPromise {
     }
   }
   
-  static func review(userChatId: String, formId: String, rating: ReviewType, requestId: String? = nil) -> Observable<CHUserChat> {
+  static func review(userChatId: String, formId: String, rating: ReviewType, requestId: String) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
       let params = [
         "url":[
