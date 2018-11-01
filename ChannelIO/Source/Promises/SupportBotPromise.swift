@@ -97,10 +97,8 @@ struct SupportBotPromise {
       }
       
       let params = [
-        "url": [
-          "requestId": requestId
-        ],
         "query": [
+          "requestId": requestId,
           "formId": formId,
           "key": key
         ]

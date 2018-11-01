@@ -1,3 +1,7 @@
+# 4.2.3
+## Updates
+* Fixed requestId to query params
+
 # 4.2.2
 ## Bug fixes
 * Fixed support bot close action 
