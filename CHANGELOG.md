@@ -1,3 +1,8 @@
+# 4.2.2
+## Bug fixes
+* Fixed support bot close action 
+* Improved string tag parsing
+
 # 4.2
 ## New 
 * Added Support bot feature 
