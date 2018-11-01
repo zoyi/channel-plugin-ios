@@ -511,8 +511,14 @@ extension ChatManager {
   
   func fetchChat() -> Observable<ChatResponse> {
     return Observable.create { [weak self] subscriber in
-      guard self?.state != .chatLoading else { return Disposables.create() }
-      guard let s = self else  { return Disposables.create() }
+      guard self?.state != .chatLoading else {
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
+      guard let s = self else  {
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
       
       self?.state = .chatLoading
       self?.nextSeq = ""

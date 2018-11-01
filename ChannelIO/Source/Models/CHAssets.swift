@@ -68,7 +68,8 @@ class CHAssets {
   class func localized(
     _ key: String,
     attributes: [NSAttributedStringKey: Any],
-    tagAttributes: [StringTagType:[NSAttributedStringKey:Any]]) -> NSAttributedString {
+    tagAttributes: [StringTagType: [NSAttributedStringKey: Any]]? = nil) -> NSAttributedString {
+    
     var locale = "en"
     if let settings = mainStore.state.settings, let settingLocale = settings.appLocale?.rawValue {
       locale = settingLocale
@@ -80,31 +81,51 @@ class CHAssets {
     guard let bundle = Bundle.init(path: path) else {
       return NSAttributedString(string: key)
     }
-
+    
     var keyString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
     //replace <br /> tag with newline
     keyString = keyString.replace("<br />", withString: "\n")
     
     let attributedString = NSMutableAttributedString(string: keyString)
-    let keyNSString = NSString(string: NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: ""))
     
     attributedString.addAttributes(attributes, range: NSRange(location: 0, length: keyString.utf16.count))
-    for (tag, attrs) in tagAttributes {
-      if let tagStartRange = keyString.range(of: "<\(tag.rawValue)>"),
-        let tagEndRnage = keyString.range(of: "</\(tag.rawValue)>") {
-        let sIndex = keyString.index(before: tagStartRange.upperBound)
-        let eIndex = keyString.index(after: tagEndRnage.lowerBound)
-        let tagContext = keyString[sIndex..<eIndex]
-  
-        attributedString.addAttributes(attrs, range: keyNSString.range(of: String(tagContext)))
-        attributedString.replaceCharacters(in: NSRange(tagEndRnage, in: keyString), with: "")
-        attributedString.replaceCharacters(in: NSRange(tagStartRange, in: keyString), with: "")
+    
+    if tagAttributes == nil {
+      return attributedString
+    }
+    
+    if let tagAttributes = tagAttributes {
+      for (tag, attrs) in tagAttributes {
+        do {
+          let pattern = "<\(tag.rawValue)>(.*?)</\(tag.rawValue)>"
+          let startTag = "<\(tag.rawValue)>"
+          let endTag = "</\(tag.rawValue)>"
+          
+          let regex = try NSRegularExpression(pattern: pattern) //\(startTag)(.*)\(endTag)")
+          let results = regex.matches(in: keyString, range: NSRange(keyString.startIndex..., in: keyString))
+          
+          var adjustLocation = 0
+          results.forEach { (result) in
+            let regexResultRange = NSRange(location: result.range.location - adjustLocation, length: result.range.length)
+            attributedString.addAttributes(attrs, range: regexResultRange)
+            let startTagRange = NSRange(location: result.range.location - adjustLocation, length: startTag.count)
+            let endTagRange = NSRange(location: result.range.location - adjustLocation + result.range.length - endTag.count, length: endTag.count)
+            
+            attributedString.replaceCharacters(in: endTagRange, with: "")
+            attributedString.replaceCharacters(in: startTagRange, with: "")
+            
+            adjustLocation = startTag.count + endTag.count
+          }
+        } catch let error {
+          print("invalid regex: \(error.localizedDescription)")
+          return attributedString
+        }
       }
     }
     
     return attributedString
+    
   }
-  
   
   class func playPushSound() {
     let pushSound = NSURL(fileURLWithPath: Bundle(for:self).path(forResource: "ringtone", ofType: "mp3")!)
