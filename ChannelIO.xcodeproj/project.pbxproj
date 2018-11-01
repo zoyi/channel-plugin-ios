@@ -279,8 +279,6 @@
 		65CB142B206A02F200E456B5 /* WebPageMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1414206A02F200E456B5 /* WebPageMessageCell.swift */; };
 		65CB142C206A02F200E456B5 /* WebPageMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1415206A02F200E456B5 /* WebPageMessageView.swift */; };
 		65CB142D206A02F200E456B5 /* NewMessageDividerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1416206A02F200E456B5 /* NewMessageDividerCell.swift */; };
-		65CB142E206A02F200E456B5 /* SatisfactionCompleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1417206A02F200E456B5 /* SatisfactionCompleteCell.swift */; };
-		65CB142F206A02F200E456B5 /* SatisfactionFeedbackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1418206A02F200E456B5 /* SatisfactionFeedbackCell.swift */; };
 		65CB1430206A02F200E456B5 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1419206A02F200E456B5 /* SwitchCell.swift */; };
 		65CB1431206A02F200E456B5 /* TextInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141A206A02F200E456B5 /* TextInputCell.swift */; };
 		65CB1432206A02F200E456B5 /* TypingIndicatorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141B206A02F200E456B5 /* TypingIndicatorCell.swift */; };
@@ -590,8 +588,6 @@
 		65CB1414206A02F200E456B5 /* WebPageMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebPageMessageCell.swift; sourceTree = "<group>"; };
 		65CB1415206A02F200E456B5 /* WebPageMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebPageMessageView.swift; sourceTree = "<group>"; };
 		65CB1416206A02F200E456B5 /* NewMessageDividerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageDividerCell.swift; sourceTree = "<group>"; };
-		65CB1417206A02F200E456B5 /* SatisfactionCompleteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SatisfactionCompleteCell.swift; sourceTree = "<group>"; };
-		65CB1418206A02F200E456B5 /* SatisfactionFeedbackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SatisfactionFeedbackCell.swift; sourceTree = "<group>"; };
 		65CB1419206A02F200E456B5 /* SwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
 		65CB141A206A02F200E456B5 /* TextInputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextInputCell.swift; sourceTree = "<group>"; };
 		65CB141B206A02F200E456B5 /* TypingIndicatorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypingIndicatorCell.swift; sourceTree = "<group>"; };
@@ -1257,8 +1253,6 @@
 				65CB140B206A02F200E456B5 /* LogCell.swift */,
 				65CB140C206A02F200E456B5 /* MessageCell */,
 				65CB1416206A02F200E456B5 /* NewMessageDividerCell.swift */,
-				65CB1417206A02F200E456B5 /* SatisfactionCompleteCell.swift */,
-				65CB1418206A02F200E456B5 /* SatisfactionFeedbackCell.swift */,
 				65CB1419206A02F200E456B5 /* SwitchCell.swift */,
 				65CB141A206A02F200E456B5 /* TextInputCell.swift */,
 				65CB141B206A02F200E456B5 /* TypingIndicatorCell.swift */,
@@ -1618,7 +1612,6 @@
 				6590015D2068CD9A0054B353 /* MarkdownElement.swift in Sources */,
 				6590014E2068CD7D0054B353 /* MarkdownList.swift in Sources */,
 				659793791FA716CB00840F6A /* CHPerson.swift in Sources */,
-				65CB142F206A02F200E456B5 /* SatisfactionFeedbackCell.swift in Sources */,
 				659001432068CD7D0054B353 /* MarkdownCodeEscaping.swift in Sources */,
 				65AA7AE71FD64CCF00D2A8B1 /* BotReducer.swift in Sources */,
 				6590FA912068C84E0054B353 /* UserChatPresenter.swift in Sources */,
@@ -1702,7 +1695,6 @@
 				22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */,
 				653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */,
 				659793A31FA716CB00840F6A /* Badge.swift in Sources */,
-				65CB142E206A02F200E456B5 /* SatisfactionCompleteCell.swift in Sources */,
 				659793A41FA716CB00840F6A /* BaseButton.swift in Sources */,
 				659793A51FA716CB00840F6A /* BaseTableViewCell.swift in Sources */,
 				65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */,
