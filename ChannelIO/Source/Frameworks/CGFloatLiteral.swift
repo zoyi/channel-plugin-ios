@@ -6,14 +6,14 @@
 //  Copyright © 2018 ZOYI. All rights reserved.
 //
 
-extension IntegerLiteralType {
-  var f: CGFloat {
+public extension IntegerLiteralType {
+  public var f: CGFloat {
     return CGFloat(self)
   }
 }
 
-extension FloatLiteralType {
-  var f: CGFloat {
+public extension FloatLiteralType {
+  public var f: CGFloat {
     return CGFloat(self)
   }
 }
