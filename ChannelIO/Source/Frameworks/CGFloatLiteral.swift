@@ -7,13 +7,13 @@
 //
 
 extension IntegerLiteralType {
-  public var f: CGFloat {
+  var f: CGFloat {
     return CGFloat(self)
   }
 }
 
 extension FloatLiteralType {
-  public var f: CGFloat {
+  var f: CGFloat {
     return CGFloat(self)
   }
 }
