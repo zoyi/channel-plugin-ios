@@ -120,7 +120,7 @@ class ChatManager: NSObject {
   
   fileprivate func observeAppState() {
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationWillEnterForeground)
+      .rx.notification(Notification.Name.UIApplicationDidBecomeActive)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.didChatLoaded = false
