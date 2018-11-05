@@ -1,3 +1,7 @@
+# 4.2.6
+## Bug fixes
+* Fixed message with image cell layout
+
 # 4.2.3
 ## Updates
 * Fixed requestId to query params
