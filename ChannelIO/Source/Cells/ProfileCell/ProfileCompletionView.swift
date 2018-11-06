@@ -37,11 +37,13 @@ class ProfileCompletionView: ProfileItemBaseView, ProfileContentProtocol {
   override func configure(model: MessageCellModelType, index: Int?, presenter: ChatManager?) {
     super.configure(model: model, index: index, presenter: presenter)
     self.indexLabel.isHidden = true
+    
     if let index = index, let value = model.profileItems[index].value {
+      let unwrapped = unwrap(any: value)
       if self.item?.fieldType == .mobileNumber {
-        self.contentView.contentLabel.text = PartialFormatter().formatPartial("\(value)")
+        self.contentView.contentLabel.text = PartialFormatter().formatPartial("\(unwrapped)")
       } else {
-        self.contentView.contentLabel.text = "\(value)"
+        self.contentView.contentLabel.text = "\(unwrapped)"
       }
     }
   }

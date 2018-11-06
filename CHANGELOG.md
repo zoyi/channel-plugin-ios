@@ -1,3 +1,7 @@
+# 4.2.7
+## Bug fixes
+* Unwrapped Any type properly with reflection
+
 # 4.2.6
 ## Bug fixes
 * Fixed message with image cell layout
