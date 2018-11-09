@@ -50,7 +50,11 @@ extension ChannelIO {
     if eventName.utf16.count > 30 || eventName == "" {
       return
     }
-    
+    //fetch active pushbot if pushbot plan is standard or pro
+    //evaluate pushbots
+    //if match any, send reach to server
+    //on receiving reach, bot + variant be fetched
+    //display notification with given info
     EventPromise.sendEvent(
       name: eventName,
       properties: eventProperty,

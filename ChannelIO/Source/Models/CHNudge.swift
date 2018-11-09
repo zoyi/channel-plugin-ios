@@ -9,14 +9,14 @@
 import Foundation
 import ObjectMapper
 
-struct CHNudge {
+struct CHNudge: CHEvaluatable {
   var id: String = ""
   var channelId: String = ""
   var pluginId: String = ""
   var run: Bool = false
   var runOnAway: Bool = false
   var name: String = ""
-  var target: [CHTargetCondition]? = nil
+  var target: [[CHTargetCondition]]? = nil
   var originalWeight: Float = 0
   var goalEventName: String? = nil
   var goalTtl: Int = 0

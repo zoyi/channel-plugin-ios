@@ -10,7 +10,11 @@ import Foundation
 import ObjectMapper
 import RxSwift
 
-struct CHSupportBot {
+protocol CHEvaluatable {
+  var target: [[CHTargetCondition]]? { get set }
+}
+
+struct CHSupportBot: CHEvaluatable {
   var id: String = ""
   var channelId: String = ""
   var pluginId: String = ""

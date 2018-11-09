@@ -592,6 +592,7 @@ extension ChatManager {
         pluginId = mainStore.state.plugin.id
       }
       
+      //if push bot message is present, create push bot user chat
       let signal = CHUserChat.create(pluginId: pluginId)
         .observeOn(MainScheduler.instance).subscribe(onNext: { (chatResponse) in
         self?.chatNewlyCreated = true

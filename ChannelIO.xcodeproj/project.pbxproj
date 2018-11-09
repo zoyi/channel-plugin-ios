@@ -109,7 +109,7 @@
 		656FBFAB20CA51E50062C6A9 /* FormMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */; };
 		656FBFAF20CA53B60062C6A9 /* CHForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAE20CA53B50062C6A9 /* CHForm.swift */; };
 		656FBFB320CE16980062C6A9 /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFB220CE16980062C6A9 /* ActionView.swift */; };
-		657AF3EB2178302A001EAA7A /* TargetEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3EA2178302A001EAA7A /* TargetEvaluator.swift */; };
+		657AF3EB2178302A001EAA7A /* TargetEvaluatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3EA2178302A001EAA7A /* TargetEvaluatorService.swift */; };
 		657AF3ED21783119001EAA7A /* TargetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3EC21783119001EAA7A /* TargetType.swift */; };
 		657AF3F1217845D7001EAA7A /* CHNudge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3EE217845D7001EAA7A /* CHNudge.swift */; };
 		657AF3F3217845D7001EAA7A /* CHTargetCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F0217845D7001EAA7A /* CHTargetCondition.swift */; };
@@ -418,7 +418,7 @@
 		656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormMessageCell.swift; sourceTree = "<group>"; };
 		656FBFAE20CA53B50062C6A9 /* CHForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHForm.swift; sourceTree = "<group>"; };
 		656FBFB220CE16980062C6A9 /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
-		657AF3EA2178302A001EAA7A /* TargetEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvaluator.swift; sourceTree = "<group>"; };
+		657AF3EA2178302A001EAA7A /* TargetEvaluatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvaluatorService.swift; sourceTree = "<group>"; };
 		657AF3EC21783119001EAA7A /* TargetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetType.swift; sourceTree = "<group>"; };
 		657AF3EE217845D7001EAA7A /* CHNudge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHNudge.swift; sourceTree = "<group>"; };
 		657AF3F0217845D7001EAA7A /* CHTargetCondition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHTargetCondition.swift; sourceTree = "<group>"; };
@@ -996,7 +996,6 @@
 				6593788320B26ABC00230248 /* Notifications.swift */,
 				222086B71FBAAD37002CFA88 /* CHAnimations.swift */,
 				22AE76B120E341CB00C18355 /* Mute.swift */,
-				657AF3EA2178302A001EAA7A /* TargetEvaluator.swift */,
 			);
 			name = Utils;
 			path = Source/Utils;
@@ -1136,6 +1135,7 @@
 			children = (
 				659793011FA7167C00840F6A /* RestService.swift */,
 				659793021FA7167C00840F6A /* WsService.swift */,
+				657AF3EA2178302A001EAA7A /* TargetEvaluatorService.swift */,
 			);
 			name = Services;
 			path = Source/Services;
@@ -1638,7 +1638,7 @@
 				65EAE11320EF468500D501FC /* TranslateView.swift in Sources */,
 				659793841FA716CB00840F6A /* ModelType.swift in Sources */,
 				659793861FA716CB00840F6A /* EventPromise.swift in Sources */,
-				657AF3EB2178302A001EAA7A /* TargetEvaluator.swift in Sources */,
+				657AF3EB2178302A001EAA7A /* TargetEvaluatorService.swift in Sources */,
 				222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */,
 				656FBFAB20CA51E50062C6A9 /* FormMessageCell.swift in Sources */,
 				65CB1425206A02F200E456B5 /* FileMessageView.swift in Sources */,

@@ -121,8 +121,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initViews()
     self.initNewChatButton()
     self.initPhotoViewer()
-    //new user chat
 
+    //insert pushbot message
     if mainStore.state.messagesState.supportBotEntry != nil && self.userChatId == nil {
       self.setTextInputbarHidden(true, animated: false)
       mainStore.dispatchOnMain(InsertSupportBotEntry())
