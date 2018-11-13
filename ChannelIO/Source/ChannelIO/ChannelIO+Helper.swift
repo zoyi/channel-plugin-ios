@@ -50,22 +50,18 @@ extension ChannelIO {
     if eventName.utf16.count > 30 || eventName == "" {
       return
     }
-    //fetch active pushbot if pushbot plan is standard or pro
-    //evaluate pushbots
-    //if match any, send reach to server
-    //on receiving reach, bot + variant be fetched
-    //display notification with given info
+    ChannelIO.pushBotProcess(eventName: eventName)
+    
     EventPromise.sendEvent(
       name: eventName,
       properties: eventProperty,
-      sysProperties: sysProperty)
-      .subscribe(onNext: { (event) in
+      sysProperties: sysProperty).subscribe(onNext: { (event) in
         dlog("\(eventName) event sent successfully")
       }, onError: { (error) in
         dlog("\(eventName) event failed")
       }).disposed(by: self.disposeBeg)
   }
-  
+
   internal class func checkInChannel(profile: Profile? = nil) -> Observable<Any?> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
@@ -211,6 +207,16 @@ extension ChannelIO {
           ChannelIO.hideNotification()
         }.disposed(by: self.disposeBeg)
       
+      notificationView.redirectSignal
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (urlString) in
+          guard let url = URL(string: urlString ?? "") else { return }
+          let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
+          if shouldHandle == false || shouldHandle == nil {
+            url.openWithUniversal()
+          }
+        }).disposed(by: self.disposeBeg)
+      
       ChannelIO.chatNotificationView = notificationView
       CHAssets.playPushSound()
       mainStore.dispatch(RemovePush())
@@ -228,6 +234,60 @@ extension ChannelIO {
 
     ChannelIO.chatNotificationView?.remove(animated: true)
     ChannelIO.chatNotificationView = nil
+  }
+  
+  
+  internal class func pushBotProcess(eventName: String) {
+    //guard mainStore.state.channel.pushBotPlan == .pro else { return }
+    let guest = mainStore.state.guest
+    
+    NudgePromise.getNudges(pluginId: mainStore.state!.plugin.id)
+      .flatMap { Observable.from($0) }
+      .filter({ (nudge) -> Bool in
+        return TargetEvaluatorService
+          .evaluate(
+            object: nudge,
+            userInfo: guest.userInfo
+          )
+      })
+      .flatMap ({ (nudge) -> Observable<CHNudge> in
+        return Observable.just(nudge)
+          .delay(
+            Double(nudge.triggerDelay),
+            scheduler: MainScheduler.instance
+          )
+      })
+      .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
+        guard ChannelIO.baseNavigation == nil else { return .empty() }
+        return NudgePromise.requestReach(nudgeId: nudge.id)
+      })
+      .takeWhile { $0.reach == true }
+      .take(1)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (response) in
+        print("reach - \(response.reach!)")
+        let (chat, message) = CHUserChat.createLocal(
+          writer: response.bot,
+          variant: response.variant
+        )
+        mainStore.dispatch(
+          CreateLocalUserChat(
+            chat: chat,
+            message: message,
+            writer: response.bot
+          )
+        )
+        guard ChannelIO.baseNavigation == nil else { return }
+        if let chat = chat, let message = message {
+          ChannelIO.showNotification(pushData: CHPush(
+            chat: chat,
+            message: message,
+            response: response
+          ))
+        }
+      }, onError: { (error) in
+        //
+      }).disposed(by: disposeBeg)
   }
 }
 
