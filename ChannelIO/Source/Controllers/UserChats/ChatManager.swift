@@ -366,7 +366,7 @@ extension ChatManager {
   func processSendMessage(msg: String) -> Observable<CHUserChat?> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
       //move this logic into presenter
-      if let chat = self?.chat, chat.isActive() {
+      if let chat = self?.chat, chat.isActive(), !chat.isNudgeChat() {
         let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
         mainStore.dispatch(CreateMessage(payload: message))
         self?.sendMessage(message: message, local: false)
@@ -377,25 +377,47 @@ extension ChatManager {
           }, onError: { (error) in
             subscriber.onError(error)
           }).disposed(by: self!.disposeBag)
+      } else if let chat = self?.chat, chat.isNudgeChat() {
+        self?.createNudgeChat(nudgeId: chat.getNudgeId())
+          .observeOn(MainScheduler.instance)
+          .flatMap({ (chatId) -> Observable<CHMessage?> in
+            guard let s = self else {
+              return Observable.just(nil)
+            }
+            s.chatId = chatId
+            let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
+            mainStore.dispatch(CreateMessage(payload: message))
+            return s.sendMessage(message: message, local: false)
+          })
+          .observeOn(MainScheduler.instance)
+          .subscribe(onNext: { (message) in
+            mainStore.dispatch(CreateMessage(payload: message))
+            subscriber.onNext(self?.chat)
+            subscriber.onCompleted()
+          }, onError: { (error) in
+            self?.state = .chatNotLoaded
+            subscriber.onError(error)
+          }).disposed(by: self!.disposeBag)
       } else {
-        self?.createChat().observeOn(MainScheduler.instance).flatMap({ (chatId) -> Observable<CHMessage?> in
-          guard let s = self else {
-            return Observable.just(nil)
-          }
-          s.chatId = chatId
-          let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-          mainStore.dispatch(CreateMessage(payload: message))
-          return s.sendMessage(message: message, local: false)
-        })
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext:{ [weak self] (message) in
-          mainStore.dispatch(CreateMessage(payload: message))
-          subscriber.onNext(self?.chat)
-          subscriber.onCompleted()
-        }, onError: { [weak self] (error) in
-          self?.state = .chatNotLoaded
-          subscriber.onError(error)
-        }).disposed(by: self!.disposeBag)
+        self?.createChat().observeOn(MainScheduler.instance)
+          .flatMap({ (chatId) -> Observable<CHMessage?> in
+            guard let s = self else {
+              return Observable.just(nil)
+            }
+            s.chatId = chatId
+            let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
+            mainStore.dispatch(CreateMessage(payload: message))
+            return s.sendMessage(message: message, local: false)
+          })
+          .observeOn(MainScheduler.instance)
+          .subscribe(onNext:{ [weak self] (message) in
+            mainStore.dispatch(CreateMessage(payload: message))
+            subscriber.onNext(self?.chat)
+            subscriber.onCompleted()
+          }, onError: { [weak self] (error) in
+            self?.state = .chatNotLoaded
+            subscriber.onError(error)
+          }).disposed(by: self!.disposeBag)
       }
       
       return Disposables.create()
@@ -484,11 +506,11 @@ extension ChatManager {
   }
   
   func needToFetchInfo() -> Bool {
-    return !self.didFetchInfo && self.chatId == "" && self.state != .infoLoading
+    return !self.didFetchInfo && self.chatId == "" && self.state != .infoLoading && !self.chatId.hasPrefix("nudgeChat")
   }
   
   func needToFetchChat() -> Bool {
-    return !self.didChatLoaded && self.chatId != "" && self.state != .chatLoading
+    return !self.didChatLoaded && self.chatId != "" && self.state != .chatLoading && !self.chatId.hasPrefix("nudgeChat")
   }
   
   func isChatLoading() -> Bool {
@@ -500,7 +522,7 @@ extension ChatManager {
   }
   
   func canLoadMore() -> Bool {
-    return self.nextSeq != "" && self.chatId != "" && self.chatType != ""
+    return self.nextSeq != "" && self.chatId != "" && self.chatType != "" && !self.chatId.hasPrefix("nudgeChat")
   }
 }
 
@@ -516,6 +538,10 @@ extension ChatManager {
         return Disposables.create()
       }
       guard let s = self else  {
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
+      guard !s.chatId.hasPrefix("nudgeChat") else {
         subscriber.onCompleted()
         return Disposables.create()
       }
@@ -545,6 +571,38 @@ extension ChatManager {
         signal.dispose()
       }
     }
+  }
+  
+  func createNudgeChat(nudgeId:String) -> Observable<String> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      if let chatId = self?.chatId, chatId != "", !chatId.hasPrefix("nudgeChat") {
+        subscriber.onNext(chatId)
+        return Disposables.create()
+      }
+      
+      //if push bot message is present, create push bot user chat
+      let signal = CHNudge.createChat(nudgeId: nudgeId)
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (chatResponse) in
+          self?.chatNewlyCreated = true
+          self?.didChatLoaded = true
+          self?.setChatEntities(with: chatResponse.userChat?.id)
+          self?.prepareToChat()
+          
+          //replace local nudgeChat
+          mainStore.dispatch(GetNudgeChat(nudgeId: nudgeId, payload: chatResponse))
+          subscriber.onNext(chatResponse.userChat?.id ?? "")
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+          self?.didChatLoaded = false
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
   }
   
   func createSupportBotChatIfNeeded(originId: String? = nil) -> Observable<(CHUserChat?, CHMessage?)> {
@@ -712,6 +770,8 @@ extension ChatManager {
 extension ChatManager {
   func prepareToChat() {
     guard self.chatId != "" else { return }
+    guard !self.chatId.hasPrefix("nudgeChat") else { return }
+    
     self.state = .chatJoining
     self.observeSocketEvents()
     
@@ -728,6 +788,8 @@ extension ChatManager {
   }
   
   func leave() {
+    guard self.chatId != "" else { return }
+    guard !self.chatId.hasPrefix("nudgeChat") else { return }
     WsService.shared.leave(chatId: self.chatId)
   }
 

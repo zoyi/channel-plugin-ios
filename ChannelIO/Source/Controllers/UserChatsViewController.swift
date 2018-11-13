@@ -496,13 +496,12 @@ extension UserChatsViewController {
     UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
+        mainStore.dispatch(GetUserChats(payload: data))
+//        if let userChats = data["userChats"] as? [CHUserChat], userChats.count == 0 && isInit {
+//          mainStore.dispatch(DeleteUserChatsAll())
+//        }
         self?.didLoad = true
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
-
-        mainStore.dispatch(GetUserChats(payload: data))
-        if let userChats = data["userChats"] as? [CHUserChat], userChats.count == 0 && isInit {
-          mainStore.dispatch(DeleteUserChatsAll())
-        }
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.display(animated:true)
@@ -540,12 +539,14 @@ extension UserChatsViewController {
   }
   
   func showChatIfNeeded(_ userChats: [CHUserChat]?, isReload: Bool = false) {
+    let userChats = userChatsSelector(state: mainStore.state)
+    
     if self.showNewChat  {
       self.showUserChat(animated: false)
     } else if let userChatId = self.goToUserChatId {
       self.showUserChat(userChatId: userChatId, animated: false)
       self.goToUserChatId = nil
-    } else if let userChats = userChats, !isReload {
+    } else if !isReload {
       if userChats.count == 0 {
         self.shouldHideTable = true
         self.showUserChat(animated: false)
@@ -592,6 +593,7 @@ extension UserChatsViewController : MGSwipeTableCellDelegate {
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
     
     self.deleteUserChats(selectedRows: [indexPath])
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (deletedChatIds, indexPaths) in
         mainStore.dispatch(DeleteUserChats(payload: deletedChatIds))
         self?.setDefaultNavItems()

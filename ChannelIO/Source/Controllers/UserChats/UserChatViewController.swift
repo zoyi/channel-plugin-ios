@@ -35,7 +35,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   var channel: CHChannel = mainStore.state.channel
   var userChatId: String?
   var userChat: CHUserChat?
-
+  
   var preloadText: String = ""
   var isFetching = false
   var isRequstingReadAll = false
@@ -122,13 +122,14 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initNewChatButton()
     self.initPhotoViewer()
 
-    //insert pushbot message
     if mainStore.state.messagesState.supportBotEntry != nil && self.userChatId == nil {
       self.setTextInputbarHidden(true, animated: false)
       mainStore.dispatchOnMain(InsertSupportBotEntry())
       self.readyToDisplay()
     } else if self.userChatId == nil {
       mainStore.dispatchOnMain(InsertWelcome())
+      self.readyToDisplay()
+    } else if self.userChatId?.hasPrefix("nudgeChat") == true {
       self.readyToDisplay()
     }
   }
