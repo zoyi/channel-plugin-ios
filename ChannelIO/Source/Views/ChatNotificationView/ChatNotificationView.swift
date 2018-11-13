@@ -15,22 +15,30 @@ final class ChatNotificationView : BaseView {
   
   // MARK: Constants
   struct Metric {
-    static let sideMargin = 12.f
-    static let topMargin = 10.f
-    static let boxHeight = 68.f
+    static let AvatarSide = 48.f
+    static let AvatarTop = -12.f
+    static let AvatarLeading = 14.f
+    static let NameTop = 16.f
+    static let NameLeading = 8.f
+    static let CloseTrailing = 6.f
+    static let CloseTop = 6.f
+    static let CloseSide = 45.f
+    static let CloseLeading = 12.f
+    static let MessageTop = 45.f
+    static let MessageTrailing = 20.f
+    static let MessageLeading = 20.f
+    static let ImageSideMargin = 4.f
+    static let ImageTop = 20.f
+    static let ImageMaxHeight = 200.f
+    static let contentTop = 20.f
+    static let buttonBottom = 18.f
+    static let buttonHeight = 37.f
+    static let titleHeight = 24.f
+    static let titleBottom = 6.f
+    static let MessageTopToTitle = 75.f
+    
     static let viewTopMargin = 20.f
     static let viewSideMargin = 14.f
-    static let avatarSide = 46.f
-    static let avatarTopMargin = 10.f
-    static let avatarLeftMargin = 8.f
-    static let nameTopMargin = 12.f
-    static let nameLeftMargin = 8.f
-    static let timestampTopMargin = 0.f
-    static let closeSide = 44.f
-    static let messageTopMargin = 3.f
-    static let messageRightMargin = 29.f
-    static let messageBotMargin = 12.f
-    static let messageLeftMargin = 8.f
   }
   
   struct Font {
@@ -83,6 +91,12 @@ final class ChatNotificationView : BaseView {
     $0.numberOfLines = Constant.nameLabelNumberOfLines
   }
   
+  let titleLabel = UILabel().then {
+    $0.font = UIFont.boldSystemFont(ofSize: 18)
+    $0.textColor = CHColors.charcoalGrey
+    $0.numberOfLines = 1
+  }
+  
   let timestampLabel = UILabel().then {
     $0.font = Font.timestampLabel
     $0.textColor = Color.timeLabel
@@ -100,8 +114,32 @@ final class ChatNotificationView : BaseView {
     $0.layer.shadowOpacity = 0
   }
   
+  let contentImageView = UIImageView().then {
+    $0.layer.cornerRadius = 6.f
+    $0.clipsToBounds = true
+    $0.contentMode = .scaleAspectFill
+    $0.isHidden = true
+  }
+  
+  let contentButton = UIButton().then {
+    $0.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+    $0.titleLabel?.numberOfLines = 1
+    $0.contentEdgeInsets = UIEdgeInsets(top: 10, left: 24, bottom: 10, right: 24)
+    $0.layer.borderWidth = 1
+    $0.layer.borderColor = CHColors.dark10.cgColor
+    $0.layer.cornerRadius = 2.f
+    $0.isHidden = true
+  }
+  
   let chatSignal = PublishSubject<Any?>()
+  let redirectSignal = PublishSubject<String?>()
   let disposeBag = DisposeBag()
+  
+  var messageTopConstraint: Constraint? = nil
+  var messageBottomConstraint: Constraint? = nil
+  var contentImageHeightConstraint: Constraint? = nil
+  var contentButtonBottomConstraint: Constraint? = nil
+  var contentButtonTopConstraint: Constraint? = nil
   
   override func initialize() {
     super.initialize()
@@ -123,8 +161,11 @@ final class ChatNotificationView : BaseView {
     
     self.addSubview(self.nameLabel)
     self.addSubview(self.messageView)
+    self.addSubview(self.titleLabel)
     self.addSubview(self.timestampLabel)
     self.addSubview(self.avatarView)
+    self.addSubview(self.contentImageView)
+    self.addSubview(self.contentButton)
     self.addSubview(self.closeView)
     
     self.signalForClick().subscribe(onNext: { [weak self] (_) in
@@ -142,33 +183,56 @@ final class ChatNotificationView : BaseView {
     super.setLayouts()
     
     self.avatarView.snp.makeConstraints { (make) in
-      make.size.equalTo(CGSize(width: Metric.avatarSide, height: Metric.avatarSide))
-      make.leading.equalToSuperview().offset(14)
-      make.top.equalToSuperview().inset(-12)
+      make.height.equalTo(Metric.AvatarSide)
+      make.width.equalTo(Metric.AvatarSide)
+      make.leading.equalToSuperview().inset(Metric.AvatarLeading)
+      make.top.equalToSuperview().inset(Metric.AvatarTop)
     }
     
     self.nameLabel.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(8)
-      make.top.equalToSuperview().inset(16)
+      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(Metric.NameLeading)
+      make.top.equalToSuperview().inset(Metric.NameTop)
     }
-
+    
     self.timestampLabel.snp.makeConstraints { [weak self] (make) in
       make.leading.equalTo((self?.nameLabel.snp.trailing)!).offset(6)
       make.centerY.equalTo((self?.nameLabel.snp.centerY)!)
     }
     
-    self.messageView.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalToSuperview().inset(14)
-      make.top.equalTo((self?.nameLabel.snp.bottom)!).offset(12)
-      make.bottom.equalToSuperview().inset(18)
-      make.trailing.equalToSuperview().inset(14)
+    self.closeView.snp.makeConstraints { [weak self] (make) in
+      make.leading.greaterThanOrEqualTo((self?.timestampLabel.snp.trailing)!).offset(Metric.CloseLeading)
+      make.trailing.equalToSuperview()
+      make.top.equalToSuperview()
+      make.height.equalTo(Metric.CloseSide)
+      make.width.equalTo(Metric.CloseSide)
     }
     
-    self.closeView.snp.makeConstraints { [weak self] (make) in
-      make.size.equalTo(CGSize(width:Metric.closeSide, height:Metric.closeSide))
-      make.top.equalToSuperview()
-      make.leading.greaterThanOrEqualTo((self?.timestampLabel.snp.trailing)!).offset(5)
-      make.trailing.equalToSuperview()
+    self.titleLabel.snp.makeConstraints { (make) in
+      make.leading.equalToSuperview().inset(Metric.MessageLeading)
+      make.top.equalToSuperview().inset(Metric.MessageTop)
+      make.trailing.equalToSuperview().inset(Metric.MessageTrailing)
+    }
+    
+    self.messageView.snp.makeConstraints { [weak self] (make) in
+      make.leading.equalToSuperview().inset(Metric.MessageLeading)
+      self?.messageTopConstraint = make.top.equalToSuperview().inset(Metric.MessageTop).constraint
+      make.trailing.equalToSuperview().inset(Metric.MessageTrailing)
+    }
+    
+    self.contentImageView.snp.makeConstraints { [weak self] (make) in
+      make.leading.equalToSuperview().inset(Metric.ImageSideMargin)
+      make.trailing.equalToSuperview().inset(Metric.ImageSideMargin)
+      make.top.equalTo((self?.messageView.snp.bottom)!).offset(Metric.ImageTop)
+      self?.contentImageHeightConstraint = make.height.lessThanOrEqualTo(Metric.ImageMaxHeight).constraint
+      make.bottom.equalToSuperview().inset(Metric.ImageSideMargin)
+    }
+    
+    self.contentButton.snp.makeConstraints { [weak self] (make) in
+      make.leading.greaterThanOrEqualToSuperview().inset(20)
+      make.trailing.lessThanOrEqualToSuperview().inset(20)
+      make.centerX.equalToSuperview()
+      self?.contentButtonTopConstraint = make.top.equalTo((self?.messageView.snp.bottom)!).offset(Metric.ImageTop).constraint
+      self?.contentButtonBottomConstraint = make.bottom.equalToSuperview().inset(22).constraint
     }
   }
   
@@ -177,6 +241,49 @@ final class ChatNotificationView : BaseView {
     self.nameLabel.text = viewModel.name
     self.avatarView.configure(viewModel.avatar)
     self.timestampLabel.text = viewModel.timestamp
+    
+    if let title = viewModel.title {
+      self.titleLabel.text = title
+      self.titleLabel.isHidden = false
+      self.messageTopConstraint?.update(inset: Metric.MessageTopToTitle)
+    } else {
+      self.titleLabel.isHidden = true
+      self.messageTopConstraint?.update(inset: Metric.MessageTop)
+    }
+    
+    if let buttonTitle = viewModel.buttonTitle {
+      self.contentButton.isHidden = false
+      self.contentButton.backgroundColor = viewModel.themeColor
+      self.contentButton.setTitle(buttonTitle, for: .normal)
+      
+      self.contentButton.signalForClick().subscribe(onNext: { [weak self]  (_) in
+        if let url = viewModel.buttonRedirect, url != "" {
+          self?.redirectSignal.onNext(url)
+          self?.redirectSignal.onCompleted()
+        } else {
+          self?.chatSignal.onNext(nil)
+          self?.chatSignal.onCompleted()
+        }
+      }).disposed(by: self.disposeBag)
+    } else if let url = viewModel.imageUrl {
+      self.contentImageView.isHidden = false
+      self.contentImageView.sd_setImage(with: url)
+      self.contentImageHeightConstraint?.update(offset: min(Metric.ImageMaxHeight, CGFloat(viewModel.imageHeight)))
+      
+      self.contentImageView.signalForClick().subscribe(onNext: { [weak self]  (_) in
+        if let url = viewModel.imageRedirect, url != "" {
+          self?.redirectSignal.onNext(url)
+          self?.redirectSignal.onCompleted()
+        } else {
+          self?.chatSignal.onNext(nil)
+          self?.chatSignal.onCompleted()
+        }
+      }).disposed(by: self.disposeBag)
+    } else {
+      self.contentButtonBottomConstraint?.update(inset: 0)
+      self.contentButtonTopConstraint?.update(offset: 0)
+      self.contentImageHeightConstraint?.update(offset: 0)
+    }
   }
   
   override func updateConstraints() {
