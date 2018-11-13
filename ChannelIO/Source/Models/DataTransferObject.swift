@@ -8,6 +8,7 @@
 
 import Foundation
 import ObjectMapper
+import SwiftyJSON
 
 struct ChatResponse {
   var userChat: CHUserChat? = nil
@@ -20,12 +21,29 @@ extension ChatResponse : Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    userChat  <- map["userChat"]
-    session   <- map["session"]
-    managers  <- map["managers"]
-    message   <- map["message"]
+    userChat          <- map["userChat"]
+    session           <- map["session"]
+    managers          <- map["managers"]
+    message           <- map["message"]
   }
+}
+
+struct NudgeReachResponse {
+  var reach: Bool?
+  var nudge: CHNudge?
+  var variant: CHNudgeVariant?
+  var bot: CHBot?
+}
+
+extension NudgeReachResponse : Mappable {
+  init?(map: Map) { }
   
+  mutating func mapping(map: Map) {
+    reach             <- map["reach"]
+    nudge             <- map["nudge"]
+    variant           <- map["nudgeVariant"]
+    bot               <- map["bot"]
+  }
 }
 
 struct GeoIPInfo {

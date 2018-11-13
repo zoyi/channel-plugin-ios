@@ -8,6 +8,7 @@
 
 import Foundation
 import ObjectMapper
+import RxSwift
 
 struct CHNudge: CHEvaluatable {
   var id: String = ""
@@ -36,6 +37,10 @@ struct CHNudge: CHEvaluatable {
   var totalWeight : Float {
     guard let variants = variants else { return originalWeight }
     return variants.map({ $0.weight }).reduce(originalWeight, +)
+  }
+  
+  static func createChat(nudgeId: String) -> Observable<ChatResponse> {
+    return NudgePromise.createNudgeUserChat(nudgeId: nudgeId)
   }
 }
 
@@ -79,12 +84,12 @@ extension CHNudge: Equatable {
   }
 }
 
-enum VariantAttachmentType: String {
-  case button
-  case image
+protocol CHImageable {
+  var imageMeta: CHImageMeta? { get set }
+  var imageUrl: String? { get set }
 }
 
-struct CHNudgeVariant {
+struct CHNudgeVariant: CHImageable {
   var id: String = ""
   var nudgeId: String = ""
   var name: String = ""
@@ -94,11 +99,13 @@ struct CHNudgeVariant {
   var weight: Float = 0
   var imageKey: String = ""
   var imageMeta: CHImageMeta? = nil
-  var imageUrl: String = ""
+  var imageUrl: String? = nil
   var imageThumb: CHImageMeta? = nil
+  var imageRedirectUrl: String? = nil
   
-  var attachment: VariantAttachmentType? = nil
+  var attachment: CHAttachmentType? = nil
   var buttonTitle: String? = nil
+  var buttonRedirectUrl: String? = nil
   var createdAt: Date? = nil
   var updatedAt: Date? = nil
   
@@ -117,6 +124,7 @@ extension CHNudgeVariant : Mappable {
     title             <- map["title"]
     attachment        <- map["attachment"]
     buttonTitle       <- map["buttonTitle"]
+    buttonRedirectUrl <- map["buttonRedirectUrl"]
     message           <- (map["message"], CustomMessageTransform())
     weight            <- map["weight"]
     botName           <- map["botName"]
@@ -137,6 +145,8 @@ extension CHNudgeVariant: Equatable {
       lhs.weight == rhs.weight &&
       lhs.name == rhs.name &&
       lhs.message == rhs.message &&
-      lhs.attachment == rhs.attachment
+      lhs.attachment == rhs.attachment &&
+      lhs.buttonTitle == rhs.buttonTitle &&
+      lhs.buttonRedirectUrl == rhs.buttonRedirectUrl
   }
 }

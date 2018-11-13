@@ -109,7 +109,7 @@ extension CHUserChat {
   static func create(pluginId: String) -> Observable<ChatResponse>{
     return UserChatPromise.createChat(pluginId: pluginId)
   }
-  
+
   func remove() -> Observable<Any?> {
     return UserChatPromise.remove(userChatId: self.id)
   }
@@ -162,6 +162,14 @@ extension CHUserChat {
 }
 
 extension CHUserChat {
+  func isNudgeChat() -> Bool {
+    return self.id.hasPrefix("nudgeChat")
+  }
+  
+  func getNudgeId() -> String {
+    return self.id.components(separatedBy: "nudgeChat").last ?? ""
+  }
+  
   func isActive() -> Bool {
     return self.state != .closed && self.state != .solved && self.state != .removed
   }
@@ -205,6 +213,7 @@ extension CHUserChat {
   func shouldHideInput() -> Bool {
     return self.isSupporting() || self.isSolved()
   }
+  
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
     return current.isReadyOrOpen() && !next.isReadyOrOpen()
@@ -213,6 +222,27 @@ extension CHUserChat {
   static func becomeOpen(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
     return current.isSolved() && next.isReadyOrOpen()
+  }
+  
+  static func createLocal(writer: CHEntity?, variant: CHNudgeVariant?) -> (CHUserChat?, CHMessage?) {
+    guard let writer = writer, let variant = variant else { return (nil, nil) }
+    let file = CHFile.create(imageable: variant)
+    let chatId = "nudgeChat" + variant.nudgeId
+    let message = CHMessage(
+      chatId: chatId,
+      entity: writer,
+      title: variant.title,
+      message: variant.message,
+      file: file)
+    
+    var userChat = CHUserChat()
+    userChat.id = chatId
+    userChat.state = .open
+    userChat.appMessageId = message.id
+    userChat.createdAt = Date()
+    userChat.updatedAt = Date()
+    
+    return (userChat, message)
   }
 }
 

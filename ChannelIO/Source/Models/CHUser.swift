@@ -21,7 +21,7 @@ struct CHUser: CHGuest, CHEntity {
   var named = false
   var mobileNumber: String?
   var profile: [String : Any]?
-  var segement: String?
+  var segment: String?
   var alert = 0
   var unread = 0
   
@@ -54,7 +54,7 @@ extension CHUser: Mappable {
     named           <- map["named"]
     alert           <- map["alert"]
     unread          <- map["unread"]
-    segment         <- map["segement"]
+    segment         <- map["segment"]
     profile         <- map["profile"]
     country         <- map["country"]
     city            <- map["city"]

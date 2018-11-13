@@ -10,8 +10,8 @@ import Foundation
 import ObjectMapper
 
 struct CHImageMeta {
-  var width = 0.0
-  var height = 0.0
+  var width = 0.f
+  var height = 0.f
   var url = ""
 }
 

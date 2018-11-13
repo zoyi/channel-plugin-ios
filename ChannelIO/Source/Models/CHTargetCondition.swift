@@ -27,59 +27,6 @@ extension CHTargetCondition {
   }
 }
 
-
-extension CHTargetCondition {
-  func evaluate(with value: Any?) -> Bool {
-    guard let op = self.op, let key = key,
-      let conditionValue = self.value,
-      let subKey = self.subKey else { return false }
-    
-    switch op {
-    case .equal:
-      guard let value = value else { return false }
-      return conditionValue == value
-    case .notEqual:
-      guard let value = value else { return false }
-      return conditionValue != value
-    case .greaterThan:
-      guard let value = Double(value) else { return false }
-      guard let checkValue = Double(conditionValue) else { return false }
-      return checkValue < value
-    case .greaterThanOrEqual:
-      guard let value = Double(value) else { return false }
-      guard let checkValue = Double(conditionValue) else { return false }
-      return checkValue =< value
-    case .lessThan:
-      guard let value = Double(value) else { return false }
-      guard let checkValue = Double(conditionValue) else { return false }
-      return checkValue > value
-    case .lessThanOrEqual:
-      guard let value = Double(value) else { return false }
-      guard let checkValue = Double(conditionValue) else { return false }
-      return checkValue >= value
-    case .contain:
-      guard let value = value as? String else { return false }
-      return conditionValue.contains(value)
-    case .notContain:
-      guard let value = value as? String else { return false }
-      return !conditionValue.contains(value)
-    case .exist:
-      return value != nil
-    case .notExist:
-      return value == nil
-    case .regex:
-      guard let value = value as? String else { return false }
-      do {
-        let regex = try NSRegularExpression(pattern: conditionValue, options: .caseInsensitive)
-        let results = regex.matches(in: value, range:  NSRange(value.startIndex..., in: value))
-        return results.count != 0
-      } catch {
-        return false
-      }
-    }
-  }
-}
-
 //typealias TargetOp = (Any?) -> Bool
 //
 //struct TargetOperatorFunc {

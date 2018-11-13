@@ -28,7 +28,7 @@ struct SortableWorkingTime {
   let order: Int
 }
 
-enum MessengerPlanType: String {
+enum ChannelPlanType: String {
   case none
   case standard
   case pro
@@ -62,7 +62,8 @@ struct CHChannel: CHEntity {
   var lunchTime: TimeRange?
   var phoneNumber: String = ""
   var requestGuestInfo = true
-  var messengerPlan: MessengerPlanType = .pro
+  var messengerPlan: ChannelPlanType = .pro
+  var pushBotPlan: ChannelPlanType = .pro
   var blocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
@@ -171,6 +172,7 @@ extension CHChannel: Mappable {
     expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
     messengerPlan           <- map["messengerPlan"]
+    pushBotPlan             <- map["pushBotPlan"]
     blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden

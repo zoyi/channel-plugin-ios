@@ -18,7 +18,7 @@ struct CHSupportBot: CHEvaluatable {
   var id: String = ""
   var channelId: String = ""
   var pluginId: String = ""
-  var target: [CHTargetCondition]? = nil
+  var target: [[CHTargetCondition]]? = nil
 
   static func getBots(with pluginId: String, fetch: Bool) -> Observable<[CHSupportBot]> {
     return Observable.create({ (subscriber) -> Disposable in
@@ -73,7 +73,7 @@ extension CHSupportBot: Mappable {
   }
 }
 
-struct CHSupportBotStep {
+struct CHSupportBotStep: CHImageable {
   var id: String = ""
   var message: String = ""
   var imageMeta: CHImageMeta? = nil

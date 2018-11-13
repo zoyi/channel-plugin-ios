@@ -10,17 +10,17 @@ import Foundation
 
 enum TargetKey: String {
   case ip = "ip"
-  case url = "url"
+  case url = "url" //x
   case mobilePageName = "mobilePageName"
-  case browser = "browser"
+  case browser = "browser" //x
   case os = "os"
   case device = "device"
   case deviceCategory = "deviceCategory"
   case country = "country"
   case city = "city"
-  case cookie = "cookie"
+  case cookie = "cookie" //x
   case locale = "locale"
-  case urlPath = "urlPath"
+  case urlPath = "urlPath" //x
   case guestId = "guest.id"
   case guestType = "guest.type"
   case guestCreatedAt = "guest.createdAt"
