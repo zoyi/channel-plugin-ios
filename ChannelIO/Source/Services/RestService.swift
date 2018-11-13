@@ -51,6 +51,10 @@ enum RestRouter: URLRequestConvertible {
   case CreateSupportBotChat(String)
   case ReplySupportBot(String, ParametersType)
   
+  case GetNudges(String)
+  case CheckNudgeReach(String)
+  case CreateNudgeChat(String)
+  
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -76,14 +80,17 @@ enum RestRouter: URLRequestConvertible {
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot, .RequestProfileBot,
          .UpdateProfileItem, .TouchGuest,
-         .CreateSupportBotChat, .ReplySupportBot:
+         .CreateSupportBotChat, .ReplySupportBot,
+         .CheckNudgeReach,
+         .CreateNudgeChat:
       return .post
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetFollowingManager,
          .GetPlugin, .Translate,
-         .GetSupportBots, .GetSupportBotEntry:
+         .GetSupportBots, .GetSupportBotEntry,
+         .GetNudges:
       return .get
     case .SetMessagesRead,
          .RemoveUserChat,
@@ -155,6 +162,12 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/support_bots/action"
     case .SendPushAck(let userChatId):
       return "/app/user_chats/\(userChatId)/messages/receive"
+    case .GetNudges(let pluginId):
+      return "/app/plugins/\(pluginId)/nudges"
+    case .CheckNudgeReach(let nudgeId):
+      return "/app/nudges/\(nudgeId)/reach"
+    case .CreateNudgeChat(let nudgeId):
+      return "/app/nudges/\(nudgeId)/user_chats"
     }
   }
   
@@ -254,7 +267,10 @@ enum RestRouter: URLRequestConvertible {
          .CreateUserChat,
          .GetSupportBotEntry,
          .CreateSupportBotChat,
-         .SendPushAck:
+         .SendPushAck,
+         .GetNudges,
+         .CheckNudgeReach,
+         .CreateNudgeChat:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
