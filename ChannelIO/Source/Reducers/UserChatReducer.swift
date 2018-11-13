@@ -50,6 +50,16 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
       PrefStore.setVisibilityOfTranslation(on: show)
     }
     return state ?? UserChatsState()
+  case let action as CreateLocalUserChat:
+    if let chat = action.chat {
+      return state?.upsert(userChat: chat) ?? UserChatsState()
+    }
+    return state ?? UserChatsState()
+  case let action as GetNudgeChat:
+    if let chat = action.payload.userChat {
+      return state?.replace(chatId: "nudgeChat"+action.nudgeId, userChat: chat) ?? UserChatsState()
+    }
+    return state ?? UserChatsState()
   case _ as CheckOutSuccess:
     return state?.clear() ?? UserChatsState()
   default:

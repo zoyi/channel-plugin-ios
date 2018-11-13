@@ -43,6 +43,17 @@ struct UserChatsState: StateType {
     return self
   }
   
+  mutating func replace(chatId: String, userChat: CHUserChat?) -> UserChatsState {
+    guard let userChat = userChat else { return self }
+    self.userChats.removeValue(forKey: chatId)
+    self.userChats[userChat.id] = userChat
+    if let lastId = userChat.appMessageId {
+      self.lastMessages[lastId] = lastId
+    }
+    
+    return self
+  }
+  
   mutating func upsert(userChat: CHUserChat?) -> UserChatsState {
     guard let userChat = userChat else { return self }
     self.userChats[userChat.id] = userChat

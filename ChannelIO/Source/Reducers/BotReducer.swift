@@ -36,6 +36,11 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
     return state ?? BotsState()
   case let action as GetSupportBots:
     return state?.upsertSupportBots(bots: action.payload) ?? BotsState()
+  case let action as CreateLocalUserChat:
+    if let bot = action.writer as? CHBot {
+      return state?.upsert(bots: [bot]) ?? BotsState()
+    }
+    return state ?? BotsState()
   case _ as CheckOutSuccess:
     return state?.clear() ?? BotsState()
   default:

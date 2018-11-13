@@ -26,6 +26,10 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
 //    }
 //
 //    return state ?? MessagesState()
+  case let action as GetNudgeChat:
+    let message = action.payload.message
+    _ = state?.removeLocalMessages()
+    return state?.insert(message: message) ?? MessagesState()
   case let action as GetMessages:
     var messages = (action.payload["messages"] as? [CHMessage]) ?? []
     let userChatId = messages.first?.chatId ?? ""
@@ -72,7 +76,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
         type: .Form,
         entity: action.bot,
         form: CHForm.create(botEntry: action.entry),
-        file: CHFile.create(botStep: step),
+        file: CHFile.create(imageable: step),
         createdAt: Date(),
         id: "support_bot_message_dummy")
       state?.supportBotEntry = message
@@ -81,6 +85,11 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
   case _ as InsertSupportBotEntry:
     if let message = state?.supportBotEntry {
       _ = state?.upsert(messages: [message])
+    }
+    return state ?? MessagesState()
+  case let action as CreateLocalUserChat:
+    if let message = action.message {
+      return state?.upsert(messages: [message]) ?? MessagesState()
     }
     return state ?? MessagesState()
   case _ as CheckOutSuccess:
