@@ -116,6 +116,8 @@
 		657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F421784606001EAA7A /* CHSupportBot.swift */; };
 		657AF3F72178750F001EAA7A /* SupportBotPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F62178750F001EAA7A /* SupportBotPromise.swift */; };
 		657AF3F921787E88001EAA7A /* Alamofire+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */; };
+		658010DE2195874C00A51CEC /* TargetEvaluatorServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658010DD2195874C00A51CEC /* TargetEvaluatorServiceTests.swift */; };
+		658010E1219948E500A51CEC /* NudgePromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658010E0219948E500A51CEC /* NudgePromise.swift */; };
 		659001312068CD200054B353 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001302068CD1F0054B353 /* MarkdownParser.swift */; };
 		659001432068CD7D0054B353 /* MarkdownCodeEscaping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001352068CD7D0054B353 /* MarkdownCodeEscaping.swift */; };
 		659001442068CD7D0054B353 /* MarkdownEscaping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659001362068CD7D0054B353 /* MarkdownEscaping.swift */; };
@@ -425,6 +427,8 @@
 		657AF3F421784606001EAA7A /* CHSupportBot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHSupportBot.swift; sourceTree = "<group>"; };
 		657AF3F62178750F001EAA7A /* SupportBotPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportBotPromise.swift; sourceTree = "<group>"; };
 		657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+Extensions.swift"; sourceTree = "<group>"; };
+		658010DD2195874C00A51CEC /* TargetEvaluatorServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvaluatorServiceTests.swift; sourceTree = "<group>"; };
+		658010E0219948E500A51CEC /* NudgePromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgePromise.swift; sourceTree = "<group>"; };
 		659001302068CD1F0054B353 /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		659001352068CD7D0054B353 /* MarkdownCodeEscaping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownCodeEscaping.swift; sourceTree = "<group>"; };
 		659001362068CD7D0054B353 /* MarkdownEscaping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownEscaping.swift; sourceTree = "<group>"; };
@@ -787,6 +791,7 @@
 			isa = PBXGroup;
 			children = (
 				225B05F71E4ED913001DE109 /* WsServiceTests.swift */,
+				658010DD2195874C00A51CEC /* TargetEvaluatorServiceTests.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -1010,6 +1015,7 @@
 				659792BF1FA7167B00840F6A /* UserChatPromise.swift */,
 				659792C01FA7167B00840F6A /* UtilityPromise.swift */,
 				657AF3F62178750F001EAA7A /* SupportBotPromise.swift */,
+				658010E0219948E500A51CEC /* NudgePromise.swift */,
 			);
 			name = Promises;
 			path = Source/Promises;
@@ -1551,6 +1557,7 @@
 				659793561FA716CB00840F6A /* BaseSLKTextViewController.swift in Sources */,
 				65AA7AE31FD64C9500D2A8B1 /* CHBot.swift in Sources */,
 				656FBFAF20CA53B60062C6A9 /* CHForm.swift in Sources */,
+				658010E1219948E500A51CEC /* NudgePromise.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
 				659793581FA716CB00840F6A /* MainNavigationController.swift in Sources */,
 				6597935A1FA716CB00840F6A /* ProfileViewController.swift in Sources */,
@@ -1753,6 +1760,7 @@
 			files = (
 				650D7C3D1E7254B2007DE358 /* ManagersStateTests.swift in Sources */,
 				650D7C491E7256A4007DE358 /* SessionsReducerTests.swift in Sources */,
+				658010DE2195874C00A51CEC /* TargetEvaluatorServiceTests.swift in Sources */,
 				65C4A7651E4AB3E4006D7CD5 /* GuestPromiseTests.swift in Sources */,
 				650D7C431E72567E007DE358 /* MessagesReducerTests.swift in Sources */,
 				225B05FA1E4ED9F5001DE109 /* ChannelTests.swift in Sources */,
