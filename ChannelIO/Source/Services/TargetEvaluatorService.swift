@@ -11,14 +11,15 @@ import Foundation
 struct TargetEvaluatorService {
   //refactor guest + userInfo into one params
   static func evaluate(object: CHEvaluatable, userInfo: [String: Any]) -> Bool {
-    guard let target = evaluableObject.target else { return }
-    
-    for andConditions in target {
-      if !self.evaluate(with: andConditions, userInfo: userInfo) {
-        return false
-      }
-    }
     return true
+//    guard let target = object.target else { return false }
+//    
+//    for andConditions in target {
+//      if !self.evaluate(with: andConditions, userInfo: userInfo) {
+//        return false
+//      }
+//    }
+//    return true
   }
   
   private static func evaluate(with conditions: [CHTargetCondition], userInfo: [String: Any]) -> Bool {
@@ -31,11 +32,11 @@ struct TargetEvaluatorService {
   }
 }
 
-private extension TargetEvaluator {
+private extension TargetEvaluatorService {
   //evaluate target with given guest and userInfo
   private static func evaluate(with condition: CHTargetCondition, userInfo: [String:Any]) -> Bool {
     guard let key = condition.key else { return false }
-    guard let value = condition.value else { return false }
+    guard let conditionValue = condition.value else { return false }
     
 //    var testValue: Any? = userInfo[key]
 //    switch key {
@@ -65,35 +66,40 @@ private extension TargetEvaluator {
 //    default:
 //      return false
 //    }
-    
-    return self.evaluate(with: condition, value:userInfo[key])
+    guard let op = condition.op else { return false }
+    return self.evaluate(with:op, conditionValue: conditionValue, value:userInfo[key.rawValue])
   }
+ 
   
   //evaluate value with condition with operator
-  private static func evaluate(with condition: CHTargetCondition, value: Any?) -> Bool {
-    guard let op = condition.op, let key = condition.key,
-      let conditionValue = condition.value,
-      let subKey = condition.subKey else { return false }
-    
+  private static func evaluate(with op: TargetOperator, conditionValue: String, value: Any?) -> Bool {
     switch op {
     case .equal:
-      guard let value = value else { return false }
+      guard let value = value as? String else { return false }
       return conditionValue == value
     case .notEqual:
-      guard let value = value else { return false }
+      guard let value = value as? String else { return false }
       return conditionValue != value
     case .greaterThan:
-      guard let value = Double(value), let checkValue = Double(conditionValue) else { return false }
-      return checkValue < value
+      guard let value = value as? String,
+        let dValue = Double(value),
+        let checkValue = Double(conditionValue) else { return false }
+      return checkValue < dValue
     case .greaterThanOrEqual:
-      guard let value = Double(value), let checkValue = Double(conditionValue)  else { return false }
-      return checkValue =< value
+      guard let value = value as? String,
+        let dValue = Double(value),
+        let checkValue = Double(conditionValue)  else { return false }
+      return checkValue <= dValue
     case .lessThan:
-      guard let value = Double(value), let checkValue = Double(conditionValue)  else { return false }
-      return checkValue > value
+      guard let value = value as? String,
+        let dValue = Double(value),
+        let checkValue = Double(conditionValue)  else { return false }
+      return checkValue > dValue
     case .lessThanOrEqual:
-      guard let value = Double(value), let checkValue = Double(conditionValue) else { return false }
-      return checkValue >= value
+      guard let value = value as? String,
+        let dValue = Double(value),
+        let checkValue = Double(conditionValue)  else { return false }
+      return checkValue >= dValue
     case .contain:
       guard let value = value as? String else { return false }
       return conditionValue.contains(value)
@@ -104,6 +110,12 @@ private extension TargetEvaluator {
       return value != nil
     case .notExist:
       return value == nil
+    case .prefix:
+      guard let value = value as? String else { return false }
+      return value.hasPrefix(conditionValue)
+    case .notPrefix:
+      guard let value = value as? String else { return false }
+      return !value.hasPrefix(conditionValue)
     case .regex:
       guard let value = value as? String else { return false }
       do {
