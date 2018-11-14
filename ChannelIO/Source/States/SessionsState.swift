@@ -12,11 +12,11 @@ struct SessionsState: StateType {
   var sessions: [String:CHSession] = [:]
 
   func findBy(userChatId: String) -> CHSession? {
-    return self.sessions
-      .filter({ $1.chatType == "UserChat" && $1.chatId == userChatId && $1.personType != "Manager" }).first?.value
+    return self.sessions.filter({ $1.chatType == "UserChat" && $1.chatId == userChatId && $1.personType != "Manager" }).first?.value
   }
   
-  mutating func remove(session: CHSession) -> SessionsState {
+  mutating func remove(session: CHSession?) -> SessionsState {
+    guard let session = session else { return self }
     self.sessions.removeValue(forKey: session.id)
     return self
   }
@@ -28,7 +28,7 @@ struct SessionsState: StateType {
   }
   
   mutating func upsert(sessions: [CHSession]) -> SessionsState {
-    sessions.forEach({ self.sessions[$0.id] = $0 })
+    sessions.forEach({ _ = self.upsert(session: $0) })
     return self
   }
   

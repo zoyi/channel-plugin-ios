@@ -23,11 +23,30 @@ func guestReducer(action: Action, guest: CHGuest?) -> CHGuest {
       return veil
     }
     return guest ?? CHVeil()
+    
   case let action as UpdateGuest:
     guest = action.payload
     return guest ?? CHVeil()
+    
+  case let action as CreateLocalUserChat:
+    if var guest = guest, let session = action.session {
+      guest.alert = guest.alert + session.alert
+      return guest
+    }
+    return guest ?? CHVeil()
+    
+  case let action as UpdateGuestWithLocalRead:
+    let count = action.session?.alert ?? 0
+    if var guest = guest {
+      let adjustCount = guest.alert - count
+      guest.alert = adjustCount > 0 ? adjustCount : 0
+      return guest
+    }
+    return guest ?? CHVeil()
+    
   case _ as CheckOutSuccess:
     return CHVeil()
+    
   default:
     return guest ?? CHVeil()
   }

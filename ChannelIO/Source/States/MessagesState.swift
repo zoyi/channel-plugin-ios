@@ -86,7 +86,9 @@ struct MessagesState: StateType {
     return self
   }
 
-  mutating func replace(message: CHMessage) -> MessagesState {
+  mutating func replace(message: CHMessage?) -> MessagesState {
+    guard let message = message else { return self }
+    
     if message.requestId != nil {
       self.messageDictionary[message.requestId!] = nil
     }

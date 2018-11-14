@@ -26,8 +26,14 @@ struct ManagersState: StateType {
     return self
   }
   
+  mutating func upsert(manager: CHManager?) -> ManagersState {
+    guard let manager = manager else { return self }
+    self.managerDictionary[manager.id] = manager
+    return self
+  }
+  
   mutating func upsert(managers: [CHManager]) -> ManagersState {
-    managers.forEach({ self.managerDictionary[$0.id] = $0 })
+    managers.forEach({ _ = self.upsert(manager: $0) })
     return self
   }
   

@@ -14,20 +14,40 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
   case let action as GetUserChats:
     let sessions = (action.payload["sessions"] as? [CHSession]) ?? []
     return state?.upsert(sessions: sessions) ?? SessionsState()
+    
   case let action as GetUserChat:
-    let session = action.payload.session
-    return state?.upsert(session: session) ?? SessionsState()
+    return state?.upsert(session: action.payload.session) ?? SessionsState()
+  
   case let action as GetNudgeChat:
-    let session = action.payload.session
-    return state?.upsert(session: session) ?? SessionsState()
+    return state?.upsert(session: action.payload.session) ?? SessionsState()
+  
   case let action as CreateSession:
-    return state?.upsert(sessions: [action.payload]) ?? SessionsState()
+    return state?.upsert(session: action.payload) ?? SessionsState()
+  
   case let action as UpdateSession:
-    return state?.upsert(sessions: [action.payload]) ?? SessionsState()
+    return state?.upsert(session: action.payload) ?? SessionsState()
+  
   case let action as DeleteSession:
     return state?.remove(session: action.payload) ?? SessionsState()
+  
+  case let action as CreateLocalUserChat:
+    return state?.upsert(session: action.session) ?? SessionsState()
+  
+  case let action as ReadSession:
+    var session = action.payload
+    session?.alert = 0
+    session?.unread = 0
+    return state?.upsert(session: session) ?? SessionsState()
+  
+  case let action as UpdateGuestWithLocalRead:
+    var session = action.session
+    session?.alert = 0
+    session?.unread = 0
+    return state?.upsert(session: session) ?? SessionsState()
+    
   case _ as CheckOutSuccess:
     return state?.clear() ?? SessionsState()
+  
   default:
     return state ?? SessionsState()
   }
