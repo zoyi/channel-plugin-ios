@@ -126,8 +126,9 @@ class UserChatsViewController: BaseViewController {
   }
   
   func initActions() {
-    self.errorToastView.refreshImageView.signalForClick()
-      .subscribe { [weak self] _ in
+    self.errorToastView.refreshImageView.signalForClick().subscribe { [weak self] _ in
+      mainStore.dispatch(DeleteUserChatsAll())
+      
       self?.errorToastView.dismiss(animated: true)
       self?.nextSeq = nil
       self?.fetchUserChats(isInit: true, showIndicator: true)
@@ -428,7 +429,6 @@ extension UserChatsViewController: UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
     let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
     let userChat = self.userChats[indexPath.row]
     let viewModel = UserChatCellModel(userChat: userChat)
@@ -496,12 +496,9 @@ extension UserChatsViewController {
     UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
-        mainStore.dispatch(GetUserChats(payload: data))
-//        if let userChats = data["userChats"] as? [CHUserChat], userChats.count == 0 && isInit {
-//          mainStore.dispatch(DeleteUserChatsAll())
-//        }
         self?.didLoad = true
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
+        mainStore.dispatch(GetUserChats(payload: data))
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.display(animated:true)

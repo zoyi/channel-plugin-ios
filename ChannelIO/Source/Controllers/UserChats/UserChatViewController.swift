@@ -129,7 +129,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     } else if self.userChatId == nil {
       mainStore.dispatchOnMain(InsertWelcome())
       self.readyToDisplay()
-    } else if self.userChatId?.hasPrefix("nudgeChat") == true {
+    } else if self.userChatId?.hasPrefix(CHConstants.nudgeChat) == true {
       self.readyToDisplay()
     }
   }
@@ -340,6 +340,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       make.trailing.equalToSuperview()
     }
     
+    //?
     if let expanded = self.titleView?.isExpanded, expanded {
       self.shyNavBarManager.expand(false)
     }

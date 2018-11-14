@@ -39,8 +39,8 @@ extension CHGuest {
     info[TargetKey.country.rawValue] = self.country
     info[TargetKey.guestMobileNumber.rawValue] = self.mobileNumber ?? ""
     info[TargetKey.guestSegment.rawValue] = self.segment ?? ""
-    info[TargetKey.guestCreatedAt.rawValue] = self.createdAt ?? Date()
-    info[TargetKey.guestUpdatedAt.rawValue] = self.updatedAt ?? Date()
+    info[TargetKey.guestCreatedAt.rawValue] = "\(self.createdAt?.miliseconds ?? Date().miliseconds)"
+    info[TargetKey.guestUpdatedAt.rawValue] = "\(self.updatedAt?.miliseconds ?? Date().miliseconds)"
     info[TargetKey.locale.rawValue] = CHUtils.getLocale()?.rawValue ?? ""
     info[TargetKey.guestType.rawValue] = self.type
     info[TargetKey.guestName.rawValue] = self.name

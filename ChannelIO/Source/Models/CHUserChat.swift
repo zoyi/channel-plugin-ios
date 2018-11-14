@@ -73,6 +73,14 @@ struct CHUserChat: ModelType {
 extension CHUserChat: Mappable {
   init?(map: Map) {}
   
+  init(chatId: String, lastMessageId: String) {
+    self.id = chatId
+    self.state = .ready
+    self.appMessageId = lastMessageId
+    self.createdAt = Date()
+    self.updatedAt = Date()
+  }
+  
   mutating func mapping(map: Map) {
     id               <- map["id"]
     personType       <- map["personType"]
@@ -129,7 +137,7 @@ extension CHUserChat {
     
     _ = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
       .subscribe(onNext: { (_) in
-        self.readAllManually()
+        mainStore.dispatch(ReadSession(payload: self.session))
       }, onError: { (error) in
         
       })
@@ -139,7 +147,7 @@ extension CHUserChat {
     return Observable.create({ (subscriber) in
       let signal = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
         .subscribe(onNext: { (_) in
-          self.readAllManually()
+          mainStore.dispatch(ReadSession(payload: self.session))
           subscriber.onNext(true)
           subscriber.onCompleted()
         }, onError: { (error) in
@@ -152,22 +160,19 @@ extension CHUserChat {
       }
     })
   }
-  
-  func readAllManually() {
-    guard var session = self.session else { return }
-    session.unread = 0
-    session.alert = 0
-    mainStore.dispatch(UpdateSession(payload: session))
-  }
 }
 
 extension CHUserChat {
+  func isLocalChat() -> Bool {
+    return self.id.hasPrefix(CHConstants.local)
+  }
+  
   func isNudgeChat() -> Bool {
-    return self.id.hasPrefix("nudgeChat")
+    return self.id.hasPrefix(CHConstants.nudgeChat)
   }
   
   func getNudgeId() -> String {
-    return self.id.components(separatedBy: "nudgeChat").last ?? ""
+    return self.id.components(separatedBy: CHConstants.nudgeChat).last ?? ""
   }
   
   func isActive() -> Bool {
@@ -224,10 +229,10 @@ extension CHUserChat {
     return current.isSolved() && next.isReadyOrOpen()
   }
   
-  static func createLocal(writer: CHEntity?, variant: CHNudgeVariant?) -> (CHUserChat?, CHMessage?) {
-    guard let writer = writer, let variant = variant else { return (nil, nil) }
+  static func createLocal(writer: CHEntity?, variant: CHNudgeVariant?) -> (CHUserChat?, CHMessage?, CHSession?) {
+    guard let writer = writer, let variant = variant else { return (nil, nil, nil) }
     let file = CHFile.create(imageable: variant)
-    let chatId = "nudgeChat" + variant.nudgeId
+    let chatId = CHConstants.nudgeChat + variant.nudgeId
     let message = CHMessage(
       chatId: chatId,
       entity: writer,
@@ -235,14 +240,9 @@ extension CHUserChat {
       message: variant.message,
       file: file)
     
-    var userChat = CHUserChat()
-    userChat.id = chatId
-    userChat.state = .open
-    userChat.appMessageId = message.id
-    userChat.createdAt = Date()
-    userChat.updatedAt = Date()
-    
-    return (userChat, message)
+    let session = CHSession(id: chatId, chatId: chatId, guest: mainStore.state.guest, alert: 1)
+    let userChat = CHUserChat(chatId: chatId, lastMessageId: message.id)
+    return (userChat, message, session)
   }
 }
 

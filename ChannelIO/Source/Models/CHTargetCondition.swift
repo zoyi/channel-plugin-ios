@@ -16,7 +16,7 @@ struct CHTargetCondition {
   var subKey: TargetSubKey?
 }
 
-extension CHTargetCondition {
+extension CHTargetCondition: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
@@ -26,20 +26,3 @@ extension CHTargetCondition {
     subKey  <- map["subKey"]
   }
 }
-
-//typealias TargetOp = (Any?) -> Bool
-//
-//struct TargetOperatorFunc {
-//  let equal: TargetOp = {
-//    return $0 == $1
-//  }
-//  let notEqual: TargetOp = {
-//    return $0 != $1
-//  }
-//  let exist: TargetOp = {
-//    return $0 != nil
-//  }
-//  let notExist: TargetOp = {
-//    return $0 == nil
-//  }
-//}
