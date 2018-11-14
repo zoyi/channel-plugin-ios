@@ -354,13 +354,13 @@ public final class ChannelIO: NSObject {
   }
   
   /**
-   *  Check whether channel is currently operating
+   * Evaluate push bot 
    *
-   *  - return: ture if a channel is in operating hour, otherwise false
+   *
    */
   @objc
-  public class func isOperating() -> Bool {
-    return false //calculate channel working time...
+  public class func checkPushBot(for actionName: String) {
+    ChannelIO.processPushBot(actionName: actionName)
   }
   
   /**

@@ -50,8 +50,9 @@ extension ChannelIO {
     if eventName.utf16.count > 30 || eventName == "" {
       return
     }
-    ChannelIO.pushBotProcess(eventName: eventName)
-    
+    if eventName == "Boot" {
+      ChannelIO.pushBotProcess(actionName: eventName)
+    }
     EventPromise.sendEvent(
       name: eventName,
       properties: eventProperty,
@@ -237,18 +238,25 @@ extension ChannelIO {
   }
   
   
-  internal class func pushBotProcess(eventName: String) {
+  internal class func processPushBot(actionName: String) {
     //guard mainStore.state.channel.pushBotPlan == .pro else { return }
     let guest = mainStore.state.guest
     
     NudgePromise.getNudges(pluginId: mainStore.state!.plugin.id)
-      .flatMap { Observable.from($0) }
-      .filter({ (nudge) -> Bool in
-        return TargetEvaluatorService
-          .evaluate(
-            object: nudge,
-            userInfo: guest.userInfo
-          )
+      .flatMap({ (nudges) -> Observable<CHNudge> in
+        var filtered: [CHNudge] = []
+        for nudge in nudges {
+          let eval = TargetEvaluatorService
+            .evaluate(
+              object: nudge,
+              userInfo: guest.userInfo.merging(
+                [TargetKey.url.rawValue: actionName],
+                uniquingKeysWith: { (_, second) in second }
+              )
+            )
+          eval ? filtered.append(nudge) : nil
+        }
+        return Observable.from(filtered)
       })
       .flatMap ({ (nudge) -> Observable<CHNudge> in
         return Observable.just(nudge)
@@ -258,15 +266,13 @@ extension ChannelIO {
           )
       })
       .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
-        guard ChannelIO.baseNavigation == nil else { return .empty() }
         return NudgePromise.requestReach(nudgeId: nudge.id)
       })
       .takeWhile { $0.reach == true }
       .take(1)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (response) in
-        print("reach - \(response.reach!)")
-        let (chat, message) = CHUserChat.createLocal(
+        let (chat, message, session) = CHUserChat.createLocal(
           writer: response.bot,
           variant: response.variant
         )
@@ -274,7 +280,8 @@ extension ChannelIO {
           CreateLocalUserChat(
             chat: chat,
             message: message,
-            writer: response.bot
+            writer: response.bot,
+            session: session
           )
         )
         guard ChannelIO.baseNavigation == nil else { return }
@@ -285,6 +292,7 @@ extension ChannelIO {
             response: response
           ))
         }
+        
       }, onError: { (error) in
         //
       }).disposed(by: disposeBeg)

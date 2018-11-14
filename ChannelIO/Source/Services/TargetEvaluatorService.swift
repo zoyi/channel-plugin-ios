@@ -11,15 +11,14 @@ import Foundation
 struct TargetEvaluatorService {
   //refactor guest + userInfo into one params
   static func evaluate(object: CHEvaluatable, userInfo: [String: Any]) -> Bool {
+    guard let target = object.target else { return true }
+    
+    for andConditions in target {
+      if !self.evaluate(with: andConditions, userInfo: userInfo) {
+        return false
+      }
+    }
     return true
-//    guard let target = object.target else { return false }
-//    
-//    for andConditions in target {
-//      if !self.evaluate(with: andConditions, userInfo: userInfo) {
-//        return false
-//      }
-//    }
-//    return true
   }
   
   private static func evaluate(with conditions: [CHTargetCondition], userInfo: [String: Any]) -> Bool {
@@ -84,28 +83,28 @@ private extension TargetEvaluatorService {
       guard let value = value as? String,
         let dValue = Double(value),
         let checkValue = Double(conditionValue) else { return false }
-      return checkValue < dValue
+      return checkValue > dValue
     case .greaterThanOrEqual:
       guard let value = value as? String,
         let dValue = Double(value),
         let checkValue = Double(conditionValue)  else { return false }
-      return checkValue <= dValue
+      return checkValue >= dValue
     case .lessThan:
       guard let value = value as? String,
         let dValue = Double(value),
         let checkValue = Double(conditionValue)  else { return false }
-      return checkValue > dValue
+      return checkValue < dValue
     case .lessThanOrEqual:
       guard let value = value as? String,
         let dValue = Double(value),
         let checkValue = Double(conditionValue)  else { return false }
-      return checkValue >= dValue
+      return checkValue <= dValue
     case .contain:
       guard let value = value as? String else { return false }
-      return conditionValue.contains(value)
+      return value.contains(conditionValue)
     case .notContain:
       guard let value = value as? String else { return false }
-      return !conditionValue.contains(value)
+      return !value.contains(conditionValue)
     case .exist:
       return value != nil
     case .notExist:

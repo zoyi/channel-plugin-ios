@@ -1,3 +1,11 @@
+# 5.0.0
+## New
+* Push bot finally comes to SDK
+
+## Updates
+* Improved data flow consistency
+* Refactored model and related methods
+
 # 4.2.7
 ## Bug fixes
 * Unwrapped Any type properly with reflection
