@@ -11,6 +11,12 @@ import ReSwift
 struct SessionsState: StateType {
   var sessions: [String:CHSession] = [:]
 
+  var localSessions: [CHSession] {
+    return self.sessions
+      .filter { $1.id.hasPrefix(CHConstants.local) || $1.chatId.hasPrefix(CHConstants.local) }
+      .map { $1 }
+  }
+  
   func findBy(userChatId: String) -> CHSession? {
     return self.sessions.filter({ $1.chatType == "UserChat" && $1.chatId == userChatId && $1.personType != "Manager" }).first?.value
   }

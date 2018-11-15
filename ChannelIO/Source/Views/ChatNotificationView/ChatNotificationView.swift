@@ -29,7 +29,7 @@ final class ChatNotificationView : BaseView {
     static let MessageLeading = 20.f
     static let ImageSideMargin = 4.f
     static let ImageTop = 20.f
-    static let ImageMaxHeight = 200.f
+    static let ImageMaxHeight = 200.f //per device?
     static let contentTop = 20.f
     static let buttonBottom = 18.f
     static let buttonHeight = 37.f

@@ -50,9 +50,11 @@ extension ChannelIO {
     if eventName.utf16.count > 30 || eventName == "" {
       return
     }
+    
     if eventName == "Boot" {
-      ChannelIO.pushBotProcess(actionName: eventName)
+      ChannelIO.processPushBot(actionName: eventName)
     }
+    
     EventPromise.sendEvent(
       name: eventName,
       properties: eventProperty,
@@ -268,8 +270,8 @@ extension ChannelIO {
       .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
         return NudgePromise.requestReach(nudgeId: nudge.id)
       })
-      .takeWhile { $0.reach == true }
-      .take(1)
+      .single { $0.reach == true }
+      .filter { _ in mainStore.state.checkinState.status == .success }
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (response) in
         let (chat, message, session) = CHUserChat.createLocal(

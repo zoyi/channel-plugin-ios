@@ -25,7 +25,12 @@ func guestReducer(action: Action, guest: CHGuest?) -> CHGuest {
     return guest ?? CHVeil()
     
   case let action as UpdateGuest:
-    guest = action.payload
+    if var guest = action.payload {
+      let count = mainStore.state.sessionsState.localSessions
+        .reduce(0) { count, session in count + session.alert }
+      guest.alert = guest.alert + count
+      return guest
+    }
     return guest ?? CHVeil()
     
   case let action as CreateLocalUserChat:

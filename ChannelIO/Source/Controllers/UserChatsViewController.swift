@@ -496,6 +496,7 @@ extension UserChatsViewController {
     UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
+        
         self?.didLoad = true
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
         mainStore.dispatch(GetUserChats(payload: data))
@@ -536,7 +537,7 @@ extension UserChatsViewController {
   }
   
   func showChatIfNeeded(_ userChats: [CHUserChat]?, isReload: Bool = false) {
-    let userChats = userChatsSelector(state: mainStore.state)
+    let allChats = userChatsSelector(state: mainStore.state) + (userChats ?? [])
     
     if self.showNewChat  {
       self.showUserChat(animated: false)
@@ -544,12 +545,12 @@ extension UserChatsViewController {
       self.showUserChat(userChatId: userChatId, animated: false)
       self.goToUserChatId = nil
     } else if !isReload {
-      if userChats.count == 0 {
+      if allChats.count == 0 {
         self.shouldHideTable = true
         self.showUserChat(animated: false)
-      } else if userChats.count == 1 {
+      } else if let chat = allChats.first, allChats.count == 1 {
         self.shouldHideTable = true
-        self.showUserChat(userChatId: userChats[0].id, animated: false)
+        self.showUserChat(userChatId: chat.id, animated: false)
       }
     }
   }
