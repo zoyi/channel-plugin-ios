@@ -29,7 +29,7 @@ final class ChatNotificationView : BaseView {
     static let MessageLeading = 20.f
     static let ImageSideMargin = 4.f
     static let ImageTop = 20.f
-    static let ImageMaxHeight = 200.f //per device?
+    static let ImageMaxHeight = 220.f //per device?
     static let contentTop = 20.f
     static let buttonBottom = 18.f
     static let buttonHeight = 37.f
@@ -39,6 +39,7 @@ final class ChatNotificationView : BaseView {
     
     static let viewTopMargin = 20.f
     static let viewSideMargin = 14.f
+    static let maxWidth = 520.f
   }
   
   struct Font {
@@ -294,8 +295,13 @@ final class ChatNotificationView : BaseView {
         make.top.equalToSuperview().inset(Metric.viewTopMargin)
       }
       
-      make.leading.equalToSuperview().inset(Metric.viewSideMargin)
-      make.trailing.equalToSuperview().inset(Metric.viewSideMargin)
+      if UIScreen.main.bounds.width > Metric.maxWidth + Metric.viewSideMargin * 2 {
+        make.centerX.equalToSuperview()
+        make.width.equalTo(Metric.maxWidth)
+      } else {
+        make.leading.equalToSuperview().inset(Metric.viewSideMargin)
+        make.trailing.equalToSuperview().inset(Metric.viewSideMargin)
+      }
     }
    
     super.updateConstraints()

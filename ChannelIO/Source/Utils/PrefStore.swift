@@ -73,7 +73,7 @@ class PrefStore {
     if let closed = UserDefaults.standard.object(forKey: VISIBLE_CLOSED_USERCHAT_KEY) as? Bool {
       return closed
     }
-    return false
+    return true
   }
   
   static func setVisibilityOfTranslation(on: Bool) {
