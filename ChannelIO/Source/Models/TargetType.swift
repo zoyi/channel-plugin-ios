@@ -10,7 +10,7 @@ import Foundation
 
 enum TargetKey: String {
   case ip = "ip"
-  case url = "url" //x
+  case url = "url"
   case mobilePageName = "mobilePageName"
   case browser = "browser" //x
   case os = "os"
@@ -18,7 +18,7 @@ enum TargetKey: String {
   case deviceCategory = "deviceCategory"
   case country = "country"
   case city = "city"
-  case cookie = "cookie" //x
+  case cookie = "cookie" //x subkey required
   case locale = "locale"
   case urlPath = "urlPath" //x
   case guestId = "guest.id"
@@ -27,7 +27,7 @@ enum TargetKey: String {
   case guestUpdatedAt = "guest.updatedAt"
   case guestMobileNumber = "guest.mobileNumber"
   case guestName = "guest.name"
-  case guestProfile = "guest.profile"
+  case guestProfile = "guest.profile" //subkey required
   case guestSegment = "guest.segment"
 }
 

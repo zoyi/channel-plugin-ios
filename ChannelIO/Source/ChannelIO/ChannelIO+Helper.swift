@@ -51,14 +51,14 @@ extension ChannelIO {
       return
     }
     
-    ChannelIO.processPushBot(actionName: eventName)
+    ChannelIO.processPushBot(with: eventProperty ?? [:])
     
     EventPromise.sendEvent(
       name: eventName,
       properties: eventProperty,
       sysProperties: sysProperty).subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
-        //ChannelIO.processPushBot(actionName: eventName, nudges: nudges)
+        //ChannelIO.processPushBot(with: eventProperty ?? [:], nudges: nudges)
       }, onError: { (error) in
         dlog("\(eventName) event failed")
       }).disposed(by: self.disposeBeg)
@@ -247,24 +247,24 @@ extension ChannelIO {
   }
   
   
-  internal class func processPushBot(actionName: String, nudges: [CHNudge]? = []) {
+  internal class func processPushBot(with property: [String: Any], nudges: [CHNudge]? = []) {
     //guard let nudges = nudges else { return }
     //guard mainStore.state.channel.pushBotPlan == .pro else { return }
     let guest = mainStore.state.guest
     
     NudgePromise.getNudges(pluginId: mainStore.state!.plugin.id)
     //Observable.of(nudges)
-      .retry(CHConstants.apiRetryCount)
+    //  .retry(CHConstants.apiRetryCount)
       .flatMap({ (nudges) -> Observable<CHNudge> in
         return Observable.from(nudges.filter { nudge in
           TargetEvaluatorService.evaluate(
             object: nudge,
             userInfo: guest.userInfo.merging(
-              [TargetKey.url.rawValue: actionName],
+              property,
               uniquingKeysWith: { (_, second) in second }
             )
           )
-        })
+        }) 
       })
       .flatMap ({ (nudge) -> Observable<CHNudge> in
         return Observable.just(nudge)

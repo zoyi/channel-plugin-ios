@@ -45,9 +45,7 @@ extension CHGuest {
     info[TargetKey.guestType.rawValue] = self.type
     info[TargetKey.guestName.rawValue] = self.name
     info[TargetKey.guestId.rawValue] = self.id
-    if let profile = profile {
-      info.merge(profile, uniquingKeysWith: { (first, _) in first })
-    }
+    info[TargetKey.guestProfile.rawValue] = profile
     return info
   }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 struct TargetEvaluatorService {
-  //refactor guest + userInfo into one params
+  
   static func evaluate(object: CHEvaluatable, userInfo: [String: Any]) -> Bool {
     guard let target = object.target else { return true }
     
@@ -29,48 +29,30 @@ struct TargetEvaluatorService {
     }
     return false
   }
+  
 }
 
 private extension TargetEvaluatorService {
-  //evaluate target with given guest and userInfo
-  private static func evaluate(with condition: CHTargetCondition, userInfo: [String:Any]) -> Bool {
+  
+  private static func evaluate(with condition: CHTargetCondition, userInfo: [String : Any]) -> Bool {
     guard let key = condition.key else { return false }
     guard let conditionValue = condition.value else { return false }
     
-//    var testValue: Any? = userInfo[key]
-//    switch key {
-//    case .mobilePageName:
-//      testValue = userInfo[key]
-//    case .os, .device, .city, .country, .deviceCategory, .locale:
-//      testValue = userInfo[key]
-//    case .ip:
-//      testValue = userInfo[key]
-//    case .guestId:
-//      testValue = guest?.id
-//    case .guestCreatedAt:
-//      testValue = guest?.createdAt
-//    case .guestUpdatedAt:
-//      testValue = guest?.updatedAt
-//    case .guestMobileNumber:
-//      testValue = guest?.mobileNumber
-//    case .guestSegment:
-//      testValue = guest?.segment
-//    case .guestType:
-//      testValue = guest?.type
-//    case .guestName:
-//      testValue = guest?.name
-//    case .guestProfile:
-//      guard let subKey = target.subKey else { return false }
-//      testValue = guest?.profile?[subKey]
-//    default:
-//      return false
-//    }
+    var testValue: Any?
+    switch key {
+    //required for subkey
+    case .guestProfile:
+      guard let subKey = condition.subKey else { return false }
+      guard let profiles = userInfo[TargetKey.guestProfile.rawValue] as? [String : Any] else { return false }
+      testValue = profiles[subKey]
+    default:
+      testValue = userInfo[key.rawValue]
+    }
+
     guard let op = condition.op else { return false }
-    return self.evaluate(with:op, conditionValue: conditionValue, value:userInfo[key.rawValue])
+    return self.evaluate(with:op, conditionValue: conditionValue, value:testValue)
   }
  
-  
-  //evaluate value with condition with operator
   private static func evaluate(with op: TargetOperator, conditionValue: String, value: Any?) -> Bool {
     switch op {
     case .equal:
@@ -126,4 +108,5 @@ private extension TargetEvaluatorService {
       }
     }
   }
+  
 }
