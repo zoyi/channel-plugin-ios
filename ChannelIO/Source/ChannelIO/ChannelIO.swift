@@ -34,6 +34,7 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func willOpenMessenger() -> Void /* notify when chat list is about to show */
   @objc optional func willCloseMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void
+  @objc optional func onClickRedirectUrl(_ url: URL) -> Bool
 }
 
 @objc
@@ -101,6 +102,7 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
+    UIViewController.swizzleForTracking
   }
   
   /**
@@ -278,7 +280,9 @@ public final class ChannelIO: NSObject {
     dispatch {
       ChannelIO.launcherView?.isHidden = true
       ChannelIO.delegate?.willOpenMessenger?()
-      ChannelIO.sendDefaultEvent(.open)
+//      ChannelIO.sendDefaultEvent(.open, property: [
+//        TargetKey.url.rawValue: "\(type(of: topController))"
+//      ])
       mainStore.dispatch(ChatListIsVisible())
 
       let userChatsController = UserChatsViewController()
@@ -342,6 +346,8 @@ public final class ChannelIO: NSObject {
     let version = Bundle(for: ChannelIO.self)
       .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
+    dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
+    
     ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: [
       "pluginId": settings.pluginKey,
       "pluginVersion": version,
@@ -351,16 +357,6 @@ public final class ChannelIO: NSObject {
       "screenHeight": UIScreen.main.bounds.height,
       "plan": mainStore.state.channel.messengerPlan.rawValue
     ])
-  }
-  
-  /**
-   * Evaluate push bot 
-   *
-   *
-   */
-  @objc
-  public class func checkPushBot(for actionName: String) {
-    ChannelIO.processPushBot(actionName: actionName)
   }
   
   /**

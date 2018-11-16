@@ -11,4 +11,5 @@ struct CHConstants {
   static let dummy = "dummy"
   static let local = "local"
   static let nudgeChat = "local_nudgeChat"
+  static let apiRetryCount = 4
 }

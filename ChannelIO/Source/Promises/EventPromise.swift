@@ -16,7 +16,7 @@ struct EventPromise {
   static func sendEvent(
     name: String,
     properties: [String: Any?]? = nil,
-    sysProperties: [String: Any?]? = nil) -> Observable<CHEvent> {
+    sysProperties: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
     return Observable.create { subscriber in
       var params = [
         "body": [String:AnyObject]()
@@ -38,12 +38,13 @@ struct EventPromise {
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            guard let event = Mapper<CHEvent>()
-              .map(JSONObject: json["event"].object) else {
+            guard let event = Mapper<CHEvent>().map(JSONObject: json["event"].object) else {
               subscriber.onError(CHErrorPool.eventParseError)
               return
             }
-            subscriber.onNext(event)
+            let nudges = Mapper<CHNudge>().mapArray(JSONObject: json["nudges"].object) ?? []
+            
+            subscriber.onNext((event, nudges))
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)

@@ -51,15 +51,14 @@ extension ChannelIO {
       return
     }
     
-    if eventName == "Boot" {
-      ChannelIO.processPushBot(actionName: eventName)
-    }
+    ChannelIO.processPushBot(actionName: eventName)
     
     EventPromise.sendEvent(
       name: eventName,
       properties: eventProperty,
-      sysProperties: sysProperty).subscribe(onNext: { (event) in
+      sysProperties: sysProperty).subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
+        //ChannelIO.processPushBot(actionName: eventName, nudges: nudges)
       }, onError: { (error) in
         dlog("\(eventName) event failed")
       }).disposed(by: self.disposeBeg)
@@ -107,10 +106,15 @@ extension ChannelIO {
           data["settings"] = settings
           
           WsService.shared.connect()
-          mainStore.dispatch(UpdateCheckinState(payload: .success))
           mainStore.dispatch(CheckInSuccess(payload: data))
-        
-          ChannelIO.sendDefaultEvent(.boot)
+          
+          if let topController = CHUtils.getTopController() {
+            ChannelIO.sendDefaultEvent(.boot, property: [
+              TargetKey.url.rawValue: "\(type(of: topController))"
+            ])
+          } else {
+            ChannelIO.sendDefaultEvent(.boot)
+          }
           
           WsService.shared.ready().take(1).subscribe(onNext: { _ in
             subscriber.onNext(data)
@@ -134,7 +138,10 @@ extension ChannelIO {
     
     dispatch {
       ChannelIO.launcherView?.isHidden = true
-      ChannelIO.sendDefaultEvent(.open)
+//      ChannelIO.sendDefaultEvent(.open, property: [
+//        TargetKey.url.rawValue: "\(type(of: topController))"
+//      ])
+      
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
@@ -214,7 +221,7 @@ extension ChannelIO {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (urlString) in
           guard let url = URL(string: urlString ?? "") else { return }
-          let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
+          let shouldHandle = ChannelIO.delegate?.onClickRedirectUrl?(url)
           if shouldHandle == false || shouldHandle == nil {
             url.openWithUniversal()
           }
@@ -240,25 +247,24 @@ extension ChannelIO {
   }
   
   
-  internal class func processPushBot(actionName: String) {
+  internal class func processPushBot(actionName: String, nudges: [CHNudge]? = []) {
+    //guard let nudges = nudges else { return }
     //guard mainStore.state.channel.pushBotPlan == .pro else { return }
     let guest = mainStore.state.guest
     
     NudgePromise.getNudges(pluginId: mainStore.state!.plugin.id)
+    //Observable.of(nudges)
+      .retry(CHConstants.apiRetryCount)
       .flatMap({ (nudges) -> Observable<CHNudge> in
-        var filtered: [CHNudge] = []
-        for nudge in nudges {
-          let eval = TargetEvaluatorService
-            .evaluate(
-              object: nudge,
-              userInfo: guest.userInfo.merging(
-                [TargetKey.url.rawValue: actionName],
-                uniquingKeysWith: { (_, second) in second }
-              )
+        return Observable.from(nudges.filter { nudge in
+          TargetEvaluatorService.evaluate(
+            object: nudge,
+            userInfo: guest.userInfo.merging(
+              [TargetKey.url.rawValue: actionName],
+              uniquingKeysWith: { (_, second) in second }
             )
-          eval ? filtered.append(nudge) : nil
-        }
-        return Observable.from(filtered)
+          )
+        })
       })
       .flatMap ({ (nudge) -> Observable<CHNudge> in
         return Observable.just(nudge)

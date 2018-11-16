@@ -39,6 +39,10 @@ func checkinReducer(action: Action, state: CheckinState?) -> CheckinState {
     state?.status = action.payload
     return state ?? CheckinState()
   
+  case _ as CheckInSuccess:
+    state?.status = .success
+    return state ?? CheckinState()
+    
   case _ as CheckOutSuccess:
     return CheckinState()
   
