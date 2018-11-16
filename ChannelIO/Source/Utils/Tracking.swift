@@ -40,10 +40,23 @@ public extension UIViewController {
     self.ch_viewWillAppear(animated)
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.settings?.enabledTrackDefaultEvent == true else { return }
-    //dynamic configuration?
+    guard self.processOnlyIfNeccessary() else { return }
     
     ChannelIO.sendDefaultEvent(.pageView, property: [
       TargetKey.url.rawValue: "\(type(of: self))"
     ])
+  }
+  
+  @objc
+  func processOnlyIfNeccessary() -> Bool {
+    let name = "\(type(of: self))"
+    
+    if self.isKind(of: UINavigationController.self) ||
+      self.isKind(of: UITabBarController.self) ||
+      name.contains("UIInputWindowController") {
+      return false
+    }
+    
+    return true
   }
 }
