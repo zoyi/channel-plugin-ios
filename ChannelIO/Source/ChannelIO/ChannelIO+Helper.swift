@@ -104,9 +104,11 @@ extension ChannelIO {
           }
           
           data["settings"] = settings
-          
-          WsService.shared.connect()
           mainStore.dispatch(CheckInSuccess(payload: data))
+          
+          if channel.realtimePlan != .none {
+            WsService.shared.connect()
+          }
           
           if let topController = CHUtils.getTopController() {
             ChannelIO.sendDefaultEvent(.boot, property: [
@@ -116,11 +118,12 @@ extension ChannelIO {
             ChannelIO.sendDefaultEvent(.boot)
           }
           
-          WsService.shared.ready().take(1).subscribe(onNext: { _ in
-            subscriber.onNext(data)
-            subscriber.onCompleted()
-          }).disposed(by: self.disposeBeg)
-
+          subscriber.onNext(data)
+          subscriber.onCompleted()
+//          WsService.shared.ready().take(1).subscribe(onNext: { _ in
+//            subscriber.onNext(data)
+//            subscriber.onCompleted()
+//          }).disposed(by: self.disposeBeg)
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {

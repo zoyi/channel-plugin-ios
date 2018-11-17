@@ -304,11 +304,15 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.baseNavigation != nil else { return }
     
     dispatch {
+      if mainStore.state.channel.realtimePlan == .none {
+        WsService.shared.disconnect()
+      }
+      
       ChannelIO.delegate?.willCloseMessenger?()
       ChannelIO.baseNavigation?.dismiss(
         animated: animated, completion: {
         mainStore.dispatch(ChatListIsHidden())
-        
+      
         //ChannelIO.launcherView?.isHidden = false
         if ChannelIO.launcherVisible {
           ChannelIO.launcherView?.show(animated: true)
