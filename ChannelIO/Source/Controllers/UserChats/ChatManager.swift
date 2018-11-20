@@ -324,10 +324,10 @@ extension ChatManager {
   
   //for image capture on channelIO
   func sendImage(imageData: UIImage) {
-    let message = CHMessage(chatId: self.chatId, guest: mainStore.state.guest, image: imageData)
-    mainStore.dispatch(CreateMessage(payload: message))
-    
+  
     if self.chatId != "" {
+      let message = CHMessage(chatId: self.chatId, guest: mainStore.state.guest, image: imageData)
+      mainStore.dispatch(CreateMessage(payload: message))
       self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
     } else {
       let createChatSignal = self.chat?.isNudgeChat() == true ?
@@ -337,6 +337,9 @@ extension ChatManager {
       createChatSignal
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
+          var message = CHMessage(chatId: chatId, guest: mainStore.state.guest, image: imageData)
+          message.createdAt = Date()
+          mainStore.dispatch(CreateMessage(payload: message))
           self?.sendMessageRecursively(allMessages: [message], currentIndex: 0)
         }, onError: { [weak self] (error) in
           self?.state = .chatNotLoaded
