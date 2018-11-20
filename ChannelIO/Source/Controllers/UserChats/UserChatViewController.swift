@@ -461,10 +461,6 @@ extension UserChatViewController: StoreSubscriber {
     let offset = self.tableView.contentOffset
     let hasNewMessage = self.chatManager.hasNewMessage(current: self.messages, updated: messages)
     
-    if hasNewMessage {
-      self.chatManager?.requestRead(at: messages.first)
-    }
-    
     //message only needs to be replace if count is differe
     self.messages = messages
     //fixed contentOffset

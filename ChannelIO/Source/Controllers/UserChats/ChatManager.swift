@@ -164,6 +164,11 @@ class ChatManager: NSObject {
         if prevChat.isReady() && newChat.isOpen() {
           self?.requestProfileBot()
         }
+        
+        if prevChat.shouldRequestRead(otherChat: newChat) {
+          self?.requestRead()
+        }
+
         mainStore.dispatch(UpdateUserChat(payload: newChat))
         self?.setChatEntities(with: newChat.id)
       })
@@ -722,9 +727,9 @@ extension ChatManager {
       }).disposed(by: self.disposeBag)
   }
   
-  func requestRead(at message: CHMessage? = nil) {
+  func requestRead() {
     guard !self.isRequestingReadAll else { return }
-    guard let chat = self.chat, let message = message else { return }
+    guard let chat = self.chat else { return }
     //guard message.entity as? CHGuest == nil else { return }
     
     self.isRequestingReadAll = true
@@ -735,7 +740,7 @@ extension ChatManager {
         )
       )
     } else {
-      chat.read(at: message)
+      chat.read()
         .debounce(1, scheduler: MainScheduler.instance)
         .subscribe(onNext: { [weak self] (completed) in
           self?.isRequestingReadAll = false

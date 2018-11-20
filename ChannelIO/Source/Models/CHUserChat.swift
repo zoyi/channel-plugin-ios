@@ -130,12 +130,17 @@ extension CHUserChat {
     return UserChatPromise.review(userChatId: self.id, formId: mid, rating: rating, requestId: requestId)
   }
   
-  func read(at message: CHMessage?) {
-    guard let message = message else { return }
-    guard let session = self.session else { return }
-    guard session.unread != 0 || session.alert != 0 else { return }
+  func shouldRequestRead(otherChat: CHUserChat?) -> Bool {
+    guard let otherChat = otherChat else { return false }
+    guard let otherSession = otherChat.session else { return false }
+    guard let session = self.session else { return false }
+    return (self.updatedAt != otherChat.updatedAt) || (session.alert != otherSession.alert)
+  }
+  
+  func read() {
+    guard self.session != nil else { return }
     
-    _ = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
+    _ = UserChatPromise.setMessageRead(userChatId: self.id)
       .subscribe(onNext: { (_) in
         mainStore.dispatch(ReadSession(payload: self.session))
       }, onError: { (error) in
@@ -143,9 +148,9 @@ extension CHUserChat {
       })
   }
   
-  func read(at message: CHMessage) -> Observable<Bool> {
+  func read() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
+      let signal = UserChatPromise.setMessageRead(userChatId: self.id)
         .subscribe(onNext: { (_) in
           mainStore.dispatch(ReadSession(payload: self.session))
           subscriber.onNext(true)

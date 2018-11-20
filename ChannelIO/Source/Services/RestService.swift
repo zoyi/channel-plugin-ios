@@ -29,7 +29,7 @@ enum RestRouter: URLRequestConvertible {
   case GetMessages(String, ParametersType)
   case CreateMessage(String, ParametersType)
   case UploadFile(String, ParametersType)
-  case SetMessagesRead(String, ParametersType)
+  case SetMessagesRead(String)
   case SendPushAck(String)
   
   case RegisterToken(ParametersType)
@@ -130,7 +130,7 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/messages"
     case .UploadFile(let userChatId, _):
       return "/app/user_chats/\(userChatId)/messages/file"
-    case .SetMessagesRead(let userChatId, _):
+    case .SetMessagesRead(let userChatId):
       return "/app/user_chats/\(userChatId)/messages/read"
     case .RegisterToken:
       return "/app/device_tokens"
@@ -255,7 +255,6 @@ enum RestRouter: URLRequestConvertible {
          .Translate(_, let params),
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params),
-         .SetMessagesRead(_, let params),
          .UnregisterToken(_, let params),
          .ReplySupportBot(_, let params),
          .GetSupportBots(_, let params):
@@ -270,6 +269,7 @@ enum RestRouter: URLRequestConvertible {
          .SendPushAck,
          .GetNudges,
          .CheckNudgeReach,
+         .SetMessagesRead,
          .CreateNudgeChat:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
