@@ -91,6 +91,7 @@ class ChatManager: NSObject {
     self.chatType = type
     self.setChatEntities(with: id)
     self.observeAppState()
+    self.requestRead()
   }
   
   fileprivate func setChatEntities(with chatId: String?) {
@@ -594,13 +595,14 @@ extension ChatManager {
       let signal = CHNudge.createChat(nudgeId: nudgeId)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (chatResponse) in
+          //replace local nudgeChat
+          mainStore.dispatch(GetNudgeChat(nudgeId: nudgeId, payload: chatResponse))
+          
           self?.chatNewlyCreated = true
           self?.didChatLoaded = true
           self?.setChatEntities(with: chatResponse.userChat?.id)
           self?.prepareToChat()
           
-          //replace local nudgeChat
-          mainStore.dispatch(GetNudgeChat(nudgeId: nudgeId, payload: chatResponse))
           subscriber.onNext(chatResponse.userChat?.id ?? "")
           subscriber.onCompleted()
         }, onError: { [weak self] (error) in
@@ -625,13 +627,13 @@ extension ChatManager {
         disposable = CHSupportBot.create(with: bot.id)
           .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (chatResponse) in
-    
+          mainStore.dispatch(GetUserChat(payload: chatResponse))
+            
           self?.chatNewlyCreated = true
           self?.didChatLoaded = true
           self?.setChatEntities(with: chatResponse.userChat?.id)
           self?.prepareToChat()
-          mainStore.dispatch(GetUserChat(payload: chatResponse))
-            
+         
           subscriber.onNext((chatResponse.userChat, chatResponse.message))
           subscriber.onCompleted()
         }, onError: { [weak self] (error) in
@@ -663,11 +665,13 @@ extension ChatManager {
       //if push bot message is present, create push bot user chat
       let signal = CHUserChat.create(pluginId: pluginId)
         .observeOn(MainScheduler.instance).subscribe(onNext: { (chatResponse) in
+        mainStore.dispatch(GetUserChat(payload: chatResponse))
+          
         self?.chatNewlyCreated = true
         self?.didChatLoaded = true
         self?.setChatEntities(with: chatResponse.userChat?.id)
         self?.prepareToChat()
-        mainStore.dispatch(GetUserChat(payload: chatResponse))
+        
         subscriber.onNext(chatResponse.userChat?.id ?? "")
         subscriber.onCompleted()
       }, onError: { [weak self] (error) in
@@ -732,7 +736,7 @@ extension ChatManager {
   
   func requestRead() {
     guard !self.isRequestingReadAll else { return }
-    guard let chat = self.chat else { return }
+    guard let chat = userChatSelector(state: mainStore.state, userChatId: self.chatId) else { return }
     //guard message.entity as? CHGuest == nil else { return }
     
     self.isRequestingReadAll = true

@@ -276,6 +276,12 @@ extension ChannelIO {
             scheduler: MainScheduler.instance
           )
       })
+      .filter {
+        return userChatSelector(
+          state: mainStore.state,
+          userChatId: CHConstants.nudgeChat + $0.id
+        ) == nil
+      }
       .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
         return NudgePromise.requestReach(nudgeId: nudge.id)
       })
@@ -287,6 +293,7 @@ extension ChannelIO {
           writer: response.bot,
           variant: response.variant
         )
+        
         mainStore.dispatch(
           CreateLocalUserChat(
             chat: chat,
