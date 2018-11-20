@@ -37,7 +37,7 @@ enum RestRouter: URLRequestConvertible {
   case CheckVersion
   case GetGeoIP
   
-  case SendEvent(ParametersType)
+  case SendEvent(String, ParametersType)
   case GetCountryCodes
   case GetFollowingManager
   
@@ -140,8 +140,8 @@ enum RestRouter: URLRequestConvertible {
       return "/geoip"
     case .UnregisterToken(let key, _):
       return "/app/device_tokens/ios/\(key)"
-    case .SendEvent:
-      return "/app/events"
+    case .SendEvent(let pluginId, _):
+      return "/app/plugins/\(pluginId)/events"
     case .GetCountryCodes:
       return "/countries"
     case .GetFollowingManager:
@@ -250,7 +250,7 @@ enum RestRouter: URLRequestConvertible {
          .UploadFile(_, let params),
          .GetUserChats(let params),
          .RegisterToken(let params),
-         .SendEvent(let params),
+         .SendEvent(_, let params),
          .UpdateProfileItem(_, let params),
          .Translate(_, let params),
          .CloseUserChat(_, let params),

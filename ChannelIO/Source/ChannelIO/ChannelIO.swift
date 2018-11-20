@@ -102,7 +102,6 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
-    UIViewController.swizzleForTracking
   }
   
   /**
