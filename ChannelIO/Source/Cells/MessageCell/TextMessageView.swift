@@ -9,12 +9,6 @@
 import Foundation
 import SnapKit
 
-let placeHolder = UITextView()
-  .then {
-    $0.textContainer.lineFragmentPadding = 0
-    $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
-  }
-
 class TextMessageView : BaseView {
   struct Metric {
     static let topBottomPadding = 10.f
@@ -148,13 +142,7 @@ class TextMessageView : BaseView {
       
       let topBottomPadding = viewModel.message.onlyEmoji ?
         Metric.minimalTopBottomPadding * 2 : Metric.topBottomPadding * 2
-      
-      placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
-      placeHolder.textContainer.lineFragmentPadding = 0
-      placeHolder.attributedText = message
-      placeHolder.sizeToFit()
-      
-      viewHeight += placeHolder.frame.size.height + topBottomPadding
+      viewHeight = message.height(fits: maxWidth - 3) + topBottomPadding
     }
     
     return viewHeight
