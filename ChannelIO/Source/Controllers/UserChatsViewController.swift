@@ -80,10 +80,13 @@ class UserChatsViewController: BaseViewController {
     self.errorToastView.containerView = self.view
     self.view.addSubview(self.errorToastView)
     
+    WsService.shared.connect()
+    
     self.initTableView()
     self.initActions()
     self.initNotifications()
     self.setDefaultNavItems()
+    
     
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     self.fetchUserChats(isInit: true, showIndicator: true)

@@ -78,6 +78,10 @@ struct MessagesState: StateType {
   
   mutating func insert(message: CHMessage?) -> MessagesState {
     guard let message = message else { return self }
+    if message.requestId != nil {
+      self.messageDictionary[message.requestId!] = nil
+    }
+    
     self.messageDictionary[message.id] = message
     
     if message.form != nil {

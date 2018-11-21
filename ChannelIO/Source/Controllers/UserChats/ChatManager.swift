@@ -38,7 +38,7 @@ class ChatManager: NSObject {
   var chatType = ""
   var chat: CHUserChat? = nil {
     willSet {
-      if let chat = self.chat {
+      if let chat = newValue {
         self.chatId = chat.id
         self.chatType = "UserChat"
       }
@@ -737,9 +737,7 @@ extension ChatManager {
   func requestRead() {
     guard !self.isRequestingReadAll else { return }
     guard let chat = userChatSelector(state: mainStore.state, userChatId: self.chatId) else { return }
-    //guard message.entity as? CHGuest == nil else { return }
     
-    self.isRequestingReadAll = true
     if chat.isLocalChat() {
       mainStore.dispatch(
         UpdateGuestWithLocalRead(
@@ -747,6 +745,7 @@ extension ChatManager {
         )
       )
     } else {
+      self.isRequestingReadAll = true
       chat.read()
         .debounce(1, scheduler: MainScheduler.instance)
         .subscribe(onNext: { [weak self] (completed) in

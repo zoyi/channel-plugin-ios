@@ -132,9 +132,8 @@ extension CHUserChat {
   
   func shouldRequestRead(otherChat: CHUserChat?) -> Bool {
     guard let otherChat = otherChat else { return false }
-    guard let otherSession = otherChat.session else { return false }
-    guard let session = self.session else { return false }
-    return (self.updatedAt != otherChat.updatedAt) || (session.alert != otherSession.alert)
+    return (self.updatedAt?.miliseconds != otherChat.updatedAt?.miliseconds) ||
+      (self.session?.alert != otherChat.session?.alert)
   }
   
   func read() {

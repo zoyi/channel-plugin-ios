@@ -45,6 +45,10 @@ private extension TargetEvaluatorService {
       guard let subKey = condition.subKey else { return false }
       guard let profiles = userInfo[TargetKey.guestProfile.rawValue] as? [String : Any] else { return false }
       testValue = profiles[subKey]
+    case .deviceCategory:
+      testValue = "mobile"
+    case .device:
+      testValue = UIDevice.current.modelName
     default:
       testValue = userInfo[key.rawValue]
     }

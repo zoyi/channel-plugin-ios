@@ -279,9 +279,7 @@ public final class ChannelIO: NSObject {
     dispatch {
       ChannelIO.launcherView?.isHidden = true
       ChannelIO.delegate?.willOpenMessenger?()
-//      ChannelIO.sendDefaultEvent(.open, property: [
-//        TargetKey.url.rawValue: "\(type(of: topController))"
-//      ])
+
       mainStore.dispatch(ChatListIsVisible())
 
       let userChatsController = UserChatsViewController()
@@ -311,8 +309,7 @@ public final class ChannelIO: NSObject {
       ChannelIO.baseNavigation?.dismiss(
         animated: animated, completion: {
         mainStore.dispatch(ChatListIsHidden())
-      
-        //ChannelIO.launcherView?.isHidden = false
+
         if ChannelIO.launcherVisible {
           ChannelIO.launcherView?.show(animated: true)
         }
@@ -352,7 +349,6 @@ public final class ChannelIO: NSObject {
     dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
     
     ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: [
-      "pluginId": settings.pluginKey,
       "pluginVersion": version,
       "device": UIDevice.current.modelName,
       "os": "\(UIDevice.current.systemName)_\(UIDevice.current.systemVersion)",
