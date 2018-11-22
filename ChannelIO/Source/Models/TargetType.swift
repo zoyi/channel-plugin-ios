@@ -11,7 +11,6 @@ import Foundation
 enum TargetKey: String {
   case ip = "ip"
   case url = "url"
-  case mobilePageName = "mobilePageName"
   case browser = "browser" //x
   case os = "os"
   case device = "device"

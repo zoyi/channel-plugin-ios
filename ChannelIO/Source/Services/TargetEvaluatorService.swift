@@ -49,6 +49,8 @@ private extension TargetEvaluatorService {
       testValue = "mobile"
     case .device:
       testValue = UIDevice.current.modelName
+    case .os:
+      testValue = UIDevice.current.systemVersion + " " + UIDevice.current.systemVersion
     default:
       testValue = userInfo[key.rawValue]
     }

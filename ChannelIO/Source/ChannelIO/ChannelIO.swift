@@ -251,6 +251,15 @@ public final class ChannelIO: NSObject {
       }).disposed(by: disposeBeg)
       
       ChannelIO.launcherView = launcherView
+      
+      if let topController = CHUtils.getTopController() {
+        ChannelIO.sendDefaultEvent(.pageView, property: [
+          TargetKey.url.rawValue: "\(type(of: topController))"
+        ])
+      } else {
+        ChannelIO.sendDefaultEvent(.pageView)
+      }
+      
     }
   }
   
@@ -353,8 +362,7 @@ public final class ChannelIO: NSObject {
       "device": UIDevice.current.modelName,
       "os": "\(UIDevice.current.systemName)_\(UIDevice.current.systemVersion)",
       "screenWidth": UIScreen.main.bounds.width,
-      "screenHeight": UIScreen.main.bounds.height,
-      "plan": mainStore.state.channel.messengerPlan.rawValue
+      "screenHeight": UIScreen.main.bounds.height
     ])
   }
   

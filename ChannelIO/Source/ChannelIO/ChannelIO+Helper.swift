@@ -109,20 +109,8 @@ extension ChannelIO {
             WsService.shared.connect()
           }
           
-          if let topController = CHUtils.getTopController() {
-            ChannelIO.sendDefaultEvent(.boot, property: [
-              TargetKey.url.rawValue: "\(type(of: topController))"
-            ])
-          } else {
-            ChannelIO.sendDefaultEvent(.boot)
-          }
-          
           subscriber.onNext(data)
           subscriber.onCompleted()
-//          WsService.shared.ready().take(1).subscribe(onNext: { _ in
-//            subscriber.onNext(data)
-//            subscriber.onCompleted()
-//          }).disposed(by: self.disposeBeg)
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {
@@ -140,9 +128,6 @@ extension ChannelIO {
     
     dispatch {
       ChannelIO.launcherView?.isHidden = true
-//      ChannelIO.sendDefaultEvent(.open, property: [
-//        TargetKey.url.rawValue: "\(type(of: topController))"
-//      ])
       
       mainStore.dispatch(ChatListIsVisible())
       
@@ -265,7 +250,7 @@ extension ChannelIO {
               uniquingKeysWith: { (_, second) in second }
             )
           )
-        }) 
+        })
       })
       .flatMap ({ (nudge) -> Observable<CHNudge> in
         return Observable.just(nudge)
