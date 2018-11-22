@@ -151,37 +151,15 @@ class MessagesReducerTests: QuickSpec {
     }
     
     it("CreateChannelClosed") {
-      state = messagesReducer(
-        action: CreateChannelClosed(), state: state
-      )
-      
-      let find = state.findBy(type: .ChannelClosed)
-      expect(find).notTo(beNil())
-      expect(find?.first!.messageType).to(equal(MessageType.ChannelClosed))
+
     }
     
     it("ClickBusinessHour") {
-      var userChat = CHUserChat()
-      userChat.id = "123"
-      
-      state = messagesReducer(
-        action: ClickBusinessHour(payload: userChat), state: state
-      )
-      
-      let find = state.findBy(type: .BusinessHourQuestion)
-      expect(find).notTo(beNil())
+
     }
     
     it("AnswerBusinessHour") {
-      var userChat = CHUserChat()
-      userChat.id = "123"
-      
-      state = messagesReducer(
-        action: AnswerBusinessHour(payload: userChat), state: state
-      )
-      
-      let find = state.findBy(type: .BusinessHourAnswer)
-      expect(find).notTo(beNil())
+
     }
     
     it("InsertWelcome") {

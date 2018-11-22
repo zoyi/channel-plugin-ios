@@ -19,22 +19,22 @@ class UserChatsStateTests: QuickSpec {
     var userChats: [CHUserChat]? = nil
     
     beforeEach {
-      state = UserChatsState()
-      userChats = [CHUserChat]()
-      for i in 0..<10 {
-        let userChat = CHUserChat(
-          id: "\(i)0", personType: "", personId: "",
-          channelId: "", bindFromId: "", state: "",
-          review: "", createdAt: nil, openedAt: nil,
-          updatedAt: nil, followedAt: nil, resolvedAt: nil,
-          followedBy: "", lastMessageId: "1\(i)1", talkedManagerIds: [],
-          resolutionTime: 0, lastMessage: nil, session: nil,
-          managers: [], channel: nil)
-        
-        userChats?.append(userChat)
-      }
-      
-      state = state.upsert(userChats:userChats!)
+//      state = UserChatsState()
+//      userChats = [CHUserChat]()
+//      for i in 0..<10 {
+//        let userChat = CHUserChat(
+//          id: "\(i)0", personType: "", personId: "",
+//          channelId: "", bindFromId: "", state: "",
+//          review: "", createdAt: nil, openedAt: nil,
+//          updatedAt: nil, followedAt: nil, resolvedAt: nil,
+//          followedBy: "", lastMessageId: "1\(i)1", talkedManagerIds: [],
+//          resolutionTime: 0, lastMessage: nil, session: nil,
+//          managers: [], channel: nil)
+//        
+//        userChats?.append(userChat)
+//      }
+//      
+//      state = state.upsert(userChats:userChats!)
     }
     
     afterEach {
