@@ -244,7 +244,7 @@ extension ChannelIO {
       .flatMap({ (nudges) -> Observable<CHNudge> in
         return Observable.from(nudges.filter { nudge in
           TargetEvaluatorService.evaluate(
-            object: nudge,
+            with: nudge.target,
             userInfo: guest.userInfo.merging(
               property,
               uniquingKeysWith: { (_, second) in second }

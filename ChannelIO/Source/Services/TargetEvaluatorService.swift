@@ -10,18 +10,18 @@ import Foundation
 
 struct TargetEvaluatorService {
   
-  static func evaluate(object: CHEvaluatable, userInfo: [String: Any]) -> Bool {
-    guard let target = object.target else { return true }
+  static func evaluate(with conditions: [[CHTargetCondition]]?, userInfo: [String: Any]) -> Bool {
+    guard let conditions = conditions else { return true }
     
-    for andConditions in target {
-      if !self.evaluate(with: andConditions, userInfo: userInfo) {
+    for andConditions in conditions {
+      if !self.evaluate(andConditions, userInfo: userInfo) {
         return false
       }
     }
     return true
   }
   
-  private static func evaluate(with conditions: [CHTargetCondition], userInfo: [String: Any]) -> Bool {
+  static func evaluate(_ conditions: [CHTargetCondition], userInfo: [String: Any]) -> Bool {
     for orCondition in conditions {
       if self.evaluate(with: orCondition, userInfo: userInfo) {
         return true
@@ -32,9 +32,9 @@ struct TargetEvaluatorService {
   
 }
 
-private extension TargetEvaluatorService {
+extension TargetEvaluatorService {
   
-  private static func evaluate(with condition: CHTargetCondition, userInfo: [String : Any]) -> Bool {
+  static func evaluate(with condition: CHTargetCondition, userInfo: [String : Any]) -> Bool {
     guard let key = condition.key else { return false }
     guard let conditionValue = condition.value else { return false }
     
@@ -45,12 +45,6 @@ private extension TargetEvaluatorService {
       guard let subKey = condition.subKey else { return false }
       guard let profiles = userInfo[TargetKey.guestProfile.rawValue] as? [String : Any] else { return false }
       testValue = profiles[subKey]
-    case .deviceCategory:
-      testValue = "mobile"
-    case .device:
-      testValue = UIDevice.current.modelName
-    case .os:
-      testValue = UIDevice.current.systemVersion + " " + UIDevice.current.systemVersion
     default:
       testValue = userInfo[key.rawValue]
     }
@@ -59,7 +53,7 @@ private extension TargetEvaluatorService {
     return self.evaluate(with:op, conditionValue: conditionValue, value:testValue)
   }
  
-  private static func evaluate(with op: TargetOperator, conditionValue: String, value: Any?) -> Bool {
+  static func evaluate(with op: TargetOperator, conditionValue: String, value: Any?) -> Bool {
     switch op {
     case .equal:
       guard let value = value as? String else { return false }

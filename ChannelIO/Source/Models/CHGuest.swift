@@ -46,6 +46,10 @@ extension CHGuest {
     info[TargetKey.guestName.rawValue] = self.name
     info[TargetKey.guestId.rawValue] = self.id
     info[TargetKey.guestProfile.rawValue] = profile
+    info[TargetKey.os.rawValue] = "iOS \(UIDevice.current.systemVersion)"
+    info[TargetKey.deviceCategory.rawValue] = "mobile"
+    info[TargetKey.device.rawValue] = UIDevice.current.modelName
+    info[TargetKey.locale.rawValue] = CHUtils.getLocale()?.rawValue ?? "en"
     return info
   }
 }

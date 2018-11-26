@@ -9,7 +9,7 @@
 import Foundation
 
 enum TargetKey: String {
-  case ip = "ip"
+  case ip = "ip" //x
   case url = "url"
   case browser = "browser" //x
   case os = "os"
