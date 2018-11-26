@@ -234,22 +234,29 @@ extension ChannelIO {
   
   internal class func processPushBot(with property: [String: Any], nudges: [CHNudge]? = []) {
     guard let nudges = nudges else { return }
-    //guard mainStore.state.channel.pushBotPlan == .pro else { return }
+    guard mainStore.state.channel.pushBotPlan != .none else { return }
     let guest = mainStore.state.guest
-    
-    //NudgePromise.getNudges(pluginId: mainStore.state!.plugin.id)
-    Observable.of(nudges)
-      .flatMap({ (nudges) -> Observable<CHNudge> in
-        return Observable.from(nudges.filter { nudge in
-          TargetEvaluatorService.evaluate(
-            with: nudge.target,
-            userInfo: guest.userInfo.merging(
-              property,
-              uniquingKeysWith: { (_, second) in second }
-            )
+
+    Observable.from(nudges)
+      .filter { (nudge) -> Bool in
+        return TargetEvaluatorService.evaluate(
+          with: nudge.target,
+          userInfo: guest.userInfo.merging(
+            property,
+            uniquingKeysWith: { (_, second) in second }
           )
+        )
+      }
+      .toArray()
+      .asObservable()
+      .flatMap { (nudges) -> Observable<CHNudge> in
+        return Observable.from(nudges.filter {
+          userChatSelector(
+            state: mainStore.state,
+            userChatId: CHConstants.nudgeChat + $0.id
+          ) == nil
         })
-      })
+      }
       .flatMap ({ (nudge) -> Observable<CHNudge> in
         return Observable.just(nudge)
           .delay(
@@ -257,12 +264,6 @@ extension ChannelIO {
             scheduler: MainScheduler.instance
           )
       })
-      .filter {
-        return userChatSelector(
-          state: mainStore.state,
-          userChatId: CHConstants.nudgeChat + $0.id
-        ) == nil
-      }
       .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
         return NudgePromise.requestReach(nudgeId: nudge.id)
       })

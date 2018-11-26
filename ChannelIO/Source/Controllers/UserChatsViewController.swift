@@ -267,7 +267,7 @@ class UserChatsViewController: BaseViewController {
     let pluginId = mainStore.state.plugin.id
     let pluginSignal = CHPlugin.get(with: pluginId)
     let followersSignal = CHManager.getRecentFollowers()
-    let supportBot = channel.supportBotPlan == .pro ?
+    let supportBot = channel.supportBotPlan != .none ?
       CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil) :
       .empty()
     
