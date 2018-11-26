@@ -310,10 +310,6 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.baseNavigation != nil else { return }
     
     dispatch {
-      if mainStore.state.channel.realtimePlan == .none {
-        WsService.shared.disconnect()
-      }
-      
       ChannelIO.delegate?.willCloseMessenger?()
       ChannelIO.baseNavigation?.dismiss(
         animated: animated, completion: {

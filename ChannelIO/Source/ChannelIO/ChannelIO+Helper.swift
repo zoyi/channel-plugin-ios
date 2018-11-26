@@ -105,10 +105,8 @@ extension ChannelIO {
           data["settings"] = settings
           mainStore.dispatch(CheckInSuccess(payload: data))
           
-          if channel.realtimePlan != .none {
-            WsService.shared.connect()
-          }
-          
+          WsService.shared.connect()
+  
           subscriber.onNext(data)
           subscriber.onCompleted()
         }, onError: { error in

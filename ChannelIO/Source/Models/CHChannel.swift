@@ -64,7 +64,7 @@ struct CHChannel: CHEntity {
   var requestGuestInfo = true
   var messengerPlan: ChannelPlanType = .pro
   var pushBotPlan: ChannelPlanType = .pro
-  var realtimePlan: ChannelPlanType = .none
+  var supportBotPlan: ChannelPlanType = .none
   var blocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
@@ -174,7 +174,7 @@ extension CHChannel: Mappable {
     timeZone                <- map["timeZone"]
     messengerPlan           <- map["messengerPlan"]
     pushBotPlan             <- map["pushBotPlan"]
-    realtimePlan            <- map["realtimePlan"]
+    supportBotPlan          <- map["supportBotPlan"]
     blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden

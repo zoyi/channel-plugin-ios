@@ -87,7 +87,6 @@ class UserChatsViewController: BaseViewController {
     self.initNotifications()
     self.setDefaultNavItems()
     
-    
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     self.fetchUserChats(isInit: true, showIndicator: true)
   }
@@ -262,12 +261,16 @@ class UserChatsViewController: BaseViewController {
     self.isShowingChat = true
     
     let controller = self.prepareUserChat(userChatId: userChatId, text: text)
+    let channel = mainStore.state.channel
     
     //NOTE: Make sure to call onCompleted on observable method to avoid leak
     let pluginId = mainStore.state.plugin.id
     let pluginSignal = CHPlugin.get(with: pluginId)
     let followersSignal = CHManager.getRecentFollowers()
-    let supportBot = CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil)
+    let supportBot = channel.supportBotPlan == .pro ?
+      CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil) :
+      .empty()
+    
     var pluginBot: CHBot? = nil
     
     Observable.zip(pluginSignal, followersSignal, supportBot)
@@ -284,8 +287,7 @@ class UserChatsViewController: BaseViewController {
         if let botId = supportBots.first?.id {
           return SupportBotPromise.getSupportBotEntry(supportBotId: botId)
         } else {
-          let emptyData = CHSupportBotEntryInfo(step: nil, actions: [])
-          return Observable.just(emptyData)
+          return .empty()
         }
       })
       .observeOn(MainScheduler.instance)
