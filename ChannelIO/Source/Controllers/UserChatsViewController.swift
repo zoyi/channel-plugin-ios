@@ -267,7 +267,7 @@ class UserChatsViewController: BaseViewController {
     let pluginId = mainStore.state.plugin.id
     let pluginSignal = CHPlugin.get(with: pluginId)
     let followersSignal = CHManager.getRecentFollowers()
-    let supportBot = channel.supportBotPlan != .none ?
+    let supportBot = channel.canUseSupportBot ?
       CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil) :
       .empty()
     
@@ -287,12 +287,14 @@ class UserChatsViewController: BaseViewController {
         if let botId = supportBots.first?.id {
           return SupportBotPromise.getSupportBotEntry(supportBotId: botId)
         } else {
-          return .empty()
+          return .just(CHSupportBotEntryInfo(step: nil, actions: []))
         }
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (entryInfo) in
-        mainStore.dispatch(GetSupportBotEntry(bot: pluginBot, entry: entryInfo))
+        if entryInfo.step != nil {
+          mainStore.dispatch(GetSupportBotEntry(bot: pluginBot, entry: entryInfo))
+        }
         
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false

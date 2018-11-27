@@ -44,7 +44,11 @@ class MainNavigationController: BaseNavigationController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    mainStore.subscribe(self)
+    mainStore.subscribe(self) {
+      $0.select { (state: AppState) in
+        state.plugin
+      }.skipRepeats { $0 == $1 }
+    }
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -68,23 +72,23 @@ class MainNavigationController: BaseNavigationController {
 // MARK: - StoreSubscriber
 
 extension MainNavigationController: StoreSubscriber {
-  func newState(state: AppState) {
+  func newState(state: CHPlugin) {
     if !self.useDefault {
       // Bar Color
-      self.navigationBar.barTintColor = UIColor(state.plugin.color)
-      self.navigationBar.tintColor = state.plugin.textUIColor
+      self.navigationBar.barTintColor = UIColor(state.color)
+      self.navigationBar.tintColor = state.textUIColor
       
       // Title
       if self.title == nil || self.title == "" {
-        self.navigationBar.topItem?.title = state.channel.name
+        self.navigationBar.topItem?.title = state.name
       }
       
       // Title Color
-      let titleColor = state.plugin.textColor == "white" ? UIColor.white : UIColor.black
+      let titleColor = state.textColor == "white" ? UIColor.white : UIColor.black
       self.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: titleColor]
       
       // Status bar color
-      self.statusBarStyle = state.plugin.textColor == "white" ? .lightContent : .default
+      self.statusBarStyle = state.textColor == "white" ? .lightContent : .default
       self.setNeedsStatusBarAppearanceUpdate()
     }
   }

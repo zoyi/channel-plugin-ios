@@ -234,10 +234,16 @@ extension ChannelIO {
   
   internal class func processPushBot(with property: [String: Any], nudges: [CHNudge]? = []) {
     guard let nudges = nudges else { return }
-    guard mainStore.state.channel.pushBotPlan != .none else { return }
+    guard mainStore.state.channel.canUsePushBot else { return }
     let guest = mainStore.state.guest
-
-    Observable.from(nudges)
+    let filtered = nudges.filter({ (nudge) -> Bool in
+      userChatSelector(
+        state: mainStore.state,
+        userChatId: CHConstants.nudgeChat + nudge.id
+      ) == nil
+    })
+    
+    Observable.from(filtered)
       .filter { (nudge) -> Bool in
         return TargetEvaluatorService.evaluate(
           with: nudge.target,
@@ -248,15 +254,7 @@ extension ChannelIO {
         )
       }
       .toArray()
-      .asObservable()
-      .flatMap { (nudges) -> Observable<CHNudge> in
-        return Observable.from(nudges.filter {
-          userChatSelector(
-            state: mainStore.state,
-            userChatId: CHConstants.nudgeChat + $0.id
-          ) == nil
-        })
-      }
+      .flatMap { Observable.from($0) }
       .flatMap ({ (nudge) -> Observable<CHNudge> in
         return Observable.just(nudge)
           .delay(

@@ -123,7 +123,15 @@ struct CHChannel: CHEntity {
   }
   
   var notAllowToUseSDK: Bool {
-    return self.blocked || self.messengerPlan != .pro
+    return self.blocked || (self.messengerPlan != .pro && !self.trial)
+  }
+  
+  var canUsePushBot: Bool {
+    return !self.blocked && (self.pushBotPlan != .none || self.trial)
+  }
+  
+  var canUseSupportBot: Bool {
+    return !self.blocked && (self.supportBotPlan != .none || self.trial)
   }
   
   var shouldHideDefaultButton: Bool {
