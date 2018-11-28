@@ -153,18 +153,30 @@ extension CHUserChat {
   
   func read() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = UserChatPromise.setMessageRead(userChatId: self.id)
-        .subscribe(onNext: { (_) in
+      let signal = self.isLocalChat() ?
+        Observable.just(nil) :
+        UserChatPromise.setMessageRead(userChatId: self.id)
+          
+      let dispose = signal.subscribe(onNext: { (_) in
+        if self.isLocalChat() {
+          let guest = personSelector(
+            state: mainStore.state,
+            personType: self.personType,
+            personId: self.personId
+          ) as? CHGuest
+          mainStore.dispatch(UpdateGuestWithLocalRead(guest:guest, session:self.session))
+        } else {
           mainStore.dispatch(ReadSession(payload: self.session))
-          subscriber.onNext(true)
-          subscriber.onCompleted()
-        }, onError: { (error) in
-          subscriber.onNext(false)
-          subscriber.onCompleted()
-        })
+        }
+        subscriber.onNext(true)
+        subscriber.onCompleted()
+      }, onError: { (error) in
+        subscriber.onNext(false)
+        subscriber.onCompleted()
+      })
       
       return Disposables.create {
-        signal.dispose()
+        dispose.dispose()
       }
     })
   }

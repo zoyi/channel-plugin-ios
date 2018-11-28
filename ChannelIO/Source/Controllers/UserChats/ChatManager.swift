@@ -737,23 +737,16 @@ extension ChatManager {
   func requestRead() {
     guard !self.isRequestingReadAll else { return }
     guard let chat = userChatSelector(state: mainStore.state, userChatId: self.chatId) else { return }
-    
-    if chat.isLocalChat() {
-      mainStore.dispatch(
-        UpdateGuestWithLocalRead(
-          guest:self.guest, session:chat.session
-        )
-      )
-    } else {
-      self.isRequestingReadAll = true
-      chat.read()
-        .debounce(1, scheduler: MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (completed) in
-          self?.isRequestingReadAll = false
-        }, onError: { [weak self] (error) in
-          self?.isRequestingReadAll = false
-        }).disposed(by: self.disposeBag)
-    }
+
+    self.isRequestingReadAll = true
+    chat.read()
+      .debounce(1, scheduler: MainScheduler.instance)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (completed) in
+        self?.isRequestingReadAll = false
+      }, onError: { [weak self] (error) in
+        self?.isRequestingReadAll = false
+      }).disposed(by: self.disposeBag)
   }
   
   func getPlugin() -> Observable<(CHPlugin, CHBot?)> {

@@ -1,8 +1,10 @@
 # 5.0.0
 ## New
-* Push bot finally comes to SDK
+* Added Push bot feature
 
 ## Updates
+* Set closed user chat visibility to true by default
+* Added unit tests for push bot evaluation 
 * Improved data flow consistency
 * Refactored model and related methods
 
