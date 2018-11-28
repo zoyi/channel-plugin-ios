@@ -68,6 +68,7 @@ struct CHUserChat: ModelType {
   var session: CHSession?
   var lastTalkedHost: CHEntity?
   var channel: CHChannel?
+  var hasRemoved: Bool = false
 }
 
 extension CHUserChat: Mappable {
@@ -119,6 +120,9 @@ extension CHUserChat {
   }
 
   func remove() -> Observable<Any?> {
+    if self.isLocalChat() {
+      return .just(nil)
+    }
     return UserChatPromise.remove(userChatId: self.id)
   }
   

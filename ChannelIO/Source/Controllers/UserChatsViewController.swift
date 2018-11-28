@@ -225,22 +225,6 @@ class UserChatsViewController: BaseViewController {
       })
   }
 
-  fileprivate func setEditingNavItems() {
-    self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-      title: CHAssets.localized("ch.chat.resend.cancel"),
-      style: .plain,
-      target: self,
-      action: #selector(exitEditingMode(sender:))
-    )
-    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-      title: CHAssets.localized("ch.chat.delete"),
-      style: .plain,
-      target: self,
-      action: #selector(deleteSelectedUserChats(sender:))
-    )
-    self.navigationItem.rightBarButtonItem?.isEnabled = false
-  }
-
   fileprivate func showPlusButton() {
     self.plusBottomConstraint?.update(inset: 24)
     UIView.animate(withDuration: 0.3) { 
@@ -340,29 +324,6 @@ class UserChatsViewController: BaseViewController {
   }
 }
 
-// MARK: Navigation actions
-
-extension UserChatsViewController {
-  @objc func exitEditingMode(sender: UIBarButtonItem) {
-    self.tableView.setEditing(false, animated: true)
-    self.setDefaultNavItems()
-  }
-  
-  @objc func deleteSelectedUserChats(sender: UIBarButtonItem) {
-    //delete selections
-    if let selectedRows = self.tableView.indexPathsForSelectedRows {
-      self.deleteUserChats(selectedRows: selectedRows)
-        .subscribe(onNext: { [weak self] (deletedChatIds, indexPaths) in
-          mainStore.dispatch(DeleteUserChats(payload: deletedChatIds))
-
-          self?.tableView.setEditing(false, animated: true)
-          self?.setDefaultNavItems()
-      }, onError: { (error) in
-        //on error??
-      }).disposed(by: self.disposeBag)
-    }
-  }
-}
 // MARK: - StoreSubscriber
 
 extension UserChatsViewController: StoreSubscriber {
@@ -449,7 +410,7 @@ extension UserChatsViewController: UITableViewDataSource {
     button.buttonWidth = 70
     button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
     cell.rightButtons = [
-        button
+      button
     ]
     cell.rightSwipeSettings.transition = .drag
     cell.tintColor = CHColors.warmPink
@@ -520,18 +481,12 @@ extension UserChatsViewController {
       }).disposed(by: self.disposeBag)
   }
   
-  func deleteUserChats(selectedRows: [IndexPath]) -> Observable<([String],[IndexPath])> {
+  func deleteUserChat(userChat: CHUserChat) -> Observable<CHUserChat> {
     return Observable.create { subscribe in
-      var deleteUserChatIds = [String]()
-      let signals =  selectedRows.map ({ (indexPath) -> Observable<Any?> in
-        let userChat = self.userChats[indexPath.row]
-        deleteUserChatIds.append(userChat.id)
-        return userChat.remove()
-      })
       
-      let observe = Observable.zip(signals)
+      let observe = userChat.remove()
         .subscribe(onNext: { (_) in
-          subscribe.onNext((deleteUserChatIds, selectedRows))
+          subscribe.onNext(userChat)
           subscribe.onCompleted()
         }, onError: { (error) in
           subscribe.onError(error)
@@ -597,11 +552,10 @@ extension UserChatsViewController : MGSwipeTableCellDelegate {
     
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
     
-    self.deleteUserChats(selectedRows: [indexPath])
+    self.deleteUserChat(userChat: self.userChats[indexPath.row])
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (deletedChatIds, indexPaths) in
-        mainStore.dispatch(DeleteUserChats(payload: deletedChatIds))
-        self?.setDefaultNavItems()
+      .subscribe(onNext: { (userChat) in
+        mainStore.dispatch(DeleteUserChat(payload: userChat))
       }, onError: { (error) in
           //on error??
       }).disposed(by: self.disposeBag)

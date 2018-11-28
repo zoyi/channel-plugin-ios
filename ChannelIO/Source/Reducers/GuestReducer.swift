@@ -49,6 +49,14 @@ func guestReducer(action: Action, guest: CHGuest?) -> CHGuest {
     }
     return guest ?? CHVeil()
     
+  case let action as DeleteUserChat:
+    if let session = action.payload.session, var guest = guest {
+      let adjustcount = guest.alert - session.alert
+      guest.alert = adjustcount
+      return guest
+    }
+    return guest ?? CHVeil()
+  
   case _ as CheckOutSuccess:
     return CHVeil()
     

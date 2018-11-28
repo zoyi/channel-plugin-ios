@@ -58,7 +58,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     return state?.upsert(messages: [action.payload]) ?? MessagesState()
     
   case let action as DeleteUserChat:
-    return state?.remove(userChatId: action.payload) ?? MessagesState()
+    return state?.remove(userChatId: action.payload.id) ?? MessagesState()
   
   case _ as InsertWelcome:
     let msg = LocalMessageFactory.generate(

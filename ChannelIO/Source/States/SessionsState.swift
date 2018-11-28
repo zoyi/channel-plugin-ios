@@ -27,6 +27,23 @@ struct SessionsState: StateType {
     return self
   }
   
+  mutating func remove(userChatId: String?) -> SessionsState {
+    guard let userChatId = userChatId else { return self }
+    var removable: [String] = []
+    for (k, v) in self.sessions {
+      if v.chatId == userChatId {
+        removable.append(k)
+      }
+    }
+    removable.forEach { self.sessions.removeValue(forKey: $0) }
+    return self
+  }
+  
+  mutating func remove(userChatIds: [String]) -> SessionsState {
+    userChatIds.forEach { _ = self.remove(userChatId: $0) }
+    return self
+  }
+  
   mutating func upsert(session: CHSession?) -> SessionsState {
     guard let session = session else { return self }
     self.sessions[session.id] = session

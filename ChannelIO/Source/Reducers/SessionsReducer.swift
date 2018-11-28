@@ -45,6 +45,9 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
     session?.unread = 0
     return state?.upsert(session: session) ?? SessionsState()
     
+  case let action as DeleteUserChats:
+    return state?.remove(userChatIds: action.payload.map { $0.id }) ?? SessionsState()
+    
   case _ as CheckOutSuccess:
     return state?.clear() ?? SessionsState()
   

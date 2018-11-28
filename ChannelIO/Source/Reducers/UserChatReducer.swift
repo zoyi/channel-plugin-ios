@@ -26,10 +26,10 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
     return state?.upsert(userChats: [action.payload]) ?? UserChatsState()
   
   case let action as DeleteUserChat:
-    return state?.remove(userChatId: action.payload) ?? UserChatsState()
+    return state?.remove(userChatId: action.payload.id) ?? UserChatsState()
   
   case let action as DeleteUserChats:
-    return state?.remove(userChatIds: action.payload) ?? UserChatsState()
+    return state?.remove(userChatIds: action.payload.map { $0.id }) ?? UserChatsState()
   
   case _ as DeleteUserChatsAll:
     return state?.clear() ?? UserChatsState()

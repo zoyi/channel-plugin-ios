@@ -60,11 +60,11 @@ struct UpdateUserChat: Action {
 }
 
 struct DeleteUserChat: Action {
-  public let payload: String
+  public let payload: CHUserChat
 }
 
 struct DeleteUserChats: Action {
-  public let payload: [String]
+  public let payload: [CHUserChat]
 }
 
 struct DeleteUserChatsAll: Action {}

@@ -441,7 +441,7 @@ fileprivate extension WsService {
         self?.eventSubject.onNext((type, session))
       case WsServiceType.DeleteUserChat:
         guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatchOnMain(DeleteUserChat(payload: userChat.id))
+        mainStore.dispatchOnMain(DeleteUserChat(payload: userChat))
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.DeleteMessage:
         guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
