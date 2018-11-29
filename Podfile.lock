@@ -1,22 +1,59 @@
 PODS:
-  - Alamofire (4.7.3)
-  - Cache (4.2.0)
+  - Alamofire (4.8.0)
+  - Cache (5.2.0)
   - CHDwifft (0.8.2)
   - CHNavBar (1.2.1)
   - CHSlackTextViewController (1.10.25)
   - CRToast (0.0.9)
-  - DKImagePickerController (3.8.1):
-    - DKImagePickerController/Camera (= 3.8.1)
-    - DKImagePickerController/ImageManager (= 3.8.1)
-  - DKImagePickerController/Camera (3.8.1)
-  - DKImagePickerController/ImageManager (3.8.1)
+  - DKCamera (1.6.4)
+  - DKImagePickerController (4.1.0):
+    - DKImagePickerController/Camera (= 4.1.0)
+    - DKImagePickerController/Core (= 4.1.0)
+    - DKImagePickerController/ImageDataManager (= 4.1.0)
+    - DKImagePickerController/InlineCamera (= 4.1.0)
+    - DKImagePickerController/PhotoEditor (= 4.1.0)
+    - DKImagePickerController/PhotoGallery (= 4.1.0)
+    - DKImagePickerController/Resource (= 4.1.0)
+  - DKImagePickerController/Camera (4.1.0):
+    - DKCamera
+    - DKImagePickerController/Core
+  - DKImagePickerController/Core (4.1.0):
+    - DKImagePickerController/ImageDataManager
+    - DKImagePickerController/Resource
+  - DKImagePickerController/ImageDataManager (4.1.0)
+  - DKImagePickerController/InlineCamera (4.1.0):
+    - DKCamera
+    - DKImagePickerController/Core
+  - DKImagePickerController/PhotoEditor (4.1.0):
+    - DKImagePickerController/Core
+    - TOCropViewController (~> 2.3)
+  - DKImagePickerController/PhotoGallery (4.1.0):
+    - DKImagePickerController/Core
+    - DKPhotoGallery
+  - DKImagePickerController/Resource (4.1.0)
+  - DKPhotoGallery (0.0.11):
+    - DKPhotoGallery/Core (= 0.0.11)
+    - DKPhotoGallery/Model (= 0.0.11)
+    - DKPhotoGallery/Preview (= 0.0.11)
+    - DKPhotoGallery/Resource (= 0.0.11)
+    - SDWebImage/GIF
+  - DKPhotoGallery/Core (0.0.11):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Preview
+    - SDWebImage/GIF
+  - DKPhotoGallery/Model (0.0.11):
+    - SDWebImage/GIF
+  - DKPhotoGallery/Preview (0.0.11):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Resource
+    - SDWebImage/GIF
+  - DKPhotoGallery/Resource (0.0.11):
+    - SDWebImage/GIF
   - FLAnimatedImage (1.0.12)
-  - Hue (3.0.1)
-  - Imaginary (3.0.3):
-    - Cache (~> 4.0)
-  - Lightbox (2.1.2):
-    - Hue (~> 3.0)
-    - Imaginary (~> 3.0)
+  - Imaginary (4.2.0):
+    - Cache (~> 5.0)
+  - Lightbox (2.3.0):
+    - Imaginary (~> 4.0)
   - M13ProgressSuite (1.2.9)
   - MGSwipeTableCell (1.6.7)
   - Nimble (7.3.1)
@@ -54,15 +91,16 @@ PODS:
   - Starscream (3.0.6)
   - SVProgressHUD (2.2.5)
   - SwiftyJSON (4.2.0)
+  - TOCropViewController (2.3.8)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.7.1)
+  - Alamofire (~> 4.8.0)
   - CHDwifft
   - CHNavBar
   - CHSlackTextViewController
   - CRToast
-  - DKImagePickerController (~> 3.8.1)
-  - Lightbox (= 2.1.2)
+  - DKImagePickerController (~> 4.1.0)
+  - Lightbox (= 2.3.0)
   - M13ProgressSuite
   - MGSwipeTableCell
   - Nimble
@@ -89,9 +127,10 @@ SPEC REPOS:
     - CHNavBar
     - CHSlackTextViewController
     - CRToast
+    - DKCamera
     - DKImagePickerController
+    - DKPhotoGallery
     - FLAnimatedImage
-    - Hue
     - Imaginary
     - Lightbox
     - M13ProgressSuite
@@ -112,19 +151,21 @@ SPEC REPOS:
     - Starscream
     - SVProgressHUD
     - SwiftyJSON
+    - TOCropViewController
 
 SPEC CHECKSUMS:
-  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Cache: f28f8dd64b632155aabf9b3906b036a659048251
+  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
+  Cache: 807c5d86d01a177f06ede9865add3aea269bbfd4
   CHDwifft: 11871cb81a6a391f844856c074622df07d19d372
   CHNavBar: 137cfc3ad7bdbbf155125d7b71bea02ddf9294a6
   CHSlackTextViewController: 2ac856e9cb50aa6281e43f5e11c348d9e81d9081
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  DKImagePickerController: 51ad6ee2ba05414bb741db54a72cd7f4fb178e34
+  DKCamera: 61fa47629a39354e5111bca1fe96695de020dcb9
+  DKImagePickerController: ab7185a76b75a6559db73c568c9791c87f915a41
+  DKPhotoGallery: e5fc53899345c26af4374503dd249caabac7d26a
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  Hue: 93e852fa6211ab35922ad8c293f51c43d6c79eb2
-  Imaginary: 9b45836a5af881f452a86e0a1215772ae4712d00
-  Lightbox: 2dc267df8be2285bc7724cb11cbbf4aaaf59dced
+  Imaginary: dae33d06dbc2ada22f98afef5eb45cc061311a2c
+  Lightbox: d317750e4132bfb871a5307cfe0a2c7d6a583c65
   M13ProgressSuite: ea9f7263e73e9215e6849dfa54e29ee0ad6a145c
   MGSwipeTableCell: fb20e983988bde2b8d0df29c2d9e1d8ffd10b74a
   Nimble: 04f732da099ea4d153122aec8c2a88fd0c7219ae
@@ -143,7 +184,8 @@ SPEC CHECKSUMS:
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  TOCropViewController: 0a075f02c253e88095143bbac7b013fc6fba5090
 
-PODFILE CHECKSUM: f1263e25a1f36d083dc96b55171a55a7fddb7252
+PODFILE CHECKSUM: 3758a8672314db21969d2f994a62b40b1c3ca0c2
 
 COCOAPODS: 1.5.3

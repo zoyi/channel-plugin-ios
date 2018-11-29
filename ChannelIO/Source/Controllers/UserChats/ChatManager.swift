@@ -975,17 +975,23 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     max: Int = 0,
     assetType: DKImagePickerControllerAssetType = .allAssets,
     from view: UIViewController?) {
-    let pickerController = DKImagePickerController()
+    let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
+    groupDataManagerConfiguration.fetchLimit = 10
+    groupDataManagerConfiguration.assetGroupTypes = [
+      .smartAlbumUserLibrary,
+      .smartAlbumFavorites,
+      .smartAlbumVideos,
+      .albumRegular
+    ]
+    
+    let groupDataManager = DKImageGroupDataManager(configuration: groupDataManagerConfiguration)
+    
+    let pickerController = DKImagePickerController(groupDataManager: groupDataManager)
     pickerController.sourceType = type
     pickerController.showsCancelButton = true
     pickerController.maxSelectableCount = max
     pickerController.assetType = assetType
-//    pickerController.assetGroupTypes = [
-//      .smartAlbumUserLibrary,
-//      .smartAlbumFavorites,
-//      .smartAlbumVideos,
-//      .albumRegular]
-    
+
     pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
       self?.sendImages(assets: assets)
     }
