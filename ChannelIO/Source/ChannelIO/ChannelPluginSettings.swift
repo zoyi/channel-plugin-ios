@@ -33,10 +33,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   /* launcher specific configuration object */
   @objc public var launcherConfig: LauncherConfig?
   
-  /* true if default launcher button not to be displayed. Default is false */
-  @available(*, deprecated)
-  @objc public var hideDefaultLauncher: Bool = false
-  
   /* true if default in-app push notification not to be displayed. Default is false */
   @objc public var hideDefaultInAppPush: Bool = false
   
@@ -78,7 +74,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     userId: String? = nil,
     debugMode: Bool = false,
     launcherConfig: LauncherConfig? = nil,
-    hideDefaultLauncher: Bool = false,
     hideDefaultInAppPush: Bool = false,
     enabledTrackDefaultEvent: Bool = true,
     locale: CHLocale = .device) {
@@ -88,7 +83,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     self.userId = userId
     self.debugMode = debugMode
     self.launcherConfig = launcherConfig
-    self.hideDefaultLauncher = hideDefaultLauncher
     self.hideDefaultInAppPush = hideDefaultInAppPush
     self.enabledTrackDefaultEvent = enabledTrackDefaultEvent
 
@@ -115,8 +109,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     let debugMode = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.debugMode) || aDecoder.decodeBool(forKey: "debugMode")
     let launcherConfig = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.launcherConfig) as? LauncherConfig ??
       aDecoder.decodeObject(forKey: "launcherConfig") as? LauncherConfig
-    let hideDefaultLauncher = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultLauncher) ||
-      aDecoder.decodeBool(forKey: "hideDefaultLauncher")
     let hideDefaultInAppPush = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultInAppPush) ||
       aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
     let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.enabledTrackDefaultEvent) ||
@@ -127,7 +119,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
       userId: userId,
       debugMode: debugMode,
       launcherConfig: launcherConfig,
-      hideDefaultLauncher: hideDefaultLauncher,
       hideDefaultInAppPush: hideDefaultInAppPush,
       enabledTrackDefaultEvent: enabledTrackDefaultEvent,
       locale: locale)
@@ -138,7 +129,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     aCoder.encode(self.userId, forKey: ChannelPluginSettingKey.userId)
     aCoder.encode(self.debugMode, forKey: ChannelPluginSettingKey.debugMode)
     aCoder.encode(self.launcherConfig, forKey: ChannelPluginSettingKey.launcherConfig)
-    aCoder.encode(self.hideDefaultLauncher, forKey: ChannelPluginSettingKey.hideDefaultLauncher)
     aCoder.encode(self.hideDefaultInAppPush, forKey: ChannelPluginSettingKey.hideDefaultInAppPush)
     aCoder.encode(self.enabledTrackDefaultEvent, forKey: ChannelPluginSettingKey.enabledTrackDefaultEvent)
     aCoder.encode(self.locale.rawValue, forKey: ChannelPluginSettingKey.locale)
@@ -169,14 +159,6 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc
   public func set(launcherConfig: LauncherConfig?) -> ChannelPluginSettings {
     self.launcherConfig = launcherConfig
-    return self
-  }
-  
-  @discardableResult
-  @available(*, deprecated)
-  @objc
-  public func set(hideDefaultLauncher: Bool) -> ChannelPluginSettings {
-    self.hideDefaultLauncher = hideDefaultLauncher
     return self
   }
   

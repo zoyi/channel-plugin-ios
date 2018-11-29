@@ -121,7 +121,7 @@ class ChatManager: NSObject {
   
   fileprivate func observeAppState() {
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationDidBecomeActive)
+      .rx.notification(UIApplication.didBecomeActiveNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.didChatLoaded = false
@@ -129,7 +129,7 @@ class ChatManager: NSObject {
       }.disposed(by: self.disposeBag)
     
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationWillResignActive)
+      .rx.notification(UIApplication.willResignActiveNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.prepareToLeave()
@@ -980,11 +980,11 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     pickerController.showsCancelButton = true
     pickerController.maxSelectableCount = max
     pickerController.assetType = assetType
-    pickerController.assetGroupTypes = [
-      .smartAlbumUserLibrary,
-      .smartAlbumFavorites,
-      .smartAlbumVideos,
-      .albumRegular]
+//    pickerController.assetGroupTypes = [
+//      .smartAlbumUserLibrary,
+//      .smartAlbumFavorites,
+//      .smartAlbumVideos,
+//      .albumRegular]
     
     pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
       self?.sendImages(assets: assets)
@@ -999,8 +999,8 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     view?.present(controller, animated: true, completion: nil)
   }
   
-  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-    let capturedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    let capturedImage = info[.originalImage] as! UIImage
     self.sendImage(imageData: capturedImage.normalizedImage())
     picker.dismiss(animated: true, completion: nil)
   }

@@ -88,10 +88,16 @@ class NavigationItem: UIBarButtonItem {
   
   convenience init(
     image: UIImage?,
+    tintColor: UIColor? = nil,
     style: UIBarButtonItem.Style,
     actionHandler: (() -> Void)?) {
     
-    self.init(image: image, style: style, target: nil, action: #selector(barButtonItemPressed))
+    var itemImage: UIImage? = image
+    if let tintColor = tintColor {
+      itemImage = image?.withRenderingMode(.alwaysTemplate).tint(with:tintColor)
+    }
+    
+    self.init(image: itemImage, style: style, target: nil, action: #selector(barButtonItemPressed))
     self.target = self
     self.actionHandler = actionHandler
   }

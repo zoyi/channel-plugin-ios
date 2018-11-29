@@ -67,8 +67,8 @@ class CHAssets {
   
   class func localized(
     _ key: String,
-    attributes: [NSAttributedStringKey: Any],
-    tagAttributes: [StringTagType: [NSAttributedStringKey: Any]]? = nil) -> NSAttributedString {
+    attributes: [NSAttributedString.Key: Any],
+    tagAttributes: [StringTagType: [NSAttributedString.Key: Any]]? = nil) -> NSAttributedString {
     
     var locale = "en"
     if let settings = mainStore.state.settings, let settingLocale = settings.appLocale?.rawValue {

@@ -9,7 +9,6 @@
 import ReSwift
 
 func guestReducer(action: Action, guest: CHGuest?) -> CHGuest {
-  var guest = guest
   switch action {
   case let action as CheckInSuccess:
     if let key = action.payload["guestKey"] as? String {

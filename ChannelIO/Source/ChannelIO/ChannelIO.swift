@@ -346,7 +346,6 @@ public final class ChannelIO: NSObject {
   @objc
   public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
     guard ChannelIO.isValidStatus else { return }
-    guard let settings = ChannelIO.settings else { return }
     
     let version = Bundle(for: ChannelIO.self)
       .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"

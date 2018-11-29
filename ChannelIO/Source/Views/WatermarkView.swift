@@ -16,15 +16,15 @@ class WatermarkView : BaseView {
   }
   
   let descLabel = UILabel().then {
-    let attributes = [
-      NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-      NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11)
+    let attributes: [NSAttributedString.Key: Any] = [
+      .foregroundColor: CHColors.blueyGrey,
+      .font: UIFont.systemFont(ofSize: 11)
     ]
 
-    let tagAttributes = [
+    let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
       StringTagType.bold:[
-        NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-        NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11)
+        .foregroundColor: CHColors.blueyGrey,
+        .font: UIFont.boldSystemFont(ofSize: 11)
       ]
     ]
     
