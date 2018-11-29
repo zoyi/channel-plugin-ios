@@ -72,7 +72,7 @@ struct CHChannel: CHEntity {
   var awayOption: ChannelAwayOptionType = .active
   var workingType: ChannelWorkingType = .always
   var trial = true
-  var trialExpiryDate: Date? = nil
+  var trialEndDate: Date? = nil
   
   var workingTimeString: String {
     var workingTimeDictionary = self.workingTime
@@ -187,6 +187,6 @@ extension CHChannel: Mappable {
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden
     trial                   <- map["trial"]
-    trialExpiryDate         <- (map["trialExpiryDate"], CustomDateTransform())
+    trialEndDate            <- (map["trialEndDate"], CustomDateTransform())
   }
 }

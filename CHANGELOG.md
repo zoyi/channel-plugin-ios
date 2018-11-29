@@ -3,6 +3,7 @@
 * Added Push bot feature
 
 ## Updates
+* swift 4.2 migration
 * Set closed user chat visibility to true by default
 * Added unit tests for push bot evaluation 
 * Improved data flow consistency
