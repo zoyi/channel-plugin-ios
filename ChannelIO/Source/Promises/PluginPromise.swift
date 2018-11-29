@@ -228,4 +228,28 @@ struct PluginPromise {
       }
     }).subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
+  
+  static func sendPushAck(chatId: String?) -> Observable<Bool?> {
+    return Observable.create({ (subscriber) -> Disposable in
+      guard let chatId = chatId else {
+        subscriber.onNext(nil)
+        return Disposables.create()
+      }
+      
+      let req = Alamofire.request(RestRouter.SendPushAck(chatId))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { (response) in
+          if response.response?.statusCode == 200 {
+            subscriber.onNext(true)
+            subscriber.onCompleted()
+          } else {
+            subscriber.onError(CHErrorPool.unregisterError)
+          }
+        })
+      
+      return Disposables.create {
+        req.cancel()
+      }
+    })
+  }
 }

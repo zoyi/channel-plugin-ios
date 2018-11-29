@@ -9,7 +9,7 @@
 import ReSwift
 
 struct CreateMessage: Action {
-  public let payload: CHMessage
+  public let payload: CHMessage?
 }
 
 struct UpdateMessage: Action {
@@ -23,5 +23,4 @@ struct DeleteMessage: Action {
 // local message action
 
 struct InsertWelcome : Action {}
-//struct CreateFeedback: Action {}
-//struct CreateCompletedFeedback: Action {}
+struct InsertSupportBotEntry: Action {}

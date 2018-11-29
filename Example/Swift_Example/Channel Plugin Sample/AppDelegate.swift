@@ -15,11 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
   var window: UIWindow?
 
-
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     
-    registerForRemoteNotification()   
+    registerForRemoteNotification(application)
+    ChannelIO.initialize(application)
     return true
   }
 
@@ -45,20 +45,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
 
-  func registerForRemoteNotification() {
+  func registerForRemoteNotification(_ application: UIApplication) {
     if #available(iOS 10.0, *) {
       let center  = UNUserNotificationCenter.current()
       center.delegate = self
       center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
-
+        if granted {
+          application.registerForRemoteNotifications()
+        }
       }
-      UIApplication.shared.registerForRemoteNotifications()
     }
     else {
-      UIApplication.shared.registerUserNotificationSettings(
+      application.registerUserNotificationSettings(
         UIUserNotificationSettings(types: [.sound, .alert, .badge], categories: nil)
       )
-      UIApplication.shared.registerForRemoteNotifications()
+      application.registerForRemoteNotifications()
     }
   }
   
@@ -75,21 +76,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                               withCompletionHandler completionHandler: @escaping () -> Void) {
     let userInfo = response.notification.request.content.userInfo
     ChannelIO.handlePushNotification(userInfo)
-    
     completionHandler()
   }
   
   func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-    
+    print("bb \(userInfo)")
   }
   
-  func application(application: UIApplication,
-                   didReceiveRemoteNotification userInfo: [NSObject : AnyObject],
-                   fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-
-  }
-  
-  //when push comes in
+  //when push comes in only for foreground
   @available(iOS 10.0, *)
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               willPresent notification: UNNotification,
@@ -100,7 +94,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
   func application(_ application: UIApplication,
                    didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-    completionHandler(.newData)
+    print("aa \(userInfo)")
+    ChannelIO.handlePushNotification(userInfo) {
+      completionHandler(.noData)
+    }
   }
 
 }

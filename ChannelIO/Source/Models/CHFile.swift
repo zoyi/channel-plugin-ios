@@ -33,7 +33,7 @@ struct CHFile {
   var size = 0
   var category = ""
   var image = false
-  var previewThumb: CHPreviewThumb?
+  var previewThumb: CHImageMeta?
 
   var isPreviewable: Bool! {
     return self.image == true && self.previewThumb != nil
@@ -86,6 +86,10 @@ struct CHFile {
     }
   }
   
+  init() {
+    
+  }
+  
   init(data: Data, category: String? = nil) {
     self.rawData = data
     self.image = false
@@ -131,6 +135,18 @@ struct CHFile {
     default:
       return .plain
     }
+  }
+  
+  static func create(imageable: CHImageable) -> CHFile? {
+    if let url = imageable.imageUrl {
+      var file = CHFile()
+      file.url = url
+      file.image = true
+      file.previewThumb = imageable.imageMeta
+      return file
+    }
+
+    return nil
   }
 }
 

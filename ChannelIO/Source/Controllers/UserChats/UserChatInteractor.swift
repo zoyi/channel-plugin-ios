@@ -191,9 +191,10 @@ extension UserChatInteractor {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (type, data) in
         let chat = userChatSelector(state: mainStore.state, userChatId: self?.userChatId)
+        if let chat = chat, let prevChat = self?.userChat, chat.updatedAt != prevChat.updatedAt {
+          self?.requestRead()
+        }
         self?.chatEventSubject.onNext(.chat(obj: chat))
-        
-        //generate feedback message if needed
       })
   }
   
@@ -305,11 +306,10 @@ extension UserChatInteractor {
     })
   }
   
-  func requestRead(at message: CHMessage?) {
-    guard let message = message else { return }
+  func requestRead() {
     guard !self.isRequstingReadAll else { return }
     
-    self.userChat?.read(at: message).subscribe(onNext: { [weak self] (completed) in
+    self.userChat?.read().subscribe(onNext: { [weak self] (completed) in
       self?.isRequstingReadAll = false
     }, onError: { [weak self] (error) in
       self?.isRequstingReadAll = false

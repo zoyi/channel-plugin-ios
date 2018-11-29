@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 extension UIButton {
   func alignVertical(spacing: CGFloat = 6.0) {
@@ -27,5 +28,19 @@ extension UIButton {
     self.contentEdgeInsets = UIEdgeInsets(
       top: edgeOffset, left: 0.0,
       bottom: edgeOffset, right: 0.0)
+  }
+}
+
+extension Reactive where Base: UIButton {
+  var isHighlighted: Observable<Bool> {
+    let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isHighlighted))
+    
+    let boolObservable = anyObservable
+      .flatMap { Observable.from(optional: $0.first as? Bool) }
+      .startWith(self.base.isHighlighted)
+      .distinctUntilChanged()
+      .share()
+    
+    return boolObservable
   }
 }

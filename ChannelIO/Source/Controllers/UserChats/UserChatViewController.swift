@@ -27,11 +27,15 @@ final class UserChatViewController: BaseSLKTextViewController {
     static let messageCellMaxWidth = UIScreen.main.bounds.width
   }
   
+  struct Metric {
+    static let newButtonHeight = 46
+  }
+  
   // MARK: Properties
   var channel: CHChannel = mainStore.state.channel
   var userChatId: String?
   var userChat: CHUserChat?
-
+  
   var preloadText: String = ""
   var isFetching = false
   var isRequstingReadAll = false
@@ -46,13 +50,13 @@ final class UserChatViewController: BaseSLKTextViewController {
       self.diffCalculator?.rows = self.messages
     }
   }
-  
-  var createdFeedback = false
-  var createdFeedbackComplete = false
-  
+
   var disposeBag = DisposeBag()
   var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
+  
+  var chatUpdateSubject = PublishSubject<Any?>()
+  var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?)>()
   
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
@@ -62,7 +66,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   var newChatButton = UIButton(type: .system).then {
     $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
-    $0.setTitle(CHAssets.localized("ch.chat.reopen"), for: .normal)
+    $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
     $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
     $0.tintColor = mainStore.state.plugin.textUIColor
     
@@ -120,9 +124,17 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initViews()
     self.initNewChatButton()
     self.initPhotoViewer()
-    //new user chat
-    if self.userChatId == nil {
-       mainStore.dispatchOnMain(InsertWelcome())
+
+    self.initUpdaters()
+    
+    if mainStore.state.messagesState.supportBotEntry != nil && self.userChatId == nil {
+      self.setTextInputbarHidden(true, animated: false)
+      mainStore.dispatchOnMain(InsertSupportBotEntry())
+      self.readyToDisplay()
+    } else if self.userChatId == nil {
+      mainStore.dispatchOnMain(InsertWelcome())
+      self.readyToDisplay()
+    } else if self.userChatId?.hasPrefix(CHConstants.nudgeChat) == true {
       self.readyToDisplay()
     }
   }
@@ -137,6 +149,22 @@ final class UserChatViewController: BaseSLKTextViewController {
     mainStore.unsubscribe(self)
   }
 
+  func initUpdaters() {
+    self.navigationUpdateSubject
+      .takeUntil(self.rx.deallocated)
+      .debounce(0.7, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (state, chat) in
+        self?.updateNavigationIfNeeded(state: state, nextUserChat: chat)
+      }).disposed(by: self.disposeBag)
+    
+    self.chatUpdateSubject
+      .takeUntil(self.rx.deallocated)
+      .debounce(0.7, scheduler: ConcurrentMainScheduler.instance)
+      .subscribe(onNext: { [weak self] _ in
+        self?.fetchChatIfNeeded()
+      }).disposed(by: self.disposeBag)
+  }
+  
   fileprivate func initManagers() {
     self.chatManager = ChatManager(id: self.userChatId)
     self.chatManager.chat = userChatSelector(
@@ -162,7 +190,7 @@ final class UserChatViewController: BaseSLKTextViewController {
         self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(15).constraint
       }
       make.centerX.equalToSuperview()
-      make.height.equalTo(46)
+      make.height.equalTo(Metric.newButtonHeight)
     }
   }
   
@@ -187,6 +215,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       if self?.textInputbar.barState == .disabled && self?.chatManager?.profileIsFocus == false {
         return
       }
+      self?.titleView?.isExpanded = false
       self?.shyNavBarManager.contract(true)
       self?.presentKeyboard(self?.menuAccesoryView == nil)
     }.disposed(by: self.disposeBag)
@@ -210,6 +239,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: WatermarkCell.self)
     self.tableView.register(cellType: ProfileCell.self)
     self.tableView.register(cellType: FormMessageCell.self)
+    self.tableView.register(cellType: FormWebMessageCell.self)
+    self.tableView.register(cellType: FormMediaMessageCell.self)
+    self.tableView.register(cellType: FormFileMessageCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -233,7 +265,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
       tableView: self.tableView,
       initialRows: self.messages,
-      sectionIndex: self.channel.showWatermark ? 2 : 1
+      sectionIndex: self.channel.notAllowToUseSDK ? 2 : 1
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
     self.diffCalculator?.insertionAnimation = .none
@@ -311,7 +343,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.shyNavBarManager.scrollView = self.tableView
     self.shyNavBarManager.stickyNavigationBar = true
     self.shyNavBarManager.fadeBehavior = .subviews
-    if let state = userChat?.state, state != "ready" &&
+    if let state = userChat?.state, state != .ready &&
       self.shyNavBarManager.extensionView == nil || !self.shyNavBarManager.isExpanded() {
       self.titleView?.isExpanded = false
       self.shyNavBarManager.hideExtension = true
@@ -329,6 +361,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       make.trailing.equalToSuperview()
     }
     
+    //?
     if let expanded = self.titleView?.isExpanded, expanded {
       self.shyNavBarManager.expand(false)
     }
@@ -341,8 +374,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.errorToastView.refreshImageView.signalForClick()
       .subscribe(onNext: { [weak self] _ in
-        self?.createdFeedback = false
-        self?.createdFeedbackComplete = false
         self?.chatManager?.reconnect()
       }).disposed(by: self.disposeBag)
     
@@ -384,7 +415,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     if showSetting {
       self.navigationItem.leftBarButtonItem = NavigationItem(
         image: CHAssets.getImage(named: "settings"),
-        textColor: tintColor,
+        tintColor: tintColor,
+        style: .plain,
         actionHandler: { [weak self] in
           self?.profileSubject.onNext(nil)
         })
@@ -392,33 +424,47 @@ final class UserChatViewController: BaseSLKTextViewController {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
 
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "back"),
-        text: alertCount,
-        fitToSize: alert != 0,
-        alignment: alert == 0 ? .left : .center,
-        textColor: tintColor,
-        actionHandler: { [weak self] in
-          self?.shyNavBarManager.disable = true
-          mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-          _ = self?.navigationController?.popViewController(animated: true)
-        })
+      if alert == 0 {
+        self.navigationItem.leftBarButtonItem = NavigationItem(
+          image: CHAssets.getImage(named: "back"),
+          tintColor: tintColor,
+          style: .plain,
+          actionHandler: { [weak self] in
+            self?.shyNavBarManager.disable = true
+            mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+            _ = self?.navigationController?.popViewController(animated: true)
+          })
+      } else {
+        self.navigationItem.leftBarButtonItem = NavigationItem(
+          image: CHAssets.getImage(named: "back"),
+          text: alertCount,
+          fitToSize: true,
+          alignment: .left,
+          textColor: tintColor,
+          actionHandler: { [weak self] in
+            self?.shyNavBarManager.disable = true
+            mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+            _ = self?.navigationController?.popViewController(animated: true)
+          })
+      }
     }
 
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      textColor: tintColor,
+      tintColor: tintColor,
+      style: .plain,
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         ChannelIO.close(animated: true)
       })
     
-    //inefficient, but workaround to fix iOS 11 layoutMargin
-//    if let bar = self.navigationController?.navigationBar {
-//      bar.subviews[2].layoutMargins != UIEdgeInsets.zero {
-//      bar.setNeedsLayout()
-//      bar.layoutIfNeeded()
-//    }
+    if #available(iOS 11, *){
+      if let bar = self.navigationController?.navigationBar,
+        bar.subviews[2].layoutMargins.left != 0 {
+        bar.setNeedsLayout()
+        bar.layoutIfNeeded()
+      }
+    }
   }
 }
 
@@ -436,10 +482,6 @@ extension UserChatViewController: StoreSubscriber {
     let offset = self.tableView.contentOffset
     let hasNewMessage = self.chatManager.hasNewMessage(current: self.messages, updated: messages)
     
-    if hasNewMessage {
-      self.chatManager?.requestRead(at: messages.first)
-    }
-    
     //message only needs to be replace if count is differe
     self.messages = messages
     //fixed contentOffset
@@ -454,19 +496,22 @@ extension UserChatViewController: StoreSubscriber {
     
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     
-    self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
+    self.navigationUpdateSubject.onNext((state, userChat))
     self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat)
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     self.showErrorIfNeeded(state: state)
     
-    self.fetchChatIfNeeded()
+    self.chatUpdateSubject.onNext(nil)
     
     if userChat?.appMessageId != self.userChat?.appMessageId {
       self.tableView.reloadData()
     }
     self.userChat = userChat
-    self.chatManager.chat = userChat
     self.channel = state.channel
+    
+    if let userChat = userChat, userChat.isSupporting() || userChat.isClosed() || userChat.isSolved() {
+      self.setTextInputbarHidden(true, animated: false)
+    }
   }
   
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
@@ -476,32 +521,33 @@ extension UserChatViewController: StoreSubscriber {
       self.initNavigationViews(with: nextUserChat)
     } else if self.currentLocale != state.settings?.appLocale {
       self.initNavigationViews(with: nextUserChat)
+    } else {
+      let userChats = userChatsSelector(
+        state: mainStore.state,
+        showCompleted: mainStore.state.userChatsState.showCompletedChats
+      )
+      
+      self.setNavItems(
+        showSetting: userChats.count == 0,
+        currentUserChat: nextUserChat,
+        guest: state.guest,
+        textColor: state.plugin.textUIColor
+      )
     }
-    
-    let userChats = userChatsSelector(
-      state: mainStore.state,
-      showCompleted: mainStore.state.userChatsState.showCompletedChats
-    )
-    
-    self.setNavItems(
-      showSetting: userChats.count == 0,
-      currentUserChat: nextUserChat,
-      guest: state.guest,
-      textColor: state.plugin.textUIColor
-    )
   }
   
   func fetchChatIfNeeded() {
     if self.chatManager.needToFetchChat() == true {
       self.chatManager.fetchChat()
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (event) in
-        self?.chatManager.fetchMessages()
-        self?.scrollToBottom(false)
-        dlog("fetched chat info")
-      }, onError: { [weak self] error in
-        dlog("failed to fetch chat info - \(error.localizedDescription)")
-        self?.navigationController?.popViewController(animated: true)
-      }).disposed(by: self.disposeBag)
+          self?.chatManager.fetchMessages()
+          self?.scrollToBottom(false)
+          dlog("fetched chat info")
+        }, onError: { [weak self] error in
+          dlog("failed to fetch chat info - \(error.localizedDescription)")
+          self?.navigationController?.popViewController(animated: true)
+        }).disposed(by: self.disposeBag)
     }
   }
   
@@ -522,16 +568,23 @@ extension UserChatViewController: StoreSubscriber {
 
     if nextUserChat?.isRemoved() == true {
       _ = self.navigationController?.popViewController(animated: true)
-    } else if nextUserChat?.isClosed() == true {
+    }
+    else if userChat?.isClosed() != true && nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
-    } else if nextUserChat?.isSolved() == true {
+      self.scrollToBottom(false)
+    }
+    else if nextUserChat?.shouldHideInput() == true ||
+      (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
       self.setTextInputbarHidden(true, animated: false)
-    } else if (!channel.allowNewChat && !self.channel.allowNewChat) && self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
+    }
+    else if (!channel.allowNewChat && !self.channel.allowNewChat) &&
+      self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
       self.setTextInputbarHidden(true, animated: false)
       self.newChatButton.isHidden = true
-    } else if !self.chatManager.profileIsFocus {
+    }
+    else if !self.chatManager.profileIsFocus {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.setTitle("", for: .normal)
@@ -573,7 +626,7 @@ extension UserChatViewController: StoreSubscriber {
         offset.y += FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
         offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width, viewModel: viewModel)
-      } else if lastMessage.messageType == .Form && viewModel.shouldDisplayForm {
+      } else if viewModel.shouldDisplayForm {
         offset.y += FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
       } else {
         offset.y += MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
@@ -631,32 +684,14 @@ extension UserChatViewController {
     self.textView.refreshFirstResponder()
     let msg = self.textView.text!
     
-    //move this logic into presenter
-    if let userChat = self.userChat,
-      userChat.isActive() {
-      if let userChatId = self.userChatId {
-        self.chatManager.sendMessage(userChatId: userChatId, text: msg).subscribe { _ in
-          
-        }.disposed(by: self.disposeBag)
-      }
-    } else if self.userChat == nil {
-      self.chatManager.createChat().flatMap({ [weak self] (chatId) -> Observable<CHMessage?> in
-        guard let s = self else {
-          return Observable.just(nil)
-        }
-        s.userChatId = chatId
-        return s.chatManager.sendMessage(userChatId: chatId, text: msg)
-      }).flatMap({ [weak self] (message) -> Observable<Bool?> in
-        guard let s = self else {
-          return Observable.just(nil)
-        }
-        return s.chatManager.requestProfileBot(chatId: s.userChatId)
-      }).subscribe(onNext: { (completed) in
+    self.chatManager.processSendMessage(msg: msg)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (chat) in
+        self?.userChat = chat
+        self?.userChatId = chat?.id
+      }, onError: { (error) in
         
-      }, onError: { [weak self] (error) in
-        self?.chatManager.state = .chatNotLoaded
       }).disposed(by: self.disposeBag)
-    }
     
     self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
@@ -734,7 +769,7 @@ extension UserChatViewController {
     }
     self.isAnimating = true
     
-    let margin = -24 - self.newChatButton.height
+    let margin = -24 - Metric.newButtonHeight //button height
     if #available(iOS 11.0, *) {
       self.newChatBottomConstraint?.update(offset: -margin)
     } else {
@@ -754,16 +789,16 @@ extension UserChatViewController {
 
 extension UserChatViewController {
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return self.channel.showWatermark ? 3 : 2
+    return self.channel.notAllowToUseSDK ? 3 : 2
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if section == 1 {
-      return self.channel.showWatermark ? 1 : self.messages.count
+      return self.channel.notAllowToUseSDK ? 1 : self.messages.count
     } else if section == 2 {
-      return self.channel.showWatermark ? self.messages.count : 0
+      return self.channel.notAllowToUseSDK ? self.messages.count : 0
     }
     return 0
   }
@@ -773,7 +808,7 @@ extension UserChatViewController {
       return 40
     }
     
-    if indexPath.section == 1 && self.channel.showWatermark {
+    if indexPath.section == 1 && self.channel.notAllowToUseSDK {
       return 40
     }
     
@@ -802,10 +837,7 @@ extension UserChatViewController {
     case .Profile:
       return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
     case .Form:
-      if viewModel.shouldDisplayForm {
-        return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-      }
-      return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     }
@@ -813,7 +845,7 @@ extension UserChatViewController {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
-    if section == 0 && self.channel.showWatermark {
+    if section == 0 && self.channel.notAllowToUseSDK {
       let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
       _ = cell.signalForClick().subscribe { _ in
         let channel = mainStore.state.channel
@@ -826,7 +858,7 @@ extension UserChatViewController {
       }
       cell.transform = tableView.transform
       return cell
-    } else if section == 0 || (section == 1 && self.channel.showWatermark) {
+    } else if section == 0 || (section == 1 && self.channel.notAllowToUseSDK) {
       let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
       cell.transform = tableView.transform
       return cell
@@ -857,61 +889,75 @@ extension UserChatViewController {
       previous: previousMessage,
       indexPath: indexPath)
 
-    switch message.messageType {
-    case .NewAlertMessage:
-      let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
-      return cell
-    case .DateDivider:
-      let cell: DateCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(date: message.message ?? "")
-      return cell
-    case .Log:
-      let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(message: message)
-      return cell
-    case .UserMessage:
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
-      return cell
-    case .WebPage:
-      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
-      cell.webView.signalForClick().subscribe{ [weak self] _ in
-        self?.chatManager?.didClickOnWebPage(with: message)
-      }.disposed(by: self.disposeBag)
-      return cell
-    case .Media:
-      let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
-      cell.mediaView.signalForClick().subscribe { [weak self] _ in
-        self?.didImageTapped(message: message)
-      }.disposed(by: self.disposeBag)
-      return cell
-    case .File:
-      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
-      cell.presenter = self.chatManager
-      cell.configure(viewModel)
-      cell.fileView.signalForClick().subscribe { [weak self] _ in
-        self?.chatManager?.didClickOnFile(with: message)
-      }.disposed(by: self.disposeBag)
-      return cell
-    case .Profile:
-      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.chatManager)
-      return cell
-    case .Form:
-      if viewModel.shouldDisplayForm {
+    if viewModel.shouldDisplayForm {
+      if viewModel.clipType == .Image {
+        let cell: FormMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        cell.mediaView.signalForClick().subscribe { [weak self] _ in
+          self?.didImageTapped(message: viewModel.message)
+          }.disposed(by: self.disposeBag)
+        return cell
+      } else if viewModel.clipType == .Webpage {
+        let cell: FormWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        cell.webView.signalForClick().subscribe{ [weak self] _ in
+          self?.chatManager?.didClickOnWebPage(with: viewModel.message)
+          }.disposed(by: self.disposeBag)
+        return cell
+      } else if viewModel.clipType == .File {
+        let cell: FormFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, presenter: self.chatManager)
+        cell.fileView.signalForClick().subscribe { [weak self] _ in
+          self?.chatManager?.didClickOnFile(with: viewModel.message)
+          }.disposed(by: self.disposeBag)
+        return cell
+      } else {
         let cell: FormMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         return cell
       }
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
+    }
+    
+    if message.messageType == .NewAlertMessage {
+      let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
+      return cell
+    } else if message.messageType == .DateDivider {
+      let cell: DateCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(date: message.message ?? "")
+      return cell
+    } else if message.messageType == .Log {
+      let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(message: message)
+      return cell
+    } else if message.messageType == .Profile {
+      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
-    default: //remote
+    } else if viewModel.clipType == .Image {
+      let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
+      cell.mediaView.signalForClick().subscribe { [weak self] _ in
+        self?.didImageTapped(message: message)
+        }.disposed(by: self.disposeBag)
+      return cell
+    } else if viewModel.clipType == .Webpage {
+      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
+      cell.webView.signalForClick().subscribe{ [weak self] _ in
+        self?.chatManager?.didClickOnWebPage(with: message)
+        }.disposed(by: self.disposeBag)
+      return cell
+    } else if viewModel.clipType == .File {
+      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
+      //cell.presenter = self.chatManager
+      cell.configure(viewModel, presenter: self.chatManager)
+      cell.fileView.signalForClick().subscribe { [weak self] _ in
+        self?.chatManager?.didClickOnFile(with: message)
+        }.disposed(by: self.disposeBag)
+      return cell
+    } else {
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
@@ -972,7 +1018,7 @@ extension UserChatViewController: ChatDelegate {
   func update(for element: ChatElement) {
     switch element {
     case .typing(_, _):
-      let indexPath = IndexPath(row: 0, section: self.channel.showWatermark ? 1 : 0)
+      let indexPath = IndexPath(row: 0, section: self.channel.notAllowToUseSDK ? 1 : 0)
       if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true,
         let typingCell = self.typingCell {
         typingCell.configure(typingUsers: self.chatManager.typers)

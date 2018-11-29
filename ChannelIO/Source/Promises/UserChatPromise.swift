@@ -78,6 +78,7 @@ struct UserChatPromise {
       return Disposables.create()
     }
   }
+  
   static func getChat(userChatId: String) -> Observable<ChatResponse> {
     return Observable.create { subscriber in
       Alamofire.request(RestRouter.GetUserChat(userChatId))
@@ -103,9 +104,14 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func close(userChatId: String, formId: String) -> Observable<CHUserChat> {
+  static func close(userChatId: String, formId: String, requestId: String) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
-      let params = ["query":["formId": formId]]
+      let params = [
+        "query":[
+          "formId": formId,
+          "requestId": requestId
+        ]
+      ]
       let req = Alamofire.request(RestRouter.CloseUserChat(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
@@ -129,11 +135,16 @@ struct UserChatPromise {
     }
   }
   
-  static func review(userChatId: String, formId: String, rating: ReviewType) -> Observable<CHUserChat> {
+  static func review(userChatId: String, formId: String, rating: ReviewType, requestId: String) -> Observable<CHUserChat> {
     return Observable.create { subscriber in
       let params = [
-        "url":["review": rating.rawValue],
-        "query":["formId": formId]
+        "url":[
+          "review": rating.rawValue,
+        ],
+        "query":[
+          "formId": formId,
+          "requestId": requestId
+        ]
       ]
       
       let req = Alamofire.request(RestRouter.ReviewUserChat(userChatId, params as RestRouter.ParametersType))
@@ -146,6 +157,7 @@ struct UserChatPromise {
               subscriber.onError(CHErrorPool.userChatParseError)
               break
             }
+            
             
             subscriber.onNext(userChat)
             subscriber.onCompleted()
@@ -370,17 +382,9 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func setMessageRead(userChatId: String, at: Date? = nil) -> Observable<Any?> {
+  static func setMessageRead(userChatId: String) -> Observable<Any?> {
     return Observable.create { subscriber in
-      guard let readAt = CustomDateTransform().transformToJSON(at) else {
-        return Disposables.create()
-      }
-      
-      let params: [String: Any] = [
-        "query": [ "at" : readAt ]
-      ]
-      
-      let req = Alamofire.request(RestRouter.SetMessagesRead(userChatId, params as RestRouter.ParametersType))
+      let req = Alamofire.request(RestRouter.SetMessagesRead(userChatId))
         .validate(statusCode: 200..<300)
         .response(completionHandler: { (response) in
           if response.response?.statusCode == 200 {

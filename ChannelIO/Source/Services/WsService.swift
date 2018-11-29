@@ -225,14 +225,18 @@ class WsService {
     guard let chatId = chatId, chatId != "" else { return }
     
     self.currentChatId = chatId
-    self.socket?.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
+    }
   }
   
   func leave(chatId: String?) {
     guard let chatId = chatId, chatId != "" else { return }
     
     self.currentChatId = ""
-    self.socket?.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
+    }
   }
   
   func sendTyping(chat: CHUserChat?, isStop: Bool) {
@@ -335,23 +339,19 @@ fileprivate extension WsService {
       
       switch type {
       case WsServiceType.CreateSession:
-        guard let session = Mapper<CHSession>()
-          .map(JSONObject: json["entity"].object) else { return }
-        if let manager = Mapper<CHManager>()
-          .map(JSONObject: json["refers"]["manager"].object) {
+        guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
+        if let manager = Mapper<CHManager>().map(JSONObject: json["refers"]["manager"].object) {
           mainStore.dispatchOnMain(UpdateManager(payload: manager))
         }
         
         mainStore.dispatchOnMain(CreateSession(payload: session))
         self?.eventSubject.onNext((type, session))
       case WsServiceType.CreateUserChat:
-        guard let userChat = Mapper<CHUserChat>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(CreateUserChat(payload: userChat))
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.CreateMessage:
-        guard let message = Mapper<CHMessage>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
         guard message.isWelcome == false else { return }
         
         if let bot = Mapper<CHBot>()
@@ -378,14 +378,13 @@ fileprivate extension WsService {
       
       switch type {
       case WsServiceType.UpdateChannel:
-        guard let channel = Mapper<CHChannel>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let channel = Mapper<CHChannel>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateChannel(payload: channel))
         self?.eventSubject.onNext((type, channel))
       case WsServiceType.UpdateSession:
-        guard let session = Mapper<CHSession>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateSession(payload: session))
+        print("\(session)")
         self?.eventSubject.onNext((type, session))
         break
       case WsServiceType.UpdateUserChat:
@@ -404,24 +403,21 @@ fileprivate extension WsService {
         mainStore.dispatchOnMain(UpdateUserChat(payload: userChat))
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.UpdateMessage:
-        guard let message = Mapper<CHMessage>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
         self?.messageOnCreateSubject.onNext(message)
         mainStore.dispatchOnMain(UpdateMessage(payload: message))
         self?.eventSubject.onNext((type, message))
       case WsServiceType.UpdateUser:
-        let user = Mapper<CHUser>()
-          .map(JSONObject: json["entity"].object)
+        guard let user = Mapper<CHUser>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateGuest(payload: user))
+        print("\(user)")
         self?.eventSubject.onNext((type, user))
       case WsServiceType.UpdateVeil:
-        let veil = Mapper<CHVeil>()
-          .map(JSONObject: json["entity"].object) 
+        guard let veil = Mapper<CHVeil>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateGuest(payload: veil))
         self?.eventSubject.onNext((type, veil))
       case WsServiceType.UpdateManager:
-        guard let manager = Mapper<CHManager>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let manager = Mapper<CHManager>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateManager(payload: manager))
         self?.eventSubject.onNext((type, manager))
       default:
@@ -440,18 +436,15 @@ fileprivate extension WsService {
       
       switch type {
       case WsServiceType.DeleteSession:
-        guard let session = Mapper<CHSession>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteSession(payload: session))
         self?.eventSubject.onNext((type, session))
       case WsServiceType.DeleteUserChat:
-        guard let userChat = Mapper<CHUserChat>()
-          .map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatchOnMain(DeleteUserChat(payload: userChat.id))
+        guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["entity"].object) else { return }
+        mainStore.dispatchOnMain(DeleteUserChat(payload: userChat))
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.DeleteMessage:
-        guard let message = Mapper<CHMessage>()
-          .map(JSONObject: json["entity"].object) else { return }
+        guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteMessage(payload: message))
         self?.eventSubject.onNext((type, message))
       default:

@@ -58,22 +58,22 @@ class MediaMessageCell: MessageCell {
     super.configure(viewModel, presenter: presenter)
     self.mediaView.configure(message: viewModel, isThumbnail: true)
     
-    let size = MediaMessageView.viewSize(fits: self.width, viewModel: viewModel)
+    let size = MediaMessageView.viewSize(fits: self.frame.width, viewModel: viewModel)
     self.widthConstraint?.update(offset: size.width)
     self.heightConstraint?.update(offset: size.height)
     
-    if viewModel.isContinuous {
-      self.topConstraint?.activate()
-      self.topToTextConstraint?.deactivate()
+    if self.textMessageView.messageView.text != "" {
+      self.topConstraint?.deactivate()
       self.topToTimeConstraint?.deactivate()
-    } else if self.textMessageView.messageView.text == "" {
+      self.topToTextConstraint?.activate()
+    } else if !viewModel.isContinuous {
       self.topConstraint?.deactivate()
       self.topToTimeConstraint?.activate()
       self.topToTextConstraint?.deactivate()
     } else {
-      self.topConstraint?.deactivate()
+      self.topConstraint?.activate()
       self.topToTimeConstraint?.deactivate()
-      self.topToTextConstraint?.activate()
+      self.topToTextConstraint?.deactivate()
     }
     
     if self.viewModel?.createdByMe == true {

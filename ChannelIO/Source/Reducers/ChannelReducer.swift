@@ -16,11 +16,14 @@ func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
       return channel
     }
     return CHChannel()
+    
   case _ as CheckOutSuccess:
     PrefStore.clearAllLocalData()
     return CHChannel()
+    
   case let action as UpdateChannel:
     return action.payload
+    
   default:
     return channel ?? CHChannel()
   }

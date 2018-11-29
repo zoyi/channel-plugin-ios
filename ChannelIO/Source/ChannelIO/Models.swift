@@ -21,6 +21,16 @@ public class PushEvent: NSObject {
     self.senderName = pushData?.manager?.name ?? ""
     self.senderAvatarUrl = pushData?.manager?.avatarUrl ?? ""
   }
+  
+  @objc
+  public func toJson() -> Dictionary<String, Any> {
+    return [
+      "chatId": self.chatId,
+      "message": self.message,
+      "senderName": self.senderName,
+      "senderAvatarUrl": self.senderAvatarUrl
+    ]
+  }
 }
 
 @objc
@@ -38,6 +48,17 @@ public class Guest: NSObject {
     self.profile = guest.profile
     self.alert = guest.alert
   }
+  
+  @objc
+  public func toJson() -> Dictionary<String, Any> {
+    return [
+      "id": self.id,
+      "name": self.name,
+      "avatarUrl": self.avatarUrl ?? "",
+      "profile": self.profile ?? "",
+      "alert": self.alert
+    ]
+  }
 }
 
 @objc
@@ -51,7 +72,11 @@ public class LauncherConfig: NSObject, NSCoding {
   @objc public var position: LauncherPosition = .right
   @objc public var xMargin: Float = 20
   @objc public var yMargin: Float = 20
+
+  @objc
+  override public init() { }
   
+  @objc
   public init(position: LauncherPosition, xMargin: Float, yMargin: Float) {
     self.position = position
     self.xMargin = xMargin

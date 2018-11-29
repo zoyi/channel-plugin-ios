@@ -15,9 +15,7 @@ struct TimeRange {
 }
 
 extension TimeRange : Mappable {
-  init?(map: Map) {
-    
-  }
+  init?(map: Map) { }
   
   mutating func mapping(map: Map) {
     from <- map["from"]
@@ -30,10 +28,22 @@ struct SortableWorkingTime {
   let order: Int
 }
 
-enum ServicePlanType: String {
-  case free = "free"
-  case startup = "startup"
-  case pro = "pro"
+enum ChannelPlanType: String {
+  case none
+  case standard
+  case pro
+}
+
+enum ChannelWorkingType: String {
+  case always
+  case never
+  case custom
+}
+
+enum ChannelAwayOptionType: String {
+  case active
+  case disable
+  case hidden
 }
 
 struct CHChannel: CHEntity {
@@ -52,13 +62,15 @@ struct CHChannel: CHEntity {
   var lunchTime: TimeRange?
   var phoneNumber: String = ""
   var requestGuestInfo = true
-  var servicePlan: ServicePlanType = .startup
-  var serviceBlocked = false
+  var messengerPlan: ChannelPlanType = .pro
+  var pushBotPlan: ChannelPlanType = .pro
+  var supportBotPlan: ChannelPlanType = .none
+  var blocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
   var timeZone = ""
-  var awayOption = ""
-  var workingType = ""
+  var awayOption: ChannelAwayOptionType = .active
+  var workingType: ChannelWorkingType = .always
   var trial = true
   var trialExpiryDate: Date? = nil
   
@@ -110,27 +122,31 @@ struct CHChannel: CHEntity {
     return  workingTime ?? "unknown"
   }
   
-  var locked: Bool {
-    return self.serviceBlocked || self.servicePlan == .free
+  var notAllowToUseSDK: Bool {
+    return self.blocked || (self.messengerPlan != .pro && !self.trial)
   }
   
-  var showWatermark: Bool {
-    return self.serviceBlocked || self.servicePlan != .pro
+  var canUsePushBot: Bool {
+    return !self.blocked && (self.pushBotPlan != .none || self.trial)
+  }
+  
+  var canUseSupportBot: Bool {
+    return !self.blocked && (self.supportBotPlan != .none || self.trial)
   }
   
   var shouldHideDefaultButton: Bool {
-    return self.awayOption == "hidden" && !self.working
+    return self.awayOption == .hidden && !self.working
   }
 
   var allowNewChat: Bool {
-    return self.workingType == "always" ||
-      self.awayOption == "active" ||
-      (self.workingType == "custom" && self.working)
+    return self.workingType == .always ||
+      self.awayOption == .active ||
+      (self.workingType == .custom && self.working)
   }
   
   var shouldShowWorkingTimes: Bool {
     if let workingTime = self.workingTime, workingTime.count != 0 {
-      return self.workingType == "custom" && !self.working
+      return self.workingType == .custom && !self.working
     }
     return false
   }
@@ -162,10 +178,12 @@ extension CHChannel: Mappable {
     lunchTime               <- map["lunchTime"]
     requestGuestInfo        <- map["requestGuestInfo"]
     homepageUrl             <- map["homepageUrl"]
-    expectedResponseDelay   <- map["expectedResponseDelay"]
+    expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
-    servicePlan             <- map["servicePlan"]
-    serviceBlocked          <- map["serviceBlocked"]
+    messengerPlan           <- map["messengerPlan"]
+    pushBotPlan             <- map["pushBotPlan"]
+    supportBotPlan          <- map["supportBotPlan"]
+    blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden
     trial                   <- map["trial"]

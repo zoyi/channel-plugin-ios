@@ -18,6 +18,7 @@ enum FormType : String {
   case button
   case solve = "userChat.solve"
   case close = "userChat.close"
+  case support = "supportBot"
 }
 
 struct CHForm {
@@ -25,6 +26,17 @@ struct CHForm {
   var inputs: [CHInput] = []
   var closed: Bool = false
   var option: [FormOptionKey: Bool] = [:]
+  
+  static func create(botEntry: CHSupportBotEntryInfo) -> CHForm {
+    var form = CHForm()
+    form.type = .support
+    form.inputs = botEntry.actions.map { (action) in
+      let (text, onlyEmoji) = CustomMessageTransform.markdown.parse(action.text)
+      return CHInput(key: action.key, text: text, onlyEmoji: onlyEmoji)
+    }
+    
+    return form
+  }
 }
 
 extension CHForm: Mappable {

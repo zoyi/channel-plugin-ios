@@ -55,9 +55,6 @@ class AvatarView: NeverClearView {
         self.layer.borderWidth = newValue ? Metric.borderWidth : 0
         self.layer.cornerRadius = newValue ? self.avatarSize / 2 : 0
       }
-      
-      self.setNeedsLayout()
-      self.layoutIfNeeded()
     }
     get {
       return self.avatarImageView.layer.borderWidth != 0

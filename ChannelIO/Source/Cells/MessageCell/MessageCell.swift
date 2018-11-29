@@ -117,7 +117,6 @@ class MessageCell: BaseTableViewCell, Reusable {
     self.translateView.isHidden = !viewModel.showTranslation
     
     self.layoutViews()
-    self.textMessageView.updateConstraints()
   }
   
   override func setLayouts() {

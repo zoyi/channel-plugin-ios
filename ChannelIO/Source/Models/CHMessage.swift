@@ -50,7 +50,7 @@ struct CHMessage: ModelType {
   var chatId: String = ""
   var personType: String = ""
   var personId: String = ""
-  var title: String = ""
+  var title: String? = nil
   var message: String?
   var messageV2: NSAttributedString?
   var requestId: String?
@@ -126,10 +126,12 @@ extension CHMessage: Mappable {
        message: String,
        type: MessageType,
        entity: CHEntity? = nil,
+       form: CHForm? = nil,
+       file: CHFile? = nil,
        createdAt:Date? = Date(),
        id: String? = nil) {
     let now = Date()
-    let requestId = "\(now.timeIntervalSince1970 * 1000)"
+    let requestId = "\(Int(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = id ?? requestId
@@ -140,6 +142,8 @@ extension CHMessage: Mappable {
     self.createdAt = createdAt ?? now
     self.messageType = type
     self.entity = entity
+    self.form = form
+    self.file = file
     self.personId = entity?.id ?? ""
     self.personType = entity?.kind ?? ""
     self.progress = 1
@@ -147,7 +151,7 @@ extension CHMessage: Mappable {
   
   init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
-    let requestId = "\(now.timeIntervalSince1970 * 1000)"
+    let requestId = "\(Int(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = requestId
@@ -162,6 +166,25 @@ extension CHMessage: Mappable {
     self.progress = 1
     self.message = self.format(message: trimmedMessage)
     (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
+  }
+  
+  init(chatId: String, entity: CHEntity, title: String? = nil, message: NSAttributedString?, file: CHFile?) {
+    let now = Date()
+    let requestId = "\(Int(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    
+    self.id = requestId
+    self.chatType = "UserChat"
+    self.chatId = chatId
+    self.personType = entity.kind
+    self.personId = entity.id
+    self.requestId = requestId
+    self.createdAt = now
+    self.state = .New
+    self.progress = 1
+    self.title = title
+    self.file = file
+    self.messageV2 = message
+    self.messageType = file?.image == true ? .Media : .Default
   }
   
   init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset? = nil, image: UIImage? = nil) {
@@ -203,20 +226,10 @@ extension CHMessage: Mappable {
     let msgv2 = map["messageV2"].currentValue as? String ?? ""
     (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
-    if self.log != nil {
-      messageType = .Log
-    } else if self.file?.image == true {
-      messageType = .Media
-    } else if self.file != nil {
-      messageType = .File
-    } else if let profiles = self.profileBot, profiles.count != 0 {
-      messageType = .Profile
-    } else if self.webPage != nil {
-      messageType = .WebPage
-    } else if self.form != nil {
+    if self.form != nil {
       messageType = .Form
     } else {
-      messageType = .Default
+      messageType = CHMessage.contextType(self)
     }
   }
   
@@ -227,6 +240,22 @@ extension CHMessage: Mappable {
     filterText = filterText.replacingOccurrences(of: "]", with: "\\]")
     filterText = filterText.replacingOccurrences(of: "[", with: "\\[")
     return filterText
+  }
+  
+  static func contextType(_ message: CHMessage) -> MessageType {
+     if message.log != nil {
+      return .Log
+    } else if message.file?.image == true {
+      return .Media
+    } else if message.file != nil {
+      return .File
+    } else if let profiles = message.profileBot, profiles.count != 0 {
+      return .Profile
+    } else if message.webPage != nil {
+      return .WebPage
+    } else {
+      return .Default
+    }
   }
 }
 
@@ -274,6 +303,16 @@ extension CHMessage {
 extension CHMessage {
   //TODO: refactor async call into actions 
   //but to do that, it also has to handle errors in redux
+  
+  static func createLocal(chatId: String, text: String?, originId: String? = nil, key: String? = nil) -> CHMessage {
+    let me = mainStore.state.guest
+    var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
+    if let originId = originId, let key = key {
+      message.submit = CHSubmit(id: originId, key: key)
+    }
+    return message
+  }
+  
   static func getMessages(
     userChatId: String,
     since: String,

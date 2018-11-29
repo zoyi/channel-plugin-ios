@@ -14,20 +14,23 @@ func managersReducer(action: Action, state: ManagersState?) -> ManagersState {
   case let action as GetUserChats:
     let managers = (action.payload["managers"] as? [CHManager]) ?? []
     return state?.upsert(managers: managers) ?? ManagersState()
+    
   case let action as GetUserChat:
     let managers = action.payload.managers ?? []
     return state?.upsert(managers: managers) ?? ManagersState()
+    
   case let action as UpdateManager:
     return state?.upsert(managers: [action.payload]) ?? ManagersState()
+    
   case let action as UpdateFollowingManagers:
     return state?.upsertFollowing(managers: action.payload) ?? ManagersState()
+    
   case let action as GetPush:
-    guard let manager = action.payload.manager else {
-      return state ?? ManagersState()
-    }
-    return state?.upsert(managers: [manager]) ?? ManagersState()
+    return state?.upsert(manager: action.payload.manager) ?? ManagersState()
+    
   case _ as CheckOutSuccess:
     return state?.clear() ?? ManagersState()
+    
   default:
     return state ?? ManagersState()
   }

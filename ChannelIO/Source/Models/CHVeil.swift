@@ -20,8 +20,14 @@ struct CHVeil: CHGuest, CHEntity {
   
   var alert = 0
   var unread = 0
-  
+  var segment: String?
   var profile: [String : Any]?
+  
+  var country: String = ""
+  var city: String = ""
+  
+  var createdAt: Date?
+  var updatedAt: Date?
 }
 
 extension CHVeil: Mappable {
@@ -46,7 +52,12 @@ extension CHVeil: Mappable {
     named           <- map["named"]
     alert           <- map["alert"]
     unread          <- map["unread"]
+    segment         <- map["segment"]
     profile         <- map["profile"]
+    country         <- map["country"]
+    city            <- map["city"]
+    createdAt       <- (map["createdAt"], CustomDateTransform())
+    updatedAt       <- (map["updatedAt"], CustomDateTransform())
   }
 }
 

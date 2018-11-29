@@ -109,7 +109,8 @@ final class ProfileViewController: BaseViewController {
   func initNavigation() {
     self.navigationItem.leftBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
-      textColor: mainStore.state.plugin.textUIColor,
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
       actionHandler: { [weak self] in
         self?.dismiss(animated: true, completion: nil)
       }
@@ -132,7 +133,7 @@ final class ProfileViewController: BaseViewController {
     let height:CGFloat = channel.homepageUrl != "" || channel.phoneNumber != "" ? 180 : 110
     self.headerView.frame = CGRect(
       x: 0, y: 0,
-      width: self.tableView.width,
+      width: self.tableView.frame.width,
       height: height
     )
     self.tableView.tableHeaderView = self.headerView
@@ -190,11 +191,11 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       
       let locale = CHUtils.getLocale()
       if locale == .english {
-        cell.titleLabel.text = CHAssets.localized("ch.language.english")
+        cell.titleLabel.text = CHAssets.localized("en")
       } else if locale == .korean {
-        cell.titleLabel.text = CHAssets.localized("ch.language.korean")
+        cell.titleLabel.text = CHAssets.localized("ko")
       } else if locale == .japanese {
-        cell.titleLabel.text = CHAssets.localized("ch.language.japanese")
+        cell.titleLabel.text = CHAssets.localized("ja")
       }
       
       return cell
@@ -206,7 +207,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         mainStore.dispatch(UpdateVisibilityOfTranslation(show: event.element!))
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
-      cell.configure(title: CHAssets.localized("ch.settings.show_translation"), isOn: isOn)
+      cell.configure(title: CHAssets.localized("ch.settings.translate_message"), isOn: isOn)
       return cell
     case (ProfileSection.action.rawValue,
           ActionRow.closedChats.rawValue):
@@ -269,7 +270,7 @@ extension ProfileViewController : StoreSubscriber {
     let height:CGFloat = state.channel.homepageUrl != "" || state.channel.phoneNumber != "" ? 180 : 110
     self.headerView.frame = CGRect(
       x: 0, y: 0,
-      width: self.tableView.width,
+      width: self.tableView.frame.size.width,
       height: height
     )
     self.headerView.configure(
@@ -301,16 +302,5 @@ extension ProfileViewController : StoreSubscriber {
         SVProgressHUD.dismiss()
         self?.tableView.reloadData()
       }).disposed(by: self.disposeBag)
-  }
-  
-  func openAgreement() {
-    let locale = CHUtils.getLocale() ?? .korean
-    let url = "https://channel.io/" +
-      locale.rawValue +
-      "/terms_user?channel=" +
-      (mainStore.state.channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
-    
-    guard let link = URL(string: url) else { return }
-    link.open()
   }
 }

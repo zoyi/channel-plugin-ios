@@ -42,11 +42,11 @@ class LanguageOptionViewController: BaseViewController {
   }
   
   func initNavigation() {
-    self.title = CHAssets.localized("ch.language")
+    self.title = CHAssets.localized("ch.user_profile.locale.label")
     self.navigationItem.leftBarButtonItem = NavigationItem(
       image:  CHAssets.getImage(named: "back"),
-      alignment: .left,
-      textColor: mainStore.state.plugin.textUIColor,
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
       actionHandler: { [weak self] in
         _ = self?.navigationController?.popViewController(animated: true)
       })
@@ -68,11 +68,11 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     cell.checked = self.currentLocale == locale
     
     if locale == .korean {
-      cell.titleLabel.text = CHAssets.localized("ch.language.korean")
+      cell.titleLabel.text = CHAssets.localized("ko")
     } else if locale == .english {
-      cell.titleLabel.text = CHAssets.localized("ch.language.english")
+      cell.titleLabel.text = CHAssets.localized("en")
     } else if locale == .japanese {
-      cell.titleLabel.text = CHAssets.localized("ch.language.japanese")
+      cell.titleLabel.text = CHAssets.localized("ja")
     }
     
     return cell

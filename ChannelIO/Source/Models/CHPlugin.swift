@@ -24,6 +24,10 @@ struct CHPlugin: ModelType {
   var welcomeNamedI18n: CHi18n?
   var welcomeI18n: CHi18n?
   
+  var name: String {
+    return mainStore.state.channel.name
+  }
+  
   var textUIColor: UIColor! {
     if self.textColor == "white" {
       return CHColors.white
@@ -53,5 +57,16 @@ extension CHPlugin: Mappable {
 extension CHPlugin {
   static func get(with id: String) -> Observable<(CHPlugin, CHBot?)> {
     return PluginPromise.getPlugin(pluginId: id)
+  }
+}
+
+extension CHPlugin: Equatable {
+  static func == (lhs:CHPlugin, rhs:CHPlugin) -> Bool {
+    return lhs.id == rhs.id &&
+      lhs.color == rhs.color &&
+      lhs.borderColor == rhs.borderColor &&
+      lhs.textColor == rhs.textColor &&
+      lhs.botName == rhs.botName &&
+      lhs.name == rhs.name
   }
 }

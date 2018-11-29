@@ -9,13 +9,13 @@
 import Foundation
 import ObjectMapper
 
-struct CHPreviewThumb {
-  var width = 0.0
-  var height = 0.0
+struct CHImageMeta {
+  var width = 0.f
+  var height = 0.f
   var url = ""
 }
 
-extension CHPreviewThumb: Mappable {
+extension CHImageMeta: Mappable {
   init?(map: Map) {
 
   }
@@ -25,3 +25,12 @@ extension CHPreviewThumb: Mappable {
     url     <- map["url"]
   }
 }
+
+extension CHImageMeta: Equatable {
+  static func ==(lhs:CHImageMeta, rhs:CHImageMeta) -> Bool {
+    return lhs.url == rhs.url &&
+      lhs.width == rhs.width &&
+      lhs.height == rhs.height
+  }
+}
+

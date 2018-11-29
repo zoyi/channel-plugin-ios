@@ -8,6 +8,13 @@
 
 import ReSwift
 
+struct FetchedUserChatPrep: Action {
+  public let followers: [CHManager]
+  public let plugin: CHPlugin
+  public let bot: CHBot?
+  public let supportBotEntry: CHSupportBotEntryInfo
+}
+
 struct GetUserChats: Action {
   public let payload: [String: Any?]
 }
@@ -28,6 +35,11 @@ struct RemoveMessages: Action {
   public let payload: String?
 }
 
+struct GetNudgeChat: Action {
+  public let nudgeId: String
+  public let payload: ChatResponse
+}
+
 struct GetUserChat: Action {
   public let payload: ChatResponse
 }
@@ -36,16 +48,23 @@ struct CreateUserChat: Action {
   public let payload: CHUserChat
 }
 
+struct CreateLocalUserChat: Action {
+  public let chat: CHUserChat?
+  public let message: CHMessage?
+  public let writer: CHEntity?
+  public let session: CHSession?
+}
+
 struct UpdateUserChat: Action {
   public let payload: CHUserChat
 }
 
 struct DeleteUserChat: Action {
-  public let payload: String
+  public let payload: CHUserChat
 }
 
 struct DeleteUserChats: Action {
-  public let payload: [String]
+  public let payload: [CHUserChat]
 }
 
 struct DeleteUserChatsAll: Action {}
@@ -63,6 +82,11 @@ struct UpdateGuest: Action {
   public let payload: CHGuest?
 }
 
+struct UpdateGuestWithLocalRead: Action {
+  public let guest: CHGuest?
+  public let session: CHSession?
+}
+
 struct UpdateVisibilityOfCompletedChats: Action {
   public let show: Bool? 
 }
@@ -74,10 +98,8 @@ struct UpdateVisibilityOfTranslation: Action {
 struct UserChatActions {
   static func openAgreement() {
     let locale = CHUtils.getLocale() ?? .korean
-    let url = "https://channel.io/" +
-      locale.rawValue +
-      "/terms_user?channel=" +
-      (mainStore.state.channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
+    let url = "https://channel.io/" + locale.rawValue +
+      "/terms_user?plugin_key=" + (mainStore.state.settings?.pluginKey ?? "")
     
     guard let link = URL(string: url) else { return }
     link.open()

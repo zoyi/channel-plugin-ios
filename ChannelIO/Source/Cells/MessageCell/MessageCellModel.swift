@@ -43,6 +43,7 @@ protocol MessageCellModelType {
   var selectedActionText: String { get set }
   var translateState: CHMessageTranslateState { get set }
   var showTranslation: Bool { get }
+  var clipType: ClipType { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -76,17 +77,19 @@ struct MessageCellModel: MessageCellModelType {
   
   var showTranslation: Bool = false
   var translateState: CHMessageTranslateState = .original
+  var clipType: ClipType = .None
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
     let isContinuous = message.isContinue(previous: previous) &&
-      previous?.form == nil && previous?.profileBot == nil &&
-      message.form == nil
+      previous?.form == nil && previous?.profileBot?.count == 0
+    
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
-    let clipType = MessageCellModel.getClipType(message: message)
+    let cType = MessageCellModel.getClipType(message: message)
     let createdByMe = message.entity is CHUser || message.entity is CHVeil
 
+    self.clipType = cType
     self.name = message.entity?.name ?? ""
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
@@ -96,9 +99,9 @@ struct MessageCellModel: MessageCellModelType {
     self.bubbleBackgroundColor = createdByMe ? pluginColor : CHColors.lightGray
     self.textColor = plugin.textUIColor
     self.usernameIsHidden = createdByMe || isContinuous
-    self.imageIsHidden = (clipType != ClipType.Image)
-    self.fileIsHidden = (clipType != ClipType.File)
-    self.webpageIsHidden = (clipType != ClipType.Webpage)
+    self.imageIsHidden = (cType != ClipType.Image)
+    self.fileIsHidden = (cType != ClipType.File)
+    self.webpageIsHidden = (cType != ClipType.Webpage)
     self.webpage = message.webPage
     self.file = message.file
     self.createdByMe = createdByMe
@@ -132,7 +135,9 @@ struct MessageCellModel: MessageCellModelType {
   }
 
   static func getClipType(message: CHMessage) -> ClipType {
-    if message.file?.isPreviewable == true || message.file?.asset != nil {
+    if message.file?.isPreviewable == true ||
+      message.file?.asset != nil ||
+      message.file?.imageData != nil {
       return .Image
     } else if message.file != nil {
       return .File

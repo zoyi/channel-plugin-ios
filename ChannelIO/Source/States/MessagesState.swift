@@ -11,6 +11,7 @@ import ReSwift
 struct MessagesState: StateType {
   var messageDictionary: [String:CHMessage] = [:]
   var formQueue: [String:CHMessage] = [:]
+  var supportBotEntry: CHMessage?
   
   func findBy(type: MessageType) -> [CHMessage]? {
     return self.messageDictionary.filter({$1.messageType == type}).map({ $1 })
@@ -70,34 +71,38 @@ struct MessagesState: StateType {
   
   mutating func upsert(messages: [CHMessage]) -> MessagesState {
     for message in messages {
-      if let isWelcome = message.botOption?["welcome"], isWelcome {
-        self.messageDictionary["welcome_dummy"] = message
-      } else {
-        self.messageDictionary[message.id] = message
-      }
-      
-      if message.form != nil {
-        self.formQueue[message.id] = message
-      }
+      _ = self.insert(message: message)
     }
     return self
   }
   
   mutating func insert(message: CHMessage?) -> MessagesState {
     guard let message = message else { return self }
-    self.messageDictionary[message.id] = message
-    return self
-  }
-
-  mutating func replace(message: CHMessage) -> MessagesState {
     if message.requestId != nil {
       self.messageDictionary[message.requestId!] = nil
     }
     
-    //when CreateMessage happens, all form should be treated as normal text
+    self.messageDictionary[message.id] = message
+    
+    if message.form != nil {
+      self.formQueue[message.id] = message
+    }
+    return self
+  }
+
+  mutating func replace(message: CHMessage?) -> MessagesState {
+    guard let message = message else { return self }
+    
+    if message.requestId != nil {
+      self.messageDictionary[message.requestId!] = nil
+    }
+    
+    //In order to display smooth message transition when actionable was clicked
+    //actionable message click -> message created -> message update --- default
+    //actioanble message click -> message created (update actionable while created) -- optimize
     for (key, message) in self.formQueue {
       var updated = message
-      updated.messageType = .Default
+      updated.messageType = CHMessage.contextType(message)
       self.messageDictionary[key] = updated
     }
     

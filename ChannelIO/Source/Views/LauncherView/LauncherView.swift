@@ -25,7 +25,7 @@ final class LauncherView : BaseView {
   
   let badgeView = Badge()
   let disposeBag = DisposeBag()
-  let buttonView = UIButton().then {
+  let buttonView = UIButton(type: .custom).then {
     $0.layer.cornerRadius = 27.f
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOpacity = 0.3
@@ -34,12 +34,26 @@ final class LauncherView : BaseView {
     $0.layer.borderWidth = 1
   }
   
+  //refactor this as general button
+  let buttonLayerView = UIView().then {
+    $0.backgroundColor = CHColors.dark50
+    $0.layer.cornerRadius = 27.f
+    $0.alpha = 0.5
+  }
+
   var layoutGuide: UILayoutGuide? = nil
   
   override func initialize() {
     super.initialize()
+    
     self.addSubview(self.buttonView)
+    self.addSubview(self.buttonLayerView)
     self.addSubview(self.badgeView)
+    
+    self.buttonView.rx.isHighlighted
+      .subscribe(onNext: { [weak self] (selected) in
+        self?.buttonLayerView.alpha = selected ? 0.5 : 0
+      }).disposed(by: self.disposeBag)
   }
   
   func configure(_ viewModel: LauncherViewModelType) {
@@ -48,7 +62,8 @@ final class LauncherView : BaseView {
     
     let imageName = viewModel.iconColor == UIColor.white ? "balloonWhite" : "balloonBlack"
     self.buttonView.setImage(CHAssets.getImage(named: imageName), for: .normal)
-
+    self.buttonView.setImage(CHAssets.getImage(named: imageName), for: .highlighted)
+    
     self.badgeView.configure(viewModel.badge)
     self.badgeView.isHidden = viewModel.badge == 0
   }
@@ -58,6 +73,10 @@ final class LauncherView : BaseView {
     
     self.buttonView.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
+    }
+    
+    self.buttonLayerView.snp.makeConstraints { [weak self] (make) in
+      make.edges.equalTo((self?.buttonView)!)
     }
     
     self.badgeView.snp.makeConstraints { [weak self] (make) in

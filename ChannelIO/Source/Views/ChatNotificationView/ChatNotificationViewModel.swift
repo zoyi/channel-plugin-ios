@@ -13,6 +13,21 @@ protocol ChatNotificationViewModelType {
   var name: String? { get }
   var timestamp: String? { get }
   var avatar: CHEntity? { get }
+  
+  var title: String? { get set }
+  var imageUrl: URL? { get set }
+  var imageHeight: CGFloat { get set }
+  var imageWidth: CGFloat { get set }
+  var imageRedirect: String? { get set }
+  var buttonTitle: String? { get set }
+  var buttonRedirect: String? { get set }
+  var themeColor: UIColor? { get set }
+}
+
+enum CHAttachmentType: String {
+  case none
+  case button
+  case image
 }
 
 struct ChatNotificationViewModel: ChatNotificationViewModelType {
@@ -20,6 +35,15 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
   var name: String?
   var timestamp: String?
   var avatar: CHEntity?
+  
+  var title: String? = nil
+  var imageUrl: URL? = nil
+  var imageHeight: CGFloat = 0.f
+  var imageWidth: CGFloat = 0.f
+  var imageRedirect: String? = nil
+  var buttonTitle: String? = nil
+  var buttonRedirect: String? = nil
+  var themeColor: UIColor? = nil
 
   init(push: CHPush) {
     if push.isReviewLog {
@@ -33,7 +57,30 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
       self.avatar = push.bot
     }
     
-    if let logMessage = push.message?.logMessage {
+    if let title = push.message?.title, title != "" {
+      self.title = title
+    }
+    
+    switch push.attachmentType {
+    case .image:
+      if let file = push.message?.file, file.image {
+        self.imageUrl = URL(string: file.url)
+        self.imageWidth = file.previewThumb?.width ?? 0.f
+        self.imageHeight = file.previewThumb?.height ?? 0.f
+      }
+      self.imageRedirect = push.redirectUrl
+    case .button:
+      if let buttonTitle = push.buttonTitle {
+        self.buttonTitle = buttonTitle
+      }
+      self.imageRedirect = push.redirectUrl
+    default:
+      break
+    }
+    
+    self.themeColor = UIColor(hex: mainStore.state.plugin.color)
+    
+    if let logMessage = push.message?.logMessage, push.showLog {
       let attributedText = NSMutableAttributedString(string: logMessage)
       attributedText.addAttributes([
         .font: UIFont.systemFont(ofSize: 14),

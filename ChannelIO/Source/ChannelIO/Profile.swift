@@ -9,11 +9,11 @@ import Foundation
 
 @objc
 public class Profile : NSObject {
-  var name = ""
-  var avatarUrl = ""
-  var mobileNumber = ""
-  var email = ""
-  var property = [String:Any]()
+  @objc var name: String = ""
+  @objc var avatarUrl: String = ""
+  @objc var mobileNumber: String = ""
+  @objc var email: String = ""
+  @objc var property:[String:Any] = [:]
   
   @discardableResult
   @objc public func set(name: String) -> Profile {
