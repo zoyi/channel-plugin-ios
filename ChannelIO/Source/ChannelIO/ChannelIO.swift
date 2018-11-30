@@ -49,7 +49,7 @@ public final class ChannelIO: NSObject {
   internal static var baseNavigation: BaseNavigationController?
   internal static var subscriber : CHPluginSubscriber?
 
-  internal static var disposeBeg = DisposeBag()
+  internal static var disposeBag = DisposeBag()
   internal static var pushToken: String?
   internal static var currentAlertCount = 0
 
@@ -60,6 +60,7 @@ public final class ChannelIO: NSObject {
 
   internal static var settings: ChannelPluginSettings? = nil
   internal static var profile: Profile? = nil
+  
   internal static var launcherView: LauncherView? = nil
   internal static var launcherVisible: Bool = false
   internal static var willBecomeActive: Bool = true
@@ -159,7 +160,7 @@ public final class ChannelIO: NSObject {
         mainStore.dispatch(UpdateCheckinState(payload: .unknown))
         completion?(.unknown, nil)
       }
-    }).disposed(by: disposeBeg)
+    }).disposed(by: disposeBag)
   }
 
   /**
@@ -195,7 +196,7 @@ public final class ChannelIO: NSObject {
         dlog("shutdown success")
       }, onError: { (error) in
         dlog("shutdown fail")
-      }).disposed(by: disposeBeg)
+      }).disposed(by: disposeBag)
   }
     
   /**
@@ -248,7 +249,7 @@ public final class ChannelIO: NSObject {
         guard ChannelIO.isValidStatus else { return }
         ChannelIO.hideNotification()
         ChannelIO.open(animated: true)
-      }).disposed(by: disposeBeg)
+      }).disposed(by: disposeBag)
       
       ChannelIO.launcherView = launcherView
       
@@ -410,7 +411,7 @@ public final class ChannelIO: NSObject {
         completion?()
       }, onError: { (error) in
         completion?()
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: self.disposeBag)
       return
     }
     

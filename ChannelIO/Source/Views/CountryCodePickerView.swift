@@ -12,7 +12,7 @@ import SnapKit
 final class CountryCodePickerView : BaseView {
 
   var countries: [CHCountry] = []
-  let disposeBeg = DisposeBag()
+  let disposeBag = DisposeBag()
   var bottomContraint: Constraint?
   var pickedCode = "" {
     didSet {
@@ -99,7 +99,7 @@ final class CountryCodePickerView : BaseView {
       self?.cancelSubject.onCompleted()
         
       self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBeg)
+    }).disposed(by: self.disposeBag)
     
     self.submitButton.signalForClick().subscribe(onNext: { [weak self] (event) in
       guard let index = self?.selectedIndex else { return }
@@ -109,7 +109,7 @@ final class CountryCodePickerView : BaseView {
       self?.submitSubject.onCompleted()
         
       self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBeg)
+    }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {

@@ -13,6 +13,7 @@ import SVProgressHUD
 extension ChannelIO {
   internal class func reset() {
     dispatch {
+      PushBotManager.reset()
       ChannelIO.launcherView?.hide(animated: false)
       ChannelIO.close(animated: false)
       ChannelIO.hideNotification()
@@ -57,10 +58,10 @@ extension ChannelIO {
       properties: eventProperty,
       sysProperties: sysProperty).subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
-        ChannelIO.processPushBot(with: eventProperty ?? [:], nudges: nudges)
+        PushBotManager.process(with: nudges, property: eventProperty ?? [:])
       }, onError: { (error) in
         dlog("\(eventName) event failed")
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: disposeBag)
   }
 
   internal class func checkInChannel(profile: Profile? = nil) -> Observable<Any?> {
@@ -113,7 +114,7 @@ extension ChannelIO {
           subscriber.onError(error)
         }, onCompleted: {
           dlog("Check in complete")
-        }).disposed(by: self.disposeBeg)
+        }).disposed(by: disposeBag)
       
       return Disposables.create()
     }
@@ -169,7 +170,7 @@ extension ChannelIO {
         dlog("register token success")
       }, onError:{ error in
         dlog("register token failed")
-      }).disposed(by: disposeBeg)
+      }).disposed(by: disposeBag)
   }
   
   internal class func showNotification(pushData: CHPush?) {
@@ -193,14 +194,14 @@ extension ChannelIO {
         .subscribe(onNext: { (event) in
           ChannelIO.hideNotification()
           ChannelIO.showUserChat(userChatId: push.userChat?.id)
-        }).disposed(by: self.disposeBeg)
+        }).disposed(by: disposeBag)
       
       notificationView.closeView
         .signalForClick()
         .observeOn(MainScheduler.instance)
         .subscribe { (event) in
           ChannelIO.hideNotification()
-        }.disposed(by: self.disposeBeg)
+        }.disposed(by: disposeBag)
       
       notificationView.redirectSignal
         .observeOn(MainScheduler.instance)
@@ -210,7 +211,7 @@ extension ChannelIO {
           if shouldHandle == false || shouldHandle == nil {
             url.openWithUniversal()
           }
-        }).disposed(by: self.disposeBeg)
+        }).disposed(by: disposeBag)
       
       ChannelIO.chatNotificationView = notificationView
       CHAssets.playPushSound()
@@ -229,71 +230,6 @@ extension ChannelIO {
 
     ChannelIO.chatNotificationView?.remove(animated: true)
     ChannelIO.chatNotificationView = nil
-  }
-  
-  
-  internal class func processPushBot(with property: [String: Any], nudges: [CHNudge]? = []) {
-    guard let nudges = nudges else { return }
-    guard mainStore.state.channel.canUsePushBot else { return }
-    let guest = mainStore.state.guest
-    let filtered = nudges.filter({ (nudge) -> Bool in
-      userChatSelector(
-        state: mainStore.state,
-        userChatId: CHConstants.nudgeChat + nudge.id
-      ) == nil
-    })
-    
-    Observable.from(filtered)
-      .filter { (nudge) -> Bool in
-        return TargetEvaluatorService.evaluate(
-          with: nudge.target,
-          userInfo: guest.userInfo.merging(
-            property,
-            uniquingKeysWith: { (_, second) in second }
-          )
-        )
-      }
-      .toArray()
-      .flatMap { Observable.from($0) }
-      .flatMap ({ (nudge) -> Observable<CHNudge> in
-        return Observable.just(nudge)
-          .delay(
-            Double(nudge.triggerDelay),
-            scheduler: MainScheduler.instance
-          )
-      })
-      .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
-        return NudgePromise.requestReach(nudgeId: nudge.id)
-      })
-      .single { $0.reach == true }
-      .filter { _ in mainStore.state.checkinState.status == .success }
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (response) in
-        let (chat, message, session) = CHUserChat.createLocal(
-          writer: response.bot,
-          variant: response.variant
-        )
-        
-        mainStore.dispatch(
-          CreateLocalUserChat(
-            chat: chat,
-            message: message,
-            writer: response.bot,
-            session: session
-          )
-        )
-        guard ChannelIO.baseNavigation == nil else { return }
-        if let chat = chat, let message = message {
-          ChannelIO.showNotification(pushData: CHPush(
-            chat: chat,
-            message: message,
-            response: response
-          ))
-        }
-        
-      }, onError: { (error) in
-        //
-      }).disposed(by: disposeBeg)
   }
 }
 

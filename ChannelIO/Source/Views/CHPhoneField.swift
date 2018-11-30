@@ -30,7 +30,7 @@ final class CHPhoneField: BaseView {
 
   let validSubject = PublishSubject<Bool>()
   
-  var disposeBeg = DisposeBag()
+  var disposeBag = DisposeBag()
   let countryCodeView = UIView()
   let countryLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 18)
@@ -184,8 +184,8 @@ extension CHPhoneField {
           .subscribe(onNext: { (name, code) in
             self?.code = code
             self?.countryLabel.text =  "+" + code
-          }).disposed(by: (self?.disposeBeg)!)
-    }).disposed(by: self.disposeBeg)
+          }).disposed(by: (self?.disposeBag)!)
+    }).disposed(by: self.disposeBag)
   }
 
 }

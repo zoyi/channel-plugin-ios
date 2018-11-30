@@ -260,6 +260,7 @@
 		65CB1433206A02F200E456B5 /* UserChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141D206A02F200E456B5 /* UserChatCell.swift */; };
 		65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB141E206A02F200E456B5 /* UserChatCellModel.swift */; };
 		65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1420206A02F200E456B5 /* WatermarkCell.swift */; };
+		65D72A3421B11D5B00EE31B4 /* PushBotManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */; };
 		65EAE11320EF468500D501FC /* TranslateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EAE11220EF468500D501FC /* TranslateView.swift */; };
 /* End PBXBuildFile section */
 
@@ -574,6 +575,7 @@
 		65CB141D206A02F200E456B5 /* UserChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatCell.swift; sourceTree = "<group>"; };
 		65CB141E206A02F200E456B5 /* UserChatCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatCellModel.swift; sourceTree = "<group>"; };
 		65CB1420206A02F200E456B5 /* WatermarkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatermarkCell.swift; sourceTree = "<group>"; };
+		65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushBotManager.swift; sourceTree = "<group>"; };
 		65EAE11220EF468500D501FC /* TranslateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateView.swift; sourceTree = "<group>"; };
 		91AA74C5F2692FBA2AAD7A32 /* Pods-ChannelIOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIOTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChannelIOTests/Pods-ChannelIOTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B60D8047C1BADF5F21DE1E7A /* Pods_ChannelIOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChannelIOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -703,6 +705,7 @@
 		14D2AA761E24AE06006FEE22 /* ChannelIO */ = {
 			isa = PBXGroup;
 			children = (
+				65D72A3221B11D5B00EE31B4 /* Managers */,
 				22F094F32176E8A00035C777 /* Frameworks */,
 				65A22F18212EA3FB00EAD15F /* Builders */,
 				6597933C1FA7167C00840F6A /* Actions */,
@@ -1265,6 +1268,15 @@
 			path = UserChatCell;
 			sourceTree = "<group>";
 		};
+		65D72A3221B11D5B00EE31B4 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */,
+			);
+			name = Managers;
+			path = Source/Managers;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1674,6 +1686,7 @@
 				659793961FA716CB00840F6A /* UserChatReducer.swift in Sources */,
 				659793971FA716CB00840F6A /* WSocketReducer.swift in Sources */,
 				659793981FA716CB00840F6A /* MessagesSelector.swift in Sources */,
+				65D72A3421B11D5B00EE31B4 /* PushBotManager.swift in Sources */,
 				659793991FA716CB00840F6A /* PersonSelector.swift in Sources */,
 				6597939A1FA716CB00840F6A /* UserChatSelector.swift in Sources */,
 				6597939B1FA716CB00840F6A /* RestService.swift in Sources */,
