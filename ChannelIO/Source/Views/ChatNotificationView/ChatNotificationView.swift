@@ -9,6 +9,7 @@
 import Foundation
 import RxSwift
 import SnapKit
+import FLAnimatedImage
 
 final class ChatNotificationView : BaseView {
   var topLayoutGuide: UILayoutSupport?
@@ -115,7 +116,7 @@ final class ChatNotificationView : BaseView {
     $0.layer.shadowOpacity = 0
   }
   
-  let contentImageView = UIImageView().then {
+  let contentImageView = FLAnimatedImageView().then {
     $0.layer.cornerRadius = 6.f
     $0.clipsToBounds = true
     $0.contentMode = .scaleAspectFill
