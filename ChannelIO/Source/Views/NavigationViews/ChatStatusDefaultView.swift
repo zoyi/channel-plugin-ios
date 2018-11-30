@@ -203,7 +203,7 @@ class ChatStatusDefaultView : BaseView {
     let paragraphStyle = NSMutableParagraphStyle()
     paragraphStyle.minimumLineHeight = 18.f
     attributedString.addAttribute(
-      NSAttributedStringKey.paragraphStyle,
+      .paragraphStyle,
       value:paragraphStyle,
       range:NSMakeRange(0, attributedString.length))
     self.statusDescLabel.attributedText = attributedString;

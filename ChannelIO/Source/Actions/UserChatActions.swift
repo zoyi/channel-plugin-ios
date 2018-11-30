@@ -35,6 +35,11 @@ struct RemoveMessages: Action {
   public let payload: String?
 }
 
+struct GetNudgeChat: Action {
+  public let nudgeId: String
+  public let payload: ChatResponse
+}
+
 struct GetUserChat: Action {
   public let payload: ChatResponse
 }
@@ -43,16 +48,23 @@ struct CreateUserChat: Action {
   public let payload: CHUserChat
 }
 
+struct CreateLocalUserChat: Action {
+  public let chat: CHUserChat?
+  public let message: CHMessage?
+  public let writer: CHEntity?
+  public let session: CHSession?
+}
+
 struct UpdateUserChat: Action {
   public let payload: CHUserChat
 }
 
 struct DeleteUserChat: Action {
-  public let payload: String
+  public let payload: CHUserChat
 }
 
 struct DeleteUserChats: Action {
-  public let payload: [String]
+  public let payload: [CHUserChat]
 }
 
 struct DeleteUserChatsAll: Action {}
@@ -68,6 +80,11 @@ struct LeavedUserChat: Action {
 //Update user
 struct UpdateGuest: Action {
   public let payload: CHGuest?
+}
+
+struct UpdateGuestWithLocalRead: Action {
+  public let guest: CHGuest?
+  public let session: CHSession?
 }
 
 struct UpdateVisibilityOfCompletedChats: Action {

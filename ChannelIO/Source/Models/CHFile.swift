@@ -137,12 +137,12 @@ struct CHFile {
     }
   }
   
-  static func create(botStep: CHSupportBotStep) -> CHFile? {
-    if let url = botStep.imageUrl {
+  static func create(imageable: CHImageable) -> CHFile? {
+    if let url = imageable.imageUrl {
       var file = CHFile()
       file.url = url
       file.image = true
-      file.previewThumb = botStep.imageMeta
+      file.previewThumb = imageable.imageMeta
       return file
     }
 

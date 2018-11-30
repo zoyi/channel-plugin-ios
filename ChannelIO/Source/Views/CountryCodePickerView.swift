@@ -12,7 +12,7 @@ import SnapKit
 final class CountryCodePickerView : BaseView {
 
   var countries: [CHCountry] = []
-  let disposeBeg = DisposeBag()
+  let disposeBag = DisposeBag()
   var bottomContraint: Constraint?
   var pickedCode = "" {
     didSet {
@@ -33,13 +33,13 @@ final class CountryCodePickerView : BaseView {
   
   let actionView = UIView()
   let closeButton = UIButton().then {
-    $0.setTitleColor(CHColors.dark, for: UIControlState.normal)
+    $0.setTitleColor(CHColors.dark, for: .normal)
     $0.setTitle(CHAssets.localized("ch.mobile_verification.cancel"), for: .normal)
     $0.titleLabel?.font = UIFont.systemFont(ofSize: 17.f)
     
   }
   let submitButton = UIButton().then {
-    $0.setTitleColor(CHColors.dark, for: UIControlState.normal)
+    $0.setTitleColor(CHColors.dark, for: .normal)
     $0.setTitle(CHAssets.localized("ch.mobile_verification.confirm"), for: .normal)
     $0.titleLabel?.font = UIFont.systemFont(ofSize: 17.f)
   }
@@ -99,7 +99,7 @@ final class CountryCodePickerView : BaseView {
       self?.cancelSubject.onCompleted()
         
       self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBeg)
+    }).disposed(by: self.disposeBag)
     
     self.submitButton.signalForClick().subscribe(onNext: { [weak self] (event) in
       guard let index = self?.selectedIndex else { return }
@@ -109,7 +109,7 @@ final class CountryCodePickerView : BaseView {
       self?.submitSubject.onCompleted()
         
       self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBeg)
+    }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {

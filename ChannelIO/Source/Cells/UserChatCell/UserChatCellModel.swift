@@ -31,10 +31,12 @@ struct UserChatCellModel: UserChatCellModelType {
     self.title = userChat.name
     if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
+    } else if let msg = userChat.lastMessage?.messageV2?.string, msg != "" {
+      self.lastMessage = msg
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
-      self.lastMessage = userChat.lastMessage?.messageV2?.string ?? ""
+      self.lastMessage = userChat.lastMessage?.message ?? ""
     }
 
     self.timestamp = userChat.readableUpdatedAt

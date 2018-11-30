@@ -37,7 +37,13 @@ struct BotsState: StateType {
   }
   
   mutating func upsert(bots: [CHBot]) -> BotsState {
-    bots.forEach({ self.botDictionary[$0.id] = $0 })
+    bots.forEach({ _ = self.upsert(bot: $0) })
+    return self
+  }
+  
+  mutating func upsert(bot: CHBot?) -> BotsState {
+    guard let bot = bot else { return self }
+    self.botDictionary[bot.id] = bot
     return self
   }
   

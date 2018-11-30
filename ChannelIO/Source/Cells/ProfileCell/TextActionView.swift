@@ -33,7 +33,7 @@ class TextActionView: BaseView, Actionable {
     $0.placeholder = CHAssets.localized("ch.profile_form.placeholder")
   }
   
-  let disposeBeg = DisposeBag()
+  let disposeBag = DisposeBag()
   var didFocus = false
   
   override func initialize() {
@@ -51,7 +51,7 @@ class TextActionView: BaseView, Actionable {
       .notification(Notification.Name.Channel.dismissKeyboard)
       .subscribe(onNext: { [weak self] (_) in
         self?.textField.resignFirstResponder()
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: self.disposeBag)
     
     self.textField.delegate = self
     self.textField.rx.text.subscribe(onNext: { [weak self] (text) in
@@ -59,7 +59,7 @@ class TextActionView: BaseView, Actionable {
         self?.confirmButton.isHidden = text.count == 0
       }
       self?.setFocus()
-    }).disposed(by: self.disposeBeg)
+    }).disposed(by: self.disposeBag)
     
     self.confirmButton.signalForClick()
       .subscribe(onNext: { [weak self] _ in
@@ -74,7 +74,7 @@ class TextActionView: BaseView, Actionable {
           self?.submitSubject.onNext(self?.textField.text)
         }
         
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {

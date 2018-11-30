@@ -34,6 +34,7 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func willOpenMessenger() -> Void /* notify when chat list is about to show */
   @objc optional func willCloseMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void
+  @objc optional func onClickRedirect(url: URL) -> Bool
 }
 
 @objc
@@ -48,7 +49,7 @@ public final class ChannelIO: NSObject {
   internal static var baseNavigation: BaseNavigationController?
   internal static var subscriber : CHPluginSubscriber?
 
-  internal static var disposeBeg = DisposeBag()
+  internal static var disposeBag = DisposeBag()
   internal static var pushToken: String?
   internal static var currentAlertCount = 0
 
@@ -59,6 +60,7 @@ public final class ChannelIO: NSObject {
 
   internal static var settings: ChannelPluginSettings? = nil
   internal static var profile: Profile? = nil
+  
   internal static var launcherView: LauncherView? = nil
   internal static var launcherVisible: Bool = false
   internal static var willBecomeActive: Bool = true
@@ -158,7 +160,7 @@ public final class ChannelIO: NSObject {
         mainStore.dispatch(UpdateCheckinState(payload: .unknown))
         completion?(.unknown, nil)
       }
-    }).disposed(by: disposeBeg)
+    }).disposed(by: disposeBag)
   }
 
   /**
@@ -194,7 +196,7 @@ public final class ChannelIO: NSObject {
         dlog("shutdown success")
       }, onError: { (error) in
         dlog("shutdown fail")
-      }).disposed(by: disposeBeg)
+      }).disposed(by: disposeBag)
   }
     
   /**
@@ -247,9 +249,18 @@ public final class ChannelIO: NSObject {
         guard ChannelIO.isValidStatus else { return }
         ChannelIO.hideNotification()
         ChannelIO.open(animated: true)
-      }).disposed(by: disposeBeg)
+      }).disposed(by: disposeBag)
       
       ChannelIO.launcherView = launcherView
+      
+      if let topController = CHUtils.getTopController() {
+        ChannelIO.sendDefaultEvent(.pageView, property: [
+          TargetKey.url.rawValue: "\(type(of: topController))"
+        ])
+      } else {
+        ChannelIO.sendDefaultEvent(.pageView)
+      }
+      
     }
   }
   
@@ -278,7 +289,7 @@ public final class ChannelIO: NSObject {
     dispatch {
       ChannelIO.launcherView?.isHidden = true
       ChannelIO.delegate?.willOpenMessenger?()
-      ChannelIO.sendDefaultEvent(.open)
+
       mainStore.dispatch(ChatListIsVisible())
 
       let userChatsController = UserChatsViewController()
@@ -304,12 +315,11 @@ public final class ChannelIO: NSObject {
       ChannelIO.baseNavigation?.dismiss(
         animated: animated, completion: {
         mainStore.dispatch(ChatListIsHidden())
-        
-        //ChannelIO.launcherView?.isHidden = false
+
         if ChannelIO.launcherVisible {
           ChannelIO.launcherView?.show(animated: true)
         }
-        ChannelIO.baseNavigation?.removeFromParentViewController()
+        ChannelIO.baseNavigation?.removeFromParent()
         ChannelIO.baseNavigation = nil
         completion?()
       })
@@ -337,30 +347,19 @@ public final class ChannelIO: NSObject {
   @objc
   public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
     guard ChannelIO.isValidStatus else { return }
-    guard let settings = ChannelIO.settings else { return }
     
     let version = Bundle(for: ChannelIO.self)
       .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
+    dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
+    
     ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: [
-      "pluginId": settings.pluginKey,
       "pluginVersion": version,
       "device": UIDevice.current.modelName,
       "os": "\(UIDevice.current.systemName)_\(UIDevice.current.systemVersion)",
       "screenWidth": UIScreen.main.bounds.width,
-      "screenHeight": UIScreen.main.bounds.height,
-      "plan": mainStore.state.channel.messengerPlan.rawValue
+      "screenHeight": UIScreen.main.bounds.height
     ])
-  }
-  
-  /**
-   *  Check whether channel is currently operating
-   *
-   *  - return: ture if a channel is in operating hour, otherwise false
-   */
-  @objc
-  public class func isOperating() -> Bool {
-    return false //calculate channel working time...
   }
   
   /**
@@ -412,7 +411,7 @@ public final class ChannelIO: NSObject {
         completion?()
       }, onError: { (error) in
         completion?()
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: self.disposeBag)
       return
     }
     

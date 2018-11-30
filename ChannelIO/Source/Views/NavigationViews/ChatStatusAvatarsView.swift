@@ -152,7 +152,7 @@ class ChatStatusAvatarsView: BaseView {
     self.secondAvatarView.alpha = 0
     self.thirdAvatarView.alpha = 0
     
-    UIView.animateKeyframes(withDuration: 0.51, delay: 0.2, options: UIViewKeyframeAnimationOptions.calculationModePaced, animations: {
+    UIView.animateKeyframes(withDuration: 0.51, delay: 0.2, options: UIView.KeyframeAnimationOptions.calculationModePaced, animations: {
       UIView.addKeyframe(withRelativeStartTime: 0.21, relativeDuration: 0.3, animations: {
         self.firstAvatarView.alpha = 1
         self.firstAvatarView.transform = CGAffineTransform.identity
@@ -167,7 +167,7 @@ class ChatStatusAvatarsView: BaseView {
     self.secondAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
     self.thirdAvatarView.alpha = 0
     
-    UIView.animateKeyframes(withDuration: 0.51, delay: 0.2, options: UIViewKeyframeAnimationOptions.calculationModePaced, animations: {
+    UIView.animateKeyframes(withDuration: 0.51, delay: 0.2, options: UIView.KeyframeAnimationOptions.calculationModePaced, animations: {
       UIView.addKeyframe(withRelativeStartTime: 0.18, relativeDuration: 0.3, animations: {
         self.secondAvatarView.alpha = 1
         self.secondAvatarView.transform = CGAffineTransform.identity
@@ -187,7 +187,7 @@ class ChatStatusAvatarsView: BaseView {
     self.secondAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
     self.thirdAvatarView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
     
-    UIView.animateKeyframes(withDuration: 0.8, delay: 0.2, options: UIViewKeyframeAnimationOptions.beginFromCurrentState, animations: {
+    UIView.animateKeyframes(withDuration: 0.8, delay: 0.2, options: UIView.KeyframeAnimationOptions.beginFromCurrentState, animations: {
       UIView.addKeyframe(withRelativeStartTime: 0.15, relativeDuration: 0.3, animations: {
         self.thirdAvatarView.alpha = 1
         self.thirdAvatarView.transform = CGAffineTransform.identity

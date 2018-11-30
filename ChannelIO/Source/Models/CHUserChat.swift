@@ -68,10 +68,19 @@ struct CHUserChat: ModelType {
   var session: CHSession?
   var lastTalkedHost: CHEntity?
   var channel: CHChannel?
+  var hasRemoved: Bool = false
 }
 
 extension CHUserChat: Mappable {
   init?(map: Map) {}
+  
+  init(chatId: String, lastMessageId: String) {
+    self.id = chatId
+    self.state = .ready
+    self.appMessageId = lastMessageId
+    self.createdAt = Date()
+    self.updatedAt = Date()
+  }
   
   mutating func mapping(map: Map) {
     id               <- map["id"]
@@ -109,8 +118,11 @@ extension CHUserChat {
   static func create(pluginId: String) -> Observable<ChatResponse>{
     return UserChatPromise.createChat(pluginId: pluginId)
   }
-  
+
   func remove() -> Observable<Any?> {
+    if self.isLocalChat() {
+      return .just(nil)
+    }
     return UserChatPromise.remove(userChatId: self.id)
   }
   
@@ -122,46 +134,67 @@ extension CHUserChat {
     return UserChatPromise.review(userChatId: self.id, formId: mid, rating: rating, requestId: requestId)
   }
   
-  func read(at message: CHMessage?) {
-    guard let message = message else { return }
-    guard let session = self.session else { return }
-    guard session.unread != 0 || session.alert != 0 else { return }
+  func shouldRequestRead(otherChat: CHUserChat?) -> Bool {
+    guard let otherChat = otherChat else { return false }
+    return (self.updatedAt?.miliseconds != otherChat.updatedAt?.miliseconds) ||
+      (self.session?.alert != otherChat.session?.alert)
+  }
+  
+  func read() {
+    guard self.session != nil else { return }
     
-    _ = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
+    _ = UserChatPromise.setMessageRead(userChatId: self.id)
       .subscribe(onNext: { (_) in
-        self.readAllManually()
+        mainStore.dispatch(ReadSession(payload: self.session))
       }, onError: { (error) in
         
       })
   }
   
-  func read(at message: CHMessage) -> Observable<Bool> {
+  func read() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = UserChatPromise.setMessageRead(userChatId: self.id, at: message.createdAt)
-        .subscribe(onNext: { (_) in
-          self.readAllManually()
-          subscriber.onNext(true)
-          subscriber.onCompleted()
-        }, onError: { (error) in
-          subscriber.onNext(false)
-          subscriber.onCompleted()
-        })
+      let signal = self.isLocalChat() ?
+        Observable.just(nil) :
+        UserChatPromise.setMessageRead(userChatId: self.id)
+          
+      let dispose = signal.subscribe(onNext: { (_) in
+        if self.isLocalChat() {
+          let guest = personSelector(
+            state: mainStore.state,
+            personType: self.personType,
+            personId: self.personId
+          ) as? CHGuest
+          mainStore.dispatch(UpdateGuestWithLocalRead(guest:guest, session:self.session))
+        } else {
+          mainStore.dispatch(ReadSession(payload: self.session))
+        }
+        subscriber.onNext(true)
+        subscriber.onCompleted()
+      }, onError: { (error) in
+        subscriber.onNext(false)
+        subscriber.onCompleted()
+      })
       
       return Disposables.create {
-        signal.dispose()
+        dispose.dispose()
       }
     })
-  }
-  
-  func readAllManually() {
-    guard var session = self.session else { return }
-    session.unread = 0
-    session.alert = 0
-    mainStore.dispatch(UpdateSession(payload: session))
   }
 }
 
 extension CHUserChat {
+  func isLocalChat() -> Bool {
+    return self.id.hasPrefix(CHConstants.local)
+  }
+  
+  func isNudgeChat() -> Bool {
+    return self.id.hasPrefix(CHConstants.nudgeChat)
+  }
+  
+  func getNudgeId() -> String {
+    return self.id.components(separatedBy: CHConstants.nudgeChat).last ?? ""
+  }
+  
   func isActive() -> Bool {
     return self.state != .closed && self.state != .solved && self.state != .removed
   }
@@ -205,6 +238,7 @@ extension CHUserChat {
   func shouldHideInput() -> Bool {
     return self.isSupporting() || self.isSolved()
   }
+  
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
     return current.isReadyOrOpen() && !next.isReadyOrOpen()
@@ -213,6 +247,22 @@ extension CHUserChat {
   static func becomeOpen(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
     return current.isSolved() && next.isReadyOrOpen()
+  }
+  
+  static func createLocal(writer: CHEntity?, variant: CHNudgeVariant?) -> (CHUserChat?, CHMessage?, CHSession?) {
+    guard let writer = writer, let variant = variant else { return (nil, nil, nil) }
+    let file = CHFile.create(imageable: variant)
+    let chatId = CHConstants.nudgeChat + variant.nudgeId
+    let message = CHMessage(
+      chatId: chatId,
+      entity: writer,
+      title: variant.title,
+      message: variant.message,
+      file: file)
+    
+    let session = CHSession(id: chatId, chatId: chatId, guest: mainStore.state.guest, alert: 1)
+    let userChat = CHUserChat(chatId: chatId, lastMessageId: message.id)
+    return (userChat, message, session)
   }
 }
 

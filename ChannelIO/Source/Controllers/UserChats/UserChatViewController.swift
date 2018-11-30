@@ -35,7 +35,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   var channel: CHChannel = mainStore.state.channel
   var userChatId: String?
   var userChat: CHUserChat?
-
+  
   var preloadText: String = ""
   var isFetching = false
   var isRequstingReadAll = false
@@ -54,6 +54,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   var disposeBag = DisposeBag()
   var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
+  
+  var chatUpdateSubject = PublishSubject<Any?>()
+  var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?)>()
   
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
@@ -121,14 +124,17 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initViews()
     self.initNewChatButton()
     self.initPhotoViewer()
-    //new user chat
 
+    self.initUpdaters()
+    
     if mainStore.state.messagesState.supportBotEntry != nil && self.userChatId == nil {
       self.setTextInputbarHidden(true, animated: false)
       mainStore.dispatchOnMain(InsertSupportBotEntry())
       self.readyToDisplay()
     } else if self.userChatId == nil {
       mainStore.dispatchOnMain(InsertWelcome())
+      self.readyToDisplay()
+    } else if self.userChatId?.hasPrefix(CHConstants.nudgeChat) == true {
       self.readyToDisplay()
     }
   }
@@ -143,6 +149,22 @@ final class UserChatViewController: BaseSLKTextViewController {
     mainStore.unsubscribe(self)
   }
 
+  func initUpdaters() {
+    self.navigationUpdateSubject
+      .takeUntil(self.rx.deallocated)
+      .debounce(0.7, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (state, chat) in
+        self?.updateNavigationIfNeeded(state: state, nextUserChat: chat)
+      }).disposed(by: self.disposeBag)
+    
+    self.chatUpdateSubject
+      .takeUntil(self.rx.deallocated)
+      .debounce(0.7, scheduler: ConcurrentMainScheduler.instance)
+      .subscribe(onNext: { [weak self] _ in
+        self?.fetchChatIfNeeded()
+      }).disposed(by: self.disposeBag)
+  }
+  
   fileprivate func initManagers() {
     self.chatManager = ChatManager(id: self.userChatId)
     self.chatManager.chat = userChatSelector(
@@ -246,8 +268,8 @@ final class UserChatViewController: BaseSLKTextViewController {
       sectionIndex: self.channel.notAllowToUseSDK ? 2 : 1
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
-    self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
-    self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
+    self.diffCalculator?.insertionAnimation = .none
+    self.diffCalculator?.deletionAnimation = .none
   }
 
   fileprivate func initNavigationViews(with userChat: CHUserChat? = nil) {
@@ -339,6 +361,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       make.trailing.equalToSuperview()
     }
     
+    //?
     if let expanded = self.titleView?.isExpanded, expanded {
       self.shyNavBarManager.expand(false)
     }
@@ -459,10 +482,6 @@ extension UserChatViewController: StoreSubscriber {
     let offset = self.tableView.contentOffset
     let hasNewMessage = self.chatManager.hasNewMessage(current: self.messages, updated: messages)
     
-    if hasNewMessage {
-      self.chatManager?.requestRead(at: messages.first)
-    }
-    
     //message only needs to be replace if count is differe
     self.messages = messages
     //fixed contentOffset
@@ -477,12 +496,12 @@ extension UserChatViewController: StoreSubscriber {
     
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     
-    self.updateNavigationIfNeeded(state: state, nextUserChat: userChat)
+    self.navigationUpdateSubject.onNext((state, userChat))
     self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat)
     self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
     self.showErrorIfNeeded(state: state)
     
-    self.fetchChatIfNeeded()
+    self.chatUpdateSubject.onNext(nil)
     
     if userChat?.appMessageId != self.userChat?.appMessageId {
       self.tableView.reloadData()
@@ -502,19 +521,19 @@ extension UserChatViewController: StoreSubscriber {
       self.initNavigationViews(with: nextUserChat)
     } else if self.currentLocale != state.settings?.appLocale {
       self.initNavigationViews(with: nextUserChat)
+    } else {
+      let userChats = userChatsSelector(
+        state: mainStore.state,
+        showCompleted: mainStore.state.userChatsState.showCompletedChats
+      )
+      
+      self.setNavItems(
+        showSetting: userChats.count == 0,
+        currentUserChat: nextUserChat,
+        guest: state.guest,
+        textColor: state.plugin.textUIColor
+      )
     }
-    
-    let userChats = userChatsSelector(
-      state: mainStore.state,
-      showCompleted: mainStore.state.userChatsState.showCompletedChats
-    )
-    
-    self.setNavItems(
-      showSetting: userChats.count == 0,
-      currentUserChat: nextUserChat,
-      guest: state.guest,
-      textColor: state.plugin.textUIColor
-    )
   }
   
   func fetchChatIfNeeded() {
@@ -622,7 +641,7 @@ extension UserChatViewController: StoreSubscriber {
   fileprivate func scrollToBottom(_ animated: Bool) {
     self.tableView.scrollToRow(
       at: IndexPath(row:0, section:0),
-      at: UITableViewScrollPosition.bottom,
+      at: .bottom,
       animated: animated
     )
   }

@@ -14,9 +14,10 @@ import ObjectMapper
 
 struct EventPromise {
   static func sendEvent(
+    pluginId: String,
     name: String,
     properties: [String: Any?]? = nil,
-    sysProperties: [String: Any?]? = nil) -> Observable<CHEvent> {
+    sysProperties: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
     return Observable.create { subscriber in
       var params = [
         "body": [String:AnyObject]()
@@ -32,18 +33,19 @@ struct EventPromise {
         params["body"]?["sysProperty"] = sysProperties as AnyObject?
       }
       
-      Alamofire.request(RestRouter.SendEvent(params as RestRouter.ParametersType))
+      Alamofire.request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            guard let event = Mapper<CHEvent>()
-              .map(JSONObject: json["event"].object) else {
+            guard let event = Mapper<CHEvent>().map(JSONObject: json["event"].object) else {
               subscriber.onError(CHErrorPool.eventParseError)
               return
             }
-            subscriber.onNext(event)
+            let nudges = Mapper<CHNudge>().mapArray(JSONObject: json["nudgeCandidates"].object) ?? []
+            
+            subscriber.onNext((event, nudges))
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)

@@ -80,6 +80,8 @@ class UserChatsViewController: BaseViewController {
     self.errorToastView.containerView = self.view
     self.view.addSubview(self.errorToastView)
     
+    WsService.shared.connect()
+    
     self.initTableView()
     self.initActions()
     self.initNotifications()
@@ -99,13 +101,13 @@ class UserChatsViewController: BaseViewController {
       tableView: self.tableView, initialRows: self.userChats
     )
     self.diffCalculator?.forceOffAnimationEnabled = true
-    self.diffCalculator?.insertionAnimation = UITableViewRowAnimation.none
-    self.diffCalculator?.deletionAnimation = UITableViewRowAnimation.none
+    self.diffCalculator?.insertionAnimation = .none
+    self.diffCalculator?.deletionAnimation = .none
   }
   
   func initNotifications() {
     NotificationCenter.default.rx
-      .notification(NSNotification.Name.UIApplicationDidBecomeActive)
+      .notification(UIApplication.didBecomeActiveNotification)
       .subscribe(onNext: { [weak self] (_) in
         if let controller = CHUtils.getTopController(), controller == self {
           self?.fetchUserChats(isInit: true, showIndicator: false, isReload: true)
@@ -126,8 +128,9 @@ class UserChatsViewController: BaseViewController {
   }
   
   func initActions() {
-    self.errorToastView.refreshImageView.signalForClick()
-      .subscribe { [weak self] _ in
+    self.errorToastView.refreshImageView.signalForClick().subscribe { [weak self] _ in
+      mainStore.dispatch(DeleteUserChatsAll())
+      
       self?.errorToastView.dismiss(animated: true)
       self?.nextSeq = nil
       self?.fetchUserChats(isInit: true, showIndicator: true)
@@ -222,22 +225,6 @@ class UserChatsViewController: BaseViewController {
       })
   }
 
-  fileprivate func setEditingNavItems() {
-    self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-      title: CHAssets.localized("ch.chat.resend.cancel"),
-      style: .plain,
-      target: self,
-      action: #selector(exitEditingMode(sender:))
-    )
-    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-      title: CHAssets.localized("ch.chat.delete"),
-      style: .plain,
-      target: self,
-      action: #selector(deleteSelectedUserChats(sender:))
-    )
-    self.navigationItem.rightBarButtonItem?.isEnabled = false
-  }
-
   fileprivate func showPlusButton() {
     self.plusBottomConstraint?.update(inset: 24)
     UIView.animate(withDuration: 0.3) { 
@@ -258,12 +245,16 @@ class UserChatsViewController: BaseViewController {
     self.isShowingChat = true
     
     let controller = self.prepareUserChat(userChatId: userChatId, text: text)
+    let channel = mainStore.state.channel
     
     //NOTE: Make sure to call onCompleted on observable method to avoid leak
     let pluginId = mainStore.state.plugin.id
     let pluginSignal = CHPlugin.get(with: pluginId)
     let followersSignal = CHManager.getRecentFollowers()
-    let supportBot = CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil)
+    let supportBot = channel.canUseSupportBot ?
+      CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil) :
+      .empty()
+    
     var pluginBot: CHBot? = nil
     
     Observable.zip(pluginSignal, followersSignal, supportBot)
@@ -280,13 +271,14 @@ class UserChatsViewController: BaseViewController {
         if let botId = supportBots.first?.id {
           return SupportBotPromise.getSupportBotEntry(supportBotId: botId)
         } else {
-          let emptyData = CHSupportBotEntryInfo(step: nil, actions: [])
-          return Observable.just(emptyData)
+          return .just(CHSupportBotEntryInfo(step: nil, actions: []))
         }
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (entryInfo) in
-        mainStore.dispatch(GetSupportBotEntry(bot: pluginBot, entry: entryInfo))
+        if entryInfo.step != nil {
+          mainStore.dispatch(GetSupportBotEntry(bot: pluginBot, entry: entryInfo))
+        }
         
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
@@ -332,29 +324,6 @@ class UserChatsViewController: BaseViewController {
   }
 }
 
-// MARK: Navigation actions
-
-extension UserChatsViewController {
-  @objc func exitEditingMode(sender: UIBarButtonItem) {
-    self.tableView.setEditing(false, animated: true)
-    self.setDefaultNavItems()
-  }
-  
-  @objc func deleteSelectedUserChats(sender: UIBarButtonItem) {
-    //delete selections
-    if let selectedRows = self.tableView.indexPathsForSelectedRows {
-      self.deleteUserChats(selectedRows: selectedRows)
-        .subscribe(onNext: { [weak self] (deletedChatIds, indexPaths) in
-          mainStore.dispatch(DeleteUserChats(payload: deletedChatIds))
-
-          self?.tableView.setEditing(false, animated: true)
-          self?.setDefaultNavItems()
-      }, onError: { (error) in
-        //on error??
-      }).disposed(by: self.disposeBag)
-    }
-  }
-}
 // MARK: - StoreSubscriber
 
 extension UserChatsViewController: StoreSubscriber {
@@ -428,7 +397,6 @@ extension UserChatsViewController: UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
     let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
     let userChat = self.userChats[indexPath.row]
     let viewModel = UserChatCellModel(userChat: userChat)
@@ -442,7 +410,7 @@ extension UserChatsViewController: UITableViewDataSource {
     button.buttonWidth = 70
     button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
     cell.rightButtons = [
-        button
+      button
     ]
     cell.rightSwipeSettings.transition = .drag
     cell.tintColor = CHColors.warmPink
@@ -496,13 +464,10 @@ extension UserChatsViewController {
     UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
+        
         self?.didLoad = true
         self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
-
         mainStore.dispatch(GetUserChats(payload: data))
-        if let userChats = data["userChats"] as? [CHUserChat], userChats.count == 0 && isInit {
-          mainStore.dispatch(DeleteUserChatsAll())
-        }
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.display(animated:true)
@@ -516,18 +481,12 @@ extension UserChatsViewController {
       }).disposed(by: self.disposeBag)
   }
   
-  func deleteUserChats(selectedRows: [IndexPath]) -> Observable<([String],[IndexPath])> {
+  func deleteUserChat(userChat: CHUserChat) -> Observable<CHUserChat> {
     return Observable.create { subscribe in
-      var deleteUserChatIds = [String]()
-      let signals =  selectedRows.map ({ (indexPath) -> Observable<Any?> in
-        let userChat = self.userChats[indexPath.row]
-        deleteUserChatIds.append(userChat.id)
-        return userChat.remove()
-      })
       
-      let observe = Observable.zip(signals)
+      let observe = userChat.remove()
         .subscribe(onNext: { (_) in
-          subscribe.onNext((deleteUserChatIds, selectedRows))
+          subscribe.onNext(userChat)
           subscribe.onCompleted()
         }, onError: { (error) in
           subscribe.onError(error)
@@ -540,18 +499,20 @@ extension UserChatsViewController {
   }
   
   func showChatIfNeeded(_ userChats: [CHUserChat]?, isReload: Bool = false) {
+    let allChats = userChatsSelector(state: mainStore.state) + (userChats ?? [])
+    
     if self.showNewChat  {
       self.showUserChat(animated: false)
     } else if let userChatId = self.goToUserChatId {
       self.showUserChat(userChatId: userChatId, animated: false)
       self.goToUserChatId = nil
-    } else if let userChats = userChats, !isReload {
-      if userChats.count == 0 {
+    } else if !isReload {
+      if allChats.count == 0 {
         self.shouldHideTable = true
         self.showUserChat(animated: false)
-      } else if userChats.count == 1 {
+      } else if let chat = allChats.first, allChats.count == 1 {
         self.shouldHideTable = true
-        self.showUserChat(userChatId: userChats[0].id, animated: false)
+        self.showUserChat(userChatId: chat.id, animated: false)
       }
     }
   }
@@ -591,10 +552,10 @@ extension UserChatsViewController : MGSwipeTableCellDelegate {
     
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
     
-    self.deleteUserChats(selectedRows: [indexPath])
-      .subscribe(onNext: { [weak self] (deletedChatIds, indexPaths) in
-        mainStore.dispatch(DeleteUserChats(payload: deletedChatIds))
-        self?.setDefaultNavItems()
+    self.deleteUserChat(userChat: self.userChats[indexPath.row])
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (userChat) in
+        mainStore.dispatch(DeleteUserChat(payload: userChat))
       }, onError: { (error) in
           //on error??
       }).disposed(by: self.disposeBag)

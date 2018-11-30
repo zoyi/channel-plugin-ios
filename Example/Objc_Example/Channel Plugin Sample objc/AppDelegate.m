@@ -54,7 +54,7 @@
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
   NSDictionary *userInfo = response.notification.request.content.userInfo;
-  [ChannelIO handlePushNotification:userInfo];
+  [ChannelIO handlePushNotification:userInfo completion:^{}];
   
   completionHandler();
 }

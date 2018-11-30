@@ -9,14 +9,14 @@
 import UIKit
 
 extension String {
-  func boundingRect(with size: CGSize, attributes: [NSAttributedStringKey: Any]) -> CGRect {
+  func boundingRect(with size: CGSize, attributes: [NSAttributedString.Key: Any]) -> CGRect {
     let options: NSStringDrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
     let rect = self.boundingRect(with: size, options: options, attributes: attributes, context: nil)
     return snap(rect)
   }
 
   func size(fits size: CGSize, font: UIFont, maximumNumberOfLines: Int = 0) -> CGSize {
-    let attributes = [NSAttributedStringKey.font: font]
+    let attributes = [NSAttributedString.Key.font: font]
     var size = self.boundingRect(with: size, attributes: attributes).size
     if maximumNumberOfLines > 0 {
       size.height = min(size.height, CGFloat(maximumNumberOfLines) * font.lineHeight)
@@ -34,7 +34,7 @@ extension String {
     return self.size(fits: size, font: font, maximumNumberOfLines: maximumNumberOfLines).height
   }
   
-  func height(fits width: CGFloat, attributes: [NSAttributedStringKey:Any]) -> CGFloat {
+  func height(fits width: CGFloat, attributes: [NSAttributedString.Key:Any]) -> CGFloat {
     let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
     return self.boundingRect(with: size, attributes: attributes).height
   }
@@ -54,7 +54,7 @@ extension NSAttributedString {
     var size = self.boundingRect(fits: size).size
     let attributes = self.attributes(at: 0, effectiveRange: nil)
    
-    if let font = attributes[NSAttributedStringKey.font] as? UIFont, maximumNumberOfLines > 0 {
+    if let font = attributes[.font] as? UIFont, maximumNumberOfLines > 0 {
       size.height = min(size.height, CGFloat(maximumNumberOfLines) * font.lineHeight)
     }
     

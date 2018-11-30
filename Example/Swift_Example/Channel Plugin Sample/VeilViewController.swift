@@ -32,7 +32,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     
-    if self.isMovingFromParentViewController {
+    if self.isMovingFromParent {
       ChannelIO.shutdown()
     }
   }
@@ -79,7 +79,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "ee03ff28-5ba7-4a36-9285-93673ffe9c11"
+      pluginKey = "06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true

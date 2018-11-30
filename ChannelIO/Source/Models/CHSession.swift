@@ -24,9 +24,17 @@ struct CHSession: ModelType {
 }
 
 extension CHSession: Mappable {
-  init?(map: Map) {
-
+  init?(map: Map) { }
+  
+  init(id: String, chatId: String, guest: CHGuest, alert: Int, type: String = "UserChat") {
+    self.id = id
+    self.chatId = chatId
+    self.personType = guest.type
+    self.personId = guest.id
+    self.alert = alert
+    self.chatType = type
   }
+  
   mutating func mapping(map: Map) {
     id          <- map["id"]
     chatType    <- map["chatType"]

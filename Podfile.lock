@@ -1,0 +1,191 @@
+PODS:
+  - Alamofire (4.8.0)
+  - Cache (5.2.0)
+  - CHDwifft (0.8.2)
+  - CHNavBar (1.2.1)
+  - CHSlackTextViewController (1.10.25)
+  - CRToast (0.0.9)
+  - DKCamera (1.6.4)
+  - DKImagePickerController (4.1.0):
+    - DKImagePickerController/Camera (= 4.1.0)
+    - DKImagePickerController/Core (= 4.1.0)
+    - DKImagePickerController/ImageDataManager (= 4.1.0)
+    - DKImagePickerController/InlineCamera (= 4.1.0)
+    - DKImagePickerController/PhotoEditor (= 4.1.0)
+    - DKImagePickerController/PhotoGallery (= 4.1.0)
+    - DKImagePickerController/Resource (= 4.1.0)
+  - DKImagePickerController/Camera (4.1.0):
+    - DKCamera
+    - DKImagePickerController/Core
+  - DKImagePickerController/Core (4.1.0):
+    - DKImagePickerController/ImageDataManager
+    - DKImagePickerController/Resource
+  - DKImagePickerController/ImageDataManager (4.1.0)
+  - DKImagePickerController/InlineCamera (4.1.0):
+    - DKCamera
+    - DKImagePickerController/Core
+  - DKImagePickerController/PhotoEditor (4.1.0):
+    - DKImagePickerController/Core
+    - TOCropViewController (~> 2.3)
+  - DKImagePickerController/PhotoGallery (4.1.0):
+    - DKImagePickerController/Core
+    - DKPhotoGallery
+  - DKImagePickerController/Resource (4.1.0)
+  - DKPhotoGallery (0.0.11):
+    - DKPhotoGallery/Core (= 0.0.11)
+    - DKPhotoGallery/Model (= 0.0.11)
+    - DKPhotoGallery/Preview (= 0.0.11)
+    - DKPhotoGallery/Resource (= 0.0.11)
+    - SDWebImage/GIF
+  - DKPhotoGallery/Core (0.0.11):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Preview
+    - SDWebImage/GIF
+  - DKPhotoGallery/Model (0.0.11):
+    - SDWebImage/GIF
+  - DKPhotoGallery/Preview (0.0.11):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Resource
+    - SDWebImage/GIF
+  - DKPhotoGallery/Resource (0.0.11):
+    - SDWebImage/GIF
+  - FLAnimatedImage (1.0.12)
+  - Imaginary (4.2.0):
+    - Cache (~> 5.0)
+  - Lightbox (2.3.0):
+    - Imaginary (~> 4.0)
+  - M13ProgressSuite (1.2.9)
+  - MGSwipeTableCell (1.6.7)
+  - Nimble (7.3.1)
+  - NVActivityIndicatorView (4.4.0):
+    - NVActivityIndicatorView/Presenter (= 4.4.0)
+  - NVActivityIndicatorView/Presenter (4.4.0)
+  - ObjectMapper (3.4.1)
+  - PhoneNumberKit (2.5.0):
+    - PhoneNumberKit/PhoneNumberKitCore (= 2.5.0)
+    - PhoneNumberKit/UIKit (= 2.5.0)
+  - PhoneNumberKit/PhoneNumberKitCore (2.5.0)
+  - PhoneNumberKit/UIKit (2.5.0):
+    - PhoneNumberKit/PhoneNumberKitCore
+  - Quick (1.3.2)
+  - ReSwift (4.0.1)
+  - Reusable (4.0.4):
+    - Reusable/Storyboard (= 4.0.4)
+    - Reusable/View (= 4.0.4)
+  - Reusable/Storyboard (4.0.4)
+  - Reusable/View (4.0.4)
+  - RxAtomic (4.4.0)
+  - RxCocoa (4.4.0):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.4.0):
+    - RxAtomic (~> 4.4)
+  - SDWebImage (4.4.2):
+    - SDWebImage/Core (= 4.4.2)
+  - SDWebImage/Core (4.4.2)
+  - SDWebImage/GIF (4.4.2):
+    - FLAnimatedImage (~> 1.0)
+    - SDWebImage/Core
+  - SnapKit (4.2.0)
+  - Socket.IO-Client-Swift (13.1.3):
+    - Starscream (~> 3.0.2)
+  - Starscream (3.0.6)
+  - SVProgressHUD (2.2.5)
+  - SwiftyJSON (4.2.0)
+  - TOCropViewController (2.3.8)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.8.0)
+  - CHDwifft
+  - CHNavBar
+  - CHSlackTextViewController
+  - CRToast
+  - DKImagePickerController (~> 4.1.0)
+  - Lightbox (= 2.3.0)
+  - M13ProgressSuite
+  - MGSwipeTableCell
+  - Nimble
+  - NVActivityIndicatorView (~> 4.4.0)
+  - ObjectMapper (~> 3.3)
+  - PhoneNumberKit (~> 2.5.0)
+  - Quick
+  - ReSwift (~> 4.0)
+  - Reusable (~> 4.0)
+  - RxCocoa (~> 4.0)
+  - RxSwift (~> 4.0)
+  - SDWebImage (~> 4.4.2)
+  - SDWebImage/GIF
+  - SnapKit (~> 4.0)
+  - Socket.IO-Client-Swift (~> 13.1.0)
+  - SVProgressHUD
+  - SwiftyJSON (~> 4.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - Cache
+    - CHDwifft
+    - CHNavBar
+    - CHSlackTextViewController
+    - CRToast
+    - DKCamera
+    - DKImagePickerController
+    - DKPhotoGallery
+    - FLAnimatedImage
+    - Imaginary
+    - Lightbox
+    - M13ProgressSuite
+    - MGSwipeTableCell
+    - Nimble
+    - NVActivityIndicatorView
+    - ObjectMapper
+    - PhoneNumberKit
+    - Quick
+    - ReSwift
+    - Reusable
+    - RxAtomic
+    - RxCocoa
+    - RxSwift
+    - SDWebImage
+    - SnapKit
+    - Socket.IO-Client-Swift
+    - Starscream
+    - SVProgressHUD
+    - SwiftyJSON
+    - TOCropViewController
+
+SPEC CHECKSUMS:
+  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
+  Cache: 807c5d86d01a177f06ede9865add3aea269bbfd4
+  CHDwifft: 11871cb81a6a391f844856c074622df07d19d372
+  CHNavBar: 137cfc3ad7bdbbf155125d7b71bea02ddf9294a6
+  CHSlackTextViewController: 2ac856e9cb50aa6281e43f5e11c348d9e81d9081
+  CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
+  DKCamera: 61fa47629a39354e5111bca1fe96695de020dcb9
+  DKImagePickerController: ab7185a76b75a6559db73c568c9791c87f915a41
+  DKPhotoGallery: e5fc53899345c26af4374503dd249caabac7d26a
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  Imaginary: dae33d06dbc2ada22f98afef5eb45cc061311a2c
+  Lightbox: d317750e4132bfb871a5307cfe0a2c7d6a583c65
+  M13ProgressSuite: ea9f7263e73e9215e6849dfa54e29ee0ad6a145c
+  MGSwipeTableCell: fb20e983988bde2b8d0df29c2d9e1d8ffd10b74a
+  Nimble: 04f732da099ea4d153122aec8c2a88fd0c7219ae
+  NVActivityIndicatorView: ec7440a57af2450319d3a4181cca7da6fc127064
+  ObjectMapper: 5311bd50ca732930959e7ca1a2de43ab823a5ced
+  PhoneNumberKit: 32a1cd1e0aa9e950feb01886a22fd7386b8cf903
+  Quick: 2623cb30d7a7f41ca62f684f679586558f483d46
+  ReSwift: f4012c613e13da7398827fe5aebdb938eaed40a3
+  Reusable: 7fc772097df3e5fc86f59d8a7af9708e49b5ff55
+  RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
+  RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
+  RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
+  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  Socket.IO-Client-Swift: d30d6fd08a38ad2a182b090936a043bf512ab2de
+  Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  TOCropViewController: 0a075f02c253e88095143bbac7b013fc6fba5090
+
+PODFILE CHECKSUM: 3758a8672314db21969d2f994a62b40b1c3ca0c2
+
+COCOAPODS: 1.5.3

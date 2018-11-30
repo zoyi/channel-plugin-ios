@@ -28,7 +28,7 @@ struct SortableWorkingTime {
   let order: Int
 }
 
-enum MessengerPlanType: String {
+enum ChannelPlanType: String {
   case none
   case standard
   case pro
@@ -62,7 +62,9 @@ struct CHChannel: CHEntity {
   var lunchTime: TimeRange?
   var phoneNumber: String = ""
   var requestGuestInfo = true
-  var messengerPlan: MessengerPlanType = .pro
+  var messengerPlan: ChannelPlanType = .pro
+  var pushBotPlan: ChannelPlanType = .pro
+  var supportBotPlan: ChannelPlanType = .none
   var blocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
@@ -70,7 +72,7 @@ struct CHChannel: CHEntity {
   var awayOption: ChannelAwayOptionType = .active
   var workingType: ChannelWorkingType = .always
   var trial = true
-  var trialExpiryDate: Date? = nil
+  var trialEndDate: Date? = nil
   
   var workingTimeString: String {
     var workingTimeDictionary = self.workingTime
@@ -121,7 +123,15 @@ struct CHChannel: CHEntity {
   }
   
   var notAllowToUseSDK: Bool {
-    return self.blocked || self.messengerPlan != .pro
+    return self.blocked || (self.messengerPlan != .pro && !self.trial)
+  }
+  
+  var canUsePushBot: Bool {
+    return !self.blocked && (self.pushBotPlan != .none || self.trial)
+  }
+  
+  var canUseSupportBot: Bool {
+    return !self.blocked && (self.supportBotPlan != .none || self.trial)
   }
   
   var shouldHideDefaultButton: Bool {
@@ -171,10 +181,12 @@ extension CHChannel: Mappable {
     expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
     messengerPlan           <- map["messengerPlan"]
+    pushBotPlan             <- map["pushBotPlan"]
+    supportBotPlan          <- map["supportBotPlan"]
     blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden
     trial                   <- map["trial"]
-    trialExpiryDate         <- (map["trialExpiryDate"], CustomDateTransform())
+    trialEndDate            <- (map["trialEndDate"], CustomDateTransform())
   }
 }

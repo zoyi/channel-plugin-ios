@@ -11,7 +11,7 @@ import SnapKit
 
 class TranslateView: BaseView {
   let translateLoader = UIActivityIndicatorView().then {
-    $0.activityIndicatorViewStyle = .gray
+    $0.style = .gray
     $0.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
   }
   let arrowImageView = UIImageView().then {

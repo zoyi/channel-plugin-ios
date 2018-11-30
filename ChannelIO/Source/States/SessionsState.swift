@@ -11,13 +11,36 @@ import ReSwift
 struct SessionsState: StateType {
   var sessions: [String:CHSession] = [:]
 
-  func findBy(userChatId: String) -> CHSession? {
+  var localSessions: [CHSession] {
     return self.sessions
-      .filter({ $1.chatType == "UserChat" && $1.chatId == userChatId && $1.personType != "Manager" }).first?.value
+      .filter { $1.id.hasPrefix(CHConstants.local) || $1.chatId.hasPrefix(CHConstants.local) }
+      .map { $1 }
   }
   
-  mutating func remove(session: CHSession) -> SessionsState {
+  func findBy(userChatId: String) -> CHSession? {
+    return self.sessions.filter({ $1.chatType == "UserChat" && $1.chatId == userChatId && $1.personType != "Manager" }).first?.value
+  }
+  
+  mutating func remove(session: CHSession?) -> SessionsState {
+    guard let session = session else { return self }
     self.sessions.removeValue(forKey: session.id)
+    return self
+  }
+  
+  mutating func remove(userChatId: String?) -> SessionsState {
+    guard let userChatId = userChatId else { return self }
+    var removable: [String] = []
+    for (k, v) in self.sessions {
+      if v.chatId == userChatId {
+        removable.append(k)
+      }
+    }
+    removable.forEach { self.sessions.removeValue(forKey: $0) }
+    return self
+  }
+  
+  mutating func remove(userChatIds: [String]) -> SessionsState {
+    userChatIds.forEach { _ = self.remove(userChatId: $0) }
     return self
   }
   
@@ -28,7 +51,7 @@ struct SessionsState: StateType {
   }
   
   mutating func upsert(sessions: [CHSession]) -> SessionsState {
-    sessions.forEach({ self.sessions[$0.id] = $0 })
+    sessions.forEach({ _ = self.upsert(session: $0) })
     return self
   }
   

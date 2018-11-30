@@ -34,7 +34,7 @@ final class NewMessageDividerCell: BaseTableViewCell, Reusable {
     super.layoutSubviews()
     
     self.containerView.snp.remakeConstraints { (make) in
-      make.edges.equalToSuperview().inset(UIEdgeInsetsMake(18, 0, 0, 0))
+      make.edges.equalToSuperview().inset(UIEdgeInsets(top:18, left:0, bottom:0, right:0))
     }
     
     self.titleLabel.snp.makeConstraints { (make) in

@@ -1,3 +1,14 @@
+# 5.0.0
+## New
+* Added Push bot feature
+
+## Updates
+* swift 4.2 migration
+* Set closed user chat visibility to true by default
+* Added unit tests for push bot evaluation 
+* Improved data flow consistency
+* Refactored model and related methods
+
 # 4.2.7
 ## Bug fixes
 * Unwrapped Any type properly with reflection

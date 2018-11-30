@@ -13,10 +13,13 @@ func pushReducer(action:Action, push: CHPush?) -> CHPush? {
   case let action as GetPush:
     //return push only if messenger is not visible
     return action.payload
+    
   case _ as RemovePush:
     return nil
+    
   case _ as CheckOutSuccess:
     return nil
+    
   default:
     return push ?? nil
   }

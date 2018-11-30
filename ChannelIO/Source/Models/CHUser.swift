@@ -21,10 +21,15 @@ struct CHUser: CHGuest, CHEntity {
   var named = false
   var mobileNumber: String?
   var profile: [String : Any]?
-  
-  //
+  var segment: String?
   var alert = 0
   var unread = 0
+  
+  var country: String = ""
+  var city:String = ""
+  
+  var createdAt: Date?
+  var updatedAt: Date?
 }
 
 extension CHUser: Mappable {
@@ -49,7 +54,12 @@ extension CHUser: Mappable {
     named           <- map["named"]
     alert           <- map["alert"]
     unread          <- map["unread"]
+    segment         <- map["segment"]
     profile         <- map["profile"]
+    country         <- map["country"]
+    city            <- map["city"]
+    createdAt       <- (map["createdAt"], CustomDateTransform())
+    updatedAt       <- (map["updatedAt"], CustomDateTransform())
   }
 }
 

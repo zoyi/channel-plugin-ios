@@ -29,7 +29,7 @@ enum RestRouter: URLRequestConvertible {
   case GetMessages(String, ParametersType)
   case CreateMessage(String, ParametersType)
   case UploadFile(String, ParametersType)
-  case SetMessagesRead(String, ParametersType)
+  case SetMessagesRead(String)
   case SendPushAck(String)
   
   case RegisterToken(ParametersType)
@@ -37,7 +37,7 @@ enum RestRouter: URLRequestConvertible {
   case CheckVersion
   case GetGeoIP
   
-  case SendEvent(ParametersType)
+  case SendEvent(String, ParametersType)
   case GetCountryCodes
   case GetFollowingManager
   
@@ -50,6 +50,10 @@ enum RestRouter: URLRequestConvertible {
   case GetSupportBotEntry(String)
   case CreateSupportBotChat(String)
   case ReplySupportBot(String, ParametersType)
+  
+  case GetNudges(String)
+  case CheckNudgeReach(String)
+  case CreateNudgeChat(String)
   
   var baseURL: String {
     get {
@@ -76,14 +80,17 @@ enum RestRouter: URLRequestConvertible {
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot, .RequestProfileBot,
          .UpdateProfileItem, .TouchGuest,
-         .CreateSupportBotChat, .ReplySupportBot:
+         .CreateSupportBotChat, .ReplySupportBot,
+         .CheckNudgeReach,
+         .CreateNudgeChat:
       return .post
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetFollowingManager,
          .GetPlugin, .Translate,
-         .GetSupportBots, .GetSupportBotEntry:
+         .GetSupportBots, .GetSupportBotEntry,
+         .GetNudges:
       return .get
     case .SetMessagesRead,
          .RemoveUserChat,
@@ -123,7 +130,7 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/messages"
     case .UploadFile(let userChatId, _):
       return "/app/user_chats/\(userChatId)/messages/file"
-    case .SetMessagesRead(let userChatId, _):
+    case .SetMessagesRead(let userChatId):
       return "/app/user_chats/\(userChatId)/messages/read"
     case .RegisterToken:
       return "/app/device_tokens"
@@ -133,8 +140,8 @@ enum RestRouter: URLRequestConvertible {
       return "/geoip"
     case .UnregisterToken(let key, _):
       return "/app/device_tokens/ios/\(key)"
-    case .SendEvent:
-      return "/app/events"
+    case .SendEvent(let pluginId, _):
+      return "/app/plugins/\(pluginId)/events"
     case .GetCountryCodes:
       return "/countries"
     case .GetFollowingManager:
@@ -155,6 +162,12 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/support_bots/action"
     case .SendPushAck(let userChatId):
       return "/app/user_chats/\(userChatId)/messages/receive"
+    case .GetNudges(let pluginId):
+      return "/app/plugins/\(pluginId)/nudges"
+    case .CheckNudgeReach(let nudgeId):
+      return "/app/nudges/\(nudgeId)/reach"
+    case .CreateNudgeChat(let nudgeId):
+      return "/app/nudges/\(nudgeId)/user_chats"
     }
   }
   
@@ -237,12 +250,11 @@ enum RestRouter: URLRequestConvertible {
          .UploadFile(_, let params),
          .GetUserChats(let params),
          .RegisterToken(let params),
-         .SendEvent(let params),
+         .SendEvent(_, let params),
          .UpdateProfileItem(_, let params),
          .Translate(_, let params),
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params),
-         .SetMessagesRead(_, let params),
          .UnregisterToken(_, let params),
          .ReplySupportBot(_, let params),
          .GetSupportBots(_, let params):
@@ -254,7 +266,11 @@ enum RestRouter: URLRequestConvertible {
          .CreateUserChat,
          .GetSupportBotEntry,
          .CreateSupportBotChat,
-         .SendPushAck:
+         .SendPushAck,
+         .GetNudges,
+         .CheckNudgeReach,
+         .SetMessagesRead,
+         .CreateNudgeChat:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

@@ -16,36 +16,6 @@ import Nimble
 
 class LocalMessageFactoryTests: QuickSpec {
   override func spec() {
-    it("channel close") {
-      let messages = LocalMessageFactory.generate(type: .ChannelClosed)
-      expect(messages.count).to(equal(1))
-      
-      let closemsg = messages.first!
-      expect(closemsg.chatId).to(equal("dummy"))
-      expect(closemsg.messageType).to(equal(MessageType.ChannelClosed))
-      expect(closemsg.id).to(equal("close_dummy"))
-    }
-    
-    it("auto business hour question") {
-      let messages = LocalMessageFactory.generate(type: .BusinessHourQuestion)
-      expect(messages.count).to(equal(1))
-      
-      let msg = messages.first!
-      expect(msg.chatId).to(equal(CHConstants.dummy))
-      expect(msg.id).to(equal("bhq_dummy"))
-      expect(msg.messageType).to(equal(MessageType.BusinessHourQuestion))
-    }
-    
-    it("auto business hour answer") {
-      let messages = LocalMessageFactory.generate(type: .BusinessHourAnswer)
-      expect(messages.count).to(equal(1))
-      
-      let msg = messages.first!
-      expect(msg.chatId).to(equal(CHConstants.dummy))
-      expect(msg.id).to(equal("bha_dummy"))
-      expect(msg.messageType).to(equal(MessageType.BusinessHourAnswer))
-      //expect(msg.message).to(equal(""))
-    }
     
     it("date divider") {
       //manually separate dates

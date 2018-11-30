@@ -24,7 +24,7 @@ class CHNavigationBar: UINavigationBar {
       for subview in self.subviews {
         if String(describing: subview.classForCoder).contains("ContentView") {
           //let oldEdges = subview.layoutMargins
-          subview.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+          subview.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
         }
       }
     }
@@ -61,34 +61,35 @@ class NavigationItem: UIBarButtonItem {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
       button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
-
-    button.frame.size = CGSize(width: 40, height: 40)
-    button.frame.origin = CGPoint(x: -16, y: 0)
-    self.init(customView: button)
     
+    button.widthAnchor.constraint(equalToConstant: 50).isActive = true
+    button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    button.translatesAutoresizingMaskIntoConstraints = false
+    
+    self.init(customView: button)
     button.addTarget(self, action: #selector(barButtonItemPressed), for: .touchUpInside)
     self.actionHandler = actionHandler
   }
   
   convenience init(
     title: String?,
-    style: UIBarButtonItemStyle,
+    style: UIBarButtonItem.Style,
     textColor: UIColor = CHColors.defaultTint,
     actionHandler: (() -> Void)?) {
     
     self.init(title: title, style: style, target: nil, action: #selector(barButtonItemPressed))
     self.target = self
     self.actionHandler = actionHandler
-    self.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:textColor], for: .normal)
+    self.setTitleTextAttributes([.foregroundColor:textColor], for: .normal)
     
     let disableColor = textColor.withAlphaComponent(0.3)
-    self.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:disableColor], for: .disabled)
+    self.setTitleTextAttributes([.foregroundColor:disableColor], for: .disabled)
   }
   
   convenience init(
     image: UIImage?,
     tintColor: UIColor? = nil,
-    style: UIBarButtonItemStyle,
+    style: UIBarButtonItem.Style,
     actionHandler: (() -> Void)?) {
     
     var itemImage: UIImage? = image

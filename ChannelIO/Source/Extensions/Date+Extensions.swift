@@ -9,6 +9,16 @@
 import Foundation
 
 extension Date {
+  var microseconds: Double {
+    return Double(self.timeIntervalSince1970 * 1000.0 * 1000.0)
+  }
+  
+  var miliseconds: Double {
+    return Double(self.timeIntervalSince1970 * 1000.0)
+  }
+}
+
+extension Date {
   func readableShortString() -> String {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -70,10 +80,6 @@ extension Date {
         return String(describing: comps2.year!) + "/" + String(describing: comps2.month!) + "/" + String(describing: comps2.day!)
       }
     }
-  }
-  
-  func getMicroseconds() -> Int64 {
-    return Int64(self.timeIntervalSince1970 * 1000.0 * 1000.0)
   }
   
   static func from(year: Int, month: Int, day: Int) -> Date {

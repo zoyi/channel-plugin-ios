@@ -50,7 +50,7 @@ final class PhoneActionView: BaseView, Actionable {
   }
   
   let arrowDownView = UIImageView().then {
-    $0.contentMode = UIViewContentMode.center
+    $0.contentMode = .center
     $0.image = CHAssets.getImage(named: "dropdownTriangle")
   }
   
@@ -63,7 +63,7 @@ final class PhoneActionView: BaseView, Actionable {
   var userGeoInfo: GeoIPInfo?
   var currentCountryCode: String = ""
   
-  let disposeBeg = DisposeBag()
+  let disposeBag = DisposeBag()
   //MARK: Init
   
   override func initialize() {
@@ -88,7 +88,7 @@ final class PhoneActionView: BaseView, Actionable {
       .notification(Notification.Name.Channel.dismissKeyboard)
       .subscribe(onNext: { [weak self] (_) in
         self?.phoneField.resignFirstResponder()
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: self.disposeBag)
     
     self.phoneField.delegate = self
     self.phoneField.rx.text.subscribe(onNext: { [weak self] (text) in
@@ -96,7 +96,7 @@ final class PhoneActionView: BaseView, Actionable {
         self?.confirmButton.isHidden = text.count == 0
       }
       self?.setFocus()
-    }).disposed(by: self.disposeBeg)
+    }).disposed(by: self.disposeBag)
     
     UtilityPromise.getCountryCodes().observeOn(MainScheduler.instance)
       .flatMap { (countries) -> Observable<GeoIPInfo> in
@@ -111,7 +111,7 @@ final class PhoneActionView: BaseView, Actionable {
         self?.currentCountryCode = geoInfo.country
       }, onError: { [weak self] (error) in
         self?.countryLabel.text = Constants.defaultDailCode
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: self.disposeBag)
 
     self.countryCodeView.signalForClick().subscribe(onNext: { [weak self] (value) in
       let firstResponder = UIResponder.slk_currentFirst()
@@ -131,12 +131,12 @@ final class PhoneActionView: BaseView, Actionable {
             self?.phoneField.defaultRegion = code
           }
           
-        }).disposed(by: (self?.disposeBeg)!)
-      }).disposed(by: self.disposeBeg)
+        }).disposed(by: (self?.disposeBag)!)
+      }).disposed(by: self.disposeBag)
     
     self.confirmButton.signalForClick().subscribe(onNext: { [weak self] _ in
       self?.submitValue()
-    }).disposed(by: self.disposeBeg)
+    }).disposed(by: self.disposeBag)
   }
 
   override func setLayouts() {

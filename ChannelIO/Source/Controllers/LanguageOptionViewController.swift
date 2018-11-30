@@ -42,7 +42,7 @@ class LanguageOptionViewController: BaseViewController {
   }
   
   func initNavigation() {
-    self.title = CHAssets.localized("ch.language")
+    self.title = CHAssets.localized("ch.user_profile.locale.label")
     self.navigationItem.leftBarButtonItem = NavigationItem(
       image:  CHAssets.getImage(named: "back"),
       tintColor: mainStore.state.plugin.textUIColor,

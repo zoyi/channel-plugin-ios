@@ -26,7 +26,7 @@ class ProfileExtendableView: BaseView {
     paragraph.lineBreakMode = CHAssets.localized("ch.agreement").guessLanguage() == "日本語" ?
       .byCharWrapping : .byWordWrapping
 
-    let attributes: [NSAttributedStringKey: Any] = [
+    let attributes: [NSAttributedString.Key: Any] = [
       .font: UIFont.systemFont(ofSize: 11),
       .foregroundColor: CHColors.blueyGrey,
       .paragraphStyle: paragraph
@@ -39,7 +39,7 @@ class ProfileExtendableView: BaseView {
 //        .alignment(.center).lineBreak(.byCharWrapping)
 //    ]
     
-    let tagAttributes: [StringTagType: [NSAttributedStringKey: Any]] = [
+    let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
       .bold:[
         .font: UIFont.boldSystemFont(ofSize: 11),
         .foregroundColor: CHColors.blueyGrey,
@@ -177,17 +177,17 @@ class ProfileExtendableView: BaseView {
       paragraph.alignment = .center
       paragraph.lineBreakMode = .byCharWrapping
 
-      let attributes = [
-        NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11),
-        NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-        NSAttributedStringKey.paragraphStyle: paragraph
+      let attributes: [NSAttributedString.Key: Any] = [
+        .font: UIFont.systemFont(ofSize: 11),
+        .foregroundColor: CHColors.blueyGrey,
+        .paragraphStyle: paragraph
       ]
       
-      let tagAttributes = [
+      let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
         StringTagType.bold:[
-          NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11),
-          NSAttributedStringKey.foregroundColor: CHColors.blueyGrey,
-          NSAttributedStringKey.paragraphStyle: paragraph
+          .font: UIFont.boldSystemFont(ofSize: 11),
+          .foregroundColor: CHColors.blueyGrey,
+          .paragraphStyle: paragraph
         ]
       ]
       

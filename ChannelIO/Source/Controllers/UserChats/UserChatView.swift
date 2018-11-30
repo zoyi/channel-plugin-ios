@@ -396,7 +396,7 @@ extension UserChatView {
   fileprivate func scrollToBottom(_ animated: Bool) {
     self.tableView.scrollToRow(
       at: IndexPath(row:0, section:0),
-      at: UITableViewScrollPosition.bottom,
+      at: .bottom,
       animated: animated
     )
   }

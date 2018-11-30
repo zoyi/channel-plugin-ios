@@ -16,7 +16,7 @@ struct CHTargetCondition {
   var subKey: TargetSubKey?
 }
 
-extension CHTargetCondition {
+extension CHTargetCondition: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {

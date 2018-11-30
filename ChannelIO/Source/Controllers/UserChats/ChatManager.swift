@@ -38,7 +38,7 @@ class ChatManager: NSObject {
   var chatType = ""
   var chat: CHUserChat? = nil {
     willSet {
-      if let chat = self.chat {
+      if let chat = newValue {
         self.chatId = chat.id
         self.chatType = "UserChat"
       }
@@ -91,6 +91,7 @@ class ChatManager: NSObject {
     self.chatType = type
     self.setChatEntities(with: id)
     self.observeAppState()
+    self.requestRead()
   }
   
   fileprivate func setChatEntities(with chatId: String?) {
@@ -120,7 +121,7 @@ class ChatManager: NSObject {
   
   fileprivate func observeAppState() {
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationDidBecomeActive)
+      .rx.notification(UIApplication.didBecomeActiveNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.didChatLoaded = false
@@ -128,7 +129,7 @@ class ChatManager: NSObject {
       }.disposed(by: self.disposeBag)
     
     NotificationCenter.default
-      .rx.notification(Notification.Name.UIApplicationWillResignActive)
+      .rx.notification(UIApplication.willResignActiveNotification)
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.prepareToLeave()
@@ -164,6 +165,11 @@ class ChatManager: NSObject {
         if prevChat.isReady() && newChat.isOpen() {
           self?.requestProfileBot()
         }
+        
+        if prevChat.shouldRequestRead(otherChat: newChat) {
+          self?.requestRead()
+        }
+
         mainStore.dispatch(UpdateUserChat(payload: newChat))
         self?.setChatEntities(with: newChat.id)
       })
@@ -319,15 +325,22 @@ extension ChatManager {
   
   //for image capture on channelIO
   func sendImage(imageData: UIImage) {
-    let message = CHMessage(chatId: self.chatId, guest: mainStore.state.guest, image: imageData)
-    mainStore.dispatch(CreateMessage(payload: message))
-    
+  
     if self.chatId != "" {
+      let message = CHMessage(chatId: self.chatId, guest: mainStore.state.guest, image: imageData)
+      mainStore.dispatch(CreateMessage(payload: message))
       self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
     } else {
-      self.createChat()
+      let createChatSignal = self.chat?.isNudgeChat() == true ?
+        self.createNudgeChat(nudgeId: self.chat?.getNudgeId()) :
+        self.createChat()
+      
+      createChatSignal
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
+          var message = CHMessage(chatId: chatId, guest: mainStore.state.guest, image: imageData)
+          message.createdAt = Date()
+          mainStore.dispatch(CreateMessage(payload: message))
           self?.sendMessageRecursively(allMessages: [message], currentIndex: 0)
         }, onError: { [weak self] (error) in
           self?.state = .chatNotLoaded
@@ -335,13 +348,17 @@ extension ChatManager {
     }
   }
   
-  //fro images from albums
+  //from images from albums
   func sendImages(assets: [DKAsset]) {
     if self.chatId != "" {
       let messages = self.createMessageForImages(assets: assets)
       self.sendMessageRecursively(allMessages: messages, currentIndex: 0)
     } else {
-      self.createChat()
+      let createChatSignal = self.chat?.isNudgeChat() == true ?
+        self.createNudgeChat(nudgeId: self.chat?.getNudgeId()) :
+        self.createChat()
+      
+      createChatSignal
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
           let messages = self?.createMessageForImages(assets: assets, requestBot: true) ?? []
@@ -366,7 +383,7 @@ extension ChatManager {
   func processSendMessage(msg: String) -> Observable<CHUserChat?> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
       //move this logic into presenter
-      if let chat = self?.chat, chat.isActive() {
+      if let chat = self?.chat, chat.isActive(), !chat.isNudgeChat() {
         let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
         mainStore.dispatch(CreateMessage(payload: message))
         self?.sendMessage(message: message, local: false)
@@ -378,24 +395,28 @@ extension ChatManager {
             subscriber.onError(error)
           }).disposed(by: self!.disposeBag)
       } else {
-        self?.createChat().observeOn(MainScheduler.instance).flatMap({ (chatId) -> Observable<CHMessage?> in
-          guard let s = self else {
-            return Observable.just(nil)
-          }
-          s.chatId = chatId
-          let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-          mainStore.dispatch(CreateMessage(payload: message))
-          return s.sendMessage(message: message, local: false)
-        })
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext:{ [weak self] (message) in
-          mainStore.dispatch(CreateMessage(payload: message))
-          subscriber.onNext(self?.chat)
-          subscriber.onCompleted()
-        }, onError: { [weak self] (error) in
-          self?.state = .chatNotLoaded
-          subscriber.onError(error)
-        }).disposed(by: self!.disposeBag)
+        let createChatSignal = self?.chat?.isNudgeChat() == true ?
+          self?.createNudgeChat(nudgeId: self?.chat?.getNudgeId()) :
+          self?.createChat()
+        
+        createChatSignal?
+          .observeOn(MainScheduler.instance)
+          .flatMap({ (chatId) -> Observable<CHMessage?> in
+            guard let s = self else { return .empty() }
+            s.chatId = chatId
+            let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
+            mainStore.dispatch(CreateMessage(payload: message))
+            return s.sendMessage(message: message, local: false)
+          })
+          .observeOn(MainScheduler.instance)
+          .subscribe(onNext: { (message) in
+            mainStore.dispatch(CreateMessage(payload: message))
+            subscriber.onNext(self?.chat)
+            subscriber.onCompleted()
+          }, onError: { (error) in
+            self?.state = .chatNotLoaded
+            subscriber.onError(error)
+          }).disposed(by: self!.disposeBag)
       }
       
       return Disposables.create()
@@ -484,11 +505,17 @@ extension ChatManager {
   }
   
   func needToFetchInfo() -> Bool {
-    return !self.didFetchInfo && self.chatId == "" && self.state != .infoLoading
+    return !self.didFetchInfo &&
+      self.chatId == "" &&
+      self.state != .infoLoading &&
+      !self.chatId.hasPrefix(CHConstants.nudgeChat)
   }
   
   func needToFetchChat() -> Bool {
-    return !self.didChatLoaded && self.chatId != "" && self.state != .chatLoading
+    return !self.didChatLoaded &&
+      self.chatId != "" &&
+      self.state != .chatLoading &&
+      !self.chatId.hasPrefix(CHConstants.nudgeChat)
   }
   
   func isChatLoading() -> Bool {
@@ -500,7 +527,10 @@ extension ChatManager {
   }
   
   func canLoadMore() -> Bool {
-    return self.nextSeq != "" && self.chatId != "" && self.chatType != ""
+    return self.nextSeq != "" &&
+      self.chatId != "" &&
+      self.chatType != "" &&
+      !self.chatId.hasPrefix(CHConstants.nudgeChat)
   }
 }
 
@@ -516,6 +546,10 @@ extension ChatManager {
         return Disposables.create()
       }
       guard let s = self else  {
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
+      guard !s.chatId.hasPrefix(CHConstants.nudgeChat) else {
         subscriber.onCompleted()
         return Disposables.create()
       }
@@ -547,6 +581,42 @@ extension ChatManager {
     }
   }
   
+  func createNudgeChat(nudgeId:String?) -> Observable<String> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      guard let nudgeId = nudgeId else {
+        subscriber.onError(CHErrorPool.paramError)
+        return Disposables.create()
+      }
+      if let chatId = self?.chatId, chatId != "", !chatId.hasPrefix(CHConstants.nudgeChat) {
+        subscriber.onNext(chatId)
+        return Disposables.create()
+      }
+      //if push bot message is present, create push bot user chat
+      let signal = CHNudge.createChat(nudgeId: nudgeId)
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (chatResponse) in
+          //replace local nudgeChat
+          mainStore.dispatch(GetNudgeChat(nudgeId: nudgeId, payload: chatResponse))
+          
+          self?.chatNewlyCreated = true
+          self?.didChatLoaded = true
+          self?.setChatEntities(with: chatResponse.userChat?.id)
+          self?.prepareToChat()
+          
+          subscriber.onNext(chatResponse.userChat?.id ?? "")
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+          self?.didChatLoaded = false
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+  
   func createSupportBotChatIfNeeded(originId: String? = nil) -> Observable<(CHUserChat?, CHMessage?)> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
       var disposable: Disposable?
@@ -557,13 +627,13 @@ extension ChatManager {
         disposable = CHSupportBot.create(with: bot.id)
           .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (chatResponse) in
-    
+          mainStore.dispatch(GetUserChat(payload: chatResponse))
+            
           self?.chatNewlyCreated = true
           self?.didChatLoaded = true
           self?.setChatEntities(with: chatResponse.userChat?.id)
           self?.prepareToChat()
-          mainStore.dispatch(GetUserChat(payload: chatResponse))
-            
+         
           subscriber.onNext((chatResponse.userChat, chatResponse.message))
           subscriber.onCompleted()
         }, onError: { [weak self] (error) in
@@ -592,13 +662,16 @@ extension ChatManager {
         pluginId = mainStore.state.plugin.id
       }
       
+      //if push bot message is present, create push bot user chat
       let signal = CHUserChat.create(pluginId: pluginId)
         .observeOn(MainScheduler.instance).subscribe(onNext: { (chatResponse) in
+        mainStore.dispatch(GetUserChat(payload: chatResponse))
+          
         self?.chatNewlyCreated = true
         self?.didChatLoaded = true
         self?.setChatEntities(with: chatResponse.userChat?.id)
         self?.prepareToChat()
-        mainStore.dispatch(GetUserChat(payload: chatResponse))
+        
         subscriber.onNext(chatResponse.userChat?.id ?? "")
         subscriber.onCompleted()
       }, onError: { [weak self] (error) in
@@ -661,15 +734,14 @@ extension ChatManager {
       }).disposed(by: self.disposeBag)
   }
   
-  func requestRead(at message: CHMessage? = nil) {
+  func requestRead() {
     guard !self.isRequestingReadAll else { return }
-    guard let chat = self.chat, let message = message else { return }
-    //guard message.entity as? CHGuest == nil else { return }
-    
-    self.isRequestingReadAll = true
+    guard let chat = userChatSelector(state: mainStore.state, userChatId: self.chatId) else { return }
 
-    chat.read(at: message)
+    self.isRequestingReadAll = true
+    chat.read()
       .debounce(1, scheduler: MainScheduler.instance)
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (completed) in
         self?.isRequestingReadAll = false
       }, onError: { [weak self] (error) in
@@ -711,6 +783,8 @@ extension ChatManager {
 extension ChatManager {
   func prepareToChat() {
     guard self.chatId != "" else { return }
+    guard !self.chatId.hasPrefix(CHConstants.nudgeChat) else { return }
+    
     self.state = .chatJoining
     self.observeSocketEvents()
     
@@ -727,6 +801,8 @@ extension ChatManager {
   }
   
   func leave() {
+    guard self.chatId != "" else { return }
+    guard !self.chatId.hasPrefix(CHConstants.nudgeChat) else { return }
     WsService.shared.leave(chatId: self.chatId)
   }
 
@@ -899,17 +975,23 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     max: Int = 0,
     assetType: DKImagePickerControllerAssetType = .allAssets,
     from view: UIViewController?) {
-    let pickerController = DKImagePickerController()
+    let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
+    groupDataManagerConfiguration.fetchLimit = 10
+    groupDataManagerConfiguration.assetGroupTypes = [
+      .smartAlbumUserLibrary,
+      .smartAlbumFavorites,
+      .smartAlbumVideos,
+      .albumRegular
+    ]
+    
+    let groupDataManager = DKImageGroupDataManager(configuration: groupDataManagerConfiguration)
+    
+    let pickerController = DKImagePickerController(groupDataManager: groupDataManager)
     pickerController.sourceType = type
     pickerController.showsCancelButton = true
     pickerController.maxSelectableCount = max
     pickerController.assetType = assetType
-    pickerController.assetGroupTypes = [
-      .smartAlbumUserLibrary,
-      .smartAlbumFavorites,
-      .smartAlbumVideos,
-      .albumRegular]
-    
+
     pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
       self?.sendImages(assets: assets)
     }
@@ -923,8 +1005,8 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     view?.present(controller, animated: true, completion: nil)
   }
   
-  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-    let capturedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    let capturedImage = info[.originalImage] as! UIImage
     self.sendImage(imageData: capturedImage.normalizedImage())
     picker.dismiss(animated: true, completion: nil)
   }

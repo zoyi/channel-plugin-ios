@@ -12,6 +12,7 @@ import M13ProgressSuite
 import DKImagePickerController
 import SnapKit
 import SDWebImage
+import Photos
 
 class MediaMessageView : BaseView {
 
@@ -77,13 +78,11 @@ class MediaMessageView : BaseView {
       self.indicatorView.isHidden = true
       self.progressView.isHidden = false
       
-      asset.fetchOriginalImageWithCompleteBlock({
-        [weak self] (image, info) in
-
+      asset.fetchOriginalImage { [weak self] (image, info) in
         self?.imageView.alpha = 0.4
         self?.imageView.image = image
         self?.placeholder = image
-      })
+      }
       
       //change to delegation to update ui rather using redux
       self.progressView.setProgress(message.progress, animated: false)
@@ -157,9 +156,12 @@ class MediaMessageView : BaseView {
     
     var size = imageDefaultSize
     if let asset = viewModel.file?.asset {
-      asset.fetchOriginalImage(true, completeBlock: { (image, info) in
+      let option = PHImageRequestOptions()
+      option.isSynchronous = true
+      
+      asset.fetchOriginalImage(options: option) { (image, info) in
         size = getThumbnailImageSize(imageSize: image?.size ?? CGSize.zero)
-      })
+      }
     } else if let image = viewModel.file?.imageData {
       size = getThumbnailImageSize(imageSize: image.size)
     }

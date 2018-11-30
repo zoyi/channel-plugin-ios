@@ -26,12 +26,17 @@ struct UserChatsState: StateType {
   }
   
   mutating func remove(userChatId: String) -> UserChatsState {
-    self.userChats.removeValue(forKey: userChatId)
+    var userChat = self.userChats[userChatId]
+    userChat?.hasRemoved = true
+    self.userChats[userChatId] = userChat
     return self
   }
   
   mutating func remove(userChatIds: [String]) -> UserChatsState {
-    userChatIds.forEach({ self.userChats.removeValue(forKey: $0) })
+    for userChatId in userChatIds {
+      _ = self.remove(userChatId: userChatId)
+    }
+    
     return self
   }
   
@@ -40,6 +45,17 @@ struct UserChatsState: StateType {
     self.nextSeq = 0
     self.currentUserChatId = ""
     self.lastMessages.removeAll()
+    return self
+  }
+  
+  mutating func replace(chatId: String, userChat: CHUserChat?) -> UserChatsState {
+    guard let userChat = userChat else { return self }
+    self.userChats.removeValue(forKey: chatId)
+    self.userChats[userChat.id] = userChat
+    if let lastId = userChat.appMessageId {
+      self.lastMessages[lastId] = lastId
+    }
+    
     return self
   }
   

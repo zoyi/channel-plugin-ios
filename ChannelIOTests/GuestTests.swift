@@ -21,21 +21,21 @@ class GuestTests: QuickSpec {
     }
     
     describe("general") {
-      it("get current") {
-        PrefStore.setCurrentUserId(userId: "214")
-        waitUntil (timeout: 30) { done in
-          _ = CHUser.getCurrent()
-            .subscribe(onNext: { (result) in
-            expect(result).to(beAKindOf(CHUser.self))
-            let user = result as! CHUser
-              
-            expect(user.id).to(equal("214"))
-            done()
-          }, onError: { (error) in
-            expect(error).to(beNil())
-          })
-        }
-      }
+//      it("get current") {
+//        PrefStore.setCurrentUserId(userId: "214")
+//        waitUntil (timeout: 30) { done in
+//          _ = CHUser.getCurrent()
+//            .subscribe(onNext: { (result) in
+//            expect(result).to(beAKindOf(CHUser.self))
+//            let user = result as! CHUser
+//
+//            expect(user.id).to(equal("214"))
+//            done()
+//          }, onError: { (error) in
+//            expect(error).to(beNil())
+//          })
+//        }
+//      }
     }
     
     describe("User") {
@@ -45,11 +45,7 @@ class GuestTests: QuickSpec {
         expect(user.id).to(equal(""))
         expect(user.name).to(equal(""))
         expect(user.avatarUrl).to(beNil())
-        expect(user.initial).to(equal(""))
-        expect(user.color).to(equal(""))
-        expect(user.ghost).to(beFalse())
         expect(user.mobileNumber).to(beNil())
-        expect(user.meta).to(beNil())
       }
       
       it("normal") {
@@ -62,34 +58,30 @@ class GuestTests: QuickSpec {
         expect(user.id).to(equal("123"))
         expect(user.name).to(equal("user"))
         expect(user.avatarUrl).to(equal("www.zoyi.co"))
-        expect(user.initial).to(equal("JJ"))
-        expect(user.color).to(equal("#123456"))
-        expect(user.ghost).to(beFalse())
         expect(user.mobileNumber).to(equal("+8201032314123"))
-        expect(user.meta).notTo(beNil())
       }
       
       it("update") {
-        PrefStore.setCurrentUserId(userId: "214")
-        
-        var user = CHUser()
-        user.name = "Intoxicated"
-        user.mobileNumber = "+821093123291"
-        waitUntil (timeout: 10) { done in
-          _ = user.update()
-            .subscribe(onNext: { (result, error) in
-            expect(error).to(beNil())
-            expect(result).to(beAKindOf(CHUser.self))
-            let user = result as! CHUser
-            
-            expect(user.id).to(equal("214"))
-            expect(user.name).to(equal("Intoxicated"))
-            expect(user.mobileNumber).to(equal("+821093123291"))
-            done()
-          }, onError: { (error) in
-            expect(error).to(beNil())
-          })
-        }
+//        PrefStore.setCurrentUserId(userId: "214")
+//
+//        var user = CHUser()
+//        user.name = "Intoxicated"
+//        user.mobileNumber = "+821093123291"
+//        waitUntil (timeout: 10) { done in
+//          _ = user
+//            .subscribe(onNext: { (result, error) in
+//            expect(error).to(beNil())
+//            expect(result).to(beAKindOf(CHUser.self))
+//            let user = result as! CHUser
+//
+//            expect(user.id).to(equal("214"))
+//            expect(user.name).to(equal("Intoxicated"))
+//            expect(user.mobileNumber).to(equal("+821093123291"))
+//            done()
+//          }, onError: { (error) in
+//            expect(error).to(beNil())
+//          })
+//        }
       }
     }
     
@@ -100,11 +92,7 @@ class GuestTests: QuickSpec {
         expect(veil.id).to(equal(""))
         expect(veil.name).to(equal(""))
         expect(veil.avatarUrl).to(beNil())
-        expect(veil.initial).to(equal(""))
-        expect(veil.color).to(equal(""))
-        expect(veil.ghost).to(beFalse())
         expect(veil.mobileNumber).to(beNil())
-        expect(veil.meta).to(beNil())
       }
       
       it("normal") {
@@ -116,11 +104,7 @@ class GuestTests: QuickSpec {
         expect(veil.id).to(equal("123"))
         expect(veil.name).to(equal("user"))
         expect(veil.avatarUrl).to(equal("www.zoyi.co"))
-        expect(veil.initial).to(equal("JJ"))
-        expect(veil.color).to(equal("#123456"))
-        expect(veil.ghost).to(beFalse())
         expect(veil.mobileNumber).to(equal("+8201032314123"))
-        expect(veil.meta).notTo(beNil())
       }
     }
   }

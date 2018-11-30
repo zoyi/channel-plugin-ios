@@ -13,6 +13,7 @@ import SVProgressHUD
 extension ChannelIO {
   internal class func reset() {
     dispatch {
+      PushBotManager.reset()
       ChannelIO.launcherView?.hide(animated: false)
       ChannelIO.close(animated: false)
       ChannelIO.hideNotification()
@@ -52,16 +53,17 @@ extension ChannelIO {
     }
     
     EventPromise.sendEvent(
+      pluginId: mainStore.state.plugin.id,
       name: eventName,
       properties: eventProperty,
-      sysProperties: sysProperty)
-      .subscribe(onNext: { (event) in
+      sysProperties: sysProperty).subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
+        PushBotManager.process(with: nudges, property: eventProperty ?? [:])
       }, onError: { (error) in
         dlog("\(eventName) event failed")
-      }).disposed(by: self.disposeBeg)
+      }).disposed(by: disposeBag)
   }
-  
+
   internal class func checkInChannel(profile: Profile? = nil) -> Observable<Any?> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
@@ -102,23 +104,17 @@ extension ChannelIO {
           }
           
           data["settings"] = settings
+          mainStore.dispatch(CheckInSuccess(payload: data))
           
           WsService.shared.connect()
-          mainStore.dispatch(UpdateCheckinState(payload: .success))
-          mainStore.dispatch(CheckInSuccess(payload: data))
-        
-          ChannelIO.sendDefaultEvent(.boot)
-          
-          WsService.shared.ready().take(1).subscribe(onNext: { _ in
-            subscriber.onNext(data)
-            subscriber.onCompleted()
-          }).disposed(by: self.disposeBeg)
-
+  
+          subscriber.onNext(data)
+          subscriber.onCompleted()
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {
           dlog("Check in complete")
-        }).disposed(by: self.disposeBeg)
+        }).disposed(by: disposeBag)
       
       return Disposables.create()
     }
@@ -131,7 +127,7 @@ extension ChannelIO {
     
     dispatch {
       ChannelIO.launcherView?.isHidden = true
-      ChannelIO.sendDefaultEvent(.open)
+      
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
@@ -174,7 +170,7 @@ extension ChannelIO {
         dlog("register token success")
       }, onError:{ error in
         dlog("register token failed")
-      }).disposed(by: disposeBeg)
+      }).disposed(by: disposeBag)
   }
   
   internal class func showNotification(pushData: CHPush?) {
@@ -198,14 +194,24 @@ extension ChannelIO {
         .subscribe(onNext: { (event) in
           ChannelIO.hideNotification()
           ChannelIO.showUserChat(userChatId: push.userChat?.id)
-        }).disposed(by: self.disposeBeg)
+        }).disposed(by: disposeBag)
       
       notificationView.closeView
         .signalForClick()
         .observeOn(MainScheduler.instance)
         .subscribe { (event) in
           ChannelIO.hideNotification()
-        }.disposed(by: self.disposeBeg)
+        }.disposed(by: disposeBag)
+      
+      notificationView.redirectSignal
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (urlString) in
+          guard let url = URL(string: urlString ?? "") else { return }
+          let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
+          if shouldHandle == false || shouldHandle == nil {
+            url.openWithUniversal()
+          }
+        }).disposed(by: disposeBag)
       
       ChannelIO.chatNotificationView = notificationView
       CHAssets.playPushSound()
@@ -234,25 +240,25 @@ extension ChannelIO {
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(self.enterBackground),
-      name: NSNotification.Name.UIApplicationWillResignActive,
+      name: UIApplication.willResignActiveNotification,
       object: nil)
     
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(self.enterBackground),
-      name: NSNotification.Name.UIApplicationWillTerminate,
+      name: UIApplication.willTerminateNotification,
       object: nil)
     
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(self.enterForeground),
-      name: NSNotification.Name.UIApplicationDidBecomeActive,
+      name: UIApplication.didBecomeActiveNotification,
       object: nil)
     
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(self.appBecomeActive(_:)),
-      name: Notification.Name.UIApplicationWillEnterForeground,
+      name: UIApplication.willEnterForegroundNotification,
       object: nil)
   }
   

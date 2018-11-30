@@ -12,6 +12,7 @@ import ObjectMapper
 enum CHDefaultEvent: String {
   case boot = "Boot"
   case open = "ChannelOpen"
+  case pageView = "PageView"
 }
 
 struct CHEvent {

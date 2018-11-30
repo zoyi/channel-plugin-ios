@@ -9,15 +9,15 @@
 import ReSwift
 
 struct CreateSession: Action {
-  public let payload: CHSession
+  public let payload: CHSession?
 }
 
 struct UpdateSession: Action {
-  public let payload: CHSession
+  public let payload: CHSession?
 }
 
 struct DeleteSession: Action {
-  public let payload: CHSession
+  public let payload: CHSession?
 }
 
 struct UpdateManager: Action {
@@ -26,4 +26,8 @@ struct UpdateManager: Action {
 
 struct UpdateFollowingManagers: Action {
   public let payload: [CHManager]
+}
+
+struct ReadSession: Action {
+  public let payload: CHSession?
 }

@@ -40,7 +40,7 @@ extension UIImage {
   }
   
   func normalizedImage() -> UIImage {
-    if (self.imageOrientation == UIImageOrientation.up) {
+    if (self.imageOrientation == UIImage.Orientation.up) {
       return self
     }
     
