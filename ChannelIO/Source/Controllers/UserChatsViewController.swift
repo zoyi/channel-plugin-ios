@@ -253,7 +253,7 @@ class UserChatsViewController: BaseViewController {
     let followersSignal = CHManager.getRecentFollowers()
     let supportBot = channel.canUseSupportBot ?
       CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil) :
-      .empty()
+      .just([])
     
     var pluginBot: CHBot? = nil
     
