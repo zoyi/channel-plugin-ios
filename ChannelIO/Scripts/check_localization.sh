@@ -5,8 +5,8 @@
 
 AUDITTYPE=${1:-"swift"}
 REGEX=${2-"\.localized\(\"[a-zA-Z0-9_.]+\"\)"}
-LOCALIZABLE=${3-"./ChannelIO/Assets/en.lproj/Localizable.strings"} 
-SEARCHFOLDER=${4-"./ChannelIO/Source"}
+LOCALIZABLE=${3-"../Assets/en.lproj/Localizable.strings"} 
+SEARCHFOLDER=${4-"../Source"}
 
 echo "check type $AUDITTYPE, regex $REGEX and localization sample $LOCALIZABLE"
 

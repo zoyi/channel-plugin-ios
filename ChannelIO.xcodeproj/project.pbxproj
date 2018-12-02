@@ -1295,6 +1295,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 14D2AA881E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "ChannelIO" */;
 			buildPhases = (
+				22E03E9B21B3C2860009F48E /* Check Localization */,
+				22E03E9C21B3C2E30009F48E /* Download emoji set */,
 				6413186B532834722FE5A94A /* [CP] Check Pods Manifest.lock */,
 				65F77B071E80E570001E8FBA /* ShellScript */,
 				14D2AA6F1E24AE06006FEE22 /* Sources */,
@@ -1393,6 +1395,42 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		22E03E9B21B3C2860009F48E /* Check Localization */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check Localization";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n${SRCROOT}/ChannelIO/Scripts/check_localization.sh\n";
+		};
+		22E03E9C21B3C2E30009F48E /* Download emoji set */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Download emoji set";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n${SRCROOT}/ChannelIO/Scripts/emoji.sh\n";
+		};
 		2687F909F125936A6FB091BE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
