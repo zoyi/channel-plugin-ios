@@ -134,7 +134,7 @@ struct CHChannel: CHEntity {
     return !self.blocked && (self.supportBotPlan != .none || self.trial)
   }
   
-  var shouldHideDefaultButton: Bool {
+  var shouldHideLauncher: Bool {
     return self.awayOption == .hidden && !self.working
   }
 

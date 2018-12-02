@@ -44,6 +44,9 @@ public final class ChannelIO: NSObject {
   @objc public static var booted: Bool {
     return mainStore.state.checkinState.status == .success
   }
+  @objc public static var canShowLauncher: Bool {
+    return !mainStore.state.channel.shouldHideLauncher
+  }
   
   internal static var chatNotificationView: ChatNotificationView?
   internal static var baseNavigation: BaseNavigationController?
@@ -209,9 +212,8 @@ public final class ChannelIO: NSObject {
   public class func show(animated: Bool) {
     guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
     ChannelIO.launcherVisible = true
-    guard ChannelIO.isValidStatus else { return }
+    guard ChannelIO.isValidStatus, ChannelIO.canShowLauncher else { return }
     guard ChannelIO.baseNavigation == nil else { return }
-    guard !mainStore.state.channel.shouldHideDefaultButton else { return }
     
     dispatch {
       let launcherView = ChannelIO.launcherView ?? LauncherView()

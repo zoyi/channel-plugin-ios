@@ -1,4 +1,7 @@
-# 5.0.2
+# 5.1.0
+## Updates
+* Added `canShowLauncher` for custom launcher
+
 ## Bug fixes
 * Displayed button and input visibility properly based on channel settings
 * Fixed missing localizations
