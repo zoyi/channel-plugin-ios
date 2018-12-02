@@ -42,7 +42,7 @@ enum ChannelWorkingType: String {
 
 enum ChannelAwayOptionType: String {
   case active
-  case disable
+  case disabled
   case hidden
 }
 

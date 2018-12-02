@@ -277,14 +277,6 @@ extension ProfileViewController : StoreSubscriber {
       plugin: state.plugin,
       channel: state.channel
     )
-
-    let showCompleted = state.userChatsState.showCompletedChats
-    if self.showCompleted != showCompleted {
-      self.showCompleted = showCompleted
-      self.fetchUserChats(showCompleted)
-    }
-    
-    self.tableView.reloadData()
   }
 
   func fetchUserChats(_ showCompleted: Bool) {

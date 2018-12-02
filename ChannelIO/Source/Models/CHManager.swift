@@ -46,16 +46,6 @@ extension CHManager: Mappable {
   }
 }
 
-struct ReviewAvatar: CHEntity {
-  var id = ""
-  var name = CHAssets.localized("ch.review.name")
-  var avatarUrl: String? = "reviewAvatar"
-  var initial = ""
-  var color = ""
-  // Manager
-  var username = ""
-}
-
 extension CHManager {
   static func getRecentFollowers() -> Observable<[CHManager]> {
     return PluginPromise.getFollowingManagers()

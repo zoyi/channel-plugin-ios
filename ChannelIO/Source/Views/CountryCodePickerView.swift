@@ -34,13 +34,13 @@ final class CountryCodePickerView : BaseView {
   let actionView = UIView()
   let closeButton = UIButton().then {
     $0.setTitleColor(CHColors.dark, for: .normal)
-    $0.setTitle(CHAssets.localized("ch.mobile_verification.cancel"), for: .normal)
+    $0.setTitle(CHAssets.localized("ch.common.cancel"), for: .normal)
     $0.titleLabel?.font = UIFont.systemFont(ofSize: 17.f)
     
   }
   let submitButton = UIButton().then {
     $0.setTitleColor(CHColors.dark, for: .normal)
-    $0.setTitle(CHAssets.localized("ch.mobile_verification.confirm"), for: .normal)
+    $0.setTitle(CHAssets.localized("ch.button_confirm"), for: .normal)
     $0.titleLabel?.font = UIFont.systemFont(ofSize: 17.f)
   }
   let pickerView = UIPickerView()

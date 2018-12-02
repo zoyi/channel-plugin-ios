@@ -1,3 +1,8 @@
+# 5.0.2
+## Bug fixes
+* Displayed button and input visibility properly based on channel settings
+* Fixed missing localizations
+
 # 5.0.0
 ## New
 * Added Push bot feature

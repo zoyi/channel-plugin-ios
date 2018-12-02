@@ -211,6 +211,7 @@ public final class ChannelIO: NSObject {
     ChannelIO.launcherVisible = true
     guard ChannelIO.isValidStatus else { return }
     guard ChannelIO.baseNavigation == nil else { return }
+    guard !mainStore.state.channel.shouldHideDefaultButton else { return }
     
     dispatch {
       let launcherView = ChannelIO.launcherView ?? LauncherView()

@@ -91,7 +91,7 @@ struct CHMessage: ModelType {
       return CHAssets.localized("ch.notification.upload_image.description")
     } else if self.file != nil {
       return CHAssets.localized("ch.notification.upload_file.description")
-    } else if self.log != nil && self.log?.action == "resolve" {
+    } else if self.log != nil && self.log?.action == "closed" {
       return CHAssets.localized("ch.review.require.preview")
     }
     return nil

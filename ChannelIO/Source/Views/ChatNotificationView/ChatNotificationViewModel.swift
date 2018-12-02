@@ -46,10 +46,7 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
   var themeColor: UIColor? = nil
 
   init(push: CHPush) {
-    if push.isReviewLog {
-      self.name = CHAssets.localized("ch.review.require.title")
-      self.avatar = ReviewAvatar()
-    } else if let managerName = push.manager?.name {
+    if let managerName = push.manager?.name {
       self.name = managerName
       self.avatar = push.manager
     } else if let botName = push.bot?.name {

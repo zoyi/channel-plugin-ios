@@ -332,9 +332,6 @@ extension UserChatView {
       self.rightButton.setImage(nil, for: .disabled)
       self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
-      self.textView.placeholder = nextUserChat?.isRemoved() == true ?
-        CHAssets.localized("ch.chat.removed.title") :
-        CHAssets.localized("ch.review.complete.title")
       self.textView.isEditable = false
     } else if (!self.channel.allowNewChat && !channel.allowNewChat) {
       //self.isNewChat(with: userChat, nextUserChat: nextUserChat) {

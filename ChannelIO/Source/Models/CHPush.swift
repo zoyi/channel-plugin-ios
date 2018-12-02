@@ -26,12 +26,6 @@ struct CHPush: CHPushDisplayable {
   
   var showLog: Bool = true
   var buttonTitle: String? = nil
-  var isReviewLog: Bool {
-    get {
-      return self.message?.log != nil &&
-        self.message?.log?.action == "resolve"
-    }
-  }
   
   var attachmentType: CHAttachmentType = .none
   var redirectUrl: String? = nil
