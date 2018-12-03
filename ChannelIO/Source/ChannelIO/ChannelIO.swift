@@ -45,7 +45,7 @@ public final class ChannelIO: NSObject {
     return mainStore.state.checkinState.status == .success
   }
   @objc public static var canShowLauncher: Bool {
-    return !mainStore.state.channel.shouldHideLauncher
+    return !mainStore.state.channel.shouldHideLauncher && ChannelIO.isValidStatus
   }
   
   internal static var chatNotificationView: ChatNotificationView?
