@@ -227,7 +227,11 @@ public final class ChannelIO: NSObject {
       let yMargin = ChannelIO.settings?.launcherConfig?.yMargin ?? 24
       let position = ChannelIO.settings?.launcherConfig?.position ?? .right
       
-      launcherView.superview == nil ?
+      if let superview = launcherView.superview, superview != view {
+        launcherView.removeFromSuperview()
+      }
+      
+      launcherView.superview != view ?
         launcherView.insert(on: view, animated: animated) :
         launcherView.show(animated: animated)
       
@@ -263,7 +267,6 @@ public final class ChannelIO: NSObject {
       } else {
         ChannelIO.sendDefaultEvent(.pageView)
       }
-      
     }
   }
   

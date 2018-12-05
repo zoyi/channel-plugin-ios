@@ -20,6 +20,7 @@ extension UIView {
     view.addSubview(self)
     
     if !animated {
+      self.alpha = 1
       return
     }
     
@@ -45,13 +46,11 @@ extension UIView {
   }
   
   func show(animated: Bool) {
-    if self.superview == nil {
-      return
-    }
     self.isHidden = false
     
     if !animated {
       self.alpha = 1
+      return
     }
     
     UIView.animate(withDuration: 0.5) {
