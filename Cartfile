@@ -7,7 +7,7 @@ github "Hearst-DD/ObjectMapper" ~> 3.3
 github "ninjaprox/NVActivityIndicatorView" ~> 4.4.0
 github "zoyi/Dwifft"
 github "Alamofire/Alamofire" ~> 4.5
-github "zhangao0086/DKImagePickerController" ~> 3.8.1
+github "zhangao0086/DKImagePickerController" ~> 4.1.0
 github "socketio/socket.io-client-swift" ~> 13.1.0
 github "zoyi/SlackTextViewController"
 github "MortimerGoro/MGSwipeTableCell" ~> 1.5.6
