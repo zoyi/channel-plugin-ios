@@ -227,6 +227,16 @@ public final class ChannelIO: NSObject {
       let yMargin = ChannelIO.settings?.launcherConfig?.yMargin ?? 24
       let position = ChannelIO.settings?.launcherConfig?.position ?? .right
       
+      if launcherView.superview == nil || launcherView.superview != view {
+        if let topController = CHUtils.getTopController() {
+          ChannelIO.sendDefaultEvent(.pageView, property: [
+            TargetKey.url.rawValue: "\(type(of: topController))"
+            ])
+        } else {
+          ChannelIO.sendDefaultEvent(.pageView)
+        }
+      }
+      
       if let superview = launcherView.superview, superview != view {
         launcherView.removeFromSuperview()
       }
@@ -259,14 +269,6 @@ public final class ChannelIO: NSObject {
       }).disposed(by: disposeBag)
       
       ChannelIO.launcherView = launcherView
-      
-      if let topController = CHUtils.getTopController() {
-        ChannelIO.sendDefaultEvent(.pageView, property: [
-          TargetKey.url.rawValue: "\(type(of: topController))"
-        ])
-      } else {
-        ChannelIO.sendDefaultEvent(.pageView)
-      }
     }
   }
   
