@@ -17,8 +17,11 @@ import Photos
 class MediaMessageView : BaseView {
 
   //MARK: properties
-  
   let imageView = FLAnimatedImageView()
+  let exportIcon = UIImageView().then {
+    $0.image = UIImage(named: "exportIcon")
+    $0.isHidden = true
+  }
   var placeholder: UIImage?
   
   static var imageMaxSize: CGSize = {
@@ -55,6 +58,7 @@ class MediaMessageView : BaseView {
     self.clipsToBounds = true
     
     self.addSubview(self.imageView)
+    self.addSubview(self.exportIcon)
     self.addSubview(self.indicatorView)
     self.addSubview(self.progressView)
   }
@@ -68,6 +72,8 @@ class MediaMessageView : BaseView {
       self.indicatorView.isHidden = true
     }
     
+    self.exportIcon.isHidden = message.file?.imageRedirectUrl != nil
+
     if message.progress == 1 {
       self.progressView.isHidden = true
       self.indicatorView.isHidden = false
@@ -119,6 +125,13 @@ class MediaMessageView : BaseView {
     
     self.imageView.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
+    }
+    
+    self.exportIcon.snp.makeConstraints { (make) in
+      make.trailing.equalToSuperview().inset(20)
+      make.bottom.equalToSuperview().inset(20)
+      make.height.equalTo(30)
+      make.width.equalTo(30)
     }
     
     self.progressView.snp.remakeConstraints { (make) in

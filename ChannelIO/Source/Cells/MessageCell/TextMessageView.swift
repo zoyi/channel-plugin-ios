@@ -161,7 +161,7 @@ extension TextMessageView : UITextViewDelegate {
     case "mailto":
       return true
     default:
-      return shouldhandle == true || shouldhandle == nil
+      return shouldhandle == false || shouldhandle == nil
     }
   }
   

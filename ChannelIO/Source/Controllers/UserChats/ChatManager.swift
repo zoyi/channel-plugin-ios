@@ -331,11 +331,7 @@ extension ChatManager {
       mainStore.dispatch(CreateMessage(payload: message))
       self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
     } else {
-      let createChatSignal = self.chat?.isNudgeChat() == true ?
-        self.createNudgeChat(nudgeId: self.chat?.getNudgeId()) :
-        self.createChat()
-      
-      createChatSignal
+      self.createChat()
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
           var message = CHMessage(chatId: chatId, guest: mainStore.state.guest, image: imageData)
@@ -354,11 +350,7 @@ extension ChatManager {
       let messages = self.createMessageForImages(assets: assets)
       self.sendMessageRecursively(allMessages: messages, currentIndex: 0)
     } else {
-      let createChatSignal = self.chat?.isNudgeChat() == true ?
-        self.createNudgeChat(nudgeId: self.chat?.getNudgeId()) :
-        self.createChat()
-      
-      createChatSignal
+      self.createChat()
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
           let messages = self?.createMessageForImages(assets: assets, requestBot: true) ?? []
@@ -382,43 +374,30 @@ extension ChatManager {
 extension ChatManager {  
   func processSendMessage(msg: String) -> Observable<CHUserChat?> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
-      //move this logic into presenter
-      if let chat = self?.chat, chat.isActive(), !chat.isNudgeChat() {
-        let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-        mainStore.dispatch(CreateMessage(payload: message))
-        self?.sendMessage(message: message, local: false)
-          .observeOn(MainScheduler.instance)
-          .subscribe(onNext: { (msg) in
-            subscriber.onNext(chat)
-            subscriber.onCompleted()
-          }, onError: { (error) in
-            subscriber.onError(error)
-          }).disposed(by: self!.disposeBag)
-      } else {
-        let createChatSignal = self?.chat?.isNudgeChat() == true ?
-          self?.createNudgeChat(nudgeId: self?.chat?.getNudgeId()) :
-          self?.createChat()
-        
-        createChatSignal?
-          .observeOn(MainScheduler.instance)
-          .flatMap({ (chatId) -> Observable<CHMessage?> in
-            guard let s = self else { return .empty() }
-            s.chatId = chatId
-            let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-            mainStore.dispatch(CreateMessage(payload: message))
-            return s.sendMessage(message: message, local: false)
-          })
-          .observeOn(MainScheduler.instance)
-          .subscribe(onNext: { (message) in
-            mainStore.dispatch(CreateMessage(payload: message))
-            subscriber.onNext(self?.chat)
-            subscriber.onCompleted()
-          }, onError: { (error) in
-            self?.state = .chatNotLoaded
-            subscriber.onError(error)
-          }).disposed(by: self!.disposeBag)
-      }
+      let createChatSignal = self?.chat?.isActive() == true ?
+        Observable.just(self?.chat?.id ?? "") :
+        self?.createChat()
       
+      createChatSignal?
+        .observeOn(MainScheduler.instance)
+        .flatMap({ (chatId) -> Observable<CHMessage?> in
+          guard let s = self else { return .empty() }
+          guard chatId != "" else { return .empty() }
+          
+          s.chatId = chatId
+          let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
+          mainStore.dispatch(CreateMessage(payload: message))
+          return s.sendMessage(message: message, local: false)
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (message) in
+          mainStore.dispatch(CreateMessage(payload: message))
+          subscriber.onNext(self?.chat)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        }).disposed(by: self!.disposeBag)
       return Disposables.create()
     })
   }
@@ -433,6 +412,24 @@ extension ChatManager {
         mainStore.dispatch(CreateMessage(payload:message))
       }, onError: { (error) in
         //handle error
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func processNudgeKeepAction(){
+    guard let chat = self.chat, chat.isNudgeChat() else { return }
+    
+    self.createNudgeChat(nudgeId: chat.getNudgeId())
+      .observeOn(MainScheduler.instance)
+      .flatMap { [weak self] (chatId) -> Observable<CHMessage?> in
+        guard let s = self else { return .empty() }
+        let message = CHMessage.createLocal(chatId: chatId, text: "")
+        mainStore.dispatch(CreateMessage(payload: message))
+        return s.sendMessage(message: message, local: false) //thumb action
+      }
+      .subscribe(onNext: { (message) in
+        mainStore.dispatch(CreateMessage(payload: message))
+      }, onError: { (erro) in
+        //?
       }).disposed(by: self.disposeBag)
   }
   

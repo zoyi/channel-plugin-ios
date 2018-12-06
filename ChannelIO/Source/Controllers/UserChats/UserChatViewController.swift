@@ -61,9 +61,32 @@ final class UserChatViewController: BaseSLKTextViewController {
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
+  
   var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
+  
+  var nudgeKeepButton = UIButton(type: .system).then {
+    $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
+    $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
+    $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
+    $0.tintColor = mainStore.state.plugin.textUIColor
+    
+    $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 20)
+    $0.imageEdgeInsets = UIEdgeInsets(top:0, left: -14, bottom: 0, right: 0)
+    
+    $0.backgroundColor = UIColor(mainStore.state.plugin.color)
+    
+    $0.layer.borderColor = UIColor(mainStore.state.plugin.borderColor)?.cgColor
+    $0.layer.cornerRadius = 23
+    $0.layer.shadowColor = CHColors.dark.cgColor
+    $0.layer.shadowOpacity = 0.2
+    $0.layer.shadowOffset = CGSize(width: 0, height: 2)
+    $0.layer.shadowRadius = 3
+    $0.layer.borderWidth = 1
+    $0.isHidden = true
+  }
+  
   var newChatButton = UIButton(type: .system).then {
     $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
     $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
@@ -84,6 +107,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     $0.layer.borderWidth = 1
     $0.isHidden = true
   }
+  
   var isAnimating = false
   var newChatBottomConstraint: Constraint? = nil
   
@@ -122,7 +146,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initTableView()
     self.initInputViews()
     self.initViews()
-    self.initNewChatButton()
+    self.initActionButtons()
     self.initPhotoViewer()
 
     self.initUpdaters()
@@ -175,12 +199,28 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.chatManager.prepareToChat()
   }
   
-  fileprivate func initNewChatButton() {
+  fileprivate func initActionButtons() {
     self.view.addSubview(self.newChatButton)
     self.newChatButton.signalForClick()
       .subscribe(onNext: { [weak self] (_) in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         self?.newChatSubject.onNext(nil)
+      }).disposed(by: self.disposeBag)
+    
+    self.newChatButton.snp.makeConstraints { [weak self] (make) in
+      if #available(iOS 11.0, *) {
+        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15).constraint
+      } else {
+        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(15).constraint
+      }
+      make.centerX.equalToSuperview()
+      make.height.equalTo(Metric.newButtonHeight)
+    }
+    
+    self.view.addSubview(self.nudgeKeepButton)
+    self.newChatButton.signalForClick()
+      .subscribe(onNext: { [weak self] (_) in
+        self?.chatManager.processNudgeKeepAction()
       }).disposed(by: self.disposeBag)
     
     self.newChatButton.snp.makeConstraints { [weak self] (make) in
@@ -939,7 +979,7 @@ extension UserChatViewController {
       cell.configure(viewModel, presenter: self.chatManager)
       cell.mediaView.signalForClick().subscribe { [weak self] _ in
         self?.didImageTapped(message: message)
-        }.disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
       return cell
     } else if viewModel.clipType == .Webpage {
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -977,20 +1017,28 @@ extension UserChatViewController {
   }
   
   func didImageTapped(message: CHMessage) {
-    let imgUrl = message.file?.url
-    var startIndex = 0
-    if let index = self.photoUrls.index(of: imgUrl ?? "") {
-      startIndex = index
+    if let urlString = message.file?.imageRedirectUrl, let url = URL(string: urlString) {
+      let shouldhandle = ChannelIO.delegate?.onClickRedirect?(url: url)
+      if shouldhandle == nil || shouldHandle == false {
+         url.openWithUniversal()
+      }
     }
-    
-    let images = self.photoUrls.map { (url) -> LightboxImage in
-      return LightboxImage(imageURL: URL(string: url)!)
+    else {
+      let imgUrl = message.file?.url
+      var startIndex = 0
+      if let index = self.photoUrls.index(of: imgUrl ?? "") {
+        startIndex = index
+      }
+      
+      let images = self.photoUrls.map { (url) -> LightboxImage in
+        return LightboxImage(imageURL: URL(string: url)!)
+      }
+
+      let controller = LightboxController(images:images, startIndex: startIndex)
+      controller.dynamicBackground = true
+
+      self.present(controller, animated: true, completion: nil)
     }
-
-    let controller = LightboxController(images:images, startIndex: startIndex)
-    controller.dynamicBackground = true
-
-    self.present(controller, animated: true, completion: nil)
   }
 }
 
