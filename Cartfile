@@ -15,6 +15,7 @@ github "Marxon13/M13ProgressSuite" ~> 1.2.9
 github "SVProgressHUD/SVProgressHUD"
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit" ~> 2.5.0
-github "rs/SDWebImage" ~> 4.3.0
+github "Flipboard/FLAnimatedImage"
+github "SDWebImage/SDWebImage" ~> 4.3.0
 github "intoxicated/TLYShyNavBar"
 github "hyperoslo/Lightbox" ~> 2.3.0
