@@ -44,6 +44,7 @@ protocol MessageCellModelType {
   var translateState: CHMessageTranslateState { get set }
   var showTranslation: Bool { get }
   var clipType: ClipType { get }
+  var buttons: [CHLink] { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -78,6 +79,7 @@ struct MessageCellModel: MessageCellModelType {
   var showTranslation: Bool = false
   var translateState: CHMessageTranslateState = .original
   var clipType: ClipType = .None
+  var buttons: [CHLink]
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
@@ -132,6 +134,9 @@ struct MessageCellModel: MessageCellModelType {
       mainStore.state.userChatsState.showTranslation &&
       !createdByMe
     self.translateState = message.translateState
+    
+    //buttons
+    self.buttons = message.buttons ?? []
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

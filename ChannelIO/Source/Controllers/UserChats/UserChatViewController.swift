@@ -878,6 +878,8 @@ extension UserChatViewController {
       return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
     case .Form:
       return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .Buttons:
+      return ButtonsMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     }
@@ -973,9 +975,12 @@ extension UserChatViewController {
       let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
+    } else if message.messageType == .Buttons {
+      let cell: ButtonsMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
     } else if viewModel.clipType == .Image {
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
       cell.mediaView.signalForClick().subscribe { [weak self] _ in
         self?.didImageTapped(message: message)
@@ -983,19 +988,17 @@ extension UserChatViewController {
       return cell
     } else if viewModel.clipType == .Webpage {
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
       cell.webView.signalForClick().subscribe{ [weak self] _ in
         self?.chatManager?.didClickOnWebPage(with: message)
-        }.disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
       return cell
     } else if viewModel.clipType == .File {
       let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
-      //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
       cell.fileView.signalForClick().subscribe { [weak self] _ in
         self?.chatManager?.didClickOnFile(with: message)
-        }.disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
       return cell
     } else {
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -1019,7 +1022,7 @@ extension UserChatViewController {
   func didImageTapped(message: CHMessage) {
     if let urlString = message.file?.imageRedirectUrl, let url = URL(string: urlString) {
       let shouldhandle = ChannelIO.delegate?.onClickRedirect?(url: url)
-      if shouldhandle == nil || shouldHandle == false {
+      if shouldhandle == nil || shouldhandle == false {
          url.openWithUniversal()
       }
     }

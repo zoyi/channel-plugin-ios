@@ -863,6 +863,14 @@ extension ChatManager {
     }
   }
   
+  func didClickOnRedirectUrl(with url: String) {
+    guard let url = URL(string: url) else { return }
+    let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
+    if shouldHandle == false || shouldHandle == nil {
+      url.openWithUniversal()
+    }
+  }
+  
   func didClickOnFile(with message: CHMessage) {
     guard let url = message.file?.url else { return }
     

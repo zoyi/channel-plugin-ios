@@ -31,6 +31,7 @@ enum MessageType {
   case File
   case Profile
   case Form
+  case Buttons
 }
 
 enum CHMessageTranslateState {
@@ -57,6 +58,7 @@ struct CHMessage: ModelType {
   var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
   var form: CHForm? = nil
+  var buttons: [CHLink]? = []
   var submit: CHSubmit? = nil
   var createdAt: Date
 
@@ -245,7 +247,9 @@ extension CHMessage: Mappable {
   static func contextType(_ message: CHMessage) -> MessageType {
      if message.log != nil {
       return .Log
-    } else if message.file?.image == true {
+     } else if let buttons = message.buttons, buttons.count != 0 {
+      return .Buttons
+     } else if message.file?.image == true {
       return .Media
     } else if message.file != nil {
       return .File
