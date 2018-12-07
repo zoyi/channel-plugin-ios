@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 import SnapKit
-import FLAnimatedImage
+import SDWebImage
 
 final class ChatNotificationView : BaseView {
   var topLayoutGuide: UILayoutSupport?

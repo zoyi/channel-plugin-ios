@@ -1,3 +1,7 @@
+# 5.1.2
+## Bug fixes 
+* Updated dependencies and structures to work with Carthage properly
+
 # 5.1.0
 ## Updates
 * Added `canShowLauncher` for custom launcher
