@@ -1,3 +1,7 @@
+# 5.1.3
+## Bug fixes
+* Hided in-app push notification after handled redirect url
+
 # 5.1.2
 ## Bug fixes 
 * Updated dependencies and structures to work with Carthage properly
