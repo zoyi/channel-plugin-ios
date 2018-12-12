@@ -16,6 +16,7 @@ class ButtonsMessageView: BaseView {
   
   override func initialize() {
     super.initialize()
+    self.addSubview(self.containerView)
   }
   
   override func setLayouts() {
@@ -48,11 +49,10 @@ class ButtonsMessageView: BaseView {
     }
     else if self.buttons.count < model.buttons.count {
       for i in self.buttons.count..<model.buttons.count {
-        let buttonView = UIButton(type: .system).then {
-          $0.setTitleColor(CHColors.azure, for: .normal)
-          $0.titleLabel?.numberOfLines = 1
-        }
+        let buttonView = CHButton.messageAction()
         self.containerView.addSubview(buttonView)
+        self.buttons.append(buttonView)
+        
         buttonView.snp.makeConstraints { [weak self] (make) in
           let previous = i != 0 ? self?.buttons[i] : nil
           make.height.equalTo(44)
@@ -78,35 +78,3 @@ class ButtonsMessageView: BaseView {
     })
   }
 }
-
-//class ButtonView: BaseView {
-//  let titleLabel = UILabel().then {
-//    $0.textColor = CHColors.azure
-//    $0.font = UIFont.systemFont(ofSize: 14)
-//    $0.numberOfLines = 1
-//  }
-//
-//  override func initialize() {
-//    super.initialize()
-//    self.layer.borderWidth = 3.f
-//    self.layer.borderColor = CHColors.paleGrey.cgColor
-//    self.layer.cornerRadius = 12.f
-//    self.backgroundColor = .white
-//
-//    self.addSubview(self.titleLabel)
-//  }
-//
-//  override func setLayouts() {
-//    super.setLayouts()
-//
-//    self.titleLabel.snp.makeConstraints { (make) in
-//      make.centerX.equalToSuperview()
-//      make.leading.equalToSuperview().inset(20)
-//      make.trailing.equalToSuperview().inset(20)
-//    }
-//  }
-//
-//  func configure(title: String) {
-//    self.titleLabel.text = title
-//  }
-//}

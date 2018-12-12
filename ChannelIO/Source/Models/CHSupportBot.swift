@@ -78,6 +78,7 @@ struct CHSupportBotStep: CHImageable {
   var message: String = ""
   var imageMeta: CHImageMeta? = nil
   var imageUrl: String? = nil
+  var imageRedirectUrl: String? = nil
 }
 
 extension CHSupportBotStep: Mappable {

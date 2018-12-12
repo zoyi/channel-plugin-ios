@@ -37,8 +37,9 @@ class ButtonsMessageCell: MessageCell {
       self?.topConstraint = make.top.equalToSuperview().inset(5).priority(850).constraint
       self?.topToTimeConstraint = make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(3).priority(750).constraint
       self?.topToTextConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3).constraint
-      self?.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
-      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.messageLeftMinMargin).constraint
+      self?.rightConstraint = make.right.equalToSuperview().inset(Metric.messageRightMinMargin).constraint
+      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.bubbleLeftMargin).constraint
+      make.bottom.equalToSuperview()
     }
   }
   
@@ -49,7 +50,7 @@ class ButtonsMessageCell: MessageCell {
   
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
-    height += 3 + ButtonsMessageView.viewHeight(fits: width, viewModel: viewModel)
+    height += 5 + ButtonsMessageView.viewHeight(fits: width, viewModel: viewModel)
     return height
   }
 }

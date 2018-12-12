@@ -227,11 +227,13 @@ public final class ChannelIO: NSObject {
       let yMargin = ChannelIO.settings?.launcherConfig?.yMargin ?? 24
       let position = ChannelIO.settings?.launcherConfig?.position ?? .right
       
-      if launcherView.superview == nil || launcherView.superview != view {
+      if launcherView.superview == nil ||
+        launcherView.superview != view ||
+        launcherView.alpha == 0 {
         if let topController = CHUtils.getTopController() {
           ChannelIO.sendDefaultEvent(.pageView, property: [
             TargetKey.url.rawValue: "\(type(of: topController))"
-            ])
+          ])
         } else {
           ChannelIO.sendDefaultEvent(.pageView)
         }

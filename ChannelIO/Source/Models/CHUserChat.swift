@@ -251,14 +251,18 @@ extension CHUserChat {
   
   static func createLocal(writer: CHEntity?, variant: CHNudgeVariant?) -> (CHUserChat?, CHMessage?, CHSession?) {
     guard let writer = writer, let variant = variant else { return (nil, nil, nil) }
-    let file = CHFile.create(imageable: variant)
+    let file = variant.attachment == .image ?
+      CHFile.create(imageable: variant) : nil
+    let button = variant.attachment == .button ?
+      [CHLink(title: variant.buttonTitle ?? "", url: variant.buttonRedirectUrl ?? "")] : nil
     let chatId = CHConstants.nudgeChat + variant.nudgeId
     let message = CHMessage(
       chatId: chatId,
       entity: writer,
       title: variant.title,
       message: variant.message,
-      file: file)
+      file: file,
+      buttons: button)
     
     let session = CHSession(id: chatId, chatId: chatId, guest: mainStore.state.guest, alert: 1)
     let userChat = CHUserChat(chatId: chatId, lastMessageId: message.id)
