@@ -422,7 +422,7 @@ extension ChatManager {
       .observeOn(MainScheduler.instance)
       .flatMap { [weak self] (chatId) -> Observable<CHMessage?> in
         guard let s = self else { return .empty() }
-        let message = CHMessage.createLocal(chatId: chatId, text: "")
+        let message = CHMessage.createLocal(chatId: chatId, text: "👍", mutable: false)
         mainStore.dispatch(CreateMessage(payload: message))
         return s.sendMessage(message: message, local: false) //thumb action
       }

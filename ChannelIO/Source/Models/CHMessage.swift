@@ -110,10 +110,10 @@ struct CHMessage: ModelType {
   var file: CHFile?
   var webPage: CHWebPage?
   var log: CHLog?
-
+  
   // Dependencies
   var entity: CHEntity?
-
+  var mutable: Bool = true
   // Used in only client
   var state: SendingState = .Sent
   var messageType: MessageType = .Default
@@ -170,7 +170,12 @@ extension CHMessage: Mappable {
     (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
   }
   
-  init(chatId: String, entity: CHEntity, title: String? = nil, message: NSAttributedString?, file: CHFile?) {
+  init(chatId: String,
+       entity: CHEntity,
+       title: String? = nil,
+       message: NSAttributedString?,
+       file: CHFile? = nil,
+       buttons: [CHLink]? = nil) {
     let now = Date()
     let requestId = "\(Int(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     
@@ -183,10 +188,11 @@ extension CHMessage: Mappable {
     self.createdAt = now
     self.state = .New
     self.progress = 1
+    self.buttons = buttons
     self.title = title
     self.file = file
     self.messageV2 = message
-    self.messageType = file?.image == true ? .Media : .Default
+    self.messageType = CHMessage.contextType(self)
   }
   
   init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset? = nil, image: UIImage? = nil) {
@@ -217,6 +223,7 @@ extension CHMessage: Mappable {
     requestId   <- map["requestId"]
     file        <- map["file"]
     webPage     <- map["webPage"]
+    buttons     <- map["buttons"]
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
@@ -228,11 +235,7 @@ extension CHMessage: Mappable {
     let msgv2 = map["messageV2"].currentValue as? String ?? ""
     (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
-    if self.form != nil {
-      messageType = .Form
-    } else {
-      messageType = CHMessage.contextType(self)
-    }
+    messageType = CHMessage.contextType(self)
   }
   
   func format(message: String) -> String {
@@ -245,11 +248,13 @@ extension CHMessage: Mappable {
   }
   
   static func contextType(_ message: CHMessage) -> MessageType {
-     if message.log != nil {
+    if message.form != nil {
+      return .Form
+    } else if message.log != nil {
       return .Log
-     } else if let buttons = message.buttons, buttons.count != 0 {
+    } else if let buttons = message.buttons, buttons.count != 0 {
       return .Buttons
-     } else if message.file?.image == true {
+    } else if message.file?.image == true {
       return .Media
     } else if message.file != nil {
       return .File
@@ -308,12 +313,18 @@ extension CHMessage {
   //TODO: refactor async call into actions 
   //but to do that, it also has to handle errors in redux
   
-  static func createLocal(chatId: String, text: String?, originId: String? = nil, key: String? = nil) -> CHMessage {
+  static func createLocal(
+    chatId: String,
+    text: String?,
+    originId: String? = nil,
+    key: String? = nil,
+    mutable: Bool = false) -> CHMessage {
     let me = mainStore.state.guest
     var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
     if let originId = originId, let key = key {
       message.submit = CHSubmit(id: originId, key: key)
     }
+    message.mutable = mutable
     return message
   }
   
@@ -395,7 +406,8 @@ extension CHMessage {
         userChatId: self.chatId,
         message: self.message ?? "",
         requestId: self.requestId!,
-        submit: self.submit).subscribe(onNext: { (message) in
+        submit: self.submit,
+        mutable: self.mutable).subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)

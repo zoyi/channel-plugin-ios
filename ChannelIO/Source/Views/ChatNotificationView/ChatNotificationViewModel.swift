@@ -70,7 +70,7 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
       if let buttonTitle = push.buttonTitle {
         self.buttonTitle = buttonTitle
       }
-      self.imageRedirect = push.redirectUrl
+      self.buttonRedirect = push.redirectUrl
     default:
       break
     }

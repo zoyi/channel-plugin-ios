@@ -19,7 +19,7 @@ class MediaMessageView : BaseView {
   //MARK: properties
   let imageView = FLAnimatedImageView()
   let exportIcon = UIImageView().then {
-    $0.image = UIImage(named: "exportIcon")
+    $0.image = CHAssets.getImage(named: "exportIcon")
     $0.isHidden = true
   }
   var placeholder: UIImage?
@@ -72,7 +72,7 @@ class MediaMessageView : BaseView {
       self.indicatorView.isHidden = true
     }
     
-    self.exportIcon.isHidden = message.file?.imageRedirectUrl != nil
+    self.exportIcon.isHidden = message.file?.imageRedirectUrl == nil
 
     if message.progress == 1 {
       self.progressView.isHidden = true
@@ -128,10 +128,10 @@ class MediaMessageView : BaseView {
     }
     
     self.exportIcon.snp.makeConstraints { (make) in
-      make.trailing.equalToSuperview().inset(20)
-      make.bottom.equalToSuperview().inset(20)
-      make.height.equalTo(30)
-      make.width.equalTo(30)
+      make.trailing.equalToSuperview().inset(10)
+      make.bottom.equalToSuperview().inset(10)
+      make.height.equalTo(34)
+      make.width.equalTo(34)
     }
     
     self.progressView.snp.remakeConstraints { (make) in

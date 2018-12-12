@@ -253,11 +253,17 @@ struct UserChatPromise {
     userChatId: String,
     message: String,
     requestId: String,
-    submit: CHSubmit? = nil) -> Observable<CHMessage> {
+    submit: CHSubmit? = nil,
+    mutable: Bool? = nil) -> Observable<CHMessage> {
     return Observable.create { subscriber in
       var params = [
+        "query": [String: AnyObject](),
         "body": [String: AnyObject]()
       ]
+      
+      if let mutable = mutable {
+        params["query"]?["mutable"] = mutable as AnyObject?
+      }
       
       params["body"]?["message"] = message as AnyObject?
       params["body"]?["requestId"] = requestId as AnyObject?

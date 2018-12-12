@@ -144,6 +144,7 @@ struct CHFile {
       file.url = url
       file.image = true
       file.previewThumb = imageable.imageMeta
+      file.imageRedirectUrl = imageable.imageRedirectUrl
       return file
     }
 

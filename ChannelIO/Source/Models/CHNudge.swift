@@ -87,6 +87,7 @@ extension CHNudge: Equatable {
 protocol CHImageable {
   var imageMeta: CHImageMeta? { get set }
   var imageUrl: String? { get set }
+  var imageRedirectUrl: String? { get set }
 }
 
 struct CHNudgeVariant: CHImageable {

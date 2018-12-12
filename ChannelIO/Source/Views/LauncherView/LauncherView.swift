@@ -25,14 +25,7 @@ final class LauncherView : BaseView {
   
   let badgeView = Badge()
   let disposeBag = DisposeBag()
-  let buttonView = UIButton(type: .custom).then {
-    $0.layer.cornerRadius = 27.f
-    $0.layer.shadowColor = UIColor.black.cgColor
-    $0.layer.shadowOpacity = 0.3
-    $0.layer.shadowOffset = CGSize(width: 0, height: 3)
-    $0.layer.shadowRadius = 5
-    $0.layer.borderWidth = 1
-  }
+  let buttonView = CHButton.launcher()
   
   //refactor this as general button
   let buttonLayerView = UIView().then {
