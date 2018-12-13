@@ -318,7 +318,7 @@ extension CHMessage {
     text: String?,
     originId: String? = nil,
     key: String? = nil,
-    mutable: Bool = false) -> CHMessage {
+    mutable: Bool = true) -> CHMessage {
     let me = mainStore.state.guest
     var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
     if let originId = originId, let key = key {

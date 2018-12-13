@@ -59,7 +59,7 @@
 "ch.notification.upload_image.description" = "이미지가 업로드 되었습니다.";
 "ch.button_close" = "닫기";
 "ch.scripts.out_of_work.default" = "지금은 채팅 운영시간이 아닙니다. 질문을 남겨주시면 가능한 빨리 답변을 드리도록 하겠습니다.";
-"ch.agreement" = "대화를 이어가시면 <b>채널 이용약관 및 개인정보처리방침</b>에 동의하게 됩니다";
+"ch.agreement" = "대화를 이어가시면 <b>채널톡 이용약관 및 개인정보처리방침</b>에 동의하게 됩니다";
 "ch.unknown" = "알 수 없음";
 "ch.user_chat_managers" = "%s 외 %d명";
 "ch.agreement.button" = "이용약관";
@@ -129,14 +129,14 @@
 "ch.chat.expect_response_delay.delayed.short_description" = "응답에 시간이 걸릴 수 있습니다";
 "ch.chat.expect_response_delay.out_of_working.short_description" = "지금은 채팅 운영시간이 아닙니다";
 "ch.chat.expect_response_delay.out_of_working.detail" = "운영시간 자세히 보기";
-"ch.term_of_service" = "채널 이용약관";
+"ch.term_of_service" = "채널톡 이용약관";
 "ch.settings.show_closed_chats" = "종료된 상담 표시";
-"ch.settings.terms" = "채널 이용약관";
+"ch.settings.terms" = "채널톡 이용약관";
 "ch.scripts.welcome.default" = "방문해주셔서 감사합니다 ${name}님 :) 어떻게 도와드릴까요?";
 "ch.scripts.welcome_ghost.default" = "방문해주셔서 감사합니다 :) 어떻게 도와드릴까요?";
 "ch.chat.menu.delete_chat" = "대화 삭제하기";
 "ch.chat.menu.delete_chat.cancel" = "취소";
-"ch.watermark" = "<b>Channel.io</b>로 채팅중입니다";
+"ch.watermark" = "<b>채널톡</b>을 이용중";
 "ko" = "한국어";
 "en" = "English";
 "ja" = "日本語";
@@ -150,3 +150,4 @@
 "ch.chat.reopen" = "새로운 상담";
 "ch.common.open" = "열기";
 "ch.common.cancel" = "취소";
+"ch.chat.push_bot_like" = "좋아요";

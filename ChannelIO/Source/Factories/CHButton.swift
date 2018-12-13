@@ -34,7 +34,7 @@ struct CHButton {
   
   static func keepNudge() -> UIButton {
     return UIButton(type: .system).then {
-      $0.setTitle("👍 좋아요", for: .normal)
+      $0.setTitle("👍 " + CHAssets.localized("ch.chat.push_bot_like"), for: .normal)
       $0.setTitleColor(CHColors.pumpkinOrange, for: .normal)
       
       $0.titleLabel?.font = UIFont.systemFont(ofSize: 17)

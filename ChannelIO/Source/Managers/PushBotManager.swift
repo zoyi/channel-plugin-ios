@@ -22,12 +22,13 @@ class PushBotManager {
     guard let nudges = nudges else { return }
     guard mainStore.state.channel.canUsePushBot else { return }
     let guest = mainStore.state.guest
-    let filtered = nudges.filter({ (nudge) -> Bool in
-      userChatSelector(
-        state: mainStore.state,
-        userChatId: CHConstants.nudgeChat + nudge.id
+    let filtered = nudges
+      .filter({ (nudge) -> Bool in
+        return userChatSelector(
+          state: mainStore.state,
+          userChatId: CHConstants.nudgeChat + nudge.id
         ) == nil
-    })
+      }).sorted { $0.order < $1.order }
 
     Observable.from(filtered)
       .filter { (nudge) -> Bool in

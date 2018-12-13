@@ -282,6 +282,8 @@ final class ChatNotificationView : BaseView {
         }
       }).disposed(by: self.disposeBag)
     } else {
+      self.contentButton.isHidden = true
+      self.contentImageView.isHidden = true
       self.contentButtonBottomConstraint?.update(inset: 0)
       self.contentButtonTopConstraint?.update(offset: 0)
       self.contentImageHeightConstraint?.update(offset: 0)

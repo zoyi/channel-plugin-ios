@@ -30,6 +30,8 @@ struct CHNudge: CHEvaluatable {
   var createdAt: Date? = nil
   var updatedAt: Date? = nil
   
+  var order: Double = 0.0
+  
   //dep
   var plugin: CHPlugin? = nil
   var variants: [CHNudgeVariant]? = nil
@@ -61,6 +63,7 @@ extension CHNudge: Mappable {
     triggerEvent        <- map["triggerEvent"]
     triggerDelay        <- map["triggerDelay"]
     repeatReachRateBase <- map["repeatReachRateBase"]
+    order               <- map["order"]
     startAt             <- (map["startAt"], CustomDateTransform())
     updatedAt           <- (map["endAt"], CustomDateTransform())
     createdAt           <- (map["createdAt"], CustomDateTransform())
@@ -80,7 +83,8 @@ extension CHNudge: Equatable {
       lhs.updatedAt == rhs.updatedAt &&
       lhs.repeatReachRateBase == rhs.repeatReachRateBase &&
       lhs.startAt == rhs.startAt &&
-      lhs.endAt == rhs.endAt
+      lhs.endAt == rhs.endAt &&
+      lhs.order == rhs.order
   }
 }
 
