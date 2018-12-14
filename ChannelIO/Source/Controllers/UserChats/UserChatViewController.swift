@@ -137,7 +137,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   func initUpdaters() {
     self.navigationUpdateSubject
       .takeUntil(self.rx.deallocated)
-      .debounce(0.7, scheduler: MainScheduler.instance)
+      .debounce(1.0, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (state, chat) in
         self?.updateNavigationIfNeeded(state: state, nextUserChat: chat)
       }).disposed(by: self.disposeBag)
@@ -523,6 +523,7 @@ extension UserChatViewController: StoreSubscriber {
       self.initNavigationViews(with: nextUserChat)
     } else if self.currentLocale != state.settings?.appLocale {
       self.initNavigationViews(with: nextUserChat)
+      self.currentLocale = state.settings?.appLocale
     } else {
       let userChats = userChatsSelector(
         state: mainStore.state,

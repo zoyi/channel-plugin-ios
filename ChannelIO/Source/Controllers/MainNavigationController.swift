@@ -21,6 +21,11 @@ class MainNavigationController: BaseNavigationController {
   var statusBarStyle = UIStatusBarStyle.default
   var isPushingViewController = false
   
+  struct StatusBar {
+    static var isHidden = false
+    static var style = UIStatusBarStyle.default
+  }
+  
   var useDefault = false {
     didSet {
       if useDefault {
@@ -44,6 +49,11 @@ class MainNavigationController: BaseNavigationController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    //legacy support
+    StatusBar.isHidden = UIApplication.shared.isStatusBarHidden
+    StatusBar.style = UIApplication.shared.statusBarStyle
+    UIApplication.shared.isStatusBarHidden = false
+    
     mainStore.subscribe(self) {
       $0.select { (state: AppState) in
         state.plugin
@@ -53,9 +63,16 @@ class MainNavigationController: BaseNavigationController {
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    //legacy support
+    UIApplication.shared.isStatusBarHidden = StatusBar.isHidden
+    UIApplication.shared.statusBarStyle = StatusBar.style
     mainStore.unsubscribe(self)
   }
 
+  override var prefersStatusBarHidden: Bool {
+    return false
+  }
+  
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return self.statusBarStyle
   }
@@ -89,6 +106,8 @@ extension MainNavigationController: StoreSubscriber {
       
       // Status bar color
       self.statusBarStyle = state.textColor == "white" ? .lightContent : .default
+      //legacy support
+      UIApplication.shared.statusBarStyle = self.statusBarStyle
       self.setNeedsStatusBarAppearanceUpdate()
     }
   }
