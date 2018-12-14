@@ -28,7 +28,7 @@ class PushBotManager {
           state: mainStore.state,
           userChatId: CHConstants.nudgeChat + nudge.id
         ) == nil
-      }).sorted { $0.order < $1.order }
+      })
 
     Observable.from(filtered)
       .filter { (nudge) -> Bool in

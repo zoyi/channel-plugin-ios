@@ -1,3 +1,8 @@
+# 5.2.0
+## Updates
+* Updated pushbot flow logics
+* Added pushbot button and image redirection
+
 # 5.1.4
 ## Bug fixes
 * Displayed status bar properly and fixed freezing on chat view
