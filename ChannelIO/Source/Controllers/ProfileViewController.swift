@@ -217,7 +217,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: event.element))
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
-      cell.configure(title: CHAssets.localized("ch.settings.show_closed_chat"), isOn: isOn)
+      cell.configure(title: CHAssets.localized("ch.settings.show_closed_chats"), isOn: isOn)
       return cell
     default:
       return  UITableViewCell()

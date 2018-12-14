@@ -1,3 +1,7 @@
+# 5.1.4
+## Bug fixes
+* Displayed status bar properly and fixed freezing on chat view
+
 # 5.1.3
 ## Bug fixes
 * Hided in-app push notification after handled redirect url
