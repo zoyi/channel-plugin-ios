@@ -584,13 +584,9 @@ extension UserChatViewController: StoreSubscriber {
       self.nudgeKeepButton.isHidden = false
     }
     else if nextUserChat?.shouldHideInput() == true ||
+      self.channel.allowNewChat == false ||
       (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
       self.setTextInputbarHidden(true, animated: false)
-    }
-    else if (!channel.allowNewChat && !self.channel.allowNewChat) &&
-      self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
-      self.setTextInputbarHidden(true, animated: false)
-      self.newChatButton.isHidden = true
     }
     else if !self.chatManager.profileIsFocus {
       self.nudgeKeepButton.isHidden = true
