@@ -362,14 +362,22 @@ public final class ChannelIO: NSObject {
       .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     
     dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
-    
-    ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: [
+  
+    var sysProperty: [String: Any] = [
       "pluginVersion": version,
       "device": UIDevice.current.modelName,
       "os": "\(UIDevice.current.systemName)_\(UIDevice.current.systemVersion)",
       "screenWidth": UIScreen.main.bounds.width,
       "screenHeight": UIScreen.main.bounds.height
-    ])
+    ]
+
+    if let pageName = eventProperty?["url"] {
+      sysProperty["url"] = pageName
+    } else if let controller = CHUtils.getTopController() {
+      sysProperty["url"] = "\(type(of: controller))"
+    }
+    
+    ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: sysProperty)
   }
   
   /**
