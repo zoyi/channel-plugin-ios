@@ -41,7 +41,7 @@ public protocol ChannelPluginDelegate: class {
 public final class ChannelIO: NSObject {
   //MARK: Properties
   @objc public static weak var delegate: ChannelPluginDelegate? = nil
-  @objc public static var booted: Bool {
+  @objc public static var isBooted: Bool {
     return mainStore.state.checkinState.status == .success
   }
   @objc public static var canShowLauncher: Bool {

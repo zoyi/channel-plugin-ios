@@ -235,7 +235,11 @@ extension CHMessage: Mappable {
     let msgv2 = map["messageV2"].currentValue as? String ?? ""
     (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
-    messageType = CHMessage.contextType(self)
+    if self.form != nil {
+      messageType = .Form
+    } else {
+      messageType = CHMessage.contextType(self)
+    }
   }
   
   func format(message: String) -> String {
@@ -248,9 +252,7 @@ extension CHMessage: Mappable {
   }
   
   static func contextType(_ message: CHMessage) -> MessageType {
-    if message.form != nil {
-      return .Form
-    } else if message.log != nil {
+     if message.log != nil {
       return .Log
     } else if let buttons = message.buttons, buttons.count != 0 {
       return .Buttons
