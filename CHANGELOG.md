@@ -1,3 +1,7 @@
+# 5.1.5
+## Bug fixes
+* Fixed to apply locale setting properly
+
 # 5.1.4
 ## Bug fixes
 * Displayed status bar properly and fixed freezing on chat view

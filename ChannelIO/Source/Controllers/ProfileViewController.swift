@@ -56,6 +56,7 @@ final class ProfileViewController: BaseViewController {
   
   var hideOptions = false
   var showCompleted = false
+  var currentLocale = CHUtils.getLocale()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -233,6 +234,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     default:
       break
     }
+    tableView.deselectRow(at: indexPath, animated: false)
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -277,6 +279,13 @@ extension ProfileViewController : StoreSubscriber {
       plugin: state.plugin,
       channel: state.channel
     )
+    
+    let locale = CHUtils.getLocale()
+    if self.currentLocale != locale {
+      self.currentLocale = locale
+      self.tableView.reloadData()
+    }
+
   }
 
   func fetchUserChats(_ showCompleted: Bool) {

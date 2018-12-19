@@ -84,7 +84,6 @@
 		65581E611E7BDCC4008B8C70 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E601E7BDCC4008B8C70 /* CFNetwork.framework */; };
 		65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E621E7BDCDB008B8C70 /* MediaPlayer.framework */; };
 		65581E651E7BDCE0008B8C70 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65581E641E7BDCE0008B8C70 /* AssetsLibrary.framework */; };
-		655824F6207B3D7000980F71 /* SettingReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655824F5207B3D7000980F71 /* SettingReducer.swift */; };
 		655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655A27F520B2699700935C1F /* ProfileCell.swift */; };
 		655A27FF20B2699700935C1F /* ProfileCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655A27F620B2699700935C1F /* ProfileCompletionView.swift */; };
 		655A280020B2699700935C1F /* TextActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655A27F720B2699700935C1F /* TextActionView.swift */; };
@@ -458,7 +457,6 @@
 		65581E601E7BDCC4008B8C70 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		65581E621E7BDCDB008B8C70 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		65581E641E7BDCE0008B8C70 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		655824F5207B3D7000980F71 /* SettingReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingReducer.swift; sourceTree = "<group>"; };
 		655A27F520B2699700935C1F /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		655A27F620B2699700935C1F /* ProfileCompletionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCompletionView.swift; sourceTree = "<group>"; };
 		655A27F720B2699700935C1F /* TextActionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextActionView.swift; sourceTree = "<group>"; };
@@ -1255,7 +1253,6 @@
 				659792FB1FA7167B00840F6A /* WSocketReducer.swift */,
 				223726061FBEEF370097F22B /* CountryCodeReducer.swift */,
 				65AA7AE61FD64CCF00D2A8B1 /* BotReducer.swift */,
-				655824F5207B3D7000980F71 /* SettingReducer.swift */,
 			);
 			name = Reducers;
 			path = Source/Reducers;
@@ -1716,7 +1713,6 @@
 				6597937B1FA716CB00840F6A /* CHImageMeta.swift in Sources */,
 				6597937C1FA716CB00840F6A /* CHPush.swift in Sources */,
 				656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */,
-				655824F6207B3D7000980F71 /* SettingReducer.swift in Sources */,
 				65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */,
 				65A2F4181FCE625400A21D8A /* ChatStatusViewModel.swift in Sources */,
 				6597937E1FA716CB00840F6A /* CHSession.swift in Sources */,
