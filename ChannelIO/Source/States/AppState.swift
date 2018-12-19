@@ -22,7 +22,6 @@ struct AppState: StateType {
   var uiState: UIState
   var socketState: WSocketState
   var countryCodeState: CountryCodeState
-  var settings: ChannelPluginSettings?
 }
 
 @objc public enum CHLocale: Int {

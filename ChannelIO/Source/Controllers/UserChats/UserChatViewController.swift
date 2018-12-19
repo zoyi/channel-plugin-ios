@@ -521,9 +521,9 @@ extension UserChatViewController: StoreSubscriber {
       self.initNavigationViews(with: nextUserChat)
     } else if self.channel.isDiff(from: state.channel) {
       self.initNavigationViews(with: nextUserChat)
-    } else if self.currentLocale != state.settings?.appLocale {
+    } else if self.currentLocale != ChannelIO.settings?.appLocale {
       self.initNavigationViews(with: nextUserChat)
-      self.currentLocale = state.settings?.appLocale
+      self.currentLocale = ChannelIO.settings?.appLocale
     } else {
       let userChats = userChatsSelector(
         state: mainStore.state,
