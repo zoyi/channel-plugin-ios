@@ -54,6 +54,7 @@ enum RestRouter: URLRequestConvertible {
   case GetNudges(String)
   case CheckNudgeReach(String)
   case CreateNudgeChat(String)
+  case KeepNudge(String, ParametersType)
   
   var baseURL: String {
     get {
@@ -82,7 +83,8 @@ enum RestRouter: URLRequestConvertible {
          .UpdateProfileItem, .TouchGuest,
          .CreateSupportBotChat, .ReplySupportBot,
          .CheckNudgeReach,
-         .CreateNudgeChat:
+         .CreateNudgeChat,
+         .KeepNudge:
       return .post
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
@@ -168,6 +170,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/nudges/\(nudgeId)/reach"
     case .CreateNudgeChat(let nudgeId):
       return "/app/nudges/\(nudgeId)/user_chats"
+    case .KeepNudge(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/nudge/keep"
     }
   }
   
@@ -257,7 +261,8 @@ enum RestRouter: URLRequestConvertible {
          .ReviewUserChat(_, let params),
          .UnregisterToken(_, let params),
          .ReplySupportBot(_, let params),
-         .GetSupportBots(_, let params):
+         .GetSupportBots(_, let params),
+         .KeepNudge(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,

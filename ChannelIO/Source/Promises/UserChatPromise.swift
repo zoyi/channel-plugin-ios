@@ -253,17 +253,12 @@ struct UserChatPromise {
     userChatId: String,
     message: String,
     requestId: String,
-    submit: CHSubmit? = nil,
-    mutable: Bool? = nil) -> Observable<CHMessage> {
+    submit: CHSubmit?) -> Observable<CHMessage> {
     return Observable.create { subscriber in
       var params = [
         "query": [String: AnyObject](),
         "body": [String: AnyObject]()
       ]
-      
-      if let mutable = mutable {
-        params["query"]?["mutable"] = mutable as AnyObject?
-      }
       
       params["body"]?["message"] = message as AnyObject?
       params["body"]?["requestId"] = requestId as AnyObject?
@@ -431,5 +426,37 @@ struct UserChatPromise {
         req.cancel()
       }
     }).subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+  }
+  
+  static func keepNudge(userChatId: String, requestId: String) -> Observable<CHMessage> {
+    return Observable.create({ (subscriber) in
+      let params = [
+        "query": [
+          "requestId": requestId
+        ]
+      ]
+      let req = Alamofire.request(RestRouter.KeepNudge(userChatId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
+        .asyncResponse(completionHandler: { (response) in
+          switch response.result {
+          case .success(let data):
+            let json = JSON(data)
+            guard let message = Mapper<CHMessage>()
+              .map(JSONObject: json["message"].object) else {
+                subscriber.onError(CHErrorPool.messageParseError)
+                break
+            }
+            
+            subscriber.onNext(message)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+        })
+      
+      return Disposables.create {
+        req.cancel()
+      }
+    })
   }
 }

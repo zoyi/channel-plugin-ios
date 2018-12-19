@@ -61,8 +61,9 @@ struct CHMessage: ModelType {
   var buttons: [CHLink]? = []
   var submit: CHSubmit? = nil
   var createdAt: Date
-
+  
   var language: String = ""
+  var system: String? = nil
   
   var translateState: CHMessageTranslateState = .original
   var translatedText: NSAttributedString? = nil
@@ -100,7 +101,7 @@ struct CHMessage: ModelType {
   }
   
   var isWelcome: Bool {
-    if let option = self.botOption, option["welcome"] == true {
+    if let system = self.system, system == "welcome" {
       return true
     } else {
       return false
@@ -113,7 +114,7 @@ struct CHMessage: ModelType {
   
   // Dependencies
   var entity: CHEntity?
-  var mutable: Bool = true
+
   // Used in only client
   var state: SendingState = .Sent
   var messageType: MessageType = .Default
@@ -319,14 +320,12 @@ extension CHMessage {
     chatId: String,
     text: String?,
     originId: String? = nil,
-    key: String? = nil,
-    mutable: Bool = true) -> CHMessage {
+    key: String? = nil) -> CHMessage {
     let me = mainStore.state.guest
     var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
     if let originId = originId, let key = key {
       message.submit = CHSubmit(id: originId, key: key)
     }
-    message.mutable = mutable
     return message
   }
   
@@ -408,8 +407,7 @@ extension CHMessage {
         userChatId: self.chatId,
         message: self.message ?? "",
         requestId: self.requestId!,
-        submit: self.submit,
-        mutable: self.mutable).subscribe(onNext: { (message) in
+        submit: self.submit).subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)

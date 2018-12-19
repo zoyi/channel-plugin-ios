@@ -180,6 +180,10 @@ extension CHUserChat {
       }
     })
   }
+  
+  func keepNudge(requestId: String) -> Observable<CHMessage> {
+    return UserChatPromise.keepNudge(userChatId: self.id, requestId: requestId)
+  }
 }
 
 extension CHUserChat {

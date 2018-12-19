@@ -420,16 +420,16 @@ extension ChatManager {
     
     self.createNudgeChat(nudgeId: chat.getNudgeId())
       .observeOn(MainScheduler.instance)
-      .flatMap { [weak self] (chatId) -> Observable<CHMessage?> in
-        guard let s = self else { return .empty() }
-        let message = CHMessage.createLocal(chatId: chatId, text: "👍", mutable: false)
+      .flatMap { [weak self] (chatId) -> Observable<CHMessage> in
+        guard let chat = self?.chat else { return .empty() }
+        let message = CHMessage.createLocal(chatId: chatId, text: "👍")
         mainStore.dispatch(CreateMessage(payload: message))
-        return s.sendMessage(message: message, local: false) //thumb action
+        return chat.keepNudge(requestId: message.requestId ?? "")
       }
       .subscribe(onNext: { (message) in
         mainStore.dispatch(CreateMessage(payload: message))
       }, onError: { (erro) in
-        //?
+        
       }).disposed(by: self.disposeBag)
   }
   
