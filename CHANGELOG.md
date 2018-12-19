@@ -1,6 +1,7 @@
 # 5.1.5
 ## Bug fixes
 * Fixed to apply locale setting properly
+* Refactored chat notification view reusability
 
 # 5.1.4
 ## Bug fixes

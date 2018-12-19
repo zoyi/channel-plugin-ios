@@ -179,14 +179,15 @@ extension ChannelIO {
     }
     
     dispatch {
-      ChannelIO.hideNotification()
-      
-      let notificationView = ChatNotificationView()
+      let notificationView = ChannelIO.chatNotificationView ?? ChatNotificationView()
       notificationView.topLayoutGuide = topController.topLayoutGuide
       
       let notificationViewModel = ChatNotificationViewModel(push: push)
       notificationView.configure(notificationViewModel)
-      notificationView.insert(on: topController.view, animated: true)
+      
+      if notificationView.superview == nil {
+        notificationView.insert(on: topController.view, animated: true)
+      }
       
       notificationView
         .signalForChat()
