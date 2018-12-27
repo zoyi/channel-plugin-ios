@@ -1,3 +1,7 @@
+# 5.1.6
+## Bug fixes
+* Fixed onReceivePush call multiple times
+
 # 5.1.5
 ## Bug fixes
 * Fixed to apply locale setting properly

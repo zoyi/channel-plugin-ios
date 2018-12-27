@@ -72,23 +72,25 @@ public final class ChannelIO: NSObject {
   class CHPluginSubscriber : StoreSubscriber {
     //refactor into two selectors
     func newState(state: AppState) {
-      self.handleBadgeDelegate(state.guest.alert)
+      self.handleBadge(state.guest.alert)
       self.handlePush(push: state.push)
-      let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
       
+      let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
       ChannelIO.launcherView?.configure(viewModel)
     }
     
     func handlePush (push: CHPush?) {
+      guard let push = push else { return }
+      
       if ChannelIO.baseNavigation == nil && ChannelIO.settings?.hideDefaultInAppPush == false {
         ChannelIO.showNotification(pushData: push)
       }
-      if let push = push {
-        ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
-      }
+
+      ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
+      mainStore.dispatch(RemovePush())
     }
     
-    func handleBadgeDelegate(_ count: Int) {
+    func handleBadge(_ count: Int) {
       if ChannelIO.currentAlertCount != count {
         ChannelIO.delegate?.onChangeBadge?(count: count)
       }
