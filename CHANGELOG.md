@@ -1,3 +1,25 @@
+# 5.2.0
+## Updates
+* Updated pushbot flow logics
+* Added pushbot button and image redirection
+* Added keep push bot button
+
+## Bug fixes
+* Fixed `didReceivePush` delegate called multiple times
+ 
+# 5.1.5
+## Bug fixes
+* Fixed to apply locale setting properly
+* Refactored chat notification view reusability
+
+# 5.1.4
+## Bug fixes
+* Displayed status bar properly and fixed freezing on chat view
+
+# 5.1.3
+## Bug fixes
+* Hided in-app push notification after handled redirect url
+
 # 5.1.2
 ## Bug fixes 
 * Updated dependencies and structures to work with Carthage properly

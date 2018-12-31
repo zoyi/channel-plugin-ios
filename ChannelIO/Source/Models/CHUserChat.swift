@@ -237,8 +237,7 @@ extension CHUserChat {
   
   func shouldHideInput() -> Bool {
     return self.isSupporting() ||
-      self.isSolved() ||
-      self.isNudgeChat()
+      self.isSolved()
   }
   
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {

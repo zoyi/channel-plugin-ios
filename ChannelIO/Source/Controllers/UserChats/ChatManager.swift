@@ -426,6 +426,7 @@ extension ChatManager {
         mainStore.dispatch(CreateMessage(payload: message))
         return s.sendMessage(message: message, local: false) //thumb action
       }
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (message) in
         mainStore.dispatch(CreateMessage(payload: message))
       }, onError: { (erro) in
