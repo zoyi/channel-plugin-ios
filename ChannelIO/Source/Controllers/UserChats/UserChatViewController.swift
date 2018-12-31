@@ -569,6 +569,8 @@ extension UserChatViewController: StoreSubscriber {
   func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
+    self.nudgeKeepButton.isHidden = nextUserChat?.isNudgeChat() == false
+    
     if nextUserChat?.isRemoved() == true {
       _ = self.navigationController?.popViewController(animated: true)
     }
@@ -581,7 +583,9 @@ extension UserChatViewController: StoreSubscriber {
     else if userChat?.isNudgeChat() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
-      self.nudgeKeepButton.isHidden = false
+    }
+    else if self.channel.allowNewChat == false && nextUserChat?.isReady() == true {
+      self.setTextInputbarHidden(true, animated: false)
     }
     else if nextUserChat?.shouldHideInput() == true ||
       self.channel.allowNewChat == false ||
@@ -589,7 +593,6 @@ extension UserChatViewController: StoreSubscriber {
       self.setTextInputbarHidden(true, animated: false)
     }
     else if !self.chatManager.profileIsFocus {
-      self.nudgeKeepButton.isHidden = true
       self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)

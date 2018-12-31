@@ -426,6 +426,7 @@ extension ChatManager {
         mainStore.dispatch(CreateMessage(payload: message))
         return chat.keepNudge(requestId: message.requestId ?? "")
       }
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (message) in
         mainStore.dispatch(CreateMessage(payload: message))
       }, onError: { (erro) in

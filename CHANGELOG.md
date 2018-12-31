@@ -2,7 +2,11 @@
 ## Updates
 * Updated pushbot flow logics
 * Added pushbot button and image redirection
+* Added keep push bot button
 
+## Bug fixes
+* Fixed `didReceivePush` delegate called multiple times
+ 
 # 5.1.5
 ## Bug fixes
 * Fixed to apply locale setting properly
