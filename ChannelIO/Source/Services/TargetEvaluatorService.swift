@@ -36,18 +36,17 @@ extension TargetEvaluatorService {
   
   static func evaluate(with condition: CHTargetCondition, userInfo: [String : Any]) -> Bool {
     guard let key = condition.key else { return false }
-    guard var conditionValue = condition.value else { return false }
+    guard let conditionValue = condition.value else { return false }
     
     var testValue: Any?
     switch key {
-    //required for subkey
-    case .os:
-      conditionValue = conditionValue.lowercased()
-      testValue = (userInfo[key.rawValue] as? String)?.lowercased()
     case .guestProfile:
       guard let subKey = condition.subKey else { return false }
       guard let profiles = userInfo[TargetKey.guestProfile.rawValue] as? [String : Any] else { return false }
       testValue = profiles[subKey]
+    //handled by server
+    case .os, .country, .browser, .device, .url, .guestId, .guestType:
+      return true
     default:
       testValue = userInfo[key.rawValue]
     }

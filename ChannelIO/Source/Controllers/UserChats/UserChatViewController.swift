@@ -66,8 +66,12 @@ final class UserChatViewController: BaseSLKTextViewController {
     $0.isHidden = true
   }
   
-  var nudgeKeepButton = CHButton.keepNudge()
-  var newChatButton = CHButton.newChat()
+  var nudgeKeepButton = CHButton.keepNudge().then {
+    $0.isHidden = true
+  }
+  var newChatButton = CHButton.newChat().then {
+    $0.isHidden = true
+  }
   
   var isAnimating = false
   var newChatBottomConstraint: Constraint? = nil
@@ -569,7 +573,11 @@ extension UserChatViewController: StoreSubscriber {
   func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
-    self.nudgeKeepButton.isHidden = nextUserChat?.isNudgeChat() == false
+    if let isNudgeChat = userChat?.isNudgeChat(), isNudgeChat {
+      self.nudgeKeepButton.isHidden = false
+    } else {
+      self.nudgeKeepButton.isHidden = true
+    }
     
     if nextUserChat?.isRemoved() == true {
       _ = self.navigationController?.popViewController(animated: true)
