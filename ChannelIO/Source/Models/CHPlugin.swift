@@ -35,6 +35,13 @@ struct CHPlugin: ModelType {
       return CHColors.black
     }
   }
+  
+  func requestProfileBot(chatId: String) {
+    _ = PluginPromise.requestProfileBot(pluginId: self.id, chatId: chatId)
+      .subscribe(onNext: { (_) in
+        
+      })
+  }
 }
 
 extension CHPlugin: Mappable {

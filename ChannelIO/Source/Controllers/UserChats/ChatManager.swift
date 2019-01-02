@@ -163,7 +163,7 @@ class ChatManager: NSObject {
         guard let newChat = data as? CHUserChat else { return }
         guard let prevChat = self?.chat else { return }
         if prevChat.isReady() && newChat.isOpen() {
-          self?.requestProfileBot()
+          mainStore.state.plugin.requestProfileBot(chatId: newChat.id)
         }
         
         if prevChat.shouldRequestRead(otherChat: newChat) {
@@ -693,7 +693,7 @@ extension ChatManager {
     self.didChatLoaded = false
     WsService.shared.connect()
     
-    GuestPromise.touch().observeOn(MainScheduler.instance).subscribe(onNext: { (user) in
+    AppManager.touch().observeOn(MainScheduler.instance).subscribe(onNext: { (user) in
       mainStore.dispatch(UpdateGuest(payload: user))
     }).disposed(by: self.disposeBag)
   }
@@ -745,10 +745,6 @@ extension ChatManager {
       }, onError: { [weak self] (error) in
         self?.isRequestingReadAll = false
       }).disposed(by: self.disposeBag)
-  }
-  
-  func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
-    return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
   }
   
   func updateProfileItem(with message: CHMessage?, key: String?, value: Any?) -> Observable<Bool> {

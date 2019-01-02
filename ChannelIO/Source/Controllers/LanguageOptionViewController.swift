@@ -9,6 +9,8 @@
 import UIKit
 import SnapKit
 import Reusable
+import RxSwift
+import SVProgressHUD
 
 class LanguageOptionViewController: BaseViewController {
   let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
@@ -17,6 +19,7 @@ class LanguageOptionViewController: BaseViewController {
   
   let locales = [CHLocaleString.korean, CHLocaleString.english, CHLocaleString.japanese]
   let currentLocale: CHLocaleString? = CHUtils.getLocale()
+  let disposeBag = DisposeBag()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -104,8 +107,18 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let locale = self.locales[indexPath.row]
-    mainStore.dispatch(UpdateLocale(payload: locale))
-    tableView.deselectRow(at: indexPath, animated: true)
-    self.navigationController?.popViewController(animated: true)
+    ChannelIO.settings?.locale = CHUtils.stringToLocale(locale.rawValue)
+    
+    SVProgressHUD.show()
+    AppManager.touch()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (guest) in
+        defer { SVProgressHUD.dismiss() }
+        mainStore.dispatch(UpdateGuest(payload: guest))
+        tableView.deselectRow(at: indexPath, animated: true)
+        self?.navigationController?.popViewController(animated: true)
+      }, onError: { (error) in
+        SVProgressHUD.dismiss()
+      }).disposed(by: self.disposeBag)
   }
 }
