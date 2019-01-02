@@ -290,26 +290,6 @@ final class ChatNotificationView : BaseView {
     }
   }
   
-  override func updateConstraints() {
-    self.snp.remakeConstraints { [weak self] (make) in
-      if let top = self?.topLayoutGuide {
-        make.top.equalTo(top.snp.bottom).offset(Metric.viewTopMargin)
-      } else {
-        make.top.equalToSuperview().inset(Metric.viewTopMargin)
-      }
-      
-      if UIScreen.main.bounds.width > Metric.maxWidth + Metric.viewSideMargin * 2 {
-        make.centerX.equalToSuperview()
-        make.width.equalTo(Metric.maxWidth)
-      } else {
-        make.leading.equalToSuperview().inset(Metric.viewSideMargin)
-        make.trailing.equalToSuperview().inset(Metric.viewSideMargin)
-      }
-    }
-   
-    super.updateConstraints()
-  }
-  
   func signalForChat() -> Observable<Any?> {
     return self.chatSignal.asObservable()
   }

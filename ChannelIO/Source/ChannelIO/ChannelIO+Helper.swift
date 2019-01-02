@@ -174,20 +174,42 @@ extension ChannelIO {
   }
   
   internal class func showNotification(pushData: CHPush?) {
-    guard let topController = CHUtils.getTopController(), let push = pushData else {
-      return
-    }
+    guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
+    guard let push = pushData else { return }
     
     dispatch {
       let notificationView = ChannelIO.chatNotificationView ?? ChatNotificationView()
-      notificationView.topLayoutGuide = topController.topLayoutGuide
       
       let notificationViewModel = ChatNotificationViewModel(push: push)
       notificationView.configure(notificationViewModel)
       
-      if notificationView.superview == nil {
-        notificationView.insert(on: topController.view, animated: true)
+      if let superview = notificationView.superview, superview != view {
+        notificationView.removeFromSuperview()
       }
+      
+      if notificationView.superview != view {
+        notificationView.insert(on: view, animated: true)
+      }
+      
+      let viewTopMargin = 20.f
+      let viewSideMargin = 14.f
+      let maxWidth = 520.f
+      
+      notificationView.snp.makeConstraints({ (make) in
+        if UIScreen.main.bounds.width > maxWidth + viewSideMargin * 2 {
+          make.centerX.equalToSuperview()
+          make.width.equalTo(maxWidth)
+        } else {
+          make.leading.equalToSuperview().inset(viewSideMargin)
+          make.trailing.equalToSuperview().inset(viewSideMargin)
+        }
+        
+        if #available(iOS 11.0, *) {
+          make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(viewTopMargin)
+        } else {
+          make.top.equalToSuperview().inset(viewTopMargin)
+        }
+      })
       
       notificationView
         .signalForChat()
@@ -216,7 +238,6 @@ extension ChannelIO {
         }).disposed(by: disposeBag)
       
       ChannelIO.chatNotificationView = notificationView
-      
       CHAssets.playPushSound()
       mainStore.dispatch(RemovePush())
     }
