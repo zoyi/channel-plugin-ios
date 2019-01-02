@@ -110,7 +110,7 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     ChannelIO.settings?.locale = CHUtils.stringToLocale(locale.rawValue)
     
     SVProgressHUD.show()
-    GuestPromise.touch()
+    AppManager.touch()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (guest) in
         defer { SVProgressHUD.dismiss() }

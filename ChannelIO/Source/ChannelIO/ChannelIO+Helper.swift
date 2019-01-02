@@ -11,15 +11,15 @@ import CRToast
 import SVProgressHUD
 
 extension ChannelIO {
+  
   internal class func reset() {
-    dispatch {
-      PushBotManager.reset()
-      ChannelIO.launcherView?.hide(animated: false)
-      ChannelIO.close(animated: false)
-      ChannelIO.hideNotification()
-      mainStore.dispatch(CheckOutSuccess())
-      WsService.shared.disconnect()
-    }
+    PushBotManager.reset()
+    ChannelIO.launcherView?.hide(animated: false)
+    ChannelIO.close(animated: false)
+    ChannelIO.hideNotification()
+    mainStore.dispatch(CheckOutSuccess())
+    WsService.shared.disconnect()
+    disposeBag = DisposeBag()
   }
   
   internal class func prepare() {
@@ -52,7 +52,7 @@ extension ChannelIO {
       return
     }
     
-    EventPromise.sendEvent(
+    CHEvent.send(
       pluginId: mainStore.state.plugin.id,
       name: eventName,
       properties: eventProperty,
@@ -88,7 +88,8 @@ extension ChannelIO {
         .with(sysProfile: nil, includeDefault: true)
         .build()
       
-      PluginPromise
+      //refactor into one class
+      AppManager
         .boot(pluginKey: settings.pluginKey, params: params)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (data) in
@@ -107,9 +108,11 @@ extension ChannelIO {
           mainStore.dispatch(CheckInSuccess(payload: data))
           
           WsService.shared.connect()
-  
-          subscriber.onNext(data)
-          subscriber.onCompleted()
+          WsService.shared.ready().subscribe(onNext: { _ in
+            subscriber.onNext(data)
+            subscriber.onCompleted()
+          }).disposed(by: disposeBag)
+          
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {
@@ -127,7 +130,6 @@ extension ChannelIO {
     
     dispatch {
       ChannelIO.launcherView?.isHidden = true
-      
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
@@ -159,18 +161,6 @@ extension ChannelIO {
         topController.present(controller, animated: animated, completion: nil)
       }
     }
-  }
-  
-  internal class func registerPushToken() {
-    guard let pushToken = ChannelIO.pushToken else { return }
-    
-    PluginPromise
-      .registerPushToken(channelId: mainStore.state.channel.id, token: pushToken)
-      .subscribe(onNext: { (result) in
-        dlog("register token success")
-      }, onError:{ error in
-        dlog("register token failed")
-      }).disposed(by: disposeBag)
   }
   
   internal class func showNotification(pushData: CHPush?) {
@@ -251,9 +241,11 @@ extension ChannelIO {
     
   internal class func hideNotification() {
     guard ChannelIO.chatNotificationView != nil else { return }
-
-    ChannelIO.chatNotificationView?.remove(animated: true)
-    ChannelIO.chatNotificationView = nil
+    
+    dispatch {
+      ChannelIO.chatNotificationView?.remove(animated: true)
+      ChannelIO.chatNotificationView = nil
+    }
   }
 }
 
@@ -293,7 +285,7 @@ extension ChannelIO {
   
   @objc internal class func enterForeground() {
     guard self.isValidStatus else { return }
-    _ = GuestPromise.touch()
+    _ = AppManager.touch()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (guest) in
       mainStore.dispatch(UpdateGuest(payload: guest))

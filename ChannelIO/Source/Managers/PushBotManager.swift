@@ -51,7 +51,7 @@ class PushBotManager {
       })
       .filter { reached[$0.id] == false || reached[$0.id] == nil }
       .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
-        return NudgePromise.requestReach(nudgeId: nudge.id)
+        return nudge.reach()
       })
       .single { $0.reach == true }
       .filter { _ in mainStore.state.checkinState.status == .success }

@@ -8,6 +8,7 @@
 
 import Foundation
 import ObjectMapper
+import RxSwift
 
 enum CHDefaultEvent: String {
   case boot = "Boot"
@@ -25,6 +26,16 @@ struct CHEvent {
   var sysProperties: [String: AnyObject] = [:]
   var createdAt: Date
   var expireAt: Date
+}
+
+extension CHEvent {
+  static func send(
+    pluginId: String,
+    name: String,
+    properties: [String: Any?]? = nil,
+    sysProperties: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
+    return EventPromise.sendEvent(pluginId: pluginId, name: name, properties: properties, sysProperties: sysProperties)
+  }
 }
 
 extension CHEvent: Mappable {

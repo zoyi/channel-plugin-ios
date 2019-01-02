@@ -72,23 +72,27 @@ public final class ChannelIO: NSObject {
   class CHPluginSubscriber : StoreSubscriber {
     //refactor into two selectors
     func newState(state: AppState) {
-      self.handleBadgeDelegate(state.guest.alert)
-      self.handlePush(push: state.push)
-      let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
-      
-      ChannelIO.launcherView?.configure(viewModel)
+      dispatch {
+        self.handleBadge(state.guest.alert)
+        self.handlePush(push: state.push)
+        
+        let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
+        ChannelIO.launcherView?.configure(viewModel)
+      }
     }
     
     func handlePush (push: CHPush?) {
+      guard let push = push else { return }
+      
       if ChannelIO.baseNavigation == nil && ChannelIO.settings?.hideDefaultInAppPush == false {
         ChannelIO.showNotification(pushData: push)
       }
-      if let push = push {
-        ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
-      }
+
+      ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
+      mainStore.dispatch(RemovePush())
     }
     
-    func handleBadgeDelegate(_ count: Int) {
+    func handleBadge(_ count: Int) {
       if ChannelIO.currentAlertCount != count {
         ChannelIO.delegate?.onChangeBadge?(count: count)
       }
@@ -122,48 +126,51 @@ public final class ChannelIO: NSObject {
     with settings: ChannelPluginSettings,
     profile: Profile? = nil,
     completion: ((ChannelPluginCompletionStatus, Guest?) -> Void)? = nil) {
-    ChannelIO.prepare()
-    ChannelIO.settings = settings
-    ChannelIO.profile = profile
     
-    if settings.pluginKey == "" {
-      mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
-      completion?(.notInitialized, nil)
-      return
-    }
-    
-    PluginPromise.checkVersion().flatMap { (event) in
-      return ChannelIO.checkInChannel(profile: profile)
-    }
-    .observeOn(MainScheduler.instance)
-    .subscribe(onNext: { (_) in
-      PrefStore.setChannelPluginSettings(pluginSetting: settings)
-      ChannelIO.registerPushToken()
+    dispatch {
+      ChannelIO.prepare()
+      ChannelIO.settings = settings
+      ChannelIO.profile = profile
       
-      if ChannelIO.launcherVisible {
-        ChannelIO.show(animated: true)
+      if settings.pluginKey == "" {
+        mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
+        completion?(.notInitialized, nil)
+        return
       }
-      completion?(.success, Guest(with: mainStore.state.guest))
-    }, onError: { error in
-      let code = (error as NSError).code
-      if code == -1001 {
-        dlog("network timeout")
-        mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
-        completion?(.networkTimeout, nil)
-      } else if code == CHErrorCode.versionError.rawValue {
-        dlog("version is not compatiable. please update sdk version")
-        mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
-        completion?(.notAvailableVersion, nil)
-      } else if code == CHErrorCode.serviceBlockedError.rawValue {
-        dlog("require payment. free plan is not eligible to use SDK")
-        mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
-        completion?(.requirePayment, nil)
-      } else {
-        dlog("unknown")
-        mainStore.dispatch(UpdateCheckinState(payload: .unknown))
-        completion?(.unknown, nil)
+      
+      AppManager.checkVersion().flatMap { (event) in
+        return ChannelIO.checkInChannel(profile: profile)
       }
-    }).disposed(by: disposeBag)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (_) in
+        PrefStore.setChannelPluginSettings(pluginSetting: settings)
+        AppManager.registerPushToken()
+        
+        if ChannelIO.launcherVisible {
+          ChannelIO.show(animated: true)
+        }
+        completion?(.success, Guest(with: mainStore.state.guest))
+      }, onError: { error in
+        let code = (error as NSError).code
+        if code == -1001 {
+          dlog("network timeout")
+          mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
+          completion?(.networkTimeout, nil)
+        } else if code == CHErrorCode.versionError.rawValue {
+          dlog("version is not compatiable. please update sdk version")
+          mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
+          completion?(.notAvailableVersion, nil)
+        } else if code == CHErrorCode.serviceBlockedError.rawValue {
+          dlog("require payment. free plan is not eligible to use SDK")
+          mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
+          completion?(.requirePayment, nil)
+        } else {
+          dlog("unknown")
+          mainStore.dispatch(UpdateCheckinState(payload: .unknown))
+          completion?(.unknown, nil)
+        }
+      }).disposed(by: disposeBag)
+    }
   }
 
   /**
@@ -180,7 +187,7 @@ public final class ChannelIO: NSObject {
     ChannelIO.pushToken = token
     
     if ChannelIO.isValidStatus {
-      ChannelIO.registerPushToken()
+      AppManager.registerPushToken()
     }
   }
 
@@ -191,15 +198,10 @@ public final class ChannelIO: NSObject {
   @objc
   public class func shutdown() {
     let guestToken = PrefStore.getCurrentGuestKey() ?? ""
-    ChannelIO.reset()
-    
-    PluginPromise.unregisterPushToken(guestToken: guestToken)
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { _ in
-        dlog("shutdown success")
-      }, onError: { (error) in
-        dlog("shutdown fail")
-      }).disposed(by: disposeBag)
+    dispatch {
+      ChannelIO.reset()
+    }
+    AppManager.unregisterToken(token: guestToken)
   }
     
   /**
@@ -281,8 +283,10 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func hide(animated: Bool) {
-    ChannelIO.launcherView?.hide(animated: animated)
-    ChannelIO.launcherVisible = false
+    dispatch {
+      ChannelIO.launcherView?.hide(animated: animated)
+      ChannelIO.launcherVisible = false
+    }
   }
   
   /** 
@@ -425,7 +429,7 @@ public final class ChannelIO: NSObject {
     
     //not tap and signal server to acknowledgement
     if !ChannelIO.willBecomeActive {
-      PluginPromise.sendPushAck(chatId: userChatId).subscribe(onNext: { (completed) in
+      AppManager.sendAck(userChatId: userChatId).subscribe(onNext: { (completed) in
         completion?()
       }, onError: { (error) in
         completion?()

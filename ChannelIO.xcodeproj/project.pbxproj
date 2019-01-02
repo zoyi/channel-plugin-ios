@@ -68,6 +68,7 @@
 		650D7C4C1E72B174007DE358 /* UserChatsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C461E725699007DE358 /* UserChatsReducerTests.swift */; };
 		651A58871E88E3970042A59F /* countryInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 650D7C311E716DBF007DE358 /* countryInfo.json */; };
 		652AE2111E81485D00B7484C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 652AE2131E81485D00B7484C /* Localizable.strings */; };
+		653516E021DCBE43006AB6C3 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653516DF21DCBE43006AB6C3 /* AppManager.swift */; };
 		653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653A6C14206C893F0048163D /* ChannelPluginSettings.swift */; };
 		653A6C17206C9BD20048163D /* ChannelIO+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */; };
 		6549CFB0207B691C000091D2 /* LanguageOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6549CFAF207B691C000091D2 /* LanguageOptionViewController.swift */; };
@@ -444,6 +445,7 @@
 		652AE2121E81485D00B7484C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2141E81485F00B7484C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2151E81485F00B7484C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		653516DF21DCBE43006AB6C3 /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		653A6C14206C893F0048163D /* ChannelPluginSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPluginSettings.swift; sourceTree = "<group>"; };
 		653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelIO+Helper.swift"; sourceTree = "<group>"; };
 		6549CFAF207B691C000091D2 /* LanguageOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageOptionViewController.swift; sourceTree = "<group>"; };
@@ -1456,6 +1458,7 @@
 			isa = PBXGroup;
 			children = (
 				65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */,
+				653516DF21DCBE43006AB6C3 /* AppManager.swift */,
 			);
 			name = Managers;
 			path = Source/Managers;
@@ -1671,6 +1674,7 @@
 				6597935B1FA716CB00840F6A /* UserChatsViewController.swift in Sources */,
 				657AF3F1217845D7001EAA7A /* CHNudge.swift in Sources */,
 				6597935C1FA716CB00840F6A /* UserChatViewController.swift in Sources */,
+				653516E021DCBE43006AB6C3 /* AppManager.swift in Sources */,
 				657AF3F921787E88001EAA7A /* Alamofire+Extensions.swift in Sources */,
 				6549CFB2207B6C6A000091D2 /* CheckableLabelCell.swift in Sources */,
 				22F094F62176E8A00035C777 /* Then.swift in Sources */,

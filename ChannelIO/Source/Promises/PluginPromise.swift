@@ -99,7 +99,7 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create{
+      return Disposables.create {
         req.cancel()
       }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))

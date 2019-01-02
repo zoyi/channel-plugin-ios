@@ -62,8 +62,4 @@ extension CHGuest {
       return mainStore.state.plugin.welcomeI18n?.getMessage()
     }
   }
-  
-  func touch() -> Observable<CHGuest> {
-    return GuestPromise.touch()
-  }
 }

@@ -19,7 +19,9 @@ struct CHSupportBot: CHEvaluatable {
   var channelId: String = ""
   var pluginId: String = ""
   var target: [[CHTargetCondition]]? = nil
+}
 
+extension CHSupportBot {
   static func getBots(with pluginId: String, fetch: Bool) -> Observable<[CHSupportBot]> {
     return Observable.create({ (subscriber) -> Disposable in
       var disposable: Disposable?
@@ -41,6 +43,10 @@ struct CHSupportBot: CHEvaluatable {
         disposable?.dispose()
       }
     })
+  }
+  
+  func getEntry() -> Observable<CHSupportBotEntryInfo> {
+    return SupportBotPromise.getSupportBotEntry(supportBotId: self.id)
   }
   
   static func reply(with userChatId: String?, formId: String?, key: String?, requestId: String? = nil) -> Observable<CHMessage> {
