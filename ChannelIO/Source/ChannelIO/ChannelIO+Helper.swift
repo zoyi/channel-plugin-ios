@@ -229,7 +229,6 @@ extension ChannelIO {
       
       ChannelIO.chatNotificationView = notificationView
       CHAssets.playPushSound()
-      mainStore.dispatch(RemovePush())
     }
   }
   

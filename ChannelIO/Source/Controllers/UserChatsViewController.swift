@@ -464,10 +464,10 @@ extension UserChatsViewController {
     UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
+        mainStore.dispatch(GetUserChats(payload: data))
         
         self?.didLoad = true
-        self?.showChatIfNeeded(data["userChats"] as? [CHUserChat], isReload: isReload)
-        mainStore.dispatch(GetUserChats(payload: data))
+        self?.showChatIfNeeded(isReload: isReload)
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         self?.errorToastView.display(animated:true)
@@ -498,8 +498,8 @@ extension UserChatsViewController {
     }
   }
   
-  func showChatIfNeeded(_ userChats: [CHUserChat]?, isReload: Bool = false) {
-    let allChats = userChatsSelector(state: mainStore.state) + (userChats ?? [])
+  func showChatIfNeeded(_ userChats: [CHUserChat]? = nil, isReload: Bool = false) {
+    let allChats = userChatsSelector(state: mainStore.state)
     
     if self.showNewChat  {
       self.showUserChat(animated: false)
