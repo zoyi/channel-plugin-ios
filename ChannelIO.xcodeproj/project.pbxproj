@@ -288,36 +288,6 @@
 		65D3564B21BA4BD6001D6A30 /* DKCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564621BA4BD5001D6A30 /* DKCamera.framework */; };
 		65D3564C21BA4BD6001D6A30 /* CropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564721BA4BD6001D6A30 /* CropViewController.framework */; };
 		65D3564D21BA4BD6001D6A30 /* TOCropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564821BA4BD6001D6A30 /* TOCropViewController.framework */; };
-		65D3566D21BA4BEF001D6A30 /* CHNavBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564E21BA4BE8001D6A30 /* CHNavBar.framework */; };
-		65D3566E21BA4BEF001D6A30 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564F21BA4BE8001D6A30 /* SDWebImage.framework */; };
-		65D3566F21BA4BEF001D6A30 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565021BA4BE8001D6A30 /* ObjectMapper.framework */; };
-		65D3567021BA4BEF001D6A30 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565121BA4BE8001D6A30 /* RxAtomic.framework */; };
-		65D3567221BA4BEF001D6A30 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565321BA4BE8001D6A30 /* RxSwift.framework */; };
-		65D3567321BA4BEF001D6A30 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565421BA4BE9001D6A30 /* SnapKit.framework */; };
-		65D3567421BA4BEF001D6A30 /* PhoneNumberKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565521BA4BE9001D6A30 /* PhoneNumberKit.framework */; };
-		65D3567521BA4BEF001D6A30 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565621BA4BE9001D6A30 /* Starscream.framework */; };
-		65D3567621BA4BEF001D6A30 /* CHDwifft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565721BA4BE9001D6A30 /* CHDwifft.framework */; };
-		65D3567721BA4BEF001D6A30 /* DKImagePickerController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565821BA4BEA001D6A30 /* DKImagePickerController.framework */; };
-		65D3567821BA4BEF001D6A30 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565921BA4BEA001D6A30 /* SwiftyJSON.framework */; };
-		65D3567921BA4BEF001D6A30 /* CRToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565A21BA4BEA001D6A30 /* CRToast.framework */; };
-		65D3567A21BA4BEF001D6A30 /* TOCropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565B21BA4BEA001D6A30 /* TOCropViewController.framework */; };
-		65D3567B21BA4BEF001D6A30 /* CHSlackTextViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565C21BA4BEB001D6A30 /* CHSlackTextViewController.framework */; };
-		65D3567C21BA4BEF001D6A30 /* Lightbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565D21BA4BEB001D6A30 /* Lightbox.framework */; };
-		65D3567D21BA4BEF001D6A30 /* ReSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565E21BA4BEB001D6A30 /* ReSwift.framework */; };
-		65D3567E21BA4BEF001D6A30 /* CropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3565F21BA4BEB001D6A30 /* CropViewController.framework */; };
-		65D3567F21BA4BEF001D6A30 /* Reusable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566021BA4BEB001D6A30 /* Reusable.framework */; };
-		65D3568021BA4BEF001D6A30 /* Cache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566121BA4BEC001D6A30 /* Cache.framework */; };
-		65D3568121BA4BEF001D6A30 /* DKPhotoGallery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566221BA4BEC001D6A30 /* DKPhotoGallery.framework */; };
-		65D3568221BA4BEF001D6A30 /* M13ProgressSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566321BA4BEC001D6A30 /* M13ProgressSuite.framework */; };
-		65D3568321BA4BEF001D6A30 /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566421BA4BEC001D6A30 /* SVProgressHUD.framework */; };
-		65D3568421BA4BF0001D6A30 /* NVActivityIndicatorViewAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566521BA4BED001D6A30 /* NVActivityIndicatorViewAppExtension.framework */; };
-		65D3568521BA4BF0001D6A30 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566621BA4BED001D6A30 /* RxCocoa.framework */; };
-		65D3568621BA4BF0001D6A30 /* DKCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566721BA4BED001D6A30 /* DKCamera.framework */; };
-		65D3568721BA4BF0001D6A30 /* Imaginary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566821BA4BEE001D6A30 /* Imaginary.framework */; };
-		65D3568821BA4BF0001D6A30 /* NVActivityIndicatorView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566921BA4BEE001D6A30 /* NVActivityIndicatorView.framework */; };
-		65D3568921BA4BF0001D6A30 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566A21BA4BEE001D6A30 /* Alamofire.framework */; };
-		65D3568A21BA4BF0001D6A30 /* SocketIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566B21BA4BEF001D6A30 /* SocketIO.framework */; };
-		65D3568B21BA4BF0001D6A30 /* MGSwipeTableCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3566C21BA4BEF001D6A30 /* MGSwipeTableCell.framework */; };
 		65D358CD21BE4E1F001D6A30 /* CHLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CC21BE4E1F001D6A30 /* CHLink.swift */; };
 		65D358D021BE4E3D001D6A30 /* ButtonsMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CE21BE4E3D001D6A30 /* ButtonsMessageCell.swift */; };
 		65D358D121BE4E3D001D6A30 /* ButtonsMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CF21BE4E3D001D6A30 /* ButtonsMessageView.swift */; };
@@ -639,36 +609,6 @@
 		65D3564621BA4BD5001D6A30 /* DKCamera.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKCamera.framework; path = Carthage/Build/iOS/DKCamera.framework; sourceTree = "<group>"; };
 		65D3564721BA4BD6001D6A30 /* CropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CropViewController.framework; path = Carthage/Build/iOS/CropViewController.framework; sourceTree = "<group>"; };
 		65D3564821BA4BD6001D6A30 /* TOCropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOCropViewController.framework; path = Carthage/Build/iOS/TOCropViewController.framework; sourceTree = "<group>"; };
-		65D3564E21BA4BE8001D6A30 /* CHNavBar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHNavBar.framework; path = Carthage/Build/iOS/CHNavBar.framework; sourceTree = SOURCE_ROOT; };
-		65D3564F21BA4BE8001D6A30 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = Carthage/Build/iOS/SDWebImage.framework; sourceTree = SOURCE_ROOT; };
-		65D3565021BA4BE8001D6A30 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = SOURCE_ROOT; };
-		65D3565121BA4BE8001D6A30 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAtomic.framework; path = Carthage/Build/iOS/RxAtomic.framework; sourceTree = SOURCE_ROOT; };
-		65D3565321BA4BE8001D6A30 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = SOURCE_ROOT; };
-		65D3565421BA4BE9001D6A30 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = SOURCE_ROOT; };
-		65D3565521BA4BE9001D6A30 /* PhoneNumberKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhoneNumberKit.framework; path = Carthage/Build/iOS/PhoneNumberKit.framework; sourceTree = SOURCE_ROOT; };
-		65D3565621BA4BE9001D6A30 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = SOURCE_ROOT; };
-		65D3565721BA4BE9001D6A30 /* CHDwifft.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHDwifft.framework; path = Carthage/Build/iOS/CHDwifft.framework; sourceTree = SOURCE_ROOT; };
-		65D3565821BA4BEA001D6A30 /* DKImagePickerController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKImagePickerController.framework; path = Carthage/Build/iOS/DKImagePickerController.framework; sourceTree = SOURCE_ROOT; };
-		65D3565921BA4BEA001D6A30 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = SOURCE_ROOT; };
-		65D3565A21BA4BEA001D6A30 /* CRToast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CRToast.framework; path = Carthage/Build/iOS/CRToast.framework; sourceTree = SOURCE_ROOT; };
-		65D3565B21BA4BEA001D6A30 /* TOCropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOCropViewController.framework; path = Carthage/Build/iOS/TOCropViewController.framework; sourceTree = SOURCE_ROOT; };
-		65D3565C21BA4BEB001D6A30 /* CHSlackTextViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHSlackTextViewController.framework; path = Carthage/Build/iOS/CHSlackTextViewController.framework; sourceTree = SOURCE_ROOT; };
-		65D3565D21BA4BEB001D6A30 /* Lightbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lightbox.framework; path = Carthage/Build/iOS/Lightbox.framework; sourceTree = SOURCE_ROOT; };
-		65D3565E21BA4BEB001D6A30 /* ReSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReSwift.framework; path = Carthage/Build/iOS/ReSwift.framework; sourceTree = SOURCE_ROOT; };
-		65D3565F21BA4BEB001D6A30 /* CropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CropViewController.framework; path = Carthage/Build/iOS/CropViewController.framework; sourceTree = SOURCE_ROOT; };
-		65D3566021BA4BEB001D6A30 /* Reusable.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reusable.framework; path = Carthage/Build/iOS/Reusable.framework; sourceTree = SOURCE_ROOT; };
-		65D3566121BA4BEC001D6A30 /* Cache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cache.framework; path = Carthage/Build/iOS/Cache.framework; sourceTree = SOURCE_ROOT; };
-		65D3566221BA4BEC001D6A30 /* DKPhotoGallery.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKPhotoGallery.framework; path = Carthage/Build/iOS/DKPhotoGallery.framework; sourceTree = SOURCE_ROOT; };
-		65D3566321BA4BEC001D6A30 /* M13ProgressSuite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = M13ProgressSuite.framework; path = Carthage/Build/iOS/M13ProgressSuite.framework; sourceTree = SOURCE_ROOT; };
-		65D3566421BA4BEC001D6A30 /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SVProgressHUD.framework; path = Carthage/Build/iOS/SVProgressHUD.framework; sourceTree = SOURCE_ROOT; };
-		65D3566521BA4BED001D6A30 /* NVActivityIndicatorViewAppExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NVActivityIndicatorViewAppExtension.framework; path = Carthage/Build/iOS/NVActivityIndicatorViewAppExtension.framework; sourceTree = SOURCE_ROOT; };
-		65D3566621BA4BED001D6A30 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = SOURCE_ROOT; };
-		65D3566721BA4BED001D6A30 /* DKCamera.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKCamera.framework; path = Carthage/Build/iOS/DKCamera.framework; sourceTree = SOURCE_ROOT; };
-		65D3566821BA4BEE001D6A30 /* Imaginary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Imaginary.framework; path = Carthage/Build/iOS/Imaginary.framework; sourceTree = SOURCE_ROOT; };
-		65D3566921BA4BEE001D6A30 /* NVActivityIndicatorView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NVActivityIndicatorView.framework; path = Carthage/Build/iOS/NVActivityIndicatorView.framework; sourceTree = SOURCE_ROOT; };
-		65D3566A21BA4BEE001D6A30 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = SOURCE_ROOT; };
-		65D3566B21BA4BEF001D6A30 /* SocketIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SocketIO.framework; path = Carthage/Build/iOS/SocketIO.framework; sourceTree = SOURCE_ROOT; };
-		65D3566C21BA4BEF001D6A30 /* MGSwipeTableCell.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MGSwipeTableCell.framework; path = Carthage/Build/iOS/MGSwipeTableCell.framework; sourceTree = SOURCE_ROOT; };
 		65D358CC21BE4E1F001D6A30 /* CHLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHLink.swift; sourceTree = "<group>"; };
 		65D358CE21BE4E3D001D6A30 /* ButtonsMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsMessageCell.swift; sourceTree = "<group>"; };
 		65D358CF21BE4E3D001D6A30 /* ButtonsMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsMessageView.swift; sourceTree = "<group>"; };
@@ -684,28 +624,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				65581E651E7BDCE0008B8C70 /* AssetsLibrary.framework in Frameworks */,
-				65D3567F21BA4BEF001D6A30 /* Reusable.framework in Frameworks */,
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
-				65D3568A21BA4BF0001D6A30 /* SocketIO.framework in Frameworks */,
-				65D3567821BA4BEF001D6A30 /* SwiftyJSON.framework in Frameworks */,
 				65D3564921BA4BD6001D6A30 /* RxAtomic.framework in Frameworks */,
-				65D3567E21BA4BEF001D6A30 /* CropViewController.framework in Frameworks */,
 				65D3564A21BA4BD6001D6A30 /* DKPhotoGallery.framework in Frameworks */,
 				65D3564B21BA4BD6001D6A30 /* DKCamera.framework in Frameworks */,
-				65D3567621BA4BEF001D6A30 /* CHDwifft.framework in Frameworks */,
-				65D3568821BA4BF0001D6A30 /* NVActivityIndicatorView.framework in Frameworks */,
 				65D3564C21BA4BD6001D6A30 /* CropViewController.framework in Frameworks */,
-				65D3567A21BA4BEF001D6A30 /* TOCropViewController.framework in Frameworks */,
 				65D3564D21BA4BD6001D6A30 /* TOCropViewController.framework in Frameworks */,
 				65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */,
 				65D3562B21BA4BD4001D6A30 /* Cache.framework in Frameworks */,
 				65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */,
-				65D3567721BA4BEF001D6A30 /* DKImagePickerController.framework in Frameworks */,
 				65D3562D21BA4BD4001D6A30 /* CHNavBar.framework in Frameworks */,
 				65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */,
 				65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */,
-				65D3566D21BA4BEF001D6A30 /* CHNavBar.framework in Frameworks */,
-				65D3568921BA4BF0001D6A30 /* Alamofire.framework in Frameworks */,
 				65D3563021BA4BD4001D6A30 /* DKImagePickerController.framework in Frameworks */,
 				65D3563121BA4BD4001D6A30 /* Imaginary.framework in Frameworks */,
 				65D3563221BA4BD4001D6A30 /* Lightbox.framework in Frameworks */,
@@ -715,48 +645,28 @@
 				65D3563621BA4BD4001D6A30 /* NVActivityIndicatorViewAppExtension.framework in Frameworks */,
 				65D3563721BA4BD4001D6A30 /* ObjectMapper.framework in Frameworks */,
 				65D3563821BA4BD4001D6A30 /* PhoneNumberKit.framework in Frameworks */,
-				65D3568121BA4BEF001D6A30 /* DKPhotoGallery.framework in Frameworks */,
 				65D3563921BA4BD4001D6A30 /* ReSwift.framework in Frameworks */,
 				65D3563A21BA4BD4001D6A30 /* Reusable.framework in Frameworks */,
-				65D3568721BA4BF0001D6A30 /* Imaginary.framework in Frameworks */,
 				65D3563C21BA4BD4001D6A30 /* RxCocoa.framework in Frameworks */,
 				65D3563D21BA4BD4001D6A30 /* RxSwift.framework in Frameworks */,
 				65D3563E21BA4BD4001D6A30 /* SDWebImage.framework in Frameworks */,
 				65D3563F21BA4BD4001D6A30 /* SnapKit.framework in Frameworks */,
-				65D3566F21BA4BEF001D6A30 /* ObjectMapper.framework in Frameworks */,
-				65D3567321BA4BEF001D6A30 /* SnapKit.framework in Frameworks */,
-				65D3567B21BA4BEF001D6A30 /* CHSlackTextViewController.framework in Frameworks */,
 				65D3564021BA4BD4001D6A30 /* SocketIO.framework in Frameworks */,
 				65D3564121BA4BD4001D6A30 /* Starscream.framework in Frameworks */,
 				65D3564221BA4BD4001D6A30 /* SVProgressHUD.framework in Frameworks */,
-				65D3566E21BA4BEF001D6A30 /* SDWebImage.framework in Frameworks */,
 				65D3564321BA4BD4001D6A30 /* SwiftyJSON.framework in Frameworks */,
-				65D3568421BA4BF0001D6A30 /* NVActivityIndicatorViewAppExtension.framework in Frameworks */,
 				65581E611E7BDCC4008B8C70 /* CFNetwork.framework in Frameworks */,
 				65581E5F1E7BDCBD008B8C70 /* Photos.framework in Frameworks */,
 				65581E5D1E7BDCB1008B8C70 /* Accelerate.framework in Frameworks */,
-				65D3567021BA4BEF001D6A30 /* RxAtomic.framework in Frameworks */,
-				65D3568B21BA4BF0001D6A30 /* MGSwipeTableCell.framework in Frameworks */,
 				65581E5B1E7BDCAB008B8C70 /* CoreImage.framework in Frameworks */,
-				65D3567C21BA4BEF001D6A30 /* Lightbox.framework in Frameworks */,
-				65D3567921BA4BEF001D6A30 /* CRToast.framework in Frameworks */,
-				65D3567221BA4BEF001D6A30 /* RxSwift.framework in Frameworks */,
 				65581E591E7BDCA2008B8C70 /* UIKit.framework in Frameworks */,
-				65D3567421BA4BEF001D6A30 /* PhoneNumberKit.framework in Frameworks */,
-				65D3568021BA4BEF001D6A30 /* Cache.framework in Frameworks */,
-				65D3568521BA4BF0001D6A30 /* RxCocoa.framework in Frameworks */,
 				65581E571E7BDC97008B8C70 /* QuartzCore.framework in Frameworks */,
-				65D3568321BA4BEF001D6A30 /* SVProgressHUD.framework in Frameworks */,
 				65581E551E7BDC92008B8C70 /* ImageIO.framework in Frameworks */,
-				65D3568621BA4BF0001D6A30 /* DKCamera.framework in Frameworks */,
 				142147891E56D76B004C9FAD /* libz.tbd in Frameworks */,
-				65D3567521BA4BEF001D6A30 /* Starscream.framework in Frameworks */,
 				142147871E56D75F004C9FAD /* WebKit.framework in Frameworks */,
-				65D3568221BA4BEF001D6A30 /* M13ProgressSuite.framework in Frameworks */,
 				142147851E56D75B004C9FAD /* CoreLocation.framework in Frameworks */,
 				142147831E56D756004C9FAD /* CoreTelephony.framework in Frameworks */,
 				142147811E56D74F004C9FAD /* SystemConfiguration.framework in Frameworks */,
-				65D3567D21BA4BEF001D6A30 /* ReSwift.framework in Frameworks */,
 				65D358DB21BE57FA001D6A30 /* Nimble.framework in Frameworks */,
 				65D358DA21BE57F4001D6A30 /* Quick.framework in Frameworks */,
 			);
@@ -983,36 +893,6 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				65D3566A21BA4BEE001D6A30 /* Alamofire.framework */,
-				65D3566121BA4BEC001D6A30 /* Cache.framework */,
-				65D3565721BA4BE9001D6A30 /* CHDwifft.framework */,
-				65D3564E21BA4BE8001D6A30 /* CHNavBar.framework */,
-				65D3565C21BA4BEB001D6A30 /* CHSlackTextViewController.framework */,
-				65D3565F21BA4BEB001D6A30 /* CropViewController.framework */,
-				65D3565A21BA4BEA001D6A30 /* CRToast.framework */,
-				65D3566721BA4BED001D6A30 /* DKCamera.framework */,
-				65D3565821BA4BEA001D6A30 /* DKImagePickerController.framework */,
-				65D3566221BA4BEC001D6A30 /* DKPhotoGallery.framework */,
-				65D3566821BA4BEE001D6A30 /* Imaginary.framework */,
-				65D3565D21BA4BEB001D6A30 /* Lightbox.framework */,
-				65D3566321BA4BEC001D6A30 /* M13ProgressSuite.framework */,
-				65D3566C21BA4BEF001D6A30 /* MGSwipeTableCell.framework */,
-				65D3566921BA4BEE001D6A30 /* NVActivityIndicatorView.framework */,
-				65D3566521BA4BED001D6A30 /* NVActivityIndicatorViewAppExtension.framework */,
-				65D3565021BA4BE8001D6A30 /* ObjectMapper.framework */,
-				65D3565521BA4BE9001D6A30 /* PhoneNumberKit.framework */,
-				65D3565E21BA4BEB001D6A30 /* ReSwift.framework */,
-				65D3566021BA4BEB001D6A30 /* Reusable.framework */,
-				65D3565121BA4BE8001D6A30 /* RxAtomic.framework */,
-				65D3566621BA4BED001D6A30 /* RxCocoa.framework */,
-				65D3565321BA4BE8001D6A30 /* RxSwift.framework */,
-				65D3564F21BA4BE8001D6A30 /* SDWebImage.framework */,
-				65D3565421BA4BE9001D6A30 /* SnapKit.framework */,
-				65D3566B21BA4BEF001D6A30 /* SocketIO.framework */,
-				65D3565621BA4BE9001D6A30 /* Starscream.framework */,
-				65D3566421BA4BEC001D6A30 /* SVProgressHUD.framework */,
-				65D3565921BA4BEA001D6A30 /* SwiftyJSON.framework */,
-				65D3565B21BA4BEA001D6A30 /* TOCropViewController.framework */,
 				22F094F42176E8A00035C777 /* Then.swift */,
 				22F094F52176E8A00035C777 /* HexColors.swift */,
 				22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */,
