@@ -445,7 +445,7 @@ final class UserChatViewController: BaseSLKTextViewController {
           image: CHAssets.getImage(named: "back"),
           text: alertCount,
           fitToSize: true,
-          alignment: .left,
+          alignment: .center,
           textColor: tintColor,
           actionHandler: { [weak self] in
             self?.shyNavBarManager.disable = true

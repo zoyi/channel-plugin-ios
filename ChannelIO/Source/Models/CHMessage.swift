@@ -134,7 +134,7 @@ extension CHMessage: Mappable {
        createdAt:Date? = Date(),
        id: String? = nil) {
     let now = Date()
-    let requestId = "\(Int(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = id ?? requestId
@@ -154,7 +154,7 @@ extension CHMessage: Mappable {
   
   init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
-    let requestId = "\(Int(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = requestId
@@ -178,7 +178,7 @@ extension CHMessage: Mappable {
        file: CHFile? = nil,
        buttons: [CHLink]? = nil) {
     let now = Date()
-    let requestId = "\(Int(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
     
     self.id = requestId
     self.chatType = "UserChat"
