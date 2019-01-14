@@ -31,15 +31,6 @@ class PushBotManager {
       })
 
     Observable.from(filtered)
-      .filter { (nudge) -> Bool in
-        return TargetEvaluatorService.evaluate(
-          with: nudge.target,
-          userInfo: guest.userInfo.merging(
-            property,
-            uniquingKeysWith: { (_, second) in second }
-          )
-        )
-      }
       .toArray()
       .flatMap { Observable.from($0) }
       .flatMap ({ (nudge) -> Observable<CHNudge> in
