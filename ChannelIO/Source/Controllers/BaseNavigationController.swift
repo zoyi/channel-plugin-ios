@@ -18,7 +18,8 @@ class BaseNavigationController: UINavigationController {
   }
 
   override init(rootViewController: UIViewController) {
-    super.init(rootViewController: rootViewController)
+    super.init(navigationBarClass: CHNavigationBar.self, toolbarClass: nil)
+    self.setViewControllers([rootViewController], animated: false)
     self.setup()
   }
 

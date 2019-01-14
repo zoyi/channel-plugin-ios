@@ -40,7 +40,7 @@ class CHAssets {
   }
   
   class func localized(_ key: String) -> String {
-    if let settings = mainStore.state.settings, let locale = settings.appLocale?.rawValue {
+    if let settings = ChannelIO.settings, let locale = settings.appLocale?.rawValue {
       guard let path = Bundle(for: self).path(forResource: locale, ofType: "lproj") else { return "" }
       guard let bundle = Bundle.init(path: path) else { return "" }
       return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
@@ -71,7 +71,7 @@ class CHAssets {
     tagAttributes: [StringTagType: [NSAttributedString.Key: Any]]? = nil) -> NSAttributedString {
     
     var locale = "en"
-    if let settings = mainStore.state.settings, let settingLocale = settings.appLocale?.rawValue {
+    if let settings = ChannelIO.settings, let settingLocale = settings.appLocale?.rawValue {
       locale = settingLocale
     }
     

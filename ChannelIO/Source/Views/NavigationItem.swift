@@ -24,7 +24,7 @@ class CHNavigationBar: UINavigationBar {
       for subview in self.subviews {
         if String(describing: subview.classForCoder).contains("ContentView") {
           //let oldEdges = subview.layoutMargins
-          subview.layoutMargins = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
+          subview.layoutMargins = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         }
       }
     }
@@ -38,7 +38,7 @@ class NavigationItem: UIBarButtonItem {
     image: UIImage?,
     text: String? = "",
     fitToSize: Bool = false,
-    alignment: NavigationItemAlign = .center,
+    alignment: NavigationItemAlign = .left,
     textColor: UIColor? = UIColor.white,
     actionHandler: (() -> Void)?) {
     
@@ -53,16 +53,16 @@ class NavigationItem: UIBarButtonItem {
     
     if alignment == .left {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -20, bottom: 0, right: 0)
-      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 10)
     } else if alignment == .right {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -20)
-      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
     } else {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
-      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+      button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
     }
     
-    button.widthAnchor.constraint(equalToConstant: 50).isActive = true
+    button.widthAnchor.constraint(equalToConstant: 55).isActive = true
     button.heightAnchor.constraint(equalToConstant: 40).isActive = true
     button.translatesAutoresizingMaskIntoConstraints = false
     

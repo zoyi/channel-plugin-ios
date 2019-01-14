@@ -141,7 +141,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   func initUpdaters() {
     self.navigationUpdateSubject
       .takeUntil(self.rx.deallocated)
-      .debounce(0.7, scheduler: MainScheduler.instance)
+      .debounce(1.0, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (state, chat) in
         self?.updateNavigationIfNeeded(state: state, nextUserChat: chat)
       }).disposed(by: self.disposeBag)
@@ -445,7 +445,7 @@ final class UserChatViewController: BaseSLKTextViewController {
           image: CHAssets.getImage(named: "back"),
           text: alertCount,
           fitToSize: true,
-          alignment: .left,
+          alignment: .center,
           textColor: tintColor,
           actionHandler: { [weak self] in
             self?.shyNavBarManager.disable = true
@@ -525,8 +525,9 @@ extension UserChatViewController: StoreSubscriber {
       self.initNavigationViews(with: nextUserChat)
     } else if self.channel.isDiff(from: state.channel) {
       self.initNavigationViews(with: nextUserChat)
-    } else if self.currentLocale != state.settings?.appLocale {
+    } else if self.currentLocale != ChannelIO.settings?.appLocale {
       self.initNavigationViews(with: nextUserChat)
+      self.currentLocale = ChannelIO.settings?.appLocale
     } else {
       let userChats = userChatsSelector(
         state: mainStore.state,

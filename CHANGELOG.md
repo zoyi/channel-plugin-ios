@@ -3,10 +3,15 @@
 * Updated pushbot flow logics
 * Added pushbot button and image redirection
 * Added keep push bot button
-
+# 5.1.8
 ## Bug fixes
-* Fixed `didReceivePush` delegate called multiple times
- 
+* Fixed int overflow issue for requestId
+* Adjusted navigation margin 
+
+# 5.1.6
+## Bug fixes
+* Fixed onReceivePush call multiple times
+
 # 5.1.5
 ## Bug fixes
 * Fixed to apply locale setting properly

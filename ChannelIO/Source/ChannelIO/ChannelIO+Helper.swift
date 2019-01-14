@@ -224,11 +224,11 @@ extension ChannelIO {
           if shouldHandle == false || shouldHandle == nil {
             url.openWithUniversal()
           }
+          ChannelIO.hideNotification()
         }).disposed(by: disposeBag)
       
       ChannelIO.chatNotificationView = notificationView
       CHAssets.playPushSound()
-      mainStore.dispatch(RemovePush())
     }
   }
   

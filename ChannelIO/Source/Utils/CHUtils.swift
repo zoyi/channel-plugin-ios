@@ -100,8 +100,19 @@ class CHUtils {
     return nil
   }
   
+  class func stringToLocale(_ localeString: String) -> CHLocale {
+    if localeString == "en" {
+      return .english
+    } else if localeString == "ko" {
+      return .korean
+    } else if localeString == "ja" {
+      return .japanese
+    }
+    return .english
+  }
+  
   class func getLocale() -> CHLocaleString? {
-    if let settings = mainStore.state.settings, let locale = settings.appLocale {
+    if let settings = ChannelIO.settings, let locale = settings.appLocale {
       return locale
     } else {
       guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
