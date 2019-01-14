@@ -1,3 +1,8 @@
+# 5.1.8
+## Bug fixes
+* Fixed int overflow issue for requestId
+* Adjusted navigation margin 
+
 # 5.1.6
 ## Bug fixes
 * Fixed onReceivePush call multiple times
