@@ -61,9 +61,9 @@ class FormMessageCell: MessageCell {
     }
     
     height += viewModel.shouldDisplayForm ? ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? []) : 0
+      fits: width, inputs: viewModel.message.form?.inputs ?? []) + Metric.top : 0
     
-    return height + Metric.top
+    return height
   }
 }
 

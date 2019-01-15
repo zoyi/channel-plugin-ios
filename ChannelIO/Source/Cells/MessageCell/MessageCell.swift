@@ -182,7 +182,7 @@ class MessageCell: BaseTableViewCell, Reusable {
     }
     
     if viewModel.showTranslation {
-      viewHeight += 20
+      viewHeight += 16
     }
     
     return viewHeight
