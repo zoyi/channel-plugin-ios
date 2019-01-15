@@ -141,7 +141,7 @@ enum RestRouter: URLRequestConvertible {
     case .UnregisterToken(let key, _):
       return "/app/device_tokens/ios/\(key)"
     case .SendEvent(let pluginId, _):
-      return "/app/plugins/\(pluginId)/events"
+      return "/app/plugins/\(pluginId)/events/v2"
     case .GetCountryCodes:
       return "/countries"
     case .GetFollowingManager:

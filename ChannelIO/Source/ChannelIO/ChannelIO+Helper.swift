@@ -55,8 +55,8 @@ extension ChannelIO {
     CHEvent.send(
       pluginId: mainStore.state.plugin.id,
       name: eventName,
-      properties: eventProperty,
-      sysProperties: sysProperty).subscribe(onNext: { (event, nudges) in
+      property: eventProperty,
+      sysProperty: sysProperty).subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
         PushBotManager.process(with: nudges, property: eventProperty ?? [:])
       }, onError: { (error) in

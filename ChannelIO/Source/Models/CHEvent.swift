@@ -32,9 +32,9 @@ extension CHEvent {
   static func send(
     pluginId: String,
     name: String,
-    properties: [String: Any?]? = nil,
-    sysProperties: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
-    return EventPromise.sendEvent(pluginId: pluginId, name: name, properties: properties, sysProperties: sysProperties)
+    property: [String: Any?]? = nil,
+    sysProperty: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
+    return EventPromise.sendEvent(pluginId: pluginId, name: name, property: property, sysProperty: sysProperty)
   }
 }
 
