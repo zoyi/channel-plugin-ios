@@ -16,6 +16,7 @@ protocol CHGuest: CHEntity {
   var country: String { get set }
   var city: String { get set }
   
+  var locale: String { get set }
   var alert: Int { get set }
   var unread: Int { get set }
   var segment: String? { get set }
@@ -36,11 +37,12 @@ extension CHGuest {
   var dict: [String: Any] {
     var data = [String: Any]()
     
-    data["named"] = self.named
+    data["named"] = self.named ? "true" : "false"
     data["country"] = self.country
     data["city"] = self.city
     data["alert"] = self.alert
     data["unread"] = self.unread
+    data["locale"] = self.locale
     
     if let profile = self.profile {
       data["profile"] = profile
@@ -49,10 +51,10 @@ extension CHGuest {
       data["segment"] = segment
     }
     if let createdAt = self.createdAt {
-      data["createdAt"] = "\(UInt64(createdAt.timeIntervalSince1970 * 1000))"
+      data["createdAt"] = UInt64(createdAt.timeIntervalSince1970 * 1000)
     }
     if let updatedAt = self.updatedAt {
-      data["updatedAt"] = "\(UInt64(updatedAt.timeIntervalSince1970 * 1000))"
+      data["updatedAt"] = UInt64(updatedAt.timeIntervalSince1970 * 1000)
     }
     return data
   }

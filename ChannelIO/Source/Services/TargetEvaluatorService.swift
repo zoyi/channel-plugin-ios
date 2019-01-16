@@ -44,9 +44,6 @@ extension TargetEvaluatorService {
       guard let subKey = condition.subKey else { return false }
       guard let profiles = userInfo[TargetKey.guestProfile.rawValue] as? [String : Any] else { return false }
       testValue = profiles[subKey]
-    //handled by server
-    case .os, .country, .browser, .device, .url, .guestId, .guestType:
-      return true
     default:
       testValue = userInfo[key.rawValue]
     }

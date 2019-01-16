@@ -3,6 +3,9 @@
 * Updated pushbot flow logics
 * Added pushbot button and image redirection
 * Added keep push bot button
+* Updated event api 
+* Removed target evaluation logic
+
 # 5.1.8
 ## Bug fixes
 * Fixed int overflow issue for requestId

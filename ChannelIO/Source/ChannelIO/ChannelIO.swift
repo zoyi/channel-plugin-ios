@@ -369,8 +369,6 @@ public final class ChannelIO: NSObject {
   
     var sysProperty: [String: Any] = [
       "pluginVersion": version,
-      "device": UIDevice.current.modelName,
-      "os": "\(UIDevice.current.systemName)_\(UIDevice.current.systemVersion)",
       "screenWidth": UIScreen.main.bounds.width,
       "screenHeight": UIScreen.main.bounds.height
     ]

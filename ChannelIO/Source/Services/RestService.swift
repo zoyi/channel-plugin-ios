@@ -143,7 +143,7 @@ enum RestRouter: URLRequestConvertible {
     case .SendEvent(let pluginId, _):
       return "/app/plugins/\(pluginId)/events/v2"
     case .GetCountryCodes:
-      return "/countries"
+      return "/available/countries"
     case .GetFollowingManager:
       return "/app/channels/following_managers"
     case .RequestProfileBot(let pluginId, let chatId):
@@ -184,6 +184,7 @@ enum RestRouter: URLRequestConvertible {
     }
     
     headers["Accept"] = "application/json"
+    headers["User-Agent"] = CHUtils.generateUserAgent()
     
     let now = Date()
     let cookies = HTTPCookieStorage.shared.cookies?
