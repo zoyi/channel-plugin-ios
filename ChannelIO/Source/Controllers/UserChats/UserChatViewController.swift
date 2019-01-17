@@ -61,29 +61,18 @@ final class UserChatViewController: BaseSLKTextViewController {
   var errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
+  
   var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
-  var newChatButton = UIButton(type: .system).then {
-    $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
-    $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
-    $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
-    $0.tintColor = mainStore.state.plugin.textUIColor
-    
-    $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 20)
-    $0.imageEdgeInsets = UIEdgeInsets(top:0, left: -14, bottom: 0, right: 0)
-    
-    $0.backgroundColor = UIColor(mainStore.state.plugin.color)
-    
-    $0.layer.borderColor = UIColor(mainStore.state.plugin.borderColor)?.cgColor
-    $0.layer.cornerRadius = 23
-    $0.layer.shadowColor = CHColors.dark.cgColor
-    $0.layer.shadowOpacity = 0.2
-    $0.layer.shadowOffset = CGSize(width: 0, height: 2)
-    $0.layer.shadowRadius = 3
-    $0.layer.borderWidth = 1
+  
+  var nudgeKeepButton = CHButton.keepNudge().then {
     $0.isHidden = true
   }
+  var newChatButton = CHButton.newChat().then {
+    $0.isHidden = true
+  }
+  
   var isAnimating = false
   var newChatBottomConstraint: Constraint? = nil
   
@@ -122,7 +111,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initTableView()
     self.initInputViews()
     self.initViews()
-    self.initNewChatButton()
+    self.initActionButtons()
     self.initPhotoViewer()
 
     self.initUpdaters()
@@ -175,7 +164,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.chatManager.prepareToChat()
   }
   
-  fileprivate func initNewChatButton() {
+  fileprivate func initActionButtons() {
     self.view.addSubview(self.newChatButton)
     self.newChatButton.signalForClick()
       .subscribe(onNext: { [weak self] (_) in
@@ -184,6 +173,22 @@ final class UserChatViewController: BaseSLKTextViewController {
       }).disposed(by: self.disposeBag)
     
     self.newChatButton.snp.makeConstraints { [weak self] (make) in
+      if #available(iOS 11.0, *) {
+        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15).constraint
+      } else {
+        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(15).constraint
+      }
+      make.centerX.equalToSuperview()
+      make.height.equalTo(Metric.newButtonHeight)
+    }
+    
+    self.view.addSubview(self.nudgeKeepButton)
+    self.nudgeKeepButton.signalForClick()
+      .subscribe(onNext: { [weak self] (_) in
+        self?.chatManager.processNudgeKeepAction()
+      }).disposed(by: self.disposeBag)
+    
+    self.nudgeKeepButton.snp.makeConstraints { [weak self] (make) in
       if #available(iOS 11.0, *) {
         self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15).constraint
       } else {
@@ -242,6 +247,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: FormWebMessageCell.self)
     self.tableView.register(cellType: FormMediaMessageCell.self)
     self.tableView.register(cellType: FormFileMessageCell.self)
+    self.tableView.register(cellType: ButtonsMessageCell.self)
     
     self.tableView.estimatedRowHeight = 0
     self.tableView.clipsToBounds = true
@@ -567,6 +573,12 @@ extension UserChatViewController: StoreSubscriber {
   func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
+    if let isNudgeChat = userChat?.isNudgeChat(), isNudgeChat {
+      self.nudgeKeepButton.isHidden = false
+    } else {
+      self.nudgeKeepButton.isHidden = true
+    }
+    
     if nextUserChat?.isRemoved() == true {
       _ = self.navigationController?.popViewController(animated: true)
     }
@@ -576,16 +588,21 @@ extension UserChatViewController: StoreSubscriber {
       self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
       self.scrollToBottom(false)
     }
+    else if userChat?.isNudgeChat() == true {
+      self.setTextInputbarHidden(true, animated: false)
+      self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
+    }
+    else if self.channel.allowNewChat == false && nextUserChat?.isReady() == true {
+      self.setTextInputbarHidden(true, animated: false)
+    }
     else if nextUserChat?.shouldHideInput() == true ||
+      self.channel.allowNewChat == false ||
       (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
       self.setTextInputbarHidden(true, animated: false)
     }
-    else if (!channel.allowNewChat && !self.channel.allowNewChat) &&
-      self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
-      self.setTextInputbarHidden(true, animated: false)
-      self.newChatButton.isHidden = true
-    }
     else if !self.chatManager.profileIsFocus {
+      self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
+      
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.setTitle("", for: .normal)
@@ -839,6 +856,8 @@ extension UserChatViewController {
       return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
     case .Form:
       return FormMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+    case .Buttons:
+      return ButtonsMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     default:
       return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
     }
@@ -934,29 +953,30 @@ extension UserChatViewController {
       let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       return cell
+    } else if message.messageType == .Buttons {
+      let cell: ButtonsMessageCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(viewModel, presenter: self.chatManager)
+      return cell
     } else if viewModel.clipType == .Image {
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
       cell.mediaView.signalForClick().subscribe { [weak self] _ in
         self?.didImageTapped(message: message)
-        }.disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
       return cell
     } else if viewModel.clipType == .Webpage {
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
       cell.webView.signalForClick().subscribe{ [weak self] _ in
         self?.chatManager?.didClickOnWebPage(with: message)
-        }.disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
       return cell
     } else if viewModel.clipType == .File {
       let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath, cellType: FileMessageCell.self)
-      //cell.presenter = self.chatManager
       cell.configure(viewModel, presenter: self.chatManager)
       cell.fileView.signalForClick().subscribe { [weak self] _ in
         self?.chatManager?.didClickOnFile(with: message)
-        }.disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
       return cell
     } else {
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -978,20 +998,28 @@ extension UserChatViewController {
   }
   
   func didImageTapped(message: CHMessage) {
-    let imgUrl = message.file?.url
-    var startIndex = 0
-    if let index = self.photoUrls.index(of: imgUrl ?? "") {
-      startIndex = index
+    if let urlString = message.file?.imageRedirectUrl, let url = URL(string: urlString) {
+      let shouldhandle = ChannelIO.delegate?.onClickRedirect?(url: url)
+      if shouldhandle == nil || shouldhandle == false {
+         url.openWithUniversal()
+      }
     }
-    
-    let images = self.photoUrls.map { (url) -> LightboxImage in
-      return LightboxImage(imageURL: URL(string: url)!)
+    else {
+      let imgUrl = message.file?.url
+      var startIndex = 0
+      if let index = self.photoUrls.index(of: imgUrl ?? "") {
+        startIndex = index
+      }
+      
+      let images = self.photoUrls.map { (url) -> LightboxImage in
+        return LightboxImage(imageURL: URL(string: url)!)
+      }
+
+      let controller = LightboxController(images:images, startIndex: startIndex)
+      controller.dynamicBackground = true
+
+      self.present(controller, animated: true, completion: nil)
     }
-
-    let controller = LightboxController(images:images, startIndex: startIndex)
-    controller.dynamicBackground = true
-
-    self.present(controller, animated: true, completion: nil)
   }
 }
 

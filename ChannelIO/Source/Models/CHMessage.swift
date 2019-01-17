@@ -31,6 +31,7 @@ enum MessageType {
   case File
   case Profile
   case Form
+  case Buttons
 }
 
 enum CHMessageTranslateState {
@@ -57,6 +58,7 @@ struct CHMessage: ModelType {
   var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
   var form: CHForm? = nil
+  var buttons: [CHLink]? = []
   var submit: CHSubmit? = nil
   var createdAt: Date
 
@@ -108,10 +110,10 @@ struct CHMessage: ModelType {
   var file: CHFile?
   var webPage: CHWebPage?
   var log: CHLog?
-
+  
   // Dependencies
   var entity: CHEntity?
-
+  var mutable: Bool = true
   // Used in only client
   var state: SendingState = .Sent
   var messageType: MessageType = .Default
@@ -131,7 +133,7 @@ extension CHMessage: Mappable {
        createdAt:Date? = Date(),
        id: String? = nil) {
     let now = Date()
-    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
+    let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = id ?? requestId
@@ -151,7 +153,7 @@ extension CHMessage: Mappable {
   
   init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
-    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
+    let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = requestId
@@ -168,9 +170,14 @@ extension CHMessage: Mappable {
     (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
   }
   
-  init(chatId: String, entity: CHEntity, title: String? = nil, message: NSAttributedString?, file: CHFile?) {
+  init(chatId: String,
+       entity: CHEntity,
+       title: String? = nil,
+       message: NSAttributedString?,
+       file: CHFile? = nil,
+       buttons: [CHLink]? = nil) {
     let now = Date()
-    let requestId = "\(now.timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
+    let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     
     self.id = requestId
     self.chatType = "UserChat"
@@ -181,10 +188,11 @@ extension CHMessage: Mappable {
     self.createdAt = now
     self.state = .New
     self.progress = 1
+    self.buttons = buttons
     self.title = title
     self.file = file
     self.messageV2 = message
-    self.messageType = file?.image == true ? .Media : .Default
+    self.messageType = CHMessage.contextType(self)
   }
   
   init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset? = nil, image: UIImage? = nil) {
@@ -215,6 +223,7 @@ extension CHMessage: Mappable {
     requestId   <- map["requestId"]
     file        <- map["file"]
     webPage     <- map["webPage"]
+    buttons     <- map["buttons"]
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
@@ -245,6 +254,8 @@ extension CHMessage: Mappable {
   static func contextType(_ message: CHMessage) -> MessageType {
      if message.log != nil {
       return .Log
+    } else if let buttons = message.buttons, buttons.count != 0 {
+      return .Buttons
     } else if message.file?.image == true {
       return .Media
     } else if message.file != nil {
@@ -304,12 +315,18 @@ extension CHMessage {
   //TODO: refactor async call into actions 
   //but to do that, it also has to handle errors in redux
   
-  static func createLocal(chatId: String, text: String?, originId: String? = nil, key: String? = nil) -> CHMessage {
+  static func createLocal(
+    chatId: String,
+    text: String?,
+    originId: String? = nil,
+    key: String? = nil,
+    mutable: Bool = true) -> CHMessage {
     let me = mainStore.state.guest
     var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
     if let originId = originId, let key = key {
       message.submit = CHSubmit(id: originId, key: key)
     }
+    message.mutable = mutable
     return message
   }
   
@@ -391,7 +408,8 @@ extension CHMessage {
         userChatId: self.chatId,
         message: self.message ?? "",
         requestId: self.requestId!,
-        submit: self.submit).subscribe(onNext: { (message) in
+        submit: self.submit,
+        mutable: self.mutable).subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)

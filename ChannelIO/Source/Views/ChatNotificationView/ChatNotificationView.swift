@@ -282,30 +282,12 @@ final class ChatNotificationView : BaseView {
         }
       }).disposed(by: self.disposeBag)
     } else {
+      self.contentButton.isHidden = true
+      self.contentImageView.isHidden = true
       self.contentButtonBottomConstraint?.update(inset: 0)
       self.contentButtonTopConstraint?.update(offset: 0)
       self.contentImageHeightConstraint?.update(offset: 0)
     }
-  }
-  
-  override func updateConstraints() {
-    self.snp.remakeConstraints { [weak self] (make) in
-      if let top = self?.topLayoutGuide {
-        make.top.equalTo(top.snp.bottom).offset(Metric.viewTopMargin)
-      } else {
-        make.top.equalToSuperview().inset(Metric.viewTopMargin)
-      }
-      
-      if UIScreen.main.bounds.width > Metric.maxWidth + Metric.viewSideMargin * 2 {
-        make.centerX.equalToSuperview()
-        make.width.equalTo(Metric.maxWidth)
-      } else {
-        make.leading.equalToSuperview().inset(Metric.viewSideMargin)
-        make.trailing.equalToSuperview().inset(Metric.viewSideMargin)
-      }
-    }
-   
-    super.updateConstraints()
   }
   
   func signalForChat() -> Observable<Any?> {

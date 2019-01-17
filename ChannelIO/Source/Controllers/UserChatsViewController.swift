@@ -135,9 +135,9 @@ class UserChatsViewController: BaseViewController {
       self?.nextSeq = nil
       self?.fetchUserChats(isInit: true, showIndicator: true)
       WsService.shared.connect()
-      _ = GuestPromise.touch().subscribe(onNext: { (guest) in
+      AppManager.touch().subscribe(onNext: { (guest) in
         mainStore.dispatch(UpdateGuest(payload: guest))
-      })
+      }).disposed(by: (self?.disposeBag)!)
     }.disposed(by: self.disposeBag)
     
     self.plusButton.signalForClick().subscribe { [weak self] _ in
@@ -268,8 +268,8 @@ class UserChatsViewController: BaseViewController {
         //target evaluate (supportBots) -> bot? 
         //evaluation happen here later
         
-        if let botId = supportBots.first?.id {
-          return SupportBotPromise.getSupportBotEntry(supportBotId: botId)
+        if let supportBot = supportBots.first {
+          return supportBot.getEntry()
         } else {
           return .just(CHSupportBotEntryInfo(step: nil, actions: []))
         }

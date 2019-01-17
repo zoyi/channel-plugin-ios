@@ -9,6 +9,12 @@
 import Foundation
 import SnapKit
 
+let placeHolder = UITextView()
+  .then {
+    $0.textContainer.lineFragmentPadding = 0
+    $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+  }
+
 class TextMessageView : BaseView {
   struct Metric {
     static let topBottomPadding = 10.f
@@ -135,16 +141,25 @@ class TextMessageView : BaseView {
   
   class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
-    if let message = viewModel.message.messageV2 {
-      let maxWidth = !viewModel.message.onlyEmoji ?
-        width - Metric.leftRightPadding * 2 :
-        width - Metric.minimalLeftRightPadding * 2
-      
-      let topBottomPadding = viewModel.message.onlyEmoji ?
-        Metric.minimalTopBottomPadding * 2 : Metric.topBottomPadding * 2
-      viewHeight = message.height(fits: maxWidth - 3) + topBottomPadding
-    }
+
+    let text = viewModel.translateState == .loading || viewModel.translateState == .original ?
+      viewModel.message.messageV2 :
+      viewModel.message.translatedText
     
+    let maxWidth = !viewModel.message.onlyEmoji ?
+      width - Metric.leftRightPadding * 2 :
+      width - Metric.minimalLeftRightPadding * 2
+    
+    let topBottomPadding = viewModel.message.onlyEmoji ?
+      Metric.minimalTopBottomPadding * 2 : Metric.topBottomPadding * 2
+    //viewHeight = message.height(fits: maxWidth - 3) + topBottomPadding
+    
+    placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+    placeHolder.textContainer.lineFragmentPadding = 0
+    placeHolder.attributedText = text
+    placeHolder.sizeToFit()
+    
+    viewHeight += placeHolder.frame.size.height + topBottomPadding
     return viewHeight
   }
 }
@@ -161,7 +176,7 @@ extension TextMessageView : UITextViewDelegate {
     case "mailto":
       return true
     default:
-      return shouldhandle == true || shouldhandle == nil
+      return shouldhandle == false || shouldhandle == nil
     }
   }
   

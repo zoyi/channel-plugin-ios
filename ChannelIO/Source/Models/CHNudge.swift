@@ -30,6 +30,8 @@ struct CHNudge: CHEvaluatable {
   var createdAt: Date? = nil
   var updatedAt: Date? = nil
   
+  var order: Double = 0.0
+  
   //dep
   var plugin: CHPlugin? = nil
   var variants: [CHNudgeVariant]? = nil
@@ -41,6 +43,14 @@ struct CHNudge: CHEvaluatable {
   
   static func createChat(nudgeId: String) -> Observable<ChatResponse> {
     return NudgePromise.createNudgeUserChat(nudgeId: nudgeId)
+  }
+  
+  static func getList(pluginId: String) -> Observable<[CHNudge]> {
+    return NudgePromise.getNudges(pluginId: pluginId)
+  }
+  
+  func reach() -> Observable<NudgeReachResponse> {
+    return NudgePromise.requestReach(nudgeId: self.id)
   }
 }
 
@@ -61,6 +71,7 @@ extension CHNudge: Mappable {
     triggerEvent        <- map["triggerEvent"]
     triggerDelay        <- map["triggerDelay"]
     repeatReachRateBase <- map["repeatReachRateBase"]
+    order               <- map["order"]
     startAt             <- (map["startAt"], CustomDateTransform())
     updatedAt           <- (map["endAt"], CustomDateTransform())
     createdAt           <- (map["createdAt"], CustomDateTransform())
@@ -80,13 +91,15 @@ extension CHNudge: Equatable {
       lhs.updatedAt == rhs.updatedAt &&
       lhs.repeatReachRateBase == rhs.repeatReachRateBase &&
       lhs.startAt == rhs.startAt &&
-      lhs.endAt == rhs.endAt
+      lhs.endAt == rhs.endAt &&
+      lhs.order == rhs.order
   }
 }
 
 protocol CHImageable {
   var imageMeta: CHImageMeta? { get set }
   var imageUrl: String? { get set }
+  var imageRedirectUrl: String? { get set }
 }
 
 struct CHNudgeVariant: CHImageable {

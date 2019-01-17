@@ -16,22 +16,26 @@ struct EventPromise {
   static func sendEvent(
     pluginId: String,
     name: String,
-    properties: [String: Any?]? = nil,
-    sysProperties: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
+    property: [String: Any?]? = nil,
+    sysProperty: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
     return Observable.create { subscriber in
       var params = [
         "body": [String:AnyObject]()
       ]
       
-      params["body"]?["name"] = name as AnyObject?
+      var event = [String: Any]()
+      event["name"] = name
       
-      if let properties = properties, properties.count != 0 {
-        params["body"]?["property"] = properties as AnyObject?
+      if let property = property, property.count != 0 {
+        event["property"] = property
       }
       
-      if let sysProperties = sysProperties, sysProperties.count != 0 {
-        params["body"]?["sysProperty"] = sysProperties as AnyObject?
+      if let sysProperty = sysProperty, sysProperty.count != 0 {
+        event["sysProperty"] = sysProperty
       }
+      
+      params["body"]?["event"] = event as AnyObject?
+      params["body"]?["guest"] = mainStore.state.guest.dict as AnyObject?
       
       Alamofire.request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
