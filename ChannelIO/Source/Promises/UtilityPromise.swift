@@ -57,7 +57,7 @@ struct UtilityPromise {
           case .success(let data):
             let json:JSON = JSON(data)
             guard let countries =  Mapper<CHCountry>()
-              .mapArray(JSONObject: json["countries"].object) else {
+              .mapArray(JSONObject: json.object) else {
                 subscriber.onNext([])
                 subscriber.onCompleted()
                 return

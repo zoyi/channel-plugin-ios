@@ -1,3 +1,7 @@
+# 5.2.1
+## Bug fixes
+* Fixed country code parsing
+
 # 5.2.0
 ## Updates
 * Updated pushbot flow logics
