@@ -914,7 +914,7 @@ extension ChatManager {
       }
   }
   
-  func didClickOnRetry(for message: CHMessage?) {
+  func didClickOnRetry(for message: CHMessage?, sender: UIView? = nil) {
     guard let message = message else { return }
     
     let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
@@ -935,6 +935,12 @@ extension ChatManager {
     alertView.addAction(UIAlertAction(title: cancelText, style: .cancel) { _ in
       // no action
     })
+    
+    if let popOver = alertView.popoverPresentationController {
+      popOver.sourceView = sender
+      popOver.sourceRect = sender?.bounds ?? CGRect.zero
+      popOver.permittedArrowDirections = .left
+    }
     
     CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
   }
@@ -978,7 +984,6 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     assetType: DKImagePickerControllerAssetType = .allAssets,
     from view: UIViewController?) {
     let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
-    groupDataManagerConfiguration.fetchLimit = 10
     groupDataManagerConfiguration.assetGroupTypes = [
       .smartAlbumUserLibrary,
       .smartAlbumFavorites,

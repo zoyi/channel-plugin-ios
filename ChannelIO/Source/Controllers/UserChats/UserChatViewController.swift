@@ -675,6 +675,8 @@ extension UserChatViewController {
 
   override func didPressLeftButton(_ sender: Any?) {
     super.didPressLeftButton(sender)
+    
+    let button = sender as! UIButton
     let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
 
     alertView.addAction(
@@ -692,7 +694,14 @@ extension UserChatViewController {
 
       })
 
-    self.navigationController?.present(alertView, animated: true, completion: nil)
+    if let popOver = alertView.popoverPresentationController {
+      popOver.sourceView = button
+      popOver.sourceRect = button.bounds
+      popOver.permittedArrowDirections = .down
+    }
+    
+    self.present(alertView, animated: true, completion: nil)
+
   }
 
   override func didPressRightButton(_ sender: Any?) {

@@ -1,3 +1,7 @@
+# 5.2.3
+## Bug fixes
+* Fixed actionsheet issue for ipad
+
 # 5.2.1
 ## Bug fixes
 * Fixed country code parsing
