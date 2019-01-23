@@ -1,5 +1,5 @@
 //
-//  FormMessageCell.swift
+//  ActionMessageCell.swift
 //  ChannelIO
 //
 //  Created by Haeun Chung on 08/06/2018.
@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-class FormMessageCell: MessageCell {
+class ActionMessageCell: MessageCell {
   let actionView = ActionView()
   var messageId = ""
   
@@ -61,13 +61,13 @@ class FormMessageCell: MessageCell {
     }
     
     height += viewModel.shouldDisplayForm ? ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? []) : 0
+      fits: width, inputs: viewModel.message.action?.inputs ?? []) + Metric.top : 0
     
-    return height + Metric.top
+    return height
   }
 }
 
-class FormWebMessageCell: WebPageMessageCell {
+class ActionWebMessageCell: WebPageMessageCell {
   let actionView = ActionView()
   var messageId = ""
   
@@ -108,12 +108,12 @@ class FormWebMessageCell: WebPageMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? [])
+      fits: width, inputs: viewModel.message.action?.inputs ?? [])
   }
 }
 
 
-class FormMediaMessageCell: MediaMessageCell {
+class ActionMediaMessageCell: MediaMessageCell {
   let actionView = ActionView()
   var messageId = ""
   
@@ -154,12 +154,12 @@ class FormMediaMessageCell: MediaMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? [])
+      fits: width, inputs: viewModel.message.action?.inputs ?? [])
   }
 }
 
 
-class FormFileMessageCell: FileMessageCell {
+class ActionFileMessageCell: FileMessageCell {
   let actionView = ActionView()
   var messageId = ""
   
@@ -200,7 +200,7 @@ class FormFileMessageCell: FileMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? [])
+      fits: width, inputs: viewModel.message.action?.inputs ?? [])
   }
 }
 

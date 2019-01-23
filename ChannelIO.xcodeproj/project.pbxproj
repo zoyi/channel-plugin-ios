@@ -98,8 +98,8 @@
 		656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */; };
 		656C984E1FC6A3F10064F53E /* ChatStatusDefaultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984D1FC6A3F10064F53E /* ChatStatusDefaultView.swift */; };
 		656C98501FC6A4200064F53E /* ChatStatusFollowedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656C984F1FC6A4200064F53E /* ChatStatusFollowedView.swift */; };
-		656FBFAB20CA51E50062C6A9 /* FormMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */; };
-		656FBFAF20CA53B60062C6A9 /* CHForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAE20CA53B50062C6A9 /* CHForm.swift */; };
+		656FBFAB20CA51E50062C6A9 /* ActionMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAA20CA51E50062C6A9 /* ActionMessageCell.swift */; };
+		656FBFAF20CA53B60062C6A9 /* CHAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFAE20CA53B50062C6A9 /* CHAction.swift */; };
 		656FBFB320CE16980062C6A9 /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656FBFB220CE16980062C6A9 /* ActionView.swift */; };
 		657AF3EB2178302A001EAA7A /* TargetEvaluatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3EA2178302A001EAA7A /* TargetEvaluatorService.swift */; };
 		657AF3ED21783119001EAA7A /* TargetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3EC21783119001EAA7A /* TargetType.swift */; };
@@ -470,8 +470,8 @@
 		656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTitleView.swift; sourceTree = "<group>"; };
 		656C984D1FC6A3F10064F53E /* ChatStatusDefaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusDefaultView.swift; sourceTree = "<group>"; };
 		656C984F1FC6A4200064F53E /* ChatStatusFollowedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStatusFollowedView.swift; sourceTree = "<group>"; };
-		656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormMessageCell.swift; sourceTree = "<group>"; };
-		656FBFAE20CA53B50062C6A9 /* CHForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHForm.swift; sourceTree = "<group>"; };
+		656FBFAA20CA51E50062C6A9 /* ActionMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionMessageCell.swift; sourceTree = "<group>"; };
+		656FBFAE20CA53B50062C6A9 /* CHAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAction.swift; sourceTree = "<group>"; };
 		656FBFB220CE16980062C6A9 /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
 		657AF3EA2178302A001EAA7A /* TargetEvaluatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvaluatorService.swift; sourceTree = "<group>"; };
 		657AF3EC21783119001EAA7A /* TargetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetType.swift; sourceTree = "<group>"; };
@@ -1218,7 +1218,7 @@
 				222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */,
 				65AA7AE21FD64C9500D2A8B1 /* CHBot.swift */,
 				2243FD542084C15800CEEF45 /* CHProfileItem.swift */,
-				656FBFAE20CA53B50062C6A9 /* CHForm.swift */,
+				656FBFAE20CA53B50062C6A9 /* CHAction.swift */,
 				657AF3EC21783119001EAA7A /* TargetType.swift */,
 				657AF3EE217845D7001EAA7A /* CHNudge.swift */,
 				657AF3F421784606001EAA7A /* CHSupportBot.swift */,
@@ -1416,7 +1416,7 @@
 				65CB1414206A02F200E456B5 /* WebPageMessageCell.swift */,
 				65CB1415206A02F200E456B5 /* WebPageMessageView.swift */,
 				656FBFB220CE16980062C6A9 /* ActionView.swift */,
-				656FBFAA20CA51E50062C6A9 /* FormMessageCell.swift */,
+				656FBFAA20CA51E50062C6A9 /* ActionMessageCell.swift */,
 				65EAE11220EF468500D501FC /* TranslateView.swift */,
 			);
 			path = MessageCell;
@@ -1638,7 +1638,7 @@
 				659793551FA716CB00840F6A /* BaseNavigationController.swift in Sources */,
 				659793561FA716CB00840F6A /* BaseSLKTextViewController.swift in Sources */,
 				65AA7AE31FD64C9500D2A8B1 /* CHBot.swift in Sources */,
-				656FBFAF20CA53B60062C6A9 /* CHForm.swift in Sources */,
+				656FBFAF20CA53B60062C6A9 /* CHAction.swift in Sources */,
 				658010E1219948E500A51CEC /* NudgePromise.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
 				22E03E9221B38D560009F48E /* MarkdownList.swift in Sources */,
@@ -1730,7 +1730,7 @@
 				659793861FA716CB00840F6A /* EventPromise.swift in Sources */,
 				657AF3EB2178302A001EAA7A /* TargetEvaluatorService.swift in Sources */,
 				222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */,
-				656FBFAB20CA51E50062C6A9 /* FormMessageCell.swift in Sources */,
+				656FBFAB20CA51E50062C6A9 /* ActionMessageCell.swift in Sources */,
 				65CB1425206A02F200E456B5 /* FileMessageView.swift in Sources */,
 				659793871FA716CB00840F6A /* GuestPromise.swift in Sources */,
 				659793881FA716CB00840F6A /* PluginPromise.swift in Sources */,

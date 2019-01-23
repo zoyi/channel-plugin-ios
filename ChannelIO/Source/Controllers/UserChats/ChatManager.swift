@@ -459,7 +459,7 @@ extension ChatManager {
   
   private func processUserChatAction(originId: String?, key: String?, value: String?) {
     guard var origin = messageSelector(state: mainStore.state, id: originId),
-      let type = origin.form?.type,
+      let type = origin.action?.type,
       let key = key, let value = value else { return }
     
     var msg: CHMessage?
@@ -477,7 +477,7 @@ extension ChatManager {
           //handle error
         }).disposed(by: self.disposeBag)
     } else if type == .solve && key == "reopen" {
-      origin.form?.closed = true
+      origin.action?.closed = true
       mainStore.dispatch(UpdateMessage(payload: origin))
       if var updatedChat = userChatSelector(state: mainStore.state, userChatId: self.chatId) {
         updatedChat.state = .following
@@ -847,7 +847,7 @@ extension ChatManager {
 extension ChatManager {
   func onClickFormOption(originId: String?, key: String?, value: String?) {
     guard let origin = messageSelector(state: mainStore.state, id: originId),
-      let type = origin.form?.type, let key = key, let value = value else { return }
+      let type = origin.action?.type, let key = key, let value = value else { return }
     
     if type == .select {
       self.processPostAction(originId: originId, key: key, value: value)

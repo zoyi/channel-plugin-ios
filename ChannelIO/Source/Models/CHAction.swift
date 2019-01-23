@@ -9,11 +9,11 @@
 import Foundation
 import ObjectMapper
 
-enum FormOptionKey: String {
+enum ActionOptionKey: String {
   case disableToManager
 }
 
-enum FormType : String {
+enum ActionType: String {
   case select
   case button
   case solve = "userChat.solve"
@@ -21,25 +21,25 @@ enum FormType : String {
   case support = "supportBot"
 }
 
-struct CHForm {
-  var type: FormType = .select
+struct CHAction {
+  var type: ActionType = .select
   var inputs: [CHInput] = []
   var closed: Bool = false
-  var option: [FormOptionKey: Bool] = [:]
+  var option: [ActionOptionKey: Bool] = [:]
   
-  static func create(botEntry: CHSupportBotEntryInfo) -> CHForm {
-    var form = CHForm()
-    form.type = .support
-    form.inputs = botEntry.actions.map { (action) in
+  static func create(botEntry: CHSupportBotEntryInfo) -> CHAction {
+    var action = CHAction()
+    action.type = .support
+    action.inputs = botEntry.actions.map { (action) in
       let (text, onlyEmoji) = CustomMessageTransform.markdown.parse(action.text)
       return CHInput(key: action.key, text: text, onlyEmoji: onlyEmoji)
     }
     
-    return form
+    return action
   }
 }
 
-extension CHForm: Mappable {
+extension CHAction: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {

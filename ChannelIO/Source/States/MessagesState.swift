@@ -10,7 +10,7 @@ import ReSwift
 
 struct MessagesState: StateType {
   var messageDictionary: [String:CHMessage] = [:]
-  var formQueue: [String:CHMessage] = [:]
+  var actionQueue: [String:CHMessage] = [:]
   var supportBotEntry: CHMessage?
   
   func findBy(type: MessageType) -> [CHMessage]? {
@@ -52,7 +52,7 @@ struct MessagesState: StateType {
         self.messageDictionary.removeValue(forKey: k)
       }
     }
-    self.formQueue = [:]
+    self.actionQueue = [:]
     return self
   }
   
@@ -84,8 +84,8 @@ struct MessagesState: StateType {
     
     self.messageDictionary[message.id] = message
     
-    if message.form != nil {
-      self.formQueue[message.id] = message
+    if message.action != nil {
+      self.actionQueue[message.id] = message
     }
     return self
   }
@@ -100,15 +100,15 @@ struct MessagesState: StateType {
     //In order to display smooth message transition when actionable was clicked
     //actionable message click -> message created -> message update --- default
     //actioanble message click -> message created (update actionable while created) -- optimize
-    for (key, message) in self.formQueue {
+    for (key, message) in self.actionQueue {
       var updated = message
       updated.messageType = CHMessage.contextType(message)
       self.messageDictionary[key] = updated
     }
     
     self.messageDictionary[message.id] = message
-    if message.form != nil {
-      self.formQueue[message.id] = message
+    if message.action != nil {
+      self.actionQueue[message.id] = message
     }
     
     return self
@@ -116,7 +116,7 @@ struct MessagesState: StateType {
   
   mutating func clear() -> MessagesState {
     self.messageDictionary.removeAll()
-    self.formQueue.removeAll()
+    self.actionQueue.removeAll()
     return self
   }
 }

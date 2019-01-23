@@ -76,9 +76,9 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
       let message = CHMessage(
         chatId: "support_bot_message_dummy",
         message: step.message,
-        type: .Form,
+        type: .Action,
         entity: action.bot,
-        form: CHForm.create(botEntry: action.entry),
+        action: CHAction.create(botEntry: action.entry),
         file: CHFile.create(imageable: step),
         createdAt: Date(),
         id: "support_bot_message_dummy")
