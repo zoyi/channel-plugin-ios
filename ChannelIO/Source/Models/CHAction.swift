@@ -23,17 +23,14 @@ enum ActionType: String {
 
 struct CHAction {
   var type: ActionType = .select
-  var inputs: [CHInput] = []
+  var buttons: [CHButtonDTO] = []
   var closed: Bool = false
   var option: [ActionOptionKey: Bool] = [:]
   
   static func create(botEntry: CHSupportBotEntryInfo) -> CHAction {
     var action = CHAction()
     action.type = .support
-    action.inputs = botEntry.actions.map { (action) in
-      let (text, onlyEmoji) = CustomMessageTransform.markdown.parse(action.text)
-      return CHInput(key: action.key, text: text, onlyEmoji: onlyEmoji)
-    }
+    action.buttons = botEntry.buttons
     
     return action
   }
@@ -44,20 +41,20 @@ extension CHAction: Mappable {
   
   mutating func mapping(map: Map) {
     type        <- map["type"]
-    inputs      <- map["inputs"]
+    buttons     <- map["buttons"]
     option      <- map["option"]
     closed      <- map["closed"]
   }
 }
 
-struct CHInput {
+struct CHButtonDTO {
   var key: String = ""
   var text: NSAttributedString? = nil
   
   var onlyEmoji: Bool = false
 }
 
-extension CHInput: Mappable {
+extension CHButtonDTO: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {

@@ -61,7 +61,7 @@ class ActionMessageCell: MessageCell {
     }
     
     height += viewModel.shouldDisplayForm ? ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.action?.inputs ?? []) + Metric.top : 0
+      fits: width, buttons: viewModel.message.action?.buttons ?? []) + Metric.top : 0
     
     return height
   }
@@ -108,7 +108,7 @@ class ActionWebMessageCell: WebPageMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.action?.inputs ?? [])
+      fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 
@@ -154,7 +154,7 @@ class ActionMediaMessageCell: MediaMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.action?.inputs ?? [])
+      fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 
@@ -200,7 +200,7 @@ class ActionFileMessageCell: FileMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.action?.inputs ?? [])
+      fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 

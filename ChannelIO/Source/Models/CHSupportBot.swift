@@ -21,15 +21,27 @@ struct CHSupportBot: CHEvaluatable {
   var target: [[CHTargetCondition]]? = nil
 }
 
+extension CHSupportBot: Mappable {
+  init?(map: Map) { }
+  
+  mutating func mapping(map: Map) {
+    id            <- map["id"]
+    channelId     <- map["channelId"]
+    pluginId      <- map["pluginId"]
+    target        <- map["target"]
+  }
+}
+
 extension CHSupportBot {
-  static func getBots(with pluginId: String, fetch: Bool) -> Observable<CHSupportBotEntryInfo> {
+  static func get(with pluginId: String, fetch: Bool) -> Observable<CHSupportBotEntryInfo> {
     return Observable.create({ (subscriber) -> Disposable in
       var disposable: Disposable?
       if fetch {
-        disposable = SupportBotPromise.getSupportBots(pluginId: pluginId)
-          .subscribe(onNext: { (bots) in
+        disposable = SupportBotPromise
+          .getSupportBot(pluginId: pluginId)
+          .subscribe(onNext: { (bot) in
             dlog("fetched support bot")
-            subscriber.onNext(bots)
+            subscriber.onNext(bot)
             subscriber.onCompleted()
           }, onError: { (error) in
             subscriber.onError(error)
@@ -64,17 +76,6 @@ extension CHSupportBot {
   }
 }
 
-extension CHSupportBot: Mappable {
-  init?(map: Map) { }
-  
-  mutating func mapping(map: Map) {
-    id            <- map["id"]
-    channelId     <- map["channelId"]
-    pluginId      <- map["pluginId"]
-    target        <- map["target"]
-  }
-}
-
 struct CHSupportBotStep: CHImageable {
   var id: String = ""
   var message: String = ""
@@ -94,24 +95,16 @@ extension CHSupportBotStep: Mappable {
   }
 }
 
-struct CHSupportBotAction {
-  var id: String = ""
-  var key: String = ""
-  var text: String = ""
-}
-
-extension CHSupportBotAction: Mappable {
-  init?(map: Map) { }
-  
-  mutating func mapping(map: Map) {
-    id            <- map["id"]
-    key           <- map["key"]
-    text          <- map["text"]
-  }
-}
-
 struct CHSupportBotEntryInfo {
-  let supportBot: CHSupportBot? = nil
-  let step: CHSupportBotStep? = nil
-  let actions: [CHSupportBotAction] = []
+  var supportBot: CHSupportBot? = nil
+  var step: CHSupportBotStep? = nil
+  var buttons: [CHButtonDTO] = []
+  
+  init() { }
+  
+  init(supportBot: CHSupportBot?, step: CHSupportBotStep?, buttons: [CHButtonDTO] = []) {
+    self.supportBot = supportBot
+    self.step = step
+    self.buttons = buttons
+  }
 }

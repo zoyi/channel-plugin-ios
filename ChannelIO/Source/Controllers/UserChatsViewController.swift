@@ -251,7 +251,7 @@ class UserChatsViewController: BaseViewController {
     let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
     let followersSignal = CHManager.getRecentFollowers()
     let supportBot = channel.canUseSupportBot ?
-      CHSupportBot.getBots(with: mainStore.state.plugin.id, fetch: userChatId == nil) :
+      CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil) :
       .just(CHSupportBotEntryInfo())
     
     Observable.zip(pluginSignal, followersSignal, supportBot)

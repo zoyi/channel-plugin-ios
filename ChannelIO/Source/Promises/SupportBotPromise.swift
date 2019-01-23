@@ -13,15 +13,9 @@ import RxSwift
 import ObjectMapper
 
 struct SupportBotPromise {
-  static func getSupportBots(pluginId: String) -> Observable<CHSupportBotEntryInfo> {
-    let params = [
-      "query": [
-        "mobile": "true"
-      ]
-    ]
-    
+  static func getSupportBot(pluginId: String) -> Observable<CHSupportBotEntryInfo> {
     return Observable.create({ (subscriber) in
-      let req = Alamofire.request(RestRouter.GetSupportBots(pluginId, params))
+      let req = Alamofire.request(RestRouter.GetSupportBot(pluginId))
         .validate(statusCode: 200..<300)
         .asyncResponse(completionHandler: { (response) in
           switch response.result {
@@ -29,9 +23,9 @@ struct SupportBotPromise {
             let json = SwiftyJSON.JSON(data)
             let supportBot = Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
             let step = Mapper<CHSupportBotStep>().map(JSONObject: json["step"].object)
-            let actions = Mapper<CHSupportBotAction>().mapArray(JSONObject: json["actions"].object) ?? []
-            let data = CHSupportBotEntryInfo(supportBot: supportBot, step: step, actions: actions)
-            
+            let buttons = Mapper<CHButtonDTO>().mapArray(JSONObject: json["buttons"].object) ?? []
+            let data = CHSupportBotEntryInfo(supportBot: supportBot, step: step, buttons: buttons)
+
             subscriber.onNext(data)
             subscriber.onCompleted()
           case .failure(let error):

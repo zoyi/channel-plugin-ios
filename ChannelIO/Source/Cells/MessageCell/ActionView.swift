@@ -66,16 +66,16 @@ class ActionButton: UIButton {
     static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
   }
   
-  required init(input: CHInput) {
+  required init(button: CHButtonDTO) {
     super.init(frame: CGRect.zero)
-    self.text = input.text
-    self.key = input.key
-    self.onlyEmoji = input.onlyEmoji
+    self.text = button.text
+    self.key = button.key
+    self.onlyEmoji = button.onlyEmoji
     
     self.text = self.text?.addFont(
-      input.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
+      button.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
       color: CHColors.dark80,
-      on: NSRange(location:0, length: input.text?.length ?? 0))
+      on: NSRange(location:0, length: button.text?.length ?? 0))
     
     self.setAttributedTitle(self.text, for: .normal)
     self.titleLabel?.lineBreakMode = .byTruncatingTail
@@ -137,10 +137,10 @@ class ActionView: BaseView {
     self.buttons.removeAll()
     
     guard viewModel.shouldDisplayForm else { return }
-    guard let inputs = viewModel.message.action?.inputs, inputs.count > 0 else { return }
+    guard let buttons = viewModel.message.action?.buttons, buttons.count > 0 else { return }
     
-    for input in inputs {
-      let button = ActionButton(input: input)
+    for button in buttons {
+      let button = ActionButton(button: button)
       button.selectedColor = viewModel.pluginColor
       button.selectedTextColor = viewModel.textColor
       
@@ -200,11 +200,11 @@ class ActionView: BaseView {
     return self.actionSubject.asObservable()
   }
   
-  class func viewHeight(fits width: CGFloat, inputs: [CHInput]) -> CGFloat {
+  class func viewHeight(fits width: CGFloat, buttons: [CHButtonDTO]) -> CGFloat {
     var cx = 0.f, cy = 0.f
 
-    for (index, input) in inputs.enumerated() {
-      let size = input.text?.size(
+    for (index, button) in buttons.enumerated() {
+      let size = button.text?.size(
         fits: CGSize(width: Constant.maxWidth - (Metric.sideMargin * 2), height: 10000),
         maximumNumberOfLines: 2) ?? CGSize.zero
       
@@ -218,7 +218,7 @@ class ActionView: BaseView {
         cx += width + Metric.itemBetweenMargin
       }
       
-      if index == inputs.count - 1 {
+      if index == buttons.count - 1 {
         cy += height
       }
     }
