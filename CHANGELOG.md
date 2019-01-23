@@ -1,3 +1,23 @@
+# 5.2.4
+## Bug fixes
+* Removed test related frameworks from project due to carthage build error
+
+# 5.2.3
+## Bug fixes
+* Fixed actionsheet issue for ipad
+
+# 5.2.1
+## Bug fixes
+* Fixed country code parsing
+
+# 5.2.0
+## Updates
+* Updated pushbot flow logics
+* Added pushbot button and image redirection
+* Added keep push bot button
+* Updated event api 
+* Removed target evaluation logic
+
 # 5.1.8
 ## Bug fixes
 * Fixed int overflow issue for requestId

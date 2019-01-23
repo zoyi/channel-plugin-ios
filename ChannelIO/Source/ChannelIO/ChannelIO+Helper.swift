@@ -11,15 +11,15 @@ import CRToast
 import SVProgressHUD
 
 extension ChannelIO {
+  
   internal class func reset() {
-    dispatch {
-      PushBotManager.reset()
-      ChannelIO.launcherView?.hide(animated: false)
-      ChannelIO.close(animated: false)
-      ChannelIO.hideNotification()
-      mainStore.dispatch(CheckOutSuccess())
-      WsService.shared.disconnect()
-    }
+    PushBotManager.reset()
+    ChannelIO.launcherView?.hide(animated: false)
+    ChannelIO.close(animated: false)
+    ChannelIO.hideNotification()
+    mainStore.dispatch(CheckOutSuccess())
+    WsService.shared.disconnect()
+    disposeBag = DisposeBag()
   }
   
   internal class func prepare() {
@@ -52,11 +52,11 @@ extension ChannelIO {
       return
     }
     
-    EventPromise.sendEvent(
+    CHEvent.send(
       pluginId: mainStore.state.plugin.id,
       name: eventName,
-      properties: eventProperty,
-      sysProperties: sysProperty).subscribe(onNext: { (event, nudges) in
+      property: eventProperty,
+      sysProperty: sysProperty).subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
         PushBotManager.process(with: nudges, property: eventProperty ?? [:])
       }, onError: { (error) in
@@ -88,7 +88,8 @@ extension ChannelIO {
         .with(sysProfile: nil, includeDefault: true)
         .build()
       
-      PluginPromise
+      //refactor into one class
+      AppManager
         .boot(pluginKey: settings.pluginKey, params: params)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (data) in
@@ -107,9 +108,11 @@ extension ChannelIO {
           mainStore.dispatch(CheckInSuccess(payload: data))
           
           WsService.shared.connect()
-  
-          subscriber.onNext(data)
-          subscriber.onCompleted()
+          WsService.shared.ready().subscribe(onNext: { _ in
+            subscriber.onNext(data)
+            subscriber.onCompleted()
+          }).disposed(by: disposeBag)
+          
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {
@@ -127,7 +130,6 @@ extension ChannelIO {
     
     dispatch {
       ChannelIO.launcherView?.isHidden = true
-      
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
@@ -161,33 +163,43 @@ extension ChannelIO {
     }
   }
   
-  internal class func registerPushToken() {
-    guard let pushToken = ChannelIO.pushToken else { return }
-    
-    PluginPromise
-      .registerPushToken(channelId: mainStore.state.channel.id, token: pushToken)
-      .subscribe(onNext: { (result) in
-        dlog("register token success")
-      }, onError:{ error in
-        dlog("register token failed")
-      }).disposed(by: disposeBag)
-  }
-  
   internal class func showNotification(pushData: CHPush?) {
-    guard let topController = CHUtils.getTopController(), let push = pushData else {
-      return
-    }
+    guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
+    guard let push = pushData else { return }
     
     dispatch {
       let notificationView = ChannelIO.chatNotificationView ?? ChatNotificationView()
-      notificationView.topLayoutGuide = topController.topLayoutGuide
       
       let notificationViewModel = ChatNotificationViewModel(push: push)
       notificationView.configure(notificationViewModel)
       
-      if notificationView.superview == nil {
-        notificationView.insert(on: topController.view, animated: true)
+      if let superview = notificationView.superview, superview != view {
+        notificationView.removeFromSuperview()
       }
+      
+      if notificationView.superview != view {
+        notificationView.insert(on: view, animated: true)
+      }
+      
+      let viewTopMargin = 20.f
+      let viewSideMargin = 14.f
+      let maxWidth = 520.f
+      
+      notificationView.snp.makeConstraints({ (make) in
+        if UIScreen.main.bounds.width > maxWidth + viewSideMargin * 2 {
+          make.centerX.equalToSuperview()
+          make.width.equalTo(maxWidth)
+        } else {
+          make.leading.equalToSuperview().inset(viewSideMargin)
+          make.trailing.equalToSuperview().inset(viewSideMargin)
+        }
+        
+        if #available(iOS 11.0, *) {
+          make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(viewTopMargin)
+        } else {
+          make.top.equalToSuperview().inset(viewTopMargin)
+        }
+      })
       
       notificationView
         .signalForChat()
@@ -228,9 +240,11 @@ extension ChannelIO {
     
   internal class func hideNotification() {
     guard ChannelIO.chatNotificationView != nil else { return }
-
-    ChannelIO.chatNotificationView?.remove(animated: true)
-    ChannelIO.chatNotificationView = nil
+    
+    dispatch {
+      ChannelIO.chatNotificationView?.remove(animated: true)
+      ChannelIO.chatNotificationView = nil
+    }
   }
 }
 
@@ -270,7 +284,7 @@ extension ChannelIO {
   
   @objc internal class func enterForeground() {
     guard self.isValidStatus else { return }
-    _ = GuestPromise.touch()
+    _ = AppManager.touch()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (guest) in
       mainStore.dispatch(UpdateGuest(payload: guest))

@@ -16,6 +16,7 @@ protocol CHGuest: CHEntity {
   var country: String { get set }
   var city: String { get set }
   
+  var locale: String { get set }
   var alert: Int { get set }
   var unread: Int { get set }
   var segment: String? { get set }
@@ -32,25 +33,30 @@ extension CHGuest {
       return "Veil"
     }
   }
-  
-  var userInfo: [String: Any] {
-    var info: [String: Any] = [:]
-    info[TargetKey.city.rawValue] = self.city
-    info[TargetKey.country.rawValue] = self.country
-    info[TargetKey.guestMobileNumber.rawValue] = self.mobileNumber ?? ""
-    info[TargetKey.guestSegment.rawValue] = self.segment ?? ""
-    info[TargetKey.guestCreatedAt.rawValue] = "\(self.createdAt?.miliseconds ?? Date().miliseconds)"
-    info[TargetKey.guestUpdatedAt.rawValue] = "\(self.updatedAt?.miliseconds ?? Date().miliseconds)"
-    info[TargetKey.locale.rawValue] = CHUtils.getLocale()?.rawValue ?? ""
-    info[TargetKey.guestType.rawValue] = self.type
-    info[TargetKey.guestName.rawValue] = self.name
-    info[TargetKey.guestId.rawValue] = self.id
-    info[TargetKey.guestProfile.rawValue] = profile
-    info[TargetKey.os.rawValue] = "iOS \(UIDevice.current.systemVersion)"
-    info[TargetKey.deviceCategory.rawValue] = "mobile"
-    info[TargetKey.device.rawValue] = UIDevice.current.modelName
-    info[TargetKey.locale.rawValue] = CHUtils.getLocale()?.rawValue ?? "en"
-    return info
+    
+  var dict: [String: Any] {
+    var data = [String: Any]()
+    
+    data["named"] = self.named ? "true" : "false"
+    data["country"] = self.country
+    data["city"] = self.city
+    data["alert"] = self.alert
+    data["unread"] = self.unread
+    data["locale"] = self.locale
+    
+    if let profile = self.profile {
+      data["profile"] = profile
+    }
+    if let segment = self.segment {
+      data["segment"] = segment
+    }
+    if let createdAt = self.createdAt {
+      data["createdAt"] = UInt64(createdAt.timeIntervalSince1970 * 1000)
+    }
+    if let updatedAt = self.updatedAt {
+      data["updatedAt"] = UInt64(updatedAt.timeIntervalSince1970 * 1000)
+    }
+    return data
   }
 }
 
@@ -61,9 +67,5 @@ extension CHGuest {
     } else {
       return mainStore.state.plugin.welcomeI18n?.getMessage()
     }
-  }
-  
-  func touch() -> Observable<CHGuest> {
-    return GuestPromise.touch()
   }
 }

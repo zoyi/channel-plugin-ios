@@ -155,3 +155,4 @@
 "ch.chat.reopen" = "新しいチャット";
 "ch.common.open" = "オープン";
 "ch.common.cancel" = "キャンセル";
+"ch.chat.push_bot_like" = "いいね";

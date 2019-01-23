@@ -163,7 +163,7 @@ class ChatManager: NSObject {
         guard let newChat = data as? CHUserChat else { return }
         guard let prevChat = self?.chat else { return }
         if prevChat.isReady() && newChat.isOpen() {
-          self?.requestProfileBot()
+          mainStore.state.plugin.requestProfileBot(chatId: newChat.id)
         }
         
         if prevChat.shouldRequestRead(otherChat: newChat) {
@@ -331,11 +331,7 @@ extension ChatManager {
       mainStore.dispatch(CreateMessage(payload: message))
       self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
     } else {
-      let createChatSignal = self.chat?.isNudgeChat() == true ?
-        self.createNudgeChat(nudgeId: self.chat?.getNudgeId()) :
-        self.createChat()
-      
-      createChatSignal
+      self.createChat()
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
           var message = CHMessage(chatId: chatId, guest: mainStore.state.guest, image: imageData)
@@ -354,11 +350,7 @@ extension ChatManager {
       let messages = self.createMessageForImages(assets: assets)
       self.sendMessageRecursively(allMessages: messages, currentIndex: 0)
     } else {
-      let createChatSignal = self.chat?.isNudgeChat() == true ?
-        self.createNudgeChat(nudgeId: self.chat?.getNudgeId()) :
-        self.createChat()
-      
-      createChatSignal
+      self.createChat()
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
           let messages = self?.createMessageForImages(assets: assets, requestBot: true) ?? []
@@ -382,43 +374,30 @@ extension ChatManager {
 extension ChatManager {  
   func processSendMessage(msg: String) -> Observable<CHUserChat?> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
-      //move this logic into presenter
-      if let chat = self?.chat, chat.isActive(), !chat.isNudgeChat() {
-        let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-        mainStore.dispatch(CreateMessage(payload: message))
-        self?.sendMessage(message: message, local: false)
-          .observeOn(MainScheduler.instance)
-          .subscribe(onNext: { (msg) in
-            subscriber.onNext(chat)
-            subscriber.onCompleted()
-          }, onError: { (error) in
-            subscriber.onError(error)
-          }).disposed(by: self!.disposeBag)
-      } else {
-        let createChatSignal = self?.chat?.isNudgeChat() == true ?
-          self?.createNudgeChat(nudgeId: self?.chat?.getNudgeId()) :
-          self?.createChat()
-        
-        createChatSignal?
-          .observeOn(MainScheduler.instance)
-          .flatMap({ (chatId) -> Observable<CHMessage?> in
-            guard let s = self else { return .empty() }
-            s.chatId = chatId
-            let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
-            mainStore.dispatch(CreateMessage(payload: message))
-            return s.sendMessage(message: message, local: false)
-          })
-          .observeOn(MainScheduler.instance)
-          .subscribe(onNext: { (message) in
-            mainStore.dispatch(CreateMessage(payload: message))
-            subscriber.onNext(self?.chat)
-            subscriber.onCompleted()
-          }, onError: { (error) in
-            self?.state = .chatNotLoaded
-            subscriber.onError(error)
-          }).disposed(by: self!.disposeBag)
-      }
+      let createChatSignal = self?.chat?.isActive() == true ?
+        Observable.just(self?.chat?.id ?? "") :
+        self?.createChat()
       
+      createChatSignal?
+        .observeOn(MainScheduler.instance)
+        .flatMap({ (chatId) -> Observable<CHMessage?> in
+          guard let s = self else { return .empty() }
+          guard chatId != "" else { return .empty() }
+          
+          s.chatId = chatId
+          let message = CHMessage.createLocal(chatId: self!.chatId, text: msg)
+          mainStore.dispatch(CreateMessage(payload: message))
+          return s.sendMessage(message: message, local: false)
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (message) in
+          mainStore.dispatch(CreateMessage(payload: message))
+          subscriber.onNext(self?.chat)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        }).disposed(by: self!.disposeBag)
       return Disposables.create()
     })
   }
@@ -433,6 +412,25 @@ extension ChatManager {
         mainStore.dispatch(CreateMessage(payload:message))
       }, onError: { (error) in
         //handle error
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func processNudgeKeepAction(){
+    guard let chat = self.chat, chat.isNudgeChat() else { return }
+    
+    self.createNudgeChat(nudgeId: chat.getNudgeId())
+      .observeOn(MainScheduler.instance)
+      .flatMap { [weak self] (chatId) -> Observable<CHMessage?> in
+        guard let s = self else { return .empty() }
+        let message = CHMessage.createLocal(chatId: chatId, text: "👍", mutable: false)
+        mainStore.dispatch(CreateMessage(payload: message))
+        return s.sendMessage(message: message, local: false) //thumb action
+      }
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (message) in
+        mainStore.dispatch(CreateMessage(payload: message))
+      }, onError: { (erro) in
+        //?
       }).disposed(by: self.disposeBag)
   }
   
@@ -695,7 +693,7 @@ extension ChatManager {
     self.didChatLoaded = false
     WsService.shared.connect()
     
-    GuestPromise.touch().observeOn(MainScheduler.instance).subscribe(onNext: { (user) in
+    AppManager.touch().observeOn(MainScheduler.instance).subscribe(onNext: { (user) in
       mainStore.dispatch(UpdateGuest(payload: user))
     }).disposed(by: self.disposeBag)
   }
@@ -747,10 +745,6 @@ extension ChatManager {
       }, onError: { [weak self] (error) in
         self?.isRequestingReadAll = false
       }).disposed(by: self.disposeBag)
-  }
-  
-  func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
-    return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
   }
   
   func updateProfileItem(with message: CHMessage?, key: String?, value: Any?) -> Observable<Bool> {
@@ -866,6 +860,14 @@ extension ChatManager {
     }
   }
   
+  func didClickOnRedirectUrl(with url: String) {
+    guard let url = URL(string: url) else { return }
+    let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
+    if shouldHandle == false || shouldHandle == nil {
+      url.openWithUniversal()
+    }
+  }
+  
   func didClickOnFile(with message: CHMessage) {
     guard let url = message.file?.url else { return }
     
@@ -912,7 +914,7 @@ extension ChatManager {
       }
   }
   
-  func didClickOnRetry(for message: CHMessage?) {
+  func didClickOnRetry(for message: CHMessage?, sender: UIView? = nil) {
     guard let message = message else { return }
     
     let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
@@ -933,6 +935,12 @@ extension ChatManager {
     alertView.addAction(UIAlertAction(title: cancelText, style: .cancel) { _ in
       // no action
     })
+    
+    if let popOver = alertView.popoverPresentationController {
+      popOver.sourceView = sender
+      popOver.sourceRect = sender?.bounds ?? CGRect.zero
+      popOver.permittedArrowDirections = .left
+    }
     
     CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
   }
@@ -976,7 +984,6 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     assetType: DKImagePickerControllerAssetType = .allAssets,
     from view: UIViewController?) {
     let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
-    groupDataManagerConfiguration.fetchLimit = 10
     groupDataManagerConfiguration.assetGroupTypes = [
       .smartAlbumUserLibrary,
       .smartAlbumFavorites,

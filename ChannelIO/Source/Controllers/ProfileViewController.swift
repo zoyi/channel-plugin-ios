@@ -54,9 +54,9 @@ final class ProfileViewController: BaseViewController {
   //var originalPosition: CGPoint?
   //var currentPositionTouched: CGPoint?
   
+  var currentLocale = CHUtils.getLocale()
   var hideOptions = false
   var showCompleted = false
-  var currentLocale = CHUtils.getLocale()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -218,7 +218,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: event.element))
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
-      cell.configure(title: CHAssets.localized("ch.settings.show_closed_chats"), isOn: isOn)
+      cell.configure(title: CHAssets.localized("ch.settings.show_closed_chat"), isOn: isOn)
       return cell
     default:
       return  UITableViewCell()
@@ -285,7 +285,6 @@ extension ProfileViewController : StoreSubscriber {
       self.currentLocale = locale
       self.tableView.reloadData()
     }
-
   }
 
   func fetchUserChats(_ showCompleted: Bool) {

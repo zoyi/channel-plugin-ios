@@ -22,23 +22,15 @@ class PushBotManager {
     guard let nudges = nudges else { return }
     guard mainStore.state.channel.canUsePushBot else { return }
     let guest = mainStore.state.guest
-    let filtered = nudges.filter({ (nudge) -> Bool in
-      userChatSelector(
-        state: mainStore.state,
-        userChatId: CHConstants.nudgeChat + nudge.id
+    let filtered = nudges
+      .filter({ (nudge) -> Bool in
+        return userChatSelector(
+          state: mainStore.state,
+          userChatId: CHConstants.nudgeChat + nudge.id
         ) == nil
-    })
+      })
 
     Observable.from(filtered)
-      .filter { (nudge) -> Bool in
-        return TargetEvaluatorService.evaluate(
-          with: nudge.target,
-          userInfo: guest.userInfo.merging(
-            property,
-            uniquingKeysWith: { (_, second) in second }
-          )
-        )
-      }
       .toArray()
       .flatMap { Observable.from($0) }
       .flatMap ({ (nudge) -> Observable<CHNudge> in
@@ -50,7 +42,7 @@ class PushBotManager {
       })
       .filter { reached[$0.id] == false || reached[$0.id] == nil }
       .concatMap ({ (nudge) -> Observable<NudgeReachResponse> in
-        return NudgePromise.requestReach(nudgeId: nudge.id)
+        return nudge.reach()
       })
       .single { $0.reach == true }
       .filter { _ in mainStore.state.checkinState.status == .success }

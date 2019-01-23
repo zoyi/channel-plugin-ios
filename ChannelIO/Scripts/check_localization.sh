@@ -40,5 +40,6 @@ then
 	exit 1
 else
 	echo "Localization completed"
-	exit 0	
+  rm final.output && rm intermediate.output && rm result.output
+  exit 0	
 fi

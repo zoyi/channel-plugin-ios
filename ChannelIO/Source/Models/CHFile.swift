@@ -34,7 +34,8 @@ struct CHFile {
   var category = ""
   var image = false
   var previewThumb: CHImageMeta?
-
+  var imageRedirectUrl: String?
+  
   var isPreviewable: Bool! {
     return self.image == true && self.previewThumb != nil
   }
@@ -143,6 +144,7 @@ struct CHFile {
       file.url = url
       file.image = true
       file.previewThumb = imageable.imageMeta
+      file.imageRedirectUrl = imageable.imageRedirectUrl
       return file
     }
 
@@ -154,14 +156,14 @@ extension CHFile: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    url          <- map["url"]
-    name         <- map["name"]
-    filename     <- map["filename"]
-    size         <- map["size"]
-    category     <- map["extension"]
-    image        <- map["image"]
-    previewThumb <- map["previewThumb"]
-    
+    url                 <- map["url"]
+    name                <- map["name"]
+    filename            <- map["filename"]
+    size                <- map["size"]
+    category            <- map["extension"]
+    image               <- map["image"]
+    previewThumb        <- map["previewThumb"]
+    imageRedirectUrl    <- map["imageRedirectUrl"]
     fileUrl = URL(string: url)
   }
 }

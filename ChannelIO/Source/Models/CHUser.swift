@@ -27,6 +27,7 @@ struct CHUser: CHGuest, CHEntity {
   
   var country: String = ""
   var city:String = ""
+  var locale: String = ""
   
   var createdAt: Date?
   var updatedAt: Date?
@@ -58,6 +59,7 @@ extension CHUser: Mappable {
     profile         <- map["profile"]
     country         <- map["country"]
     city            <- map["city"]
+    locale          <- map["locale"]
     createdAt       <- (map["createdAt"], CustomDateTransform())
     updatedAt       <- (map["updatedAt"], CustomDateTransform())
   }

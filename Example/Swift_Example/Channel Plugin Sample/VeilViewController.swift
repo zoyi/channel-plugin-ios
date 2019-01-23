@@ -79,7 +79,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
+      pluginKey = "06ccfc12-a9fd-4c68-b364-5d19f81a60dd" //06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true
@@ -101,7 +101,8 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   @IBAction func onClickShowChat(_ sender: Any) {
-    ChannelIO.open(animated: true)
+    ChannelIO.track(eventName: "pageView", eventProperty: ["url":"Main"])
+    //ChannelIO.open(animated: true)
   }
   
   @IBAction func onClickShowLauncher(_ sender: Any) {
