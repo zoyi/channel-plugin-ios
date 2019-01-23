@@ -19,8 +19,10 @@ struct CHSupportBot: CHEvaluatable {
   var channelId: String = ""
   var pluginId: String = ""
   var target: [[CHTargetCondition]]? = nil
+}
 
-  static func getBots(with pluginId: String, fetch: Bool) -> Observable<[CHSupportBot]> {
+extension CHSupportBot {
+  static func getBots(with pluginId: String, fetch: Bool) -> Observable<CHSupportBotEntryInfo> {
     return Observable.create({ (subscriber) -> Disposable in
       var disposable: Disposable?
       if fetch {
@@ -33,7 +35,7 @@ struct CHSupportBot: CHEvaluatable {
             subscriber.onError(error)
           })
       } else {
-        subscriber.onNext([])
+        subscriber.onNext(CHSupportBotEntryInfo())
         subscriber.onCompleted()
       }
       
@@ -43,17 +45,17 @@ struct CHSupportBot: CHEvaluatable {
     })
   }
   
-  static func reply(with userChatId: String?, formId: String?, key: String?, requestId: String? = nil) -> Observable<CHMessage> {
-    return SupportBotPromise.replySupportBot(userChatId: userChatId, formId: formId, key: key, requestId: requestId)
+  static func reply(with userChatId: String?, actionId: String?, buttonId: String?, requestId: String? = nil) -> Observable<CHMessage> {
+    return SupportBotPromise.replySupportBot(userChatId: userChatId, actionId: actionId, buttonId: buttonId, requestId: requestId)
   }
   
-  static func reply(with message: CHMessage, formId: String? = nil) -> Observable<CHMessage> {
-    let formId = formId ?? message.submit?.id
+  static func reply(with message: CHMessage, actionId: String? = nil) -> Observable<CHMessage> {
+    let actionId = actionId ?? message.id
     
     return SupportBotPromise.replySupportBot(
       userChatId: message.chatId,
-      formId: formId,
-      key: message.submit?.key,
+      actionId: actionId,
+      buttonId: message.submit?.key,
       requestId: message.requestId)
   }
   
@@ -78,6 +80,7 @@ struct CHSupportBotStep: CHImageable {
   var message: String = ""
   var imageMeta: CHImageMeta? = nil
   var imageUrl: String? = nil
+  var imageRedirectUrl: String? = nil
 }
 
 extension CHSupportBotStep: Mappable {
@@ -108,6 +111,7 @@ extension CHSupportBotAction: Mappable {
 }
 
 struct CHSupportBotEntryInfo {
-  let step: CHSupportBotStep?
-  let actions: [CHSupportBotAction]
+  let supportBot: CHSupportBot? = nil
+  let step: CHSupportBotStep? = nil
+  let actions: [CHSupportBotAction] = []
 }

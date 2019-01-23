@@ -445,7 +445,7 @@ extension ChatManager {
       .flatMap({ (chat, message) -> Observable<CHMessage> in
         let msg = CHMessage.createLocal(chatId: chat!.id, text: value, originId: originId, key: key)
         mainStore.dispatch(CreateMessage(payload: msg))
-        return CHSupportBot.reply(with: msg, formId: message?.id)
+        return CHSupportBot.reply(with: msg, actionId: message?.id)
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (updated) in

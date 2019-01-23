@@ -135,9 +135,9 @@ class UserChatsViewController: BaseViewController {
       self?.nextSeq = nil
       self?.fetchUserChats(isInit: true, showIndicator: true)
       WsService.shared.connect()
-      _ = GuestPromise.touch().subscribe(onNext: { (guest) in
+      AppManager.touch().subscribe(onNext: { (guest) in
         mainStore.dispatch(UpdateGuest(payload: guest))
-      })
+      }).disposed(by: (self?.disposeBag)!)
     }.disposed(by: self.disposeBag)
     
     self.plusButton.signalForClick().subscribe { [weak self] _ in
@@ -248,36 +248,20 @@ class UserChatsViewController: BaseViewController {
     let channel = mainStore.state.channel
     
     //NOTE: Make sure to call onCompleted on observable method to avoid leak
-    let pluginId = mainStore.state.plugin.id
-    let pluginSignal = CHPlugin.get(with: pluginId)
+    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
     let followersSignal = CHManager.getRecentFollowers()
     let supportBot = channel.canUseSupportBot ?
-      CHSupportBot.getBots(with: pluginId, fetch: userChatId == nil) :
-      .just([])
-    
-    var pluginBot: CHBot? = nil
+      CHSupportBot.getBots(with: mainStore.state.plugin.id, fetch: userChatId == nil) :
+      .just(CHSupportBotEntryInfo())
     
     Observable.zip(pluginSignal, followersSignal, supportBot)
       .observeOn(MainScheduler.instance)
-      .flatMap({ (info, managers, supportBots) -> Observable<CHSupportBotEntryInfo> in
+      .subscribe(onNext: { [weak self] (info, managers, supportEntryInfo) in
         mainStore.dispatch(UpdateFollowingManagers(payload: managers))
         mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
         
-        pluginBot = info.1
-        mainStore.dispatch(GetSupportBots(payload: supportBots))
-        //target evaluate (supportBots) -> bot? 
-        //evaluation happen here later
-        
-        if let botId = supportBots.first?.id {
-          return SupportBotPromise.getSupportBotEntry(supportBotId: botId)
-        } else {
-          return .just(CHSupportBotEntryInfo(step: nil, actions: []))
-        }
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (entryInfo) in
-        if entryInfo.step != nil {
-          mainStore.dispatch(GetSupportBotEntry(bot: pluginBot, entry: entryInfo))
+        if supportEntryInfo.step != nil && supportEntryInfo.supportBot != nil {
+          mainStore.dispatch(GetSupportBotEntry(bot: info.1, entry: supportEntryInfo))
         }
         
         self?.navigationController?.pushViewController(controller, animated: animated)

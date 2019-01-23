@@ -49,7 +49,7 @@ enum RestRouter: URLRequestConvertible {
   case GetSupportBots(String, ParametersType)
   case GetSupportBotEntry(String)
   case CreateSupportBotChat(String)
-  case ReplySupportBot(String, ParametersType)
+  case ReplySupportBot(String, String, ParametersType)
   
   case GetNudges(String)
   case CheckNudgeReach(String)
@@ -158,8 +158,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/support_bots/\(supportBotId)/entry"
     case .CreateSupportBotChat(let supportBotId):
       return "/app/support_bots/\(supportBotId)/user_chats"
-    case .ReplySupportBot(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/support_bots/action"
+    case .ReplySupportBot(let userChatId, let buttonId, _):
+      return "/app/user_chats/\(userChatId)/support_bot/buttons/\(buttonId)"
     case .SendPushAck(let userChatId):
       return "/app/user_chats/\(userChatId)/messages/receive"
     case .GetNudges(let pluginId):
@@ -256,7 +256,7 @@ enum RestRouter: URLRequestConvertible {
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params),
          .UnregisterToken(_, let params),
-         .ReplySupportBot(_, let params),
+         .ReplySupportBot(_, _, let params),
          .GetSupportBots(_, let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
