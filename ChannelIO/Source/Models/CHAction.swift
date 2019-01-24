@@ -23,7 +23,7 @@ enum ActionType: String {
 
 struct CHAction {
   var type: ActionType = .select
-  var buttons: [CHButtonDTO] = []
+  var buttons: [CHActionButton] = []
   var closed: Bool = false
   var option: [ActionOptionKey: Bool] = [:]
   
@@ -47,17 +47,19 @@ extension CHAction: Mappable {
   }
 }
 
-struct CHButtonDTO {
+struct CHActionButton {
+  var id: String = ""
   var key: String = ""
   var text: NSAttributedString? = nil
   
   var onlyEmoji: Bool = false
 }
 
-extension CHButtonDTO: Mappable {
+extension CHActionButton: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
+    id          <- map["id"]
     key         <- map["key"]
     let rawText = map["text"].currentValue as? String ?? ""
     (text, onlyEmoji) = CustomMessageTransform.markdown.parse(rawText)

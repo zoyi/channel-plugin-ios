@@ -245,14 +245,11 @@ class UserChatsViewController: BaseViewController {
     self.isShowingChat = true
     
     let controller = self.prepareUserChat(userChatId: userChatId, text: text)
-    let channel = mainStore.state.channel
     
     //NOTE: Make sure to call onCompleted on observable method to avoid leak
     let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
     let followersSignal = CHManager.getRecentFollowers()
-    let supportBot = channel.canUseSupportBot ?
-      CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil) :
-      .just(CHSupportBotEntryInfo())
+    let supportBot = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil)
     
     Observable.zip(pluginSignal, followersSignal, supportBot)
       .observeOn(MainScheduler.instance)
@@ -483,7 +480,7 @@ extension UserChatsViewController {
   }
   
   func showChatIfNeeded(_ userChats: [CHUserChat]? = nil, isReload: Bool = false) {
-    let allChats = userChatsSelector(state: mainStore.state)
+    let allChats = userChatsSelector(state: mainStore.state, showCompleted: self.showCompleted)
     
     if self.showNewChat  {
       self.showUserChat(animated: false)

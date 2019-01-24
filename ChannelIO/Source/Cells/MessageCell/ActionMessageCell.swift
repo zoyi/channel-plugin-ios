@@ -8,10 +8,14 @@
 
 import Foundation
 import RxSwift
+import SnapKit
 
 class ActionMessageCell: MessageCell {
   let actionView = ActionView()
   var messageId = ""
+  
+  var topConstraint: Constraint? = nil
+  var topToTextViewConstraint: Constraint? = nil
   
   struct Metric {
     static let top = 16.f
@@ -25,7 +29,7 @@ class ActionMessageCell: MessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -33,8 +37,9 @@ class ActionMessageCell: MessageCell {
     super.setLayouts()
     
     self.actionView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.top)
-      
+      self?.topConstraint = make.top.equalToSuperview().inset(Metric.top).constraint
+      self?.topToTextViewConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!)
+        .offset(Metric.top).priority(750).constraint
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview().inset(Metric.trailing)
       make.bottom.equalToSuperview()
@@ -44,6 +49,15 @@ class ActionMessageCell: MessageCell {
   override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager?) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
+    
+    if let msg = viewModel.message.messageV2?.string, msg == "" {
+      self.topConstraint?.activate()
+      self.topToTextViewConstraint?.deactivate()
+    } else {
+      self.topConstraint?.deactivate()
+      self.topToTextViewConstraint?.activate()
+    }
+    
     self.actionView.configure(viewModel)
   }
   
@@ -83,7 +97,7 @@ class ActionWebMessageCell: WebPageMessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -129,7 +143,7 @@ class ActionMediaMessageCell: MediaMessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -175,7 +189,7 @@ class ActionFileMessageCell: FileMessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   

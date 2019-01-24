@@ -23,7 +23,7 @@ struct SupportBotPromise {
             let json = SwiftyJSON.JSON(data)
             let supportBot = Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
             let step = Mapper<CHSupportBotStep>().map(JSONObject: json["step"].object)
-            let buttons = Mapper<CHButtonDTO>().mapArray(JSONObject: json["buttons"].object) ?? []
+            let buttons = Mapper<CHActionButton>().mapArray(JSONObject: json["buttons"].object) ?? []
             let data = CHSupportBotEntryInfo(supportBot: supportBot, step: step, buttons: buttons)
 
             subscriber.onNext(data)

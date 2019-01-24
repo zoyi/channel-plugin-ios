@@ -21,7 +21,7 @@ class PushBotManager {
   class func process(with nudges: [CHNudge]? = [], property: [String: Any]) {
     guard let nudges = nudges else { return }
     guard mainStore.state.channel.canUsePushBot else { return }
-    let guest = mainStore.state.guest
+    
     let filtered = nudges
       .filter({ (nudge) -> Bool in
         return userChatSelector(

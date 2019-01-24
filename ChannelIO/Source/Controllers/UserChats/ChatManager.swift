@@ -839,7 +839,7 @@ extension ChatManager {
 }
 
 extension ChatManager {
-  func onClickFormOption(originId: String?, key: String?, value: String?) {
+  func onClickActionButton(originId: String?, key: String?, value: String?) {
     guard let origin = messageSelector(state: mainStore.state, id: originId),
       let type = origin.action?.type, let key = key, let value = value else { return }
     

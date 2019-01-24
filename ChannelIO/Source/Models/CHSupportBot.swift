@@ -37,8 +37,7 @@ extension CHSupportBot {
     return Observable.create({ (subscriber) -> Disposable in
       var disposable: Disposable?
       if fetch {
-        disposable = SupportBotPromise
-          .getSupportBot(pluginId: pluginId)
+        disposable = SupportBotPromise.getSupportBot(pluginId: pluginId)
           .subscribe(onNext: { (bot) in
             dlog("fetched support bot")
             subscriber.onNext(bot)
@@ -98,11 +97,11 @@ extension CHSupportBotStep: Mappable {
 struct CHSupportBotEntryInfo {
   var supportBot: CHSupportBot? = nil
   var step: CHSupportBotStep? = nil
-  var buttons: [CHButtonDTO] = []
+  var buttons: [CHActionButton] = []
   
   init() { }
   
-  init(supportBot: CHSupportBot?, step: CHSupportBotStep?, buttons: [CHButtonDTO] = []) {
+  init(supportBot: CHSupportBot?, step: CHSupportBotStep?, buttons: [CHActionButton] = []) {
     self.supportBot = supportBot
     self.step = step
     self.buttons = buttons

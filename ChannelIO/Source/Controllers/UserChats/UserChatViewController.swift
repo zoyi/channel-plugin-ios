@@ -582,10 +582,10 @@ extension UserChatViewController: StoreSubscriber {
     if nextUserChat?.isRemoved() == true {
       _ = self.navigationController?.popViewController(animated: true)
     }
-    else if userChat?.isClosed() != true && nextUserChat?.isClosed() == true {
+    else if nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
-      self.newChatButton.isHidden = self.tableView.contentOffset.y > 100
+      self.newChatButton.isHidden = false
       self.scrollToBottom(false)
     }
     else if userChat?.isNudgeChat() == true {
@@ -593,6 +593,7 @@ extension UserChatViewController: StoreSubscriber {
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
     }
     else if self.channel.allowNewChat == false && nextUserChat?.isReady() == true {
+      self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.setTextInputbarHidden(true, animated: false)
     }
     else if nextUserChat?.shouldHideInput() == true ||

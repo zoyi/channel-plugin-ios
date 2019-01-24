@@ -66,7 +66,7 @@ class ActionButton: UIButton {
     static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
   }
   
-  required init(button: CHButtonDTO) {
+  required init(button: CHActionButton) {
     super.init(frame: CGRect.zero)
     self.text = button.text
     self.key = button.key
@@ -200,7 +200,7 @@ class ActionView: BaseView {
     return self.actionSubject.asObservable()
   }
   
-  class func viewHeight(fits width: CGFloat, buttons: [CHButtonDTO]) -> CGFloat {
+  class func viewHeight(fits width: CGFloat, buttons: [CHActionButton]) -> CGFloat {
     var cx = 0.f, cy = 0.f
 
     for (index, button) in buttons.enumerated() {

@@ -153,7 +153,7 @@ enum RestRouter: URLRequestConvertible {
     case .Translate(let messageId, _):
       return "/app/messages/\(messageId)/translate"
     case .GetSupportBot(let pluginId):
-      return "/app/plugins/\(pluginId)/support_bots"
+      return "/app/plugins/\(pluginId)/support_bot"
     case .GetSupportBotEntry(let supportBotId):
       return "/app/support_bots/\(supportBotId)/entry"
     case .CreateSupportBotChat(let supportBotId):
