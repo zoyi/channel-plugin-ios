@@ -56,4 +56,5 @@ Pod::Spec.new do |s|
   s.dependency 'CHNavBar'
   s.dependency 'SDWebImage', '~> 4.4.2'
   s.dependency 'SDWebImage/GIF'
+  s.dependency 'RxSwiftExt'
 end

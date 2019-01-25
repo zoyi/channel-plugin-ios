@@ -18,3 +18,4 @@ github "marmelroy/PhoneNumberKit" == 2.5.0
 github "rs/SDWebImage" == 4.3.0
 github "intoxicated/TLYShyNavBar"
 github "hyperoslo/Lightbox" == 2.3.0
+github "RxSwiftCommunity/RxSwiftExt" == "2.5.1"
