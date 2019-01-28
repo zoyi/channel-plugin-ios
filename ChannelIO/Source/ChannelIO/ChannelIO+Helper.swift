@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxSwiftExt
 import CRToast
 import SVProgressHUD
 
@@ -56,7 +57,12 @@ extension ChannelIO {
       pluginId: mainStore.state.plugin.id,
       name: eventName,
       property: eventProperty,
-      sysProperty: sysProperty).subscribe(onNext: { (event, nudges) in
+      sysProperty: sysProperty)
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while sending the event \(eventName). Attempting to send again")
+        return true
+      })
+      .subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
         PushBotManager.process(with: nudges, property: eventProperty ?? [:])
       }, onError: { (error) in
@@ -91,6 +97,10 @@ extension ChannelIO {
       //refactor into one class
       AppManager
         .boot(pluginKey: settings.pluginKey, params: params)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while booting channelSDK. Attempting to boot again")
+          return true
+        })
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (data) in
           var data = data

@@ -10,6 +10,7 @@ import UIKit
 import CHDwifft
 import ReSwift
 import RxSwift
+import RxSwiftExt
 import SnapKit
 import SVProgressHUD
 import MGSwipeTableCell
@@ -249,24 +250,37 @@ class UserChatsViewController: BaseViewController {
     //NOTE: Make sure to call onCompleted on observable method to avoid leak
     let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
     let followersSignal = CHManager.getRecentFollowers()
-    let supportBot = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil)
     
-    Observable.zip(pluginSignal, followersSignal, supportBot)
+    var bot: CHBot? = nil
+    
+    Observable.zip(pluginSignal, followersSignal)
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        SVProgressHUD.show()
+        dlog("Error while opening chat. Attempting to open again")
+        return true
+      })
+      .flatMap({ (info, managers) -> Observable<CHSupportBotEntryInfo> in
+        bot = info.1
+        mainStore.dispatchOnMain(UpdateFollowingManagers(payload: managers))
+        mainStore.dispatchOnMain(GetPlugin(plugin: info.0, bot: info.1))
+        return CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil)
+      })
+      .catchError({ (error) -> Observable<CHSupportBotEntryInfo> in
+        return .just(CHSupportBotEntryInfo())
+      })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (info, managers, supportEntryInfo) in
-        mainStore.dispatch(UpdateFollowingManagers(payload: managers))
-        mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
-        
-        if supportEntryInfo.step != nil && supportEntryInfo.supportBot != nil {
-          mainStore.dispatch(GetSupportBotEntry(bot: info.1, entry: supportEntryInfo))
+      .subscribe(onNext: { [weak self] (entry) in
+        SVProgressHUD.dismiss()
+        if entry.step != nil && entry.supportBot != nil {
+          mainStore.dispatch(GetSupportBotEntry(bot: bot, entry: entry))
         }
-        
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.isShowingChat = false
         self?.shouldHideTable = false
         dlog("got following managers")
       }, onError: { [weak self] (error) in
+        SVProgressHUD.dismiss()
         dlog("error getting following managers: \(error.localizedDescription)")
         self?.showNewChat = false
         self?.isShowingChat = false
@@ -443,6 +457,10 @@ extension UserChatsViewController {
     }
     
     UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while fetching chat data. Attempting to fetch again")
+        return true
+      })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
         mainStore.dispatch(GetUserChats(payload: data))

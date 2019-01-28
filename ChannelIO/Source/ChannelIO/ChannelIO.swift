@@ -24,7 +24,7 @@ let mainStore = Store<AppState>(
 
 func dlog(_ str: String) {
   guard ChannelIO.settings?.debugMode == true else { return }
-  print("[CHPlugin]: \(str)")
+  print("[ChannelIO]: \(str)")
 }
 
 @objc
