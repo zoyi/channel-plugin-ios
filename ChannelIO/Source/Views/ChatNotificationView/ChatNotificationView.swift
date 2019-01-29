@@ -133,8 +133,8 @@ final class ChatNotificationView : BaseView {
     $0.isHidden = true
   }
   
-  let chatSignal = PublishSubject<Any?>()
-  let redirectSignal = PublishSubject<String?>()
+  var chatSignal = PublishSubject<Any?>()
+  var redirectSignal = PublishSubject<String?>()
   let disposeBag = DisposeBag()
   
   var messageTopConstraint: Constraint? = nil
@@ -290,7 +290,13 @@ final class ChatNotificationView : BaseView {
     }
   }
   
+  func signalForRedirect() -> Observable<String?> {
+    self.redirectSignal = PublishSubject<String?>()
+    return self.redirectSignal.asObservable()
+  }
+  
   func signalForChat() -> Observable<Any?> {
+    self.chatSignal = PublishSubject<Any?>()
     return self.chatSignal.asObservable()
   }
 }

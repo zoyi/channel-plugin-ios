@@ -326,8 +326,7 @@ public final class ChannelIO: NSObject {
     
     dispatch {
       ChannelIO.delegate?.willCloseMessenger?()
-      ChannelIO.baseNavigation?.dismiss(
-        animated: animated, completion: {
+      ChannelIO.baseNavigation?.dismiss(animated: animated, completion: {
         mainStore.dispatch(ChatListIsHidden())
 
         if ChannelIO.launcherVisible {

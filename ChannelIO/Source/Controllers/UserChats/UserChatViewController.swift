@@ -455,14 +455,6 @@ final class UserChatViewController: BaseSLKTextViewController {
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         ChannelIO.close(animated: true)
       })
-    
-    if #available(iOS 11, *){
-      if let bar = self.navigationController?.navigationBar,
-        bar.subviews[2].layoutMargins.left != 0 {
-        bar.setNeedsLayout()
-        bar.layoutIfNeeded()
-      }
-    }
   }
 }
 
@@ -506,6 +498,16 @@ extension UserChatViewController: StoreSubscriber {
     }
     self.userChat = userChat
     self.channel = state.channel
+    
+    //NOTE: due to ios 11 layoutMargin issue
+    //https://stackoverflow.com/questions/6021138/how-to-adjust-uitoolbar-left-and-right-padding/47554138#47554138
+    if #available(iOS 11, *){
+      if let bar = self.navigationController?.navigationBar,
+        bar.subviews[2].layoutMargins.left != 0 {
+        bar.setNeedsLayout()
+        bar.layoutIfNeeded()
+      }
+    }
   }
   
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
