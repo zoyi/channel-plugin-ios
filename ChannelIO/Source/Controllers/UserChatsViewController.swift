@@ -463,9 +463,9 @@ extension UserChatsViewController {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
-        mainStore.dispatch(GetUserChats(payload: data))
-        
         self?.didLoad = true
+        
+        mainStore.dispatch(GetUserChats(payload: data))
         self?.showChatIfNeeded(isReload: isReload)
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
