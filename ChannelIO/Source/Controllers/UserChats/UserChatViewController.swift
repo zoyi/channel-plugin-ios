@@ -32,6 +32,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   var placeHolder: UIView? = nil
+  var isReadyToDisplay: Bool = false
   
   // MARK: Properties
   var channel: CHChannel = mainStore.state.channel
@@ -209,6 +210,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   fileprivate func initSLKTextView() {
     self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
     self.textView.keyboardType = .default
+    self.setTextInputbarHidden(true, animated: false)
   }
   
   func initInputViews() {
@@ -562,6 +564,8 @@ extension UserChatViewController: StoreSubscriber {
   }
   
   func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
+    guard self.isReadyToDisplay else { return }
+    
     if let isNudgeChat = userChat?.isNudgeChat(), isNudgeChat {
       self.nudgeKeepButton.isHidden = false
     } else {
@@ -577,7 +581,7 @@ extension UserChatViewController: StoreSubscriber {
       self.newChatButton.isHidden = false
       self.scrollToBottom(false)
     }
-    else if userChat?.isNudgeChat() == true {
+    else if nextUserChat?.isNudgeChat() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
     }
@@ -1084,7 +1088,9 @@ extension UserChatViewController: ChatDelegate {
   func readyToDisplay() {
     self.initDwifft()
     self.hideLoader()
+    self.isReadyToDisplay = true
     self.tableView.isHidden = false
+    self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: self.userChat)
   }
 }
 
