@@ -432,29 +432,17 @@ final class UserChatViewController: BaseSLKTextViewController {
       let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
 
-      if alert == 0 {
-        self.navigationItem.leftBarButtonItem = NavigationItem(
-          image: CHAssets.getImage(named: "back"),
-          tintColor: tintColor,
-          style: .plain,
-          actionHandler: { [weak self] in
-            self?.shyNavBarManager.disable = true
-            mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-            _ = self?.navigationController?.popViewController(animated: true)
-          })
-      } else {
-        self.navigationItem.leftBarButtonItem = NavigationItem(
-          image: CHAssets.getImage(named: "back"),
-          text: alertCount,
-          fitToSize: true,
-          alignment: .center,
-          textColor: tintColor,
-          actionHandler: { [weak self] in
-            self?.shyNavBarManager.disable = true
-            mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-            _ = self?.navigationController?.popViewController(animated: true)
-          })
-      }
+      self.navigationItem.leftBarButtonItem = NavigationItem(
+        image: CHAssets.getImage(named: "back"),
+        text: alert == 0 ? "" : alertCount ,
+        fitToSize: true,
+        alignment: .left,
+        textColor: tintColor,
+        actionHandler: { [weak self] in
+          self?.shyNavBarManager.disable = true
+          mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+          _ = self?.navigationController?.popViewController(animated: true)
+        })
     }
 
     self.navigationItem.rightBarButtonItem = NavigationItem(
