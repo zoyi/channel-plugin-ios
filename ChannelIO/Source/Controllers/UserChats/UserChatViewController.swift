@@ -527,6 +527,11 @@ extension UserChatViewController: StoreSubscriber {
         textColor: state.plugin.textUIColor
       )
     }
+    
+    if nextUserChat != nil || nextUserChat?.isLocalChat() == false {
+      self.titleView?.isExpanded = false
+      self.shyNavBarManager.contract(false)
+    }
   }
   
   func fetchChatIfNeeded() {
