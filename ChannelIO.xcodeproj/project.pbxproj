@@ -30,6 +30,12 @@
 		22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */; };
 		22AE76B220E341CB00C18355 /* Mute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AE76B120E341CB00C18355 /* Mute.swift */; };
 		22AE76B920E347C700C18355 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 22AE76B820E347C700C18355 /* mute.caf */; };
+		22B443692200342B00EFC637 /* DKPhotoGallery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443642200342A00EFC637 /* DKPhotoGallery.framework */; };
+		22B4436A2200342B00EFC637 /* CropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443652200342A00EFC637 /* CropViewController.framework */; };
+		22B4436B2200342B00EFC637 /* DKCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443662200342A00EFC637 /* DKCamera.framework */; };
+		22B4436C2200342B00EFC637 /* TOCropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443672200342A00EFC637 /* TOCropViewController.framework */; };
+		22B4436D2200342B00EFC637 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443682200342B00EFC637 /* RxAtomic.framework */; };
+		22B4436F220034D900EFC637 /* DKImagePickerController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B4436E220034D900EFC637 /* DKImagePickerController.framework */; };
 		22E03E8521B38D560009F48E /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6B21B38D560009F48E /* MarkdownParser.swift */; };
 		22E03E8621B38D560009F48E /* String+UTF16.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6D21B38D560009F48E /* String+UTF16.swift */; };
 		22E03E8721B38D560009F48E /* UIFont+Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6E21B38D560009F48E /* UIFont+Traits.swift */; };
@@ -265,7 +271,6 @@
 		65D3562D21BA4BD4001D6A30 /* CHNavBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A22166205F0032F5C5 /* CHNavBar.framework */; };
 		65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */; };
 		65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A52166205F0032F5C5 /* CRToast.framework */; };
-		65D3563021BA4BD4001D6A30 /* DKImagePickerController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AA216620600032F5C5 /* DKImagePickerController.framework */; };
 		65D3563121BA4BD4001D6A30 /* Imaginary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AF216620600032F5C5 /* Imaginary.framework */; };
 		65D3563221BA4BD4001D6A30 /* Lightbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A8216620600032F5C5 /* Lightbox.framework */; };
 		65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AE216620600032F5C5 /* M13ProgressSuite.framework */; };
@@ -284,11 +289,6 @@
 		65D3564121BA4BD4001D6A30 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AB216620600032F5C5 /* Starscream.framework */; };
 		65D3564221BA4BD4001D6A30 /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A9216620600032F5C5 /* SVProgressHUD.framework */; };
 		65D3564321BA4BD4001D6A30 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AD216620600032F5C5 /* SwiftyJSON.framework */; };
-		65D3564921BA4BD6001D6A30 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564421BA4BD4001D6A30 /* RxAtomic.framework */; };
-		65D3564A21BA4BD6001D6A30 /* DKPhotoGallery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564521BA4BD5001D6A30 /* DKPhotoGallery.framework */; };
-		65D3564B21BA4BD6001D6A30 /* DKCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564621BA4BD5001D6A30 /* DKCamera.framework */; };
-		65D3564C21BA4BD6001D6A30 /* CropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564721BA4BD6001D6A30 /* CropViewController.framework */; };
-		65D3564D21BA4BD6001D6A30 /* TOCropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D3564821BA4BD6001D6A30 /* TOCropViewController.framework */; };
 		65D358CD21BE4E1F001D6A30 /* CHLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CC21BE4E1F001D6A30 /* CHLink.swift */; };
 		65D358D021BE4E3D001D6A30 /* ButtonsMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CE21BE4E3D001D6A30 /* ButtonsMessageCell.swift */; };
 		65D358D121BE4E3D001D6A30 /* ButtonsMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CF21BE4E3D001D6A30 /* ButtonsMessageView.swift */; };
@@ -353,7 +353,6 @@
 		225962A7216620600032F5C5 /* CHDwifft.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHDwifft.framework; path = Carthage/Build/iOS/CHDwifft.framework; sourceTree = "<group>"; };
 		225962A8216620600032F5C5 /* Lightbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lightbox.framework; path = Carthage/Build/iOS/Lightbox.framework; sourceTree = "<group>"; };
 		225962A9216620600032F5C5 /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SVProgressHUD.framework; path = Carthage/Build/iOS/SVProgressHUD.framework; sourceTree = "<group>"; };
-		225962AA216620600032F5C5 /* DKImagePickerController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKImagePickerController.framework; path = Carthage/Build/iOS/DKImagePickerController.framework; sourceTree = "<group>"; };
 		225962AB216620600032F5C5 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
 		225962AC216620600032F5C5 /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
 		225962AD216620600032F5C5 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
@@ -374,6 +373,12 @@
 		22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveTypingAvatarsView.swift; sourceTree = "<group>"; };
 		22AE76B120E341CB00C18355 /* Mute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mute.swift; sourceTree = "<group>"; };
 		22AE76B820E347C700C18355 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = mute.caf; path = Assets/mute.caf; sourceTree = "<group>"; };
+		22B443642200342A00EFC637 /* DKPhotoGallery.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKPhotoGallery.framework; path = Carthage/Build/iOS/DKPhotoGallery.framework; sourceTree = "<group>"; };
+		22B443652200342A00EFC637 /* CropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CropViewController.framework; path = Carthage/Build/iOS/CropViewController.framework; sourceTree = "<group>"; };
+		22B443662200342A00EFC637 /* DKCamera.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKCamera.framework; path = Carthage/Build/iOS/DKCamera.framework; sourceTree = "<group>"; };
+		22B443672200342A00EFC637 /* TOCropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOCropViewController.framework; path = Carthage/Build/iOS/TOCropViewController.framework; sourceTree = "<group>"; };
+		22B443682200342B00EFC637 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAtomic.framework; path = Carthage/Build/iOS/RxAtomic.framework; sourceTree = "<group>"; };
+		22B4436E220034D900EFC637 /* DKImagePickerController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKImagePickerController.framework; path = Carthage/Build/iOS/DKImagePickerController.framework; sourceTree = "<group>"; };
 		22E03E6B21B38D560009F48E /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		22E03E6D21B38D560009F48E /* String+UTF16.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+UTF16.swift"; sourceTree = "<group>"; };
 		22E03E6E21B38D560009F48E /* UIFont+Traits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Traits.swift"; sourceTree = "<group>"; };
@@ -604,11 +609,6 @@
 		65CB141E206A02F200E456B5 /* UserChatCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatCellModel.swift; sourceTree = "<group>"; };
 		65CB1420206A02F200E456B5 /* WatermarkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatermarkCell.swift; sourceTree = "<group>"; };
 		65CD481721F9BDBF001F0113 /* TableViewAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewAnimator.swift; sourceTree = "<group>"; };
-		65D3564421BA4BD4001D6A30 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAtomic.framework; path = Carthage/Build/iOS/RxAtomic.framework; sourceTree = "<group>"; };
-		65D3564521BA4BD5001D6A30 /* DKPhotoGallery.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKPhotoGallery.framework; path = Carthage/Build/iOS/DKPhotoGallery.framework; sourceTree = "<group>"; };
-		65D3564621BA4BD5001D6A30 /* DKCamera.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKCamera.framework; path = Carthage/Build/iOS/DKCamera.framework; sourceTree = "<group>"; };
-		65D3564721BA4BD6001D6A30 /* CropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CropViewController.framework; path = Carthage/Build/iOS/CropViewController.framework; sourceTree = "<group>"; };
-		65D3564821BA4BD6001D6A30 /* TOCropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOCropViewController.framework; path = Carthage/Build/iOS/TOCropViewController.framework; sourceTree = "<group>"; };
 		65D358CC21BE4E1F001D6A30 /* CHLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHLink.swift; sourceTree = "<group>"; };
 		65D358CE21BE4E3D001D6A30 /* ButtonsMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsMessageCell.swift; sourceTree = "<group>"; };
 		65D358CF21BE4E3D001D6A30 /* ButtonsMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsMessageView.swift; sourceTree = "<group>"; };
@@ -623,20 +623,18 @@
 			files = (
 				65581E651E7BDCE0008B8C70 /* AssetsLibrary.framework in Frameworks */,
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
-				65D3564921BA4BD6001D6A30 /* RxAtomic.framework in Frameworks */,
-				65D3564A21BA4BD6001D6A30 /* DKPhotoGallery.framework in Frameworks */,
-				65D3564B21BA4BD6001D6A30 /* DKCamera.framework in Frameworks */,
-				65D3564C21BA4BD6001D6A30 /* CropViewController.framework in Frameworks */,
-				65D3564D21BA4BD6001D6A30 /* TOCropViewController.framework in Frameworks */,
+				22B4436F220034D900EFC637 /* DKImagePickerController.framework in Frameworks */,
 				65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */,
 				65D3562B21BA4BD4001D6A30 /* Cache.framework in Frameworks */,
 				65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */,
+				22B443692200342B00EFC637 /* DKPhotoGallery.framework in Frameworks */,
 				65D3562D21BA4BD4001D6A30 /* CHNavBar.framework in Frameworks */,
 				65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */,
 				65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */,
-				65D3563021BA4BD4001D6A30 /* DKImagePickerController.framework in Frameworks */,
+				22B4436A2200342B00EFC637 /* CropViewController.framework in Frameworks */,
 				65D3563121BA4BD4001D6A30 /* Imaginary.framework in Frameworks */,
 				65D3563221BA4BD4001D6A30 /* Lightbox.framework in Frameworks */,
+				22B4436C2200342B00EFC637 /* TOCropViewController.framework in Frameworks */,
 				65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */,
 				65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */,
 				65D3563521BA4BD4001D6A30 /* NVActivityIndicatorView.framework in Frameworks */,
@@ -656,6 +654,7 @@
 				65581E611E7BDCC4008B8C70 /* CFNetwork.framework in Frameworks */,
 				65581E5F1E7BDCBD008B8C70 /* Photos.framework in Frameworks */,
 				65581E5D1E7BDCB1008B8C70 /* Accelerate.framework in Frameworks */,
+				22B4436D2200342B00EFC637 /* RxAtomic.framework in Frameworks */,
 				65581E5B1E7BDCAB008B8C70 /* CoreImage.framework in Frameworks */,
 				65581E591E7BDCA2008B8C70 /* UIKit.framework in Frameworks */,
 				65581E571E7BDC97008B8C70 /* QuartzCore.framework in Frameworks */,
@@ -664,6 +663,7 @@
 				142147871E56D75F004C9FAD /* WebKit.framework in Frameworks */,
 				142147851E56D75B004C9FAD /* CoreLocation.framework in Frameworks */,
 				142147831E56D756004C9FAD /* CoreTelephony.framework in Frameworks */,
+				22B4436B2200342B00EFC637 /* DKCamera.framework in Frameworks */,
 				142147811E56D74F004C9FAD /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -682,18 +682,18 @@
 		143D7E321E24DBE40095961F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				65D3564721BA4BD6001D6A30 /* CropViewController.framework */,
-				65D3564621BA4BD5001D6A30 /* DKCamera.framework */,
-				65D3564521BA4BD5001D6A30 /* DKPhotoGallery.framework */,
-				65D3564421BA4BD4001D6A30 /* RxAtomic.framework */,
-				65D3564821BA4BD6001D6A30 /* TOCropViewController.framework */,
+				22B4436E220034D900EFC637 /* DKImagePickerController.framework */,
+				22B443652200342A00EFC637 /* CropViewController.framework */,
+				22B443662200342A00EFC637 /* DKCamera.framework */,
+				22B443642200342A00EFC637 /* DKPhotoGallery.framework */,
+				22B443682200342B00EFC637 /* RxAtomic.framework */,
+				22B443672200342A00EFC637 /* TOCropViewController.framework */,
 				225962962166205E0032F5C5 /* Alamofire.framework */,
 				225962A32166205F0032F5C5 /* Cache.framework */,
 				225962A7216620600032F5C5 /* CHDwifft.framework */,
 				225962A22166205F0032F5C5 /* CHNavBar.framework */,
 				2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */,
 				225962A52166205F0032F5C5 /* CRToast.framework */,
-				225962AA216620600032F5C5 /* DKImagePickerController.framework */,
 				225962AF216620600032F5C5 /* Imaginary.framework */,
 				225962A8216620600032F5C5 /* Lightbox.framework */,
 				225962AE216620600032F5C5 /* M13ProgressSuite.framework */,
