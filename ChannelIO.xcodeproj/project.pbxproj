@@ -20,6 +20,7 @@
 		223726071FBEEF370097F22B /* CountryCodeReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223726061FBEEF370097F22B /* CountryCodeReducer.swift */; };
 		223726091FBEEFA20097F22B /* CountryCodeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223726081FBEEFA20097F22B /* CountryCodeActions.swift */; };
 		2243FD552084C15800CEEF45 /* CHProfileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2243FD542084C15800CEEF45 /* CHProfileItem.swift */; };
+		22476B972201FDF900DA4FBC /* RxSwiftExt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22476B962201FDF900DA4FBC /* RxSwiftExt.framework */; };
 		225B05F81E4ED913001DE109 /* WsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F71E4ED913001DE109 /* WsServiceTests.swift */; };
 		225B05FA1E4ED9F5001DE109 /* ChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05F91E4ED9F5001DE109 /* ChannelTests.swift */; };
 		225B05FE1E4EDA14001DE109 /* GuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B05FD1E4EDA14001DE109 /* GuestTests.swift */; };
@@ -337,6 +338,7 @@
 		223726061FBEEF370097F22B /* CountryCodeReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeReducer.swift; sourceTree = "<group>"; };
 		223726081FBEEFA20097F22B /* CountryCodeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeActions.swift; sourceTree = "<group>"; };
 		2243FD542084C15800CEEF45 /* CHProfileItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHProfileItem.swift; sourceTree = "<group>"; };
+		22476B962201FDF900DA4FBC /* RxSwiftExt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwiftExt.framework; path = Carthage/Build/iOS/RxSwiftExt.framework; sourceTree = "<group>"; };
 		225962962166205E0032F5C5 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		225962992166205E0032F5C5 /* MGSwipeTableCell.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MGSwipeTableCell.framework; path = Carthage/Build/iOS/MGSwipeTableCell.framework; sourceTree = "<group>"; };
 		2259629B2166205E0032F5C5 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
@@ -354,7 +356,6 @@
 		225962A8216620600032F5C5 /* Lightbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lightbox.framework; path = Carthage/Build/iOS/Lightbox.framework; sourceTree = "<group>"; };
 		225962A9216620600032F5C5 /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SVProgressHUD.framework; path = Carthage/Build/iOS/SVProgressHUD.framework; sourceTree = "<group>"; };
 		225962AB216620600032F5C5 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
-		225962AC216620600032F5C5 /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
 		225962AD216620600032F5C5 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		225962AE216620600032F5C5 /* M13ProgressSuite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = M13ProgressSuite.framework; path = Carthage/Build/iOS/M13ProgressSuite.framework; sourceTree = "<group>"; };
 		225962AF216620600032F5C5 /* Imaginary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Imaginary.framework; path = Carthage/Build/iOS/Imaginary.framework; sourceTree = "<group>"; };
@@ -621,6 +622,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22476B972201FDF900DA4FBC /* RxSwiftExt.framework in Frameworks */,
 				65581E651E7BDCE0008B8C70 /* AssetsLibrary.framework in Frameworks */,
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
 				22B4436F220034D900EFC637 /* DKImagePickerController.framework in Frameworks */,
@@ -682,6 +684,7 @@
 		143D7E321E24DBE40095961F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				22476B962201FDF900DA4FBC /* RxSwiftExt.framework */,
 				22B4436E220034D900EFC637 /* DKImagePickerController.framework */,
 				22B443652200342A00EFC637 /* CropViewController.framework */,
 				22B443662200342A00EFC637 /* DKCamera.framework */,
@@ -704,7 +707,6 @@
 				225962A02166205F0032F5C5 /* PhoneNumberKit.framework */,
 				225962A62166205F0032F5C5 /* ReSwift.framework */,
 				225962B3216620610032F5C5 /* Reusable.framework */,
-				225962AC216620600032F5C5 /* RxBlocking.framework */,
 				225962B1216620600032F5C5 /* RxCocoa.framework */,
 				2259629C2166205E0032F5C5 /* RxSwift.framework */,
 				225962A12166205F0032F5C5 /* SDWebImage.framework */,
