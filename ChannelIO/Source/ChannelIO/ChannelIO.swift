@@ -24,7 +24,7 @@ let mainStore = Store<AppState>(
 
 func dlog(_ str: String) {
   guard ChannelIO.settings?.debugMode == true else { return }
-  print("[CHPlugin]: \(str)")
+  print("[ChannelIO]: \(str)")
 }
 
 @objc
@@ -326,8 +326,7 @@ public final class ChannelIO: NSObject {
     
     dispatch {
       ChannelIO.delegate?.willCloseMessenger?()
-      ChannelIO.baseNavigation?.dismiss(
-        animated: animated, completion: {
+      ChannelIO.baseNavigation?.dismiss(animated: animated, completion: {
         mainStore.dispatch(ChatListIsHidden())
 
         if ChannelIO.launcherVisible {

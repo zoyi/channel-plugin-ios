@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxSwiftExt
 import CRToast
 import SVProgressHUD
 
@@ -56,7 +57,12 @@ extension ChannelIO {
       pluginId: mainStore.state.plugin.id,
       name: eventName,
       property: eventProperty,
-      sysProperty: sysProperty).subscribe(onNext: { (event, nudges) in
+      sysProperty: sysProperty)
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while sending the event \(eventName). Attempting to send again")
+        return true
+      })
+      .subscribe(onNext: { (event, nudges) in
         dlog("\(eventName) event sent successfully")
         PushBotManager.process(with: nudges, property: eventProperty ?? [:])
       }, onError: { (error) in
@@ -91,6 +97,10 @@ extension ChannelIO {
       //refactor into one class
       AppManager
         .boot(pluginKey: settings.pluginKey, params: params)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while booting channelSDK. Attempting to boot again")
+          return true
+        })
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (data) in
           var data = data
@@ -166,70 +176,70 @@ extension ChannelIO {
   internal class func showNotification(pushData: CHPush?) {
     guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
     guard let push = pushData else { return }
+
+    let notificationView = ChannelIO.chatNotificationView ?? ChatNotificationView()
     
-    dispatch {
-      let notificationView = ChannelIO.chatNotificationView ?? ChatNotificationView()
-      
-      let notificationViewModel = ChatNotificationViewModel(push: push)
-      notificationView.configure(notificationViewModel)
-      
-      if let superview = notificationView.superview, superview != view {
-        notificationView.removeFromSuperview()
-      }
-      
-      if notificationView.superview != view {
-        notificationView.insert(on: view, animated: true)
-      }
-      
-      let viewTopMargin = 20.f
-      let viewSideMargin = 14.f
-      let maxWidth = 520.f
-      
-      notificationView.snp.makeConstraints({ (make) in
-        if UIScreen.main.bounds.width > maxWidth + viewSideMargin * 2 {
-          make.centerX.equalToSuperview()
-          make.width.equalTo(maxWidth)
-        } else {
-          make.leading.equalToSuperview().inset(viewSideMargin)
-          make.trailing.equalToSuperview().inset(viewSideMargin)
-        }
-        
-        if #available(iOS 11.0, *) {
-          make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(viewTopMargin)
-        } else {
-          make.top.equalToSuperview().inset(viewTopMargin)
-        }
-      })
-      
-      notificationView
-        .signalForChat()
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (event) in
-          ChannelIO.hideNotification()
-          ChannelIO.showUserChat(userChatId: push.userChat?.id)
-        }).disposed(by: disposeBag)
-      
-      notificationView.closeView
-        .signalForClick()
-        .observeOn(MainScheduler.instance)
-        .subscribe { (event) in
-          ChannelIO.hideNotification()
-        }.disposed(by: disposeBag)
-      
-      notificationView.redirectSignal
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (urlString) in
-          guard let url = URL(string: urlString ?? "") else { return }
-          let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
-          if shouldHandle == false || shouldHandle == nil {
-            url.openWithUniversal()
-          }
-          ChannelIO.hideNotification()
-        }).disposed(by: disposeBag)
-      
-      ChannelIO.chatNotificationView = notificationView
-      CHAssets.playPushSound()
+    let notificationViewModel = ChatNotificationViewModel(push: push)
+    notificationView.configure(notificationViewModel)
+    
+    if let superview = notificationView.superview, superview != view {
+      notificationView.removeFromSuperview()
     }
+    
+    if notificationView.superview != view {
+      notificationView.insert(on: view, animated: true)
+    }
+    
+    let viewTopMargin = 20.f
+    let viewSideMargin = 14.f
+    let maxWidth = 520.f
+    
+    notificationView.snp.makeConstraints({ (make) in
+      if UIScreen.main.bounds.width > maxWidth + viewSideMargin * 2 {
+        make.centerX.equalToSuperview()
+        make.width.equalTo(maxWidth)
+      } else {
+        make.leading.equalToSuperview().inset(viewSideMargin)
+        make.trailing.equalToSuperview().inset(viewSideMargin)
+      }
+      
+      if #available(iOS 11.0, *) {
+        make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(viewTopMargin)
+      } else {
+        make.top.equalToSuperview().inset(viewTopMargin)
+      }
+    })
+    
+    notificationView
+      .signalForChat()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (event) in
+        ChannelIO.hideNotification()
+        ChannelIO.showUserChat(userChatId: push.userChat?.id)
+      }).disposed(by: disposeBag)
+    
+    notificationView.closeView
+      .signalForClick()
+      .observeOn(MainScheduler.instance)
+      .subscribe { (event) in
+        ChannelIO.hideNotification()
+      }.disposed(by: disposeBag)
+    
+    notificationView
+      .signalForRedirect()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (urlString) in
+        guard let url = URL(string: urlString ?? "") else { return }
+        let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
+        if shouldHandle == false || shouldHandle == nil {
+          url.openWithUniversal()
+        }
+        ChannelIO.hideNotification()
+      }).disposed(by: disposeBag)
+    
+    ChannelIO.chatNotificationView = notificationView
+    CHAssets.playPushSound()
+    
   }
   
   internal class func sendDefaultEvent(_ event: CHDefaultEvent, property: [String: Any]? = nil) {

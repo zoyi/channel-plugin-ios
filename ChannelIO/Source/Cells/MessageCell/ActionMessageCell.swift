@@ -1,5 +1,5 @@
 //
-//  FormMessageCell.swift
+//  ActionMessageCell.swift
 //  ChannelIO
 //
 //  Created by Haeun Chung on 08/06/2018.
@@ -8,10 +8,14 @@
 
 import Foundation
 import RxSwift
+import SnapKit
 
-class FormMessageCell: MessageCell {
+class ActionMessageCell: MessageCell {
   let actionView = ActionView()
   var messageId = ""
+  
+  var topConstraint: Constraint? = nil
+  var topToTextViewConstraint: Constraint? = nil
   
   struct Metric {
     static let top = 16.f
@@ -25,7 +29,7 @@ class FormMessageCell: MessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -33,8 +37,9 @@ class FormMessageCell: MessageCell {
     super.setLayouts()
     
     self.actionView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.top)
-      
+      self?.topConstraint = make.top.equalToSuperview().inset(Metric.top).constraint
+      self?.topToTextViewConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!)
+        .offset(Metric.top).priority(750).constraint
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview().inset(Metric.trailing)
       make.bottom.equalToSuperview()
@@ -44,6 +49,15 @@ class FormMessageCell: MessageCell {
   override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager?) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
+    
+    if let msg = viewModel.message.messageV2?.string, msg == "" {
+      self.topConstraint?.activate()
+      self.topToTextViewConstraint?.deactivate()
+    } else {
+      self.topConstraint?.deactivate()
+      self.topToTextViewConstraint?.activate()
+    }
+    
     self.actionView.configure(viewModel)
   }
   
@@ -61,13 +75,13 @@ class FormMessageCell: MessageCell {
     }
     
     height += viewModel.shouldDisplayForm ? ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? []) + Metric.top : 0
+      fits: width, buttons: viewModel.message.action?.buttons ?? []) + Metric.top : 0
     
     return height
   }
 }
 
-class FormWebMessageCell: WebPageMessageCell {
+class ActionWebMessageCell: WebPageMessageCell {
   let actionView = ActionView()
   var messageId = ""
   
@@ -83,7 +97,7 @@ class FormWebMessageCell: WebPageMessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -108,12 +122,12 @@ class FormWebMessageCell: WebPageMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? [])
+      fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 
 
-class FormMediaMessageCell: MediaMessageCell {
+class ActionMediaMessageCell: MediaMessageCell {
   let actionView = ActionView()
   var messageId = ""
   
@@ -129,7 +143,7 @@ class FormMediaMessageCell: MediaMessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -154,12 +168,12 @@ class FormMediaMessageCell: MediaMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? [])
+      fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 
 
-class FormFileMessageCell: FileMessageCell {
+class ActionFileMessageCell: FileMessageCell {
   let actionView = ActionView()
   var messageId = ""
   
@@ -175,7 +189,7 @@ class FormFileMessageCell: FileMessageCell {
     
     self.actionView.observeAction()
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickFormOption(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -200,7 +214,7 @@ class FormFileMessageCell: FileMessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height + Metric.top + ActionView.viewHeight(
-      fits: width, inputs: viewModel.message.form?.inputs ?? [])
+      fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 

@@ -85,7 +85,7 @@ struct MessageCellModel: MessageCellModelType {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
     let isContinuous = message.isContinue(previous: previous) &&
-      previous?.form == nil && previous?.profileBot?.count == 0
+      previous?.action == nil && previous?.profileBot?.count == 0
     
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
     let cType = MessageCellModel.getClipType(message: message)
@@ -126,7 +126,7 @@ struct MessageCellModel: MessageCellModelType {
     self.totalCount = self.profileItems.count //max 4
     
     //form : select
-    self.shouldDisplayForm = message.form != nil && indexPath?.row == 0 && message.form?.closed == false
+    self.shouldDisplayForm = message.action != nil && indexPath?.row == 0 && message.action?.closed == false
     
     self.showTranslation =
       message.language != "" &&

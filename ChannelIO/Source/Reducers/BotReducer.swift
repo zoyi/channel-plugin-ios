@@ -28,8 +28,11 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
   case let action as GetPlugin:
     return state?.upsert(bot: action.bot) ?? BotsState()
     
-  case let action as GetSupportBots:
-    return state?.upsertSupportBots(bots: action.payload) ?? BotsState()
+  case let action as GetSupportBotEntry:
+    if let bot = action.entry.supportBot {
+      return state?.upsertSupportBots(bots: [bot]) ?? BotsState()
+    }
+    return state ?? BotsState()
     
   case let action as CreateLocalUserChat:
     if let bot = action.writer as? CHBot {

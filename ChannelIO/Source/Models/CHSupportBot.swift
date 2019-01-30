@@ -21,21 +21,32 @@ struct CHSupportBot: CHEvaluatable {
   var target: [[CHTargetCondition]]? = nil
 }
 
+extension CHSupportBot: Mappable {
+  init?(map: Map) { }
+  
+  mutating func mapping(map: Map) {
+    id            <- map["id"]
+    channelId     <- map["channelId"]
+    pluginId      <- map["pluginId"]
+    target        <- map["target"]
+  }
+}
+
 extension CHSupportBot {
-  static func getBots(with pluginId: String, fetch: Bool) -> Observable<[CHSupportBot]> {
+  static func get(with pluginId: String, fetch: Bool) -> Observable<CHSupportBotEntryInfo> {
     return Observable.create({ (subscriber) -> Disposable in
       var disposable: Disposable?
       if fetch {
-        disposable = SupportBotPromise.getSupportBots(pluginId: pluginId)
-          .subscribe(onNext: { (bots) in
+        disposable = SupportBotPromise.getSupportBot(pluginId: pluginId)
+          .subscribe(onNext: { (bot) in
             dlog("fetched support bot")
-            subscriber.onNext(bots)
+            subscriber.onNext(bot)
             subscriber.onCompleted()
           }, onError: { (error) in
             subscriber.onError(error)
           })
       } else {
-        subscriber.onNext([])
+        subscriber.onNext(CHSupportBotEntryInfo())
         subscriber.onCompleted()
       }
       
@@ -45,37 +56,22 @@ extension CHSupportBot {
     })
   }
   
-  func getEntry() -> Observable<CHSupportBotEntryInfo> {
-    return SupportBotPromise.getSupportBotEntry(supportBotId: self.id)
+  static func reply(with userChatId: String?, actionId: String?, buttonId: String?, requestId: String? = nil) -> Observable<CHMessage> {
+    return SupportBotPromise.replySupportBot(userChatId: userChatId, actionId: actionId, buttonId: buttonId, requestId: requestId)
   }
   
-  static func reply(with userChatId: String?, formId: String?, key: String?, requestId: String? = nil) -> Observable<CHMessage> {
-    return SupportBotPromise.replySupportBot(userChatId: userChatId, formId: formId, key: key, requestId: requestId)
-  }
-  
-  static func reply(with message: CHMessage, formId: String? = nil) -> Observable<CHMessage> {
-    let formId = formId ?? message.submit?.id
+  static func reply(with message: CHMessage, actionId: String? = nil) -> Observable<CHMessage> {
+    let actionId = actionId ?? message.id
     
     return SupportBotPromise.replySupportBot(
       userChatId: message.chatId,
-      formId: formId,
-      key: message.submit?.key,
+      actionId: actionId,
+      buttonId: message.submit?.key,
       requestId: message.requestId)
   }
   
   static func create(with botId: String) -> Observable<ChatResponse> {
     return SupportBotPromise.createSupportBotUserChat(supportBotId: botId)
-  }
-}
-
-extension CHSupportBot: Mappable {
-  init?(map: Map) { }
-  
-  mutating func mapping(map: Map) {
-    id            <- map["id"]
-    channelId     <- map["channelId"]
-    pluginId      <- map["pluginId"]
-    target        <- map["target"]
   }
 }
 
@@ -98,23 +94,16 @@ extension CHSupportBotStep: Mappable {
   }
 }
 
-struct CHSupportBotAction {
-  var id: String = ""
-  var key: String = ""
-  var text: String = ""
-}
-
-extension CHSupportBotAction: Mappable {
-  init?(map: Map) { }
-  
-  mutating func mapping(map: Map) {
-    id            <- map["id"]
-    key           <- map["key"]
-    text          <- map["text"]
-  }
-}
-
 struct CHSupportBotEntryInfo {
-  let step: CHSupportBotStep?
-  let actions: [CHSupportBotAction]
+  var supportBot: CHSupportBot? = nil
+  var step: CHSupportBotStep? = nil
+  var buttons: [CHActionButton] = []
+  
+  init() { }
+  
+  init(supportBot: CHSupportBot?, step: CHSupportBotStep?, buttons: [CHActionButton] = []) {
+    self.supportBot = supportBot
+    self.step = step
+    self.buttons = buttons
+  }
 }

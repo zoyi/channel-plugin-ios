@@ -30,7 +30,7 @@ enum MessageType {
   case Media
   case File
   case Profile
-  case Form
+  case Action
   case Buttons
 }
 
@@ -57,7 +57,7 @@ struct CHMessage: ModelType {
   var requestId: String?
   var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
-  var form: CHForm? = nil
+  var action: CHAction? = nil
   var buttons: [CHLink]? = []
   var submit: CHSubmit? = nil
   var createdAt: Date
@@ -128,7 +128,7 @@ extension CHMessage: Mappable {
        message: String,
        type: MessageType,
        entity: CHEntity? = nil,
-       form: CHForm? = nil,
+       action: CHAction? = nil,
        file: CHFile? = nil,
        createdAt:Date? = Date(),
        id: String? = nil) {
@@ -144,7 +144,7 @@ extension CHMessage: Mappable {
     self.createdAt = createdAt ?? now
     self.messageType = type
     self.entity = entity
-    self.form = form
+    self.action = action
     self.file = file
     self.personId = entity?.id ?? ""
     self.personType = entity?.kind ?? ""
@@ -228,15 +228,15 @@ extension CHMessage: Mappable {
     createdAt   <- (map["createdAt"], CustomDateTransform())
     botOption   <- map["botOption"]
     profileBot  <- map["profileBot"]
-    form        <- map["form"]
+    action      <- map["action"]
     submit      <- map["submit"]
     language    <- map["language"]
     
     let msgv2 = map["messageV2"].currentValue as? String ?? ""
     (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
-    if self.form != nil {
-      messageType = .Form
+    if self.action != nil {
+      messageType = .Action
     } else {
       messageType = CHMessage.contextType(self)
     }
@@ -551,5 +551,5 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
     lhs.webPage == rhs.webPage &&
     lhs.message == rhs.message &&
     lhs.translateState == rhs.translateState &&
-    lhs.form?.closed == rhs.form?.closed
+    lhs.action?.closed == rhs.action?.closed
 }

@@ -27,10 +27,6 @@ struct UpdateLocale: Action {
   public let payload: CHLocaleString
 }
 
-struct GetSupportBots: Action {
-  public let payload: [CHSupportBot]
-}
-
 struct GetSupportBotEntry: Action {
   public let bot: CHBot?
   public let entry: CHSupportBotEntryInfo

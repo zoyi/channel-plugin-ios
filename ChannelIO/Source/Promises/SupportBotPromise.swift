@@ -13,52 +13,26 @@ import RxSwift
 import ObjectMapper
 
 struct SupportBotPromise {
-  static func getSupportBots(pluginId: String) -> Observable<[CHSupportBot]> {
-    let params = [
-      "query": [
-        "mobile": "true"
-      ]
-    ]
+  static func getSupportBot(pluginId: String) -> Observable<CHSupportBotEntryInfo> {
     return Observable.create({ (subscriber) in
-      let req = Alamofire.request(RestRouter.GetSupportBots(pluginId, params))
+      let req = Alamofire.request(RestRouter.GetSupportBot(pluginId))
         .validate(statusCode: 200..<300)
         .asyncResponse(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            let supportBots = Mapper<CHSupportBot>().mapArray(JSONObject: json["supportBots"].object) ?? []
-            
-            subscriber.onNext(supportBots)
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(error)
-          }
-        })
-      
-      return Disposables.create {
-        req.cancel()
-      }
-    })
-  }
-  
-  static func getSupportBotEntry(supportBotId: String) -> Observable<CHSupportBotEntryInfo> {
-    return Observable.create({ (subscriber) in
-      let req = Alamofire.request(RestRouter.GetSupportBotEntry(supportBotId))
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { (response) in
-          switch response.result {
-          case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let supportBot = Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
             let step = Mapper<CHSupportBotStep>().map(JSONObject: json["step"].object)
-            let actions = Mapper<CHSupportBotAction>().mapArray(JSONObject: json["actions"].object) ?? []
-            let data = CHSupportBotEntryInfo(step: step, actions: actions)
-            
+            let buttons = Mapper<CHActionButton>().mapArray(JSONObject: json["buttons"].object) ?? []
+            let data = CHSupportBotEntryInfo(supportBot: supportBot, step: step, buttons: buttons)
+
             subscriber.onNext(data)
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)
           }
         })
+      
       return Disposables.create {
         req.cancel()
       }
@@ -89,9 +63,9 @@ struct SupportBotPromise {
     })
   }
   
-  static func replySupportBot(userChatId: String?, formId: String?, key: String?, requestId: String? = nil) -> Observable<CHMessage> {
+  static func replySupportBot(userChatId: String?, actionId: String?, buttonId: String?, requestId: String? = nil) -> Observable<CHMessage> {
     return Observable.create({ (subscriber) in
-      guard let chatId = userChatId, let formId = formId, let key = key , let requestId = requestId else {
+      guard let chatId = userChatId, let buttonId = buttonId, let actionId = actionId , let requestId = requestId else {
         subscriber.onError(CHErrorPool.unknownError)
         return Disposables.create()
       }
@@ -99,12 +73,11 @@ struct SupportBotPromise {
       let params = [
         "query": [
           "requestId": requestId,
-          "formId": formId,
-          "key": key
+          "actionId": actionId
         ]
       ]
       
-      let req = Alamofire.request(RestRouter.ReplySupportBot(chatId, params as RestRouter.ParametersType))
+      let req = Alamofire.request(RestRouter.ReplySupportBot(chatId, buttonId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
           switch response.result {

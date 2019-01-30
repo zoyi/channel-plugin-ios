@@ -9,11 +9,11 @@
 import Foundation
 import ObjectMapper
 
-enum FormOptionKey: String {
+enum ActionOptionKey: String {
   case disableToManager
 }
 
-enum FormType : String {
+enum ActionType: String {
   case select
   case button
   case solve = "userChat.solve"
@@ -21,46 +21,45 @@ enum FormType : String {
   case support = "supportBot"
 }
 
-struct CHForm {
-  var type: FormType = .select
-  var inputs: [CHInput] = []
+struct CHAction {
+  var type: ActionType = .select
+  var buttons: [CHActionButton] = []
   var closed: Bool = false
-  var option: [FormOptionKey: Bool] = [:]
+  var option: [ActionOptionKey: Bool] = [:]
   
-  static func create(botEntry: CHSupportBotEntryInfo) -> CHForm {
-    var form = CHForm()
-    form.type = .support
-    form.inputs = botEntry.actions.map { (action) in
-      let (text, onlyEmoji) = CustomMessageTransform.markdown.parse(action.text)
-      return CHInput(key: action.key, text: text, onlyEmoji: onlyEmoji)
-    }
+  static func create(botEntry: CHSupportBotEntryInfo) -> CHAction {
+    var action = CHAction()
+    action.type = .support
+    action.buttons = botEntry.buttons
     
-    return form
+    return action
   }
 }
 
-extension CHForm: Mappable {
+extension CHAction: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
     type        <- map["type"]
-    inputs      <- map["inputs"]
+    buttons     <- map["buttons"]
     option      <- map["option"]
     closed      <- map["closed"]
   }
 }
 
-struct CHInput {
+struct CHActionButton {
+  var id: String = ""
   var key: String = ""
   var text: NSAttributedString? = nil
   
   var onlyEmoji: Bool = false
 }
 
-extension CHInput: Mappable {
+extension CHActionButton: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
+    id          <- map["id"]
     key         <- map["key"]
     let rawText = map["text"].currentValue as? String ?? ""
     (text, onlyEmoji) = CustomMessageTransform.markdown.parse(rawText)

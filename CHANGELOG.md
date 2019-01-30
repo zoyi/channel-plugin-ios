@@ -1,3 +1,10 @@
+# 5.3.0
+## Updates
+* Support bot will not be working below 5.3
+* Updated support bot api and flows
+* Added APIs retry logics
+* Added RxSwiftExt framework
+
 # 5.2.4
 ## Bug fixes
 * Removed test related frameworks from project due to carthage build error

@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxSwiftExt
 import RxCocoa
 import CHSlackTextViewController
 import SVProgressHUD
@@ -284,7 +285,13 @@ extension ChatManager {
         return Disposables.create()
       }
       
-      let signal = message.send().subscribe(onNext: { (updated) in
+      let signal = message.send()
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while sending message. Attempting to send again")
+          return true
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (updated) in
         dlog("Message has been sent successfully")
         self?.sendTyping(isStop: true)
         subscriber.onNext(updated)
@@ -312,7 +319,13 @@ extension ChatManager {
   func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
     var message = allMessages.get(index: currentIndex)
     
-    message?.send().observeOn(MainScheduler.instance).subscribe(onNext: { [weak self] (updated) in
+    message?.send()
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while sending message. Attempting to send again")
+        return true
+      })
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (updated) in
       message?.state = .Sent
       mainStore.dispatch(CreateMessage(payload: updated))
       self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
@@ -379,6 +392,10 @@ extension ChatManager {
         self?.createChat()
       
       createChatSignal?
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while creating a chat. Attempting to create again")
+          return true
+        })
         .observeOn(MainScheduler.instance)
         .flatMap({ (chatId) -> Observable<CHMessage?> in
           guard let s = self else { return .empty() }
@@ -443,7 +460,11 @@ extension ChatManager {
       .flatMap({ (chat, message) -> Observable<CHMessage> in
         let msg = CHMessage.createLocal(chatId: chat!.id, text: value, originId: originId, key: key)
         mainStore.dispatch(CreateMessage(payload: msg))
-        return CHSupportBot.reply(with: msg, formId: message?.id)
+        return CHSupportBot.reply(with: msg, actionId: message?.id)
+      })
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while replying supportBot. Attempting to reply again")
+        return true
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (updated) in
@@ -457,7 +478,7 @@ extension ChatManager {
   
   private func processUserChatAction(originId: String?, key: String?, value: String?) {
     guard var origin = messageSelector(state: mainStore.state, id: originId),
-      let type = origin.form?.type,
+      let type = origin.action?.type,
       let key = key, let value = value else { return }
     
     var msg: CHMessage?
@@ -475,7 +496,7 @@ extension ChatManager {
           //handle error
         }).disposed(by: self.disposeBag)
     } else if type == .solve && key == "reopen" {
-      origin.form?.closed = true
+      origin.action?.closed = true
       mainStore.dispatch(UpdateMessage(payload: origin))
       if var updatedChat = userChatSelector(state: mainStore.state, userChatId: self.chatId) {
         updatedChat.state = .following
@@ -556,7 +577,12 @@ extension ChatManager {
       self?.nextSeq = ""
       
       let signal = CHUserChat.get(userChatId: s.chatId)
-        .observeOn(MainScheduler.instance).subscribe(onNext: { (response) in
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while fetching chat. Attempting to fetch again")
+          return true
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (response) in
         self?.didChatLoaded = true
         self?.state = .chatLoaded
         //due to message update step were not desirable
@@ -591,6 +617,10 @@ extension ChatManager {
       }
       //if push bot message is present, create push bot user chat
       let signal = CHNudge.createChat(nudgeId: nudgeId)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while creating a chat. Attempting to create again")
+          return true
+        })
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (chatResponse) in
           //replace local nudgeChat
@@ -623,6 +653,10 @@ extension ChatManager {
         subscriber.onCompleted()
       } else if let bot = mainStore.state.botsState.findSupportBot() {
         disposable = CHSupportBot.create(with: bot.id)
+          .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+            dlog("Error while creating a chat. Attempting to create again")
+            return true
+          })
           .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (chatResponse) in
           mainStore.dispatch(GetUserChat(payload: chatResponse))
@@ -662,21 +696,25 @@ extension ChatManager {
       
       //if push bot message is present, create push bot user chat
       let signal = CHUserChat.create(pluginId: pluginId)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while creating a chat. Attempting to create again")
+          return true
+        })
         .observeOn(MainScheduler.instance).subscribe(onNext: { (chatResponse) in
-        mainStore.dispatch(GetUserChat(payload: chatResponse))
+          mainStore.dispatch(GetUserChat(payload: chatResponse))
           
-        self?.chatNewlyCreated = true
-        self?.didChatLoaded = true
-        self?.setChatEntities(with: chatResponse.userChat?.id)
-        self?.prepareToChat()
+          self?.chatNewlyCreated = true
+          self?.didChatLoaded = true
+          self?.setChatEntities(with: chatResponse.userChat?.id)
+          self?.prepareToChat()
         
-        subscriber.onNext(chatResponse.userChat?.id ?? "")
-        subscriber.onCompleted()
-      }, onError: { [weak self] (error) in
-        self?.didChatLoaded = false
-        self?.state = .chatNotLoaded
-        subscriber.onError(error)
-      })
+          subscriber.onNext(chatResponse.userChat?.id ?? "")
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+          self?.didChatLoaded = false
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        })
       
       return Disposables.create {
         signal.dispose()
@@ -710,6 +748,10 @@ extension ChatManager {
       since: self.nextSeq,
       limit: 30,
       sortOrder: "DESC")
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while fetching messages. Attempting to fetch again")
+        return true
+      })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
         if let nextSeq = data["next"] {
@@ -839,9 +881,9 @@ extension ChatManager {
 }
 
 extension ChatManager {
-  func onClickFormOption(originId: String?, key: String?, value: String?) {
+  func onClickActionButton(originId: String?, key: String?, value: String?) {
     guard let origin = messageSelector(state: mainStore.state, id: originId),
-      let type = origin.form?.type, let key = key, let value = value else { return }
+      let type = origin.action?.type, let key = key, let value = value else { return }
     
     if type == .select {
       self.processPostAction(originId: originId, key: key, value: value)
@@ -926,7 +968,13 @@ extension ChatManager {
     
     let sendText = CHAssets.localized("ch.chat.retry_sending_message")
     alertView.addAction(UIAlertAction(title: sendText, style: .default) { [weak self] _ in
-      message.send().subscribe(onNext: { (message) in
+      message.send()
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while sending message. Attempting to send again")
+          return true
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (message) in
         mainStore.dispatch(CreateMessage(payload: message))
       }).disposed(by: (self?.disposeBag)!)
     })
