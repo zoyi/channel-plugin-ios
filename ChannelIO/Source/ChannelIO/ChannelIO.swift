@@ -321,17 +321,18 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func close(animated: Bool, completion: (() -> Void)? = nil) {
-    guard ChannelIO.isValidStatus else { return }
-    guard ChannelIO.baseNavigation != nil else { return }
+    guard ChannelIO.isValidStatus else { completion?(); return }
+    guard mainStore.state.uiState.isChannelVisible else { completion?(); return }
+    guard ChannelIO.baseNavigation != nil else { completion?(); return }
     
     dispatch {
       ChannelIO.delegate?.willCloseMessenger?()
       ChannelIO.baseNavigation?.dismiss(animated: animated, completion: {
         mainStore.dispatch(ChatListIsHidden())
-
         if ChannelIO.launcherVisible {
           ChannelIO.launcherView?.show(animated: true)
         }
+        
         ChannelIO.baseNavigation?.removeFromParent()
         ChannelIO.baseNavigation = nil
         completion?()

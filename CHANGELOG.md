@@ -1,3 +1,7 @@
+# 5.3.1
+## Updates
+* Optimized `close:` to handle edge cases
+
 # 5.3.0
 ## Updates
 * Support bot will not be working below 5.3
