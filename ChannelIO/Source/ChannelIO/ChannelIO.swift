@@ -212,7 +212,8 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func show(animated: Bool) {
-    guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
+    guard let view = CHUtils.getTopController()?.baseController.view else { return }
+
     ChannelIO.launcherVisible = true
     guard ChannelIO.isValidStatus, ChannelIO.canShowLauncher else { return }
     guard ChannelIO.baseNavigation == nil else { return }

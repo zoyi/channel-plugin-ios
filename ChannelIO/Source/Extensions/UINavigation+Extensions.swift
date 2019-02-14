@@ -23,3 +23,23 @@ extension UINavigationController {
     CATransaction.commit()
   }
 }
+
+extension UIViewController {
+  var isModal: Bool {
+    let presentingIsModal = presentingViewController != nil
+    let presentingIsNavigation = navigationController?.presentingViewController?.presentedViewController == navigationController
+    let presentingIsTabBar = tabBarController?.presentingViewController is UITabBarController
+    return presentingIsModal || presentingIsNavigation || presentingIsTabBar || false
+  }
+  
+  var baseController: UIViewController {
+    if let tabBarViewController = self.tabBarController {
+      return tabBarViewController
+    }
+    if let navigationController = self.navigationController {
+      return navigationController
+    }
+    return self
+  }
+}
+

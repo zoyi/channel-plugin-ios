@@ -1,3 +1,7 @@
+# 5.3.3
+## Updates
+* Displayed launcher on proper top controller view
+
 # 5.3.2
 ## Bug fixes
 * Fixed retry loader to dismiss properly

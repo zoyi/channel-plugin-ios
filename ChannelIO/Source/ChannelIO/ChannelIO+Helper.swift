@@ -174,7 +174,7 @@ extension ChannelIO {
   }
   
   internal class func showNotification(pushData: CHPush?) {
-    guard let view = UIApplication.shared.keyWindow?.rootViewController?.view else { return }
+    guard let view = CHUtils.getTopController()?.baseController.view else { return }
     guard let push = pushData else { return }
 
     let notificationView = ChannelIO.chatNotificationView ?? ChatNotificationView()
