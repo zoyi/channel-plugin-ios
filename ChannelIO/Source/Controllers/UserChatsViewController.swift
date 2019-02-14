@@ -285,6 +285,8 @@ class UserChatsViewController: BaseViewController {
         self?.showNewChat = false
         self?.isShowingChat = false
         self?.errorToastView.display(animated: true)
+      }, onDisposed: {
+        SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)
   }
   
@@ -477,6 +479,8 @@ extension UserChatsViewController {
       }, onCompleted: {
         SVProgressHUD.dismiss()
         dlog("Get UserChats complete")
+      }, onDisposed: {
+        SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)
   }
   

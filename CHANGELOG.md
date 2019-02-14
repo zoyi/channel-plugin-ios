@@ -1,3 +1,7 @@
+# 5.3.2
+## Bug fixes
+* Fixed retry loader to dismiss properly
+
 # 5.3.1
 ## Updates
 * Optimized `close:` to handle edge cases
