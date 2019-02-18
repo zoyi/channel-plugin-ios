@@ -1,3 +1,8 @@
+# 5.3.4
+## Updates
+* Added `initPushToken: String` for react native
+* Renamed `willOpenMessenger` and `willCloseMessenger` to `willShowMessenger` and `willHideMessenger`
+
 # 5.3.3
 ## Updates
 * Displayed launcher on proper top controller view

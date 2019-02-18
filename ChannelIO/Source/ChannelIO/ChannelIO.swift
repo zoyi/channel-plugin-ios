@@ -31,8 +31,8 @@ func dlog(_ str: String) {
 public protocol ChannelPluginDelegate: class {
   @objc optional func onChangeBadge(count: Int) -> Void /* notify badge count when changed */
   @objc optional func onClickChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
-  @objc optional func willOpenMessenger() -> Void /* notify when chat list is about to show */
-  @objc optional func willCloseMessenger() -> Void /* notify when chat list is about to hide */
+  @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
+  @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void
   @objc optional func onClickRedirect(url: URL) -> Bool
 }
@@ -190,6 +190,15 @@ public final class ChannelIO: NSObject {
       AppManager.registerPushToken()
     }
   }
+  
+  @objc
+  public class func initPushToken(tokenString: String) {
+    ChannelIO.pushToken = tokenString
+    
+    if ChannelIO.isValidStatus {
+      AppManager.registerPushToken()
+    }
+  }
 
   /**
    *   Shutdown ChannelIO
@@ -303,7 +312,7 @@ public final class ChannelIO: NSObject {
     
     dispatch {
       ChannelIO.launcherView?.isHidden = true
-      ChannelIO.delegate?.willOpenMessenger?()
+      ChannelIO.delegate?.willShowMessenger?()
 
       mainStore.dispatch(ChatListIsVisible())
 
@@ -327,7 +336,7 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.baseNavigation != nil else { completion?(); return }
     
     dispatch {
-      ChannelIO.delegate?.willCloseMessenger?()
+      ChannelIO.delegate?.willHideMessenger?()
       ChannelIO.baseNavigation?.dismiss(animated: animated, completion: {
         mainStore.dispatch(ChatListIsHidden())
         if ChannelIO.launcherVisible {
