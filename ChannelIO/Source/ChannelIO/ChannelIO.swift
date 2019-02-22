@@ -63,6 +63,7 @@ public final class ChannelIO: NSObject {
 
   internal static var settings: ChannelPluginSettings? = nil
   internal static var profile: Profile? = nil
+  internal static var lastPush: CHPush?
   
   internal static var launcherView: LauncherView? = nil
   internal static var launcherVisible: Bool = false
@@ -77,7 +78,11 @@ public final class ChannelIO: NSObject {
         self.handlePush(push: state.push)
         
         if state.plugin.isValid {
-          let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
+          let viewModel = LauncherViewModel(
+            plugin: state.plugin,
+            guest: state.guest,
+            push: ChannelIO.lastPush
+          )
           ChannelIO.launcherView?.configure(viewModel)
         }
       }
@@ -89,9 +94,12 @@ public final class ChannelIO: NSObject {
       if ChannelIO.baseNavigation == nil && ChannelIO.settings?.hideDefaultInAppPush == false {
         ChannelIO.showNotification(pushData: push)
       }
-
-      ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
-      mainStore.dispatch(RemovePush())
+      
+      if ChannelIO.lastPush != push {
+        ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
+        ChannelIO.lastPush = push
+      }
+      //mainStore.dispatch(RemovePush())
     }
     
     func handleBadge(_ count: Int) {
@@ -234,7 +242,8 @@ public final class ChannelIO: NSObject {
       
       let viewModel = LauncherViewModel(
         plugin: mainStore.state.plugin,
-        guest: mainStore.state.guest
+        guest: mainStore.state.guest,
+        push: mainStore.state.push
       )
       
       let xMargin = ChannelIO.settings?.launcherConfig?.xMargin ?? 24

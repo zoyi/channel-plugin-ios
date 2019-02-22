@@ -60,3 +60,15 @@ extension CHPush : Mappable {
     type      <- map["type"]
   }
 }
+
+extension CHPush: Equatable {
+  static func == (lhs:CHPush, rhs:CHPush) -> Bool {
+    return lhs.type == rhs.type &&
+      lhs.message == rhs.message &&
+      lhs.bot == rhs.bot &&
+      lhs.manager == rhs.manager &&
+      lhs.attachmentType == rhs.attachmentType &&
+      lhs.isNudgePush == rhs.isNudgePush
+  }
+}
+

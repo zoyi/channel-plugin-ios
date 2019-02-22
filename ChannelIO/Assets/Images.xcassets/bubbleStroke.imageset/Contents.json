@@ -1,19 +1,19 @@
 {
   "images" : [
     {
+      "scale" : "1x",
       "idiom" : "universal",
-      "filename" : "bubbleStroke.png",
-      "scale" : "1x"
+      "filename" : "bubbleStroke.png"
     },
     {
+      "scale" : "2x",
       "idiom" : "universal",
-      "filename" : "bubbleStroke@2x.png",
-      "scale" : "2x"
+      "filename" : "bubbleStroke@2x.png"
     },
     {
+      "scale" : "3x",
       "idiom" : "universal",
-      "filename" : "bubbleStroke@3x.png",
-      "scale" : "3x"
+      "filename" : "bubbleStroke@3x.png"
     }
   ],
   "info" : {

@@ -51,3 +51,15 @@ extension CHManager {
     return PluginPromise.getFollowingManagers()
   }
 }
+
+extension CHManager: Equatable {
+  static func == (lhs:CHManager, rhs:CHManager) -> Bool {
+    return lhs.id == rhs.id &&
+      lhs.name == rhs.name &&
+      lhs.avatarUrl == rhs.avatarUrl &&
+      lhs.initial == rhs.initial &&
+      lhs.color == rhs.color &&
+      lhs.username == rhs.username &&
+      lhs.online == rhs.online
+  }
+}
