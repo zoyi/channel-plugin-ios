@@ -19,6 +19,7 @@ class BootParamBuilder: ParamBuilder {
   
   var userId: String? = nil
   var profile: Profile?
+  var profileData: [String: Any]?
   var sysProfile: [String: Any]?
   var includeDefaultSysProfile = false
   
@@ -26,6 +27,12 @@ class BootParamBuilder: ParamBuilder {
     static let profile = "profile"
     static let sysProfile = "sysProfile"
     static let userId = "userId"
+  }
+  
+  @discardableResult
+  func with(profile: [String: Any]) -> BootParamBuilder {
+    self.profileData = profile
+    return self
   }
   
   @discardableResult
@@ -45,6 +52,11 @@ class BootParamBuilder: ParamBuilder {
     self.sysProfile = sysProfile
     self.includeDefaultSysProfile = includeDefault
     return self
+  }
+  
+  private func buildProfileData() -> [String: Any]? {
+    guard let profileData = self.profileData else { return nil }
+    return profileData
   }
   
   private func buildProfile() -> [String: Any]? {
@@ -90,8 +102,16 @@ class BootParamBuilder: ParamBuilder {
   
   func build() -> CHParam {
     var data = [String: Any]()
-    if let profileData = self.buildProfile() {
-      data[ParamKey.profile] = profileData
+    if let profile = self.buildProfile() {
+      data[ParamKey.profile] = profile
+    }
+    
+    if let profileData = self.buildProfileData() {
+      if let profile = data[ParamKey.profile] as? [String: Any] {
+        data[ParamKey.profile] = profile.merging(profileData, uniquingKeysWith: { (_, second) in second })
+      } else {
+        data[ParamKey.profile] = profileData
+      }
     }
     
     if let sysProfile = self.buildSysProps() {
