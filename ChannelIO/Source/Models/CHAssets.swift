@@ -147,3 +147,21 @@ class CHAssets {
     }
   }
 }
+ 
+extension CHAssets {
+  static func normalIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleFilled")!
+  }
+  
+  static func pushIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleFilledPush")!
+  }
+  
+  static func upIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleFilledUp")!
+  }
+  
+  static func upRightIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleFilledUpRight")!
+  }
+}

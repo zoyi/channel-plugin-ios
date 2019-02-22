@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct CHColors {
   static let dark = UIColor("#516378")!
@@ -50,4 +51,58 @@ struct CHColors {
   static let brightSkyBlue = UIColor("#00c3ff")!
   static let warmGrey = UIColor("#9b9b9b")!
   static let pumpkinOrange = UIColor("#fb8200")!
+  
+  static func shiftHue(with color: UIColor, shiftValue: CGFloat) -> UIColor {
+    let rgba = color.rgba
+    let r = rgba.red, g = rgba.green, b = rgba.blue
+    let minV:CGFloat = CGFloat(min(r, g, b))
+    let maxV:CGFloat = CGFloat(max(r, g, b))
+    let delta:CGFloat = maxV - minV
+    var hue:CGFloat = 0
+    if delta != 0 {
+      if r == maxV {
+        hue = (g - b) / delta
+      }
+      else if g == maxV {
+        hue = 2 + (b - r) / delta
+      }
+      else {
+        hue = 4 + (r - g) / delta
+      }
+      hue *= 60
+      if hue < 0 {
+        hue += 360
+      }
+    }
+    let saturation = maxV == 0 ? 0 : (delta / maxV)
+    let brightness = maxV
+    
+    var finalHue = hue + shiftValue
+    if finalHue > 360 {
+      finalHue -= 360
+    }
+    return UIColor(hue: finalHue/360, saturation: saturation, brightness: brightness, alpha: rgba.alpha)
+  }
+}
+
+extension UIColor {
+  var rgba: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+    var red: CGFloat = 0
+    var green: CGFloat = 0
+    var blue: CGFloat = 0
+    var alpha: CGFloat = 0
+    getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+    
+    return (red, green, blue, alpha)
+  }
+  
+  var hsv: (hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) {
+    var hue: CGFloat = 0
+    var saturation: CGFloat = 0
+    var brightness: CGFloat = 0
+    var alpha: CGFloat = 0
+    
+    getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+    return (hue, saturation, brightness, alpha)
+  }
 }

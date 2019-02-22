@@ -76,8 +76,10 @@ public final class ChannelIO: NSObject {
         self.handleBadge(state.guest.alert)
         self.handlePush(push: state.push)
         
-        let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
-        ChannelIO.launcherView?.configure(viewModel)
+        if state.plugin.isValid {
+          let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
+          ChannelIO.launcherView?.configure(viewModel)
+        }
       }
     }
     
@@ -260,7 +262,7 @@ public final class ChannelIO: NSObject {
         launcherView.show(animated: animated)
       
       launcherView.snp.remakeConstraints ({ (make) in
-        make.size.equalTo(CGSize(width:54.f, height:54.f))
+        make.size.equalTo(CGSize(width:50.f, height:50.f))
         
         if position == LauncherPosition.right {
           make.right.equalToSuperview().inset(xMargin)

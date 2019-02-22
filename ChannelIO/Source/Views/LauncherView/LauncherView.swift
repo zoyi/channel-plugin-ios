@@ -30,10 +30,18 @@ final class LauncherView : BaseView {
   //refactor this as general button
   let buttonLayerView = UIView().then {
     $0.backgroundColor = CHColors.dark50
-    $0.layer.cornerRadius = 27.f
+    $0.layer.cornerRadius = 25.f
     $0.alpha = 0.5
   }
 
+  let buttonGradientLayer = CAGradientLayer().then {
+    $0.startPoint = CGPoint(x: 0.5, y: 0.0)
+    $0.endPoint = CGPoint(x: 0.5, y: 1.0)
+    $0.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+    $0.locations = [0, 0.5, 1]
+    $0.cornerRadius = 25
+  }
+  
   var layoutGuide: UILayoutGuide? = nil
   
   override func initialize() {
@@ -42,6 +50,7 @@ final class LauncherView : BaseView {
     self.addSubview(self.buttonView)
     self.addSubview(self.buttonLayerView)
     self.addSubview(self.badgeView)
+    self.buttonView.layer.insertSublayer(self.buttonGradientLayer, at: 0)
     
     self.buttonView.rx.isHighlighted
       .subscribe(onNext: { [weak self] (selected) in
@@ -50,13 +59,14 @@ final class LauncherView : BaseView {
   }
   
   func configure(_ viewModel: LauncherViewModelType) {
-    self.buttonView.backgroundColor = UIColor(viewModel.bgColor)
-    self.buttonView.layer.borderColor = UIColor(viewModel.borderColor)?.cgColor
+    self.buttonGradientLayer.colors = viewModel.gradientColors
     
-    let imageName = viewModel.iconColor == UIColor.white ? "balloonWhite" : "balloonBlack"
-    self.buttonView.setImage(CHAssets.getImage(named: imageName), for: .normal)
-    self.buttonView.setImage(CHAssets.getImage(named: imageName), for: .highlighted)
+    self.buttonView.imageView?.contentMode = .scaleAspectFit
+    self.buttonView.bringSubviewToFront(self.buttonView.imageView!)
     
+    self.buttonView.setImage(viewModel.launchIcon!, for: .normal)
+    self.buttonView.setImage(viewModel.launchIcon!, for: .highlighted)
+  
     self.badgeView.configure(viewModel.badge)
     self.badgeView.isHidden = viewModel.badge == 0
   }

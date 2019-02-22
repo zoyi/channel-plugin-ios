@@ -244,6 +244,7 @@ class UserChatsViewController: BaseViewController {
   func showUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
     guard !self.isShowingChat else { return }
     self.isShowingChat = true
+    self.tableView.isHidden = true
     
     let controller = self.prepareUserChat(userChatId: userChatId, text: text)
     

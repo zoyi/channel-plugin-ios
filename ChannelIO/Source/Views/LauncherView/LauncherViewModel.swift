@@ -10,23 +10,37 @@ import Foundation
 import UIKit
 
 protocol LauncherViewModelType {
-  var bgColor: String { get }
-  var borderColor: String { get }
+  var bgColor: UIColor { get }
   var badge: Int { get }
-  var iconColor: UIColor { get }
+  var position: LauncherPosition { get }
+  var launchIcon: UIImage? { get }
+  var gradientColors: [CGColor] { get }
 }
 
 struct LauncherViewModel: LauncherViewModelType {
-  var bgColor = "#00A6FF"
-  var borderColor = ""
+  var bgColor: UIColor
+  var gradientColors: [CGColor]
   var badge = 0
-  var iconColor = UIColor.white
   var position = LauncherPosition.right
+  var launchIcon: UIImage?
   
-  init(plugin: CHPlugin, guest: CHGuest? = nil) {
-    self.bgColor = plugin.color
-    self.borderColor = plugin.borderColor
-    self.iconColor = (plugin.textColor == "white") ? UIColor.white : UIColor.black
+  init(plugin: CHPlugin, guest: CHGuest? = nil, push: CHPush? = nil) {
+    self.bgColor = UIColor(plugin.color) ?? UIColor.white
     self.badge = guest?.alert ?? 0
+    self.gradientColors = [
+      self.bgColor.cgColor,
+      self.bgColor.cgColor,
+      plugin.gradientColor?.cgColor ?? plugin.textUIColor.cgColor
+    ]
+    
+    if let push = push, push.isNudgePush {
+      self.launchIcon = CHAssets.pushIcon()
+    } else if self.badge > 10 {
+      self.launchIcon = CHAssets.upRightIcon()
+    } else if self.badge <= 10 && self.badge != 0 {
+      self.launchIcon = CHAssets.upIcon()
+    } else {
+      self.launchIcon = CHAssets.normalIcon()
+    }
   }
 }

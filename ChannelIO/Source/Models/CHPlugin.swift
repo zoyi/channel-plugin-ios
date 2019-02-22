@@ -13,11 +13,9 @@ import ObjectMapper
 struct CHPlugin: ModelType {
   var id = ""
   var color = ""
+  var gradientColor: UIColor?
   var borderColor = ""
   var textColor = ""
-  var mobileMarginX = 0
-  var mobileMarginY = 0
-  var mobileHideButton = false
   var botName = ""
   
   var mobilePosition = "right"
@@ -26,6 +24,10 @@ struct CHPlugin: ModelType {
   
   var name: String {
     return mainStore.state.channel.name
+  }
+  
+  var isValid: Bool {
+    return id != ""
   }
   
   var textUIColor: UIColor! {
@@ -50,14 +52,16 @@ extension CHPlugin: Mappable {
   mutating func mapping(map: Map) {
     id               <- map["id"]
     color            <- map["color"]
+    gradientColor    <- map["gradientColor"]
     borderColor      <- map["borderColor"]
     textColor        <- map["textColor"]
-    mobileMarginX    <- map["mobileMarginX"]
-    mobileMarginY    <- map["mobileMarginY"]
-    mobileHideButton <- map["mobileHideButton"]
     botName          <- map["botName"]
     welcomeNamedI18n <- map["welcomeNamedI18n"]
     welcomeI18n      <- map["welcomeI18n"]
+    
+    if let color = UIColor(color) {
+       gradientColor = CHColors.shiftHue(with: color, shiftValue: 14)
+    }
   }
 }
 
@@ -71,6 +75,7 @@ extension CHPlugin: Equatable {
   static func == (lhs:CHPlugin, rhs:CHPlugin) -> Bool {
     return lhs.id == rhs.id &&
       lhs.color == rhs.color &&
+      lhs.gradientColor == rhs.gradientColor &&
       lhs.borderColor == rhs.borderColor &&
       lhs.textColor == rhs.textColor &&
       lhs.botName == rhs.botName &&
