@@ -81,7 +81,7 @@ public final class ChannelIO: NSObject {
           let viewModel = LauncherViewModel(
             plugin: state.plugin,
             guest: state.guest,
-            push: ChannelIO.lastPush
+            push: state.push
           )
           ChannelIO.launcherView?.configure(viewModel)
         }
@@ -99,7 +99,6 @@ public final class ChannelIO: NSObject {
         ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
         ChannelIO.lastPush = push
       }
-      //mainStore.dispatch(RemovePush())
     }
     
     func handleBadge(_ count: Int) {

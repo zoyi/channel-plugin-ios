@@ -252,6 +252,7 @@ extension ChannelIO {
     guard ChannelIO.chatNotificationView != nil else { return }
     
     dispatch {
+      mainStore.dispatch(RemovePush())
       ChannelIO.chatNotificationView?.remove(animated: true)
       ChannelIO.chatNotificationView = nil
     }
