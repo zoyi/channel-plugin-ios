@@ -153,15 +153,31 @@ extension CHAssets {
     return CHAssets.getImage(named: "bubbleFilled")!
   }
   
+  static func normalBlackIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleStroke")!
+  }
+  
   static func pushIcon() -> UIImage {
     return CHAssets.getImage(named: "bubbleFilledPush")!
+  }
+  
+  static func pushBlackIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleStrokePush")!
   }
   
   static func upIcon() -> UIImage {
     return CHAssets.getImage(named: "bubbleFilledUp")!
   }
   
+  static func upBlackIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleStrokeUp")!
+  }
+  
   static func upRightIcon() -> UIImage {
     return CHAssets.getImage(named: "bubbleFilledUpRight")!
+  }
+  
+  static func upRightBlackIcon() -> UIImage {
+    return CHAssets.getImage(named: "bubbleStrokeUpRight")!
   }
 }

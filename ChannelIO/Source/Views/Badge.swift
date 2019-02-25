@@ -14,8 +14,8 @@ final class Badge: NeverClearView {
   // MARK: Constants
 
   struct Metric {
-    static let minWidth = 12.f // TODO: Expose to outside
-    static let padding = 6.f // TODO: Expose to outside
+    static let minWidth = 10.f // TODO: Expose to outside
+    static let padding = 5.f // TODO: Expose to outside
   }
 
   struct Font {
@@ -24,7 +24,8 @@ final class Badge: NeverClearView {
 
   struct Color {
     static let text = CHColors.white
-    static let background = CHColors.warmPink
+    static let background = CHColors.neonRed
+    static let border = CHColors.warmPink
   }
 
   // MARK: Properties
@@ -40,7 +41,11 @@ final class Badge: NeverClearView {
   override func initialize() {
     super.initialize()
     self.clipsToBounds = true
+    
     self.backgroundColor = Color.background
+    self.layer.borderColor = Color.border.cgColor
+    self.layer.borderWidth = 1.f
+    
     self.addSubview(self.label)
   }
 
@@ -65,8 +70,8 @@ final class Badge: NeverClearView {
 
     self.label.snp.remakeConstraints { (make) in
       make.width.greaterThanOrEqualTo(Metric.minWidth)
-      make.leading.equalToSuperview().inset(5)
-      make.trailing.equalToSuperview().inset(5)
+      make.leading.greaterThanOrEqualToSuperview().inset(5)
+      make.trailing.greaterThanOrEqualToSuperview().inset(5)
       make.centerX.equalToSuperview()
       make.centerY.equalToSuperview()
     }

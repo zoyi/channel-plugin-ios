@@ -25,22 +25,29 @@ struct LauncherViewModel: LauncherViewModelType {
   var launchIcon: UIImage?
   
   init(plugin: CHPlugin, guest: CHGuest? = nil, push: CHPush? = nil) {
+    
     self.bgColor = UIColor(plugin.color) ?? UIColor.white
+    let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
+    
     self.badge = guest?.alert ?? 0
     self.gradientColors = [
       self.bgColor.cgColor,
       self.bgColor.cgColor,
-      plugin.gradientColor?.cgColor ?? plugin.textUIColor.cgColor
+      gradientColor.cgColor
     ]
     
     if let push = push, push.isNudgePush {
-      self.launchIcon = CHAssets.pushIcon()
-    } else if self.badge > 10 {
-      self.launchIcon = CHAssets.upRightIcon()
-    } else if self.badge <= 10 && self.badge != 0 {
-      self.launchIcon = CHAssets.upIcon()
+      self.launchIcon = plugin.textColor == "white" ?
+        CHAssets.pushIcon() : CHAssets.pushBlackIcon()
+    } else if self.badge >= 10 {
+      self.launchIcon = plugin.textColor == "white" ?
+        CHAssets.upRightIcon() : CHAssets.upRightBlackIcon()
+    } else if self.badge < 10 && self.badge != 0 {
+      self.launchIcon = plugin.textColor == "white" ?
+        CHAssets.upIcon() : CHAssets.upBlackIcon()
     } else {
-      self.launchIcon = CHAssets.normalIcon()
+      self.launchIcon = plugin.textColor == "white" ?
+        CHAssets.normalIcon() : CHAssets.normalBlackIcon()
     }
   }
 }

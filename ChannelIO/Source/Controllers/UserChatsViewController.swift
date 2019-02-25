@@ -53,6 +53,7 @@ class UserChatsViewController: BaseViewController {
   let errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
+  //refactor
   let plusButton = NewChatView()
   
   var showCompleted = false

@@ -16,14 +16,19 @@ final class LauncherView : BaseView {
   static let tagId = 0xDEADBEE
   
   struct Metric {
-    static let badgeViewTopMargin = -3.f
-    static let badgeViewRightMargin = -3.f
-    static let badgeViewHeight = 22.f
+    static let badgeViewTopMargin = -4.f
+    static let badgeViewRightMargin = -2.f
+    static let badgeViewHeight = 20.f
   }
   
   // MARK: Properties 
   
-  let badgeView = Badge()
+  let badgeView = Badge().then {
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOpacity = 0.2
+    $0.layer.shadowOffset = CGSize(width: 0, height: 1)
+    $0.layer.shadowRadius = 2
+  }
   let disposeBag = DisposeBag()
   let buttonView = CHButton.launcher()
   
@@ -82,10 +87,10 @@ final class LauncherView : BaseView {
       make.edges.equalTo((self?.buttonView)!)
     }
     
-    self.badgeView.snp.makeConstraints { [weak self] (make) in
+    self.badgeView.snp.makeConstraints { (make) in
       make.height.equalTo(Metric.badgeViewHeight)
       make.top.equalToSuperview().inset(Metric.badgeViewTopMargin)
-      make.centerX.equalTo((self?.snp.right)!).offset(-5)
+      make.trailing.equalToSuperview().inset(Metric.badgeViewRightMargin)
     }
   }
 }

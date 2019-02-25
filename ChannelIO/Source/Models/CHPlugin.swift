@@ -13,7 +13,7 @@ import ObjectMapper
 struct CHPlugin: ModelType {
   var id = ""
   var color = ""
-  var gradientColor: UIColor?
+  var gradientColor = ""
   var borderColor = ""
   var textColor = ""
   var botName = ""
@@ -58,10 +58,6 @@ extension CHPlugin: Mappable {
     botName          <- map["botName"]
     welcomeNamedI18n <- map["welcomeNamedI18n"]
     welcomeI18n      <- map["welcomeI18n"]
-    
-    if let color = UIColor(color) {
-       gradientColor = CHColors.shiftHue(with: color, shiftValue: 14)
-    }
   }
 }
 
