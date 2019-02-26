@@ -64,7 +64,7 @@ struct CHButton {
   static func launcher() -> UIButton {
     return  UIButton(type: .custom).then {
       $0.layer.cornerRadius = 25.f
-      $0.layer.shadowColor = UIColor.black.cgColor
+      $0.layer.shadowColor = CHColors.dark20.cgColor
       $0.layer.shadowOpacity = 0.3
       $0.layer.shadowOffset = CGSize(width: 0, height: 3)
       $0.layer.shadowRadius = 5

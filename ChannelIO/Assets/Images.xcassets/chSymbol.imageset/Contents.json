@@ -1,18 +1,18 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
       "filename" : "chSymbol.png",
+      "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "idiom" : "universal",
       "filename" : "chSymbol@2x.png",
+      "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "idiom" : "universal",
       "filename" : "chSymbol@3x.png",
+      "idiom" : "universal",
       "scale" : "3x"
     }
   ],
