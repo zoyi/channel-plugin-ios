@@ -77,14 +77,12 @@ public final class ChannelIO: NSObject {
         self.handleBadge(state.guest.alert)
         self.handlePush(push: state.push)
         
-        if state.plugin.isValid {
-          let viewModel = LauncherViewModel(
-            plugin: state.plugin,
-            guest: state.guest,
-            push: state.push
-          )
-          ChannelIO.launcherView?.configure(viewModel)
-        }
+        let viewModel = LauncherViewModel(
+          plugin: state.plugin,
+          guest: state.guest,
+          push: ChannelIO.lastPush
+        )
+        ChannelIO.launcherView?.configure(viewModel)
       }
     }
     

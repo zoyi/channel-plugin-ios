@@ -36,18 +36,18 @@ struct LauncherViewModel: LauncherViewModelType {
       gradientColor.cgColor
     ]
     
-    if let push = push, push.isNudgePush {
+    if self.badge == 0 {
+      self.launchIcon = plugin.textColor == "white" ?
+        CHAssets.normalIcon() : CHAssets.normalBlackIcon()
+    } else if let push = push, push.isNudgePush {
       self.launchIcon = plugin.textColor == "white" ?
         CHAssets.pushIcon() : CHAssets.pushBlackIcon()
     } else if self.badge >= 10 {
       self.launchIcon = plugin.textColor == "white" ?
         CHAssets.upRightIcon() : CHAssets.upRightBlackIcon()
-    } else if self.badge < 10 && self.badge != 0 {
-      self.launchIcon = plugin.textColor == "white" ?
-        CHAssets.upIcon() : CHAssets.upBlackIcon()
     } else {
       self.launchIcon = plugin.textColor == "white" ?
-        CHAssets.normalIcon() : CHAssets.normalBlackIcon()
+        CHAssets.upIcon() : CHAssets.upBlackIcon()
     }
   }
 }
