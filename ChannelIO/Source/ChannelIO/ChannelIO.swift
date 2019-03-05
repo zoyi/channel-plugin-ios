@@ -377,7 +377,7 @@ public final class ChannelIO: NSObject {
    *  - parameter
    */
   @objc
-  public class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+  private class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
     GuestPromise.updateGuest(with: profile)
       .subscribe(onNext: { (guest) in
         completion?(true, Guest(with: guest))
@@ -392,7 +392,7 @@ public final class ChannelIO: NSObject {
    *  - parameter
    */
   @objc
-  public class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+  private class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
     GuestPromise.updateGuest(with: profile)
       .subscribe(onNext: { (guest) in
         completion?(true, Guest(with: guest))

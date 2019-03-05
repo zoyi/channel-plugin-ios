@@ -1,3 +1,7 @@
+# 5.4.0
+## Updates
+* Updated default launcher icon and rebranding
+
 # 5.3.4
 ## Updates
 * Added `initPushToken: String` for react native
