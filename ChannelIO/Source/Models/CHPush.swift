@@ -9,9 +9,7 @@
 import Foundation
 import ObjectMapper
 
-protocol CHPushDisplayable {
-  
-}
+protocol CHPushDisplayable { }
 
 struct CHPush: CHPushDisplayable {
   var type = ""
@@ -29,6 +27,8 @@ struct CHPush: CHPushDisplayable {
   
   var attachmentType: CHAttachmentType = .none
   var redirectUrl: String? = nil
+  
+  var isNudgePush: Bool = false
 }
 
 extension CHPush : Mappable {
@@ -41,6 +41,7 @@ extension CHPush : Mappable {
     self.attachmentType = response.variant?.attachment ?? .none
     self.buttonTitle = response.variant?.buttonTitle
     self.showLog = false
+    self.isNudgePush = true
     
     if self.attachmentType == .image, let url = response.variant?.imageRedirectUrl {
       self.redirectUrl = url
@@ -59,3 +60,15 @@ extension CHPush : Mappable {
     type      <- map["type"]
   }
 }
+
+extension CHPush: Equatable {
+  static func == (lhs:CHPush, rhs:CHPush) -> Bool {
+    return lhs.type == rhs.type &&
+      lhs.message == rhs.message &&
+      lhs.bot == rhs.bot &&
+      lhs.manager == rhs.manager &&
+      lhs.attachmentType == rhs.attachmentType &&
+      lhs.isNudgePush == rhs.isNudgePush
+  }
+}
+

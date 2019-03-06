@@ -53,6 +53,7 @@ class UserChatsViewController: BaseViewController {
   let errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
+  //refactor
   let plusButton = NewChatView()
   
   var showCompleted = false
@@ -142,7 +143,7 @@ class UserChatsViewController: BaseViewController {
     }.disposed(by: self.disposeBag)
     
     self.plusButton.signalForClick().subscribe { [weak self] _ in
-      self?.showUserChat()
+      self?.showUserChat(hideTable: false)
     }.disposed(by: self.disposeBag)
     
     self.watermarkView.signalForClick().subscribe{ _ in
@@ -241,9 +242,10 @@ class UserChatsViewController: BaseViewController {
     }
   }
   
-  func showUserChat(userChatId: String? = nil, text:String = "", animated: Bool = true) {
+  func showUserChat(userChatId: String? = nil, text:String = "", hideTable: Bool = true, animated: Bool = true) {
     guard !self.isShowingChat else { return }
     self.isShowingChat = true
+    self.tableView.isHidden = hideTable
     
     let controller = self.prepareUserChat(userChatId: userChatId, text: text)
     
@@ -302,7 +304,7 @@ class UserChatsViewController: BaseViewController {
     controller.signalForNewChat().subscribe (onNext: { [weak self] text in
       let text = text as? String ?? ""
       self?.navigationController?.popViewController(animated: true, completion: {
-        self?.showUserChat(text: text, animated: true)
+        self?.showUserChat(text: text, hideTable: false, animated: true)
       })
     }).disposed(by: self.disposeBag)
     
@@ -436,7 +438,7 @@ extension UserChatsViewController: UITableViewDelegate {
     tableView.deselectRow(at: indexPath, animated: true)
 
     let userChat = self.userChats[indexPath.row]
-    self.showUserChat(userChatId: userChat.id, animated: true)
+    self.showUserChat(userChatId: userChat.id, hideTable: false, animated: true)
   }
 
   func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

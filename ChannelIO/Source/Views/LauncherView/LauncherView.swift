@@ -16,24 +16,37 @@ final class LauncherView : BaseView {
   static let tagId = 0xDEADBEE
   
   struct Metric {
-    static let badgeViewTopMargin = -3.f
-    static let badgeViewRightMargin = -3.f
-    static let badgeViewHeight = 22.f
+    static let badgeViewTopMargin = -4.f
+    static let badgeViewRightMargin = -2.f
+    static let badgeViewHeight = 20.f
   }
   
   // MARK: Properties 
   
-  let badgeView = Badge()
+  let badgeView = Badge().then {
+    $0.layer.shadowColor = CHColors.dark20.cgColor
+    $0.layer.shadowOpacity = 0.2
+    $0.layer.shadowOffset = CGSize(width: 0, height: 1)
+    $0.layer.shadowRadius = 2
+  }
   let disposeBag = DisposeBag()
   let buttonView = CHButton.launcher()
   
   //refactor this as general button
   let buttonLayerView = UIView().then {
     $0.backgroundColor = CHColors.dark50
-    $0.layer.cornerRadius = 27.f
+    $0.layer.cornerRadius = 25.f
     $0.alpha = 0.5
   }
 
+  let buttonGradientLayer = CAGradientLayer().then {
+    $0.startPoint = CGPoint(x: 0.5, y: 0.0)
+    $0.endPoint = CGPoint(x: 0.5, y: 1.0)
+    $0.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+    $0.locations = [0, 0.5, 1]
+    $0.cornerRadius = 25
+  }
+  
   var layoutGuide: UILayoutGuide? = nil
   
   override func initialize() {
@@ -42,6 +55,7 @@ final class LauncherView : BaseView {
     self.addSubview(self.buttonView)
     self.addSubview(self.buttonLayerView)
     self.addSubview(self.badgeView)
+    self.buttonView.layer.insertSublayer(self.buttonGradientLayer, at: 0)
     
     self.buttonView.rx.isHighlighted
       .subscribe(onNext: { [weak self] (selected) in
@@ -50,13 +64,14 @@ final class LauncherView : BaseView {
   }
   
   func configure(_ viewModel: LauncherViewModelType) {
-    self.buttonView.backgroundColor = UIColor(viewModel.bgColor)
-    self.buttonView.layer.borderColor = UIColor(viewModel.borderColor)?.cgColor
+    self.buttonGradientLayer.colors = viewModel.gradientColors
     
-    let imageName = viewModel.iconColor == UIColor.white ? "balloonWhite" : "balloonBlack"
-    self.buttonView.setImage(CHAssets.getImage(named: imageName), for: .normal)
-    self.buttonView.setImage(CHAssets.getImage(named: imageName), for: .highlighted)
+    self.buttonView.imageView?.contentMode = .scaleAspectFit
+    self.buttonView.bringSubviewToFront(self.buttonView.imageView!)
     
+    self.buttonView.setImage(viewModel.launchIcon!, for: .normal)
+    self.buttonView.setImage(viewModel.launchIcon!, for: .highlighted)
+  
     self.badgeView.configure(viewModel.badge)
     self.badgeView.isHidden = viewModel.badge == 0
   }
@@ -72,10 +87,10 @@ final class LauncherView : BaseView {
       make.edges.equalTo((self?.buttonView)!)
     }
     
-    self.badgeView.snp.makeConstraints { [weak self] (make) in
+    self.badgeView.snp.makeConstraints { (make) in
       make.height.equalTo(Metric.badgeViewHeight)
       make.top.equalToSuperview().inset(Metric.badgeViewTopMargin)
-      make.centerX.equalTo((self?.snp.right)!).offset(-5)
+      make.trailing.equalToSuperview().inset(Metric.badgeViewRightMargin)
     }
   }
 }

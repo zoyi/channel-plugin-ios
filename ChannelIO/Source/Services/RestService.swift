@@ -20,6 +20,7 @@ enum RestRouter: URLRequestConvertible {
   case GetPlugin(String)
   
   case TouchGuest
+  case UpdateGuest(ParametersType)
   case GetUserChats(ParametersType)
   case GetUserChat(String)
   case CreateUserChat(String)
@@ -96,7 +97,8 @@ enum RestRouter: URLRequestConvertible {
          .RemoveUserChat,
          .CloseUserChat,
          .ReviewUserChat,
-         .SendPushAck:
+         .SendPushAck,
+         .UpdateGuest:
       return .put
     case .UnregisterToken:
       return .delete
@@ -168,6 +170,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/nudges/\(nudgeId)/reach"
     case .CreateNudgeChat(let nudgeId):
       return "/app/nudges/\(nudgeId)/user_chats"
+    case .UpdateGuest(_):
+      return "/app/guests"
     }
   }
   
@@ -257,7 +261,8 @@ enum RestRouter: URLRequestConvertible {
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params),
          .UnregisterToken(_, let params),
-         .ReplySupportBot(_, _, let params):
+         .ReplySupportBot(_, _, let params),
+         .UpdateGuest(let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,

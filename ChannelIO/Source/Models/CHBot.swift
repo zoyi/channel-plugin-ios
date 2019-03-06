@@ -31,3 +31,14 @@ extension CHBot : Mappable {
     createdAt        <- (map["createdAt"], CustomDateTransform())
   }
 }
+
+extension CHBot: Equatable {
+  static func == (lhs:CHBot, rhs:CHBot) -> Bool {
+    return lhs.id == rhs.id &&
+      lhs.channelId == rhs.channelId &&
+      lhs.name == rhs.name &&
+      lhs.avatarUrl == rhs.avatarUrl &&
+      lhs.initial == rhs.initial &&
+      lhs.color == rhs.color
+  }
+}

@@ -63,6 +63,7 @@ public final class ChannelIO: NSObject {
 
   internal static var settings: ChannelPluginSettings? = nil
   internal static var profile: Profile? = nil
+  internal static var lastPush: CHPush?
   
   internal static var launcherView: LauncherView? = nil
   internal static var launcherVisible: Bool = false
@@ -76,7 +77,11 @@ public final class ChannelIO: NSObject {
         self.handleBadge(state.guest.alert)
         self.handlePush(push: state.push)
         
-        let viewModel = LauncherViewModel(plugin: state.plugin, guest: state.guest)
+        let viewModel = LauncherViewModel(
+          plugin: state.plugin,
+          guest: state.guest,
+          push: ChannelIO.lastPush
+        )
         ChannelIO.launcherView?.configure(viewModel)
       }
     }
@@ -87,9 +92,11 @@ public final class ChannelIO: NSObject {
       if ChannelIO.baseNavigation == nil && ChannelIO.settings?.hideDefaultInAppPush == false {
         ChannelIO.showNotification(pushData: push)
       }
-
-      ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
-      mainStore.dispatch(RemovePush())
+      
+      if ChannelIO.lastPush != push {
+        ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
+        ChannelIO.lastPush = push
+      }
     }
     
     func handleBadge(_ count: Int) {
@@ -232,7 +239,8 @@ public final class ChannelIO: NSObject {
       
       let viewModel = LauncherViewModel(
         plugin: mainStore.state.plugin,
-        guest: mainStore.state.guest
+        guest: mainStore.state.guest,
+        push: mainStore.state.push
       )
       
       let xMargin = ChannelIO.settings?.launcherConfig?.xMargin ?? 24
@@ -260,7 +268,7 @@ public final class ChannelIO: NSObject {
         launcherView.show(animated: animated)
       
       launcherView.snp.remakeConstraints ({ (make) in
-        make.size.equalTo(CGSize(width:54.f, height:54.f))
+        make.size.equalTo(CGSize(width:50.f, height:50.f))
         
         if position == LauncherPosition.right {
           make.right.equalToSuperview().inset(xMargin)
@@ -360,6 +368,37 @@ public final class ChannelIO: NSObject {
   public class func openChat(with chatId: String? = nil, animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
+  }
+  
+  
+  /**
+   *  Update user profile
+   *
+   *  - parameter
+   */
+  @objc
+  private class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+    GuestPromise.updateGuest(with: profile)
+      .subscribe(onNext: { (guest) in
+        completion?(true, Guest(with: guest))
+      }, onError: { error in
+        completion?(false, nil)
+      }).disposed(by: disposeBag)
+  }
+  
+  /**
+   *  Update user profile once. If you provide already existed user profile, it won't update the guest profile.
+   *
+   *  - parameter
+   */
+  @objc
+  private class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+    GuestPromise.updateGuest(with: profile)
+      .subscribe(onNext: { (guest) in
+        completion?(true, Guest(with: guest))
+      }, onError: { error in
+        completion?(false, nil)
+      }).disposed(by: disposeBag)
   }
   
   /**
