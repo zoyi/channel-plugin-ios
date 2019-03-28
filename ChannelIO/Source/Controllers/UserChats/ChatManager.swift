@@ -14,7 +14,8 @@ import CHSlackTextViewController
 import SVProgressHUD
 import Alamofire
 import AVKit
-import DKImagePickerController
+import Photos
+import TLPhotoPicker
 
 enum ChatElement {
   case photos(obj: [String])
@@ -358,7 +359,7 @@ extension ChatManager {
   }
   
   //from images from albums
-  func sendImages(assets: [DKAsset]) {
+  func sendImages(assets: [PHAsset]) {
     if self.chatId != "" {
       let messages = self.createMessageForImages(assets: assets)
       self.sendMessageRecursively(allMessages: messages, currentIndex: 0)
@@ -374,7 +375,7 @@ extension ChatManager {
     }
   }
   
-  private func createMessageForImages(assets: [DKAsset], requestBot: Bool = false) -> [CHMessage] {
+  private func createMessageForImages(assets: [PHAsset], requestBot: Bool = false) -> [CHMessage] {
     let messages = assets.map({ (asset) -> CHMessage in
       return CHMessage(chatId: self.chatId, guest: mainStore.state.guest, asset: asset)
     })
@@ -1027,30 +1028,36 @@ extension ChatManager {
 //routing
 extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   func presentPicker(
-    type: DKImagePickerControllerSourceType,
     max: Int = 0,
-    assetType: DKImagePickerControllerAssetType = .allAssets,
     from view: UIViewController?) {
-    let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
-    groupDataManagerConfiguration.assetGroupTypes = [
-      .smartAlbumUserLibrary,
-      .smartAlbumFavorites,
-      .smartAlbumVideos,
-      .albumRegular
-    ]
     
-    let groupDataManager = DKImageGroupDataManager(configuration: groupDataManagerConfiguration)
-    
-    let pickerController = DKImagePickerController(groupDataManager: groupDataManager)
-    pickerController.sourceType = type
-    pickerController.showsCancelButton = true
-    pickerController.maxSelectableCount = max
-    pickerController.assetType = assetType
-
-    pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
+    let viewController = TLPhotosPickerViewController(withPHAssets: { [weak self] (assets) in // TLAssets
       self?.sendImages(assets: assets)
-    }
-    view?.present(pickerController, animated: true, completion: nil)
+    }, didCancel: nil)
+    var configure = TLPhotosPickerConfigure()
+    viewController.configure = configure
+    //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main) // If you want use your custom cell..
+    view?.present(viewController, animated: true, completion: nil)
+//    let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
+//    groupDataManagerConfiguration.assetGroupTypes = [
+//      .smartAlbumUserLibrary,
+//      .smartAlbumFavorites,
+//      .smartAlbumVideos,
+//      .albumRegular
+//    ]
+//
+//    let groupDataManager = DKImageGroupDataManager(configuration: groupDataManagerConfiguration)
+//
+//    let pickerController = DKImagePickerController(groupDataManager: groupDataManager)
+//    pickerController.sourceType = type
+//    pickerController.showsCancelButton = true
+//    pickerController.maxSelectableCount = max
+//    pickerController.assetType = assetType
+//
+//    pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
+//      self?.sendImages(assets: assets)
+//    }
+//    view?.present(pickerController, animated: true, completion: nil)
   }
   
   func presentCameraPicker(from view: UIViewController?) {

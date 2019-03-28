@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ChannelIO'
-  s.version          = '5.4.0'
+  s.version          = '5.4.1'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'SDK', :file => 'LICENSE' }
   s.author           = { 'ZOYI' => 'eng@zoyi.co' }
   s.source           = { :git => 'https://github.com/zoyi/channel-plugin-ios.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '9.1'
   #s.script_phase = {
   #  :name => 'ChannelIO Emoji Sync',
   #  :script => '${PODS_TARGET_SRCROOT}/Assets/setup.sh',
@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
   s.resources = 'ChannelIO/Assets/*'
   s.swift_version = '4.2'
 
-  s.frameworks = 'SystemConfiguration', 'CoreTelephony', 'CoreLocation', 'WebKit'
+  s.frameworks = 'CoreTelephony'
  
   s.dependency 'Reusable', '~> 4.0'
   s.dependency 'SnapKit', '~> 4.0'
@@ -43,7 +43,7 @@ Pod::Spec.new do |s|
   s.dependency 'ObjectMapper', '~> 3.3'
   s.dependency 'NVActivityIndicatorView', '~> 4.4.0'
   s.dependency 'CHDwifft'
-  s.dependency 'DKImagePickerController', '~> 4.1.0'
+  s.dependency 'TLPhotoPicker', '~> 1.8.3'
   s.dependency 'Alamofire', '~> 4.8'
   s.dependency 'Socket.IO-Client-Swift', '~> 13.1.0' 
   s.dependency 'CHSlackTextViewController'

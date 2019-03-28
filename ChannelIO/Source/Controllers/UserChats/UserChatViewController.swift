@@ -10,7 +10,6 @@ import UIKit
 import CHDwifft
 import ReSwift
 import RxSwift
-import DKImagePickerController
 import SVProgressHUD
 import CHSlackTextViewController
 import CHNavBar
@@ -683,7 +682,7 @@ extension UserChatViewController {
 
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { [weak self] _ in
-        self?.chatManager?.presentPicker(type: .photo, max: 20, from: self)
+        self?.chatManager?.presentPicker(max: 20, from: self)
       })
 
     alertView.addAction(

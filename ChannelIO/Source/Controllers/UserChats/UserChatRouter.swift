@@ -8,7 +8,7 @@
 
 import UIKit
 import RxSwift
-import DKImagePickerController
+import Photos
 import AVKit
 
 class UserChatRouter: NSObject, UserChatRouterProtocol {
@@ -68,22 +68,22 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     return view
   }
   
-  func showOptionActionSheet(from view: UIViewController?) -> Observable<[DKAsset]> {
+  func showOptionActionSheet(from view: UIViewController?) -> Observable<[PHAsset]> {
     return Observable.create({ (subscriber) in
       let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
       
       alertView.addAction(
         UIAlertAction(title: CHAssets.localized("ch.camera"), style: .default) { [weak self] _ in
-          _ = self?.showOptionPicker(type: .camera, from: view).subscribe(onNext: { asset in
-            subscriber.onNext(asset)
-          })
+//          _ = self?.showOptionPicker(type: .camera, from: view).subscribe(onNext: { asset in
+//            subscriber.onNext(asset)
+//          })
       })
       
       alertView.addAction(
         UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { [weak self] _ in
-          _ = self?.showOptionPicker(type: .photo, max: 20, from: view).subscribe(onNext: { (assets) in
-            subscriber.onNext(assets)
-          })
+//          _ = self?.showOptionPicker(type: .photo, max: 20, from: view).subscribe(onNext: { (assets) in
+//            subscriber.onNext(assets)
+//          })
       })
       
       alertView.addAction(
@@ -97,22 +97,19 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
    
   }
   
-  func showOptionPicker(
-    type: DKImagePickerControllerSourceType,
-    max: Int = 0,
-    assetType: DKImagePickerControllerAssetType = .allPhotos, from view: UIViewController?) -> Observable<[DKAsset]> {
+  func showOptionPicker(max: Int = 0, from view: UIViewController?) -> Observable<[PHAsset]> {
     return Observable.create({ (subscriber) in
-      let pickerController = DKImagePickerController()
-      pickerController.sourceType = type
-      pickerController.showsCancelButton = true
-      pickerController.maxSelectableCount = max
-      pickerController.assetType = assetType
-      pickerController.didSelectAssets = { (assets: [DKAsset]) in
-        subscriber.onNext(assets)
-        subscriber.onCompleted()
-      }
-      
-      view?.present(pickerController, animated: true, completion: nil)
+//      let pickerController = DKImagePickerController()
+//      pickerController.sourceType = type
+//      pickerController.showsCancelButton = true
+//      pickerController.maxSelectableCount = max
+//      pickerController.assetType = assetType
+//      pickerController.didSelectAssets = { (assets: [DKAsset]) in
+//        subscriber.onNext(assets)
+//        subscriber.onCompleted()
+//      }
+//
+//      view?.present(pickerController, animated: true, completion: nil)
       return Disposables.create()
     })
   }

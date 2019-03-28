@@ -1,3 +1,8 @@
+# 5.4.1
+## Updates
+* Set minimum required version from ios 9.0 to 9.1
+* Replaced photo picker framework
+
 # 5.4.0
 ## Updates
 * Updated default launcher icon and rebranding

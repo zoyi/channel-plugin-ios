@@ -8,10 +8,10 @@
 
 import Foundation
 import ObjectMapper
-import DKImagePickerController
 import MobileCoreServices
 import RxSwift
 import Alamofire
+import Photos
 
 enum Mimetype: String {
   case image = "image/png"
@@ -42,14 +42,14 @@ struct CHFile {
   
   //local
   var rawData: Data?
-  var asset: DKAsset?
+  var asset: PHAsset?
   var imageData: UIImage?
   var downloaded: Bool = false
   var localUrl: URL?
   var fileUrl: URL?
   
   var mimeType: Mimetype? {
-    if let identifier = self.asset?.originalAsset?.value(forKey: "uniformTypeIdentifier") as? String {
+    if let identifier = self.asset?.value(forKey: "uniformTypeIdentifier") as? String {
       return CHFile.convertToMimetype(from: identifier)
     } else if self.imageData != nil {
       return .image
@@ -97,8 +97,8 @@ struct CHFile {
     self.category = category ?? ""
   }
   
-  init(imageAsset: DKAsset) {
-    self.asset = imageAsset
+  init(asset: PHAsset) {
+    self.asset = asset
     self.image = self.mimeType == .image || self.mimeType == .gif
     
     if let mineType = self.mimeType {

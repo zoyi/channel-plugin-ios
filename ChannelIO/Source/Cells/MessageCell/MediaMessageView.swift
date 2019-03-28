@@ -9,7 +9,6 @@
 import Foundation
 import NVActivityIndicatorView
 import M13ProgressSuite
-import DKImagePickerController
 import SnapKit
 import SDWebImage
 import Photos
@@ -84,7 +83,7 @@ class MediaMessageView : BaseView {
       self.indicatorView.isHidden = true
       self.progressView.isHidden = false
       
-      asset.fetchOriginalImage { [weak self] (image, info) in
+      asset.fetchImage(size: self.imageSize) { [weak self] (image, info) in
         self?.imageView.alpha = 0.4
         self?.imageView.image = image
         self?.placeholder = image
@@ -169,12 +168,7 @@ class MediaMessageView : BaseView {
     
     var size = imageDefaultSize
     if let asset = viewModel.file?.asset {
-      let option = PHImageRequestOptions()
-      option.isSynchronous = true
-      
-      asset.fetchOriginalImage(options: option) { (image, info) in
-        size = getThumbnailImageSize(imageSize: image?.size ?? CGSize.zero)
-      }
+      size = getThumbnailImageSize(imageSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight))
     } else if let image = viewModel.file?.imageData {
       size = getThumbnailImageSize(imageSize: image.size)
     }
