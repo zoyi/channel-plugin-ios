@@ -10,13 +10,11 @@ import UIKit
 import CHDwifft
 import ReSwift
 import RxSwift
-import DKImagePickerController
 import SVProgressHUD
 import CHSlackTextViewController
 import CHNavBar
 import AVKit
 import SnapKit
-import Lightbox
 import SDWebImage
 
 final class UserChatViewController: BaseSLKTextViewController {
@@ -58,8 +56,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
   
+  var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
   var chatUpdateSubject = PublishSubject<Any?>()
-  
   var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?)>()
   
   var errorToastView = ErrorToastView().then {
@@ -118,7 +116,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.initInputViews()
     self.initViews()
     self.initActionButtons()
-    self.initPhotoViewer()
 
     self.initUpdaters()
     self.showLoader()
@@ -401,24 +398,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       }).disposed(by: self.disposeBag)
   }
   
-  fileprivate func initPhotoViewer() {
-    LightboxConfig.hideStatusBar = false
-    LightboxConfig.loadImage = { imageView, URL, completion in
-      SDWebImageManager.shared().loadImage(with: URL, options: .queryDataWhenInMemory, progress: { (m, max, url) in
-
-      }, completed: { (image, data, error, cache, completed, url) in
-        if let gif = UIImage.sd_animatedGIF(with: data), gif.isGIF() {
-          imageView.image = gif
-          completion?(gif)
-        } else {
-          imageView.image = image
-          completion?(image)
-        }
-      })
-    }
-    LightboxConfig.CloseButton.text = CHAssets.localized("ch.button_close")
-  }
-  
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
     
@@ -683,7 +662,7 @@ extension UserChatViewController {
 
     alertView.addAction(
       UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { [weak self] _ in
-        self?.chatManager?.presentPicker(type: .photo, max: 20, from: self)
+        self?.chatManager?.presentPicker(max: 20, from: self)
       })
 
     alertView.addAction(
@@ -923,7 +902,7 @@ extension UserChatViewController {
         let cell: ActionMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         cell.mediaView.signalForClick().subscribe { [weak self] _ in
-          self?.didImageTapped(message: viewModel.message)
+          self?.didImageTapped(message: viewModel.message, indexPath: indexPath)
           }.disposed(by: self.disposeBag)
         return cell
       } else if viewModel.clipType == .Webpage {
@@ -970,7 +949,7 @@ extension UserChatViewController {
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, presenter: self.chatManager)
       cell.mediaView.signalForClick().subscribe { [weak self] _ in
-        self?.didImageTapped(message: message)
+        self?.didImageTapped(message: message, indexPath: indexPath)
       }.disposed(by: self.disposeBag)
       return cell
     } else if viewModel.clipType == .Webpage {
@@ -1006,7 +985,7 @@ extension UserChatViewController {
     return self.newChatSubject
   }
   
-  func didImageTapped(message: CHMessage) {
+  func didImageTapped(message: CHMessage, indexPath: IndexPath) {
     if let urlString = message.file?.imageRedirectUrl, let url = URL(string: urlString) {
       let shouldhandle = ChannelIO.delegate?.onClickRedirect?(url: url)
       if shouldhandle == nil || shouldhandle == false {
@@ -1014,20 +993,35 @@ extension UserChatViewController {
       }
     }
     else {
-      let imgUrl = message.file?.url
-      var startIndex = 0
-      if let index = self.photoUrls.index(of: imgUrl ?? "") {
-        startIndex = index
+      let viewer = FullScreenSlideshowViewController()
+      viewer.slideshow.circular = false
+      viewer.slideshow.pageIndicator = CHPageIndicator(frame: CGRect(x:0,y:0, width: UIScreen.main.bounds.width, height: 60))
+      viewer.slideshow.pageIndicatorPosition = PageIndicatorPosition(horizontal: .center, vertical: .top)
+      
+      viewer.inputs = self.photoUrls.map { (url) -> SDWebImageSource in
+        return SDWebImageSource(url: URL(string: url)!)
+      }
+      let index = self.photoUrls.index(of: message.file?.url ?? "")
+      if let index = index {
+        viewer.initialPage = index
       }
       
-      let images = self.photoUrls.map { (url) -> LightboxImage in
-        return LightboxImage(imageURL: URL(string: url)!)
+      let cell = self.tableView.cellForRow(at: indexPath) as? MediaMessageCell
+      if let cell = cell {
+        self.viewerTransitionDelegate = ZoomAnimatedTransitioningDelegate(
+          imageView: cell.mediaView.imageView,
+          slideshowController: viewer)
+        viewer.transitioningDelegate = self.viewerTransitionDelegate
       }
-
-      let controller = LightboxController(images:images, startIndex: startIndex)
-      controller.dynamicBackground = true
-
-      self.present(controller, animated: true, completion: nil)
+      
+      viewer.slideshow.currentPageChanged = { [weak self] page in
+        if let cell = cell {
+          self?.viewerTransitionDelegate?.referenceImageView = page != index ? nil : cell.mediaView.imageView
+        }
+      }
+      
+      //TODO: move table position based on image view?
+      self.present(viewer, animated: true, completion: nil)
     }
   }
 }

@@ -33,6 +33,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>privacy camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>microphone for camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>privacy photo</string>
 	<key>UIBackgroundModes</key>

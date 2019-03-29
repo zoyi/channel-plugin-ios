@@ -9,7 +9,6 @@
 import UIKit
 import ReSwift
 import RxSwift
-import DKImagePickerController
 import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire

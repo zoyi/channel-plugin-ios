@@ -75,7 +75,7 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
       break
     }
     
-    self.themeColor = UIColor(hex: mainStore.state.plugin.color)
+    self.themeColor = UIColor(mainStore.state.plugin.color)
     
     if let logMessage = push.message?.logMessage, push.showLog {
       let attributedText = NSMutableAttributedString(string: logMessage)

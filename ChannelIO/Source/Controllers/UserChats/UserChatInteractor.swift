@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import ReSwift
-import DKImagePickerController
+import Photos
 
 class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   var presenter: UserChatPresenterProtocol?
@@ -316,7 +316,7 @@ extension UserChatInteractor {
     }).disposed(by: self.disposeBag)
   }
 
-  func send(text: String, assets: [DKAsset])  {
+  func send(text: String, assets: [PHAsset])  {
     let me = mainStore.state.guest
     var message = CHMessage(chatId: self.userChatId, guest: me, message: text)
     
@@ -349,7 +349,7 @@ extension UserChatInteractor {
     })
   }
   
-  func send(assets: [DKAsset]) -> Observable<[CHMessage]> {
+  func send(assets: [PHAsset]) -> Observable<[CHMessage]> {
     return Observable.create({ (subscribe) -> Disposable in
       return Disposables.create()
     })

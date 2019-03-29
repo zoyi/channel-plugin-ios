@@ -7,9 +7,9 @@
 //
 
 import RxSwift
-import DKImagePickerController
 import UIKit
 import SVProgressHUD
+import Photos
 
 class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   weak var view: UserChatViewProtocol? = nil
@@ -208,7 +208,7 @@ extension UserChatPresenter {
     self.interactor?.fetchMessages()
   }
   
-  func didClickOnRightButton(text: String, assets: [DKAsset]) {
+  func didClickOnRightButton(text: String, assets: [PHAsset]) {
     guard let interactor = self.interactor else { return }
     guard let chatId = self.userChatId else { return }
     let guest = mainStore.state.guest
@@ -256,7 +256,7 @@ extension UserChatPresenter {
     }).disposed(by: self.disposeBag)
   }
   
-  func send(text: String, assets: [DKAsset]) {
+  func send(text: String, assets: [PHAsset]) {
 
   }
   

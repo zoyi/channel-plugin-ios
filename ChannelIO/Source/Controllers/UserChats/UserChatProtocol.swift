@@ -8,7 +8,7 @@
 
 import UIKit
 import RxSwift
-import DKImagePickerController
+import Photos
 
 enum ChatEvent {
   case messages(obj: [CHMessage], next: String)
@@ -56,8 +56,8 @@ protocol UserChatPresenterProtocol: class {
   
   func fetchMessages()
   
-  func didClickOnRightButton(text: String, assets: [DKAsset])
-  func send(text: String, assets: [DKAsset])
+  func didClickOnRightButton(text: String, assets: [PHAsset])
+  func send(text: String, assets: [PHAsset])
   func sendTyping(isStop: Bool)
   
   func didClickOnFeedback(rating: String, from view: UIViewController?)
@@ -108,7 +108,7 @@ protocol UserChatInteractorProtocol: class {
   func sendFeedback(rating: String)
   
   func send(text: String, originId: String?, key: String?) -> Observable<CHMessage>
-  func send(assets: [DKAsset]) -> Observable<[CHMessage]>
+  func send(assets: [PHAsset]) -> Observable<[CHMessage]>
   func send(messages: [CHMessage]) -> Observable<Any?>
   func send(message: CHMessage?) -> Observable<CHMessage?>
   func sendTyping(isStop: Bool)
@@ -127,12 +127,8 @@ protocol UserChatRouterProtocol: class {
   func showNewChat(with text: String, from view: UINavigationController?)
   
   func showRetryActionSheet(from view: UIViewController?) -> Observable<Bool?>
-  func showOptionActionSheet(from view: UIViewController?) -> Observable<[DKAsset]> 
-  func showOptionPicker(
-    type: DKImagePickerControllerSourceType,
-    max: Int,
-    assetType: DKImagePickerControllerAssetType,
-    from view: UIViewController?) -> Observable<[DKAsset]>
+  func showOptionActionSheet(from view: UIViewController?) -> Observable<[PHAsset]>
+  func showOptionPicker(max: Int, from view: UIViewController?) -> Observable<[PHAsset]>
 }
 
 struct UserChatInfo {

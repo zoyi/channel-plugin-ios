@@ -9,7 +9,6 @@
 import Foundation
 import ObjectMapper
 import RxSwift
-import DKImagePickerController
 import MobileCoreServices
 import AVFoundation
 import Photos
@@ -195,12 +194,12 @@ extension CHMessage: Mappable {
     self.messageType = CHMessage.contextType(self)
   }
   
-  init(chatId: String, guest: CHGuest, message: String = "", asset: DKAsset? = nil, image: UIImage? = nil) {
+  init(chatId: String, guest: CHGuest, message: String = "", asset: PHAsset? = nil, image: UIImage? = nil) {
     self.init(chatId: chatId, guest: guest, message: message, messageType: .Media)
     if let image = image {
       self.file = CHFile(imageData: image)
     } else if let asset = asset {
-      self.file = CHFile(imageAsset: asset)
+      self.file = CHFile(asset: asset)
     }
     
     self.messageType = self.file?.mimeType == .image || self.file?.mimeType == .gif ? .Media : .File
@@ -363,7 +362,7 @@ extension CHMessage {
         case .video:
           return self.sendVideo()
         default:
-          return self.sendFile()
+          return self.sendImage()
         }
       }
       return self.sendText()
@@ -381,7 +380,7 @@ extension CHMessage {
       
       var signal: Disposable?
       if let asset = file.asset, let mimeType = file.mimeType {
-        asset.fetchAVAsset(options: nil, completeBlock: { (asset, info) in
+        asset.fetchVideo(completion: { (asset, mix, info) in
           if let asset = asset as? AVURLAsset {
             let data = try! Data(contentsOf: asset.url)
             signal = self.send(data: data, fileName: "Channel_File", mimeType: mimeType)
@@ -390,8 +389,6 @@ extension CHMessage {
               }, onError: { (error) in
                 subscriber.onError(error)
               })
-          } else {
-            //?
           }
         })
       }
@@ -429,16 +426,16 @@ extension CHMessage {
       }
       
       var signal: Disposable?
-      asset.fetchImageData(options: nil, completeBlock: { (rawData, info) in
+      asset.fetchImageData(completion: { (data, uti, orientation, info) in
         signal = self.send(
-          data: rawData,
+          data: data,
           fileName: "Channel_Gif_Photo_\(Date().fullDateString()).gif",
           mimeType: file.mimeType).subscribe(onNext: { (message) in
             subscriber.onNext(message)
           }, onError: { (error) in
             subscriber.onError(error)
           })
-        })
+      })
 
       return Disposables.create {
         signal?.dispose()
@@ -456,18 +453,26 @@ extension CHMessage {
       var signal: Disposable?
       let fileName = "Channel_Photo_\(Date().fullDateString()).png"
       if let asset = file.asset {
-        asset.fetchOriginalImage(options: nil, completeBlock: { (image, info) in
-          signal = self.send(data: image!.jpegData(compressionQuality: 1.0),fileName: fileName, mimeType: file.mimeType)
-            .subscribe(onNext: { (message) in
+        asset.fetchImageData(completion: { (data, uti, orientation, info) in
+          guard let data = data, let image = UIImage(data: data) else {
+            subscriber.onError(CHErrorPool.sendFileError)
+            return
+          }
+          signal = self.send(
+            data: image.jpegData(compressionQuality: 1.0),
+            fileName: fileName,
+            mimeType: file.mimeType).subscribe(onNext: { (message) in
               subscriber.onNext(message)
               subscriber.onCompleted()
             }, onError: { (error) in
               subscriber.onError(error)
             })
-          })
+        })
       } else if let image = file.imageData {
-        signal = self.send(data: image.jpegData(compressionQuality:1.0), fileName: fileName, mimeType: file.mimeType)
-          .subscribe(onNext: { (message) in
+        signal = self.send(
+          data: image.jpegData(compressionQuality:1.0),
+          fileName: fileName,
+          mimeType: file.mimeType).subscribe(onNext: { (message) in
             subscriber.onNext(message)
             subscriber.onCompleted()
           }, onError: { (error) in
@@ -489,7 +494,7 @@ extension CHMessage {
       }
       
       var signal: Disposable?
-      asset.fetchAVAsset(options: nil, completeBlock: { (asset, info) in
+      asset.fetchVideo(completion: { (asset, mix, info) in
         if let asset = asset as? AVURLAsset {
           let data = try! Data(contentsOf: asset.url)
           signal = self.send(
@@ -500,8 +505,9 @@ extension CHMessage {
             }, onError: { (error) in
               subscriber.onError(error)
             })
-        }
-      })
+          }
+        })
+
       return Disposables.create {
         signal?.dispose()
       }
