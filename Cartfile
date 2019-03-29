@@ -1,21 +1,20 @@
-github "ReactiveX/RxSwift" == 4.4.0
-github "RxSwiftCommunity/RxSwiftExt" == 3.4.0
-github "AliSoftware/Reusable" == 4.0.5
-github "SnapKit/SnapKit" == 4.2.0
-github "SwiftyJSON/SwiftyJSON" == 4.2.0
-github "ReSwift/ReSwift" == 4.0.1
-github "tristanhimmelman/ObjectMapper" == 3.4
-github "ninjaprox/NVActivityIndicatorView" == 4.4.0
+github "ReactiveX/RxSwift" ~> 4.4.0
+github "RxSwiftCommunity/RxSwiftExt" ~> 3.4.0
+github "AliSoftware/Reusable" ~> 4.0.5
+github "SnapKit/SnapKit" ~> 4.2.0
+github "SwiftyJSON/SwiftyJSON" ~> 4.2.0
+github "ReSwift/ReSwift" ~> 4.0.1
+github "tristanhimmelman/ObjectMapper" ~> 3.4
+github "ninjaprox/NVActivityIndicatorView" ~> 4.4.0
 github "zoyi/Dwifft"
-github "Alamofire/Alamofire" == 4.7.3
-github "tilltue/TLPhotoPicker" == 1.8.3
-github "socketio/socket.io-client-swift" == 13.3.1
+github "Alamofire/Alamofire" ~> 4.8.2
+github "tilltue/TLPhotoPicker" ~> 1.8.3
+github "socketio/socket.io-client-swift" ~> 13.3.1
 github "zoyi/SlackTextViewController"
-github "MortimerGoro/MGSwipeTableCell" == 1.6.8
-github "Marxon13/M13ProgressSuite" == 1.2.9
-github "SVProgressHUD/SVProgressHUD" == 2.2.5
+github "MortimerGoro/MGSwipeTableCell" ~> 1.6.8
+github "Marxon13/M13ProgressSuite" ~> 1.2.9
+github "SVProgressHUD/SVProgressHUD" ~> 2.2.5
 github "cruffenach/CRToast"
-github "marmelroy/PhoneNumberKit" == 2.5.0
-github "rs/SDWebImage" == 4.3.0
+github "marmelroy/PhoneNumberKit" ~> 2.5.0
+github "rs/SDWebImage" ~> 4.3.0
 github "intoxicated/TLYShyNavBar"
-github "hyperoslo/Lightbox" == 2.3.0

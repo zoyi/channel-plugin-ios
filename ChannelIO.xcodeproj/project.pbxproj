@@ -66,6 +66,19 @@
 		650D7C451E72568C007DE358 /* ManagersReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C441E72568C007DE358 /* ManagersReducerTests.swift */; };
 		650D7C491E7256A4007DE358 /* SessionsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C481E7256A4007DE358 /* SessionsReducerTests.swift */; };
 		650D7C4C1E72B174007DE358 /* UserChatsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C461E725699007DE358 /* UserChatsReducerTests.swift */; };
+		6512132B224DF47F00737089 /* ImageSlideshow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121320224DF47D00737089 /* ImageSlideshow.swift */; };
+		6512132C224DF47F00737089 /* PageIndicatorPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121321224DF47D00737089 /* PageIndicatorPosition.swift */; };
+		6512132D224DF47F00737089 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121322224DF47D00737089 /* ActivityIndicator.swift */; };
+		6512132E224DF47F00737089 /* UIImageView+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121323224DF47D00737089 /* UIImageView+Tools.swift */; };
+		6512132F224DF47F00737089 /* ZoomAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121324224DF47E00737089 /* ZoomAnimatedTransitioning.swift */; };
+		65121330224DF47F00737089 /* FullScreenSlideshowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121325224DF47E00737089 /* FullScreenSlideshowViewController.swift */; };
+		65121331224DF47F00737089 /* ImageSlideshowItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121326224DF47E00737089 /* ImageSlideshowItem.swift */; };
+		65121332224DF47F00737089 /* PageIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121327224DF47E00737089 /* PageIndicator.swift */; };
+		65121333224DF47F00737089 /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121328224DF47E00737089 /* InputSource.swift */; };
+		65121334224DF47F00737089 /* SwiftSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121329224DF47E00737089 /* SwiftSupport.swift */; };
+		65121335224DF47F00737089 /* UIImage+AspectFit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512132A224DF47E00737089 /* UIImage+AspectFit.swift */; };
+		65121337224DF50E00737089 /* SDWebImageSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121336224DF50E00737089 /* SDWebImageSource.swift */; };
+		65121339224E002B00737089 /* TLPhotoPicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65121338224E002B00737089 /* TLPhotoPicker.framework */; };
 		651A58871E88E3970042A59F /* countryInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 650D7C311E716DBF007DE358 /* countryInfo.json */; };
 		652AE2111E81485D00B7484C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 652AE2131E81485D00B7484C /* Localizable.strings */; };
 		653516E021DCBE43006AB6C3 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653516DF21DCBE43006AB6C3 /* AppManager.swift */; };
@@ -259,13 +272,10 @@
 		65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CB1420206A02F200E456B5 /* WatermarkCell.swift */; };
 		65CD481821F9BDBF001F0113 /* TableViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD481721F9BDBF001F0113 /* TableViewAnimator.swift */; };
 		65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962962166205E0032F5C5 /* Alamofire.framework */; };
-		65D3562B21BA4BD4001D6A30 /* Cache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A32166205F0032F5C5 /* Cache.framework */; };
 		65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A7216620600032F5C5 /* CHDwifft.framework */; };
 		65D3562D21BA4BD4001D6A30 /* CHNavBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A22166205F0032F5C5 /* CHNavBar.framework */; };
 		65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */; };
 		65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A52166205F0032F5C5 /* CRToast.framework */; };
-		65D3563121BA4BD4001D6A30 /* Imaginary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AF216620600032F5C5 /* Imaginary.framework */; };
-		65D3563221BA4BD4001D6A30 /* Lightbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A8216620600032F5C5 /* Lightbox.framework */; };
 		65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AE216620600032F5C5 /* M13ProgressSuite.framework */; };
 		65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962992166205E0032F5C5 /* MGSwipeTableCell.framework */; };
 		65D3563521BA4BD4001D6A30 /* NVActivityIndicatorView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962B4216620610032F5C5 /* NVActivityIndicatorView.framework */; };
@@ -341,16 +351,13 @@
 		225962A02166205F0032F5C5 /* PhoneNumberKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhoneNumberKit.framework; path = Carthage/Build/iOS/PhoneNumberKit.framework; sourceTree = "<group>"; };
 		225962A12166205F0032F5C5 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = Carthage/Build/iOS/SDWebImage.framework; sourceTree = "<group>"; };
 		225962A22166205F0032F5C5 /* CHNavBar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHNavBar.framework; path = Carthage/Build/iOS/CHNavBar.framework; sourceTree = "<group>"; };
-		225962A32166205F0032F5C5 /* Cache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cache.framework; path = Carthage/Build/iOS/Cache.framework; sourceTree = "<group>"; };
 		225962A52166205F0032F5C5 /* CRToast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CRToast.framework; path = Carthage/Build/iOS/CRToast.framework; sourceTree = "<group>"; };
 		225962A62166205F0032F5C5 /* ReSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReSwift.framework; path = Carthage/Build/iOS/ReSwift.framework; sourceTree = "<group>"; };
 		225962A7216620600032F5C5 /* CHDwifft.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHDwifft.framework; path = Carthage/Build/iOS/CHDwifft.framework; sourceTree = "<group>"; };
-		225962A8216620600032F5C5 /* Lightbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lightbox.framework; path = Carthage/Build/iOS/Lightbox.framework; sourceTree = "<group>"; };
 		225962A9216620600032F5C5 /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SVProgressHUD.framework; path = Carthage/Build/iOS/SVProgressHUD.framework; sourceTree = "<group>"; };
 		225962AB216620600032F5C5 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
 		225962AD216620600032F5C5 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		225962AE216620600032F5C5 /* M13ProgressSuite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = M13ProgressSuite.framework; path = Carthage/Build/iOS/M13ProgressSuite.framework; sourceTree = "<group>"; };
-		225962AF216620600032F5C5 /* Imaginary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Imaginary.framework; path = Carthage/Build/iOS/Imaginary.framework; sourceTree = "<group>"; };
 		225962B1216620600032F5C5 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		225962B2216620610032F5C5 /* SocketIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SocketIO.framework; path = Carthage/Build/iOS/SocketIO.framework; sourceTree = "<group>"; };
 		225962B3216620610032F5C5 /* Reusable.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reusable.framework; path = Carthage/Build/iOS/Reusable.framework; sourceTree = "<group>"; };
@@ -404,6 +411,19 @@
 		650D7C441E72568C007DE358 /* ManagersReducerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagersReducerTests.swift; sourceTree = "<group>"; };
 		650D7C461E725699007DE358 /* UserChatsReducerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatsReducerTests.swift; sourceTree = "<group>"; };
 		650D7C481E7256A4007DE358 /* SessionsReducerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsReducerTests.swift; sourceTree = "<group>"; };
+		65121320224DF47D00737089 /* ImageSlideshow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSlideshow.swift; sourceTree = "<group>"; };
+		65121321224DF47D00737089 /* PageIndicatorPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageIndicatorPosition.swift; sourceTree = "<group>"; };
+		65121322224DF47D00737089 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
+		65121323224DF47D00737089 /* UIImageView+Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Tools.swift"; sourceTree = "<group>"; };
+		65121324224DF47E00737089 /* ZoomAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomAnimatedTransitioning.swift; sourceTree = "<group>"; };
+		65121325224DF47E00737089 /* FullScreenSlideshowViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullScreenSlideshowViewController.swift; sourceTree = "<group>"; };
+		65121326224DF47E00737089 /* ImageSlideshowItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSlideshowItem.swift; sourceTree = "<group>"; };
+		65121327224DF47E00737089 /* PageIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageIndicator.swift; sourceTree = "<group>"; };
+		65121328224DF47E00737089 /* InputSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
+		65121329224DF47E00737089 /* SwiftSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftSupport.swift; sourceTree = "<group>"; };
+		6512132A224DF47E00737089 /* UIImage+AspectFit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+AspectFit.swift"; sourceTree = "<group>"; };
+		65121336224DF50E00737089 /* SDWebImageSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDWebImageSource.swift; sourceTree = "<group>"; };
+		65121338224E002B00737089 /* TLPhotoPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TLPhotoPicker.framework; path = Carthage/Build/iOS/TLPhotoPicker.framework; sourceTree = "<group>"; };
 		652AE2121E81485D00B7484C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2141E81485F00B7484C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2151E81485F00B7484C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -609,17 +629,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65121339224E002B00737089 /* TLPhotoPicker.framework in Frameworks */,
 				22476B972201FDF900DA4FBC /* RxSwiftExt.framework in Frameworks */,
 				65581E651E7BDCE0008B8C70 /* AssetsLibrary.framework in Frameworks */,
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
 				65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */,
-				65D3562B21BA4BD4001D6A30 /* Cache.framework in Frameworks */,
 				65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */,
 				65D3562D21BA4BD4001D6A30 /* CHNavBar.framework in Frameworks */,
 				65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */,
 				65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */,
-				65D3563121BA4BD4001D6A30 /* Imaginary.framework in Frameworks */,
-				65D3563221BA4BD4001D6A30 /* Lightbox.framework in Frameworks */,
 				65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */,
 				65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */,
 				65D3563521BA4BD4001D6A30 /* NVActivityIndicatorView.framework in Frameworks */,
@@ -662,16 +680,14 @@
 		143D7E321E24DBE40095961F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				65121338224E002B00737089 /* TLPhotoPicker.framework */,
 				22476B962201FDF900DA4FBC /* RxSwiftExt.framework */,
 				22B443682200342B00EFC637 /* RxAtomic.framework */,
 				225962962166205E0032F5C5 /* Alamofire.framework */,
-				225962A32166205F0032F5C5 /* Cache.framework */,
 				225962A7216620600032F5C5 /* CHDwifft.framework */,
 				225962A22166205F0032F5C5 /* CHNavBar.framework */,
 				2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */,
 				225962A52166205F0032F5C5 /* CRToast.framework */,
-				225962AF216620600032F5C5 /* Imaginary.framework */,
-				225962A8216620600032F5C5 /* Lightbox.framework */,
 				225962AE216620600032F5C5 /* M13ProgressSuite.framework */,
 				225962992166205E0032F5C5 /* MGSwipeTableCell.framework */,
 				225962B4216620610032F5C5 /* NVActivityIndicatorView.framework */,
@@ -952,6 +968,25 @@
 			path = NavigationViews;
 			sourceTree = "<group>";
 		};
+		6586DBB3224DEA8000C018DC /* ImageViewer */ = {
+			isa = PBXGroup;
+			children = (
+				65121322224DF47D00737089 /* ActivityIndicator.swift */,
+				65121325224DF47E00737089 /* FullScreenSlideshowViewController.swift */,
+				65121320224DF47D00737089 /* ImageSlideshow.swift */,
+				65121326224DF47E00737089 /* ImageSlideshowItem.swift */,
+				65121328224DF47E00737089 /* InputSource.swift */,
+				65121327224DF47E00737089 /* PageIndicator.swift */,
+				65121321224DF47D00737089 /* PageIndicatorPosition.swift */,
+				65121329224DF47E00737089 /* SwiftSupport.swift */,
+				6512132A224DF47E00737089 /* UIImage+AspectFit.swift */,
+				65121323224DF47D00737089 /* UIImageView+Tools.swift */,
+				65121324224DF47E00737089 /* ZoomAnimatedTransitioning.swift */,
+				65121336224DF50E00737089 /* SDWebImageSource.swift */,
+			);
+			path = ImageViewer;
+			sourceTree = "<group>";
+		};
 		6590FA8F2068C82D0054B353 /* UserChats */ = {
 			isa = PBXGroup;
 			children = (
@@ -1028,6 +1063,7 @@
 		659792C11FA7167B00840F6A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				6586DBB3224DEA8000C018DC /* ImageViewer */,
 				6590FA8F2068C82D0054B353 /* UserChats */,
 				659792C21FA7167B00840F6A /* BaseNavigationController.swift */,
 				659792C31FA7167B00840F6A /* BaseSLKTextViewController.swift */,
@@ -1396,6 +1432,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				ja,
@@ -1498,6 +1535,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6512132C224DF47F00737089 /* PageIndicatorPosition.swift in Sources */,
 				650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
 				6593788220B26A5D00230248 /* ProfileHeaderView.swift in Sources */,
@@ -1513,6 +1551,7 @@
 				659793551FA716CB00840F6A /* BaseNavigationController.swift in Sources */,
 				659793561FA716CB00840F6A /* BaseSLKTextViewController.swift in Sources */,
 				65AA7AE31FD64C9500D2A8B1 /* CHBot.swift in Sources */,
+				6512132D224DF47F00737089 /* ActivityIndicator.swift in Sources */,
 				656FBFAF20CA53B60062C6A9 /* CHAction.swift in Sources */,
 				658010E1219948E500A51CEC /* NudgePromise.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
@@ -1541,6 +1580,7 @@
 				659793621FA716CB00840F6A /* UIButton+Extensions.swift in Sources */,
 				65D358D121BE4E3D001D6A30 /* ButtonsMessageView.swift in Sources */,
 				659793631FA716CB00840F6A /* UIDevice+Extenions.swift in Sources */,
+				65121335224DF47F00737089 /* UIImage+AspectFit.swift in Sources */,
 				659793641FA716CB00840F6A /* UIImage+Extensions.swift in Sources */,
 				65CB1433206A02F200E456B5 /* UserChatCell.swift in Sources */,
 				655A27FF20B2699700935C1F /* ProfileCompletionView.swift in Sources */,
@@ -1585,11 +1625,13 @@
 				659793791FA716CB00840F6A /* CHPerson.swift in Sources */,
 				65AA7AE71FD64CCF00D2A8B1 /* BotReducer.swift in Sources */,
 				6590FA912068C84E0054B353 /* UserChatPresenter.swift in Sources */,
+				6512132F224DF47F00737089 /* ZoomAnimatedTransitioning.swift in Sources */,
 				6597937A1FA716CB00840F6A /* CHPlugin.swift in Sources */,
 				65AA7AE11FD638E000D2A8B1 /* ChatStatusAvatarsView.swift in Sources */,
 				657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */,
 				2252145A224CFB5B00F2C9CE /* PHAsset+Extensions.swift in Sources */,
 				6597937B1FA716CB00840F6A /* CHImageMeta.swift in Sources */,
+				65121333224DF47F00737089 /* InputSource.swift in Sources */,
 				6597937C1FA716CB00840F6A /* CHPush.swift in Sources */,
 				656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */,
 				65CB1436206A02F200E456B5 /* WatermarkCell.swift in Sources */,
@@ -1606,6 +1648,8 @@
 				659793831FA716CB00840F6A /* DataTransferObject.swift in Sources */,
 				65EAE11320EF468500D501FC /* TranslateView.swift in Sources */,
 				659793841FA716CB00840F6A /* ModelType.swift in Sources */,
+				65121330224DF47F00737089 /* FullScreenSlideshowViewController.swift in Sources */,
+				65121334224DF47F00737089 /* SwiftSupport.swift in Sources */,
 				659793861FA716CB00840F6A /* EventPromise.swift in Sources */,
 				657AF3EB2178302A001EAA7A /* TargetEvaluatorService.swift in Sources */,
 				222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */,
@@ -1616,6 +1660,7 @@
 				656C98501FC6A4200064F53E /* ChatStatusFollowedView.swift in Sources */,
 				223726091FBEEFA20097F22B /* CountryCodeActions.swift in Sources */,
 				65CB142D206A02F200E456B5 /* NewMessageDividerCell.swift in Sources */,
+				6512132B224DF47F00737089 /* ImageSlideshow.swift in Sources */,
 				65CB142A206A02F200E456B5 /* TextMessageView.swift in Sources */,
 				22F094F72176E8A00035C777 /* HexColors.swift in Sources */,
 				22E03E9621B38D560009F48E /* MarkdownCommonElement.swift in Sources */,
@@ -1635,6 +1680,7 @@
 				222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */,
 				65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */,
 				659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */,
+				6512132E224DF47F00737089 /* UIImageView+Tools.swift in Sources */,
 				659793951FA716CB00840F6A /* UIReducer.swift in Sources */,
 				657AF3F3217845D7001EAA7A /* CHTargetCondition.swift in Sources */,
 				22342CC91FBEF50800425666 /* CountryCodeState.swift in Sources */,
@@ -1670,11 +1716,13 @@
 				65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */,
 				655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */,
 				659793A61FA716CB00840F6A /* BaseView.swift in Sources */,
+				65121332224DF47F00737089 /* PageIndicator.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,
 				65A2F41D1FCEA28900A21D8A /* ContactComponentButton.swift in Sources */,
 				659793B51FA716CB00840F6A /* NewMessageBannerView.swift in Sources */,
 				659793B61FA716CB00840F6A /* ChatNotificationViewModel.swift in Sources */,
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
+				65121331224DF47F00737089 /* ImageSlideshowItem.swift in Sources */,
 				22AE76B220E341CB00C18355 /* Mute.swift in Sources */,
 				22E03E8D21B38D560009F48E /* MarkdownUnescaping.swift in Sources */,
 				22E03E8921B38D560009F48E /* MarkdownLink.swift in Sources */,
@@ -1691,6 +1739,7 @@
 				65C0FFDA2003099F005FD3F2 /* WatermarkView.swift in Sources */,
 				659793C61FA716CB00840F6A /* MultiAvatarView.swift in Sources */,
 				659793C71FA716CB00840F6A /* NavigationItem.swift in Sources */,
+				65121337224DF50E00737089 /* SDWebImageSource.swift in Sources */,
 				659793C81FA716CB00840F6A /* NewChatView.swift in Sources */,
 				6549CFB0207B691C000091D2 /* LanguageOptionViewController.swift in Sources */,
 				65CB14072069E41900E456B5 /* UserChatRouter.swift in Sources */,
