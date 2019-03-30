@@ -8,7 +8,6 @@ github "tristanhimmelman/ObjectMapper" ~> 3.4
 github "ninjaprox/NVActivityIndicatorView" ~> 4.4.0
 github "zoyi/Dwifft"
 github "Alamofire/Alamofire" ~> 4.8.2
-github "tilltue/TLPhotoPicker" ~> 1.8.3
 github "socketio/socket.io-client-swift" ~> 13.3.1
 github "zoyi/SlackTextViewController"
 github "MortimerGoro/MGSwipeTableCell" ~> 1.6.8

@@ -141,7 +141,7 @@ struct MessageCellModel: MessageCellModelType {
 
   static func getClipType(message: CHMessage) -> ClipType {
     if message.file?.isPreviewable == true ||
-      message.file?.asset != nil ||
+      message.file?.mimeType == .image || message.file?.mimeType == .gif ||
       message.file?.imageData != nil {
       return .Image
     } else if message.file != nil {

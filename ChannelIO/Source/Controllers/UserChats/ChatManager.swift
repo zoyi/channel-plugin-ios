@@ -15,7 +15,6 @@ import SVProgressHUD
 import Alamofire
 import AVKit
 import Photos
-import TLPhotoPicker
 
 enum ChatElement {
   case photos(obj: [String])
@@ -1038,26 +1037,6 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     viewController.configure = configure
     //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main) // If you want use your custom cell..
     view?.present(viewController, animated: true, completion: nil)
-//    let groupDataManagerConfiguration = DKImageGroupDataManagerConfiguration()
-//    groupDataManagerConfiguration.assetGroupTypes = [
-//      .smartAlbumUserLibrary,
-//      .smartAlbumFavorites,
-//      .smartAlbumVideos,
-//      .albumRegular
-//    ]
-//
-//    let groupDataManager = DKImageGroupDataManager(configuration: groupDataManagerConfiguration)
-//
-//    let pickerController = DKImagePickerController(groupDataManager: groupDataManager)
-//    pickerController.sourceType = type
-//    pickerController.showsCancelButton = true
-//    pickerController.maxSelectableCount = max
-//    pickerController.assetType = assetType
-//
-//    pickerController.didSelectAssets = { [weak self] (assets: [DKAsset]) in
-//      self?.sendImages(assets: assets)
-//    }
-//    view?.present(pickerController, animated: true, completion: nil)
   }
   
   func presentCameraPicker(from view: UIViewController?) {

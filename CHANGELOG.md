@@ -1,9 +1,9 @@
-# 5.5.0
+# 5.5.1
 ## Updates
 * Swift 5
 * Set minimum required version from ios 9.0 to 9.1
-* Replaced photo picker framework (Removed DKImagePickerController)
-* Replaced photo viewer (Removed Lightbox)
+* Replaced photo picker framework (Removed DKImagePickerController, DKCamera, CropViewController, DKGallery)
+* Replaced photo viewer (Removed Lightbox, submodule Imaginary, Cache)
 
 # 5.4.0
 ## Updates

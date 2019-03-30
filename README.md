@@ -9,13 +9,13 @@
 
 ## Prerequisite
 
-* iOS 9 or above 
+* iOS 9.1 or above 
 
 ## Documentation
 
 https://developers.channel.io/docs
 
-## Install Channel plugin Framework from CocoaPods(iOS 9+)
+## Install Channel plugin Framework from CocoaPods(iOS 9.1+)
 
 Add below into your Podfile on Xcode.
 
@@ -35,10 +35,12 @@ pod install
 
 Now you can see Channel plugin framework by inspecting YOUR_PROJECT.xcworkspace.
 
-## Install Channel plugin Framework from Carthage(iOS 9+)
+## Install Channel plugin Framework from Carthage(iOS 9.1+)
 
 1. Add `github "zoyi/channel-plugin-ios"` to your `Cartfile`.
 2. Run `carthage update --platform iOS --no-use-binaries`.
-3. Go to your Xcode project's "General" settings. Open `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build/iOS` in Finder and drag `ChannelIO.framework` to the "Embedded Binaries" section in Xcode along with other dependencies. Make sure `Copy items if needed` is selected and click `Finish`.
+3. Go to your Xcode project's "General" settings. Open `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build/iOS` in Finder and drag `ChannelIO.framework` to the "Linked Frameworks and Libraries" section in Xcode along with other dependencies. Make sure `Copy items if needed` is selected and click `Finish`.
+4. Remove `RxTest` and `RxBlocking` frameworks
+5. Add Build phase in order to use carthage framework (see carthage instruction) 
 
 
