@@ -80,7 +80,6 @@
 		650D7C491E7256A4007DE358 /* SessionsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C481E7256A4007DE358 /* SessionsReducerTests.swift */; };
 		650D7C4C1E72B174007DE358 /* UserChatsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C461E725699007DE358 /* UserChatsReducerTests.swift */; };
 		6512132B224DF47F00737089 /* ImageSlideshow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121320224DF47D00737089 /* ImageSlideshow.swift */; };
-		6512132C224DF47F00737089 /* PageIndicatorPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121321224DF47D00737089 /* PageIndicatorPosition.swift */; };
 		6512132D224DF47F00737089 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121322224DF47D00737089 /* ActivityIndicator.swift */; };
 		6512132E224DF47F00737089 /* UIImageView+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121323224DF47D00737089 /* UIImageView+Tools.swift */; };
 		6512132F224DF47F00737089 /* ZoomAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65121324224DF47E00737089 /* ZoomAnimatedTransitioning.swift */; };
@@ -437,7 +436,6 @@
 		650D7C461E725699007DE358 /* UserChatsReducerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatsReducerTests.swift; sourceTree = "<group>"; };
 		650D7C481E7256A4007DE358 /* SessionsReducerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsReducerTests.swift; sourceTree = "<group>"; };
 		65121320224DF47D00737089 /* ImageSlideshow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSlideshow.swift; sourceTree = "<group>"; };
-		65121321224DF47D00737089 /* PageIndicatorPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageIndicatorPosition.swift; sourceTree = "<group>"; };
 		65121322224DF47D00737089 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		65121323224DF47D00737089 /* UIImageView+Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Tools.swift"; sourceTree = "<group>"; };
 		65121324224DF47E00737089 /* ZoomAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomAnimatedTransitioning.swift; sourceTree = "<group>"; };
@@ -1021,7 +1019,6 @@
 				65121326224DF47E00737089 /* ImageSlideshowItem.swift */,
 				65121328224DF47E00737089 /* InputSource.swift */,
 				65121327224DF47E00737089 /* PageIndicator.swift */,
-				65121321224DF47D00737089 /* PageIndicatorPosition.swift */,
 				65121329224DF47E00737089 /* SwiftSupport.swift */,
 				6512132A224DF47E00737089 /* UIImage+AspectFit.swift */,
 				65121323224DF47D00737089 /* UIImageView+Tools.swift */,
@@ -1582,7 +1579,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6512132C224DF47F00737089 /* PageIndicatorPosition.swift in Sources */,
 				650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
 				6593788220B26A5D00230248 /* ProfileHeaderView.swift in Sources */,
