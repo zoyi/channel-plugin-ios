@@ -62,11 +62,17 @@ extension UIPageControl: PageIndicatorView {
 }
 
 /// Page indicator that shows page in numeric style, eg. "5/21"
-public class LabelPageIndicator: UILabel, PageIndicatorView {
+public class LabelPageIndicator: UIView, PageIndicatorView {
     public var view: UIView {
         return self
     }
-
+  
+    let label = UILabel()
+    let backgroundView = UIView().then {
+      $0.backgroundColor = .black
+      $0.layer.cornerRadius = 14
+      $0.alpha = 0.7
+    }
     public var numberOfPages: Int = 0 {
         didSet {
             updateLabel()
@@ -81,25 +87,40 @@ public class LabelPageIndicator: UILabel, PageIndicatorView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
+        self.addSubview(self.backgroundView)
+        self.addSubview(self.label)
         initialize()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        self.addSubview(self.backgroundView)
+        self.addSubview(self.label)
         initialize()
     }
 
     private func initialize() {
-        self.textAlignment = .center
+        self.label.textAlignment = .center
+        self.label.font = UIFont.systemFont(ofSize: 14)
+        self.label.textColor = .white
     }
 
     private func updateLabel() {
-        text = "\(page+1) / \(numberOfPages)"
+        self.label.text = "\(page+1) / \(numberOfPages)"
+        self.label.sizeToFit()
     }
 
     public override func sizeToFit() {
         let maximumString = String(repeating: "8", count: numberOfPages) as NSString
-        self.frame.size = maximumString.size(withAttributes: [.font: font])
+        var size = maximumString.size(withAttributes: [.font: self.label.font!])
+        size.width += 30
+        size.height = 28
+        self.frame.size = size
+    }
+  
+    public override func layoutSubviews() {
+        self.backgroundView.frame = self.bounds
+        self.label.center = self.backgroundView.center
     }
 }
 

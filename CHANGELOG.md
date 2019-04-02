@@ -1,3 +1,7 @@
+# 5.5.3
+## Bug fixes
+* Fixed missing file caused build failure
+
 # 5.5.1
 ## Updates
 * Swift 5

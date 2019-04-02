@@ -995,8 +995,8 @@ extension UserChatViewController {
     else {
       let viewer = FullScreenSlideshowViewController()
       viewer.slideshow.circular = false
-      viewer.slideshow.pageIndicator = CHPageIndicator(frame: CGRect(x:0,y:0, width: UIScreen.main.bounds.width, height: 60))
-      viewer.slideshow.pageIndicatorPosition = PageIndicatorPosition(horizontal: .center, vertical: .top)
+      viewer.slideshow.pageIndicator = LabelPageIndicator(frame: CGRect(x:0,y:0, width: UIScreen.main.bounds.width, height: 60))
+      viewer.slideshow.pageIndicatorPosition = PageIndicatorPosition(horizontal: .center, vertical: .customTop(padding: 5))
       
       viewer.inputs = self.photoUrls.map { (url) -> SDWebImageSource in
         return SDWebImageSource(url: URL(string: url)!)
