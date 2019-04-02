@@ -28,7 +28,7 @@
 import UIKit
 
 /// Cusotm Page Indicator can be used by implementing this protocol
-public protocol PageIndicatorView: class {
+protocol PageIndicatorView: class {
     /// View of the page indicator
     var view: UIView { get }
 
@@ -62,7 +62,7 @@ extension UIPageControl: PageIndicatorView {
 }
 
 /// Page indicator that shows page in numeric style, eg. "5/21"
-public class LabelPageIndicator: UIView, PageIndicatorView {
+class LabelPageIndicator: UIView, PageIndicatorView {
     public var view: UIView {
         return self
     }
@@ -126,7 +126,7 @@ public class LabelPageIndicator: UIView, PageIndicatorView {
 
 
 /// Describes the configuration of the page indicator position
-public struct PageIndicatorPosition {
+struct PageIndicatorPosition {
   public enum Horizontal {
     case left(padding: CGFloat), center, right(padding: CGFloat)
   }

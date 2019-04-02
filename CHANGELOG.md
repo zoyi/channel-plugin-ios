@@ -1,3 +1,7 @@
+# 5.5.4
+## Updates
+* Removed unecessory public classes
+
 # 5.5.3
 ## Bug fixes
 * Fixed missing file caused build failure

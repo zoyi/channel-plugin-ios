@@ -30,7 +30,7 @@ import Photos
 import PhotosUI
 import MobileCoreServices
 
-public struct TLPHAsset {
+struct TLPHAsset {
     enum CloudDownloadState {
         case ready, progress, complete, failed
     }
@@ -307,13 +307,13 @@ extension TLPHAsset: Equatable {
     }
 }
 
-extension Array {
+internal extension Array {
     subscript (safe index: Int) -> Element? {
         return indices ~= index ? self[index] : nil
     }
 }
 
-public struct TLAssetsCollection {
+struct TLAssetsCollection {
     var phAssetCollection: PHAssetCollection? = nil
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var useCameraButton: Bool = false
@@ -371,7 +371,7 @@ public struct TLAssetsCollection {
     }
 }
 
-extension UIImage {
+internal extension UIImage {
     func upOrientationImage() -> UIImage? {
         switch imageOrientation {
         case .up:

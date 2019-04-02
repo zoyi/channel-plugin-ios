@@ -27,7 +27,7 @@
 import Foundation
 import Photos
 
-public enum PHFetchedResultGroupedBy {
+enum PHFetchedResultGroupedBy {
     case year
     case month
     case week
@@ -52,7 +52,7 @@ public enum PHFetchedResultGroupedBy {
     }
 }
 
-extension TLAssetsCollection {
+internal extension TLAssetsCollection {
     func enumarateFetchResult(groupedBy: PHFetchedResultGroupedBy) -> Dictionary<String,[TLPHAsset]> {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = groupedBy.dateFormat

@@ -27,9 +27,9 @@
 
 import UIKit
 
-@objc
 /// The delegate protocol informing about image slideshow state changes
-public protocol ImageSlideshowDelegate: class {
+@objc
+protocol ImageSlideshowDelegate: class {
     /// Tells the delegate that the current page has changed
     ///
     /// - Parameters:
@@ -55,7 +55,7 @@ public protocol ImageSlideshowDelegate: class {
     - underScrollView: Page Control is under image slideshow
     - custom: Custom vertical padding, relative to "insideScrollView" position
  */
-public enum PageControlPosition {
+internal enum PageControlPosition {
     case hidden
     case insideScrollView
     case underScrollView
@@ -66,21 +66,20 @@ public enum PageControlPosition {
 ///
 /// - fixed: preload only fixed number of images before and after the current image
 /// - all: preload all images in the slideshow
-public enum ImagePreload {
+internal enum ImagePreload {
     case fixed(offset: Int)
     case all
 }
 
 /// Main view containing the Image Slideshow
-@objcMembers
-open class ImageSlideshow: UIView {
+internal class ImageSlideshow: UIView {
 
     /// Scroll View to wrap the slideshow
-    public let scrollView = UIScrollView()
+    let scrollView = UIScrollView()
 
     /// Page Control shown in the slideshow
     @available(*, deprecated, message: "Use pageIndicator.view instead")
-    open var pageControl: UIPageControl {
+    var pageControl: UIPageControl {
         if let pageIndicator = pageIndicator as? UIPageControl {
             return pageIndicator
         }
@@ -88,13 +87,13 @@ open class ImageSlideshow: UIView {
     }
 
     /// Activity indicator shown when loading image
-    open var activityIndicator: ActivityIndicatorFactory? {
+    var activityIndicator: ActivityIndicatorFactory? {
         didSet {
             reloadScrollView()
         }
     }
 
-    open var pageIndicator: PageIndicatorView? = UIPageControl() {
+    var pageIndicator: PageIndicatorView? = UIPageControl() {
         didSet {
             oldValue?.view.removeFromSuperview()
             if let pageIndicator = pageIndicator {
@@ -104,7 +103,7 @@ open class ImageSlideshow: UIView {
         }
     }
 
-    open var pageIndicatorPosition: PageIndicatorPosition = PageIndicatorPosition() {
+    var pageIndicatorPosition: PageIndicatorPosition = PageIndicatorPosition() {
         didSet {
             setNeedsLayout()
         }
@@ -114,7 +113,7 @@ open class ImageSlideshow: UIView {
 
     /// Page control position
     @available(*, deprecated, message: "Use pageIndicatorPosition instead")
-    open var pageControlPosition = PageControlPosition.insideScrollView {
+    var pageControlPosition = PageControlPosition.insideScrollView {
         didSet {
             pageIndicator = UIPageControl()
             switch pageControlPosition {
@@ -131,7 +130,7 @@ open class ImageSlideshow: UIView {
     }
 
     /// Current page
-    open fileprivate(set) var currentPage: Int = 0 {
+    fileprivate(set) var currentPage: Int = 0 {
         didSet {
             if oldValue != currentPage {
                 currentPageChanged?(currentPage)
@@ -141,19 +140,19 @@ open class ImageSlideshow: UIView {
     }
 
     /// Delegate called on image slideshow state change
-    open weak var delegate: ImageSlideshowDelegate?
+    weak var delegate: ImageSlideshowDelegate?
 
     /// Called on each currentPage change
-    open var currentPageChanged: ((_ page: Int) -> ())?
+    var currentPageChanged: ((_ page: Int) -> ())?
 
     /// Called on scrollViewWillBeginDragging
-    open var willBeginDragging: (() -> ())?
+    var willBeginDragging: (() -> ())?
 
     /// Called on scrollViewDidEndDecelerating
-    open var didEndDecelerating: (() -> ())?
+    var didEndDecelerating: (() -> ())?
 
     /// Currenlty displayed slideshow item
-    open var currentSlideshowItem: ImageSlideshowItem? {
+    var currentSlideshowItem: ImageSlideshowItem? {
         if slideshowItems.count > scrollViewPage {
             return slideshowItems[scrollViewPage]
         } else {
@@ -162,18 +161,18 @@ open class ImageSlideshow: UIView {
     }
 
     /// Current scroll view page. This may differ from `currentPage` as circular slider has two more dummy pages at indexes 0 and n-1 to provide fluent scrolling between first and last item.
-    open fileprivate(set) var scrollViewPage: Int = 0
+    fileprivate(set) var scrollViewPage: Int = 0
 
     /// Input Sources loaded to slideshow
-    open fileprivate(set) var images = [InputSource]()
+    fileprivate(set) var images = [InputSource]()
 
     /// Image Slideshow Items loaded to slideshow
-    open fileprivate(set) var slideshowItems = [ImageSlideshowItem]()
+    fileprivate(set) var slideshowItems = [ImageSlideshowItem]()
 
     // MARK: - Preferences
 
     /// Enables/disables infinite scrolling between images
-    open var circular = true {
+    var circular = true {
         didSet {
             if images.count > 0 {
                 setImageInputs(images)

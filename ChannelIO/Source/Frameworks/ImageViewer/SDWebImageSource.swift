@@ -9,7 +9,7 @@
 import Foundation
 import SDWebImage
 
-public class SDWebImageSource: NSObject, InputSource {
+class SDWebImageSource: NSObject, InputSource {
   public var url: URL
   public var placeholder: UIImage?
   

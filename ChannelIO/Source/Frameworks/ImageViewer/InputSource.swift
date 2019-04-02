@@ -29,7 +29,8 @@
 import UIKit
 
 /// A protocol that can be adapted by different Input Source providers
-@objc public protocol InputSource {
+@objc
+protocol InputSource: class {
     /**
      Load image from the source to image view.
      - parameter imageView: Image view to load the image into.
@@ -46,8 +47,7 @@ import UIKit
 }
 
 /// Input Source to load plain UIImage
-@objcMembers
-open class ImageSource: NSObject, InputSource {
+class ImageSource: NSObject, InputSource {
     var image: UIImage!
 
     /// Initializes a new Image Source with UIImage

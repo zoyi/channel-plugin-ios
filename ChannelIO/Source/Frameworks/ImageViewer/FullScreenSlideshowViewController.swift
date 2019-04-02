@@ -27,8 +27,7 @@
 
 import UIKit
 
-@objcMembers
-open class FullScreenSlideshowViewController: UIViewController {
+internal class FullScreenSlideshowViewController: UIViewController {
 
     open var slideshow: ImageSlideshow = {
         let slideshow = ImageSlideshow()
@@ -43,25 +42,25 @@ open class FullScreenSlideshowViewController: UIViewController {
     }()
 
     /// Close button 
-    open var closeButton = UIButton()
+    internal var closeButton = UIButton()
 
     /// Close button frame
-    open var closeButtonFrame: CGRect?
+    internal var closeButtonFrame: CGRect?
 
     /// Closure called on page selection
-    open var pageSelected: ((_ page: Int) -> Void)?
+    internal var pageSelected: ((_ page: Int) -> Void)?
 
     /// Index of initial image
-    open var initialPage: Int = 0
+    internal var initialPage: Int = 0
 
     /// Input sources to 
-    open var inputs: [InputSource]?
+    internal var inputs: [InputSource]?
 
     /// Background color
-    open var backgroundColor = UIColor.black
+    internal var backgroundColor = UIColor.black
 
     /// Enables/disable zoom
-    open var zoomEnabled = true {
+    internal var zoomEnabled = true {
         didSet {
             slideshow.zoomEnabled = zoomEnabled
         }
@@ -106,7 +105,7 @@ open class FullScreenSlideshowViewController: UIViewController {
         slideshow.slideshowItems.forEach { $0.cancelPendingLoad() }
     }
 
-    open override func viewDidLayoutSubviews() {
+    internal override func viewDidLayoutSubviews() {
         if !isBeingDismissed {
             let safeAreaInsets: UIEdgeInsets
             if #available(iOS 11.0, *) {

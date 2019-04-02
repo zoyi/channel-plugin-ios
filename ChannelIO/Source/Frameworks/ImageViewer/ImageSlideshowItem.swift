@@ -28,8 +28,7 @@
 import UIKit
 
 /// Used to wrap a single slideshow item and allow zooming on it
-@objcMembers
-open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
+class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     /// Image view to hold the image
     public let imageView = UIImageView()

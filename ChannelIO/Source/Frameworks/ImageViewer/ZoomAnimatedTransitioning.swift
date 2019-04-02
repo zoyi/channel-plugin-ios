@@ -28,8 +28,7 @@
 
 import UIKit
 
-@objcMembers
-open class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate {
+class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate {
     /// parent image view used for animated transition
     open var referenceImageView: UIImageView?
     /// parent slideshow view used for animated transition
@@ -168,7 +167,6 @@ extension ZoomAnimatedTransitioningDelegate: UIGestureRecognizerDelegate {
     }
 }
 
-@objcMembers
 class ZoomAnimator: NSObject {
 
     var referenceImageView: UIImageView?
@@ -189,7 +187,6 @@ class ZoomAnimator: NSObject {
     }
 }
 
-@objcMembers
 class ZoomInAnimator: ZoomAnimator, UIViewControllerAnimatedTransitioning {
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {

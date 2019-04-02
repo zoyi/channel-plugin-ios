@@ -28,7 +28,7 @@
 import UIKit
 
 /// Cusotm Activity Indicator can be used by implementing this protocol
-public protocol ActivityIndicatorView {
+protocol ActivityIndicatorView {
     /// View of the activity indicator
     var view: UIView { get }
 
@@ -40,7 +40,7 @@ public protocol ActivityIndicatorView {
 }
 
 /// Factory protocol to create new ActivityIndicatorViews. Meant to be implemented when creating custom activity indicator.
-public protocol ActivityIndicatorFactory {
+protocol ActivityIndicatorFactory {
     func create() -> ActivityIndicatorView
 }
 
@@ -61,7 +61,7 @@ extension UIActivityIndicatorView: ActivityIndicatorView {
 
 /// Default activity indicator factory creating UIActivityIndicatorView instances
 @objcMembers
-open class DefaultActivityIndicator: ActivityIndicatorFactory {
+class DefaultActivityIndicator: ActivityIndicatorFactory {
     /// activity indicator style
     open var style: UIActivityIndicatorViewStyle
     

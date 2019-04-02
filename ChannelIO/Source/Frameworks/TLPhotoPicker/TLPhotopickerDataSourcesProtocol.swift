@@ -27,7 +27,7 @@
 import Foundation
 import Photos
 
-public protocol TLPhotopickerDataSourcesProtocol {
+protocol TLPhotopickerDataSourcesProtocol {
     func headerReferenceSize() -> CGSize
     func footerReferenceSize() -> CGSize
     func registerSupplementView(collectionView: UICollectionView)

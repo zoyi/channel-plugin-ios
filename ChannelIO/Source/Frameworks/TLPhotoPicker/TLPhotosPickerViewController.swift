@@ -30,7 +30,7 @@ import Photos
 import PhotosUI
 import MobileCoreServices
 
-public protocol TLPhotosPickerViewControllerDelegate: class {
+protocol TLPhotosPickerViewControllerDelegate: class {
     func dismissPhotoPicker(withPHAssets: [PHAsset])
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
     func dismissComplete()
@@ -54,7 +54,7 @@ extension TLPhotosPickerViewControllerDelegate {
 }
 
 //for log
-public protocol TLPhotosPickerLogDelegate: class {
+protocol TLPhotosPickerLogDelegate: class {
     func selectedCameraCell(picker: TLPhotosPickerViewController)
     func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
@@ -69,7 +69,7 @@ extension TLPhotosPickerLogDelegate {
 }
 
 
-public struct TLPhotosPickerConfigure {
+struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
     public var cancelTitle = "Cancel"
@@ -106,7 +106,7 @@ public struct TLPhotosPickerConfigure {
 }
 
 
-public struct Platform {
+struct Platform {
     
     public static var isSimulator: Bool {
         return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
@@ -115,7 +115,7 @@ public struct Platform {
 }
 
 
-open class TLPhotosPickerViewController: UIViewController {
+class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var titleView: UIView!
     @IBOutlet open var titleLabel: UILabel!
     @IBOutlet open var subTitleStackView: UIStackView!
