@@ -28,7 +28,7 @@
 import UIKit
 import PhotosUI
 
-open class TLPlayerView: UIView {
+class TLPlayerView: UIView {
     @objc open var player: AVPlayer? {
         get {
             return playerLayer.player
@@ -48,7 +48,7 @@ open class TLPlayerView: UIView {
     }
 }
 
-open class TLPhotoCollectionViewCell: UICollectionViewCell {
+class TLPhotoCollectionViewCell: UICollectionViewCell {
     private var observer: NSObjectProtocol?
     @IBOutlet open var imageView: UIImageView?
     @IBOutlet open var playerView: TLPlayerView?

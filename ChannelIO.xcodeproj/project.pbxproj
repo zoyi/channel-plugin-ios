@@ -290,7 +290,6 @@
 		65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AE216620600032F5C5 /* M13ProgressSuite.framework */; };
 		65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962992166205E0032F5C5 /* MGSwipeTableCell.framework */; };
 		65D3563521BA4BD4001D6A30 /* NVActivityIndicatorView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962B4216620610032F5C5 /* NVActivityIndicatorView.framework */; };
-		65D3563621BA4BD4001D6A30 /* NVActivityIndicatorViewAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629D2166205F0032F5C5 /* NVActivityIndicatorViewAppExtension.framework */; };
 		65D3563721BA4BD4001D6A30 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629B2166205E0032F5C5 /* ObjectMapper.framework */; };
 		65D3563821BA4BD4001D6A30 /* PhoneNumberKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A02166205F0032F5C5 /* PhoneNumberKit.framework */; };
 		65D3563921BA4BD4001D6A30 /* ReSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A62166205F0032F5C5 /* ReSwift.framework */; };
@@ -356,7 +355,6 @@
 		225962992166205E0032F5C5 /* MGSwipeTableCell.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MGSwipeTableCell.framework; path = Carthage/Build/iOS/MGSwipeTableCell.framework; sourceTree = "<group>"; };
 		2259629B2166205E0032F5C5 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 		2259629C2166205E0032F5C5 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
-		2259629D2166205F0032F5C5 /* NVActivityIndicatorViewAppExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NVActivityIndicatorViewAppExtension.framework; path = Carthage/Build/iOS/NVActivityIndicatorViewAppExtension.framework; sourceTree = "<group>"; };
 		2259629E2166205F0032F5C5 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHSlackTextViewController.framework; path = Carthage/Build/iOS/CHSlackTextViewController.framework; sourceTree = "<group>"; };
 		225962A02166205F0032F5C5 /* PhoneNumberKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhoneNumberKit.framework; path = Carthage/Build/iOS/PhoneNumberKit.framework; sourceTree = "<group>"; };
@@ -662,7 +660,6 @@
 				65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */,
 				65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */,
 				65D3563521BA4BD4001D6A30 /* NVActivityIndicatorView.framework in Frameworks */,
-				65D3563621BA4BD4001D6A30 /* NVActivityIndicatorViewAppExtension.framework in Frameworks */,
 				65D3563721BA4BD4001D6A30 /* ObjectMapper.framework in Frameworks */,
 				65D3563821BA4BD4001D6A30 /* PhoneNumberKit.framework in Frameworks */,
 				65D3563921BA4BD4001D6A30 /* ReSwift.framework in Frameworks */,
@@ -711,7 +708,6 @@
 				225962AE216620600032F5C5 /* M13ProgressSuite.framework */,
 				225962992166205E0032F5C5 /* MGSwipeTableCell.framework */,
 				225962B4216620610032F5C5 /* NVActivityIndicatorView.framework */,
-				2259629D2166205F0032F5C5 /* NVActivityIndicatorViewAppExtension.framework */,
 				2259629B2166205E0032F5C5 /* ObjectMapper.framework */,
 				225962A02166205F0032F5C5 /* PhoneNumberKit.framework */,
 				225962A62166205F0032F5C5 /* ReSwift.framework */,
