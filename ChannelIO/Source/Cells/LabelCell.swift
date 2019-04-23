@@ -38,20 +38,20 @@ final class LabelCell : BaseTableViewCell, Reusable {
     self.addSubview(self.arrowImageView)
   }
   
-  override func layoutSubviews() {
-    super.layoutSubviews()
+  override func setLayouts() {
+    super.setLayouts()
     
-    self.titleLabel.snp.remakeConstraints { (make) in
+    self.titleLabel.snp.makeConstraints { (make) in
       make.centerY.equalToSuperview()
       make.leading.equalToSuperview().inset(16)
     }
     
-    self.arrowImageView.snp.remakeConstraints { (make) in
+    self.arrowImageView.snp.makeConstraints { (make) in
       make.centerY.equalToSuperview()
       make.trailing.equalToSuperview().inset(10)
     }
   }
-  
+
   class func height() -> CGFloat {
     return 52
   }

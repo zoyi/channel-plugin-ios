@@ -9,42 +9,6 @@
 import Foundation
 import ObjectMapper
 
-struct TimeRange {
-  var from = 0
-  var to = 0
-}
-
-extension TimeRange : Mappable {
-  init?(map: Map) { }
-  
-  mutating func mapping(map: Map) {
-    from <- map["from"]
-    to <- map["to"]
-  }
-}
-
-struct SortableWorkingTime {
-  let value: String
-  let order: Int
-}
-
-enum ChannelPlanType: String {
-  case none
-  case standard
-  case pro
-}
-
-enum ChannelWorkingType: String {
-  case always
-  case never
-  case custom
-}
-
-enum ChannelAwayOptionType: String {
-  case active
-  case disabled
-  case hidden
-}
 
 struct CHChannel: CHEntity {
   // ModelType
@@ -56,6 +20,7 @@ struct CHChannel: CHEntity {
   // Channel
   var name = ""
   var country = ""
+  var desc = ""
   var textColor = "white"
   var working = true
   var workingTime: [String:TimeRange]?
@@ -170,6 +135,7 @@ extension CHChannel: Mappable {
     initial                 <- map["initial"]
     color                   <- map["color"]
     name                    <- map["name"]
+    desc                    <- map["description"]
     country                 <- map["country"]
     textColor               <- map["textColor"]
     phoneNumber             <- map["phoneNumber"]
@@ -189,4 +155,41 @@ extension CHChannel: Mappable {
     trial                   <- map["trial"]
     trialEndDate            <- (map["trialEndDate"], CustomDateTransform())
   }
+}
+
+struct TimeRange {
+  var from = 0
+  var to = 0
+}
+
+extension TimeRange : Mappable {
+  init?(map: Map) { }
+  
+  mutating func mapping(map: Map) {
+    from <- map["from"]
+    to <- map["to"]
+  }
+}
+
+struct SortableWorkingTime {
+  let value: String
+  let order: Int
+}
+
+enum ChannelPlanType: String {
+  case none
+  case standard
+  case pro
+}
+
+enum ChannelWorkingType: String {
+  case always
+  case never
+  case custom
+}
+
+enum ChannelAwayOptionType: String {
+  case active
+  case disabled
+  case hidden
 }

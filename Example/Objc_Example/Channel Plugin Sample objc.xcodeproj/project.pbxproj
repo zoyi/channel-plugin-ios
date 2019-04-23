@@ -11,15 +11,11 @@
 		22B443F322005F5800EFC637 /* CHNavBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443D222005F5700EFC637 /* CHNavBar.framework */; };
 		22B443F522005F5800EFC637 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443D422005F5700EFC637 /* Alamofire.framework */; };
 		22B443F622005F5800EFC637 /* Reusable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443D522005F5700EFC637 /* Reusable.framework */; };
-		22B443F722005F5800EFC637 /* CropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443D622005F5700EFC637 /* CropViewController.framework */; };
 		22B443F822005F5800EFC637 /* CHDwifft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443D722005F5700EFC637 /* CHDwifft.framework */; };
 		22B443F922005F5800EFC637 /* NVActivityIndicatorView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443D822005F5800EFC637 /* NVActivityIndicatorView.framework */; };
 		22B443FA22005F5800EFC637 /* M13ProgressSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443D922005F5800EFC637 /* M13ProgressSuite.framework */; };
-		22B443FB22005F5800EFC637 /* TOCropViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443DA22005F5800EFC637 /* TOCropViewController.framework */; };
 		22B443FC22005F5800EFC637 /* ChannelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443DB22005F5800EFC637 /* ChannelIO.framework */; };
-		22B443FE22005F5800EFC637 /* DKPhotoGallery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443DD22005F5800EFC637 /* DKPhotoGallery.framework */; };
 		22B443FF22005F5800EFC637 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443DE22005F5800EFC637 /* Starscream.framework */; };
-		22B4440022005F5900EFC637 /* DKImagePickerController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443DF22005F5800EFC637 /* DKImagePickerController.framework */; };
 		22B4440122005F5900EFC637 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E022005F5800EFC637 /* RxAtomic.framework */; };
 		22B4440222005F5900EFC637 /* NVActivityIndicatorViewAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E122005F5800EFC637 /* NVActivityIndicatorViewAppExtension.framework */; };
 		22B4440322005F5900EFC637 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E222005F5800EFC637 /* SwiftyJSON.framework */; };
@@ -27,15 +23,11 @@
 		22B4440522005F5900EFC637 /* MGSwipeTableCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E422005F5800EFC637 /* MGSwipeTableCell.framework */; };
 		22B4440622005F5900EFC637 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E522005F5800EFC637 /* RxSwift.framework */; };
 		22B4440722005F5900EFC637 /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E622005F5800EFC637 /* SVProgressHUD.framework */; };
-		22B4440822005F5900EFC637 /* DKCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E722005F5800EFC637 /* DKCamera.framework */; };
 		22B4440922005F5900EFC637 /* CRToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E822005F5800EFC637 /* CRToast.framework */; };
 		22B4440A22005F5900EFC637 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443E922005F5800EFC637 /* SDWebImage.framework */; };
-		22B4440B22005F5900EFC637 /* Imaginary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443EA22005F5800EFC637 /* Imaginary.framework */; };
 		22B4440C22005F5900EFC637 /* PhoneNumberKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443EB22005F5800EFC637 /* PhoneNumberKit.framework */; };
-		22B4440D22005F5900EFC637 /* Lightbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443EC22005F5800EFC637 /* Lightbox.framework */; };
 		22B4440E22005F5900EFC637 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443ED22005F5800EFC637 /* ObjectMapper.framework */; };
 		22B4440F22005F5900EFC637 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443EE22005F5800EFC637 /* RxCocoa.framework */; };
-		22B4441022005F5900EFC637 /* Cache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443EF22005F5800EFC637 /* Cache.framework */; };
 		22B4441122005F5900EFC637 /* ReSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443F022005F5800EFC637 /* ReSwift.framework */; };
 		22B4441222005F5900EFC637 /* SocketIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443F122005F5800EFC637 /* SocketIO.framework */; };
 		65F77B3A1E810910001E8FBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F77B391E810910001E8FBA /* main.m */; };
@@ -54,15 +46,11 @@
 		22B443D222005F5700EFC637 /* CHNavBar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHNavBar.framework; path = Carthage/Build/iOS/CHNavBar.framework; sourceTree = "<group>"; };
 		22B443D422005F5700EFC637 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		22B443D522005F5700EFC637 /* Reusable.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reusable.framework; path = Carthage/Build/iOS/Reusable.framework; sourceTree = "<group>"; };
-		22B443D622005F5700EFC637 /* CropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CropViewController.framework; path = Carthage/Build/iOS/CropViewController.framework; sourceTree = "<group>"; };
 		22B443D722005F5700EFC637 /* CHDwifft.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHDwifft.framework; path = Carthage/Build/iOS/CHDwifft.framework; sourceTree = "<group>"; };
 		22B443D822005F5800EFC637 /* NVActivityIndicatorView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NVActivityIndicatorView.framework; path = Carthage/Build/iOS/NVActivityIndicatorView.framework; sourceTree = "<group>"; };
 		22B443D922005F5800EFC637 /* M13ProgressSuite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = M13ProgressSuite.framework; path = Carthage/Build/iOS/M13ProgressSuite.framework; sourceTree = "<group>"; };
-		22B443DA22005F5800EFC637 /* TOCropViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOCropViewController.framework; path = Carthage/Build/iOS/TOCropViewController.framework; sourceTree = "<group>"; };
 		22B443DB22005F5800EFC637 /* ChannelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ChannelIO.framework; path = Carthage/Build/iOS/ChannelIO.framework; sourceTree = "<group>"; };
-		22B443DD22005F5800EFC637 /* DKPhotoGallery.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKPhotoGallery.framework; path = Carthage/Build/iOS/DKPhotoGallery.framework; sourceTree = "<group>"; };
 		22B443DE22005F5800EFC637 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
-		22B443DF22005F5800EFC637 /* DKImagePickerController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKImagePickerController.framework; path = Carthage/Build/iOS/DKImagePickerController.framework; sourceTree = "<group>"; };
 		22B443E022005F5800EFC637 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAtomic.framework; path = Carthage/Build/iOS/RxAtomic.framework; sourceTree = "<group>"; };
 		22B443E122005F5800EFC637 /* NVActivityIndicatorViewAppExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NVActivityIndicatorViewAppExtension.framework; path = Carthage/Build/iOS/NVActivityIndicatorViewAppExtension.framework; sourceTree = "<group>"; };
 		22B443E222005F5800EFC637 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
@@ -70,15 +58,11 @@
 		22B443E422005F5800EFC637 /* MGSwipeTableCell.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MGSwipeTableCell.framework; path = Carthage/Build/iOS/MGSwipeTableCell.framework; sourceTree = "<group>"; };
 		22B443E522005F5800EFC637 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		22B443E622005F5800EFC637 /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SVProgressHUD.framework; path = Carthage/Build/iOS/SVProgressHUD.framework; sourceTree = "<group>"; };
-		22B443E722005F5800EFC637 /* DKCamera.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DKCamera.framework; path = Carthage/Build/iOS/DKCamera.framework; sourceTree = "<group>"; };
 		22B443E822005F5800EFC637 /* CRToast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CRToast.framework; path = Carthage/Build/iOS/CRToast.framework; sourceTree = "<group>"; };
 		22B443E922005F5800EFC637 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = Carthage/Build/iOS/SDWebImage.framework; sourceTree = "<group>"; };
-		22B443EA22005F5800EFC637 /* Imaginary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Imaginary.framework; path = Carthage/Build/iOS/Imaginary.framework; sourceTree = "<group>"; };
 		22B443EB22005F5800EFC637 /* PhoneNumberKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhoneNumberKit.framework; path = Carthage/Build/iOS/PhoneNumberKit.framework; sourceTree = "<group>"; };
-		22B443EC22005F5800EFC637 /* Lightbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lightbox.framework; path = Carthage/Build/iOS/Lightbox.framework; sourceTree = "<group>"; };
 		22B443ED22005F5800EFC637 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 		22B443EE22005F5800EFC637 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
-		22B443EF22005F5800EFC637 /* Cache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cache.framework; path = Carthage/Build/iOS/Cache.framework; sourceTree = "<group>"; };
 		22B443F022005F5800EFC637 /* ReSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReSwift.framework; path = Carthage/Build/iOS/ReSwift.framework; sourceTree = "<group>"; };
 		22B443F122005F5800EFC637 /* SocketIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SocketIO.framework; path = Carthage/Build/iOS/SocketIO.framework; sourceTree = "<group>"; };
 		652AE2061E81379C00B7484C /* Channel Plugin Sample objc.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Channel Plugin Sample objc.entitlements"; sourceTree = "<group>"; };
@@ -109,15 +93,11 @@
 				22B443F322005F5800EFC637 /* CHNavBar.framework in Frameworks */,
 				22B443F522005F5800EFC637 /* Alamofire.framework in Frameworks */,
 				22B443F622005F5800EFC637 /* Reusable.framework in Frameworks */,
-				22B443F722005F5800EFC637 /* CropViewController.framework in Frameworks */,
 				22B443F822005F5800EFC637 /* CHDwifft.framework in Frameworks */,
 				22B443F922005F5800EFC637 /* NVActivityIndicatorView.framework in Frameworks */,
 				22B443FA22005F5800EFC637 /* M13ProgressSuite.framework in Frameworks */,
-				22B443FB22005F5800EFC637 /* TOCropViewController.framework in Frameworks */,
 				22B443FC22005F5800EFC637 /* ChannelIO.framework in Frameworks */,
-				22B443FE22005F5800EFC637 /* DKPhotoGallery.framework in Frameworks */,
 				22B443FF22005F5800EFC637 /* Starscream.framework in Frameworks */,
-				22B4440022005F5900EFC637 /* DKImagePickerController.framework in Frameworks */,
 				22B4440122005F5900EFC637 /* RxAtomic.framework in Frameworks */,
 				22B4440222005F5900EFC637 /* NVActivityIndicatorViewAppExtension.framework in Frameworks */,
 				22B4440322005F5900EFC637 /* SwiftyJSON.framework in Frameworks */,
@@ -125,15 +105,11 @@
 				22B4440522005F5900EFC637 /* MGSwipeTableCell.framework in Frameworks */,
 				22B4440622005F5900EFC637 /* RxSwift.framework in Frameworks */,
 				22B4440722005F5900EFC637 /* SVProgressHUD.framework in Frameworks */,
-				22B4440822005F5900EFC637 /* DKCamera.framework in Frameworks */,
 				22B4440922005F5900EFC637 /* CRToast.framework in Frameworks */,
 				22B4440A22005F5900EFC637 /* SDWebImage.framework in Frameworks */,
-				22B4440B22005F5900EFC637 /* Imaginary.framework in Frameworks */,
 				22B4440C22005F5900EFC637 /* PhoneNumberKit.framework in Frameworks */,
-				22B4440D22005F5900EFC637 /* Lightbox.framework in Frameworks */,
 				22B4440E22005F5900EFC637 /* ObjectMapper.framework in Frameworks */,
 				22B4440F22005F5900EFC637 /* RxCocoa.framework in Frameworks */,
-				22B4441022005F5900EFC637 /* Cache.framework in Frameworks */,
 				22B4441122005F5900EFC637 /* ReSwift.framework in Frameworks */,
 				22B4441222005F5900EFC637 /* SocketIO.framework in Frameworks */,
 			);
@@ -146,18 +122,11 @@
 			isa = PBXGroup;
 			children = (
 				22B443D422005F5700EFC637 /* Alamofire.framework */,
-				22B443EF22005F5800EFC637 /* Cache.framework */,
 				22B443DB22005F5800EFC637 /* ChannelIO.framework */,
 				22B443D722005F5700EFC637 /* CHDwifft.framework */,
 				22B443D222005F5700EFC637 /* CHNavBar.framework */,
 				22B443D122005F5700EFC637 /* CHSlackTextViewController.framework */,
-				22B443D622005F5700EFC637 /* CropViewController.framework */,
 				22B443E822005F5800EFC637 /* CRToast.framework */,
-				22B443E722005F5800EFC637 /* DKCamera.framework */,
-				22B443DF22005F5800EFC637 /* DKImagePickerController.framework */,
-				22B443DD22005F5800EFC637 /* DKPhotoGallery.framework */,
-				22B443EA22005F5800EFC637 /* Imaginary.framework */,
-				22B443EC22005F5800EFC637 /* Lightbox.framework */,
 				22B443D922005F5800EFC637 /* M13ProgressSuite.framework */,
 				22B443E422005F5800EFC637 /* MGSwipeTableCell.framework */,
 				22B443D822005F5800EFC637 /* NVActivityIndicatorView.framework */,
@@ -175,7 +144,6 @@
 				22B443DE22005F5800EFC637 /* Starscream.framework */,
 				22B443E622005F5800EFC637 /* SVProgressHUD.framework */,
 				22B443E222005F5800EFC637 /* SwiftyJSON.framework */,
-				22B443DA22005F5800EFC637 /* TOCropViewController.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -275,6 +243,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -312,17 +281,10 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Cache.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/ChannelIO.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CHDwifft.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CHNavBar.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CHSlackTextViewController.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/CropViewController.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/DKCamera.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/DKImagePickerController.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/DKPhotoGallery.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Imaginary.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Lightbox.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/M13ProgressSuite.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/MGSwipeTableCell.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/NVActivityIndicatorView.framework",
@@ -340,25 +302,17 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Starscream.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SVProgressHUD.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/TOCropViewController.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CRToast.framework",
 			);
 			outputFileListPaths = (
 			);
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Alamofire.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Cache.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ChannelIO.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/CHDwifft.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/CHNavBar.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/CHSlackTextViewController.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/CropViewController.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/CRToast.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/DKCamera.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/DKImagePickerController.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/DKPhotoGallery.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Imaginary.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Lightbox.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/M13ProgressSuite.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/MGSwipeTableCell.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NVActivityIndicatorView.framework",
@@ -376,7 +330,6 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Starscream.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SVProgressHUD.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SwiftyJSON.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/TOCropViewController.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -538,7 +491,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "Channel Plugin Sample objc/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -560,7 +513,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "Channel Plugin Sample objc/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
