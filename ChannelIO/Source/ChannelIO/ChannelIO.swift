@@ -54,7 +54,7 @@ public final class ChannelIO: NSObject {
 
   internal static var disposeBag = DisposeBag()
   internal static var pushToken: String?
-  internal static var currentAlertCount = 0
+  internal static var currentAlertCount: Int? = nil
 
   static var isValidStatus: Bool {
     return mainStore.state.checkinState.status == .success &&
@@ -99,8 +99,10 @@ public final class ChannelIO: NSObject {
       }
     }
     
-    func handleBadge(_ count: Int) {
-      if ChannelIO.currentAlertCount != count {
+    func handleBadge(_ count: Int?) {
+      guard let count = count else { return }
+      
+      if let curr = ChannelIO.currentAlertCount, curr != count {
         ChannelIO.delegate?.onChangeBadge?(count: count)
       }
       ChannelIO.currentAlertCount = count
@@ -379,8 +381,12 @@ public final class ChannelIO: NSObject {
   @objc
   private class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
     GuestPromise.updateGuest(with: profile)
-      .subscribe(onNext: { (guest) in
-        completion?(true, Guest(with: guest))
+      .subscribe(onNext: { (guest, error) in
+        if let guest = guest {
+          completion?(true, Guest(with: guest))
+        } else {
+          completion?(false, nil)
+        }
       }, onError: { error in
         completion?(false, nil)
       }).disposed(by: disposeBag)
@@ -394,8 +400,12 @@ public final class ChannelIO: NSObject {
   @objc
   private class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
     GuestPromise.updateGuest(with: profile)
-      .subscribe(onNext: { (guest) in
-        completion?(true, Guest(with: guest))
+      .subscribe(onNext: { (guest, error) in
+        if let guest = guest {
+          completion?(true, Guest(with: guest))
+        } else {
+          completion?(false, nil)
+        }
       }, onError: { error in
         completion?(false, nil)
       }).disposed(by: disposeBag)

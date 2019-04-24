@@ -251,7 +251,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
           self?.profileSubject.onNext(nil)
       })
     } else {
-      let alert = guest.alert - (currentUserChat?.session?.alert ?? 0)
+      let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
       let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
       
       self.navigationItem.leftBarButtonItem = NavigationItem(

@@ -17,8 +17,8 @@ protocol CHGuest: CHEntity {
   var city: String { get set }
   
   var locale: String { get set }
-  var alert: Int { get set }
-  var unread: Int { get set }
+  var alert: Int? { get set }
+  var unread: Int? { get set }
   var segment: String? { get set }
   
   var createdAt: Date? { get set }
@@ -40,10 +40,14 @@ extension CHGuest {
     data["named"] = self.named ? "true" : "false"
     data["country"] = self.country
     data["city"] = self.city
-    data["alert"] = self.alert
-    data["unread"] = self.unread
     data["locale"] = self.locale
     
+    if let alert = self.alert {
+      data["alert"] = self.alert
+    }
+    if let unread = self.unread {
+      data["unread"] = self.unread
+    }
     if let profile = self.profile {
       data["profile"] = profile
     }
@@ -67,5 +71,9 @@ extension CHGuest {
     } else {
       return mainStore.state.plugin.welcomeI18n?.getMessage()
     }
+  }
+  
+  func updateProfile(key: String, value: Any) -> Observable<(CHGuest?, Any?)> {
+    return GuestPromise.updateGuest(with: [key: value])
   }
 }
