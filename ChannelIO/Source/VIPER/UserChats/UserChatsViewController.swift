@@ -316,10 +316,13 @@ class UserChatsViewController: BaseViewController {
   }
   
   func showProfileView() {
-    let controller = ProfileViewController()
-    let navigation = MainNavigationController(rootViewController: controller)
-    //navigation.modalPresentationStyle = .overCurrentContext
-    self.navigationController?.present(navigation, animated: true, completion: nil)
+    let settingView = SettingRouter.createModule()
+    self.navigationController?.pushViewController(settingView, animated: true)
+    
+//    let controller = ProfileViewController()
+//    let navigation = MainNavigationController(rootViewController: controller)
+//    //navigation.modalPresentationStyle = .overCurrentContext
+//    self.navigationController?.present(navigation, animated: true, completion: nil)
   }
 }
 

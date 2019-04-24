@@ -13,7 +13,7 @@ class SettingView: BaseViewController {
   var presenter: SettingPresenterProtocol?
   
   let headerView = SettingHeaderView()
-  let tableView = UITableView().then {
+  let tableView =  UITableView(frame: CGRect.zero, style: .grouped).then {
     $0.register(cellType: LabelCell.self)
     $0.register(cellType: SwitchCell.self)
     $0.register(cellType: KeyValueCell.self)
@@ -22,6 +22,8 @@ class SettingView: BaseViewController {
     $0.estimatedRowHeight = 0
     $0.sectionFooterHeight = 0
     $0.sectionHeaderHeight = 0
+    $0.bounces = false
+    $0.backgroundColor = .white
   }
   let versionLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 10)
@@ -43,7 +45,12 @@ class SettingView: BaseViewController {
     
     self.view.addSubview(self.headerView)
     self.view.addSubview(self.tableView)
+    self.view.addSubview(self.versionLabel)
     
+    self.tableView.delegate = self
+    self.tableView.dataSource = self
+    
+    self.initNavigation()
     presenter?.viewDidLoad()
   }
   
@@ -74,8 +81,12 @@ class SettingView: BaseViewController {
     }
     
     self.versionLabel.snp.makeConstraints { (make) in
-      make.bottom.equalToSuperview()
-      make.trailing.equalToSuperview()
+      make.trailing.equalToSuperview().inset(14)
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+      } else {
+        make.bottom.equalToSuperview().inset(10)
+      }
     }
   }
   
@@ -88,6 +99,16 @@ class SettingView: BaseViewController {
     super.viewWillDisappear(animated)
     self.presenter?.cleanup()
   }
+  
+  func initNavigation() {
+    self.navigationItem.leftBarButtonItem = NavigationItem(
+      image:  CHAssets.getImage(named: "back"),
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
+      actionHandler: { [weak self] in
+        _ = self?.navigationController?.popViewController(animated: true)
+      })
+  }
 }
 
 extension SettingView: SettingViewProtocol {
@@ -96,6 +117,7 @@ extension SettingView: SettingViewProtocol {
   }
   
   func displayOptions(with options: [SettingOptionModel]) {
+    self.title = CHAssets.localized("ch.settings.title")
     self.options = options
     self.tableView.reloadData()
   }
@@ -138,11 +160,25 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    let view = UIView().then {
+      $0.backgroundColor = .white
+    }
+    let label = UILabel().then {
+      $0.font = UIFont.boldSystemFont(ofSize: 13)
+      $0.textColor = CHColors.blueyGrey
+    }
+    view.addSubview(label)
+    label.snp.makeConstraints { (make) in
+      make.bottom.equalToSuperview().inset(6)
+      make.leading.equalToSuperview().inset(18)
+    }
     switch section {
     case Section.options:
-      return UIView()
+      label.text = "옵션"
+      return view
     case Section.profiles:
-      return UIView()
+      label.text = "내 프로필 설정"
+      return view
     default:
       return nil
     }
@@ -159,13 +195,13 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
       switch item.option {
       case .none:
         let cell: LabelCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.arrowImageView.isHidden = false
+        cell.arrowImageView.isHidden = true
         cell.isUserInteractionEnabled = false
         cell.titleLabel.text = item.title
         return cell
       case .selectable, .editable:
         let cell: LabelCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.arrowImageView.isHidden = true
+        cell.arrowImageView.isHidden = false
         cell.signalForClick().subscribe(onNext: { [weak self] (_) in
           self?.presenter?.didClickOnOption(item: item, nextValue: nil, from: self)
         }).disposed(by: self.disposeBag)

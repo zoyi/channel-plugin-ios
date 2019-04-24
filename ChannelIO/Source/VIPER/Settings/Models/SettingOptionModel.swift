@@ -36,9 +36,10 @@ struct SettingOptionModel {
         models.append(model)
       case .translation:
         var model = SettingOptionModel()
-        model.title = ""
+        model.title = CHAssets.localized("ch.settings.translate_message")
         model.type = option
-        model.option = .selectable
+        model.option = .switchable
+        model.value = mainStore.state.userChatsState.showTranslation
         models.append(model)
       default:
         break

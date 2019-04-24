@@ -36,7 +36,7 @@ class SettingHeaderView: BaseView {
   
   override func initialize() {
     super.initialize()
-    
+    self.layer.addSublayer(self.bgLayer)
     self.addSubview(self.channelNameLabel)
     self.addSubview(self.homepageUrlLabel)
     self.addSubview(self.descriptionLabel)
@@ -60,21 +60,23 @@ class SettingHeaderView: BaseView {
       guard let `self` = self else { return }
       make.leading.equalTo(Metric.nameLeading)
       make.top.equalToSuperview()
-      make.trailing.greaterThanOrEqualTo(self.channelAvatarView.snp.leading).offset(Metric.nameTrailing)
+      make.trailing.lessThanOrEqualTo(self.channelAvatarView.snp.leading).offset(-Metric.nameTrailing)
     }
     
     self.homepageUrlLabel.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       make.leading.equalTo(Metric.nameLeading)
+      make.height.equalTo(20)
       make.top.equalTo(self.channelNameLabel.snp.bottom).offset(Metric.homepageTop)
-      make.trailing.greaterThanOrEqualTo(self.channelAvatarView.snp.leading).offset(Metric.nameTrailing)
+      make.trailing.lessThanOrEqualTo(self.channelAvatarView.snp.leading).offset(-Metric.nameTrailing)
     }
     
     self.descriptionLabel.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       make.leading.equalTo(Metric.nameLeading)
+      make.height.equalTo(16)
       make.top.equalTo(self.homepageUrlLabel.snp.bottom).offset(Metric.descTop)
-      make.trailing.greaterThanOrEqualTo(self.channelAvatarView.snp.leading).offset(Metric.nameTrailing)
+      make.trailing.lessThanOrEqualTo(self.channelAvatarView.snp.leading).offset(-Metric.nameTrailing)
       make.bottom.equalToSuperview().inset(Metric.descBottom)
     }
     
@@ -88,8 +90,11 @@ class SettingHeaderView: BaseView {
   
   func configure(with model: SettingHeaderViewModel) {
     self.channelNameLabel.text = model.title
+    self.channelNameLabel.textColor = model.textColor
     self.homepageUrlLabel.text = model.homepageUrl
+    self.homepageUrlLabel.textColor = model.textColor
     self.descriptionLabel.text = model.desc
+    self.descriptionLabel.textColor = model.textColor
     self.channelAvatarView.configure(model.entity)
     self.bgLayer.colors = model.colors
   }

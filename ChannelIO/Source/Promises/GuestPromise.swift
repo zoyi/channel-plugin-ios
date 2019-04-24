@@ -45,7 +45,7 @@ struct GuestPromise {
     }
   }
   
-  static func updateGuest(with profile: [String: Any]) -> Observable<CHGuest> {
+  static func updateGuest(with profile: [String: Any]) -> Observable<(CHGuest?, Any?)> {
     return Observable.create({ (subscriber) -> Disposable in
       let builder = BootParamBuilder()
       builder.with(profile: profile)
@@ -63,12 +63,16 @@ struct GuestPromise {
             if user == nil && veil == nil {
               subscriber.onError(CHErrorPool.guestParseError)
             } else {
-              user == nil ? subscriber.onNext(veil!) : subscriber.onNext(user!)
+              user != nil ? subscriber.onNext((user, nil)) : subscriber.onNext((veil, nil))
               subscriber.onCompleted()
             }
             break
           case .failure(let error):
-            subscriber.onError(error)
+            if let data = response.data {
+              CRToastManager.showErrorFromData(data)
+            }
+            subscriber.onNext((nil, error))
+            subscriber.onCompleted()
             break
           }
         })

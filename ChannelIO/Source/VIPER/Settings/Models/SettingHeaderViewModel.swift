@@ -14,4 +14,5 @@ struct SettingHeaderViewModel {
   var desc: String?
   var entity: CHEntity
   var colors: [CGColor]
+  var textColor: UIColor
 }

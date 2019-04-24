@@ -22,6 +22,16 @@ class SettingRouter: SettingRouterProtocol {
   
   static func createModule() -> SettingView {
     let view = SettingView()
+    let interactor = SettingInteractor()
+    let router = SettingRouter()
+    let presenter = SettingPresenter()
+    
+    presenter.view = view
+    presenter.router = router
+    presenter.interactor = interactor
+    
+    view.presenter = presenter
+    interactor.presenter = presenter
     
     return view
   }

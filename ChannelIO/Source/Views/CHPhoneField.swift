@@ -137,7 +137,7 @@ final class CHPhoneField: BaseView {
   }
 }
 
-extension CHPhoneField : CHFieldProtocol {
+extension CHPhoneField : CHFieldDelegate {
   func getText() -> String {
     if let number = self.field.text,
       number == "" {
@@ -189,5 +189,3 @@ extension CHPhoneField {
   }
 
 }
-
-

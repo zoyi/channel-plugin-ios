@@ -43,6 +43,7 @@
 		22AE76B220E341CB00C18355 /* Mute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AE76B120E341CB00C18355 /* Mute.swift */; };
 		22AE76B920E347C700C18355 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 22AE76B820E347C700C18355 /* mute.caf */; };
 		22B4436D2200342B00EFC637 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443682200342B00EFC637 /* RxAtomic.framework */; };
+		22D879FC2270208B00CC1DDB /* CHEditTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D879FB2270208B00CC1DDB /* CHEditTextField.swift */; };
 		22E03E8521B38D560009F48E /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6B21B38D560009F48E /* MarkdownParser.swift */; };
 		22E03E8621B38D560009F48E /* String+UTF16.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6D21B38D560009F48E /* String+UTF16.swift */; };
 		22E03E8721B38D560009F48E /* UIFont+Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6E21B38D560009F48E /* UIFont+Traits.swift */; };
@@ -413,6 +414,7 @@
 		22AE76B120E341CB00C18355 /* Mute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mute.swift; sourceTree = "<group>"; };
 		22AE76B820E347C700C18355 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = mute.caf; path = Assets/mute.caf; sourceTree = "<group>"; };
 		22B443682200342B00EFC637 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAtomic.framework; path = Carthage/Build/iOS/RxAtomic.framework; sourceTree = "<group>"; };
+		22D879FB2270208B00CC1DDB /* CHEditTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEditTextField.swift; sourceTree = "<group>"; };
 		22E03E6B21B38D560009F48E /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		22E03E6D21B38D560009F48E /* String+UTF16.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+UTF16.swift"; sourceTree = "<group>"; };
 		22E03E6E21B38D560009F48E /* UIFont+Traits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Traits.swift"; sourceTree = "<group>"; };
@@ -883,6 +885,14 @@
 			path = TLPhotoPicker;
 			sourceTree = "<group>";
 		};
+		22D879FA2270207D00CC1DDB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				22D879FB2270208B00CC1DDB /* CHEditTextField.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		22E03E6A21B38D560009F48E /* MessageFormat */ = {
 			isa = PBXGroup;
 			children = (
@@ -990,6 +1000,7 @@
 		6512B9FF226ED1D800757CB2 /* ProfileEditor */ = {
 			isa = PBXGroup;
 			children = (
+				22D879FA2270207D00CC1DDB /* Views */,
 				6512BA00226ED1F200757CB2 /* ProfileEditorViewController.swift */,
 			);
 			path = ProfileEditor;
@@ -1829,6 +1840,7 @@
 				223726091FBEEFA20097F22B /* CountryCodeActions.swift in Sources */,
 				65CB142D206A02F200E456B5 /* NewMessageDividerCell.swift in Sources */,
 				6512132B224DF47F00737089 /* ImageSlideshow.swift in Sources */,
+				22D879FC2270208B00CC1DDB /* CHEditTextField.swift in Sources */,
 				65CB142A206A02F200E456B5 /* TextMessageView.swift in Sources */,
 				22F094F72176E8A00035C777 /* HexColors.swift in Sources */,
 				22E03E9621B38D560009F48E /* MarkdownCommonElement.swift in Sources */,

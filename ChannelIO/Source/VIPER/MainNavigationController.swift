@@ -21,6 +21,9 @@ class MainNavigationController: BaseNavigationController {
   var statusBarStyle = UIStatusBarStyle.default
   var isPushingViewController = false
   
+  var currentBgColor: UIColor?
+  var currentGradientColor: UIColor?
+  
   struct StatusBar {
     static var isHidden = false
     static var style = UIStatusBarStyle.default
@@ -92,7 +95,21 @@ extension MainNavigationController: StoreSubscriber {
   func newState(state: CHPlugin) {
     if !self.useDefault {
       // Bar Color
-      self.navigationBar.barTintColor = UIColor(state.color)
+      //self.navigationBar.barTintColor = UIColor(state.color)
+      let bgColor = UIColor(state.color) ?? UIColor.white
+      let gradientColor = UIColor(state.gradientColor) ?? UIColor.white
+      
+      if bgColor != self.currentBgColor ||
+        gradientColor != self.currentGradientColor {
+        self.currentBgColor = bgColor
+        self.currentGradientColor = gradientColor
+        self.navigationBar.setGradientBackground(
+          colors: [bgColor, bgColor, gradientColor],
+          startPoint: .topLeft,
+          endPoint: .topRight
+        )
+        self.navigationBar.setValue(true, forKey: "hidesShadow")
+      }
       self.navigationBar.tintColor = state.textUIColor
       
       // Title

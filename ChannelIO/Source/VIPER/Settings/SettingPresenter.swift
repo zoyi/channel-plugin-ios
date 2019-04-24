@@ -36,7 +36,8 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
         bgColor.cgColor,
         bgColor.cgColor,
         gradientColor.cgColor
-      ])
+      ],
+      textColor: plugin.textUIColor)
     
     self.view?.displayHeader(with: headerModel)
     
@@ -59,6 +60,9 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
   }
   
   func prepare() {
+    let settingOptions = SettingOptionModel.generate(options: [.language, .translation])
+    self.view?.displayOptions(with: settingOptions)
+    
     self.interactor?.subscribeDataSource()
   }
   
