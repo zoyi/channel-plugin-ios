@@ -39,14 +39,20 @@ class NavigationItem: UIBarButtonItem {
     text: String? = "",
     fitToSize: Bool = false,
     alignment: NavigationItemAlign = .left,
-    textColor: UIColor? = UIColor.white,
+    textColor: UIColor? = .white,
+    textBackgroundColor: UIColor? = .white,
     actionHandler: (() -> Void)?) {
     
     let button = UIButton(type: .custom)
     button.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
-    button.setTitle(text, for: .normal)
     button.imageView?.tintColor = textColor
+    
+    button.setTitle(text, for: .normal)
     button.setTitleColor(textColor, for: .normal)
+    button.titleLabel?.layer.cornerRadius = 15
+    button.titleLabel?.heightAnchor.constraint(equalToConstant: 30).isActive = true
+    button.titleLabel?.backgroundColor = textBackgroundColor ?? .white
+    
     if fitToSize {
       button.sizeToFit()
     }

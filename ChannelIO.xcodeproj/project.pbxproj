@@ -95,6 +95,13 @@
 		6512BA03226EDA2700757CB2 /* SettingHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA02226EDA2700757CB2 /* SettingHeaderView.swift */; };
 		6512BA05226EF15A00757CB2 /* KeyValueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA04226EF15A00757CB2 /* KeyValueCell.swift */; };
 		6512BA07226EFFA000757CB2 /* SettingHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA06226EFFA000757CB2 /* SettingHeaderViewModel.swift */; };
+		6512BA0A2271758000757CB2 /* DefaultNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA092271758000757CB2 /* DefaultNavigationTitleView.swift */; };
+		6512BA0C2271758E00757CB2 /* FollowNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA0B2271758E00757CB2 /* FollowNavigationTitleView.swift */; };
+		6512BA0E2271772000757CB2 /* NavigationAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA0D2271772000757CB2 /* NavigationAvatarView.swift */; };
+		6512BA322271A8C800757CB2 /* LoungeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA312271A8C700757CB2 /* LoungeHeaderView.swift */; };
+		6512BA342271A8FF00757CB2 /* LoungeMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA332271A8FF00757CB2 /* LoungeMainView.swift */; };
+		6512BA362271AA0300757CB2 /* LoungeExternalAppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA352271AA0300757CB2 /* LoungeExternalAppsView.swift */; };
+		6512BA382271AA4300757CB2 /* FollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA372271AA4300757CB2 /* FollowersView.swift */; };
 		651A58871E88E3970042A59F /* countryInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 650D7C311E716DBF007DE358 /* countryInfo.json */; };
 		652AE2111E81485D00B7484C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 652AE2131E81485D00B7484C /* Localizable.strings */; };
 		653516E021DCBE43006AB6C3 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653516DF21DCBE43006AB6C3 /* AppManager.swift */; };
@@ -467,6 +474,13 @@
 		6512BA02226EDA2700757CB2 /* SettingHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHeaderView.swift; sourceTree = "<group>"; };
 		6512BA04226EF15A00757CB2 /* KeyValueCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueCell.swift; sourceTree = "<group>"; };
 		6512BA06226EFFA000757CB2 /* SettingHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHeaderViewModel.swift; sourceTree = "<group>"; };
+		6512BA092271758000757CB2 /* DefaultNavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNavigationTitleView.swift; sourceTree = "<group>"; };
+		6512BA0B2271758E00757CB2 /* FollowNavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowNavigationTitleView.swift; sourceTree = "<group>"; };
+		6512BA0D2271772000757CB2 /* NavigationAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationAvatarView.swift; sourceTree = "<group>"; };
+		6512BA312271A8C700757CB2 /* LoungeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeHeaderView.swift; sourceTree = "<group>"; };
+		6512BA332271A8FF00757CB2 /* LoungeMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeMainView.swift; sourceTree = "<group>"; };
+		6512BA352271AA0300757CB2 /* LoungeExternalAppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeExternalAppsView.swift; sourceTree = "<group>"; };
+		6512BA372271AA4300757CB2 /* FollowersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersView.swift; sourceTree = "<group>"; };
 		652AE2121E81485D00B7484C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2141E81485F00B7484C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2151E81485F00B7484C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1006,6 +1020,16 @@
 			path = ProfileEditor;
 			sourceTree = "<group>";
 		};
+		6512BA082271755400757CB2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6512BA092271758000757CB2 /* DefaultNavigationTitleView.swift */,
+				6512BA0B2271758E00757CB2 /* FollowNavigationTitleView.swift */,
+				6512BA0D2271772000757CB2 /* NavigationAvatarView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		652AE20E1E81482F00B7484C /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -1080,6 +1104,7 @@
 		6590FA8F2068C82D0054B353 /* UserChats */ = {
 			isa = PBXGroup;
 			children = (
+				6512BA082271755400757CB2 /* Views */,
 				659792C81FA7167B00840F6A /* UserChatsViewController.swift */,
 			);
 			path = UserChats;
@@ -1459,6 +1484,10 @@
 		65CB991A226EC016004F9DC7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6512BA312271A8C700757CB2 /* LoungeHeaderView.swift */,
+				6512BA332271A8FF00757CB2 /* LoungeMainView.swift */,
+				6512BA352271AA0300757CB2 /* LoungeExternalAppsView.swift */,
+				6512BA372271AA4300757CB2 /* FollowersView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1781,6 +1810,7 @@
 				657AF3F72178750F001EAA7A /* SupportBotPromise.swift in Sources */,
 				659793701FA716CB00840F6A /* Profile.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
+				6512BA362271AA0300757CB2 /* LoungeExternalAppsView.swift in Sources */,
 				6512BA03226EDA2700757CB2 /* SettingHeaderView.swift in Sources */,
 				654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */,
 				65CB14052069E2B800E456B5 /* UserChatInteractor.swift in Sources */,
@@ -1794,7 +1824,9 @@
 				65CB992C226ECABE004F9DC7 /* SettingInteractor.swift in Sources */,
 				22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */,
 				659793761FA716CB00840F6A /* CHLog.swift in Sources */,
+				6512BA342271A8FF00757CB2 /* LoungeMainView.swift in Sources */,
 				659793771FA716CB00840F6A /* CHManager.swift in Sources */,
+				6512BA322271A8C800757CB2 /* LoungeHeaderView.swift in Sources */,
 				659793781FA716CB00840F6A /* CHMessage.swift in Sources */,
 				22E03E9821B38D560009F48E /* MarkdownLevelElement.swift in Sources */,
 				659793791FA716CB00840F6A /* CHPerson.swift in Sources */,
@@ -1890,6 +1922,7 @@
 				659793A11FA716CB00840F6A /* PrefStore.swift in Sources */,
 				659793A21FA716CB00840F6A /* AvatarView.swift in Sources */,
 				22E03E8F21B38D560009F48E /* MarkdownEmoji.swift in Sources */,
+				6512BA0C2271758E00757CB2 /* FollowNavigationTitleView.swift in Sources */,
 				65CB991D226EC040004F9DC7 /* LoungeView.swift in Sources */,
 				22F0ED9220B53C55008924C1 /* Models.swift in Sources */,
 				22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */,
@@ -1905,11 +1938,13 @@
 				65A2F41D1FCEA28900A21D8A /* ContactComponentButton.swift in Sources */,
 				659793B51FA716CB00840F6A /* NewMessageBannerView.swift in Sources */,
 				2287B0C6224F26C700C7E018 /* TLAssetsCollection.swift in Sources */,
+				6512BA0E2271772000757CB2 /* NavigationAvatarView.swift in Sources */,
 				659793B61FA716CB00840F6A /* ChatNotificationViewModel.swift in Sources */,
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
 				65121331224DF47F00737089 /* ImageSlideshowItem.swift in Sources */,
 				22AE76B220E341CB00C18355 /* Mute.swift in Sources */,
 				65CB9921226EC055004F9DC7 /* LoungeInteractor.swift in Sources */,
+				6512BA382271AA4300757CB2 /* FollowersView.swift in Sources */,
 				22E03E8D21B38D560009F48E /* MarkdownUnescaping.swift in Sources */,
 				22E03E8921B38D560009F48E /* MarkdownLink.swift in Sources */,
 				6512BA07226EFFA000757CB2 /* SettingHeaderViewModel.swift in Sources */,
@@ -1919,6 +1954,7 @@
 				659793BD1FA716CB00840F6A /* CHPhoneField.swift in Sources */,
 				659793BE1FA716CB00840F6A /* CHTextField.swift in Sources */,
 				6590FA952068C8640054B353 /* UserChatProtocol.swift in Sources */,
+				6512BA0A2271758000757CB2 /* DefaultNavigationTitleView.swift in Sources */,
 				659793BF1FA716CB00840F6A /* CountryCodePickerView.swift in Sources */,
 				659793C31FA716CB00840F6A /* ErrorToastView.swift in Sources */,
 				659EAE7F1FDFC31F00041E1E /* ChatManager.swift in Sources */,

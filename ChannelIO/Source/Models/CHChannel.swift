@@ -39,54 +39,6 @@ struct CHChannel: CHEntity {
   var trial = true
   var trialEndDate: Date? = nil
   
-  var workingTimeString: String {
-    var workingTimeDictionary = self.workingTime
-    if let launchTime = self.lunchTime {
-      workingTimeDictionary?["lunch_time"] = launchTime
-    }
-    
-    let workingTime = workingTimeDictionary?.map({ (key, value) -> SortableWorkingTime in
-      let fromValue = value.from
-      let toValue = value.to
-      
-      if fromValue == 0 && toValue == 0 {
-        return SortableWorkingTime(value: "", order: 0)
-      }
-      
-      let from = min(1439, fromValue)
-      let to = min(1439, toValue)
-      let fromTxt = from >= 720 ? "PM" : "AM"
-      let toTxt = to >= 720 ? "PM" : "AM"
-      let fromMin = from % 60
-      let fromHour = from / 60 > 12 ? from / 60 - 12 : from / 60
-      let toMin = to % 60
-      let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
-      
-      let timeStr = String(format: "%@ - %d:%02d%@ ~ %d:%02d%@",
-                      CHAssets.localized("ch.out_of_work.\(key)"),
-                      fromHour, fromMin, fromTxt, toHour, toMin, toTxt)
-      var order = 0
-      switch key.lowercased() {
-      case "mon": order = 1
-      case "tue": order = 2
-      case "wed": order = 3
-      case "thu": order = 4
-      case "fri": order = 5
-      case "sat": order = 6
-      case "sun": order = 7
-      default: order = 8
-      }
-      
-      return SortableWorkingTime(value: timeStr, order: order)
-    }).sorted(by: { (wt, otherWt) -> Bool in
-      return wt.order < otherWt.order
-    }).filter({ $0.value != "" }).compactMap({ (wt) -> String? in
-      return wt.value
-    }).joined(separator: "\n")
-    
-    return  workingTime ?? "unknown"
-  }
-  
   var notAllowToUseSDK: Bool {
     return self.blocked || (self.messengerPlan != .pro && !self.trial)
   }
@@ -123,6 +75,81 @@ struct CHChannel: CHEntity {
   func isDiff(from channel: CHChannel) -> Bool {
     return self.working != channel.working || self.workingType != channel.workingType ||
       self.expectedResponseDelay != channel.expectedResponseDelay
+  }
+  
+  var sortedWorkingTime: [SortableWorkingTime]? {
+    guard let workingTime = self.workingTime else { return nil }
+    
+    return workingTime.map({ (key, value) -> SortableWorkingTime in
+      let fromValue = value.from
+      let toValue = value.to
+      
+      if fromValue == 0 && toValue == 0 {
+        return SortableWorkingTime(value: "", key: key, order: 0)
+      }
+      
+      let from = min(1439, fromValue)
+      let to = min(1439, toValue)
+      let fromTxt = from >= 720 ? "PM" : "AM"
+      let toTxt = to >= 720 ? "PM" : "AM"
+      let fromMin = from % 60
+      let fromHour = from / 60 > 12 ? from / 60 - 12 : from / 60
+      let toMin = to % 60
+      let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
+      
+      let timeStr = String(format: "%@ - %d:%02d%@ ~ %d:%02d%@",
+                           CHAssets.localized("ch.out_of_work.\(key)"),
+                           fromHour, fromMin, fromTxt, toHour, toMin, toTxt)
+      var order = 0
+      switch key.lowercased() {
+      case "mon": order = 1
+      case "tue": order = 2
+      case "wed": order = 3
+      case "thu": order = 4
+      case "fri": order = 5
+      case "sat": order = 6
+      case "sun": order = 7
+      default: order = 8
+      }
+      
+      return SortableWorkingTime(value: timeStr, key: key.lowercased(), order: order)
+    })
+    .sorted(by: { (wt, otherWt) -> Bool in
+      return wt.order < otherWt.order
+    })
+    .filter({ $0.value != "" })
+  }
+  
+  var workingTimeString: String {
+    var workingTimeDictionary = self.workingTime
+    if let launchTime = self.lunchTime {
+      workingTimeDictionary?["lunch_time"] = launchTime
+    }
+    
+    let workingTime = self.sortedWorkingTime?
+      .compactMap({ (wt) -> String? in
+        return wt.value
+      }).joined(separator: "\n")
+    
+    return  workingTime ?? "unknown"
+  }
+  
+  var nextOperationTime: String? {
+    let weekday = Calendar.current.component(.weekday, from: Date())
+    var nextAvailable: SortableWorkingTime? = nil
+    
+    let operationDays = self.sortedWorkingTime ?? []
+    for operationDay in operationDays {
+      if operationDay.order >= weekday {
+        nextAvailable = operationDay
+      }
+    }
+    
+    if nextAvailable == nil {
+      nextAvailable = operationDays.first
+    }
+    
+    return nextAvailable?.value
   }
 }
 
@@ -173,6 +200,7 @@ extension TimeRange : Mappable {
 
 struct SortableWorkingTime {
   let value: String
+  let key: String
   let order: Int
 }
 

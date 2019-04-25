@@ -44,14 +44,7 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   
   case let action as GetPush:
     return state?.upsert(userChat: action.payload.userChat) ?? UserChatsState()
-  
-  case let action as UpdateVisibilityOfCompletedChats:
-    if let show = action.show {
-      state?.showCompletedChats = show
-      PrefStore.setVisibilityOfClosedUserChat(on: show)
-    }
-    return state ?? UserChatsState()
-  
+    
   case let action as UpdateVisibilityOfTranslation:
     if let show = action.show {
       state?.showTranslation = show

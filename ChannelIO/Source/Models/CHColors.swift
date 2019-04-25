@@ -52,5 +52,6 @@ struct CHColors {
   static let warmGrey = UIColor("#9b9b9b")!
   static let pumpkinOrange = UIColor("#fb8200")!
   static let neonRed = UIColor("#f90d3c")!
+  static let white70 = UIColor("#ffffffb3")!
 }
 

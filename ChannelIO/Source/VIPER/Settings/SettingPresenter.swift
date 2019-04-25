@@ -75,7 +75,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
       self.router?.pushLanguageSelector(from: view)
     }
     else if item.type == .translation, let nextValue = nextValue as? Bool {
-      mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: nextValue))
+      mainStore.dispatch(UpdateVisibilityOfTranslation(show: nextValue))
     }
   }
   
