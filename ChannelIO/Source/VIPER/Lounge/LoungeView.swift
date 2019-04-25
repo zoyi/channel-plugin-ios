@@ -6,4 +6,9 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import RxSwift
+
+class LoungeView: BaseViewController {
+  
+}

@@ -215,7 +215,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
       let cell = SwitchCell()
       let isOn = mainStore.state.userChatsState.showCompletedChats
       cell.switchSignal.subscribe { event in
-        mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: event.element))
+        
       }.disposed(by: self.disposeBag)
       cell.selectionStyle = .none
       cell.configure(title: CHAssets.localized("ch.settings.show_closed_chat"), isOn: isOn)
