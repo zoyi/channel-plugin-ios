@@ -9,25 +9,30 @@
 import Foundation
 
 protocol UserChatCellModelType {
-  var title: String { get }
-  var lastMessage: String? { get }
-  var timestamp: String { get }
-  var avatar: CHEntity? { get }
-  var badgeCount: Int { get }
-  var isBadgeHidden: Bool { get }
-  var isClosed: Bool { get }
+  var chatId: String? { get set }
+  var title: String { get set }
+  var lastMessage: String? { get set }
+  var timestamp: String { get set }
+  var avatar: CHEntity? { get set }
+  var badgeCount: Int { get set }
+  var isBadgeHidden: Bool { get set }
+  var isClosed: Bool { get set }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
-  let title: String
-  let lastMessage: String?
-  let timestamp: String
-  let avatar: CHEntity?
-  let badgeCount: Int
-  let isBadgeHidden: Bool
-  let isClosed: Bool
+  var chatId: String? = nil
+  var title: String = ""
+  var lastMessage: String? = nil
+  var timestamp: String = ""
+  var avatar: CHEntity? = nil
+  var badgeCount: Int = 0
+  var isBadgeHidden: Bool = false
+  var isClosed: Bool = false
+  
+  init() {}
   
   init(userChat: CHUserChat) {
+    self.chatId = userChat.id
     self.title = userChat.name
     if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
@@ -46,4 +51,11 @@ struct UserChatCellModel: UserChatCellModelType {
     self.isClosed = userChat.isClosed()
   }
   
+  static func welcome(with channel: CHChannel, guest: CHGuest) -> UserChatCellModel {
+    var model = UserChatCellModel()
+    model.avatar = channel
+    model.title = channel.name
+    model.lastMessage = guest.getWelcome()
+    return model
+  }
 }

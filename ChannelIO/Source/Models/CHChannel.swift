@@ -97,18 +97,19 @@ struct CHChannel: CHEntity {
       let toMin = to % 60
       let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
       
-      let timeStr = String(format: "%@ - %d:%02d%@ ~ %d:%02d%@",
-                           CHAssets.localized("ch.out_of_work.\(key)"),
-                           fromHour, fromMin, fromTxt, toHour, toMin, toTxt)
+      let timeStr = String(
+        format: "%d:%02d%@ ~ %d:%02d%@",
+        fromHour, fromMin, fromTxt, toHour, toMin, toTxt
+      )
       var order = 0
       switch key.lowercased() {
-      case "mon": order = 1
-      case "tue": order = 2
-      case "wed": order = 3
-      case "thu": order = 4
-      case "fri": order = 5
-      case "sat": order = 6
-      case "sun": order = 7
+      case "sun": order = 1
+      case "mon": order = 2
+      case "tue": order = 3
+      case "wed": order = 4
+      case "thu": order = 5
+      case "fri": order = 6
+      case "sat": order = 7
       default: order = 8
       }
       
@@ -134,13 +135,25 @@ struct CHChannel: CHEntity {
     return  workingTime ?? "unknown"
   }
   
+  var todayOperationTime: String? {
+    let weekday = Calendar.current.component(.weekday, from: Date())
+    let operationDays = self.sortedWorkingTime ?? []
+    for opTime in operationDays {
+      if opTime.order == weekday {
+        return opTime.value
+      }
+    }
+    
+    return nil
+  }
+  
   var nextOperationTime: String? {
     let weekday = Calendar.current.component(.weekday, from: Date())
     var nextAvailable: SortableWorkingTime? = nil
     
     let operationDays = self.sortedWorkingTime ?? []
     for operationDay in operationDays {
-      if operationDay.order >= weekday {
+      if operationDay.order > weekday {
         nextAvailable = operationDay
       }
     }
@@ -149,7 +162,11 @@ struct CHChannel: CHEntity {
       nextAvailable = operationDays.first
     }
     
-    return nextAvailable?.value
+    if let nextAvailable = nextAvailable {
+      return CHAssets.localized("ch.out_of_work.\(nextAvailable.key)") + " " + nextAvailable.value
+    }
+    
+    return nil
   }
 }
 

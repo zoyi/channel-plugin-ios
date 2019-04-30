@@ -31,7 +31,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     static let avatarHeight = 36.f
     static let badgeHeight = 22.f
     static let badgeLeftPadding = 20.f
-    static let cellHeight = 84.f
+    static let cellHeight = 80.f
   }
 
   struct Font {
@@ -146,6 +146,17 @@ final class UserChatCell: BaseTableViewCell, Reusable {
 
   // MARK: Cell Height
 
+  func height(fits width: CGFloat, viewModel: UserChatCellModelType?) -> CGFloat {
+    guard let viewModel = viewModel else { return 0 }
+    
+    var height: CGFloat = 0.0
+    height += 13.f //top
+    height += 18.f
+    height += viewModel.lastMessage?.height(fits: width - 62.f - 52.f, font: UIFont.systemFont(ofSize: 14)) ?? 0
+    height += 9
+    return 0
+  }
+  
   class func height(fits width: CGFloat, viewModel: UserChatCellModelType) -> CGFloat {
     return Metric.cellHeight
   }

@@ -308,9 +308,9 @@ class UserChatsViewController: BaseViewController {
       })
     }).disposed(by: self.disposeBag)
     
-    controller.signalForProfile().subscribe { [weak self] _ in
-      self?.showProfileView()
-    }.disposed(by: self.disposeBag)
+//    controller.signalForProfile().subscribe { [weak self] _ in
+//      self?.showProfileView()
+//    }.disposed(by: self.disposeBag)
     
     return controller
   }
@@ -318,11 +318,6 @@ class UserChatsViewController: BaseViewController {
   func showProfileView() {
     let settingView = SettingRouter.createModule()
     self.navigationController?.pushViewController(settingView, animated: true)
-    
-//    let controller = ProfileViewController()
-//    let navigation = MainNavigationController(rootViewController: controller)
-//    //navigation.modalPresentationStyle = .overCurrentContext
-//    self.navigationController?.present(navigation, animated: true, completion: nil)
   }
 }
 

@@ -11,7 +11,7 @@ import Foundation
 struct CHButton {
   static func newChat() -> UIButton {
     return UIButton(type: .system).then {
-      $0.setImage(CHAssets.getImage(named: "newChatPlus")?.withRenderingMode(.alwaysTemplate), for: .normal)
+      $0.setImage(CHAssets.getImage(named: "sendDiabled")?.withRenderingMode(.alwaysTemplate), for: .normal)
       $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
       $0.tintColor = mainStore.state.plugin.textUIColor

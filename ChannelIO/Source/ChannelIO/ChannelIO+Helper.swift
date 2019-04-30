@@ -142,34 +142,34 @@ extension ChannelIO {
       ChannelIO.launcherView?.isHidden = true
       mainStore.dispatch(ChatListIsVisible())
       
-      //chat view but different chatId
-      if let userChatViewController = topController as? UserChatViewController {
-        if userChatViewController.userChatId != userChatId {
-          userChatViewController.navigationController?.popViewController(animated: true, completion: {
-            if let userChatsController = CHUtils.getTopController() as? UserChatsViewController {
-              userChatsController.showUserChat(userChatId: userChatId)
-            }
-          })
-        }
-      }
-      //chat list
-      else if let controller = topController as? UserChatsViewController {
-        controller.showUserChat(userChatId: userChatId)
-      }
-      //no channel views
-      else {
-        let userChatsController = UserChatsViewController()
-        userChatsController.showNewChat = userChatId == nil
-        userChatsController.shouldHideTable = true
-        if let userChatId = userChatId {
-          userChatsController.goToUserChatId = userChatId
-        }
-        
-        let controller = MainNavigationController(rootViewController: userChatsController)
-        ChannelIO.baseNavigation = controller
-        
-        topController.present(controller, animated: animated, completion: nil)
-      }
+//      //chat view but different chatId
+//      if let userChatViewController = topController as? UserChatViewController {
+//        if userChatViewController.userChatId != userChatId {
+//          userChatViewController.navigationController?.popViewController(animated: true, completion: {
+//            if let userChatsController = CHUtils.getTopController() as? UserChatsViewController {
+//              userChatsController.showUserChat(userChatId: userChatId)
+//            }
+//          })
+//        }
+//      }
+//      //chat list
+//      else if let controller = topController as? UserChatsViewController {
+//        controller.showUserChat(userChatId: userChatId)
+//      }
+//      //no channel views
+//      else {
+//        let userChatsController = UserChatsViewController()
+//        userChatsController.showNewChat = userChatId == nil
+//        userChatsController.shouldHideTable = true
+//        if let userChatId = userChatId {
+//          userChatsController.goToUserChatId = userChatId
+//        }
+//
+//        let controller = MainNavigationController(rootViewController: userChatsController)
+//        ChannelIO.baseNavigation = controller
+      
+//        topController.present(controller, animated: animated, completion: nil)
+//      }
     }
   }
   

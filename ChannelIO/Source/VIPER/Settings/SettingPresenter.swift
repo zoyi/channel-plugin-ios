@@ -24,19 +24,13 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
-    let bgColor = UIColor(plugin.color) ?? UIColor.white
-    let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
-
+    
     let headerModel = SettingHeaderViewModel(
       title: channel.name,
       homepageUrl: channel.homepageUrl,
       desc: channel.desc,
       entity: channel,
-      colors: [
-        bgColor.cgColor,
-        bgColor.cgColor,
-        gradientColor.cgColor
-      ],
+      colors:plugin.gradientColors,
       textColor: plugin.textUIColor)
     
     self.view?.displayHeader(with: headerModel)

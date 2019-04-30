@@ -44,6 +44,21 @@ struct CHPlugin: ModelType {
         
       })
   }
+  
+  var gradientColors: [CGColor] {
+    let color = UIColor(self.color) ?? .white
+    let gradientColor = UIColor(self.gradientColor) ?? .white
+    
+    return [
+      color.cgColor,
+      color.cgColor,
+      gradientColor.cgColor
+    ]
+  }
+  
+  var bgColor: UIColor {
+    return UIColor(self.color) ?? .white
+  }
 }
 
 extension CHPlugin: Mappable {

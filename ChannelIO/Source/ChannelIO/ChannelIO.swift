@@ -325,9 +325,8 @@ public final class ChannelIO: NSObject {
       ChannelIO.delegate?.willShowMessenger?()
 
       mainStore.dispatch(ChatListIsVisible())
-
-      let userChatsController = UserChatsViewController()
-      let controller = MainNavigationController(rootViewController: userChatsController)
+      let loungeView = LoungeRouter.createModule()
+      let controller = MainNavigationController(rootViewController: loungeView)
       ChannelIO.baseNavigation = controller
 
       topController.present(controller, animated: animated, completion: nil)

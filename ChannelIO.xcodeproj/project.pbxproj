@@ -102,6 +102,9 @@
 		6512BA342271A8FF00757CB2 /* LoungeMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA332271A8FF00757CB2 /* LoungeMainView.swift */; };
 		6512BA362271AA0300757CB2 /* LoungeExternalAppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA352271AA0300757CB2 /* LoungeExternalAppsView.swift */; };
 		6512BA382271AA4300757CB2 /* FollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA372271AA4300757CB2 /* FollowersView.swift */; };
+		6512BA3A2277E76500757CB2 /* LoungeTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA392277E76500757CB2 /* LoungeTitleView.swift */; };
+		6512BA3C2277EBE200757CB2 /* LoungeHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA3B2277EBE200757CB2 /* LoungeHeaderViewModel.swift */; };
+		6512BA3E2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA3D2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift */; };
 		651A58871E88E3970042A59F /* countryInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 650D7C311E716DBF007DE358 /* countryInfo.json */; };
 		652AE2111E81485D00B7484C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 652AE2131E81485D00B7484C /* Localizable.strings */; };
 		653516E021DCBE43006AB6C3 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653516DF21DCBE43006AB6C3 /* AppManager.swift */; };
@@ -481,6 +484,9 @@
 		6512BA332271A8FF00757CB2 /* LoungeMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeMainView.swift; sourceTree = "<group>"; };
 		6512BA352271AA0300757CB2 /* LoungeExternalAppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeExternalAppsView.swift; sourceTree = "<group>"; };
 		6512BA372271AA4300757CB2 /* FollowersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersView.swift; sourceTree = "<group>"; };
+		6512BA392277E76500757CB2 /* LoungeTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeTitleView.swift; sourceTree = "<group>"; };
+		6512BA3B2277EBE200757CB2 /* LoungeHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeHeaderViewModel.swift; sourceTree = "<group>"; };
+		6512BA3D2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeExternalSourceViewModel.swift; sourceTree = "<group>"; };
 		652AE2121E81485D00B7484C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2141E81485F00B7484C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2151E81485F00B7484C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1484,6 +1490,7 @@
 		65CB991A226EC016004F9DC7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6512BA392277E76500757CB2 /* LoungeTitleView.swift */,
 				6512BA312271A8C700757CB2 /* LoungeHeaderView.swift */,
 				6512BA332271A8FF00757CB2 /* LoungeMainView.swift */,
 				6512BA352271AA0300757CB2 /* LoungeExternalAppsView.swift */,
@@ -1495,6 +1502,8 @@
 		65CB991B226EC01A004F9DC7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6512BA3B2277EBE200757CB2 /* LoungeHeaderViewModel.swift */,
+				6512BA3D2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1813,8 +1822,10 @@
 				6512BA362271AA0300757CB2 /* LoungeExternalAppsView.swift in Sources */,
 				6512BA03226EDA2700757CB2 /* SettingHeaderView.swift in Sources */,
 				654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */,
+				6512BA3E2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift in Sources */,
 				65CB14052069E2B800E456B5 /* UserChatInteractor.swift in Sources */,
 				659793721FA716CB00840F6A /* CHEvent.swift in Sources */,
+				6512BA3C2277EBE200757CB2 /* LoungeHeaderViewModel.swift in Sources */,
 				659793731FA716CB00840F6A /* CHFile.swift in Sources */,
 				659793741FA716CB00840F6A /* CHGuest.swift in Sources */,
 				659793751FA716CB00840F6A /* CHi18n.swift in Sources */,
@@ -1873,6 +1884,7 @@
 				65CB142D206A02F200E456B5 /* NewMessageDividerCell.swift in Sources */,
 				6512132B224DF47F00737089 /* ImageSlideshow.swift in Sources */,
 				22D879FC2270208B00CC1DDB /* CHEditTextField.swift in Sources */,
+				6512BA3A2277E76500757CB2 /* LoungeTitleView.swift in Sources */,
 				65CB142A206A02F200E456B5 /* TextMessageView.swift in Sources */,
 				22F094F72176E8A00035C777 /* HexColors.swift in Sources */,
 				22E03E9621B38D560009F48E /* MarkdownCommonElement.swift in Sources */,

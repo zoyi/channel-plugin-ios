@@ -7,7 +7,21 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class LoungeExternalAppsView: BaseView {
+  var clickSignal = PublishRelay<LoungeExternalSourceModel>()
+
+  override func initialize() {
+    super.initialize()
+  }
   
+  override func setLayouts() {
+    super.setLayouts()
+  }
+  
+  func configure(with model: LoungeExternalSourceViewModel) {
+  
+  }
 }
