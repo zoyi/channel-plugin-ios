@@ -65,8 +65,8 @@ class LoungeMainView: BaseView {
     
     self.layer.shadowColor = CHColors.dark.cgColor
     self.layer.shadowOffset = CGSize(width: 0.f, height: 0.f)
-    self.layer.shadowRadius = 3.f
-    self.layer.shadowOpacity = 0.2
+    self.layer.shadowRadius = 4.f
+    self.layer.shadowOpacity = 0.5
     self.layer.masksToBounds = false
     
     self.tableView.layer.cornerRadius = 10

@@ -40,6 +40,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     
     SVProgressHUD.show()
     
+    self.view.backgroundColor = .white
+    
     self.scrollView.delegate = self
     self.scrollView.alwaysBounceHorizontal = false
     self.scrollView.alwaysBounceVertical = true
@@ -53,6 +55,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.scrollView.backgroundColor = .clear
     
     let gesture = UITapGestureRecognizer(target: self, action: #selector(tapCheck(_:)))
+    gesture.delegate = self
     self.scrollView.addGestureRecognizer(gesture)
     
     self.initViews()
@@ -98,15 +101,15 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       } else {
         make.top.equalToSuperview()
       }
-      make.leading.equalToSuperview().inset(8)
-      make.trailing.equalToSuperview().inset(8)
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
     }
     
     self.mainView.snp.makeConstraints { [weak self] (make) in
       make.top.equalToSuperview()
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
+      make.leading.equalToSuperview().inset(8)
+      make.trailing.equalToSuperview().inset(8)
       make.width.equalTo(UIScreen.main.bounds.width - 16)
       self?.mainHeightConstraint = make.height.equalTo(340).constraint
     }
@@ -155,7 +158,9 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     
     self.view.addSubview(self.dismissButton)
   }
-  
+}
+
+extension LoungeView: UIGestureRecognizerDelegate {
   @objc func tapCheck(_ gesture: UITapGestureRecognizer) {
     let location = gesture.location(in: self.view)
     
@@ -164,6 +169,10 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     } else if self.headerView.settingButton.frame.contains(location) {
       self.presenter?.didClickOnSetting(from: self)
     }
+  }
+  
+  func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+    return touch.view?.isDescendant(of: self.mainView) == false
   }
 }
 
