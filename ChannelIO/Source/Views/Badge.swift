@@ -12,9 +12,13 @@ import SnapKit
 final class Badge: NeverClearView {
 
   // MARK: Constants
-
+  var minWidth: CGFloat = 10.f {
+    didSet {
+      self.widthConstraint?.update(offset: self.minWidth)
+    }
+  }
+  
   struct Metric {
-    static let minWidth = 10.f // TODO: Expose to outside
     static let padding = 5.f // TODO: Expose to outside
   }
 
@@ -35,6 +39,8 @@ final class Badge: NeverClearView {
     $0.textColor = Color.text
     $0.textAlignment = .center
   }
+  
+  private var widthConstraint: Constraint?
 
   // MARK: Initializing
 
@@ -47,6 +53,15 @@ final class Badge: NeverClearView {
     self.layer.borderWidth = 1.f
     
     self.addSubview(self.label)
+    
+    self.label.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      self.widthConstraint = make.width.greaterThanOrEqualTo(self.minWidth).constraint
+      make.leading.greaterThanOrEqualToSuperview().inset(5)
+      make.trailing.greaterThanOrEqualToSuperview().inset(5)
+      make.centerX.equalToSuperview()
+      make.centerY.equalToSuperview()
+    }
   }
 
   // MARK: Configuring
@@ -67,18 +82,10 @@ final class Badge: NeverClearView {
   override func layoutSubviews() {
     super.layoutSubviews()
     self.layer.cornerRadius = self.frame.size.height / 2
-
-    self.label.snp.remakeConstraints { (make) in
-      make.width.greaterThanOrEqualTo(Metric.minWidth)
-      make.leading.greaterThanOrEqualToSuperview().inset(5)
-      make.trailing.greaterThanOrEqualToSuperview().inset(5)
-      make.centerX.equalToSuperview()
-      make.centerY.equalToSuperview()
-    }
   }
 
   override func sizeThatFits(_ size: CGSize) -> CGSize {
     let labelSize = self.label.sizeThatFits(size)
-    return CGSize(width: max(labelSize.width + Metric.padding * 2, Metric.minWidth), height: size.height)
+    return CGSize(width: max(labelSize.width + Metric.padding * 2, self.minWidth), height: size.height)
   }
 }

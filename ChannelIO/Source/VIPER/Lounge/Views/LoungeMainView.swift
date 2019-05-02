@@ -12,10 +12,20 @@ import RxCocoa
 import SnapKit
 
 class LoungeMainView: BaseView {
+  struct Metric {
+    static let sectionHeaderHeight = 30.f
+    static let sectionFooterHeight = 70.f
+  }
+  
+  struct Constant {
+    static let maxNumberOfCell = 3
+  }
+  
   weak var presenter: LoungePresenter?
   
   let tableView = UITableView().then {
     $0.isScrollEnabled = false
+    $0.separatorStyle = .none
     $0.register(cellType: UserChatCell.self)
   }
   
@@ -31,12 +41,35 @@ class LoungeMainView: BaseView {
   
   var disposeBag = DisposeBag()
   
+  var welcomeCellHeight: CGFloat {
+    self.welcomeCell.setNeedsLayout()
+    self.welcomeCell.layoutIfNeeded()
+    
+    return self.welcomeCell.frame.height
+  }
+  
+  var viewHeight: CGFloat {
+    if self.chats.count == 0 && self.welcomeModel != nil {
+      return self.welcomeCellHeight + Metric.sectionFooterHeight
+    } else if self.chats.count < 4 {
+      return CGFloat(self.chats.count * 80) + Metric.sectionFooterHeight
+    } else {
+      return CGFloat(Constant.maxNumberOfCell * 80) +
+        Metric.sectionHeaderHeight +
+        Metric.sectionFooterHeight
+    }
+  }
+  
   override func initialize() {
     super.initialize()
     
-    self.layer.cornerRadius = 10
-    self.clipsToBounds = true
+    self.layer.shadowColor = CHColors.dark.cgColor
+    self.layer.shadowOffset = CGSize(width: 0.f, height: 0.f)
+    self.layer.shadowRadius = 3.f
+    self.layer.shadowOpacity = 0.2
+    self.layer.masksToBounds = false
     
+    self.tableView.layer.cornerRadius = 10
     self.tableView.delegate = self
     self.tableView.dataSource = self
   
@@ -90,7 +123,6 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
     view.newChatSignal
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)
-    
     return view
   }
   
@@ -100,7 +132,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let view = LoungeTableHeaderView()
-    view.seeMoreLabel.isHidden = self.chats.count <= 3
+    view.configure(guest: mainStore.state.guest, chatModels: self.chats)
     view.moreSignal
       .bind(to: self.moreSignal)
       .disposed(by: self.disposeBag)
@@ -134,10 +166,16 @@ class LoungeTableHeaderView: BaseView {
   let recentLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
+    $0.text = "최근대화"
+  }
+  let alertCountLabel = UILabel().then {
+    $0.font = UIFont.boldSystemFont(ofSize: 13)
+    $0.textColor = CHColors.warmPink
   }
   let seeMoreLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.charcoalGrey
+    $0.text = CHAssets.localized("전체 보기")
   }
   
   var moreSignal = PublishRelay<Any?>()
@@ -146,6 +184,7 @@ class LoungeTableHeaderView: BaseView {
     super.initialize()
     
     self.addSubview(self.recentLabel)
+    self.addSubview(self.alertCountLabel)
     self.addSubview(self.seeMoreLabel)
     _ = self.seeMoreLabel.signalForClick().bind(to: self.moreSignal)
   }
@@ -163,6 +202,36 @@ class LoungeTableHeaderView: BaseView {
       make.centerY.equalTo(self.recentLabel.snp.centerY)
       make.trailing.equalToSuperview().inset(16)
     }
+    
+    self.alertCountLabel.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      make.centerY.equalTo(self.recentLabel.snp.centerY)
+      make.trailing.equalTo(self.seeMoreLabel.snp.leading).offset(-5)
+    }
+  }
+  
+  func configure(guest: CHGuest, chatModels: [UserChatCellModel]) {
+    guard let guestAlert = guest.alert else { return }
+    
+    if chatModels.count > 3 {
+      let displayAlertCounts = chatModels[0...2]
+        .map { $0.badgeCount }
+        .reduce(0) { (result, next) in
+          return result + next
+      }
+      let restCount = guestAlert - displayAlertCounts
+      
+      self.seeMoreLabel.font = restCount > 0 ?
+        UIFont.boldSystemFont(ofSize: 13) :
+        UIFont.systemFont(ofSize: 13)
+      
+      self.alertCountLabel.text = "\(guestAlert - displayAlertCounts)"
+      self.alertCountLabel.isHidden = restCount <= 0
+    } else {
+      self.seeMoreLabel.isHidden = true
+      
+    }
+
   }
 }
 
@@ -179,8 +248,8 @@ class LoungeTableFooterView: BaseView {
   override func setLayouts() {
     super.setLayouts()
     self.newChatButton.snp.makeConstraints { (make) in
-      make.centerY.equalToSuperview()
       make.centerX.equalToSuperview()
+      make.top.equalToSuperview().inset(10)
       make.height.equalTo(46)
     }
   }

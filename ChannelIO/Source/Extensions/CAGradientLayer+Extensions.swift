@@ -11,15 +11,18 @@ extension CAGradientLayer {
   enum Point {
     case topRight, topLeft
     case bottomRight, bottomLeft
-    case custion(point: CGPoint)
+    case top, bottom
+    case custom(point: CGPoint)
     
-    var point: CGPoint {
+    var value: CGPoint {
       switch self {
       case .topRight: return CGPoint(x: 1, y: 0)
       case .topLeft: return CGPoint(x: 0, y: 0)
       case .bottomRight: return CGPoint(x: 1, y: 1)
       case .bottomLeft: return CGPoint(x: 0, y: 1)
-      case .custion(let point): return point
+      case .top: return CGPoint(x: 0.5, y: 0)
+      case .bottom: return CGPoint(x: 0.5, y: 1)
+      case .custom(let point): return point
       }
     }
   }
@@ -44,8 +47,8 @@ extension CAGradientLayer {
     self.init(
       frame: frame,
       colors: colors,
-      startPoint: startPoint.point,
-      endPoint: endPoint.point
+      startPoint: startPoint.value,
+      endPoint: endPoint.value
     )
   }
   

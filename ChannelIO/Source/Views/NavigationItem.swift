@@ -49,10 +49,10 @@ class NavigationItem: UIBarButtonItem {
     
     button.setTitle(text, for: .normal)
     button.setTitleColor(textColor, for: .normal)
-    button.titleLabel?.layer.cornerRadius = 15
-    button.titleLabel?.heightAnchor.constraint(equalToConstant: 30).isActive = true
-    button.titleLabel?.backgroundColor = textBackgroundColor ?? .white
-    
+//    button.titleLabel?.layer.cornerRadius = 15
+//    button.titleLabel?.heightAnchor.constraint(equalToConstant: 30).isActive = true
+//    button.titleLabel?.backgroundColor = textBackgroundColor ?? .white
+//    
     if fitToSize {
       button.sizeToFit()
     }

@@ -44,7 +44,7 @@ protocol LoungeInteractorProtocol: class {
   func unsubscribeDataSource()
   
   func getChannel() -> Observable<CHChannel>
-  func getPlugin() -> Observable<CHPlugin>
+  func getPlugin() -> Observable<(CHPlugin, CHBot?)>
   func getFollowers() -> Observable<[CHManager]>
   func getChats() -> Observable<[CHUserChat]>
 }

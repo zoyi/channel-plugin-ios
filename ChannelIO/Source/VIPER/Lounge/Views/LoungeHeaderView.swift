@@ -12,6 +12,9 @@ import RxSwift
 import RxCocoa
 
 class LoungeHeaderView: BaseView {
+  let contentView = UIView().then {
+    $0.backgroundColor = .clear
+  }
   let channelNameLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 22)
     $0.textAlignment = .left
@@ -45,11 +48,18 @@ class LoungeHeaderView: BaseView {
   }
   
   let followersView = FollowersView()
+  
   let bgView = CAGradientLayer().then {
-    $0.startPoint = CGPoint(x: 0.5, y: 0.0)
-    $0.endPoint = CGPoint(x: 0.5, y: 1.0)
-    $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 270)
-    $0.locations = [0, 0.33, 0.66, 1]
+    $0.startPoint = CAGradientLayer.Point.topLeft.value
+    $0.endPoint = CAGradientLayer.Point.topRight.value
+    $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 306)
+    $0.locations = [0, 0.5, 1]
+  }
+  let bottomBgView = CAGradientLayer().then {
+    $0.startPoint = CAGradientLayer.Point.bottom.value
+    $0.endPoint = CAGradientLayer.Point.top.value
+    $0.frame = CGRect(x: 0, y: 206, width: UIScreen.main.bounds.width, height: 100)
+    $0.colors = [CHColors.paleGreyFour.cgColor, CHColors.paleGreyFour0.cgColor]
   }
   
   let triggerPoint:CGFloat = 0.7
@@ -62,14 +72,16 @@ class LoungeHeaderView: BaseView {
     super.initialize()
     
     self.layer.addSublayer(self.bgView)
-    self.addSubview(self.channelNameLabel)
-    self.addSubview(self.settingButton)
-    self.addSubview(self.dismissButton)
-    self.addSubview(self.responseLabel)
-    self.addSubview(self.responseImageView)
-    self.addSubview(self.responseDescriptionLabel)
-    self.addSubview(self.operationTimeLabel)
-    self.addSubview(self.followersView)
+    self.layer.addSublayer(self.bottomBgView)
+    self.addSubview(self.contentView)
+    self.contentView.addSubview(self.channelNameLabel)
+    self.contentView.addSubview(self.settingButton)
+    self.contentView.addSubview(self.dismissButton)
+    self.contentView.addSubview(self.responseLabel)
+    self.contentView.addSubview(self.responseImageView)
+    self.contentView.addSubview(self.responseDescriptionLabel)
+    self.contentView.addSubview(self.operationTimeLabel)
+    self.contentView.addSubview(self.followersView)
     
     self.settingButton.signalForClick()
       .bind(to: self.settingSignal)
@@ -82,6 +94,10 @@ class LoungeHeaderView: BaseView {
   
   override func setLayouts() {
     super.setLayouts()
+    
+    self.contentView.snp.makeConstraints { (make) in
+      make.edges.equalToSuperview()
+    }
     
     self.channelNameLabel.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
@@ -162,12 +178,7 @@ class LoungeHeaderView: BaseView {
   }
   
   func configure(channel: CHChannel, plugin: CHPlugin, followers: [CHEntity]) {
-    self.bgView.colors = [
-      plugin.bgColor.cgColor,
-      plugin.bgColor.cgColor,
-      plugin.bgColor.cgColor,
-      UIColor.white.cgColor
-    ]
+    self.bgView.colors = plugin.gradientColors
     
     self.settingButton.tintColor = plugin.textUIColor
     self.dismissButton.tintColor = plugin.textUIColor
@@ -199,11 +210,13 @@ class LoungeHeaderView: BaseView {
   }
   
   func change(with progress: CGFloat) {
-    self.alpha = 1 - progress
-    if self.alpha >= self.triggerPoint {
-      
-    } else {
-      
-    }
+    self.contentView.alpha = progress
+//    self.channelNameLabel.alpha = progress
+//    self.dismissButton.alpha = progress
+//    self.settingButton.alpha = progress
+//    self.responseDescriptionLabel.alpha = progress
+//    self.responseImageView.alpha = progress
+//    self.responseLabel.alpha = progress
+//    self.followersView.alpha = progress
   }
 }

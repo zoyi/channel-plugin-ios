@@ -42,10 +42,13 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         return true
       })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (channel, plugin, followers, chats) in
+      .subscribe(onNext: { [weak self] (channel, pluginInfo, followers, chats) in
+        mainStore.dispatchOnMain(UpdateFollowingManagers(payload: followers))
+        mainStore.dispatchOnMain(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
+        
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
-          plugin: plugin,
+          plugin: pluginInfo.0,
           followers: followers
         )
         let sources = LoungeExternalSourceViewModel()

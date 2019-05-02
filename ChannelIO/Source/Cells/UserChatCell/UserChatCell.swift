@@ -71,7 +71,9 @@ final class UserChatCell: BaseTableViewCell, Reusable {
 
   let avatarView = AvatarView()
 
-  let badge = Badge()
+  let badge = Badge().then {
+    $0.minWidth = 12.f
+  }
 
   let messageLabel = UILabel().then {
     $0.font = Font.messageLabel
@@ -89,37 +91,32 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.contentView.addSubview(self.badge)
     self.contentView.addSubview(self.messageLabel)
 
-    self.avatarView.snp.remakeConstraints { (make) in
+    self.avatarView.snp.makeConstraints { (make) in
       make.top.equalToSuperview().inset(Metric.cellTopPadding)
       make.left.equalToSuperview().inset(Metric.cellLeftPadding)
       make.size.equalTo(CGSize(width: Metric.avatarWidth, height: Metric.avatarHeight))
     }
     
-    self.titleLabel.snp.remakeConstraints { [weak self] (make) in
+    self.titleLabel.snp.makeConstraints { [weak self] (make) in
       make.top.equalToSuperview().inset(Metric.cellTopPadding)
       make.left.equalTo((self?.avatarView.snp.right)!).offset(Metric.avatarRightPadding)
     }
     
-    self.timestampLabel.snp.remakeConstraints { [weak self] (make) in
+    self.timestampLabel.snp.makeConstraints { [weak self] (make) in
       make.top.equalToSuperview().inset(Metric.cellTopPadding)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
       make.left.equalTo((self?.titleLabel.snp.right)!).offset(Metric.cellRightPadding)
     }
     
-    self.messageLabel.snp.remakeConstraints { [weak self] (make) in
+    self.messageLabel.snp.makeConstraints { [weak self] (make) in
       make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metric.titleBottomPadding)
       make.left.equalTo((self?.avatarView.snp.right)!).offset(Metric.avatarRightPadding)
-      //if (self?.badge.isHidden)! {
       make.right.equalToSuperview().inset(76)
-      //} else {
-      //  make.right.greaterThanOrEqualTo((self?.badge.snp.left)!).offset(50)
-      //}
     }
     
-    self.badge.snp.remakeConstraints { [weak self] (make) in
+    self.badge.snp.makeConstraints { [weak self] (make) in
       make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(Metric.timestampBottomPadding)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
-      //make.left.equalTo((self?.messageLabel.snp.right)!).offset(Metric.badgeLeftPadding)
       make.height.equalTo(Metric.badgeHeight)
     }
   }

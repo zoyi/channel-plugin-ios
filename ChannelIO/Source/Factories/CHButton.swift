@@ -11,7 +11,7 @@ import Foundation
 struct CHButton {
   static func newChat() -> UIButton {
     return UIButton(type: .system).then {
-      $0.setImage(CHAssets.getImage(named: "sendDiabled")?.withRenderingMode(.alwaysTemplate), for: .normal)
+      $0.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysTemplate), for: .normal)
       $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
       $0.tintColor = mainStore.state.plugin.textUIColor
@@ -28,7 +28,6 @@ struct CHButton {
       $0.layer.shadowOffset = CGSize(width: 0, height: 2)
       $0.layer.shadowRadius = 3
       $0.layer.borderWidth = 1
-      $0.isHidden = true
     }
   }
   
@@ -62,13 +61,23 @@ struct CHButton {
   }
   
   static func launcher() -> UIButton {
-    return  UIButton(type: .custom).then {
+    return UIButton(type: .custom).then {
       $0.layer.cornerRadius = 25.f
       $0.layer.shadowColor = CHColors.dark20.cgColor
       $0.layer.shadowOpacity = 0.3
       $0.layer.shadowOffset = CGSize(width: 0, height: 3)
       $0.layer.shadowRadius = 5
-      $0.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+      //$0.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+    }
+  }
+  
+  static func dismiss() -> UIButton {
+    return UIButton(type: .custom).then {
+      $0.setImage(CHAssets.getImage(named: "exit"), for: .normal)
+      $0.imageView?.contentMode = .scaleAspectFit
+      $0.layer.cornerRadius = 15.f
+      $0.clipsToBounds = true
+      $0.setBackgroundColor(color: CHColors.black60, forUIControlState: .normal)
     }
   }
 }

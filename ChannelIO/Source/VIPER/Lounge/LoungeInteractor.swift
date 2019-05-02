@@ -31,14 +31,8 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     })
   }
   
-  func getPlugin() -> Observable<CHPlugin> {
-    return Observable.create({ (subscriber) -> Disposable in
-      subscriber.onNext(mainStore.state.plugin)
-      subscriber.onCompleted()
-      return Disposables.create {
-        
-      }
-    })
+  func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
+    return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
   }
   
   func getFollowers() -> Observable<[CHManager]> {
@@ -50,7 +44,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
       let signal = UserChatPromise.getChats(since: nil, limit: 4, showCompleted: true)
         .subscribe(onNext: { (data) in
           mainStore.dispatch(GetUserChats(payload: data))
-          let chats = data["userChats"] as? [CHUserChat] ?? []
+          let chats = userChatsSelector(state: mainStore.state, showCompleted: true)
           subscriber.onNext(chats)
           subscriber.onCompleted()
         }, onError: { error in

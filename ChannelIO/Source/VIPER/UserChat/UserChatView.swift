@@ -48,7 +48,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
   var typingCell: TypingIndicatorCell!
 
-  var titleView : NavigationTitleView? = nil
+  var titleView : ChatNavigationTitleView? = nil
 
   var newChatSubject = PublishSubject<Any?>()
   var profileSubject = PublishSubject<Any?>()
@@ -110,7 +110,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
         if self?.textInputbar.barState == .disabled {
           return
         }
-        self?.shyNavBarManager.contract(true)
         self?.presentKeyboard(self?.menuAccesoryView == nil)
       }.disposed(by: self.disposeBag)
   }
@@ -150,70 +149,22 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     )
 
     self.initNavigationTitle(with: info.userChat, channel: info.channel, plugin: info.plugin)
-    self.initNavigationExtension(with: info.userChat, channel: info.channel, plugin: info.plugin, managers: info.managers)
   }
   
   func initNavigationTitle(with userChat: CHUserChat?, channel: CHChannel, plugin: CHPlugin) {
-    let titleView = NavigationTitleView()
-    titleView.configure(channel: channel, userChat: userChat, plugin: plugin)
+    let titleView = ChatNavigationTitleView()
+    titleView.configure(channel: channel, plugin: plugin)
 
     titleView.translatesAutoresizingMaskIntoConstraints = false
     titleView.layoutIfNeeded()
     titleView.sizeToFit()
     titleView.translatesAutoresizingMaskIntoConstraints = true
-    titleView.signalForChange().subscribe({ [weak self] (event) in
-      if self?.shyNavBarManager.isExpanded() == true {
-        self?.shyNavBarManager.contract(true)
-      } else {
-        self?.shyNavBarManager.expand(true)
-        self?.dismissKeyboard(true)
-      }
-    }).disposed(by: self.disposeBag)
 
     self.navigationItem.titleView = titleView
     self.titleView = titleView
 
     self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     self.navigationController?.navigationBar.shadowImage = UIImage()
-  }
-
-  func initNavigationExtension(with userChat: CHUserChat?, channel: CHChannel, plugin: CHPlugin, managers: [CHManager]) {
-    let view: UIView!
-    if userChat?.isOpen() == true || userChat == nil {
-      view = ChatStatusViewFactory.createDefaultExtensionView(
-        fit: self.view.bounds.width,
-        userChat: userChat,
-        channel: channel,
-        plugin: plugin,
-        managers: managers)
-    } else {
-      view = ChatStatusViewFactory.createFollowedExtensionView(
-        fit: self.view.bounds.width,
-        userChat: userChat,
-        channel: channel,
-        plugin: plugin)
-    }
-
-    self.shyNavBarManager.scrollView = self.tableView
-    self.shyNavBarManager.stickyNavigationBar = true
-    self.shyNavBarManager.fadeBehavior = .subviews
-    if let state = userChat?.state, state != .ready &&
-      self.shyNavBarManager.extensionView == nil || !self.shyNavBarManager.isExpanded() {
-      self.titleView?.isExpanded = false
-      self.shyNavBarManager.hideExtension = true
-    }
-
-    self.shyNavBarManager.extensionView = view
-    self.shyNavBarManager.delegate = self
-    self.shyNavBarManager.isInverted = true
-    self.shyNavBarManager.triggerExtensionAtTop = true
-    self.shyNavBarManager.expansionResistance = 0
-
-    view.snp.makeConstraints { (make) in
-      make.top.equalToSuperview()
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-    }
   }
 
   fileprivate func initViews() {
@@ -259,7 +210,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
         text: alertCount,
         textColor: tintColor,
         actionHandler: { [weak self] in
-          self?.shyNavBarManager.disable = true
           mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
           _ = self?.navigationController?.popViewController(animated: true)
       })
@@ -414,7 +364,6 @@ extension UserChatView {
     let msg = self.textView.text!
     //self.presenter?.send(text: msg, assets: [])
     self.presenter?.didClickOnRightButton(text: msg, assets: [])
-    self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
   }
 
@@ -618,23 +567,3 @@ extension UserChatView : SLKInputBarViewDelegate {
     }
   }
 }
-
-extension UserChatView : TLYShyNavBarManagerDelegate {
-  func shyNavBarManagerTransforming(_ shyNavBarManager: TLYShyNavBarManager!, progress: CGFloat) {
-    self.titleView?.expand(with: progress)
-  }
-
-  func shyNavBarManagerDidBecomeFullyExpanded(_ shyNavBarManager: TLYShyNavBarManager!) {
-    if self.titleView?.isExpanded == false {
-      self.titleView?.isExpanded = true
-    }
-  }
-
-  func shyNavBarManagerDidBecomeFullyContracted(_ shyNavBarManager: TLYShyNavBarManager!) {
-    if self.titleView?.isExpanded == true {
-      self.titleView?.isExpanded = false
-    }
-  }
-}
-
-

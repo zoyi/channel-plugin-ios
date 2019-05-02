@@ -83,8 +83,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   var profileIndexPath: IndexPath?
   
-  var titleView : NavigationTitleView? = nil
-  
   var newChatSubject = PublishSubject<Any?>()
   var profileSubject = PublishSubject<Any?>()
   
@@ -134,11 +132,15 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    self.navigationController?.setNavigationBarHidden(false, animated: true)
     mainStore.subscribe(self)
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    if let count = self.navigationController?.viewControllers.count, count == 1 {
+      self.navigationController?.setNavigationBarHidden(true, animated: true)
+    }
     mainStore.unsubscribe(self)
   }
 
@@ -225,8 +227,6 @@ final class UserChatViewController: BaseSLKTextViewController {
       if self?.textInputbar.barState == .disabled && self?.chatManager?.profileIsFocus == false {
         return
       }
-      self?.titleView?.isExpanded = false
-      self?.shyNavBarManager.contract(true)
       self?.presentKeyboard(self?.menuAccesoryView == nil)
     }.disposed(by: self.disposeBag)
     
@@ -299,79 +299,32 @@ final class UserChatViewController: BaseSLKTextViewController {
     )
     
     self.initNavigationTitle(with: userChat ?? self.userChat)
-    self.initNavigationExtension(with: userChat ?? self.userChat)
+    //self.initNavigationExtension(with: userChat ?? self.userChat)
+    if let nav = self.navigationController as? MainNavigationController {
+      nav.newState(state: mainStore.state.plugin)
+    }
   }
   
   func initNavigationTitle(with userChat: CHUserChat? = nil) {
-    let titleView = NavigationTitleView()
-    titleView.configure(
-      channel: mainStore.state.channel,
-      userChat: userChat,
-      plugin: mainStore.state.plugin)
-    
-    titleView.translatesAutoresizingMaskIntoConstraints = false
-    titleView.layoutIfNeeded()
-    titleView.sizeToFit()
-    titleView.translatesAutoresizingMaskIntoConstraints = true
-    titleView.signalForChange().subscribe({ [weak self] (event) in
-      if self?.shyNavBarManager.isExpanded() == true {
-        self?.shyNavBarManager.contract(true)
-      } else {
-        self?.shyNavBarManager.expand(true)
-        self?.dismissKeyboard(true)
-      }
-    }).disposed(by: self.disposeBag)
-    
-    self.navigationItem.titleView = titleView
-    if let previousTitleView = self.titleView {
-      titleView.isExpanded = previousTitleView.isExpanded
-    }
-    self.titleView = titleView
-    
-    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-    self.navigationController?.navigationBar.shadowImage = UIImage()
-  }
-  
-  func initNavigationExtension(with userChat: CHUserChat? = nil) {
-    let view: UIView!
-    let userChat = userChat ?? self.userChat
-    
-    if userChat?.lastTalkedHost == nil {
-      view = ChatStatusViewFactory.createDefaultExtensionView(
-        fit: self.view.bounds.width,
-        userChat: userChat,
-        channel: mainStore.state.channel,
-        plugin: mainStore.state.plugin,
-        managers: mainStore.state.managersState.followingManagers)
+    var navigationTitleView: UIView?
+    if let userChat = userChat, let host = userChat.lastTalkedHost {
+      let titleView = ChatNavigationFollowingTitleView()
+      titleView.configure(host: host, plugin: mainStore.state.plugin)
+      navigationTitleView = titleView
     } else {
-      view = ChatStatusViewFactory.createFollowedExtensionView(
-        fit: self.view.bounds.width,
-        userChat: userChat,
+      let titleView = ChatNavigationTitleView()
+      titleView.configure(
         channel: mainStore.state.channel,
-        plugin: mainStore.state.plugin)
+        plugin: mainStore.state.plugin
+      )
+      navigationTitleView = titleView
     }
     
-    self.shyNavBarManager.scrollView = self.tableView
-    self.shyNavBarManager.stickyNavigationBar = true
-    self.shyNavBarManager.fadeBehavior = .subviews
-    
-    //NOTE: order matter before setting view
-    if (userChat != nil && userChat?.isLocalChat() == false) {
-      self.titleView?.isExpanded = false
-      self.shyNavBarManager.hideExtension = true
-    }
-    
-    self.shyNavBarManager.extensionView = view
-    self.shyNavBarManager.triggerExtensionAtTop = true
-    self.shyNavBarManager.delegate = self
-    self.shyNavBarManager.isInverted = true
-    self.shyNavBarManager.expansionResistance = 0
-    
-    view.snp.makeConstraints { (make) in
-      make.top.equalToSuperview()
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-    }
+    navigationTitleView?.translatesAutoresizingMaskIntoConstraints = false
+    navigationTitleView?.layoutIfNeeded()
+    navigationTitleView?.sizeToFit()
+    navigationTitleView?.translatesAutoresizingMaskIntoConstraints = true
+    self.navigationItem.titleView = navigationTitleView
   }
 
   fileprivate func initViews() {
@@ -401,31 +354,20 @@ final class UserChatViewController: BaseSLKTextViewController {
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
     
-    if showSetting {
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "settings"),
-        tintColor: tintColor,
-        style: .plain,
-        actionHandler: { [weak self] in
-          self?.profileSubject.onNext(nil)
-        })
-    } else {
-      let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
-      let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
+    let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
+    let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
 
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "back"),
-        text: alert == 0 ? "" : alertCount ,
-        fitToSize: true,
-        alignment: .left,
-        textColor: tintColor,
-        actionHandler: { [weak self] in
-          self?.shyNavBarManager.disable = true
-          mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-          _ = self?.navigationController?.popViewController(animated: true)
-        })
-    }
-
+    self.navigationItem.leftBarButtonItem = NavigationItem(
+      image: CHAssets.getImage(named: "back"),
+      text: alert == 0 ? "" : alertCount ,
+      fitToSize: true,
+      alignment: .left,
+      textColor: tintColor,
+      actionHandler: { [weak self] in
+        mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+        _ = self?.navigationController?.popViewController(animated: true)
+      })
+    
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "exit"),
       tintColor: tintColor,
@@ -480,13 +422,13 @@ extension UserChatViewController: StoreSubscriber {
     
     //NOTE: due to ios 11 layoutMargin issue
     //https://stackoverflow.com/questions/6021138/how-to-adjust-uitoolbar-left-and-right-padding/47554138#47554138
-    if #available(iOS 11, *){
-      if let bar = self.navigationController?.navigationBar,
-        bar.subviews[2].layoutMargins.left != 0 {
-        bar.setNeedsLayout()
-        bar.layoutIfNeeded()
-      }
-    }
+//    if #available(iOS 11, *){
+//      if let bar = self.navigationController?.navigationBar,
+//        bar.subviews[2].layoutMargins.left != 0 {
+//        bar.setNeedsLayout()
+//        bar.layoutIfNeeded()
+//      }
+//    }
   }
   
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
@@ -509,11 +451,6 @@ extension UserChatViewController: StoreSubscriber {
         guest: state.guest,
         textColor: state.plugin.textUIColor
       )
-    }
-    
-    if nextUserChat != nil && nextUserChat?.isLocalChat() == false {
-      self.titleView?.isExpanded = false
-      self.shyNavBarManager.contract(false)
     }
   }
   
@@ -695,8 +632,6 @@ extension UserChatViewController {
       }, onError: { (error) in
         
       }).disposed(by: self.disposeBag)
-    
-    self.shyNavBarManager.contract(true)
     super.didPressRightButton(sender)
   }
 
@@ -1001,7 +936,7 @@ extension UserChatViewController {
       viewer.inputs = self.photoUrls.map { (url) -> SDWebImageSource in
         return SDWebImageSource(url: URL(string: url)!)
       }
-      let index = self.photoUrls.index(of: message.file?.url ?? "")
+      let index = self.photoUrls.firstIndex(of: message.file?.url ?? "")
       if let index = index {
         viewer.initialPage = index
       }
@@ -1070,9 +1005,6 @@ extension UserChatViewController: ChatDelegate {
   }
   
   func showError() {
-    if self.shyNavBarManager.isExpanded() {
-      self.shyNavBarManager.contract(false)
-    }
     self.chatManager?.didChatLoaded = false
     self.errorToastView.display(animated: true)
   }
@@ -1087,24 +1019,6 @@ extension UserChatViewController: ChatDelegate {
     self.isReadyToDisplay = true
     self.tableView.isHidden = false
     self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: self.userChat)
-  }
-}
-
-extension UserChatViewController : TLYShyNavBarManagerDelegate {
-  func shyNavBarManagerTransforming(_ shyNavBarManager: TLYShyNavBarManager!, progress: CGFloat) {
-    self.titleView?.expand(with: progress)
-  }
-  
-  func shyNavBarManagerDidBecomeFullyExpanded(_ shyNavBarManager: TLYShyNavBarManager!) {
-    if self.titleView?.isExpanded == false {
-      self.titleView?.isExpanded = true
-    }
-  }
-  
-  func shyNavBarManagerDidBecomeFullyContracted(_ shyNavBarManager: TLYShyNavBarManager!) {
-    if self.titleView?.isExpanded == true {
-      self.titleView?.isExpanded = false
-    }
   }
 }
 

@@ -99,17 +99,12 @@ extension MainNavigationController: StoreSubscriber {
       let bgColor = UIColor(state.color) ?? UIColor.white
       let gradientColor = UIColor(state.gradientColor) ?? UIColor.white
       
-      if bgColor != self.currentBgColor ||
-        gradientColor != self.currentGradientColor {
-        self.currentBgColor = bgColor
-        self.currentGradientColor = gradientColor
-        self.navigationBar.setGradientBackground(
-          colors: [bgColor, bgColor, gradientColor],
-          startPoint: .topLeft,
-          endPoint: .topRight
-        )
-        self.navigationBar.setValue(true, forKey: "hidesShadow")
-      }
+      self.navigationBar.setGradientBackground(
+        colors: [bgColor, bgColor, gradientColor],
+        startPoint: .topLeft,
+        endPoint: .topRight
+      )
+      self.navigationBar.setValue(true, forKey: "hidesShadow")
       self.navigationBar.tintColor = state.textUIColor
       
       // Title

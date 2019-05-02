@@ -116,6 +116,10 @@ class UserChatsViewController: BaseViewController {
         }
       }).disposed(by: self.disposeBag)
     
+    if let nav = self.navigationController as? MainNavigationController {
+      nav.newState(state: mainStore.state.plugin)
+    }
+    
     WsService.shared.error()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
@@ -162,6 +166,7 @@ class UserChatsViewController: BaseViewController {
     mainStore.subscribe(self)
     //in order to reload if language has been changed
     self.tableView.reloadData()
+    self.navigationController?.setNavigationBarHidden(false, animated: true)
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -170,6 +175,9 @@ class UserChatsViewController: BaseViewController {
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    if let count = self.navigationController?.viewControllers.count, count == 1 {
+      self.navigationController?.setNavigationBarHidden(true, animated: true)
+    }
     mainStore.unsubscribe(self)
   }
 
@@ -219,12 +227,24 @@ class UserChatsViewController: BaseViewController {
       })
     
     self.navigationItem.leftBarButtonItem = NavigationItem(
-      image: CHAssets.getImage(named: "settings"),
-      tintColor: tintColor,
-      style: .plain,
+      image: CHAssets.getImage(named: "back"),
+      fitToSize: true,
+      alignment: .left,
+      textColor: tintColor,
       actionHandler: { [weak self] in
-        self?.showProfileView()
+        _ = self?.navigationController?.popViewController(animated: true)
       })
+    
+    let titleView = ChatNavigationTitleView()
+    titleView.configure(
+      channel: mainStore.state.channel,
+      plugin: mainStore.state.plugin)
+    
+    titleView.translatesAutoresizingMaskIntoConstraints = false
+    titleView.layoutIfNeeded()
+    titleView.sizeToFit()
+    titleView.translatesAutoresizingMaskIntoConstraints = true
+    self.navigationItem.titleView = titleView
   }
 
   fileprivate func showPlusButton() {
@@ -437,18 +457,6 @@ extension UserChatsViewController: UITableViewDelegate {
 
     let userChat = self.userChats[indexPath.row]
     self.showUserChat(userChatId: userChat.id, hideTable: false, animated: true)
-  }
-
-  func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-    if let count = tableView.indexPathsForSelectedRows?.count {
-      self.navigationItem.rightBarButtonItem?.isEnabled = count != 0
-    } else {
-      self.navigationItem.rightBarButtonItem?.isEnabled = false 
-    }
-  }
-  
-  @nonobjc func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-    return true
   }
 }
 

@@ -92,11 +92,13 @@ class SettingView: BaseViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    self.navigationController?.setNavigationBarHidden(false, animated: true)
     self.presenter?.prepare()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    self.navigationController?.setNavigationBarHidden(true, animated: true)
     self.presenter?.cleanup()
   }
   
@@ -108,6 +110,10 @@ class SettingView: BaseViewController {
       actionHandler: { [weak self] in
         _ = self?.navigationController?.popViewController(animated: true)
       })
+    
+    if let nav = self.navigationController as? MainNavigationController {
+      nav.newState(state: mainStore.state.plugin)
+    }
   }
 }
 
