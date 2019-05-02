@@ -24,9 +24,9 @@ struct CHButton {
       $0.layer.borderColor = UIColor(mainStore.state.plugin.borderColor)?.cgColor
       $0.layer.cornerRadius = 23
       $0.layer.shadowColor = CHColors.dark.cgColor
-      $0.layer.shadowOpacity = 0.2
-      $0.layer.shadowOffset = CGSize(width: 0, height: 2)
-      $0.layer.shadowRadius = 3
+      $0.layer.shadowOpacity = 0.4
+      $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+      $0.layer.shadowRadius = 4
       $0.layer.borderWidth = 1
     }
   }

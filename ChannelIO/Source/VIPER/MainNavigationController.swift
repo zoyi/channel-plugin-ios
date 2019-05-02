@@ -100,7 +100,7 @@ extension MainNavigationController: StoreSubscriber {
       let gradientColor = UIColor(state.gradientColor) ?? UIColor.white
       
       self.navigationBar.setGradientBackground(
-        colors: [bgColor, bgColor, gradientColor],
+        colors: [bgColor, bgColor, bgColor, gradientColor],
         startPoint: .topLeft,
         endPoint: .topRight
       )

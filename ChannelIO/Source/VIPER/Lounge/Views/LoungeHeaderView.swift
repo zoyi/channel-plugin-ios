@@ -51,9 +51,8 @@ class LoungeHeaderView: BaseView {
   
   let bgView = CAGradientLayer().then {
     $0.startPoint = CAGradientLayer.Point.topLeft.value
-    $0.endPoint = CAGradientLayer.Point.topRight.value
+    $0.endPoint = CAGradientLayer.Point.bottomRight.value
     $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 306)
-    $0.locations = [0, 0.5, 1]
   }
   let bottomBgView = CAGradientLayer().then {
     $0.startPoint = CAGradientLayer.Point.bottom.value
@@ -211,12 +210,5 @@ class LoungeHeaderView: BaseView {
   
   func change(with progress: CGFloat) {
     self.contentView.alpha = progress
-//    self.channelNameLabel.alpha = progress
-//    self.dismissButton.alpha = progress
-//    self.settingButton.alpha = progress
-//    self.responseDescriptionLabel.alpha = progress
-//    self.responseImageView.alpha = progress
-//    self.responseLabel.alpha = progress
-//    self.followersView.alpha = progress
   }
 }

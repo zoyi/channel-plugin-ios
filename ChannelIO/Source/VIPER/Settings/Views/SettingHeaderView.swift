@@ -16,7 +16,6 @@ class SettingHeaderView: BaseView {
     $0.startPoint = CGPoint(x: 0.0, y: 0.5)
     $0.endPoint = CGPoint(x: 1.0, y: 0.5)
     $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 86)
-    $0.locations = [0, 0.5, 1]
   }
   
   let channelNameLabel = UILabel().then {

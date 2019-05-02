@@ -52,6 +52,7 @@ struct CHPlugin: ModelType {
     return [
       color.cgColor,
       color.cgColor,
+      color.cgColor,
       gradientColor.cgColor
     ]
   }
