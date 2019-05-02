@@ -44,7 +44,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   var photoUrls = [String]()
   var typingManagers = [CHManager]()
   var timeStorage = [String: Timer]()
-
+  var previousMaxContentHeight: CGFloat = 0.f
+  
   var diffCalculator: SingleSectionTableViewDiffCalculator<CHMessage>?
   var messages = [CHMessage]() {
     didSet {
@@ -147,7 +148,41 @@ final class UserChatViewController: BaseSLKTextViewController {
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return self.navigationController?.preferredStatusBarStyle ?? .lightContent
   }
-
+  
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    self.adjustTableViewInset()
+  }
+  
+  func adjustTableViewInset() {
+    var chatViewSize = UIScreen.main.bounds.height -
+      (self.navigationController?.navigationBar.frame.height ?? 0)
+    
+    chatViewSize -= 50 //MASIC #: log height?
+    if #available(iOS 11.0, *) {
+      chatViewSize -= self.view.safeAreaInsets.bottom
+    }
+    
+    if self.tableView.contentSize.height <= chatViewSize {
+      //NOTE: it shrinks instantly for a sec. But why?
+      guard self.tableView.contentSize.height > 40 else { return }
+      var currInset = self.tableView.contentInset
+      currInset.top = chatViewSize - self.tableView.contentSize.height
+      
+      self.tableView.contentInset = currInset
+    } else {
+      if #available(iOS 11.0, *) {
+        self.tableView.contentInset = UIEdgeInsets(
+          top: self.view.safeAreaInsets.bottom,
+          left: 0,
+          bottom: 0,
+          right: 0)
+      } else {
+        self.tableView.contentInset = .zero
+      }
+    }
+  }
+  
   func initUpdaters() {
     self.navigationUpdateSubject
       .takeUntil(self.rx.deallocated)
@@ -262,6 +297,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.clipsToBounds = true
     self.tableView.separatorStyle = .none
     self.tableView.allowsSelection = false
+    self.tableView.showsHorizontalScrollIndicator = false
+    self.tableView.showsVerticalScrollIndicator = false
   }
 
   func initTypingCell() {
@@ -401,6 +438,7 @@ extension UserChatViewController: StoreSubscriber {
     self.messages = messages
     //fixed contentOffset
     self.tableView.layoutIfNeeded()
+    self.adjustTableViewInset()
     
     // Photo - is this scalable? or doesn't need to care at this moment?
     self.photoUrls = messages.reversed()
@@ -421,18 +459,9 @@ extension UserChatViewController: StoreSubscriber {
     if userChat?.appMessageId != self.userChat?.appMessageId {
       self.tableView.reloadData()
     }
+    
     self.userChat = userChat
     self.channel = state.channel
-    
-    //NOTE: due to ios 11 layoutMargin issue
-    //https://stackoverflow.com/questions/6021138/how-to-adjust-uitoolbar-left-and-right-padding/47554138#47554138
-//    if #available(iOS 11, *){
-//      if let bar = self.navigationController?.navigationBar,
-//        bar.subviews[2].layoutMargins.left != 0 {
-//        bar.setNeedsLayout()
-//        bar.layoutIfNeeded()
-//      }
-//    }
   }
   
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
