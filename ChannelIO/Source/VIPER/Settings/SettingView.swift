@@ -98,7 +98,9 @@ class SettingView: BaseViewController {
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    self.navigationController?.setNavigationBarHidden(true, animated: true)
+    if let count = self.navigationController?.viewControllers.count, count == 1 {
+      self.navigationController?.setNavigationBarHidden(true, animated: true)
+    }
     self.presenter?.cleanup()
   }
   

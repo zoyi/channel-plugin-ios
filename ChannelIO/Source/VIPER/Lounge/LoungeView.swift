@@ -103,8 +103,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       guard let `self` = self else { return }
       make.height.equalTo(80)
       make.top.equalTo(self.mainView.snp.bottom).offset(8)
-      make.leading.greaterThanOrEqualToSuperview()
-      make.trailing.lessThanOrEqualToSuperview()
+      make.leading.greaterThanOrEqualToSuperview().inset(8)
+      make.trailing.lessThanOrEqualToSuperview().inset(8)
       make.centerX.equalToSuperview()
       make.bottom.equalToSuperview()
     }

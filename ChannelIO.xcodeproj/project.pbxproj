@@ -849,7 +849,6 @@
 				6556A2981FA7316C00B80F4E /* ChannelIO */,
 				2263481C209DB5C00072801B /* ChannelIO.h */,
 				14D2AA781E24AE06006FEE22 /* Info.plist */,
-				14DFAC671E4A189D00130119 /* Images.xcassets */,
 			);
 			path = ChannelIO;
 			sourceTree = "<group>";
@@ -1046,6 +1045,7 @@
 				65CB14012069190E00E456B5 /* ringtone.mp3 */,
 				652AE2131E81485D00B7484C /* Localizable.strings */,
 				650D7C311E716DBF007DE358 /* countryInfo.json */,
+				14DFAC671E4A189D00130119 /* Images.xcassets */,
 			);
 			name = Assets;
 			sourceTree = "<group>";

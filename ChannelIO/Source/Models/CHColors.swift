@@ -37,7 +37,7 @@ struct CHColors {
   static let lightSnow = UIColor("#fbfbfc")!
   static let yellow = UIColor("#ffa908")!
   static let defaultTint = UIColor("#007aff")!
-  static let dark10 = UIColor("#3f152128")!
+  static let dark10 = UIColor("#51637819")!
   static let paleGrey = UIColor("#eaeff4")!
   static let paleGreyFour = UIColor("#fbfbfc")!
   static let paleGreyFour0 = UIColor("#fbfbfc")!.withAlphaComponent(0.0)

@@ -27,7 +27,7 @@ class LoungeExternalAppsView: BaseView {
   
   let containerView = UIStackView().then {
     $0.axis = .horizontal
-    $0.spacing = 20
+    $0.spacing = UIScreen.main.bounds.width == 320 ? 16 : 20
   }
   
   override func initialize() {
@@ -56,14 +56,6 @@ class LoungeExternalAppsView: BaseView {
     for each in self.containerView.subviews {
       each.removeFromSuperview()
     }
-    let marginSpaces = CGFloat(Metric.sideMargin * 2)
-    let iconSpaces = CGFloat(models.count * Metric.iconSize)
-    let spaceCount = CGFloat(models.count - 1)
-    
-    let spacing = spaceCount >= 1 ? (UIScreen.main.bounds.width - marginSpaces - iconSpaces)/spaceCount : 0.f
-    if spacing > 0 {
-      self.containerView.spacing = spacing
-    }
     
     for model in models {
       let modelView = LoungeExternalAppView()
@@ -91,6 +83,7 @@ class LoungeExternalAppView: BaseView {
     super.initialize()
     
     self.clipsToBounds = true
+    self.backgroundColor = CHColors.dark10
     self.addSubview(self.sourceImageView)
   }
   

@@ -25,7 +25,7 @@ class LoungeHeaderView: BaseView {
     $0.alpha = 0.8
   }
   let dismissButton = UIButton().then {
-    $0.setImage(CHAssets.getImage(named: "exit")?.withRenderingMode(.alwaysTemplate), for: .normal)
+    $0.setImage(CHAssets.getImage(named: "closeWhite")?.withRenderingMode(.alwaysTemplate), for: .normal)
     $0.alpha = 0.8
   }
   

@@ -227,10 +227,9 @@ class UserChatsViewController: BaseViewController {
       })
     
     self.navigationItem.leftBarButtonItem = NavigationItem(
-      image: CHAssets.getImage(named: "back"),
-      fitToSize: true,
-      alignment: .left,
-      textColor: tintColor,
+      image:  CHAssets.getImage(named: "back"),
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
       actionHandler: { [weak self] in
         _ = self?.navigationController?.popViewController(animated: true)
       })

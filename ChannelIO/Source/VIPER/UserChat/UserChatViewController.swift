@@ -410,7 +410,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       })
     
     self.navigationItem.rightBarButtonItem = NavigationItem(
-      image: CHAssets.getImage(named: "exit"),
+      image: CHAssets.getImage(named: "dismissButton")?.withRenderingMode(.alwaysTemplate),
       tintColor: tintColor,
       style: .plain,
       actionHandler: { [weak self] in

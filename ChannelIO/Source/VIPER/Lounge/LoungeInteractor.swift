@@ -59,7 +59,10 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
 
 extension LoungeInteractor: StoreSubscriber {
   func newState(state: AppState) {
-    
+    //if language change update
+    //if channel change update
+    //if plugin change update
+    //if userchats changes update
   }
 }
 
