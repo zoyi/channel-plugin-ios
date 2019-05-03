@@ -23,7 +23,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   let headerView = LoungeHeaderView()
   let mainView = LoungeMainView()
   let externalView = LoungeExternalAppsView()
-
+  let watermarkView = WatermarkView()
+  
   var dismissButton = CHButton.dismiss().then {
     $0.alpha = 1
   }
@@ -42,29 +43,13 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     
     self.view.backgroundColor = .white
     
-    self.scrollView.delegate = self
-    self.scrollView.alwaysBounceHorizontal = false
-    self.scrollView.alwaysBounceVertical = true
-    self.scrollView.showsVerticalScrollIndicator = false
-    self.scrollView.showsHorizontalScrollIndicator = false
-    self.scrollView.contentInset = UIEdgeInsets(
-      top: Metric.scrollInsetTop,
-      left: 0,
-      bottom: Metric.scrollInsetBottom,
-      right: 0)
-    self.scrollView.backgroundColor = .clear
-    
-    let gesture = UITapGestureRecognizer(target: self, action: #selector(tapCheck(_:)))
-    gesture.delegate = self
-    self.scrollView.addGestureRecognizer(gesture)
-    
     self.initViews()
+    self.initScrollView()
     self.presenter?.viewDidLoad()
   }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    //navigation bar is weird..
     self.navigationController?.isNavigationBarHidden = true
   }
   
@@ -118,9 +103,22 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       guard let `self` = self else { return }
       make.height.equalTo(80)
       make.top.equalTo(self.mainView.snp.bottom).offset(8)
+      make.leading.greaterThanOrEqualToSuperview()
+      make.trailing.lessThanOrEqualToSuperview()
+      make.centerX.equalToSuperview()
+      make.bottom.equalToSuperview()
+    }
+    
+    self.watermarkView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+      } else {
+        make.bottom.equalToSuperview()
+      }
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.bottom.equalToSuperview()
+      make.height.equalTo(40)
     }
   }
   
@@ -157,6 +155,34 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       }).disposed(by: self.disposeBag)
     
     self.view.addSubview(self.dismissButton)
+    
+    self.view.addSubview(self.watermarkView)
+    self.watermarkView.signalForClick().subscribe(onNext: { _ in
+      let channel = mainStore.state.channel
+      let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+      let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
+      
+      if let url = URL(string: urlString) {
+        url.open()
+      }
+    }).disposed(by: self.disposeBag)
+  }
+  
+  func initScrollView() {
+    self.scrollView.delegate = self
+    self.scrollView.bounces = false
+    self.scrollView.showsVerticalScrollIndicator = false
+    self.scrollView.showsHorizontalScrollIndicator = false
+    self.scrollView.contentInset = UIEdgeInsets(
+      top: Metric.scrollInsetTop,
+      left: 0,
+      bottom: Metric.scrollInsetBottom,
+      right: 0)
+    self.scrollView.backgroundColor = .clear
+    
+    let gesture = UITapGestureRecognizer(target: self, action: #selector(tapCheck(_:)))
+    gesture.delegate = self
+    self.scrollView.addGestureRecognizer(gesture)
   }
 }
 
@@ -190,8 +216,8 @@ extension LoungeView {
     self.mainHeightConstraint?.update(offset: self.mainView.viewHeight)
   }
   
-  func displayExternalSources(with model: LoungeExternalSourceViewModel) {
-    self.externalView.configure(with: model)
+  func displayExternalSources(with models: [LoungeExternalSourceModel]) {
+    self.externalView.configure(with: models)
   }
 }
 

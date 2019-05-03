@@ -51,10 +51,9 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           plugin: pluginInfo.0,
           followers: followers
         )
-        let sources = LoungeExternalSourceViewModel()
-        let models = chats.map { UserChatCellModel(userChat: $0) }
-        
         self?.view?.displayHeader(with: headerModel)
+        
+        let models = chats.map { UserChatCellModel(userChat: $0) }
         self?.view?.displayMainContent(
           with: models,
           welcomeModel: UserChatCellModel.welcome(
@@ -62,8 +61,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
             guest: mainStore.state.guest
           )
         )
-
+        
+        let sources = LoungeExternalSourceModel
+          .generate(with: mainStore.state.channel, thirdparties: [])
         self?.view?.displayExternalSources(with: sources)
+        
         self?.view?.displayReady()
       }).disposed(by: self.disposeBag)
   }

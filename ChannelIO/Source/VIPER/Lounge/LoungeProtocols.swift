@@ -15,7 +15,7 @@ protocol LoungeViewProtocol: class {
   func displayReady()
   func displayHeader(with model: LoungeHeaderViewModel)
   func displayMainContent(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?)
-  func displayExternalSources(with model: LoungeExternalSourceViewModel)
+  func displayExternalSources(with models: [LoungeExternalSourceModel])
 }
 
 protocol LoungePresenterProtocol: class {

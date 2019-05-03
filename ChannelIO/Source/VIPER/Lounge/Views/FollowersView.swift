@@ -9,10 +9,30 @@
 import UIKit
 
 class FollowersView: BaseView {
-  let firstFollowerView = AvatarView()
-  let secondFollowerView = AvatarView()
-  let thirdFollowerView = AvatarView()
-  let forthFollowerView = AvatarView()
+  let firstFollowerView = AvatarView().then {
+    $0.layer.shadowColor = CHColors.dark.cgColor
+    $0.layer.shadowOpacity = 0.4
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowRadius = 4
+  }
+  let secondFollowerView = AvatarView().then {
+    $0.layer.shadowColor = CHColors.dark.cgColor
+    $0.layer.shadowOpacity = 0.4
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowRadius = 4
+  }
+  let thirdFollowerView = AvatarView().then {
+    $0.layer.shadowColor = CHColors.dark.cgColor
+    $0.layer.shadowOpacity = 0.4
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowRadius = 4
+  }
+  let forthFollowerView = AvatarView().then {
+    $0.layer.shadowColor = CHColors.dark.cgColor
+    $0.layer.shadowOpacity = 0.4
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowRadius = 4
+  }
   
   var displayedMembers = 0
   

@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   #  :script => '${PODS_TARGET_SRCROOT}/Assets/setup.sh',
   #  :execution_position => :before_compile
   #}
-  s.source_files = 'ChannelIO/Source/**/*'
+  s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
   s.resources = 'ChannelIO/Assets/*', 'ChannelIO/Source/Frameworks/TLPhotoPicker/TLPhotoPickerController.bundle'
   s.resource_bundles = {
     'TLPhotoPicker' => ['ChannelIO/Source/Frameworks/TLPhotoPicker/*.xib']

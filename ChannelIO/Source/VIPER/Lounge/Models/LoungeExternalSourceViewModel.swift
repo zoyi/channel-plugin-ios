@@ -10,17 +10,33 @@ import Foundation
 
 enum CHExternalSourceType {
   case kakao
-  case toktok
+  case talktalk
   case facebook
   case email
   case phone
   case link
+  
+  var image: UIImage? {
+    switch self {
+    case .kakao: return CHAssets.getImage(named: "integrationKakao")
+    case .talktalk: return CHAssets.getImage(named: "integrationTalktalk")
+    case .facebook: return CHAssets.getImage(named: "integrationFbmsg")
+    case .email: return CHAssets.getImage(named: "integrationEmail")
+    case .phone: return CHAssets.getImage(named: "integrationPhone")
+    case .link: return CHAssets.getImage(named: "integrationLink")
+    }
+  }
 }
 
 struct LoungeExternalSourceModel {
+  var type: CHExternalSourceType
+  var value: String
   
-}
-
-struct LoungeExternalSourceViewModel {
-  
+  static func generate(with channel: CHChannel, thirdparties: [CHThirdPartyApp]) -> [LoungeExternalSourceModel] {
+    let pd = LoungeExternalSourceModel(type: .phone, value: "01093123291")
+    let fd = LoungeExternalSourceModel(type: .facebook, value: "facebook://")
+    let td = LoungeExternalSourceModel(type: .talktalk, value: "line://")
+    let kd = LoungeExternalSourceModel(type: .kakao, value: "kakao://")
+    return [kd, td, fd, pd]
+  }
 }
