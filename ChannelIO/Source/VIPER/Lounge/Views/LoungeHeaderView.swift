@@ -172,6 +172,20 @@ class LoungeHeaderView: BaseView {
     }
   }
   
+  override func displayError() {
+    let plugin = mainStore.state.plugin
+    let channel = mainStore.state.channel
+    
+    self.bgView.colors = plugin.gradientColors
+    self.settingButton.tintColor = plugin.textUIColor
+    self.dismissButton.tintColor = plugin.textUIColor
+    self.channelNameLabel.text = channel.name
+    self.channelNameLabel.textColor = plugin.textUIColor
+    
+    self.setVisibilityForComponents(hidden: true)
+    self.followersView.configureDefault()
+  }
+  
   func configure(model: LoungeHeaderViewModel) {
     self.configure(channel: model.chanenl, plugin: model.plugin, followers: model.followers)
   }
@@ -182,6 +196,7 @@ class LoungeHeaderView: BaseView {
     self.settingButton.tintColor = plugin.textUIColor
     self.dismissButton.tintColor = plugin.textUIColor
     
+    self.setVisibilityForComponents(hidden: false)
     self.channelNameLabel.text = channel.name
     self.channelNameLabel.textColor = plugin.textUIColor
     self.responseDescriptionLabel.textColor = plugin.textUIColor
@@ -210,5 +225,14 @@ class LoungeHeaderView: BaseView {
   
   func change(with progress: CGFloat) {
     self.contentView.alpha = progress
+  }
+  
+  func setVisibilityForComponents(hidden: Bool) {
+    self.channelNameLabel.isHidden = hidden
+    self.channelNameLabel.isHidden = hidden
+    self.responseDescriptionLabel.isHidden = hidden
+    self.responseLabel.isHidden = hidden
+    self.operationTimeLabel.isHidden = hidden
+    self.responseImageView.isHidden = hidden
   }
 }

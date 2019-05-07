@@ -105,6 +105,8 @@ class AvatarView: NeverClearView {
         self.avatarImageView.image = CHAssets.getImage(named: url)
       }
       self.avatarImageView.isHidden = false
+    } else {
+      self.avatarImageView.isHidden = true
     }
     
     if let manager = avatar as? CHManager, self.showOnline {

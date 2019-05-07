@@ -9,6 +9,12 @@
 import Foundation
 import RxSwift
 
+enum LoungeSectionType {
+  case header
+  case chats
+  case externalSource
+}
+
 protocol LoungeViewProtocol: class {
   var presenter: LoungePresenterProtocol? { get set }
   
@@ -16,6 +22,8 @@ protocol LoungeViewProtocol: class {
   func displayHeader(with model: LoungeHeaderViewModel)
   func displayMainContent(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?)
   func displayExternalSources(with models: [LoungeExternalSourceModel])
+  
+  func displayError(for type: LoungeSectionType)
 }
 
 protocol LoungePresenterProtocol: class {
@@ -27,6 +35,7 @@ protocol LoungePresenterProtocol: class {
   func prepare()
   func cleanup()
   
+  func didClickOnRefresh(for type: LoungeSectionType)
   func didClickOnSetting(from view: UIViewController?)
   func didClickOnDismiss()
   func didClickOnChat(with chatId: String?, from view: UIViewController?)
@@ -35,6 +44,8 @@ protocol LoungePresenterProtocol: class {
   
   func didClickOnExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   func didClickOnWatermark()
+
+  
 }
 
 protocol LoungeInteractorProtocol: class {
@@ -47,13 +58,14 @@ protocol LoungeInteractorProtocol: class {
   func getPlugin() -> Observable<(CHPlugin, CHBot?)>
   func getFollowers() -> Observable<[CHManager]>
   func getChats() -> Observable<[CHUserChat]>
+  func getExternalSource() -> Observable<Any?>
 }
 
 protocol LoungeRouterProtocol: class {
   func pushChatList(from view: UIViewController?)
   func pushChat(with chatId: String?, from view: UIViewController?)
   func pushSettings(from view: UIViewController?)
-  func presentEamilComposer(from view: UIViewController?)
+  func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   
   static func createModule(with chatId: String?) -> LoungeView
 }

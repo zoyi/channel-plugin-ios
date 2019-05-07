@@ -39,8 +39,6 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    SVProgressHUD.show()
-    
     self.view.backgroundColor = .white
     
     self.initViews()
@@ -51,10 +49,12 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.isNavigationBarHidden = true
+    self.presenter?.prepare()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    self.presenter?.cleanup()
   }
   
   override func setupConstraints() {
@@ -124,36 +124,35 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   
   func initViews() {
     self.view.addSubview(self.headerView)
-    self.headerView.settingSignal
-      .subscribe(onNext: { [weak self] (_) in
-        self?.presenter?.didClickOnSetting(from: self)
-      }).disposed(by: self.disposeBag)
-    self.headerView.dismissSignal
-      .subscribe(onNext: { [weak self] (_) in
-        self?.presenter?.didClickOnDismiss()
-      }).disposed(by: self.disposeBag)
+    self.headerView.settingSignal.subscribe(onNext: { [weak self] (_) in
+      self?.presenter?.didClickOnSetting(from: self)
+    }).disposed(by: self.disposeBag)
+    self.headerView.dismissSignal.subscribe(onNext: { [weak self] (_) in
+      self?.presenter?.didClickOnDismiss()
+    }).disposed(by: self.disposeBag)
     
     self.view.addSubview(self.scrollView)
     self.scrollView.addSubview(self.mainView)
-    self.mainView.signalForChat()
-      .subscribe(onNext: { [weak self] (chat) in
-        self?.presenter?.didClickOnChat(with: chat.chatId, from: self)
-      }).disposed(by: self.disposeBag)
-    self.mainView.signalForNew()
-      .subscribe(onNext: { [weak self] (_) in
-        self?.presenter?.didClickOnNewChat(from: self)
-      }).disposed(by: self.disposeBag)
-    self.mainView.signalForMore()
-      .subscribe(onNext: { [weak self] (_) in
-        self?.presenter?.didClickOnSeeMoreChat(from: self)
-      }).disposed(by: self.disposeBag)
+    self.mainView.signalForChat().subscribe(onNext: { [weak self] (chat) in
+      self?.presenter?.didClickOnChat(with: chat.chatId, from: self)
+    }).disposed(by: self.disposeBag)
+    self.mainView.signalForNew().subscribe(onNext: { [weak self] (_) in
+      self?.presenter?.didClickOnNewChat(from: self)
+    }).disposed(by: self.disposeBag)
+    self.mainView.signalForMore().subscribe(onNext: { [weak self] (_) in
+      self?.presenter?.didClickOnSeeMoreChat(from: self)
+    }).disposed(by: self.disposeBag)
+    self.mainView.refreshSignal.subscribe(onNext: { [weak self] (_) in
+      self?.presenter?.didClickOnRefresh(for: .chats)
+    }).disposed(by: self.disposeBag)
     
     self.scrollView.addSubview(self.externalView)
-    self.externalView.clickSignal
-      .subscribe(onNext: { [weak self] (source) in
-        self?.presenter?.didClickOnExternalSource(with: source, from: self)
-      }).disposed(by: self.disposeBag)
-    
+    self.externalView.clickSignal.subscribe(onNext: { [weak self] (source) in
+      self?.presenter?.didClickOnExternalSource(with: source, from: self)
+    }).disposed(by: self.disposeBag)
+    self.externalView.refreshSignal.subscribe(onNext: { [weak self] (_) in
+      self?.presenter?.didClickOnRefresh(for: .externalSource)
+    }).disposed(by: self.disposeBag)
     self.view.addSubview(self.dismissButton)
     
     self.view.addSubview(self.watermarkView)
@@ -218,6 +217,14 @@ extension LoungeView {
   
   func displayExternalSources(with models: [LoungeExternalSourceModel]) {
     self.externalView.configure(with: models)
+  }
+  
+  func displayError(for type: LoungeSectionType) {
+    switch type {
+    case .header: self.headerView.displayError()
+    case .chats: self.mainView.displayError()
+    case .externalSource: self.externalView.displayError()
+    }
   }
 }
 

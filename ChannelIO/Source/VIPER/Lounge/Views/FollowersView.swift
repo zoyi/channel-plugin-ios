@@ -73,6 +73,52 @@ class FollowersView: BaseView {
     }
   }
   
+  func configureDefault() {
+    self.firstFollowerView.configure(nil)
+    self.firstFollowerView.snp.makeConstraints { (make) in
+      make.leading.equalToSuperview()
+      make.top.equalToSuperview()
+      make.height.equalTo(Metric.sizeForFour)
+      make.width.equalTo(Metric.sizeForFour)
+    }
+    
+    self.secondFollowerView.configure(nil)
+    self.secondFollowerView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      make.trailing.equalToSuperview()
+      make.top.equalToSuperview()
+      make.leading.equalTo(self.firstFollowerView.snp.trailing).offset(2)
+      make.height.equalTo(Metric.sizeForFour)
+      make.width.equalTo(Metric.sizeForFour)
+    }
+    
+    self.thirdFollowerView.configure(nil)
+    self.thirdFollowerView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      make.leading.equalToSuperview()
+      make.bottom.equalToSuperview()
+      make.top.equalTo(self.firstFollowerView.snp.bottom).offset(2)
+      make.height.equalTo(Metric.sizeForFour)
+      make.width.equalTo(Metric.sizeForFour)
+    }
+    
+    self.forthFollowerView.configure(nil)
+    self.forthFollowerView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      make.trailing.equalToSuperview()
+      make.bottom.equalToSuperview()
+      make.top.equalTo(self.secondFollowerView.snp.bottom).offset(2)
+      make.leading.equalTo(self.thirdFollowerView.snp.trailing).offset(2)
+      make.height.equalTo(Metric.sizeForFour)
+      make.width.equalTo(Metric.sizeForFour)
+    }
+    
+    self.firstFollowerView.isHidden = false
+    self.secondFollowerView.isHidden = false
+    self.thirdFollowerView.isHidden = false
+    self.forthFollowerView.isHidden = false
+  }
+  
   func configureForOneEntity(_ entity: CHEntity?) {
     guard let entity = entity else { return }
     

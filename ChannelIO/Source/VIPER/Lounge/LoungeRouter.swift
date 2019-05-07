@@ -24,6 +24,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       chatView.userChatId = userChatId
     }
     
+    //plugin may not need
     Observable.zip(pluginSignal, supportSignal)
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         let reloadMessage = CHAssets.localized("plugin.reload.message")
@@ -52,13 +53,18 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     let settingView = SettingRouter.createModule()
     view?.navigationController?.pushViewController(settingView, animated: true)
   }
-  
-  func presentEamilComposer(from view: UIViewController?) {
-    guard MFMailComposeViewController.canSendMail() else { return }
-    
-    let mailComposerVC = MFMailComposeViewController()
-    mailComposerVC.mailComposeDelegate = self
-    view?.present(mailComposerVC, animated: true, completion: nil)
+
+  func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
+    switch source.type {
+    case .email:
+      guard MFMailComposeViewController.canSendMail() else { return }
+      
+      let mailComposerVC = MFMailComposeViewController()
+      mailComposerVC.mailComposeDelegate = self
+      view?.present(mailComposerVC, animated: true, completion: nil)
+    default:
+      break
+    }
   }
   
   static func createModule(with chatId: String? = nil) -> LoungeView {

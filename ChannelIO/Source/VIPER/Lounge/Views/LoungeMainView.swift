@@ -29,6 +29,8 @@ class LoungeMainView: BaseView {
     $0.register(cellType: UserChatCell.self)
   }
   
+  var errorView: LoungeMainErrorView?
+  
   var welcomeModel: UserChatCellModel?
   let welcomeCell = UserChatCell().then {
     $0.messageLabel.numberOfLines = 8
@@ -38,6 +40,7 @@ class LoungeMainView: BaseView {
   var chatSignal = PublishRelay<UserChatCellModel>()
   var newSignal = PublishRelay<Any?>()
   var moreSignal = PublishRelay<Any?>()
+  var refreshSignal = PublishRelay<Any?>()
   
   var disposeBag = DisposeBag()
   
@@ -72,7 +75,7 @@ class LoungeMainView: BaseView {
     self.tableView.layer.cornerRadius = 10
     self.tableView.delegate = self
     self.tableView.dataSource = self
-  
+
     self.addSubview(self.tableView)
   }
   
@@ -84,9 +87,34 @@ class LoungeMainView: BaseView {
     }
   }
   
+  override func displayError() {
+    self.tableView.isHidden = true
+    
+    let errorView = LoungeMainErrorView()
+    errorView.layer.cornerRadius = 10
+    
+    self.addSubview(errorView)
+    errorView.refreshSignal.subscribe(onNext: { [weak self] (_) in
+      errorView.startAnimation()
+      self?.refreshSignal.accept(nil)
+    }).disposed(by: self.disposeBag)
+    
+    errorView.snp.remakeConstraints { (make) in
+      make.edges.equalToSuperview()
+    }
+    
+    self.errorView = errorView
+  }
+  
   func configure(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
     self.chats = chats
     self.welcomeModel = welcomeModel
+    
+    self.errorView?.stopAnimation()
+    self.errorView?.removeFromSuperview()
+    self.errorView = nil
+    
+    self.tableView.isHidden = false
     self.tableView.reloadData()
   }
 }

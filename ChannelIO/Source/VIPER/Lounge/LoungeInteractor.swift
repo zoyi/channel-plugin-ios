@@ -10,7 +10,7 @@ import Foundation
 import ReSwift
 import RxSwift
 
-class LoungeInteractor: NSObject, LoungeInteractorProtocol {
+class LoungeInteractor: NSObject, LoungeInteractorProtocol {  
   var presenter: LoungePresenterProtocol?
   
   func subscribeDataSource() {
@@ -52,6 +52,16 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
         })
       return Disposables.create {
         signal.dispose()
+      }
+    })
+  }
+  
+  func getExternalSource() -> Observable<Any?> {
+    return Observable.create({ (subscriber) -> Disposable in
+      subscriber.onNext(nil)
+      subscriber.onCompleted()
+      return Disposables.create {
+
       }
     })
   }

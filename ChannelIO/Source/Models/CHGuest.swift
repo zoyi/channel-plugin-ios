@@ -73,7 +73,7 @@ extension CHGuest {
     }
   }
   
-  func updateProfile(key: String, value: Any) -> Observable<(CHGuest?, Any?)> {
-    return GuestPromise.updateGuest(with: [key: value])
+  func updateProfile(key: String, value: Any?) -> Observable<(CHGuest?, Any?)> {
+    return GuestPromise.updateProfile(with: [key: value])
   }
 }

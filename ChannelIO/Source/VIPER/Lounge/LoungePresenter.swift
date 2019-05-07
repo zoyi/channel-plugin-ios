@@ -14,68 +14,51 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   var interactor: LoungeInteractorProtocol?
   var router: LoungeRouterProtocol?
   
+  var needToFetch = false
   var chatId: String?
   
   var disposeBag = DisposeBag()
+  
+  var once = false
+  var two = false
   
   func viewDidLoad() {
     self.fetchData()
     
     NotificationCenter.default.rx
-      .notification(UIApplication.didBecomeActiveNotification)
+      .notification(UIApplication.willEnterForegroundNotification)
       .takeUntil(self.rx.deallocated)
       .subscribe(onNext: { [weak self] (_) in
-        self?.fetchData()
+        self?.needToFetch = true
       }).disposed(by: self.disposeBag)
   }
   
   func fetchData() {
-    guard let interactor = interactor else { return }
-    let pluginSignal = interactor.getPlugin()
-    let channelSignal = interactor.getChannel()
-    let followersSignal = interactor.getFollowers()
-    let chatSignal = interactor.getChats()
-    
-    Observable.zip(channelSignal, pluginSignal, followersSignal, chatSignal)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        dlog("Error while fetching data... retrying.. in 3 seconds")
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (channel, pluginInfo, followers, chats) in
-        mainStore.dispatchOnMain(UpdateFollowingManagers(payload: followers))
-        mainStore.dispatchOnMain(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
-        
-        let headerModel = LoungeHeaderViewModel(
-          chanenl: channel,
-          plugin: pluginInfo.0,
-          followers: followers
-        )
-        self?.view?.displayHeader(with: headerModel)
-        
-        let models = chats.map { UserChatCellModel(userChat: $0) }
-        self?.view?.displayMainContent(
-          with: models,
-          welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.channel,
-            guest: mainStore.state.guest
-          )
-        )
-        
-        let sources = LoungeExternalSourceModel
-          .generate(with: mainStore.state.channel, thirdparties: [])
-        self?.view?.displayExternalSources(with: sources)
-        
-        self?.view?.displayReady()
-      }).disposed(by: self.disposeBag)
+    self.loadHeaderInfo()
+    self.loadChats()
+    self.loadExternalSources()
   }
   
   func prepare() {
-    
+    if self.needToFetch {
+      self.fetchData()
+    }
   }
   
   func cleanup() {
     
+  }
+  
+  func didClickOnRefresh(for type: LoungeSectionType) {
+    switch type {
+    case .header:
+      self.loadHeaderInfo()
+    case .chats:
+      self.loadHeaderInfo()
+      self.loadChats()
+    case .externalSource:
+      self.loadExternalSources()
+    }
   }
   
   func didClickOnSetting(from view: UIViewController?) {
@@ -99,10 +82,87 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
-    //?
+    self.router?.presentExternalSource(with: source, from: view)
   }
   
   func didClickOnWatermark() {
     //open url?
+  }
+}
+
+extension LoungePresenter {
+  func loadHeaderInfo() {
+    guard let interactor = self.interactor else { return }
+    
+    Observable.zip(interactor.getChannel(), interactor.getPlugin(), interactor.getFollowers())
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while fetching data... retrying.. in 3 seconds")
+        return true
+      })
+      .subscribe(onNext: { [weak self] (channel, pluginInfo, followers) in
+        if self?.once == false {
+          self?.once = true
+          self?.view?.displayError(for: .header)
+          return
+        }
+        
+        mainStore.dispatchOnMain(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
+        mainStore.dispatchOnMain(UpdateFollowingManagers(payload: followers))
+
+        let headerModel = LoungeHeaderViewModel(
+          chanenl: channel,
+          plugin: pluginInfo.0,
+          followers: followers
+        )
+        self?.view?.displayHeader(with: headerModel)
+      }, onError: { [weak self] (error) in
+        self?.view?.displayError(for: .header)
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func loadChats() {
+    guard let interactor = self.interactor else { return }
+    
+    interactor.getChats()
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while fetching data... retrying.. in 3 seconds")
+        return true
+      })
+      .subscribe(onNext: { [weak self] (chats) in
+        if self?.two == false {
+          self?.two = true
+          self?.view?.displayError(for: .chats)
+          return
+        }
+        
+        let models = chats.map { UserChatCellModel(userChat: $0) }
+        self?.view?.displayMainContent(
+          with: models,
+          welcomeModel: UserChatCellModel.welcome(
+            with: mainStore.state.channel,
+            guest: mainStore.state.guest
+          ))
+      }, onError: { [weak self] (error) in
+        self?.view?.displayError(for: .chats)
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func loadExternalSources() {
+    guard let interactor = self.interactor else { return }
+    
+    interactor.getExternalSource()
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while fetching data... retrying.. in 3 seconds")
+        return true
+      })
+      .subscribe(onNext: { [weak self] (sources) in
+        self?.view?.displayError(for: .externalSource)
+        //
+        //    let sources = LoungeExternalSourceModel
+        //      .generate(with: mainStore.state.channel, thirdparties: [])
+        //    self?.view?.displayExternalSources(with: sources)
+      }, onError: { [weak self] (error) in
+        self?.view?.displayError(for: .externalSource)
+      }).disposed(by: self.disposeBag)
   }
 }

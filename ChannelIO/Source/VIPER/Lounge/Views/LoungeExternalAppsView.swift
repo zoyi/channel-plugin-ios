@@ -16,7 +16,9 @@ class LoungeExternalAppsView: BaseView {
     static let sideMargin = 8
   }
   
+  var refreshSignal = PublishRelay<Any?>()
   var clickSignal = PublishRelay<LoungeExternalSourceModel>()
+  
   var disposeBag = DisposeBag()
   
   let titleLabel = UILabel().then {
@@ -29,6 +31,8 @@ class LoungeExternalAppsView: BaseView {
     $0.axis = .horizontal
     $0.spacing = UIScreen.main.bounds.width == 320 ? 16 : 20
   }
+  
+  var refreshButton: UIButton?
   
   override func initialize() {
     super.initialize()
@@ -50,6 +54,25 @@ class LoungeExternalAppsView: BaseView {
       make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
     }
+  }
+  
+  override func displayError() {
+    let refreshButton = CHButton.errorRefresh()
+    self.addSubview(refreshButton)
+    refreshButton.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      make.top.equalTo(self.titleLabel.snp.bottom)
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.bottom.equalToSuperview()
+    }
+    
+    _ = refreshButton.signalForClick().subscribe(onNext: { [weak self] (_) in
+      self?.refreshSignal.accept(nil)
+    })
+    
+    self.refreshButton?.removeFromSuperview()
+    self.refreshButton = refreshButton
   }
   
   func configure(with models: [LoungeExternalSourceModel]) {

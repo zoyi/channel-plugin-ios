@@ -45,12 +45,15 @@ struct GuestPromise {
     }
   }
   
-  static func updateGuest(with profile: [String: Any]) -> Observable<(CHGuest?, Any?)> {
+  static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHGuest?, Any?)> {
     return Observable.create({ (subscriber) -> Disposable in
-      let builder = BootParamBuilder()
-      builder.with(profile: profile)
+      let params = [
+        "body": [
+          "profile": profiles
+        ]
+      ]
       
-      let req = Alamofire.request(RestRouter.UpdateGuest(builder.build() as RestRouter.ParametersType))
+      let req = Alamofire.request(RestRouter.UpdateGuest(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {

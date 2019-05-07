@@ -28,4 +28,8 @@ class BaseView: UIView {
   func setLayouts() {
     // Override 
   }
+  
+  func displayError() {
+    
+  }
 }

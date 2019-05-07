@@ -80,4 +80,20 @@ struct CHButton {
       $0.setBackgroundColor(color: CHColors.black60, forUIControlState: .normal)
     }
   }
+  
+  static func errorRefresh() -> UIButton {
+    return UIButton(type: .custom).then {
+      $0.setImage(CHAssets.getImage(named: "refreshCell"), for: .normal)
+      $0.imageView?.contentMode = .scaleAspectFit
+      
+      $0.layer.cornerRadius = 22.f
+
+      $0.layer.borderColor = CHColors.paleGrey20.cgColor
+      $0.layer.borderWidth = 1.f
+      $0.layer.shadowColor = CHColors.dark.cgColor
+      $0.layer.shadowOpacity = 0.2
+      $0.layer.shadowOffset = CGSize(width: 0, height: 2)
+      $0.layer.shadowRadius = 3
+    }
+  }
 }
