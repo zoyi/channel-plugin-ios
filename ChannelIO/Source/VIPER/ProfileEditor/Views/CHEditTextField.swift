@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import UIKit
 
 protocol CHFieldDelegate: class {
@@ -15,6 +16,7 @@ protocol CHFieldDelegate: class {
   func getText() -> String
   func setText(_ value: String)
   func isValid() -> Observable<Bool>
+  func hasChanged() -> Observable<String>
 }
 
 enum EditFieldType {
@@ -44,6 +46,7 @@ final class CHEditTextField : BaseView {
     $0.backgroundColor = CHColors.dark20
   }
   
+  let changeSubject = PublishRelay<String>()
   let validSubject = PublishSubject<Bool>()
   var fieldType: EditFieldType = .text
   
@@ -72,28 +75,28 @@ final class CHEditTextField : BaseView {
     self.addSubview(self.botDivider)
   }
   
-  override func layoutSubviews() {
-    super.layoutSubviews()
+  override func setLayouts() {
+    super.setLayouts()
     
-    self.topDivider.snp.remakeConstraints { (make) in
+    self.topDivider.snp.makeConstraints { (make) in
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.top.equalToSuperview()
-      make.height.equalTo(0.5)
+      make.height.equalTo(0.33)
     }
     
-    self.field.snp.remakeConstraints { (make) in
+    self.field.snp.makeConstraints { (make) in
       make.leading.equalToSuperview().inset(20)
       make.trailing.equalToSuperview()
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
     }
     
-    self.botDivider.snp.remakeConstraints { (make) in
+    self.botDivider.snp.makeConstraints { (make) in
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
-      make.height.equalTo(0.5)
+      make.height.equalTo(0.33)
     }
   }
 }
@@ -104,7 +107,7 @@ extension CHEditTextField: CHFieldDelegate {
   }
   
   func setText(_ value: String) {
-    //self.textField.text = value
+    self.field.text = value
   }
   
   func isValid() -> Observable<Bool> {
@@ -113,6 +116,13 @@ extension CHEditTextField: CHFieldDelegate {
   
   @objc func textFieldDidChange(_ textField: UITextField) {
     self.validSubject.onNext(true)
+    if let text = textField.text {
+      self.changeSubject.accept(text)
+    }
+  }
+  
+  func hasChanged() -> Observable<String> {
+    return self.changeSubject.asObservable()
   }
 }
 

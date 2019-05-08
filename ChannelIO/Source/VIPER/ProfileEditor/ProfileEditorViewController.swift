@@ -18,21 +18,20 @@ class ProfileEditorViewController: BaseViewController {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
   }
-  
-  var text = ""
-  var guest: CHGuest?
 
-  var schema: CHProfileSchema?
-  
-  var entityType: EntityType = .none
-  
-  var type: EditFieldType = .name
-  var fieldView: CHFieldDelegate!
   let footerLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
     $0.numberOfLines = 0
   }
+  
+  var text = ""
+  var guest: CHGuest?
+  var schema: CHProfileSchema?
+  
+  var entityType: EntityType = .none
+  var type: EditFieldType = .name
+  var fieldView: CHFieldDelegate!
   
   private var submitSubject = PublishSubject<String>()
   var disposeBag = DisposeBag()
@@ -43,27 +42,26 @@ class ProfileEditorViewController: BaseViewController {
     self.type = type
     self.guest = guest
     self.entityType = .guest
-    self.title = CHAssets.localized("정보수정")
-    
+
     switch type {
     case .name:
       self.text = guest.name
       self.fieldView = CHEditTextField(
         text: self.text,
-        placeholder: CHAssets.localized("없음"))
-      self.headerLabel.text = CHAssets.localized("userchat.detail.edit.name_label")
+        placeholder: CHAssets.localized("ch.settings.edit.name_placeholder"))
+      self.headerLabel.text = CHAssets.localized("ch.settings.edit.name_label")
     case .phone:
       self.text = guest.mobileNumber ?? ""
       self.fieldView = CHPhoneField(text: self.text)
-      self.headerLabel.text = CHAssets.localized("userchat.detail.edit.phone_label")
-      self.footerLabel.text = CHAssets.localized("userchat.detail.edit.phone_description")
+      self.headerLabel.text = CHAssets.localized("ch.settings.edit.phone_number_label")
+      self.footerLabel.text = CHAssets.localized("ch.settings.edit.phone_number_description")
     case .text:
       let key = schema?.key ?? ""
       self.text = guest.profile?[key] as? String ?? ""
       self.fieldView = CHEditTextField(
         text: self.text,
         type: .text,
-        placeholder: CHAssets.localized("userchat.detail.edit_profile.placeholder"))
+        placeholder: CHAssets.localized("ch.profile_form.placeholder"))
       self.headerLabel.text = schema?.nameI18n?.getMessage() ?? ""
     case .number:
       let key = schema?.key ?? ""
@@ -73,7 +71,7 @@ class ProfileEditorViewController: BaseViewController {
       self.fieldView = CHEditTextField(
         text: self.text,
         type: .number,
-        placeholder: CHAssets.localized("userchat.detail.edit_profile.placeholder"))
+        placeholder: CHAssets.localized("ch.profile_form.placeholder"))
       self.headerLabel.text = schema?.nameI18n?.getMessage() ?? ""
     }
     
@@ -83,6 +81,11 @@ class ProfileEditorViewController: BaseViewController {
       .subscribe(onNext: { [weak self] (valid) in
         self?.navigationItem.rightBarButtonItem?.isEnabled = valid
       }).disposed(by: self.disposeBag)
+    
+    self.fieldView.hasChanged()
+      .subscribe(onNext: { [weak self] (value) in
+        self?.text = value
+      }).disposed(by: self.disposeBag)
   }
   
   override func viewDidLoad() {
@@ -90,7 +93,7 @@ class ProfileEditorViewController: BaseViewController {
     
     self.setNavigation()
     
-    self.view.backgroundColor = CHColors.lightGray
+    self.view.backgroundColor = .white
     self.view.addSubview(self.headerLabel)
     self.view.addSubview(self.fieldView as! UIView)
     self.view.addSubview(self.footerLabel)
@@ -121,31 +124,38 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func setNavigation() {
-//    self.navigationItem.rightMargin = 16
-//    self.navigationItem.rightBarButtonItem = NavigationItem(
-//      title: "edit_manager.save_button".localized,
-//      style: .plain,
-//      textColor: self.channel?.textUIColor ?? UIColor.black,
-//      actionHandler: { [weak self] _ in
-//        if let text = self?.fieldView.getText() {
-//          self?.text = text
-//        }
-//
-//        if self?.entityType == .manager {
-//          self?.updateManagerInfo()
-//        } else if self?.entityType == .guest {
-//          self?.updateGuestInfo()
-//        }
-//    })
+    let title = self.schema?.nameI18n?.getMessage() ?? ""
+    let titleView = SimpleNavigationTitleView()
+    titleView.configure(
+      with: title + " " + CHAssets.localized("ch.input"),
+      textColor: mainStore.state.plugin.textUIColor
+    )
+    self.navigationItem.titleView = titleView
+    
+    self.navigationItem.leftBarButtonItem = NavigationItem(
+      image:  CHAssets.getImage(named: "back"),
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
+      actionHandler: { [weak self] in
+        _ = self?.navigationController?.popViewController(animated: true)
+      })
+    
+    self.navigationItem.rightBarButtonItem = NavigationItem(
+      title: "확인",
+      style: .plain,
+      textColor: mainStore.state.plugin.textUIColor,
+      actionHandler: { [weak self] in
+        self?.updateGuestInfo()
+      })
   }
   
   func updateGuestInfo() {
-    SVProgressHUD.show(withStatus: CHAssets.localized("edit_manager.changing_message"))
+    SVProgressHUD.show(withStatus: CHAssets.localized("업데이트중..."))
     
     let numberFormatter = NumberFormatter()
     numberFormatter.numberStyle = .decimal
     
-    let key : String = self.type == .name ? "name" : self.schema?.key ?? ""
+    let key : String = self.schema?.key ?? ""
     let value : Any? = self.type == .number ?
       numberFormatter.number(from: self.text) :
       (self.text == "" ? nil : self.text)
@@ -159,7 +169,7 @@ class ProfileEditorViewController: BaseViewController {
         if error == nil {
           _ = self?.navigationController?.popViewController(animated: true)
         }
-        }, onError: { (error) in
+      }, onError: { (error) in
           //error
       }).disposed(by: self.disposeBag)
   }

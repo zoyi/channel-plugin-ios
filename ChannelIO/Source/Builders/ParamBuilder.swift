@@ -59,25 +59,14 @@ class BootParamBuilder: ParamBuilder {
     return profileData
   }
   
-  private func buildProfile() -> [String: Any]? {
+  private func buildProfile() -> [String: Any?]? {
     guard let profile = self.profile else { return nil }
     
-    var params = [String: Any]()
-    if profile.name != "" {
-      params["name"] = profile.name
-    }
-    
-    if profile.email != "" {
-      params["email"] = profile.email
-    }
-    
-    if profile.mobileNumber != "" {
-      params["mobileNumber"] = profile.mobileNumber
-    }
-    
-    if profile.avatarUrl != "" {
-      params["avatarUrl"] = profile.avatarUrl
-    }
+    var params = [String: Any?]()
+    params["name"] = profile.name
+    params["email"] = profile.email
+    params["mobileNumber"] = profile.mobileNumber
+    params["avatarUrl"] = profile.avatarUrl
     
     let merged = params.merging(profile.property, uniquingKeysWith: { (first, _) in first })
     return merged

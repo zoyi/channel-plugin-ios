@@ -96,12 +96,12 @@ class ChatNavigationTitleView : BaseView {
   
   override var intrinsicContentSize: CGSize {
     //is there a way to calculate its max width more proper way other than magic number?
-    let width = UIScreen.main.bounds.width - 150
+    let width = UIScreen.main.bounds.width - 120
     return CGSize(width: width, height: 44)
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {
-    let width = UIScreen.main.bounds.width - 150
+    let width = UIScreen.main.bounds.width - 120
     return CGSize(width: width, height: 44)
   }
 }
@@ -146,12 +146,12 @@ class ChatNavigationFollowingTitleView : BaseView {
   }
   
   override var intrinsicContentSize: CGSize {
-    let width = UIScreen.main.bounds.width - 150
+    let width = UIScreen.main.bounds.width - 120
     return CGSize(width: width, height: 44)
   }
 
   override func sizeThatFits(_ size: CGSize) -> CGSize {
-    let width = UIScreen.main.bounds.width - 150
+    let width = UIScreen.main.bounds.width - 120
     return CGSize(width: width, height: 44)
   }
 }

@@ -40,9 +40,7 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
   }
   
   func presentSettings(from view: UIViewController?) {
-    let controller = ProfileViewController()
-    let navigation = MainNavigationController(rootViewController: controller)
-    view?.navigationController?.present(navigation, animated: true, completion: nil)
+
   }
   
   func showNewChat(with text: String, from view: UINavigationController?) {

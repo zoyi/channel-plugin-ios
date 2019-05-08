@@ -113,6 +113,13 @@ class SettingView: BaseViewController {
         _ = self?.navigationController?.popViewController(animated: true)
       })
     
+    let titleView = SimpleNavigationTitleView()
+    titleView.configure(
+      with: CHAssets.localized("ch.settings.title"),
+      textColor: mainStore.state.plugin.textUIColor
+    )
+    self.navigationItem.titleView = titleView
+    
     if let nav = self.navigationController as? MainNavigationController {
       nav.newState(state: mainStore.state.plugin)
     }
@@ -125,7 +132,6 @@ extension SettingView: SettingViewProtocol {
   }
   
   func displayOptions(with options: [SettingOptionModel]) {
-    self.title = CHAssets.localized("ch.settings.title")
     self.options = options
     self.tableView.reloadData()
   }
