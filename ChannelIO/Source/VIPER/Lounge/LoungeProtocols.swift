@@ -31,8 +31,10 @@ protocol LoungePresenterProtocol: class {
   var interactor: LoungeInteractorProtocol? { get set }
   var router: LoungeRouterProtocol? { get set }
   
+  var needToFetch: Bool { get set }
+  
   func viewDidLoad()
-  func prepare()
+  func prepare(fetch: Bool)
   func cleanup()
   
   func didClickOnRefresh(for type: LoungeSectionType)
@@ -41,11 +43,10 @@ protocol LoungePresenterProtocol: class {
   func didClickOnChat(with chatId: String?, from view: UIViewController?)
   func didClickOnNewChat(from view: UIViewController?)
   func didClickOnSeeMoreChat(from view: UIViewController?)
+  func didClickOnHelp(from view: UIViewController?)
   
   func didClickOnExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   func didClickOnWatermark()
-
-  
 }
 
 protocol LoungeInteractorProtocol: class {
@@ -53,6 +54,10 @@ protocol LoungeInteractorProtocol: class {
   
   func subscribeDataSource()
   func unsubscribeDataSource()
+  
+  func updateChats() -> Observable<[CHUserChat]>
+  func updateGeneralInfo() -> Observable<(CHChannel, CHPlugin)>
+  func updateExternalSource() -> Observable<[Any]>
   
   func getChannel() -> Observable<CHChannel>
   func getPlugin() -> Observable<(CHPlugin, CHBot?)>
@@ -65,6 +70,8 @@ protocol LoungeRouterProtocol: class {
   func pushChatList(from view: UIViewController?)
   func pushChat(with chatId: String?, from view: UIViewController?)
   func pushSettings(from view: UIViewController?)
+  
+  func presentBusinessHours(from view: UIViewController?)
   func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   
   static func createModule(with chatId: String?) -> LoungeView

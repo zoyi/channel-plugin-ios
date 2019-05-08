@@ -44,12 +44,21 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.initViews()
     self.initScrollView()
     self.presenter?.viewDidLoad()
+    
+    NotificationCenter.default
+      .rx.notification(Notification.Name.Channel.enterForeground)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (_) in
+        if self?.isVisible() == true {
+          self?.presenter?.prepare(fetch: true)
+        }
+      }).disposed(by: self.disposeBag)
   }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.isNavigationBarHidden = true
-    self.presenter?.prepare()
+    self.presenter?.prepare(fetch: true)
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -208,6 +217,7 @@ extension LoungeView {
   
   func displayHeader(with model: LoungeHeaderViewModel) {
     self.headerView.configure(model: model)
+    self.watermarkView.isHidden = !model.chanenl.notAllowToUseSDK
   }
   
   func displayMainContent(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {

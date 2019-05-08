@@ -61,10 +61,12 @@ class LoungeExternalAppsView: BaseView {
     self.addSubview(refreshButton)
     refreshButton.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
-      make.top.equalTo(self.titleLabel.snp.bottom)
+      make.top.equalTo(self.titleLabel.snp.bottom).offset(3)
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
+      make.height.equalTo(44)
+      make.width.equalTo(44)
     }
     
     _ = refreshButton.signalForClick().subscribe(onNext: { [weak self] (_) in

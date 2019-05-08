@@ -16,6 +16,8 @@ struct CHBot : CHEntity {
   var initial = ""
   var color = ""
   var createdAt: Date? = nil
+  
+  var isDefaultBot: Bool = false
 }
 
 extension CHBot : Mappable {

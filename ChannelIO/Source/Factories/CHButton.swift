@@ -9,19 +9,22 @@
 import Foundation
 
 struct CHButton {
-  static func newChat() -> UIButton {
+  static func newChat(
+    textColor: UIColor = mainStore.state.plugin.textUIColor,
+    backgroundColor: UIColor? = UIColor(mainStore.state.plugin.color),
+    borderColor: UIColor? = UIColor(mainStore.state.plugin.borderColor)) -> UIButton {
     return UIButton(type: .system).then {
       $0.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysTemplate), for: .normal)
       $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
-      $0.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
-      $0.tintColor = mainStore.state.plugin.textUIColor
+      $0.setTitleColor(textColor, for: .normal)
+      $0.tintColor = textColor
       
       $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 20)
       $0.imageEdgeInsets = UIEdgeInsets(top:0, left: -14, bottom: 0, right: 0)
       
-      $0.backgroundColor = UIColor(mainStore.state.plugin.color)
+      $0.backgroundColor = backgroundColor
       
-      $0.layer.borderColor = UIColor(mainStore.state.plugin.borderColor)?.cgColor
+      $0.layer.borderColor = borderColor?.cgColor
       $0.layer.cornerRadius = 23
       $0.layer.shadowColor = CHColors.dark.cgColor
       $0.layer.shadowOpacity = 0.4
@@ -85,6 +88,7 @@ struct CHButton {
     return UIButton(type: .custom).then {
       $0.setImage(CHAssets.getImage(named: "refreshCell"), for: .normal)
       $0.imageView?.contentMode = .scaleAspectFit
+      $0.backgroundColor = .white
       
       $0.layer.cornerRadius = 22.f
 

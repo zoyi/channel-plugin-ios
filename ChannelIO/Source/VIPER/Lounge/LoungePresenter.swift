@@ -18,18 +18,48 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   var chatId: String?
   
   var disposeBag = DisposeBag()
-  
-  var once = false
-  var two = false
+  var notiDisposeBag = DisposeBag()
   
   func viewDidLoad() {
-    self.fetchData()
+    self.interactor?.updateExternalSource()
+      .observeOn(MainScheduler.instance)
+      .debounce(1, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { (sources) in
+        //
+        //    let sources = LoungeExternalSourceModel
+        //      .generate(with: mainStore.state.channel, thirdparties: [])
+        //    self?.view?.displayExternalSources(with: sources)
+      }).disposed(by: self.disposeBag)
     
-    NotificationCenter.default.rx
-      .notification(UIApplication.willEnterForegroundNotification)
-      .takeUntil(self.rx.deallocated)
-      .subscribe(onNext: { [weak self] (_) in
-        self?.needToFetch = true
+    self.interactor?.updateGeneralInfo()
+      .observeOn(MainScheduler.instance)
+      .debounce(1, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (channel, plugin) in
+        //NOTE: check if entities have been changed? or...
+        let followers = mainStore.state.managersState.followingManagers
+        let headerModel = LoungeHeaderViewModel(
+          chanenl: channel,
+          plugin: plugin,
+          followers: followers
+        )
+        self?.view?.displayHeader(with: headerModel)
+      }).disposed(by: self.disposeBag)
+    
+    self.interactor?.updateChats()
+      .observeOn(MainScheduler.instance)
+      .debounce(1, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (chats) in
+        guard let `self` = self else { return }
+        //guard !chats.elementsEqual(self.chats) else { return }
+        //userchat has been change
+        //welcome message has been changed
+        let models = chats.map { UserChatCellModel(userChat: $0) }
+        self.view?.displayMainContent(
+          with: models,
+          welcomeModel: UserChatCellModel.welcome(
+            with: mainStore.state.channel,
+            guest: mainStore.state.guest
+        ))
       }).disposed(by: self.disposeBag)
   }
   
@@ -39,14 +69,16 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     self.loadExternalSources()
   }
   
-  func prepare() {
-    if self.needToFetch {
+  func prepare(fetch: Bool = false) {
+    if self.needToFetch || fetch {
+      self.needToFetch = false
       self.fetchData()
     }
+    self.interactor?.subscribeDataSource()
   }
   
   func cleanup() {
-    
+    self.interactor?.unsubscribeDataSource()
   }
   
   func didClickOnRefresh(for type: LoungeSectionType) {
@@ -81,6 +113,10 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     self.router?.pushChatList(from: view)
   }
   
+  func didClickOnHelp(from view: UIViewController?) {
+    self.router?.presentBusinessHours(from: view)
+  }
+  
   func didClickOnExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
     self.router?.presentExternalSource(with: source, from: view)
   }
@@ -99,15 +135,10 @@ extension LoungePresenter {
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, pluginInfo, followers) in
-        if self?.once == false {
-          self?.once = true
-          self?.view?.displayError(for: .header)
-          return
-        }
-        
-        mainStore.dispatchOnMain(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
-        mainStore.dispatchOnMain(UpdateFollowingManagers(payload: followers))
+        mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
+        mainStore.dispatch(UpdateFollowingManagers(payload: followers))
 
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
@@ -128,13 +159,8 @@ extension LoungePresenter {
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats) in
-        if self?.two == false {
-          self?.two = true
-          self?.view?.displayError(for: .chats)
-          return
-        }
-        
         let models = chats.map { UserChatCellModel(userChat: $0) }
         self?.view?.displayMainContent(
           with: models,
@@ -155,6 +181,7 @@ extension LoungePresenter {
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (sources) in
         self?.view?.displayError(for: .externalSource)
         //

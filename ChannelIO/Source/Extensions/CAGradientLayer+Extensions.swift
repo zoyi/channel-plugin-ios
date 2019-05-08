@@ -60,3 +60,12 @@ extension CAGradientLayer {
     return UIGraphicsGetImageFromCurrentImageContext()
   }
 }
+
+extension UIView {
+  func dropShadow(with color: UIColor, opacity: Float, offset: CGSize, radius: CGFloat) {
+    self.layer.shadowColor = color.cgColor
+    self.layer.shadowOpacity = opacity
+    self.layer.shadowOffset = offset
+    self.layer.shadowRadius = radius
+  }
+}

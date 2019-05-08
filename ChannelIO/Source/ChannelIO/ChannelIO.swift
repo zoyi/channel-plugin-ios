@@ -377,38 +377,38 @@ public final class ChannelIO: NSObject {
    *
    *  - parameter
    */
-  @objc
-  private class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
-    GuestPromise.updateGuest(with: profile)
-      .subscribe(onNext: { (guest, error) in
-        if let guest = guest {
-          completion?(true, Guest(with: guest))
-        } else {
-          completion?(false, nil)
-        }
-      }, onError: { error in
-        completion?(false, nil)
-      }).disposed(by: disposeBag)
-  }
+//  @objc
+//  private class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+//    GuestPromise.updateGuest(with: profile)
+//      .subscribe(onNext: { (guest, error) in
+//        if let guest = guest {
+//          completion?(true, Guest(with: guest))
+//        } else {
+//          completion?(false, nil)
+//        }
+//      }, onError: { error in
+//        completion?(false, nil)
+//      }).disposed(by: disposeBag)
+//  }
   
   /**
    *  Update user profile once. If you provide already existed user profile, it won't update the guest profile.
    *
    *  - parameter
    */
-  @objc
-  private class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
-    GuestPromise.updateGuest(with: profile)
-      .subscribe(onNext: { (guest, error) in
-        if let guest = guest {
-          completion?(true, Guest(with: guest))
-        } else {
-          completion?(false, nil)
-        }
-      }, onError: { error in
-        completion?(false, nil)
-      }).disposed(by: disposeBag)
-  }
+//  @objc
+//  private class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+//    GuestPromise.updateGuest(with: profile)
+//      .subscribe(onNext: { (guest, error) in
+//        if let guest = guest {
+//          completion?(true, Guest(with: guest))
+//        } else {
+//          completion?(false, nil)
+//        }
+//      }, onError: { error in
+//        completion?(false, nil)
+//      }).disposed(by: disposeBag)
+//  }
   
   /**
    *  Track an event

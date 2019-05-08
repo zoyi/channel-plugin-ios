@@ -16,10 +16,18 @@ extension UINavigationController {
     self.popViewController(animated: animated)
     CATransaction.commit()
   }
+  
   func pushViewController(viewController: UIViewController, animated: Bool, completion: @escaping ()->()) {
     CATransaction.begin()
     CATransaction.setCompletionBlock(completion)
     self.pushViewController(viewController, animated: animated)
+    CATransaction.commit()
+  }
+  
+  func popToRootViewController(animated: Bool, completion: @escaping () -> ()) {
+    CATransaction.begin()
+    CATransaction.setCompletionBlock(completion)
+    self.popToRootViewController(animated: animated)
     CATransaction.commit()
   }
 }
@@ -58,5 +66,11 @@ extension UINavigationBar {
       gradientLayer.createGradientImage(),
       for: UIBarMetrics.default
     )
+  }
+}
+
+extension UIViewController {
+  func isVisible() -> Bool {
+    return self.isViewLoaded && self.view.window != nil
   }
 }

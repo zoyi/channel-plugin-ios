@@ -143,15 +143,20 @@ final class UserChatCell: BaseTableViewCell, Reusable {
 
   // MARK: Cell Height
 
-  func height(fits width: CGFloat, viewModel: UserChatCellModelType?) -> CGFloat {
+  static func calculateHeight(fits width: CGFloat, viewModel: UserChatCellModelType?, maxNumberOfLines: Int) -> CGFloat {
     guard let viewModel = viewModel else { return 0 }
     
     var height: CGFloat = 0.0
     height += 13.f //top
     height += 18.f
-    height += viewModel.lastMessage?.height(fits: width - 62.f - 52.f, font: UIFont.systemFont(ofSize: 14)) ?? 0
+    height += viewModel.lastMessage?
+      .height(
+        fits: width - 62.f - 52.f,
+        font: UIFont.systemFont(ofSize: 14),
+        maximumNumberOfLines: maxNumberOfLines
+      ) ?? 0
     height += 9
-    return 0
+    return height
   }
   
   class func height(fits width: CGFloat, viewModel: UserChatCellModelType) -> CGFloat {

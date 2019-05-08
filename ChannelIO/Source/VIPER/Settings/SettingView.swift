@@ -94,6 +94,13 @@ class SettingView: BaseViewController {
     super.viewWillAppear(animated)
     self.navigationController?.setNavigationBarHidden(false, animated: true)
     self.presenter?.prepare()
+    
+    if let titleView = self.navigationItem.titleView as? SimpleNavigationTitleView {
+      titleView.configure(
+        with: CHAssets.localized("ch.settings.title"),
+        textColor: mainStore.state.plugin.textUIColor
+      )
+    }
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -188,10 +195,10 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
     }
     switch section {
     case Section.options:
-      label.text = "옵션"
+      label.text = CHAssets.localized("ch.settings.options")
       return view
     case Section.profiles:
-      label.text = "내 프로필 설정"
+      label.text = CHAssets.localized("ch.settings.my_profile")
       return view
     default:
       return nil

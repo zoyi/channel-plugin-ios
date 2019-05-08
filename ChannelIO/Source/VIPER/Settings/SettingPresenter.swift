@@ -35,28 +35,27 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     
     self.view?.displayHeader(with: headerModel)
     
-    let settingOptions = SettingOptionModel.generate(options: [.language, .translation])
+    let settingOptions = SettingOptionModel.generate(options: [.language, .closeChatVisibility, .translation])
     self.view?.displayOptions(with: settingOptions)
     
     self.interactor?.getProfileSchemas()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (schemas) in
         let profiles = mainStore.state.guest.profile
-        self?.view?.displayProfiles(
-          with: GuestProfileItemModel
-            .generate(
-              from: profiles,
-              schemas: schemas
-            ))
+        let models = GuestProfileItemModel.generate(
+          from: profiles,
+          schemas: schemas
+        )
+        self?.view?.displayProfiles(with: models)
       }, onError: { (error) in
         
       }).disposed(by: self.disposeBag)
   }
   
   func prepare() {
-    let settingOptions = SettingOptionModel.generate(options: [.language, .translation])
+    let settingOptions = SettingOptionModel.generate(options: [.language, .closeChatVisibility, .translation])
     self.view?.displayOptions(with: settingOptions)
-    
+
     self.interactor?.subscribeDataSource()
   }
   
@@ -70,6 +69,9 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     }
     else if item.type == .translation, let nextValue = nextValue as? Bool {
       mainStore.dispatch(UpdateVisibilityOfTranslation(show: nextValue))
+    }
+    else if item.type == .closeChatVisibility, let nextValue = nextValue as? Bool {
+       mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: nextValue))
     }
   }
   

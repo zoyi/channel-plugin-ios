@@ -146,6 +146,8 @@
 		657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F421784606001EAA7A /* CHSupportBot.swift */; };
 		657AF3F72178750F001EAA7A /* SupportBotPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F62178750F001EAA7A /* SupportBotPromise.swift */; };
 		657AF3F921787E88001EAA7A /* Alamofire+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */; };
+		657DB87022827C1F0023D550 /* CAGradientLayer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657DB86F22827C1F0023D550 /* CAGradientLayer+Extensions.swift */; };
+		657DB8742282C1A30023D550 /* CHView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657DB8732282C1A30023D550 /* CHView.swift */; };
 		658010DE2195874C00A51CEC /* TargetEvaluatorServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658010DD2195874C00A51CEC /* TargetEvaluatorServiceTests.swift */; };
 		658010E1219948E500A51CEC /* NudgePromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658010E0219948E500A51CEC /* NudgePromise.swift */; };
 		6590FA912068C84E0054B353 /* UserChatPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6590FA902068C84E0054B353 /* UserChatPresenter.swift */; };
@@ -521,6 +523,8 @@
 		657AF3F421784606001EAA7A /* CHSupportBot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHSupportBot.swift; sourceTree = "<group>"; };
 		657AF3F62178750F001EAA7A /* SupportBotPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportBotPromise.swift; sourceTree = "<group>"; };
 		657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+Extensions.swift"; sourceTree = "<group>"; };
+		657DB86F22827C1F0023D550 /* CAGradientLayer+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Extensions.swift"; sourceTree = "<group>"; };
+		657DB8732282C1A30023D550 /* CHView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHView.swift; sourceTree = "<group>"; };
 		658010DD2195874C00A51CEC /* TargetEvaluatorServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvaluatorServiceTests.swift; sourceTree = "<group>"; };
 		658010E0219948E500A51CEC /* NudgePromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgePromise.swift; sourceTree = "<group>"; };
 		6590FA902068C84E0054B353 /* UserChatPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatPresenter.swift; sourceTree = "<group>"; };
@@ -863,6 +867,7 @@
 			isa = PBXGroup;
 			children = (
 				2266C0C721C1267300A71398 /* CHButton.swift */,
+				657DB8732282C1A30023D550 /* CHView.swift */,
 			);
 			name = Factories;
 			path = Source/Factories;
@@ -1105,6 +1110,7 @@
 			children = (
 				659792A51FA7167A00840F6A /* Array+Extensions.swift */,
 				659792A61FA7167A00840F6A /* CRToast+Extensions.swift */,
+				657DB86F22827C1F0023D550 /* CAGradientLayer+Extensions.swift */,
 				659792A71FA7167A00840F6A /* Date+Extensions.swift */,
 				659792A81FA7167A00840F6A /* String+BoundingRect.swift */,
 				659792A91FA7167A00840F6A /* String+Utils.swift */,
@@ -1759,6 +1765,7 @@
 				22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */,
 				65CB1429206A02F200E456B5 /* MessageCellModel.swift in Sources */,
 				659793621FA716CB00840F6A /* UIButton+Extensions.swift in Sources */,
+				657DB8742282C1A30023D550 /* CHView.swift in Sources */,
 				65D358D121BE4E3D001D6A30 /* ButtonsMessageView.swift in Sources */,
 				659793631FA716CB00840F6A /* UIDevice+Extenions.swift in Sources */,
 				65121335224DF47F00737089 /* UIImage+AspectFit.swift in Sources */,
@@ -1809,6 +1816,7 @@
 				657AF3ED21783119001EAA7A /* TargetType.swift in Sources */,
 				22E03E8721B38D560009F48E /* UIFont+Traits.swift in Sources */,
 				65CB992C226ECABE004F9DC7 /* SettingInteractor.swift in Sources */,
+				657DB87022827C1F0023D550 /* CAGradientLayer+Extensions.swift in Sources */,
 				22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */,
 				659793761FA716CB00840F6A /* CHLog.swift in Sources */,
 				6512BA342271A8FF00757CB2 /* LoungeMainView.swift in Sources */,

@@ -54,6 +54,10 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     view?.navigationController?.pushViewController(settingView, animated: true)
   }
 
+  func presentBusinessHours(from view: UIViewController?) {
+    
+  }
+  
   func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
     switch source.type {
     case .email:

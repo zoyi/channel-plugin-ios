@@ -142,34 +142,40 @@ extension ChannelIO {
       ChannelIO.launcherView?.isHidden = true
       mainStore.dispatch(ChatListIsVisible())
       
-//      //chat view but different chatId
-//      if let userChatViewController = topController as? UserChatViewController {
-//        if userChatViewController.userChatId != userChatId {
-//          userChatViewController.navigationController?.popViewController(animated: true, completion: {
+      //chat view but different chatId
+      if let userChatViewController = topController as? UserChatViewController {
+        if userChatViewController.userChatId != userChatId {
+          userChatViewController.navigationController?.popToRootViewController(animated: true, completion: {
 //            if let userChatsController = CHUtils.getTopController() as? UserChatsViewController {
 //              userChatsController.showUserChat(userChatId: userChatId)
 //            }
-//          })
-//        }
-//      }
-//      //chat list
-//      else if let controller = topController as? UserChatsViewController {
-//        controller.showUserChat(userChatId: userChatId)
-//      }
-//      //no channel views
-//      else {
-//        let userChatsController = UserChatsViewController()
-//        userChatsController.showNewChat = userChatId == nil
-//        userChatsController.shouldHideTable = true
-//        if let userChatId = userChatId {
-//          userChatsController.goToUserChatId = userChatId
-//        }
-//
-//        let controller = MainNavigationController(rootViewController: userChatsController)
-//        ChannelIO.baseNavigation = controller
+            if let loungeView = CHUtils.getTopController() as? LoungeView,
+              let presenter = loungeView.presenter as? LoungePresenter,
+              let router = presenter.router {
+              router.pushChat(with: userChatId, from: loungeView)
+//              loungeView.presenter?.didClickOnChat(with: userChatId, from: loungeView)
+            }
+          })
+        }
+      }
+      //chat list
+      else if let controller = topController as? UserChatsViewController {
+        controller.showUserChat(userChatId: userChatId)
+      }
+      //no channel views
+      else {
+        let userChatsController = UserChatsViewController()
+        userChatsController.showNewChat = userChatId == nil
+        userChatsController.shouldHideTable = true
+        if let userChatId = userChatId {
+          userChatsController.goToUserChatId = userChatId
+        }
+
+        let controller = MainNavigationController(rootViewController: userChatsController)
+        ChannelIO.baseNavigation = controller
       
-//        topController.present(controller, animated: animated, completion: nil)
-//      }
+        topController.present(controller, animated: animated, completion: nil)
+      }
     }
   }
   
@@ -257,6 +263,14 @@ extension ChannelIO {
       ChannelIO.chatNotificationView = nil
     }
   }
+  
+  internal class func checkOperationTimer() {
+    //timer every n seconds
+    //check current time is in operation time
+    //if not fetch channel, plugin and apply change
+    //1. !working -> working
+    //2. working -> !working
+  }
 }
 
 extension ChannelIO {
@@ -291,6 +305,7 @@ extension ChannelIO {
   @objc internal class func enterBackground() {
     WsService.shared.disconnect()
     ChannelIO.willBecomeActive = false
+    NotificationCenter.default.post(name: Notification.Name.Channel.enterBackground, object: nil)
   }
   
   @objc internal class func enterForeground() {
@@ -301,6 +316,7 @@ extension ChannelIO {
       mainStore.dispatch(UpdateGuest(payload: guest))
     })
     WsService.shared.connect()
+    NotificationCenter.default.post(name: Notification.Name.Channel.enterForeground, object: nil)
   }
   
   @objc internal class func appBecomeActive(_ application: UIApplication) {

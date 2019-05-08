@@ -41,8 +41,13 @@ struct SettingOptionModel {
         model.option = .switchable
         model.value = mainStore.state.userChatsState.showTranslation
         models.append(model)
-      default:
-        break
+      case .closeChatVisibility:
+        var model = SettingOptionModel()
+        model.title = CHAssets.localized("ch.settings.show_closed_chats")
+        model.type = option
+        model.option = .switchable
+        model.value = mainStore.state.userChatsState.showCompletedChats
+        models.append(model)
       }
     }
     return models
@@ -51,6 +56,7 @@ struct SettingOptionModel {
 
 enum SettingOptionType {
   case language
+  case closeChatVisibility
   case translation
 }
 

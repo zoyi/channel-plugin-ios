@@ -56,6 +56,8 @@ struct UserChatCellModel: UserChatCellModelType {
     model.avatar = channel
     model.title = channel.name
     model.lastMessage = guest.getWelcome()
+    model.isBadgeHidden = true
+    model.badgeCount = 0
     return model
   }
 }

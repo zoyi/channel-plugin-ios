@@ -19,6 +19,10 @@ class LoungeMainView: BaseView {
   
   struct Constant {
     static let maxNumberOfCell = 3
+    static let maxNumberOfLinesForWelcomeCell = 8
+    static let defaultCellHeight = 80.f
+    static let headerHeight = 30.f
+    static let footerHeight = 70.f
   }
   
   weak var presenter: LoungePresenter?
@@ -32,9 +36,8 @@ class LoungeMainView: BaseView {
   var errorView: LoungeMainErrorView?
   
   var welcomeModel: UserChatCellModel?
-  let welcomeCell = UserChatCell().then {
-    $0.messageLabel.numberOfLines = 8
-  }
+  var welcomeCellHeight: CGFloat = 0
+  
   var chats: [UserChatCellModel] = []
   
   var chatSignal = PublishRelay<UserChatCellModel>()
@@ -44,20 +47,19 @@ class LoungeMainView: BaseView {
   
   var disposeBag = DisposeBag()
   
-  var welcomeCellHeight: CGFloat {
-    self.welcomeCell.setNeedsLayout()
-    self.welcomeCell.layoutIfNeeded()
-    
-    return self.welcomeCell.frame.height
-  }
-  
+
   var viewHeight: CGFloat {
-    if self.chats.count == 0 && self.welcomeModel != nil {
+    if let model = self.welcomeModel, self.chats.count == 0 {
+      self.welcomeCellHeight = UserChatCell.calculateHeight(
+        fits: self.frame.width,
+        viewModel: model,
+        maxNumberOfLines: 8)
+      
       return self.welcomeCellHeight + Metric.sectionFooterHeight
     } else if self.chats.count < 4 {
-      return CGFloat(self.chats.count * 80) + Metric.sectionFooterHeight
+      return CGFloat(self.chats.count) * Constant.defaultCellHeight + Metric.sectionFooterHeight
     } else {
-      return CGFloat(Constant.maxNumberOfCell * 80) +
+      return CGFloat(Constant.maxNumberOfCell) * Constant.defaultCellHeight +
         Metric.sectionHeaderHeight +
         Metric.sectionFooterHeight
     }
@@ -139,15 +141,16 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.chats.count > 0 ? min(self.chats.count, 3) : self.welcomeModel != nil ? 1 : 0
+    return self.chats.count > 0 ? min(self.chats.count, Constant.maxNumberOfCell) : self.welcomeModel != nil ? 1 : 0
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return self.chats.count > 3 ? 30 : CGFloat.leastNormalMagnitude
+    return self.chats.count > Constant.maxNumberOfCell ? Constant.headerHeight : CGFloat.leastNormalMagnitude
   }
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
     let view = LoungeTableFooterView()
+    view.setEnableButton(enabled: mainStore.state.channel.working)
     view.newChatSignal
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)
@@ -155,7 +158,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-    return 70
+    return Constant.footerHeight
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -168,15 +171,25 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    let maxWidth = UIScreen.main.bounds.width - 16
-    return self.chats.count > 0 ? 80 : self.welcomeCell.height(fits: maxWidth, viewModel: self.welcomeModel)
+    return self.chats.count > 0 ? Constant.defaultCellHeight : self.welcomeCellHeight
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
-    let model = self.chats[indexPath.row]
-    cell.configure(model)
-    return cell
+    if self.chats.count > 0 {
+      let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
+      let model = self.chats[indexPath.row]
+      cell.configure(model)
+      return cell
+    }
+    
+    if let welcomeModel = self.welcomeModel {
+      let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
+      cell.configure(welcomeModel)
+      cell.messageLabel.numberOfLines = Constant.maxNumberOfLinesForWelcomeCell
+      return cell
+    }
+    
+    return UITableViewCell()
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -194,7 +207,7 @@ class LoungeTableHeaderView: BaseView {
   let recentLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
-    $0.text = "최근대화"
+    $0.text = CHAssets.localized("ch.lounge.recent_chats")
   }
   let alertCountLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
@@ -203,10 +216,11 @@ class LoungeTableHeaderView: BaseView {
   let seeMoreLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.charcoalGrey
-    $0.text = CHAssets.localized("전체 보기")
+    $0.text = CHAssets.localized("ch.lounge.chats.see_all")
   }
   
   var moreSignal = PublishRelay<Any?>()
+  var disposeBag = DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -214,7 +228,9 @@ class LoungeTableHeaderView: BaseView {
     self.addSubview(self.recentLabel)
     self.addSubview(self.alertCountLabel)
     self.addSubview(self.seeMoreLabel)
-    _ = self.seeMoreLabel.signalForClick().bind(to: self.moreSignal)
+    self.seeMoreLabel.signalForClick()
+      .bind(to: self.moreSignal)
+      .disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -257,9 +273,7 @@ class LoungeTableHeaderView: BaseView {
       self.alertCountLabel.isHidden = restCount <= 0
     } else {
       self.seeMoreLabel.isHidden = true
-      
     }
-
   }
 }
 
@@ -267,10 +281,15 @@ class LoungeTableFooterView: BaseView {
   let newChatButton = CHButton.newChat()
   
   let newChatSignal = PublishRelay<Any?>()
+  var disposeBag = DisposeBag()
+  
   override func initialize() {
     super.initialize()
     self.addSubview(self.newChatButton)
-    _ = self.newChatButton.signalForClick().bind(to: self.newChatSignal)
+    
+    self.newChatButton.signalForClick()
+      .bind(to: self.newChatSignal)
+      .disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -279,6 +298,22 @@ class LoungeTableFooterView: BaseView {
       make.centerX.equalToSuperview()
       make.top.equalToSuperview().inset(10)
       make.height.equalTo(46)
+    }
+  }
+  
+  func setEnableButton(enabled: Bool) {
+    if enabled {
+      self.newChatButton.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
+      self.newChatButton.tintColor = mainStore.state.plugin.textUIColor
+      self.newChatButton.backgroundColor = UIColor(mainStore.state.plugin.color)
+      self.newChatButton.layer.borderColor = UIColor(mainStore.state.plugin.borderColor)?.cgColor
+      self.newChatButton.isUserInteractionEnabled = true
+    } else {
+      self.newChatButton.setTitleColor(CHColors.blueyGrey, for: .normal)
+      self.newChatButton.tintColor = CHColors.blueyGrey
+      self.newChatButton.backgroundColor = CHColors.paleGrey20
+      self.newChatButton.layer.borderColor = UIColor.clear.cgColor
+      self.newChatButton.isUserInteractionEnabled = false
     }
   }
 }

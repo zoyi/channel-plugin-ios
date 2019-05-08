@@ -267,39 +267,28 @@ class UserChatsViewController: BaseViewController {
     self.tableView.isHidden = hideTable
     
     let controller = self.prepareUserChat(userChatId: userChatId, text: text)
-    
-    //NOTE: Make sure to call onCompleted on observable method to avoid leak
+   
     let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-    let followersSignal = CHManager.getRecentFollowers()
+    let supportSignal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil)
     
-    var bot: CHBot? = nil
-    
-    Observable.zip(pluginSignal, followersSignal)
+    Observable.zip(pluginSignal, supportSignal)
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         SVProgressHUD.show()
         dlog("Error while opening chat. Attempting to open again")
         return true
       })
-      .flatMap({ (info, managers) -> Observable<CHSupportBotEntryInfo> in
-        bot = info.1
-        mainStore.dispatchOnMain(UpdateFollowingManagers(payload: managers))
-        mainStore.dispatchOnMain(GetPlugin(plugin: info.0, bot: info.1))
-        return CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil)
-      })
-      .catchError({ (error) -> Observable<CHSupportBotEntryInfo> in
-        return .just(CHSupportBotEntryInfo())
-      })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (entry) in
+      .subscribe(onNext: { [weak self] (pluginInfo, supportEntry) in
         SVProgressHUD.dismiss()
-        if entry.step != nil && entry.supportBot != nil {
-          mainStore.dispatch(GetSupportBotEntry(bot: bot, entry: entry))
+        mainStore.dispatchOnMain(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
+        
+        if supportEntry.step != nil && supportEntry.supportBot != nil {
+          mainStore.dispatch(GetSupportBotEntry(bot: pluginInfo.1, entry: supportEntry))
         }
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.isShowingChat = false
         self?.shouldHideTable = false
-        dlog("got following managers")
       }, onError: { [weak self] (error) in
         SVProgressHUD.dismiss()
         dlog("error getting following managers: \(error.localizedDescription)")
@@ -326,10 +315,6 @@ class UserChatsViewController: BaseViewController {
         self?.showUserChat(text: text, hideTable: false, animated: true)
       })
     }).disposed(by: self.disposeBag)
-    
-//    controller.signalForProfile().subscribe { [weak self] _ in
-//      self?.showProfileView()
-//    }.disposed(by: self.disposeBag)
     
     return controller
   }
