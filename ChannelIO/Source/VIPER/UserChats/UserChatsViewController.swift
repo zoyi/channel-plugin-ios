@@ -47,14 +47,11 @@ class UserChatsViewController: BaseViewController {
     $0.isHidden = true
   }
   
-  let watermarkView = WatermarkView().then {
-    $0.alpha = 0
-  }
   let errorToastView = ErrorToastView().then {
     $0.isHidden = true
   }
-  //refactor
-  let plusButton = NewChatView()
+
+  let newChatButton = CHButton.newChat()
   
   var showCompleted = false
   var didLoad = false
@@ -75,8 +72,7 @@ class UserChatsViewController: BaseViewController {
     
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.emptyView)
-    self.view.addSubview(self.watermarkView)
-    self.view.addSubview(self.plusButton)
+    self.view.addSubview(self.newChatButton)
     
     self.errorToastView.topLayoutGuide = self.topLayoutGuide
     self.errorToastView.containerView = self.view
@@ -146,18 +142,8 @@ class UserChatsViewController: BaseViewController {
       }).disposed(by: (self?.disposeBag)!)
     }.disposed(by: self.disposeBag)
     
-    self.plusButton.signalForClick().subscribe { [weak self] _ in
+    self.newChatButton.signalForClick().subscribe { [weak self] _ in
       self?.showUserChat(hideTable: false)
-    }.disposed(by: self.disposeBag)
-    
-    self.watermarkView.signalForClick().subscribe{ _ in
-      let channel = mainStore.state.channel
-      let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-      let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
-      
-      if let url = URL(string: urlString) {
-        url.open()
-      }
     }.disposed(by: self.disposeBag)
   }
   
@@ -186,32 +172,23 @@ class UserChatsViewController: BaseViewController {
     self.tableView.snp.makeConstraints { [weak self] make in
       if #available(iOS 11.0, *) {
         make.top.equalTo((self?.view.safeAreaLayoutGuide.snp.top)!)
+        make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!)
       } else {
         make.top.equalToSuperview()
+        make.bottom.equalToSuperview()
       }
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      self?.tableViewBottomConstraint = make.bottom.equalTo((self?.watermarkView.snp.top)!).constraint
     }
 
     self.emptyView.snp.makeConstraints { (make) in
       make.edges.equalTo(0)
     }
     
-    self.plusButton.snp.makeConstraints { [weak self] make in
-      make.right.equalToSuperview().inset(24)
-      self?.plusBottomConstraint = make.bottom.equalToSuperview().inset(24).constraint
-    }
-    
-    self.watermarkView.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-      if #available(iOS 11.0, *) {
-        make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!)
-      } else {
-        make.bottom.equalToSuperview()
-      }
-      make.height.equalTo(40)
+    self.newChatButton.snp.makeConstraints { [weak self] make in
+      make.centerX.equalToSuperview()
+      make.height.equalTo(46)
+      self?.plusBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
     }
   }
   
@@ -246,15 +223,15 @@ class UserChatsViewController: BaseViewController {
     self.navigationItem.titleView = titleView
   }
 
-  fileprivate func showPlusButton() {
+  fileprivate func showNewChatButton() {
     self.plusBottomConstraint?.update(inset: 24)
     UIView.animate(withDuration: 0.3) { 
       self.view.layoutIfNeeded()
     }
   }
   
-  fileprivate func hidePlusButton() {
-    let margin = -24 - self.plusButton.frame.size.height
+  fileprivate func hideNewChatButton() {
+    let margin = -24 - self.newChatButton.frame.size.height
     self.plusBottomConstraint?.update(inset: margin)
     UIView.animate(withDuration: 0.3) {
       self.view.layoutIfNeeded()
@@ -328,7 +305,6 @@ class UserChatsViewController: BaseViewController {
 // MARK: - StoreSubscriber
 
 extension UserChatsViewController: StoreSubscriber {
-
   func newState(state: AppState) {
     self.userChats = userChatsSelector(
       state: state,
@@ -337,13 +313,8 @@ extension UserChatsViewController: StoreSubscriber {
     self.nextSeq = state.userChatsState.nextSeq
     self.tableView.isHidden = (self.userChats.count == 0 || !self.didLoad) || self.shouldHideTable
     self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad || self.showNewChat
-    self.plusButton.isHidden = self.tableView.isHidden && self.showNewChat
+    self.newChatButton.isHidden = self.tableView.isHidden && self.showNewChat
     
-    self.plusButton.configure(
-      bgColor: state.plugin.color,
-      borderColor: state.plugin.borderColor,
-      tintColor: state.plugin.textColor)
-   
     // fetch data
     let showCompleted = state.userChatsState.showCompletedChats
     if self.showCompleted != showCompleted {
@@ -351,8 +322,6 @@ extension UserChatsViewController: StoreSubscriber {
       self.nextSeq = nil
       self.fetchUserChats(isInit: true, showIndicator: true, isReload: true)
     }
-    
-    self.showWatermarkIfNeeded()
   }
 }
 
@@ -363,11 +332,10 @@ extension UserChatsViewController: UIScrollViewDelegate {
     let yOffset = scrollView.contentOffset.y
     if self.scrollOffset < yOffset && self.scrollOffset > 0 &&
       yOffset < scrollView.contentSize.height - scrollView.bounds.height {
-      self.hidePlusButton()
+      self.hideNewChatButton()
     }
     
     self.scrollOffset = yOffset
-    self.showWatermarkIfNeeded()
   }
   
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -381,11 +349,11 @@ extension UserChatsViewController: UIScrollViewDelegate {
   }
   
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    self.showPlusButton()
+    self.showNewChatButton()
   }
   
   func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    self.showPlusButton()
+    self.showNewChatButton()
   }
 }
 
@@ -510,31 +478,6 @@ extension UserChatsViewController {
         self.showUserChat(userChatId: chat.id, animated: false)
       }
     }
-  }
-}
-
-extension UserChatsViewController {
-  func showWatermarkIfNeeded() {
-    if !mainStore.state.channel.notAllowToUseSDK {
-      return
-    }
-    
-    let yOffset = self.tableView.contentOffset.y
-    let contentHeight = CGFloat(self.userChats.count * 84)
-    if contentHeight > self.tableView.bounds.height - 40 {
-      let triggerOffset = contentHeight - self.tableView.bounds.height - 40
-      if yOffset > 0 && yOffset > triggerOffset {
-        self.progressWatermark(yOffset - triggerOffset)
-      } else {
-        self.progressWatermark(0)
-      }
-    } else {
-      self.progressWatermark(40)
-    }
-  }
-  
-  func progressWatermark(_ offset: CGFloat) {
-    self.watermarkView.alpha = offset/40
   }
 }
 

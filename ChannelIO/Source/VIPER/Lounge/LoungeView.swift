@@ -133,13 +133,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   
   func initViews() {
     self.view.addSubview(self.headerView)
-    self.headerView.settingSignal.subscribe(onNext: { [weak self] (_) in
-      self?.presenter?.didClickOnSetting(from: self)
-    }).disposed(by: self.disposeBag)
-    self.headerView.dismissSignal.subscribe(onNext: { [weak self] (_) in
-      self?.presenter?.didClickOnDismiss()
-    }).disposed(by: self.disposeBag)
-    
+
     self.view.addSubview(self.scrollView)
     self.scrollView.addSubview(self.mainView)
     self.mainView.signalForChat().subscribe(onNext: { [weak self] (chat) in
@@ -196,12 +190,18 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
 
 extension LoungeView: UIGestureRecognizerDelegate {
   @objc func tapCheck(_ gesture: UITapGestureRecognizer) {
-    let location = gesture.location(in: self.view)
-    
-    if self.headerView.dismissButton.frame.contains(location) {
-      self.presenter?.didClickOnDismiss()
-    } else if self.headerView.settingButton.frame.contains(location) {
-      self.presenter?.didClickOnSetting(from: self)
+    if self.headerView.dismissButton.frame
+      .contains(gesture.location(in: self.view)) {
+        self.presenter?.didClickOnDismiss()
+    }
+    else if self.headerView.settingButton.frame
+      .contains(gesture.location(in: self.view)) {
+        self.presenter?.didClickOnSetting(from: self)
+    }
+    else if self.headerView.textContainerView.frame
+      .contains(gesture.location(in: self.headerView.textContainerView)) &&
+      self.headerView.operationTimeLabel.isHidden == false {
+      self.presenter?.didClickOnHelp(from: self)
     }
   }
   

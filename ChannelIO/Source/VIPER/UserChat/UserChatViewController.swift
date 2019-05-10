@@ -300,7 +300,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.register(cellType: DateCell.self)
     self.tableView.register(cellType: LogCell.self)
     self.tableView.register(cellType: TypingIndicatorCell.self)
-    self.tableView.register(cellType: WatermarkCell.self)
     self.tableView.register(cellType: ProfileCell.self)
     self.tableView.register(cellType: ActionMessageCell.self)
     self.tableView.register(cellType: ActionWebMessageCell.self)
@@ -662,7 +661,6 @@ extension UserChatViewController {
     }
     
     self.present(alertView, animated: true, completion: nil)
-
   }
 
   override func didPressRightButton(_ sender: Any?) {
@@ -836,20 +834,7 @@ extension UserChatViewController {
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
-    if section == 0 && self.channel.notAllowToUseSDK {
-      let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
-      _ = cell.signalForClick().subscribe { _ in
-        let channel = mainStore.state.channel
-        let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-        let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
-        
-        if let url = URL(string: urlString) {
-          url.open()
-        }
-      }
-      cell.transform = tableView.transform
-      return cell
-    } else if section == 0 || (section == 1 && self.channel.notAllowToUseSDK) {
+    if section == 0 || (section == 1 && self.channel.notAllowToUseSDK) {
       let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
       cell.transform = tableView.transform
       return cell

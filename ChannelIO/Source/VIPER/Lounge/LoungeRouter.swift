@@ -24,6 +24,12 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       chatView.userChatId = userChatId
     }
     
+    chatView.signalForNewChat().subscribe(onNext: { [weak self] (_) in
+      view?.navigationController?.popViewController(animated: true, completion: {
+        self?.pushChat(with: nil, from: view)
+      })
+    }).disposed(by: self.disposeBag)
+    
     //plugin may not need
     Observable.zip(pluginSignal, supportSignal)
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
@@ -55,7 +61,17 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
   }
 
   func presentBusinessHours(from view: UIViewController?) {
+    let channel = mainStore.state.channel
+    let alertController = UIAlertController(
+      title: "운영시간",
+      message: channel.workingTimeString,
+      preferredStyle: .alert)
     
+    alertController.addAction(UIAlertAction(title: "확인", style: .default) {  _ in
+      alertController.dismiss(animated: true, completion: nil)
+    })
+    alertController.modalTransitionStyle = .crossDissolve
+    view?.present(alertController, animated: true, completion: nil)
   }
   
   func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
