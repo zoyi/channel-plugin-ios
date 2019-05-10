@@ -164,7 +164,7 @@ class MessageTests: QuickSpec {
       
       it("normal image") {
         let tempImage = CHAssets.getImage(named: "audio")
-        let tempData = UIImagePNGRepresentation(tempImage!)
+        let tempData = tempImage!.pngData()
         let file = CHFile(data: tempData!, category: "image")
         
         var message = CHMessage(chatId: self.userChatId,

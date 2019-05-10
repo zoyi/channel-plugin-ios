@@ -35,7 +35,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       .observeOn(MainScheduler.instance)
       .debounce(1, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, plugin) in
-        //NOTE: check if entities have been changed? or...
+        //NOTE: check if entities have been changed
         let followers = mainStore.state.managersState.followingManagers
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
@@ -59,7 +59,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           welcomeModel: UserChatCellModel.welcome(
             with: mainStore.state.channel,
             guest: mainStore.state.guest
-        ))
+          ))
       }).disposed(by: self.disposeBag)
   }
   

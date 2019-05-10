@@ -13,7 +13,7 @@ import SVProgressHUD
 
 class LoungeView: BaseViewController, LoungeViewProtocol {
   struct Metric {
-    static let scrollInsetTop = 160.f
+    static let scrollInsetTop = 140.f
     static let scrollInsetBottom = 20.f
   }
   
@@ -69,8 +69,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func setupConstraints() {
     super.setupConstraints()
     
-    self.headerView.snp.makeConstraints { (make) in
-      make.height.equalTo(270)
+    self.headerView.snp.makeConstraints { [weak self] (make) in
+      make.height.equalTo(266)
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()

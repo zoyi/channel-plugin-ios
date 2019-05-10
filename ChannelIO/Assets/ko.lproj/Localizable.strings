@@ -41,7 +41,7 @@
 "ch.mobile_verification.placeholder" = "휴대폰 번호";
 "ch.permission.denied" = "권한이 거부되었습니다.";
 "ch.user_profile.locale.label" = "언어";
-"ch.out_of_work.confirm" = "운영시간 자세히 보기";
+"ch.out_of_work.confirm" = "운영시간 보기";
 "ch.out_of_work.mon" = "월";
 "ch.out_of_work.tue" = "화";
 "ch.out_of_work.wed" = "수";

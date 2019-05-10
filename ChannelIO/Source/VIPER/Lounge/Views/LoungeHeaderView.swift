@@ -15,6 +15,15 @@ class LoungeHeaderView: BaseView {
   let contentView = UIView().then {
     $0.backgroundColor = .clear
   }
+  
+  let infoContainerView = UIView().then {
+    $0.backgroundColor = .clear
+  }
+  
+  let textContainerView = UIView().then {
+    $0.backgroundColor = .clear
+  }
+  
   let channelNameLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 22)
     $0.textAlignment = .left
@@ -37,17 +46,25 @@ class LoungeHeaderView: BaseView {
     $0.font = UIFont.systemFont(ofSize: 14)
     $0.alpha = 0.8
   }
+  
   let responseImageView = UIImageView()
+  
   let responseDescriptionLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.alpha = 0.8
   }
+  
   let operationTimeLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
+    $0.text = CHAssets.localized("ch.out_of_work.confirm")
     $0.alpha = 0.8
+    $0.isHidden = true
   }
+  
   let helpImageView = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "help")?.withRenderingMode(.alwaysTemplate)
+    $0.image = CHAssets.getImage(named: "clock")?.withRenderingMode(.alwaysTemplate)
+    $0.isHidden = true
+    $0.alpha = 0.8
   }
   
   let followersView = FollowersView()
@@ -59,7 +76,11 @@ class LoungeHeaderView: BaseView {
     ],
     startPoint: .top,
     endPoint: .bottom).then {
-      $0.dropShadow(with: CHColors.dark, opacity: 0.4, offset: CGSize(width: 0, height: 4), radius: 4)
+      $0.dropShadow(
+        with: CHColors.dark,
+        opacity: 0.4,
+        offset: CGSize(width: 0, height: 4),
+        radius: 4)
     }
   
   let bgView = CAGradientLayer().then {
@@ -67,6 +88,7 @@ class LoungeHeaderView: BaseView {
     $0.endPoint = CAGradientLayer.Point.bottomRight.value
     $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 306)
   }
+  
   let bottomBgView = CAGradientLayer().then {
     $0.startPoint = CAGradientLayer.Point.bottom.value
     $0.endPoint = CAGradientLayer.Point.top.value
@@ -87,17 +109,22 @@ class LoungeHeaderView: BaseView {
     
     self.layer.addSublayer(self.bgView)
     self.layer.addSublayer(self.bottomBgView)
+    
     self.addSubview(self.contentView)
     self.contentView.addSubview(self.channelNameLabel)
     self.contentView.addSubview(self.settingButton)
     self.contentView.addSubview(self.dismissButton)
-    self.contentView.addSubview(self.responseLabel)
-    self.contentView.addSubview(self.responseImageView)
-    self.contentView.addSubview(self.responseDescriptionLabel)
-    self.contentView.addSubview(self.operationTimeLabel)
-    self.contentView.addSubview(self.helpImageView)
-    self.contentView.addSubview(self.followersView)
-    self.contentView.addSubview(self.offlineImageView)
+    
+    self.infoContainerView.addSubview(self.textContainerView)
+    self.textContainerView.addSubview(self.responseLabel)
+    self.textContainerView.addSubview(self.responseImageView)
+    self.textContainerView.addSubview(self.responseDescriptionLabel)
+    self.textContainerView.addSubview(self.operationTimeLabel)
+    self.textContainerView.addSubview(self.helpImageView)
+    
+    self.addSubview(self.infoContainerView)
+    self.infoContainerView.addSubview(self.followersView)
+    self.infoContainerView.addSubview(self.offlineImageView)
     
     self.settingButton.signalForClick()
       .bind(to: self.settingSignal)
@@ -108,6 +135,10 @@ class LoungeHeaderView: BaseView {
       .disposed(by: self.disposeBag)
     
     self.helpImageView.signalForClick()
+      .bind(to: self.helpSignal)
+      .disposed(by: self.disposeBag)
+    
+    self.operationTimeLabel.signalForClick()
       .bind(to: self.helpSignal)
       .disposed(by: self.disposeBag)
   }
@@ -156,11 +187,22 @@ class LoungeHeaderView: BaseView {
       make.width.equalTo(30)
     }
     
-    self.responseLabel.snp.makeConstraints { [weak self] (make) in
+    self.infoContainerView.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
-      make.top.equalTo(self.channelNameLabel.snp.bottom).offset(10)
+      make.leading.equalToSuperview()
+      make.top.equalTo(self.channelNameLabel.snp.bottom).offset(6)
+      make.trailing.equalToSuperview()
+      make.height.equalTo(80)
+    }
+    
+    self.textContainerView.snp.makeConstraints { (make) in
       make.leading.equalToSuperview().inset(24)
-      make.trailing.lessThanOrEqualTo(self.followersView.snp.leading).offset(-10)
+      make.centerY.equalToSuperview()
+    }
+    
+    self.responseLabel.snp.makeConstraints { (make) in
+      make.top.equalToSuperview()
+      make.leading.equalToSuperview()
     }
     
     self.responseImageView.snp.makeConstraints { [weak self] (make) in
@@ -169,43 +211,43 @@ class LoungeHeaderView: BaseView {
       make.width.equalTo(22)
       make.centerY.equalTo(self.responseLabel.snp.centerY)
       make.leading.equalTo(self.responseLabel.snp.trailing)
-      make.trailing.lessThanOrEqualTo(self.followersView).offset(-10)
     }
     
     self.responseDescriptionLabel.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       make.top.equalTo(self.responseImageView.snp.bottom).offset(2)
-      make.leading.equalToSuperview().inset(24)
-      make.trailing.lessThanOrEqualTo(self.followersView.snp.leading).offset(-10)
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
     }
     
     self.operationTimeLabel.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       make.top.equalTo(self.responseDescriptionLabel.snp.bottom).offset(2)
-      make.leading.equalToSuperview().inset(24)
-      make.trailing.lessThanOrEqualTo(self.followersView.snp.leading).offset(-10)
+      make.leading.equalToSuperview()
+      make.bottom.equalToSuperview()
     }
     
     self.helpImageView.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       make.centerY.equalTo(self.operationTimeLabel.snp.centerY)
       make.leading.equalTo(self.operationTimeLabel.snp.trailing).offset(5)
+      make.trailing.lessThanOrEqualToSuperview()
       make.height.equalTo(15)
       make.width.equalTo(15)
     }
     
     self.followersView.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
-      make.top.equalTo(self.responseLabel.snp.top)
+      make.centerY.equalToSuperview()
+      make.leading.equalTo(self.textContainerView.snp.trailing).offset(10)
       make.trailing.equalToSuperview().inset(20)
     }
     
-    self.offlineImageView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.offlineImageView.snp.makeConstraints { (make) in
       make.height.equalTo(60)
       make.width.equalTo(60)
       make.trailing.equalToSuperview().inset(20)
-      make.top.equalTo(self.responseLabel.snp.top)
+      make.centerY.equalToSuperview()
     }
   }
   
@@ -247,7 +289,6 @@ class LoungeHeaderView: BaseView {
         CHAssets.getImage(named: "\(channel.expectedResponseDelay)B")
       self.responseLabel.text = CHAssets.localized("ch.chat.expect_response_delay.\(channel.expectedResponseDelay)")
       self.responseDescriptionLabel.text = CHAssets.localized("ch.chat.expect_response_delay.\(channel.expectedResponseDelay).short_description")
-      self.operationTimeLabel.text = channel.todayOperationTime ?? ""
       self.followersView.configure(entities: followers)
       self.followersView.isHidden = false
       self.offlineImageView.isHidden = true
@@ -258,8 +299,6 @@ class LoungeHeaderView: BaseView {
       
       self.responseLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working")
       self.responseDescriptionLabel.text =  CHAssets.localized("ch.lounge.header.available_time")
-      self.operationTimeLabel.text = channel.nextOperationTime ?? ""
-      //self.followersView.configure(entities: [channel])
       self.followersView.isHidden = true
       self.offlineImageView.isHidden = false
     }

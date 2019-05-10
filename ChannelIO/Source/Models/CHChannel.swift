@@ -168,14 +168,6 @@ struct CHChannel: CHEntity {
     
     return nil
   }
-  
-  var isLunchTime: Bool {
-    guard let lunchTime = self.lunchTime else { return false }
-//    Calendar.current.dateComponents(
-    //now know lunch time range
-    //
-    return false
-  }
 }
 
 extension CHChannel: Equatable {
