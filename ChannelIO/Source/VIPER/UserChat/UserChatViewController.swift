@@ -54,6 +54,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
 
   var disposeBag = DisposeBag()
+  var notiDisposeBag = DisposeBag()
+  
   var currentLocale: CHLocaleString? = CHUtils.getLocale()
   var chatManager : ChatManager!
   
@@ -134,6 +136,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.setNavigationBarHidden(false, animated: true)
+    self.initObservers()
     mainStore.subscribe(self)
   }
 
@@ -142,6 +145,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     if let count = self.navigationController?.viewControllers.count, count == 1 {
       self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
+    self.removeObservers()
     mainStore.unsubscribe(self)
   }
   
@@ -154,32 +158,22 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.adjustTableViewInset()
   }
   
-  func adjustTableViewInset() {
-    var chatViewSize = UIScreen.main.bounds.height -
-      (self.navigationController?.navigationBar.frame.height ?? 0)
+  func adjustTableViewInset(bottomInset: CGFloat = 0.f) {
+    let chatViewHeight = self.tableView.frame.height
     
-    chatViewSize -= 50 //MASIC #: log height?
-    if #available(iOS 11.0, *) {
-      chatViewSize -= self.view.safeAreaInsets.bottom
-    }
-    
-    if self.tableView.contentSize.height <= chatViewSize {
+    if self.tableView.contentSize.height <= chatViewHeight {
       //NOTE: it shrinks instantly for a sec. But why?
       guard self.tableView.contentSize.height > 40 else { return }
       var currInset = self.tableView.contentInset
-      currInset.top = chatViewSize - self.tableView.contentSize.height
+      currInset.top = chatViewHeight - self.tableView.contentSize.height
       
       self.tableView.contentInset = currInset
     } else {
-      if #available(iOS 11.0, *) {
-        self.tableView.contentInset = UIEdgeInsets(
-          top: self.view.safeAreaInsets.bottom,
-          left: 0,
-          bottom: 0,
-          right: 0)
-      } else {
-        self.tableView.contentInset = .zero
-      }
+      self.tableView.contentInset = UIEdgeInsets(
+        top: bottomInset,
+        left: 0,
+        bottom: self.tableView.contentInset.bottom,
+        right: 0)
     }
   }
   
@@ -197,6 +191,27 @@ final class UserChatViewController: BaseSLKTextViewController {
       .subscribe(onNext: { [weak self] _ in
         self?.fetchChatIfNeeded()
       }).disposed(by: self.disposeBag)
+  }
+  
+  func initObservers() {
+    NotificationCenter.default
+      .rx.notification(UIResponder.keyboardDidShowNotification)
+      .observeOn(MainScheduler.instance)
+      .subscribe { [weak self] (event) in
+        let userInfo = event.element?.userInfo
+        guard let keyboardEndFrame = (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        guard let s = self else { return }
+        let keyboardFrame = s.view.convert(keyboardEndFrame, from: nil)
+        let newHeight = s.view.frame.size.height - keyboardFrame.origin.y
+        if newHeight < 0 || newHeight > UIScreen.main.bounds.height {
+          return
+        }
+        self?.adjustTableViewInset()
+      }.disposed(by: self.notiDisposeBag)
+  }
+  
+  func removeObservers(){
+    self.notiDisposeBag = DisposeBag()
   }
   
   fileprivate func initManagers() {
@@ -528,17 +543,17 @@ extension UserChatViewController: StoreSubscriber {
     }
     else if nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
-      self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
+      self.adjustTableViewInset(bottomInset: 60.f)
       self.newChatButton.isHidden = false
       self.scrollToBottom(false)
     }
     else if nextUserChat?.isNudgeChat() == true {
       self.setTextInputbarHidden(true, animated: false)
-      self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
+      self.adjustTableViewInset(bottomInset: 60.f)
     }
     else if self.channel.allowNewChat == false && nextUserChat?.isReady() == true {
-      self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
       self.setTextInputbarHidden(true, animated: false)
+      self.adjustTableViewInset(bottomInset: 60.f)
     }
     else if nextUserChat?.isSupporting() == true ||
       nextUserChat?.isSolved() == true ||
@@ -547,7 +562,7 @@ extension UserChatViewController: StoreSubscriber {
       self.setTextInputbarHidden(true, animated: false)
     }
     else if !self.chatManager.profileIsFocus {
-      self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.tableView.contentInset.bottom, right: 0)
+      self.adjustTableViewInset(bottomInset: 0.f)
       
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
