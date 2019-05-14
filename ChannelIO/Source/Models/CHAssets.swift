@@ -10,21 +10,27 @@ import UIKit
 import AVFoundation
 
 class CHAssets {
-  class func mainBundle() -> Bundle {
+  class func getBundle() -> Bundle {
+    if let bundlePath = Bundle(for: self).path(forResource: "ChannelIO", ofType: "bundle"),
+      let bundle = Bundle.init(path: bundlePath) {
+     return bundle
+    }
     return Bundle(for: self)
   }
   
   class func getImage(named: String) -> UIImage? {
-    let bundle = Bundle(for: self)
+    let bundle = CHAssets.getBundle()
     return UIImage(named: named, in: bundle, compatibleWith: nil)
   }
 
   class func getPath(name: String, type: String) -> String? {
-    return Bundle(for: self).path(forResource: name, ofType: type)
+    let bundle = CHAssets.getBundle()
+    return bundle.path(forResource: name, ofType: type)
   }
   
   class func getData(named: String, type: String) -> Data? {
-    let bundle = Bundle(for: self)
+    let bundle = CHAssets.getBundle()
+
     if #available(iOS 9.0, *) {
       return NSDataAsset(name: named, bundle: bundle)?.data
     } else {
@@ -40,18 +46,18 @@ class CHAssets {
   }
   
   class func localized(_ key: String) -> String {
+    let rootBundle = CHAssets.getBundle()
     if let settings = ChannelIO.settings, let locale = settings.appLocale?.rawValue {
-      guard let path = Bundle(for: self).path(forResource: locale, ofType: "lproj") else { return "" }
+      guard let path = rootBundle.path(forResource: locale, ofType: "lproj") else { return "" }
       guard let bundle = Bundle.init(path: path) else { return "" }
       return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
     } else {
-      let bundle = Bundle(for: self)
-      return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+      return NSLocalizedString(key, tableName: nil, bundle: rootBundle, value: "", comment: "")
     }
   }
   
   class func attributedLocalized(_ key: String) -> NSMutableAttributedString {
-    let bundle = Bundle(for: self)
+    let bundle = CHAssets.getBundle()
     let localizedString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
     let data = localizedString.data(using: .utf16)
     do {
@@ -75,7 +81,8 @@ class CHAssets {
       locale = settingLocale
     }
     
-    guard let path = Bundle(for: self).path(forResource: locale, ofType: "lproj") else {
+    let rootBundle = CHAssets.getBundle()
+    guard let path = rootBundle.path(forResource: locale, ofType: "lproj") else {
       return NSAttributedString(string: key)
     }
     guard let bundle = Bundle.init(path: path) else {
@@ -128,7 +135,8 @@ class CHAssets {
   }
   
   class func playPushSound() {
-    let pushSound = NSURL(fileURLWithPath: Bundle(for:self).path(forResource: "ringtone", ofType: "mp3")!)
+    let bundle = CHAssets.getBundle()
+    let pushSound = NSURL(fileURLWithPath: bundle.path(forResource: "ringtone", ofType: "mp3")!)
     var soundId: SystemSoundID = 0
     AudioServicesCreateSystemSoundID(pushSound, &soundId)
     
