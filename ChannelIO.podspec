@@ -31,10 +31,8 @@ Pod::Spec.new do |s|
   s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
   #s.resources = 'ChannelIO/Assets/*', 'ChannelIO/Source/Frameworks/TLPhotoPicker/TLPhotoPickerController.bundle'
   s.resource_bundles = {
-    'ChannelIO' => ['ChannelIO/Assets/*'],
-    'TLPhotoPicker' => [
-      'ChannelIO/Source/Frameworks/TLPhotoPicker/TLPhotoPickerController.bundle', 
-      'ChannelIO/Source/Frameworks/TLPhotoPicker/*.xib'
+    'ChannelIO' => [
+      'ChannelIO/Assets/*'
     ]
   }
   s.swift_version = '5.0'
@@ -62,4 +60,5 @@ Pod::Spec.new do |s|
   s.dependency 'SDWebImage', '~> 4.4.6'
   s.dependency 'SDWebImage/GIF'
   s.dependency 'RxSwiftExt'
+  s.dependency 'TLPhotoPicker'
 end

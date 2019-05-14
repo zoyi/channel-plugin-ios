@@ -17,3 +17,4 @@ github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit" ~> 2.5.0
 github "rs/SDWebImage" ~> 4.3.0
 github "intoxicated/TLYShyNavBar"
+github "tilltue/TLPhotoPicker"
