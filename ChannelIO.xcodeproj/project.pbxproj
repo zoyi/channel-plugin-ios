@@ -294,6 +294,7 @@
 		65D358D121BE4E3D001D6A30 /* ButtonsMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CF21BE4E3D001D6A30 /* ButtonsMessageView.swift */; };
 		65D358DC21BE58B9001D6A30 /* ChannelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D2AA741E24AE06006FEE22 /* ChannelIO.framework */; };
 		65D72A3421B11D5B00EE31B4 /* PushBotManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */; };
+		65D986D3228ABAD400D1D23A /* TLPhotoPicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */; };
 		65EAE11320EF468500D501FC /* TranslateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EAE11220EF468500D501FC /* TranslateView.swift */; };
 /* End PBXBuildFile section */
 
@@ -615,6 +616,7 @@
 		65D358CE21BE4E3D001D6A30 /* ButtonsMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsMessageCell.swift; sourceTree = "<group>"; };
 		65D358CF21BE4E3D001D6A30 /* ButtonsMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsMessageView.swift; sourceTree = "<group>"; };
 		65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushBotManager.swift; sourceTree = "<group>"; };
+		65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TLPhotoPicker.framework; path = Carthage/Build/iOS/TLPhotoPicker.framework; sourceTree = "<group>"; };
 		65EAE11220EF468500D501FC /* TranslateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -623,6 +625,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65D986D3228ABAD400D1D23A /* TLPhotoPicker.framework in Frameworks */,
 				22476B972201FDF900DA4FBC /* RxSwiftExt.framework in Frameworks */,
 				65581E651E7BDCE0008B8C70 /* AssetsLibrary.framework in Frameworks */,
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
@@ -672,6 +675,7 @@
 		143D7E321E24DBE40095961F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */,
 				22476B962201FDF900DA4FBC /* RxSwiftExt.framework */,
 				22B443682200342B00EFC637 /* RxAtomic.framework */,
 				225962962166205E0032F5C5 /* Alamofire.framework */,
