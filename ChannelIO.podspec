@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ChannelIO'
-  s.version          = '5.5.4'
+  s.version          = '5.5.6'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -28,10 +28,12 @@ Pod::Spec.new do |s|
   #  :script => '${PODS_TARGET_SRCROOT}/Assets/setup.sh',
   #  :execution_position => :before_compile
   #}
-  s.source_files = 'ChannelIO/Source/**/*'
-  s.resources = 'ChannelIO/Assets/*', 'ChannelIO/Source/Frameworks/TLPhotoPicker/TLPhotoPickerController.bundle'
+  s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
+  
   s.resource_bundles = {
-    'TLPhotoPicker' => ['ChannelIO/Source/Frameworks/TLPhotoPicker/*.xib']
+    'ChannelIO' => [
+      'ChannelIO/Assets/*'
+    ]
   }
   s.swift_version = '5.0'
 
@@ -55,7 +57,8 @@ Pod::Spec.new do |s|
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit', '~> 2.5.0'
   s.dependency 'CHNavBar'
-  s.dependency 'SDWebImage', '~> 4.4.2'
+  s.dependency 'SDWebImage', '~> 4.4.6'
   s.dependency 'SDWebImage/GIF'
   s.dependency 'RxSwiftExt'
+  s.dependency 'TLPhotoPicker'
 end
