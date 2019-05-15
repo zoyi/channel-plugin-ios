@@ -82,6 +82,13 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       let mailComposerVC = MFMailComposeViewController()
       mailComposerVC.mailComposeDelegate = self
       view?.present(mailComposerVC, animated: true, completion: nil)
+    case .phone:
+      if let url = URL(string:source.value) {
+        UIApplication.shared.openURL(url)
+      }
+    case .link:
+      UIPasteboard.general.string = source.value
+      CHNotification.shared.display(message: "Copied completed")
     default:
       break
     }

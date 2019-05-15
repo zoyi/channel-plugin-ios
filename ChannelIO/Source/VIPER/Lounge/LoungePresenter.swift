@@ -183,11 +183,11 @@ extension LoungePresenter {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (sources) in
-        self?.view?.displayError(for: .externalSource)
+        //self?.view?.displayError(for: .externalSource)
         //
-        //    let sources = LoungeExternalSourceModel
-        //      .generate(with: mainStore.state.channel, thirdparties: [])
-        //    self?.view?.displayExternalSources(with: sources)
+        let sources = LoungeExternalSourceModel
+          .generate(with: mainStore.state.channel, thirdparties: [])
+        self?.view?.displayExternalSources(with: sources)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .externalSource)
       }).disposed(by: self.disposeBag)

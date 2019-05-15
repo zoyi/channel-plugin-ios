@@ -33,10 +33,15 @@ struct LoungeExternalSourceModel {
   var value: String
   
   static func generate(with channel: CHChannel, thirdparties: [CHThirdPartyApp]) -> [LoungeExternalSourceModel] {
-    let pd = LoungeExternalSourceModel(type: .phone, value: "01093123291")
-    let fd = LoungeExternalSourceModel(type: .facebook, value: "facebook://")
-    let td = LoungeExternalSourceModel(type: .talktalk, value: "line://")
-    let kd = LoungeExternalSourceModel(type: .kakao, value: "kakao://")
-    return [kd, td, fd, pd]
+//    let pd = LoungeExternalSourceModel(type: .phone, value: "01093123291")
+//    let fd = LoungeExternalSourceModel(type: .facebook, value: "facebook://")
+//    let td = LoungeExternalSourceModel(type: .talktalk, value: "line://")
+//    let kd = LoungeExternalSourceModel(type: .kakao, value: "kakao://")
+    var sources: [LoungeExternalSourceModel] = []
+    sources.append(LoungeExternalSourceModel(type: .link, value: channel.defaultPluginLink))
+    if let phoneNumber = channel.phoneNumber {
+      sources.append(LoungeExternalSourceModel(type: .phone, value: "tel://\(phoneNumber)"))
+    }
+    return sources
   }
 }
