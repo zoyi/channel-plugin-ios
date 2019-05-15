@@ -155,7 +155,7 @@ class LoungeHeaderView: BaseView {
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(16)
       } else {
-        make.top.equalToSuperview().inset(16)
+        make.top.equalToSuperview().inset(36)
       }
       make.leading.equalToSuperview().inset(24)
     }
@@ -166,7 +166,7 @@ class LoungeHeaderView: BaseView {
       if #available(iOS 11.0, *) {
          make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(7)
       } else {
-         make.top.equalToSuperview().inset(7)
+         make.top.equalToSuperview().inset(27)
       }
      
       make.height.equalTo(30)
@@ -179,7 +179,7 @@ class LoungeHeaderView: BaseView {
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(7)
       } else {
-        make.top.equalToSuperview().inset(7)
+        make.top.equalToSuperview().inset(27)
       }
       
       make.trailing.equalToSuperview().inset(12)

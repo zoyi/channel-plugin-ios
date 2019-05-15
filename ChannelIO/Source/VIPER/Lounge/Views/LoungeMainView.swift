@@ -56,10 +56,8 @@ class LoungeMainView: BaseView {
         maxNumberOfLines: 8)
       
       return self.welcomeCellHeight + Metric.sectionFooterHeight
-    } else if self.chats.count < 4 {
-      return CGFloat(self.chats.count) * Constant.defaultCellHeight + Metric.sectionFooterHeight
     } else {
-      return CGFloat(Constant.maxNumberOfCell) * Constant.defaultCellHeight +
+      return CGFloat(min(self.chats.count, Constant.maxNumberOfCell)) * Constant.defaultCellHeight +
         Metric.sectionHeaderHeight +
         Metric.sectionFooterHeight
     }
@@ -145,7 +143,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return self.chats.count > Constant.maxNumberOfCell ? Constant.headerHeight : CGFloat.leastNormalMagnitude
+    return self.chats.count != 0 ? Constant.headerHeight : CGFloat.leastNormalMagnitude
   }
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

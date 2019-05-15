@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CHDwifft
+//import CHDwifft
 import ReSwift
 import RxSwift
 import SVProgressHUD
@@ -46,10 +46,10 @@ final class UserChatViewController: BaseSLKTextViewController {
   var timeStorage = [String: Timer]()
   var previousMaxContentHeight: CGFloat = 0.f
   
-  var diffCalculator: SingleSectionTableViewDiffCalculator<CHMessage>?
+  //var diffCalculator: SingleSectionTableViewDiffCalculator<CHMessage>?
   var messages = [CHMessage]() {
     didSet {
-      self.diffCalculator?.rows = self.messages
+      //self.diffCalculator?.rows = self.messages
     }
   }
 
@@ -166,7 +166,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       guard self.tableView.contentSize.height > 40 else { return }
       var currInset = self.tableView.contentInset
       currInset.top = chatViewHeight - self.tableView.contentSize.height
-      
+      print("top: \(currInset.top)")
       self.tableView.contentInset = currInset
     } else {
       self.tableView.contentInset = UIEdgeInsets(
@@ -328,14 +328,14 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   fileprivate func initDwifft() {
     self.tableView.reloadData()
-    self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
-      tableView: self.tableView,
-      initialRows: self.messages,
-      sectionIndex: self.channel.notAllowToUseSDK ? 2 : 1
-    )
-    self.diffCalculator?.forceOffAnimationEnabled = true
-    self.diffCalculator?.insertionAnimation = .none
-    self.diffCalculator?.deletionAnimation = .none
+//    self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
+//      tableView: self.tableView,
+//      initialRows: self.messages,
+//      sectionIndex: self.channel.notAllowToUseSDK ? 2 : 1
+//    )
+//    self.diffCalculator?.forceOffAnimationEnabled = true
+//    self.diffCalculator?.insertionAnimation = .none
+//    self.diffCalculator?.deletionAnimation = .none
   }
 
   fileprivate func initNavigationViews(with userChat: CHUserChat? = nil) {
@@ -411,8 +411,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
     let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
-
-    self.navigationItem.leftBarButtonItem = NavigationItem(
+    let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+    spacer.width = -16
+    
+    let backButton = NavigationItem(
       image: CHAssets.getImage(named: "back"),
       text: alert == 0 ? "" : alertCount ,
       fitToSize: true,
@@ -421,7 +423,13 @@ final class UserChatViewController: BaseSLKTextViewController {
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         _ = self?.navigationController?.popViewController(animated: true)
-      })
+    })
+    
+    if #available(iOS 11, *) {
+      self.navigationItem.leftBarButtonItems = [backButton]
+    } else {
+      self.navigationItem.leftBarButtonItems = [spacer, backButton]
+    }
     
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "dismissButton")?.withRenderingMode(.alwaysTemplate),
@@ -1073,13 +1081,6 @@ extension UserChatViewController {
     
     view.addSubview(placeHolder)
     view.mask = placeHolder
-    
-//    let animation = CABasicAnimation(keyPath: "transform.translation.x")
-//    animation.duration = 2
-//    animation.fromValue = -layer.frame.size.width
-//    animation.toValue = layer.frame.size.width
-//    animation.repeatCount = .infinity
-//    layer.add(animation, forKey: "shimmerAnimation")
     
     self.view.addSubview(view)
   

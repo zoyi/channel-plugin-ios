@@ -15,6 +15,7 @@ import SnapKit
 import SVProgressHUD
 import MGSwipeTableCell
 
+//TODO: refactoring VIPER
 class UserChatsViewController: BaseViewController {
 
   // MARK: Properties
@@ -37,10 +38,8 @@ class UserChatsViewController: BaseViewController {
   
   let tableView = UITableView().then {
     $0.clipsToBounds = false
+    $0.separatorStyle = .none
     $0.register(cellType: UserChatCell.self)
-    $0.separatorStyle = .singleLine
-    $0.separatorColor = CHColors.snow
-    $0.separatorInset.left = 64.f
   }
 
   let emptyView = UserChatsEmptyView().then {
@@ -393,6 +392,14 @@ extension UserChatsViewController: UITableViewDataSource {
 
 extension UserChatsViewController: UITableViewDelegate {
 
+  func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    return 100
+  }
+  
+  func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    return UIView()
+  }
+  
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     let userChat = self.userChats[indexPath.row]
     let viewModel = UserChatCellModel(userChat: userChat)

@@ -93,7 +93,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
       } else {
-        make.top.equalToSuperview()
+        make.top.equalToSuperview().inset(20)
       }
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
