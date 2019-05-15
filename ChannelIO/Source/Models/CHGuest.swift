@@ -43,10 +43,10 @@ extension CHGuest {
     data["locale"] = self.locale
     
     if let alert = self.alert {
-      data["alert"] = self.alert
+      data["alert"] = alert
     }
     if let unread = self.unread {
-      data["unread"] = self.unread
+      data["unread"] = unread
     }
     if let profile = self.profile {
       data["profile"] = profile

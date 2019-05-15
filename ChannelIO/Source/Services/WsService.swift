@@ -292,7 +292,7 @@ class WsService {
 
 //MARK: Socket IO Handlers
 fileprivate extension WsService {
-  fileprivate func addSocketHandlers() {
+  func addSocketHandlers() {
     self.onCreate()
     self.onConnect()
     self.onReady()
@@ -309,7 +309,7 @@ fileprivate extension WsService {
     self.onError()
   }
   
-  fileprivate func onConnect() {
+  func onConnect() {
     self.socket?.on(CHSocketResponse.connected.value) { [weak self] (data, ack) in
       dlog("socket connected")
       mainStore.dispatchOnMain(SocketConnected())
@@ -317,7 +317,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onReady() {
+  func onReady() {
     self.socket?.on(CHSocketResponse.ready.value) { [weak self] (data, ack) in
       self?.readySubject.onNext(CHSocketResponse.ready.value)
       mainStore.dispatchOnMain(SocketReady())
@@ -329,7 +329,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onCreate() {
+  func onCreate() {
     self.socket?.on(CHSocketResponse.create.value) { [weak self] (data, ack) in
       dlog("socket on created")
       guard let data = data.get(index: 0) else { return }
@@ -368,7 +368,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onUpdate() {
+  func onUpdate() {
     self.socket?.on(CHSocketResponse.update.value) { [weak self] (data, ack) in
       dlog("socket on update")
       guard let data = data.get(index: 0) else { return }
@@ -426,7 +426,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onDelete() {
+  func onDelete() {
     self.socket?.on(CHSocketResponse.delete.value) { [weak self] (data, ack) in
       dlog("socket on delete")
       guard let data = data.get(index: 0) else { return }
@@ -453,7 +453,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onJoined() {
+  func onJoined() {
     self.socket?.on(CHSocketResponse.joined.value) { [weak self] (data, ack) in
       dlog("socket joined: \(data)")
       
@@ -463,7 +463,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onLeaved() {
+  func onLeaved() {
     self.socket?.on(CHSocketResponse.leaved.value) { (data, ack) in
       dlog("socket leaved: \(data)")
       
@@ -472,7 +472,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onTyping() {
+  func onTyping() {
     self.socket?.on(CHSocketResponse.typing.value) {  [weak self] (data, ack) in
       guard let entity = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: entity) else { return }
@@ -481,7 +481,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onPush() {
+  func onPush() {
     self.socket?.on(CHSocketResponse.push.value) { (data, ack) in
       //dlog("socket pushed: \(data)")
       guard let entity = data.get(index: 0) else { return }
@@ -496,7 +496,7 @@ fileprivate extension WsService {
     }
   }
 
-  fileprivate func onAuthenticated() {
+  func onAuthenticated() {
     self.socket?.on(CHSocketResponse.authenticated.value) { [weak self] (data, ack) in
       dlog("socket authenticated")
       
@@ -512,14 +512,14 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onUnauthorized() {
+  func onUnauthorized() {
     self.socket?.on(CHSocketResponse.unauthorized.value) { (data, ack) in
       dlog("unauthorized")
       self.errorSubject.onNext(nil)
     }
   }
   
-  fileprivate func onReconnectAttempt() {
+  func onReconnectAttempt() {
     self.socket?.on(CHSocketResponse.reconnect.value) { [weak self] (data, ack) in
       dlog("socket reconnect attempt")
       mainStore.dispatchOnMain(SocketReconnecting())
@@ -528,7 +528,7 @@ fileprivate extension WsService {
     
   }
   
-  fileprivate func onDisconnect() {
+  func onDisconnect() {
     self.socket?.on(CHSocketResponse.disconnect.value) { (data, ack) in
       dlog("socket disconnected")
       self.errorSubject.onNext(nil)
@@ -536,7 +536,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func onError() {
+  func onError() {
     self.socket?.on(CHSocketResponse.error.value) { (data, ack) in
       dlog("socket error with data: \(data)")
       self.errorSubject.onNext(nil)
@@ -544,7 +544,7 @@ fileprivate extension WsService {
     }
   }
   
-  fileprivate func emitAuth() {
+  func emitAuth() {
     dlog("socket submitting auth")
     guard let jwt = PrefStore.getCurrentGuestKey() else { return }
     self.socket?.emit("authentication", ["jwt":jwt])

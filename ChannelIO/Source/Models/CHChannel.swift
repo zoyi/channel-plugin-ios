@@ -19,13 +19,14 @@ struct CHChannel: CHEntity {
   var color = ""
   // Channel
   var name = ""
+  var domain = ""
   var country = ""
   var desc = ""
   var textColor = "white"
   var working = true
   var workingTime: [String:TimeRange]?
   var lunchTime: TimeRange?
-  var phoneNumber: String = ""
+  var phoneNumber: String?
   var requestGuestInfo = true
   var messengerPlan: ChannelPlanType = .pro
   var pushBotPlan: ChannelPlanType = .pro
@@ -38,6 +39,14 @@ struct CHChannel: CHEntity {
   var workingType: ChannelWorkingType = .always
   var trial = true
   var trialEndDate: Date? = nil
+  
+  
+}
+
+extension CHChannel {
+  var defaultPluginLink: String {
+    return "\(self.domain).channel.io"
+  }
   
   var notAllowToUseSDK: Bool {
     return self.blocked || (self.messengerPlan != .pro && !self.trial)
@@ -54,7 +63,7 @@ struct CHChannel: CHEntity {
   var shouldHideLauncher: Bool {
     return self.awayOption == .hidden && !self.working
   }
-
+  
   var allowNewChat: Bool {
     return self.workingType == .always ||
       self.awayOption == .active ||
@@ -171,8 +180,19 @@ struct CHChannel: CHEntity {
 }
 
 extension CHChannel: Equatable {
-  static func ==(lhs:CHChannel, rhs:CHChannel) -> Bool {
-    return false
+  static func == (lhs:CHChannel, rhs:CHChannel) -> Bool {
+    return lhs.id == rhs.id &&
+      lhs.avatarUrl == rhs.avatarUrl &&
+      lhs.initial == rhs.initial &&
+      lhs.color == rhs.color &&
+      lhs.name == rhs.name &&
+      lhs.domain == rhs.domain &&
+      lhs.phoneNumber == rhs.phoneNumber &&
+      lhs.working == rhs.working &&
+      lhs.textColor == rhs.textColor &&
+      lhs.expectedResponseDelay == rhs.expectedResponseDelay &&
+      lhs.messengerPlan == lhs.messengerPlan &&
+      lhs.trial == rhs.trial
   }
 }
 
@@ -185,6 +205,7 @@ extension CHChannel: Mappable {
     initial                 <- map["initial"]
     color                   <- map["color"]
     name                    <- map["name"]
+    domain                  <- map["domain"]
     desc                    <- map["description"]
     country                 <- map["country"]
     textColor               <- map["textColor"]

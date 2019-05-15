@@ -37,11 +37,11 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     }
   }
   
-  func willOpenMessenger() {
+  func willShowMessenger() {
     print("will show")
   }
   
-  func willCloseMessenger() {
+  func willHideMessenger() {
     print("will hide")
   }
   

@@ -116,7 +116,7 @@ struct MessageCellModel: MessageCellModelType {
     
     //profileBot
     self.profileItems = message.profileBot ?? []
-    if let index = self.profileItems.index(where: { (profileItem) -> Bool in
+    if let index = self.profileItems.firstIndex(where: { (profileItem) -> Bool in
       return profileItem.value == nil
     }) {
       self.currentIndex = index

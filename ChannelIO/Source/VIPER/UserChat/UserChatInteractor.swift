@@ -502,7 +502,7 @@ extension UserChatInteractor {
     guard let person = params[0] as? CHEntity else { return }
     
     timer.invalidate()
-    if let index = self.typingPersons.index(where: { (p) in
+    if let index = self.typingPersons.firstIndex(where: { (p) in
       return p.id == person.id && p.kind == person.kind
     }) {
       self.typingPersons.remove(at: index)
@@ -512,7 +512,7 @@ extension UserChatInteractor {
   }
   
   fileprivate func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
-    return self.typingPersons.index(where: {
+    return self.typingPersons.firstIndex(where: {
       $0.id == typingEntity.personId && $0.kind == typingEntity.personType
     })
   }

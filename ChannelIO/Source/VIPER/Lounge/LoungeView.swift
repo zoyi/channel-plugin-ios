@@ -69,7 +69,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func setupConstraints() {
     super.setupConstraints()
     
-    self.headerView.snp.makeConstraints { [weak self] (make) in
+    self.headerView.snp.makeConstraints { (make) in
       make.height.equalTo(266)
       make.top.equalToSuperview()
       make.leading.equalToSuperview()

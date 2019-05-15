@@ -18,7 +18,7 @@ struct ManagersState: StateType {
   }
 
   func findBy(ids: [String]) -> [CHManager] {
-    return self.managerDictionary.filter({ ids.index(of: $0.key) != nil }).map({ $1 })
+    return self.managerDictionary.filter({ ids.firstIndex(of: $0.key) != nil }).map({ $1 })
   }
   
   mutating func upsertFollowing(managers: [CHManager]) -> ManagersState {

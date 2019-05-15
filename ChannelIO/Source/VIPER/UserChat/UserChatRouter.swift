@@ -71,14 +71,14 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
       let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
       
       alertView.addAction(
-        UIAlertAction(title: CHAssets.localized("ch.camera"), style: .default) { [weak self] _ in
+        UIAlertAction(title: CHAssets.localized("ch.camera"), style: .default) { _ in
 //          _ = self?.showOptionPicker(type: .camera, from: view).subscribe(onNext: { asset in
 //            subscriber.onNext(asset)
 //          })
       })
       
       alertView.addAction(
-        UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { [weak self] _ in
+        UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { _ in
 //          _ = self?.showOptionPicker(type: .photo, max: 20, from: view).subscribe(onNext: { (assets) in
 //            subscriber.onNext(assets)
 //          })

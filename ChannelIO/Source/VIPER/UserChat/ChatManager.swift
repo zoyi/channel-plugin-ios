@@ -260,7 +260,7 @@ extension ChatManager {
     guard let person = params[0] as? CHEntity else { return }
     
     timer.invalidate()
-    if let index = self.typingPersons.index(where: { (p) in
+    if let index = self.typingPersons.firstIndex(where: { (p) in
       return p.id == person.id && p.kind == person.kind
     }) {
       self.typingPersons.remove(at: index)
@@ -270,7 +270,7 @@ extension ChatManager {
   }
   
   fileprivate func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
-    return self.typingPersons.index(where: {
+    return self.typingPersons.firstIndex(where: {
       $0.id == typingEntity.personId && $0.kind == typingEntity.personType
     })
   }
@@ -1034,9 +1034,9 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     let viewController = TLPhotosPickerViewController(withPHAssets: { [weak self] (assets) in // TLAssets
       self?.sendImages(assets: assets)
     }, didCancel: nil)
-    var configure = TLPhotosPickerConfigure()
+    let configure = TLPhotosPickerConfigure()
     viewController.configure = configure
-    //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main) // If you want use your custom cell..
+    
     view?.present(viewController, animated: true, completion: nil)
   }
   

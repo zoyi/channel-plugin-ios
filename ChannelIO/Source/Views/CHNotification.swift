@@ -70,7 +70,7 @@ class CHNotification {
       make.trailing.equalToSuperview().inset(8)
     }
     
-    notificationView.display(message: message)
+    notificationView.display(with: message)
     self.notificationView = notificationView
     
     self.timer?.invalidate()
@@ -100,6 +100,7 @@ private class CHNotificationView: BaseView {
   
   override func initialize() {
     super.initialize()
+    
     self.alpha = 0
     self.layer.cornerRadius = 10.f
     self.clipsToBounds = true
@@ -135,7 +136,7 @@ private class CHNotificationView: BaseView {
     self.contentView.alpha = model.alpha
   }
   
-  func display(message: String) {
+  func display(with message: String) {
     self.messageLabel.text = message
     
     UIView.animate(withDuration: 0.3) { [weak self] in
