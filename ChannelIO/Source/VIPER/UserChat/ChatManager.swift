@@ -15,6 +15,7 @@ import SVProgressHUD
 import Alamofire
 import AVKit
 import Photos
+import TLPhotoPicker
 
 enum ChatElement {
   case photos(obj: [String])

@@ -1,3 +1,8 @@
+# 5.5.6
+## Updates
+* Detached TLPhotoPicker from project (added to podspec and cartfile) - Don't forget to add this to your linked frameworks if you use Carthage)
+* Cocopaods bundle resource 
+
 # 5.5.4
 ## Updates
 * Removed unecessory public classes
