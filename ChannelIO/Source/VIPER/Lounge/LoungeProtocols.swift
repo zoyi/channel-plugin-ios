@@ -11,7 +11,7 @@ import RxSwift
 
 enum LoungeSectionType {
   case header
-  case chats
+  case mainContent
   case externalSource
 }
 
@@ -63,6 +63,7 @@ protocol LoungeInteractorProtocol: class {
   func getPlugin() -> Observable<(CHPlugin, CHBot?)>
   func getFollowers() -> Observable<[CHManager]>
   func getChats() -> Observable<[CHUserChat]>
+  func getSupportBot() -> Observable<CHSupportBotEntryInfo>
   func getExternalSource() -> Observable<Any?>
 }
 

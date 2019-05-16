@@ -79,14 +79,15 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           with: models,
           welcomeModel: UserChatCellModel.welcome(
             with: mainStore.state.channel,
-            guest: mainStore.state.guest
+            guest: mainStore.state.guest,
+            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))
       }).disposed(by: self.disposeBag)
   }
   
   func fetchData() {
     self.loadHeaderInfo()
-    self.loadChats()
+    self.loadMainContents()
     self.loadExternalSources()
   }
   
@@ -106,9 +107,9 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     switch type {
     case .header:
       self.loadHeaderInfo()
-    case .chats:
+    case .mainContent:
       self.loadHeaderInfo()
-      self.loadChats()
+      self.loadMainContents()
     case .externalSource:
       self.loadExternalSources()
     }
@@ -178,22 +179,23 @@ extension LoungePresenter {
       }).disposed(by: self.disposeBag)
   }
   
-  func loadChats() {
+  func loadMainContents() {
     guard let interactor = self.interactor else { return }
     
-    interactor.getChats()
+    Observable.zip(interactor.getChats(), interactor.getSupportBot())
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (chats) in
+      .subscribe(onNext: { [weak self] (chats, entry) in
         let models = chats.map { UserChatCellModel(userChat: $0) }
         self?.view?.displayMainContent(
           with: models,
           welcomeModel: UserChatCellModel.welcome(
             with: mainStore.state.channel,
-            guest: mainStore.state.guest
+            guest: mainStore.state.guest,
+            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .chats)

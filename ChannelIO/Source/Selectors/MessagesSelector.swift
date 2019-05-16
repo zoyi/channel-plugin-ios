@@ -128,3 +128,7 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
     )
   })
 }
+
+func supportBotEntrySelector(state: AppState) -> CHMessage? {
+  return state.messagesState.supportBotEntry
+}

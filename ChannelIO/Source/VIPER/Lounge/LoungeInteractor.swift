@@ -52,6 +52,25 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     return CHManager.getRecentFollowers()
   }
   
+  func getSupportBot() -> Observable<CHSupportBotEntryInfo> {
+    return Observable.create({ (subscriber) -> Disposable in
+      let signal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
+        .subscribe(onNext: { (entry) in
+          if entry.step != nil && entry.supportBot != nil {
+            mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
+          }
+          subscriber.onNext(entry)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          subscriber.onError(error)
+        })
+
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+  
   func getChats() -> Observable<[CHUserChat]> {
     return Observable.create({ (subscriber) -> Disposable in
       let signal = UserChatPromise.getChats(since: nil, limit: 4, showCompleted: true)
@@ -71,6 +90,10 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     })
   }
   
+  func updateChats() -> Observable<[CHUserChat]> {
+    return self.chatSignal.asObservable()
+  }
+  
   func getExternalSource() -> Observable<Any?> {
     return Observable.create({ (subscriber) -> Disposable in
       subscriber.onNext(nil)
@@ -81,18 +104,14 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     })
   }
   
-  func updateChats() -> Observable<[CHUserChat]> {
-    return self.chatSignal.asObservable()
+  func updateExternalSource() -> Observable<[Any]> {
+    return .just([])
   }
-  
+
   func updateGeneralInfo() -> Observable<(CHChannel, CHPlugin)> {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
     return Observable.just((channel, plugin))
-  }
-  
-  func updateExternalSource() -> Observable<[Any]> {
-    return .just([])
   }
 }
 

@@ -51,11 +51,11 @@ struct UserChatCellModel: UserChatCellModelType {
     self.isClosed = userChat.isClosed()
   }
   
-  static func welcome(with channel: CHChannel, guest: CHGuest) -> UserChatCellModel {
+  static func welcome(with channel: CHChannel, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
     var model = UserChatCellModel()
     model.avatar = channel
     model.title = channel.name
-    model.lastMessage = guest.getWelcome()
+    model.lastMessage = supportBotMessage?.messageV2?.string ?? guest.getWelcome()
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model
