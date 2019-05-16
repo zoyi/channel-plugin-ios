@@ -39,8 +39,6 @@ struct CHChannel: CHEntity {
   var workingType: ChannelWorkingType = .always
   var trial = true
   var trialEndDate: Date? = nil
-  
-  
 }
 
 extension CHChannel {
@@ -48,8 +46,8 @@ extension CHChannel {
     return "\(self.domain).channel.io"
   }
   
-  var notAllowToUseSDK: Bool {
-    return self.blocked || (self.messengerPlan != .pro && !self.trial)
+  var canUseSDK: Bool {
+    return !self.blocked && (self.messengerPlan == .pro || self.trial)
   }
   
   var canUsePushBot: Bool {

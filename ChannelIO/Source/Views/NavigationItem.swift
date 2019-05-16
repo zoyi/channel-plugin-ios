@@ -73,7 +73,7 @@ class NavigationItem: UIBarButtonItem {
         defaultWidth = 38
       } else if count == 2{
         defaultWidth = 44
-      } else {
+      } else if count > 2 {
         defaultWidth = 50
       }
     }

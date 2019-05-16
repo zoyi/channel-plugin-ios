@@ -19,8 +19,29 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
+  var errorSignal = PublishSubject<Any?>()
   
   func viewDidLoad() {
+    CHNotification.shared.refreshSignal
+      .subscribe(onNext: { [weak self] (_) in
+        self?.fetchData()
+        CHNotification.shared.dismiss()
+      }).disposed(by: self.disposeBag)
+    
+    WsService.shared.error()
+      .observeOn(MainScheduler.instance)
+      .bind(to: self.errorSignal)
+      .disposed(by: self.disposeBag)
+    
+    self.errorSignal
+      .debounce(1.0, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { (_) in
+        CHNotification.shared.display(
+          message: CHAssets.localized("ch.toast.unstable_internet"),
+          config: CHNotificationConfiguration.warningConfig
+        )
+      }).disposed(by: self.disposeBag)
+    
     self.interactor?.updateExternalSource()
       .observeOn(MainScheduler.instance)
       .debounce(1, scheduler: MainScheduler.instance)
@@ -122,7 +143,13 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnWatermark() {
-    //open url?
+    let channel = mainStore.state.channel
+    let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+    let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
+    
+    if let url = URL(string: urlString) {
+      url.open()
+    }
   }
 }
 

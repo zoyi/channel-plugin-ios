@@ -21,6 +21,7 @@ struct CHPlugin: ModelType {
   var mobilePosition = "right"
   var welcomeNamedI18n: CHi18n?
   var welcomeI18n: CHi18n?
+  var showPoweredBy: Bool?
   
   var name: String {
     return mainStore.state.channel.name
@@ -74,6 +75,7 @@ extension CHPlugin: Mappable {
     botName          <- map["botName"]
     welcomeNamedI18n <- map["welcomeNamedI18n"]
     welcomeI18n      <- map["welcomeI18n"]
+    showPoweredBy    <- map["showPoweredBy"]
   }
 }
 

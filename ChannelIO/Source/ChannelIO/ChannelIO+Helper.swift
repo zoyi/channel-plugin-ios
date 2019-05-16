@@ -109,7 +109,7 @@ extension ChannelIO {
             return
           }
 
-          if channel.notAllowToUseSDK && !channel.trial {
+          if !channel.canUseSDK {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }

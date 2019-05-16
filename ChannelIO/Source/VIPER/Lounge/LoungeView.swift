@@ -159,14 +159,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.view.addSubview(self.dismissButton)
     
     self.view.addSubview(self.watermarkView)
-    self.watermarkView.signalForClick().subscribe(onNext: { _ in
-      let channel = mainStore.state.channel
-      let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-      let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
-      
-      if let url = URL(string: urlString) {
-        url.open()
-      }
+    self.watermarkView.signalForClick().subscribe(onNext: { [weak self] _ in
+      self?.presenter?.didClickOnWatermark()
     }).disposed(by: self.disposeBag)
   }
   
@@ -217,7 +211,7 @@ extension LoungeView {
   
   func displayHeader(with model: LoungeHeaderViewModel) {
     self.headerView.configure(model: model)
-    self.watermarkView.isHidden = !model.chanenl.notAllowToUseSDK
+    self.watermarkView.isHidden = model.plugin.showPoweredBy == false
   }
   
   func displayMainContent(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {

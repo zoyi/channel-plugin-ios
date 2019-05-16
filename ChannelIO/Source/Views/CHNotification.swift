@@ -61,9 +61,12 @@ class CHNotification {
     self.notificationView?.removeFromSuperview()
     
     let notificationView = CHNotificationView()
-    notificationView.configure(self.config)
+    notificationView.configure(config)
     notificationView.refreshView.signalForClick()
-      .bind(to: self.refreshSignal)
+      .subscribe(onNext: { [weak self] (_) in
+        //notificationView.refreshView.rotate()
+        self?.refreshSignal.accept(nil)
+      })
       .disposed(by: self.disposeBag)
     
     vc.view.addSubview(notificationView)
@@ -79,6 +82,7 @@ class CHNotification {
     
     notificationView.display(with: message)
     self.notificationView = notificationView
+    self.config = config
     
     self.timer?.invalidate()
     if config.timeout != 0 {
@@ -91,7 +95,9 @@ class CHNotification {
     }
   }
   
-  @objc private func dismiss() {
+  @objc func dismiss() {
+    //self.notificationView?.refreshView.stopRotating()
+    
     UIView.animate(withDuration: 0.6, animations: { [weak self] in
       self?.notificationView?.alpha = 0
     }) { [weak self] (completed) in
@@ -126,6 +132,7 @@ private class CHNotificationView: BaseView {
     
     self.addSubview(self.contentView)
     self.addSubview(self.messageLabel)
+    self.addSubview(self.refreshView)
   }
   
   override func setLayouts() {
@@ -137,13 +144,13 @@ private class CHNotificationView: BaseView {
     
     self.messageLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(12)
-      make.leading.equalToSuperview().inset(12)
+      make.leading.equalToSuperview().inset(12).priority(750)
+      make.centerX.equalToSuperview()
+      make.trailing.equalToSuperview().inset(12).priority(750)
       make.bottom.equalToSuperview().inset(12)
     }
     
-    self.refreshView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
-      make.leading.equalTo(self.messageLabel.snp.trailing).offset(10)
+    self.refreshView.snp.makeConstraints { (make) in
       make.trailing.equalToSuperview()
       make.centerY.equalToSuperview()
     }
@@ -163,5 +170,9 @@ private class CHNotificationView: BaseView {
     UIView.animate(withDuration: 0.3) { [weak self] in
       self?.alpha = 1
     }
+  }
+  
+  func animateRefresh() {
+    
   }
 }

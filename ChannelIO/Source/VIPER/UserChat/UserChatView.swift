@@ -225,7 +225,7 @@ extension UserChatView {
   }
   
   func display(typers: [CHEntity]) {
-    let indexPath = IndexPath(row: 0, section: self.channel.notAllowToUseSDK ? 1 : 0)
+    let indexPath = IndexPath(row: 0, section: self.channel.canUseSDK ? 0 : 1)
     if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let typingCell = self.typingCell {
       typingCell.configure(typingUsers: typers)
     }
@@ -383,16 +383,16 @@ extension UserChatView {
 
 extension UserChatView {
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return self.channel.notAllowToUseSDK ? 3 : 2
+    return self.channel.canUseSDK ? 2 : 3
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if section == 1 {
-      return self.channel.notAllowToUseSDK ? 1 : self.messages.count
+      return self.channel.canUseSDK ? self.messages.count : 1
     } else if section == 2 {
-      return self.channel.notAllowToUseSDK ? self.messages.count : 0
+      return self.channel.canUseSDK ? 0 : self.messages.count
     }
     return 0
   }
@@ -402,7 +402,7 @@ extension UserChatView {
       return 40
     }
 
-    if indexPath.section == 1 && self.channel.notAllowToUseSDK {
+    if indexPath.section == 1 && !self.channel.canUseSDK {
       return 40
     }
 
@@ -446,7 +446,7 @@ extension UserChatView {
       }
       cell.transform = tableView.transform
       return cell
-    } else if section == 0 || (section == 1 && self.channel.notAllowToUseSDK) {
+    } else if section == 0 || (section == 1 && !self.channel.canUseSDK) {
       let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
       cell.transform = tableView.transform
       return cell
