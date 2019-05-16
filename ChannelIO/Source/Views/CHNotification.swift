@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import SnapKit
 
 struct CHNotificationConfiguration {
@@ -37,7 +38,7 @@ struct CHNotificationConfiguration {
       font: UIFont.boldSystemFont(ofSize: 13),
       numberOfLines: 2,
       backgroundColor: CHColors.yellowishOrange,
-      timeout: 2.0,
+      timeout: 0,
       alpha: 1.f,
       margin: 60.f
     )
@@ -52,12 +53,18 @@ class CHNotification {
   private var timer: Timer?
   private init(){}
   
+  var refreshSignal = PublishRelay<Any?>()
+  var disposeBag = DisposeBag()
+  
   func display(message: String, config: CHNotificationConfiguration = CHNotificationConfiguration.succeedConfig) {
     guard let vc = CHUtils.getTopController() else { return }
     self.notificationView?.removeFromSuperview()
     
     let notificationView = CHNotificationView()
     notificationView.configure(self.config)
+    notificationView.refreshView.signalForClick()
+      .bind(to: self.refreshSignal)
+      .disposed(by: self.disposeBag)
     
     vc.view.addSubview(notificationView)
     notificationView.snp.makeConstraints { make in
@@ -74,12 +81,14 @@ class CHNotification {
     self.notificationView = notificationView
     
     self.timer?.invalidate()
-    self.timer = Timer.scheduledTimer(
-      timeInterval: config.timeout,
-      target: self,
-      selector: #selector(dismiss),
-      userInfo: nil,
-      repeats: false)
+    if config.timeout != 0 {
+      self.timer = Timer.scheduledTimer(
+        timeInterval: config.timeout,
+        target: self,
+        selector: #selector(dismiss),
+        userInfo: nil,
+        repeats: false)
+    }
   }
   
   @objc private func dismiss() {
@@ -97,6 +106,12 @@ private class CHNotificationView: BaseView {
     $0.textAlignment = .center
     $0.textColor = .white
   }
+  
+  let refreshView = UIImageView().then {
+    $0.image = CHAssets.getImage(named: "refresh")
+  }
+  
+  var disposeBag = DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -124,7 +139,13 @@ private class CHNotificationView: BaseView {
       make.top.equalToSuperview().inset(12)
       make.leading.equalToSuperview().inset(12)
       make.bottom.equalToSuperview().inset(12)
-      make.trailing.equalToSuperview().inset(12)
+    }
+    
+    self.refreshView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      make.leading.equalTo(self.messageLabel.snp.trailing).offset(10)
+      make.trailing.equalToSuperview()
+      make.centerY.equalToSuperview()
     }
   }
   

@@ -39,9 +39,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   //var photoBrowser : MWPhotoBrowser? = nil
   //var chatManager : ChatManager!
 
-  var errorToastView = ErrorToastView().then {
-    $0.isHidden = true
-  }
   var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
@@ -168,15 +165,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   }
 
   fileprivate func initViews() {
-    self.errorToastView.topLayoutGuide = self.topLayoutGuide
-    self.errorToastView.containerView = self.view
-    self.view.addSubview(self.errorToastView)
-
-    self.errorToastView.refreshImageView.signalForClick()
-      .subscribe(onNext: { [weak self] _ in
-        self?.presenter?.reload()
-      }).disposed(by: self.disposeBag)
-
     self.view.addSubview(self.newMessageView)
     self.newMessageView.snp.makeConstraints { [weak self] (make) in
       make.height.equalTo(48)
@@ -244,11 +232,7 @@ extension UserChatView {
   }
   
   func display(error: Error?, visible: Bool) {
-    if error != nil && visible {
-      self.errorToastView.display(animated: true)
-    } else {
-      self.errorToastView.dismiss(animated: true)
-    }
+
   }
   
   func displayNewBanner() {

@@ -46,9 +46,9 @@ class UserChatsViewController: BaseViewController {
     $0.isHidden = true
   }
   
-  let errorToastView = ErrorToastView().then {
-    $0.isHidden = true
-  }
+//  let errorToastView = ErrorToastView().then {
+//    $0.isHidden = true
+//  }
 
   let newChatButton = CHButton.newChat()
   
@@ -72,10 +72,6 @@ class UserChatsViewController: BaseViewController {
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.emptyView)
     self.view.addSubview(self.newChatButton)
-    
-    self.errorToastView.topLayoutGuide = self.topLayoutGuide
-    self.errorToastView.containerView = self.view
-    self.view.addSubview(self.errorToastView)
     
     WsService.shared.connect()
     
@@ -118,28 +114,28 @@ class UserChatsViewController: BaseViewController {
     WsService.shared.error()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
-        self?.errorToastView.display(animated: true)
+        
       }).disposed(by: self.disposeBag)
     
     WsService.shared.ready()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
-        self?.errorToastView.dismiss(animated: true)
+        
       }).disposed(by: self.disposeBag)
   }
   
   func initActions() {
-    self.errorToastView.refreshImageView.signalForClick().subscribe { [weak self] _ in
-      mainStore.dispatch(DeleteUserChatsAll())
-      
-      self?.errorToastView.dismiss(animated: true)
-      self?.nextSeq = nil
-      self?.fetchUserChats(isInit: true, showIndicator: true)
-      WsService.shared.connect()
-      AppManager.touch().subscribe(onNext: { (guest) in
-        mainStore.dispatch(UpdateGuest(payload: guest))
-      }).disposed(by: (self?.disposeBag)!)
-    }.disposed(by: self.disposeBag)
+//    self.errorToastView.refreshImageView.signalForClick().subscribe { [weak self] _ in
+//      mainStore.dispatch(DeleteUserChatsAll())
+//
+//      self?.errorToastView.dismiss(animated: true)
+//      self?.nextSeq = nil
+//      self?.fetchUserChats(isInit: true, showIndicator: true)
+//      WsService.shared.connect()
+//      AppManager.touch().subscribe(onNext: { (guest) in
+//        mainStore.dispatch(UpdateGuest(payload: guest))
+//      }).disposed(by: (self?.disposeBag)!)
+//    }.disposed(by: self.disposeBag)
     
     self.newChatButton.signalForClick().subscribe { [weak self] _ in
       self?.showUserChat(hideTable: false)
@@ -270,7 +266,7 @@ class UserChatsViewController: BaseViewController {
         dlog("error getting following managers: \(error.localizedDescription)")
         self?.showNewChat = false
         self?.isShowingChat = false
-        self?.errorToastView.display(animated: true)
+        //self?.errorToastView.display(animated: true)
       }, onDisposed: {
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)
@@ -438,7 +434,7 @@ extension UserChatsViewController {
         self?.showChatIfNeeded(isReload: isReload)
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
-        self?.errorToastView.display(animated:true)
+        //self?.errorToastView.display(animated:true)
         self?.didLoad = false
 
         SVProgressHUD.dismiss()

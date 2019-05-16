@@ -24,7 +24,7 @@ class UserChatsEmptyView: BaseView {
   // MARK: Properties
 
   let imageView = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "group")
+    $0.image = CHAssets.getImage(named: "noListIllust")
   }
 
   let descriptionLabel = UILabel().then {
@@ -56,7 +56,7 @@ class UserChatsEmptyView: BaseView {
     }
 
     self.descriptionLabel.snp.remakeConstraints { (make) in
-      make.top.equalTo(self.snp.centerY).offset(28)
+      make.top.equalTo(self.snp.centerY).offset(20)
       make.centerX.equalToSuperview()
       make.leading.equalToSuperview().inset(20)
       make.trailing.equalToSuperview().inset(20)

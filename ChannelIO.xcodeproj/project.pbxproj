@@ -977,6 +977,7 @@
 		6512BA082271755400757CB2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6597933B1FA7167C00840F6A /* UserChatsEmptyView.swift */,
 				659793321FA7167C00840F6A /* NewChatView.swift */,
 				6512BA092271758000757CB2 /* DefaultNavigationTitleView.swift */,
 				6512BA0B2271758E00757CB2 /* FollowNavigationTitleView.swift */,
@@ -1266,7 +1267,6 @@
 				6597932C1FA7167C00840F6A /* LauncherView */,
 				659793301FA7167C00840F6A /* MultiAvatarView.swift */,
 				659793311FA7167C00840F6A /* NavigationItem.swift */,
-				6597933B1FA7167C00840F6A /* UserChatsEmptyView.swift */,
 				65C0FFD92003099F005FD3F2 /* WatermarkView.swift */,
 				223DDE44228C1F46005B9905 /* CHNotification.swift */,
 			);
