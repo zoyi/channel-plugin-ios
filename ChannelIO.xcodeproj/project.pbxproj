@@ -30,6 +30,7 @@
 		22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */; };
 		22AE76B220E341CB00C18355 /* Mute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AE76B120E341CB00C18355 /* Mute.swift */; };
 		22AE76B920E347C700C18355 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 22AE76B820E347C700C18355 /* mute.caf */; };
+		22B21863228D9AA000E39FEB /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B21862228D9AA000E39FEB /* DateUtils.swift */; };
 		22B4436D2200342B00EFC637 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443682200342B00EFC637 /* RxAtomic.framework */; };
 		22D879FC2270208B00CC1DDB /* CHEditTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D879FB2270208B00CC1DDB /* CHEditTextField.swift */; };
 		22E03E8521B38D560009F48E /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6B21B38D560009F48E /* MarkdownParser.swift */; };
@@ -394,6 +395,7 @@
 		22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveTypingAvatarsView.swift; sourceTree = "<group>"; };
 		22AE76B120E341CB00C18355 /* Mute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mute.swift; sourceTree = "<group>"; };
 		22AE76B820E347C700C18355 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = mute.caf; path = Assets/mute.caf; sourceTree = "<group>"; };
+		22B21862228D9AA000E39FEB /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
 		22B443682200342B00EFC637 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAtomic.framework; path = Carthage/Build/iOS/RxAtomic.framework; sourceTree = "<group>"; };
 		22D879FB2270208B00CC1DDB /* CHEditTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEditTextField.swift; sourceTree = "<group>"; };
 		22E03E6B21B38D560009F48E /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
@@ -1105,6 +1107,7 @@
 				22AE76B120E341CB00C18355 /* Mute.swift */,
 				650C48D1219E5F1B00713AD9 /* Tracking.swift */,
 				65CD481721F9BDBF001F0113 /* TableViewAnimator.swift */,
+				22B21862228D9AA000E39FEB /* DateUtils.swift */,
 			);
 			name = Utils;
 			path = Source/Utils;
@@ -1870,6 +1873,7 @@
 				659793A31FA716CB00840F6A /* Badge.swift in Sources */,
 				659793A41FA716CB00840F6A /* BaseButton.swift in Sources */,
 				659793A51FA716CB00840F6A /* BaseTableViewCell.swift in Sources */,
+				22B21863228D9AA000E39FEB /* DateUtils.swift in Sources */,
 				65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */,
 				655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */,
 				659793A61FA716CB00840F6A /* BaseView.swift in Sources */,

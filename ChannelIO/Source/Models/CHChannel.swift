@@ -22,6 +22,7 @@ struct CHChannel: CHEntity {
   var domain = ""
   var country = ""
   var desc = ""
+  var defaultPluginId = ""
   var textColor = "white"
   var working = true
   var workingTime: [String:TimeRange]?
@@ -35,6 +36,7 @@ struct CHChannel: CHEntity {
   var homepageUrl = ""
   var expectedResponseDelay = ""
   var timeZone = ""
+  var utcOffset = ""
   var awayOption: ChannelAwayOptionType = .active
   var workingType: ChannelWorkingType = .always
   var trial = true
@@ -175,6 +177,39 @@ extension CHChannel {
     
     return nil
   }
+  
+  func closestWorkingTime(from date: Date) -> (weekday: Weekday, time: Int)? {
+    guard let workingTime = self.workingTime else { return nil }
+    
+    var workingTimes = DateUtils.emptyArrayWithWeekday()
+    var breakTimes = DateUtils.emptyArrayWithWeekday()
+    
+    for (dayString, range) in workingTime {
+      if let day = Weekday(rawValue: dayString) {
+        workingTimes[day]?.append(range)
+      }
+    }
+    
+    if let lunchTime = self.lunchTime {
+      for day in breakTimes.keys {
+        breakTimes[day]?.append(lunchTime)
+      }
+    }
+
+    for (day, ranges) in workingTimes {
+      if let otherRanges = breakTimes[day] {
+        workingTimes[day] = DateUtils.substract(ranges: ranges, otherRanges: otherRanges)
+      }
+    }
+
+    if workingTimes.reduce(true, { (result, workingTime) in
+      return result && workingTime.value.count == 0
+    }) {
+      return nil
+    }
+    
+    return DateUtils.getClosestTimeFromWeekdayRange(date: date, weekdayRange: workingTimes)
+  }
 }
 
 extension CHChannel: Equatable {
@@ -205,6 +240,7 @@ extension CHChannel: Mappable {
     name                    <- map["name"]
     domain                  <- map["domain"]
     desc                    <- map["description"]
+    defaultPluginId         <- map["defaultPluginId"]
     country                 <- map["country"]
     textColor               <- map["textColor"]
     phoneNumber             <- map["phoneNumber"]
@@ -215,6 +251,7 @@ extension CHChannel: Mappable {
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
+    utcOffset               <- map["utcOffset"]
     messengerPlan           <- map["messengerPlan"]
     pushBotPlan             <- map["pushBotPlan"]
     supportBotPlan          <- map["supportBotPlan"]

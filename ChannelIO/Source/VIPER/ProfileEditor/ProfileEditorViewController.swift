@@ -141,7 +141,7 @@ class ProfileEditorViewController: BaseViewController {
       })
     
     self.navigationItem.rightBarButtonItem = NavigationItem(
-      title: "확인",
+      title: CHAssets.localized("ch.button_confirm"),
       style: .plain,
       textColor: mainStore.state.plugin.textUIColor,
       actionHandler: { [weak self] in

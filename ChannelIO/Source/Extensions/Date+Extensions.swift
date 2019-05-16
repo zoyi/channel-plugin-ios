@@ -93,5 +93,13 @@ extension Date {
     let date = gregorianCalendar.date(from: dateComponents)!
     return date
   }
+  
+  var minutes: Int {
+    return Calendar.current.component(.minute, from: self)
+  }
+  
+  var hours: Int {
+    return Calendar.current.component(.hour, from: self)
+  }
 }
 
