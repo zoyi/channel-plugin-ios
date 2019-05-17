@@ -35,13 +35,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   }
 
   func getChannel() -> Observable<CHChannel> {
-    return Observable.create({ (subscriber) -> Disposable in
-      subscriber.onNext(mainStore.state.channel)
-      subscriber.onCompleted()
-      return Disposables.create {
-        
-      }
-    })
+    return ChannelPromise.getChannel()
   }
   
   func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
@@ -57,7 +51,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
       let signal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
         .subscribe(onNext: { (entry) in
           if entry.step != nil && entry.supportBot != nil {
-            mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
+            mainStore.dispatchOnMain(GetSupportBotEntry(bot: nil, entry: entry))
           }
           subscriber.onNext(entry)
           subscriber.onCompleted()
@@ -75,7 +69,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     return Observable.create({ (subscriber) -> Disposable in
       let signal = UserChatPromise.getChats(since: nil, limit: 4, showCompleted: true)
         .subscribe(onNext: { [weak self] (data) in
-          mainStore.dispatch(GetUserChats(payload: data))
+          mainStore.dispatchOnMain(GetUserChats(payload: data))
           let showCompletion = mainStore.state.userChatsState.showCompletedChats
           let chats = userChatsSelector(state: mainStore.state, showCompleted: showCompletion)
           self?.chats = chats
@@ -94,14 +88,8 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     return self.chatSignal.asObservable()
   }
   
-  func getExternalSource() -> Observable<Any?> {
-    return Observable.create({ (subscriber) -> Disposable in
-      subscriber.onNext(nil)
-      subscriber.onCompleted()
-      return Disposables.create {
-
-      }
-    })
+  func getExternalSource() -> Observable<[CHExternalSourceType:String]?> {
+    return ChannelPromise.getExternalMessengers()
   }
   
   func updateExternalSource() -> Observable<[Any]> {

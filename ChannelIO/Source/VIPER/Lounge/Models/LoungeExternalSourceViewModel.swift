@@ -8,8 +8,8 @@
 
 import Foundation
 
-enum CHExternalSourceType {
-  case kakao
+enum CHExternalSourceType: String {
+  case kakao = "appKakaoLink"
   case talktalk
   case facebook
   case email
@@ -32,12 +32,15 @@ struct LoungeExternalSourceModel {
   var type: CHExternalSourceType
   var value: String
   
-  static func generate(with channel: CHChannel, thirdparties: [CHThirdPartyApp]) -> [LoungeExternalSourceModel] {
-//    let pd = LoungeExternalSourceModel(type: .phone, value: "01093123291")
-//    let fd = LoungeExternalSourceModel(type: .facebook, value: "facebook://")
-//    let td = LoungeExternalSourceModel(type: .talktalk, value: "line://")
-//    let kd = LoungeExternalSourceModel(type: .kakao, value: "kakao://")
+  static func generate(with channel: CHChannel, thirdParties: [CHExternalSourceType: String]?) -> [LoungeExternalSourceModel] {
     var sources: [LoungeExternalSourceModel] = []
+    
+    if let thirdParties = thirdParties {
+      for (thirdParty, link) in thirdParties {
+        sources.append(LoungeExternalSourceModel(type: thirdParty, value: link))
+      }
+    }
+    
     sources.append(LoungeExternalSourceModel(type: .link, value: channel.defaultPluginLink))
     if let phoneNumber = channel.phoneNumber {
       sources.append(LoungeExternalSourceModel(type: .phone, value: "tel://\(phoneNumber)"))

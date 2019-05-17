@@ -61,4 +61,18 @@ class WatermarkView : BaseView {
     }
   }
   
+  func reload() {
+    self.descLabel.attributedText = CHAssets.localized(
+      "ch.watermark",
+      attributes: [
+        .foregroundColor: CHColors.blueyGrey,
+        .font: UIFont.systemFont(ofSize: 11)
+      ],
+      tagAttributes: [
+        StringTagType.bold:[
+          .foregroundColor: CHColors.blueyGrey,
+          .font: UIFont.boldSystemFont(ofSize: 11)
+        ]
+      ])
+  }
 }

@@ -198,7 +198,7 @@ extension LoungePresenter {
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))
       }, onError: { [weak self] (error) in
-        self?.view?.displayError(for: .chats)
+        self?.view?.displayError(for: .mainContent)
       }).disposed(by: self.disposeBag)
   }
   
@@ -212,10 +212,8 @@ extension LoungePresenter {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (sources) in
-        //self?.view?.displayError(for: .externalSource)
-        //
         let sources = LoungeExternalSourceModel
-          .generate(with: mainStore.state.channel, thirdparties: [])
+          .generate(with: mainStore.state.channel, thirdParties: sources)
         self?.view?.displayExternalSources(with: sources)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .externalSource)

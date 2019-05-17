@@ -30,6 +30,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   }
   
   var disposeBag = DisposeBag()
+  
+  var scrollTopConstraint: Constraint?
   var mainHeightConstraint: Constraint?
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -91,9 +93,13 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.scrollView.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       if #available(iOS 11.0, *) {
-        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+        self.scrollTopConstraint = make.top
+          .equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
+          //.offset(Metric.scrollInsetTop).constraint
       } else {
-        make.top.equalToSuperview().inset(20)
+        self.scrollTopConstraint = make.top
+          .equalToSuperview().constraint
+          //.inset(Metric.scrollInsetTop).constraint
       }
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
@@ -115,7 +121,6 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.leading.greaterThanOrEqualToSuperview().inset(8)
       make.trailing.lessThanOrEqualToSuperview().inset(8)
       make.centerX.equalToSuperview()
-      make.bottom.equalToSuperview()
     }
     
     self.watermarkView.snp.makeConstraints { [weak self] (make) in
@@ -146,7 +151,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       self?.presenter?.didClickOnSeeMoreChat(from: self)
     }).disposed(by: self.disposeBag)
     self.mainView.refreshSignal.subscribe(onNext: { [weak self] (_) in
-      self?.presenter?.didClickOnRefresh(for: .chats)
+      self?.presenter?.didClickOnRefresh(for: .mainContent)
     }).disposed(by: self.disposeBag)
     
     self.scrollView.addSubview(self.externalView)
@@ -211,6 +216,7 @@ extension LoungeView {
   
   func displayHeader(with model: LoungeHeaderViewModel) {
     self.headerView.configure(model: model)
+    self.watermarkView.reload()
     self.watermarkView.isHidden = model.plugin.showPoweredBy == false
   }
   
@@ -226,7 +232,7 @@ extension LoungeView {
   func displayError(for type: LoungeSectionType) {
     switch type {
     case .header: self.headerView.displayError()
-    case .chats: self.mainView.displayError()
+    case .mainContent: self.mainView.displayError()
     case .externalSource: self.externalView.displayError()
     }
   }

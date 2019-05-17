@@ -64,7 +64,7 @@ protocol LoungeInteractorProtocol: class {
   func getFollowers() -> Observable<[CHManager]>
   func getChats() -> Observable<[CHUserChat]>
   func getSupportBot() -> Observable<CHSupportBotEntryInfo>
-  func getExternalSource() -> Observable<Any?>
+  func getExternalSource() -> Observable<[CHExternalSourceType:String]?>
 }
 
 protocol LoungeRouterProtocol: class {

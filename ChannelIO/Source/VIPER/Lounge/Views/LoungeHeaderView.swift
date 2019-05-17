@@ -282,6 +282,7 @@ class LoungeHeaderView: BaseView {
     self.responseDescriptionLabel.textColor = plugin.textUIColor
     self.responseLabel.textColor = plugin.textUIColor
     self.operationTimeLabel.textColor = plugin.textUIColor
+    self.operationTimeLabel.text = CHAssets.localized("ch.out_of_work.confirm")
     
     if channel.working {
       self.responseImageView.image = plugin.textColor == "white" ?
@@ -298,7 +299,7 @@ class LoungeHeaderView: BaseView {
         CHAssets.getImage(named: "offhoursB")
       
       self.responseLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working")
-      self.responseDescriptionLabel.text =  CHAssets.localized("ch.lounge.header.available_time")
+      self.responseDescriptionLabel.text = CHAssets.localized("ch.lounge.header.available_time")
       self.followersView.isHidden = true
       self.offlineImageView.isHidden = false
     }

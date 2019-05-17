@@ -24,7 +24,7 @@ class LoungeExternalAppsView: BaseView {
   let titleLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
     $0.textColor = CHColors.blueyGrey
-    $0.text = CHAssets.localized("다른 방법으로 문의")
+    $0.text = CHAssets.localized("ch.lounge.external.title")
   }
   
   let containerView = UIStackView().then {
@@ -100,22 +100,20 @@ class LoungeExternalAppsView: BaseView {
 }
 
 class LoungeExternalAppView: BaseView {
-  let sourceImageView = UIImageView().then {
-    $0.contentMode = .center
-  }
-  
+  let imageView = UIImageView()
+
   override func initialize() {
     super.initialize()
     
     self.clipsToBounds = true
     self.backgroundColor = CHColors.dark10
-    self.addSubview(self.sourceImageView)
+    self.addSubview(self.imageView)
   }
   
   override func setLayouts() {
     super.setLayouts()
     
-    self.sourceImageView.snp.makeConstraints { (make) in
+    self.imageView.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
     }
   }
@@ -126,6 +124,6 @@ class LoungeExternalAppView: BaseView {
   }
   
   func configure(with model: LoungeExternalSourceModel) {
-    self.sourceImageView.image = model.type.image
+    self.imageView.image = model.type.image
   }
 }

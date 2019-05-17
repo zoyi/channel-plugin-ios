@@ -222,8 +222,8 @@ class FollowersView: BaseView {
       make.leading.equalToSuperview()
       make.bottom.equalToSuperview()
       make.top.equalTo(self.firstFollowerView.snp.bottom).offset(2)
-      make.height.equalTo(Metric.sizeForTwo)
-      make.width.equalTo(Metric.sizeForTwo)
+      make.height.equalTo(Metric.sizeForFour)
+      make.width.equalTo(Metric.sizeForFour)
     }
     
     self.forthFollowerView.configure(entities[3])
@@ -233,8 +233,8 @@ class FollowersView: BaseView {
       make.bottom.equalToSuperview()
       make.top.equalTo(self.secondFollowerView.snp.bottom).offset(2)
       make.leading.equalTo(self.thirdFollowerView.snp.trailing).offset(2)
-      make.height.equalTo(Metric.sizeForTwo)
-      make.width.equalTo(Metric.sizeForTwo)
+      make.height.equalTo(Metric.sizeForFour)
+      make.width.equalTo(Metric.sizeForFour)
     }
     
     self.firstFollowerView.isHidden = false

@@ -89,6 +89,10 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     case .link:
       UIPasteboard.general.string = source.value
       CHNotification.shared.display(message: "Copied completed")
+    case .kakao:
+      if let url = URL(string:source.value) {
+        UIApplication.shared.openURL(url)
+      }
     default:
       break
     }
