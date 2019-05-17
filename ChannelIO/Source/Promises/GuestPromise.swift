@@ -67,14 +67,12 @@ struct GuestPromise {
               user != nil ? subscriber.onNext((user, nil)) : subscriber.onNext((veil, nil))
               subscriber.onCompleted()
             }
-            break
           case .failure(let error):
             if let data = response.data {
               CRToastManager.showErrorFromData(data)
             }
             subscriber.onNext((nil, error))
             subscriber.onCompleted()
-            break
           }
         })
       

@@ -35,6 +35,7 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void
   @objc optional func onClickRedirect(url: URL) -> Bool
+  @objc optional func onChangeGuestProfile(key: String, value: Any?) -> Void
 }
 
 @objc
