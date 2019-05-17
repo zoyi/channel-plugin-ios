@@ -22,15 +22,11 @@ class SettingInteractor: SettingInteractorProtocol {
   }
   
   func getChannel() -> Observable<CHChannel> {
-    return Observable.create({ (subscriber) -> Disposable in
-      return Disposables.create()
-    })
+    return ChannelPromise.getChannel()
   }
   
   func getProfileSchemas() -> Observable<[CHProfileSchema]> {
-    return Observable.create({ (subscriber) -> Disposable in
-      return Disposables.create()
-    })
+    return PluginPromise.getProfileSchemas(pluginId: mainStore.state.plugin.id)
   }
   
   func getCurrentLocale() -> CHLocale? {

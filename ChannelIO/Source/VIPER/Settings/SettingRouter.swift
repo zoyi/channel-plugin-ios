@@ -12,16 +12,18 @@ class SettingRouter: SettingRouterProtocol {
   func pushLanguageSelector(from view: UIViewController?) {
     let viewController = LanguageOptionViewController()
     view?.navigationController?.pushViewController(viewController, animated: true)
-//    let schema = CHProfileSchema(
-//      id: "1", channelId: "2", key: "phone", nameI18n: CHi18n(text: "phone", en: nil, ja: nil, ko: nil), type: .string, visible: true, createdAt: nil, updatedAt: nil
-//    )
-//    let dest = ProfileEditorViewController(type: .phone, guest: mainStore.state.guest, schema: schema)
-//    view?.navigationController?.pushViewController(dest, animated: true)
   }
   
   func pushProfileSchemaEditor(with item: GuestProfileItemModel, from view: UIViewController?) {
-    let viewController = ProfileEditorViewController()
-    viewController.profileItem = item
+    var type: EditFieldType
+    if item.rawData.key == "mobileNumber" {
+      type = .phone
+    } else if item.profileType == .number {
+      type = .number
+    } else {
+      type = .text
+    }
+    let viewController = ProfileEditorViewController(type: type, guest: mainStore.state.guest, schema: item.rawData)
     view?.navigationController?.pushViewController(viewController, animated: true)
   }
   

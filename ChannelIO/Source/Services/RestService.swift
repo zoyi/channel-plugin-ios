@@ -17,45 +17,41 @@ enum EPType: String {
 
 enum RestRouter: URLRequestConvertible {
   case Boot(String, ParametersType)
-  case GetPlugin(String)
-  
-  case TouchGuest
-  case UpdateGuest(ParametersType)
-  case GetUserChats(ParametersType)
-  case GetUserChat(String)
   case CreateUserChat(String)
-  case RemoveUserChat(String)
   case CloseUserChat(String, ParametersType)
-  case ReviewUserChat(String, ParametersType)
-  case GetMessages(String, ParametersType)
   case CreateMessage(String, ParametersType)
-  case UploadFile(String, ParametersType)
-  case SetMessagesRead(String)
-  case SendPushAck(String)
-  
-  case RegisterToken(ParametersType)
-  case UnregisterToken(String, ParametersType)
   case CheckVersion
-  case GetGeoIP
-  
-  case SendEvent(String, ParametersType)
-  case GetCountryCodes
-  case GetFollowingManager
-  
-  case RequestProfileBot(String, String)
-  case UpdateProfileItem(String, ParametersType)
-
-  case Translate(String, ParametersType)
-  
-  case GetSupportBot(String)
-  case GetSupportBotEntry(String)
   case CreateSupportBotChat(String)
-  case ReplySupportBot(String, String, ParametersType)
-  
-  case GetNudges(String)
   case CheckNudgeReach(String)
   case CreateNudgeChat(String)
-  
+  case GetNudges(String)
+  case GetPlugin(String)
+  case GetGeoIP
+  case GetChannel
+  case GetCountryCodes
+  case GetFollowingManager
+  case GetExternalMessengers
+  case GetSupportBot(String)
+  case GetSupportBotEntry(String)
+  case GetUserChats(ParametersType)
+  case GetUserChat(String)
+  case GetMessages(String, ParametersType)
+  case GetProfileBotSchemas(String)
+  case ReplySupportBot(String, String, ParametersType)
+  case RequestProfileBot(String, String)
+  case RegisterToken(ParametersType)
+  case RemoveUserChat(String)
+  case ReviewUserChat(String, ParametersType)
+  case SendEvent(String, ParametersType)
+  case SetMessagesRead(String)
+  case SendPushAck(String)
+  case TouchGuest
+  case Translate(String, ParametersType)
+  case UpdateGuest(ParametersType)
+  case UpdateProfileItem(String, ParametersType)
+  case UnregisterToken(String, ParametersType)
+  case UploadFile(String, ParametersType)
+
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -91,7 +87,10 @@ enum RestRouter: URLRequestConvertible {
          .GetFollowingManager,
          .GetPlugin, .Translate,
          .GetSupportBot, .GetSupportBotEntry,
-         .GetNudges:
+         .GetNudges,
+         .GetExternalMessengers,
+         .GetProfileBotSchemas,
+         .GetChannel:
       return .get
     case .SetMessagesRead,
          .RemoveUserChat,
@@ -110,68 +109,74 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .Boot(let pluginKey, _):
       return "/app/plugins/\(pluginKey)/boot/v2"
-    case .TouchGuest:
-      return "/app/guests/touch"
-    case .GetPlugin(let pluginId):
-      return "/app/plugins/\(pluginId)"
-    case .GetUserChats:
-      return "/app/user_chats"
-    case .CreateUserChat(let pluginId):
-      return "/app/plugins/\(pluginId)/user_chats"
-    case .GetUserChat(let userChatId):
-      return "/app/user_chats/\(userChatId)"
-    case .RemoveUserChat(let userChatId):
-      return "/app/user_chats/\(userChatId)/remove"
-    case .CloseUserChat(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/close"
-    case .ReviewUserChat(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/review"
-    case .GetMessages(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages"
-    case .CreateMessage(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages"
-    case .UploadFile(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages/file"
-    case .SetMessagesRead(let userChatId):
-      return "/app/user_chats/\(userChatId)/messages/read"
-    case .RegisterToken:
-      return "/app/device_tokens"
-    case .CheckVersion:
-      return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
-    case .GetGeoIP:
-      return "/geoip"
-    case .UnregisterToken(let key, _):
-      return "/app/device_tokens/ios/\(key)"
-    case .SendEvent(let pluginId, _):
-      return "/app/plugins/\(pluginId)/events/v2"
-    case .GetCountryCodes:
-      return "/available/countries"
-    case .GetFollowingManager:
-      return "/app/channels/following_managers"
-    case .RequestProfileBot(let pluginId, let chatId):
-      return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
-    case .UpdateProfileItem(let messageId, _):
-      return "/app/messages/\(messageId)/profile_bot"
-    case .Translate(let messageId, _):
-      return "/app/messages/\(messageId)/translate"
-    case .GetSupportBot(let pluginId):
-      return "/app/plugins/\(pluginId)/support_bot"
-    case .GetSupportBotEntry(let supportBotId):
-      return "/app/support_bots/\(supportBotId)/entry"
-    case .CreateSupportBotChat(let supportBotId):
-      return "/app/support_bots/\(supportBotId)/user_chats"
-    case .ReplySupportBot(let userChatId, let buttonId, _):
-      return "/app/user_chats/\(userChatId)/support_bot/buttons/\(buttonId)"
-    case .SendPushAck(let userChatId):
-      return "/app/user_chats/\(userChatId)/messages/receive"
-    case .GetNudges(let pluginId):
-      return "/app/plugins/\(pluginId)/nudges"
     case .CheckNudgeReach(let nudgeId):
       return "/app/nudges/\(nudgeId)/reach"
     case .CreateNudgeChat(let nudgeId):
       return "/app/nudges/\(nudgeId)/user_chats"
+    case .CreateUserChat(let pluginId):
+      return "/app/plugins/\(pluginId)/user_chats"
+    case .CreateSupportBotChat(let supportBotId):
+      return "/app/support_bots/\(supportBotId)/user_chats"
+    case .CreateMessage(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/messages"
+    case .CheckVersion:
+      return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
+    case .GetMessages(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/messages"
+    case .CloseUserChat(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/close"
+    case .GetCountryCodes:
+      return "/available/countries"
+    case .GetChannel:
+      return "/app/channels"
+    case .GetExternalMessengers:
+      return "/app/channels/messengers"
+    case .GetFollowingManager:
+      return "/app/channels/following_managers"
+    case .GetPlugin(let pluginId):
+      return "/app/plugins/\(pluginId)"
+    case .GetUserChats:
+      return "/app/user_chats"
+    case .GetGeoIP:
+      return "/geoip"
+    case .GetUserChat(let userChatId):
+      return "/app/user_chats/\(userChatId)"
+    case .GetSupportBot(let pluginId):
+      return "/app/plugins/\(pluginId)/support_bot"
+    case .GetSupportBotEntry(let supportBotId):
+      return "/app/support_bots/\(supportBotId)/entry"
+    case .GetNudges(let pluginId):
+      return "/app/plugins/\(pluginId)/nudges"
+    case .GetProfileBotSchemas(let pluginId):
+      return "/app/plugins/\(pluginId)/profile_bot_schemas"
+    case .RemoveUserChat(let userChatId):
+      return "/app/user_chats/\(userChatId)/remove"
+    case .ReviewUserChat(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/review"
+    case .RequestProfileBot(let pluginId, let chatId):
+      return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
+    case .RegisterToken:
+      return "/app/device_tokens"
+    case .ReplySupportBot(let userChatId, let buttonId, _):
+      return "/app/user_chats/\(userChatId)/support_bot/buttons/\(buttonId)"
+    case .SetMessagesRead(let userChatId):
+      return "/app/user_chats/\(userChatId)/messages/read"
+    case .SendPushAck(let userChatId):
+      return "/app/user_chats/\(userChatId)/messages/receive"
+    case .SendEvent(let pluginId, _):
+      return "/app/plugins/\(pluginId)/events/v2"
+    case .Translate(let messageId, _):
+      return "/app/messages/\(messageId)/translate"
+    case .TouchGuest:
+      return "/app/guests/touch"
+    case .UpdateProfileItem(let messageId, _):
+      return "/app/messages/\(messageId)/profile_bot"
+    case .UploadFile(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/messages/file"
     case .UpdateGuest(_):
       return "/app/guests"
+    case .UnregisterToken(let key, _):
+      return "/app/device_tokens/ios/\(key)"
     }
   }
   
@@ -276,7 +281,9 @@ enum RestRouter: URLRequestConvertible {
          .CheckNudgeReach,
          .SetMessagesRead,
          .CreateNudgeChat,
-         .GetSupportBot:
+         .GetSupportBot,
+         .GetExternalMessengers,
+         .GetProfileBotSchemas:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

@@ -43,7 +43,7 @@ class SettingHeaderView: BaseView {
   }
   
   struct Metric {
-    static let nameLeading = 46
+    static let nameLeading = 60
     static let nameTrailing = 10
     static let homepageTop = 4
     static let descTop = 2

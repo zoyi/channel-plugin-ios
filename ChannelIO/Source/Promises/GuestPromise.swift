@@ -48,9 +48,7 @@ struct GuestPromise {
   static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHGuest?, Any?)> {
     return Observable.create({ (subscriber) -> Disposable in
       let params = [
-        "body": [
-          "profile": profiles
-        ]
+        "body": profiles
       ]
       
       let req = Alamofire.request(RestRouter.UpdateGuest(params as RestRouter.ParametersType))

@@ -12,8 +12,6 @@ import SVProgressHUD
 import SnapKit
 
 class ProfileEditorViewController: BaseViewController {
-  var profileItem: GuestProfileItemModel?
-  
   let headerLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
@@ -145,6 +143,9 @@ class ProfileEditorViewController: BaseViewController {
       style: .plain,
       textColor: mainStore.state.plugin.textUIColor,
       actionHandler: { [weak self] in
+        if let text = self?.fieldView.getText() {
+          self?.text = text
+        }
         self?.updateGuestInfo()
       })
   }

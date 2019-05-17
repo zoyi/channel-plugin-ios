@@ -24,7 +24,6 @@ class KeyValueCell: BaseTableViewCell, Reusable {
   let arrowImageView = UIImageView().then {
     $0.contentMode = .center
     $0.image = CHAssets.getImage(named: "chevronRightSmall")
-    $0.isHidden = true
   }
 
   override func initialize() {
@@ -46,7 +45,7 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     self.valueLabel.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       make.centerY.equalToSuperview()
-      make.leading.equalTo(self.titleLabel.snp.trailing).inset(16)
+      make.leading.equalTo(self.titleLabel.snp.trailing).offset(16)
     }
     
     self.arrowImageView.snp.makeConstraints { [weak self] (make) in
