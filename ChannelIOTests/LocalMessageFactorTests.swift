@@ -50,18 +50,21 @@ class LocalMessageFactoryTests: QuickSpec {
     }
     
     it("new alert message") {
+      let createdAt = Date()
       var userChat = CHUserChat()
       var session = CHSession()
-      session.unread = 4
+      session.readAt = Calendar.current.date(byAdding: .second, value: -10, to: createdAt)
       userChat.session = session
       
-      let message = CHMessage(chatId: "31231", message: "test", type: .Default)
+      let message = CHMessage(chatId: "31231", message: "test", type: .Default, createdAt: createdAt)
       let messages = [ message, message, message, message, message, message]
       let modifiedMessages = LocalMessageFactory
         .generate(type: .NewAlertMessage, messages: messages, userChat: userChat)
       
-      let alertmsg = modifiedMessages[2]
-      expect(alertmsg.messageType).to(equal(MessageType.NewAlertMessage))
+      let shouldContain = modifiedMessages.contains(where: { (message) -> Bool in
+        message.messageType == .NewAlertMessage
+      })
+      expect(shouldContain).to(equal(true))
     }
     
     describe("user message") {
@@ -98,9 +101,9 @@ class LocalMessageFactoryTests: QuickSpec {
       expect(messages.count).to(equal(1))
       
       let closemsg = messages.first!
-      expect(closemsg.chatId).to(equal("dummy"))
+      expect(closemsg.chatId).to(equal("welcome_dummy"))
       expect(closemsg.messageType).to(equal(MessageType.WelcomeMessage))
-      expect(closemsg.id).to(equal("dummy"))
+      expect(closemsg.id).to(equal("welcome_dummy"))
     }
   }
 }

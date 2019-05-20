@@ -16,6 +16,21 @@ extension Date {
   var miliseconds: Double {
     return Double(self.timeIntervalSince1970 * 1000.0)
   }
+  
+  var minutes: Int {
+    var totalMinutues: Int = 0
+    totalMinutues += self.hours * 60
+    totalMinutues += Calendar.current.component(.minute, from: self)
+    return totalMinutues
+  }
+  
+  var hours: Int {
+    return Calendar.current.component(.hour, from: self)
+  }
+  
+  var weekday: Weekday {
+    return Weekday.toWeekday(from: Calendar.current.component(.weekday, from: self))
+  }
 }
 
 extension Date {
@@ -40,7 +55,7 @@ extension Date {
     formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
     return formatter.string(from: self)
   }
-  
+
   func readableTimeStamp() -> String {
     let cal = NSCalendar.current
     let now = Date()
@@ -82,6 +97,21 @@ extension Date {
     }
   }
   
+  func next(weekday: Weekday, mintues: Int) -> Date? {
+    var dateComponents = DateComponents.init()
+    dateComponents.weekday = weekday.toIndex
+    dateComponents.hour = mintues / 60
+    dateComponents.minute =  mintues % 60
+    
+    return Calendar.current.nextDate(after: self, matching: dateComponents, matchingPolicy: .nextTime)
+  }
+  
+  static func from(dateString: String) -> Date? {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
+    return formatter.date(from: dateString)
+  }
+  
   static func from(year: Int, month: Int, day: Int) -> Date {
     let gregorianCalendar = NSCalendar(calendarIdentifier: .gregorian)!
     
@@ -94,12 +124,33 @@ extension Date {
     return date
   }
   
-  var minutes: Int {
-    return Calendar.current.component(.minute, from: self)
+  func diff(from date: Date, components: Set<Calendar.Component>) -> DateComponents {
+    return Calendar.current.dateComponents(components, from: self, to: date)
   }
   
-  var hours: Int {
-    return Calendar.current.component(.hour, from: self)
+  func convertTimeZone(with abbreviation: String) -> Date? {
+    guard
+      let timezoneKey = TimeZone
+        .abbreviationDictionary
+        .filter({ $0.value == abbreviation })
+        .first?.key,
+      let remoteZone = TimeZone.init(abbreviation: timezoneKey)
+      else {
+        print("Unrecognized timezone abbreviation")
+        return nil
+    }
+    
+    let localZone = NSTimeZone.local
+    let currentOffset = TimeInterval(localZone.secondsFromGMT(for: self))
+    let remoteOffset = TimeInterval(remoteZone.secondsFromGMT(for: self))
+    let diff = currentOffset - remoteOffset
+
+    if diff == 0 {
+      return Date(timeInterval: currentOffset, since: self)
+    }
+    else {
+      return Date(timeInterval: remoteOffset, since: self)
+    }
   }
 }
 
