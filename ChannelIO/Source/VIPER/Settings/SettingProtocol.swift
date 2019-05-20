@@ -41,6 +41,8 @@ protocol SettingInteractorProtocol {
   func getProfileSchemas() -> Observable<[CHProfileSchema]>
   func getCurrentLocale() -> CHLocale?
   func getTranslationEnabled() -> Bool
+  
+  func updateGuest() -> Observable<CHGuest>
 }
 
 protocol SettingRouterProtocol {

@@ -14,6 +14,8 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
   var interactor: SettingInteractorProtocol?
   var router: SettingRouterProtocol?
   
+  var schemas: [CHProfileSchema] = []
+  
   var disposeBag = DisposeBag()
   
   func viewDidLoad() {
@@ -46,9 +48,21 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
           from: profiles,
           schemas: schemas
         )
+        self?.schemas = schemas
         self?.view?.displayProfiles(with: models)
       }, onError: { (error) in
         
+      }).disposed(by: self.disposeBag)
+    
+    self.interactor?.updateGuest()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (guest) in
+        let profiles = mainStore.state.guest.profile
+        let models = GuestProfileItemModel.generate(
+          from: profiles,
+          schemas: self?.schemas ?? []
+        )
+        self?.view?.displayProfiles(with: models)
       }).disposed(by: self.disposeBag)
   }
   
