@@ -6,23 +6,18 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import Foundation
-import Reusable
 import SnapKit
 import ReSwift
 import RxSwift
 import UserNotifications
-import SVProgressHUD
-import CRToast
-import AVFoundation
 
-let mainStore = Store<AppState>(
+internal let mainStore = Store<AppState>(
   reducer: appReducer,
   state: nil,
   middleware: [loggingMiddleware]
 )
 
-func dlog(_ str: String) {
+internal func dlog(_ str: String) {
   guard ChannelIO.settings?.debugMode == true else { return }
   print("[ChannelIO]: \(str)")
 }
@@ -50,7 +45,15 @@ public final class ChannelIO: NSObject {
   }
   
   internal static var chatNotificationView: ChatNotificationView?
-  internal static var baseNavigation: BaseNavigationController?
+  internal static var baseNavigation: BaseNavigationController? {
+    willSet {
+      if ChannelIO.baseNavigation == nil && newValue != nil {
+        ChannelAvailabilityChecker.shared.run()
+      } else {
+        ChannelAvailabilityChecker.shared.stop()
+      }
+    }
+  }
   internal static var subscriber : CHPluginSubscriber?
 
   internal static var disposeBag = DisposeBag()

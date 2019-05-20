@@ -128,16 +128,37 @@ extension Date {
     return Calendar.current.dateComponents(components, from: self, to: date)
   }
   
-  func convertTimeZone(with abbreviation: String) -> Date? {
-    guard
-      let timezoneKey = TimeZone
-        .abbreviationDictionary
-        .filter({ $0.value == abbreviation })
-        .first?.key,
-      let remoteZone = TimeZone.init(abbreviation: timezoneKey)
-      else {
-        print("Unrecognized timezone abbreviation")
+  func parseUTCOffset(string: String) -> Int? {
+    let components = string.components(separatedBy: ":")
+    if let hours = Int(components[0]), let minutes = Int(components[1]) {
+      return minutes * 60 + hours * 60 * 60
+    }
+    return nil
+  }
+  
+  //take either timezone string as "ETC/GTM+9" or "GMT+9" or abbreviation
+  func convertTimeZone(with string: String) -> Date? {
+    var remoteZone: NSTimeZone
+    if let timeZone = NSTimeZone(name: string) {
+      remoteZone = timeZone
+    }
+    else if string.contains("/") {
+      if let gmt = string.components(separatedBy: "/").last,
+        let timeZone = NSTimeZone(name: gmt){
+        remoteZone = timeZone
+      } else {
         return nil
+      }
+    }
+    else if let timezoneKey = TimeZone
+        .abbreviationDictionary
+        .filter({ $0.value == string })
+        .first?.key,
+      let timeZone = NSTimeZone.init(abbreviation: timezoneKey) {
+      remoteZone = timeZone
+    } else {
+      print("Unrecognized timezone abbreviation")
+      return nil
     }
     
     let localZone = NSTimeZone.local

@@ -208,6 +208,15 @@ final class UserChatViewController: BaseSLKTextViewController {
         }
         self?.adjustTableViewInset()
       }.disposed(by: self.notiDisposeBag)
+    
+    ChannelAvailabilityChecker.shared.updateSignal
+      .flatMap({ (_) -> Observable<CHChannel> in
+        return ChannelPromise.getChannel()
+      })
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (channel) in
+        mainStore.dispatch(UpdateChannel(payload: channel))
+      }).disposed(by: self.notiDisposeBag)
   }
   
   func removeObservers(){
@@ -558,7 +567,7 @@ extension UserChatViewController: StoreSubscriber {
       self.setTextInputbarHidden(true, animated: false)
       self.adjustTableViewInset(bottomInset: 60.f)
     }
-    else if self.channel.allowNewChat == false && nextUserChat?.isReady() == true {
+    else if self.channel.allowNewChat == false && self.textView.text == "" {
       self.setTextInputbarHidden(true, animated: false)
       self.adjustTableViewInset(bottomInset: 60.f)
     }
@@ -703,6 +712,15 @@ extension UserChatViewController {
   
   override func textViewDidChange(_ textView: UITextView) {
     self.chatManager.sendTyping(isStop: textView.text == "")
+    
+    //hide input if
+    // * channel is not working
+    // * away option prevent chat
+    // * text become empty
+    if textView.text == "" && !self.channel.working && self.channel.allowNewChat == false {
+      self.setTextInputbarHidden(true, animated: false)
+      self.adjustTableViewInset(bottomInset: 60.f)
+    }
   }
 }
 

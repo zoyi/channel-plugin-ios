@@ -252,6 +252,9 @@
 		65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA7AE41FD64CC100D2A8B1 /* BotsState.swift */; };
 		65AA7AE71FD64CCF00D2A8B1 /* BotReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA7AE61FD64CCF00D2A8B1 /* BotReducer.swift */; };
 		65AC15D4228160660005643F /* LoungeMainErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AC15D3228160660005643F /* LoungeMainErrorView.swift */; };
+		65BC6408229262D6000F8508 /* ChannelAvailabilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BC6407229262D6000F8508 /* ChannelAvailabilityChecker.swift */; };
+		65BC640A229271ED000F8508 /* DateUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BC6409229271ED000F8508 /* DateUtilsTests.swift */; };
+		65BC640C229273B2000F8508 /* ChannelPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BC640B229273B2000F8508 /* ChannelPromise.swift */; };
 		65C0FFDA2003099F005FD3F2 /* WatermarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C0FFD92003099F005FD3F2 /* WatermarkView.swift */; };
 		65C4A75D1E499C15006D7CD5 /* PluginPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C4A75C1E499C15006D7CD5 /* PluginPromiseTests.swift */; };
 		65C4A75F1E49AC78006D7CD5 /* UserChatPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C4A75E1E49AC78006D7CD5 /* UserChatPromiseTests.swift */; };
@@ -619,6 +622,9 @@
 		65AA7AE41FD64CC100D2A8B1 /* BotsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotsState.swift; sourceTree = "<group>"; };
 		65AA7AE61FD64CCF00D2A8B1 /* BotReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotReducer.swift; sourceTree = "<group>"; };
 		65AC15D3228160660005643F /* LoungeMainErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeMainErrorView.swift; sourceTree = "<group>"; };
+		65BC6407229262D6000F8508 /* ChannelAvailabilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAvailabilityChecker.swift; sourceTree = "<group>"; };
+		65BC6409229271ED000F8508 /* DateUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtilsTests.swift; sourceTree = "<group>"; };
+		65BC640B229273B2000F8508 /* ChannelPromise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelPromise.swift; sourceTree = "<group>"; };
 		65C0FFD92003099F005FD3F2 /* WatermarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkView.swift; sourceTree = "<group>"; };
 		65C4A75C1E499C15006D7CD5 /* PluginPromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginPromiseTests.swift; sourceTree = "<group>"; };
 		65C4A75E1E49AC78006D7CD5 /* UserChatPromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserChatPromiseTests.swift; sourceTree = "<group>"; };
@@ -941,6 +947,7 @@
 			isa = PBXGroup;
 			children = (
 				650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */,
+				65BC6409229271ED000F8508 /* DateUtilsTests.swift */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -1108,6 +1115,7 @@
 				650C48D1219E5F1B00713AD9 /* Tracking.swift */,
 				65CD481721F9BDBF001F0113 /* TableViewAnimator.swift */,
 				22B21862228D9AA000E39FEB /* DateUtils.swift */,
+				65BC6407229262D6000F8508 /* ChannelAvailabilityChecker.swift */,
 			);
 			name = Utils;
 			path = Source/Utils;
@@ -1116,6 +1124,7 @@
 		659792B91FA7167B00840F6A /* Promises */ = {
 			isa = PBXGroup;
 			children = (
+				65BC640B229273B2000F8508 /* ChannelPromise.swift */,
 				659792BB1FA7167B00840F6A /* EventPromise.swift */,
 				659792BC1FA7167B00840F6A /* GuestPromise.swift */,
 				659792BD1FA7167B00840F6A /* PluginPromise.swift */,
@@ -1851,6 +1860,7 @@
 				22E03E8821B38D560009F48E /* MarkdownAutomaticLink.swift in Sources */,
 				659793991FA716CB00840F6A /* PersonSelector.swift in Sources */,
 				22E03E8B21B38D560009F48E /* MarkdownCodeEscaping.swift in Sources */,
+				65BC640C229273B2000F8508 /* ChannelPromise.swift in Sources */,
 				6597939A1FA716CB00840F6A /* UserChatSelector.swift in Sources */,
 				6597939B1FA716CB00840F6A /* RestService.swift in Sources */,
 				22E03E8621B38D560009F48E /* String+UTF16.swift in Sources */,
@@ -1885,6 +1895,7 @@
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
 				6512BA6922812C0100757CB2 /* SimpleNavigationTitleView.swift in Sources */,
 				65121331224DF47F00737089 /* ImageSlideshowItem.swift in Sources */,
+				65BC6408229262D6000F8508 /* ChannelAvailabilityChecker.swift in Sources */,
 				22AE76B220E341CB00C18355 /* Mute.swift in Sources */,
 				65CB9921226EC055004F9DC7 /* LoungeInteractor.swift in Sources */,
 				6512BA382271AA4300757CB2 /* FollowersView.swift in Sources */,
@@ -1944,6 +1955,7 @@
 				658010DE2195874C00A51CEC /* TargetEvaluatorServiceTests.swift in Sources */,
 				65C4A7651E4AB3E4006D7CD5 /* GuestPromiseTests.swift in Sources */,
 				650D7C431E72567E007DE358 /* MessagesReducerTests.swift in Sources */,
+				65BC640A229271ED000F8508 /* DateUtilsTests.swift in Sources */,
 				225B05FA1E4ED9F5001DE109 /* ChannelTests.swift in Sources */,
 				65C4A75D1E499C15006D7CD5 /* PluginPromiseTests.swift in Sources */,
 				650D7C4C1E72B174007DE358 /* UserChatsReducerTests.swift in Sources */,

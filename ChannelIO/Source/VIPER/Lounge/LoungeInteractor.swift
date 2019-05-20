@@ -99,9 +99,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   }
 
   func updateGeneralInfo() -> Observable<(CHChannel, CHPlugin)> {
-    let channel = mainStore.state.channel
-    let plugin = mainStore.state.plugin
-    return Observable.just((channel, plugin))
+    return self.infoSignal.asObservable()
   }
 }
 

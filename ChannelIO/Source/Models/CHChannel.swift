@@ -77,10 +77,6 @@ extension CHChannel {
     return false
   }
   
-  var shouldShowSingleManager: Bool {
-    return self.expectedResponseDelay == "delayed" || !self.working
-  }
-  
   func isDiff(from channel: CHChannel) -> Bool {
     return self.working != channel.working || self.workingType != channel.workingType ||
       self.expectedResponseDelay != channel.expectedResponseDelay
@@ -178,7 +174,8 @@ extension CHChannel {
     return nil
   }
   
-  func closestWorkingTime(from date: Date) -> (weekday: Weekday, time: Int)? {
+  //return closest weekday and time left in minutes
+  func closestWorkingTime(from date: Date) -> (weekday: Weekday, timeLeft: Int)? {
     guard let workingTime = self.workingTime else { return nil }
     
     var workingTimes = DateUtils.emptyArrayWithWeekday()
@@ -208,7 +205,32 @@ extension CHChannel {
       return nil
     }
     
-    return DateUtils.getClosestTimeFromWeekdayRange(date: date, weekdayRange: workingTimes)
+    //convert to remote date
+    guard let remoteTime = date.convertTimeZone(with: self.timeZone) else { return nil }
+    //get weekday, minutes result
+    if let result = DateUtils.getClosestTimeFromWeekdayRange(date: remoteTime, weekdayRange: workingTimes) {
+      if remoteTime.minutes == result.time && remoteTime.weekday == result.weekday {
+        //is in working hour...
+        return (date.weekday, 0)
+      }
+      
+      //this point, either before working time or after working time
+      guard let nextDate = Date().next(weekday: result.weekday, mintues: result.time) else {
+        return nil
+      }
+      
+      //get weekday and left hours
+      let components = date.diff(from: nextDate, components: [.weekday, .hour, .minute,])
+      if let weekday = components.weekday,
+        let hours = components.hour,
+        let minutes = components.minute {
+        let totalMinutes = hours * 60 + minutes
+        return (Weekday.toWeekday(from: date.weekday.toIndex + weekday), totalMinutes)
+      }
+      return nil
+    }
+    
+    return nil
   }
 }
 

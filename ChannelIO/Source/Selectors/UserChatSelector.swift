@@ -9,13 +9,17 @@
 import Foundation
 import ReSwift
 
-func userChatsSelector(state: AppState, showCompleted:Bool = false) -> [CHUserChat] {
+func userChatsSelector(state: AppState, showCompleted:Bool = false, limit: Int? = nil) -> [CHUserChat] {
   var userChats = state.userChatsState.userChats.values.sorted { (c1, c2) -> Bool in
     if let m1Last = c1.lastMessage, let m2Last = c2.lastMessage {
       return m1Last.createdAt > m2Last.createdAt
     }
     return c1.updatedAt! > c2.updatedAt!
   }.filter ({ $0.state != .removed && $0.appMessageId != nil && !$0.hasRemoved })
+  
+  if let limit = limit, userChats.count > limit {
+    userChats = Array(userChats[0..<limit])
+  }
   
   if !showCompleted {
     userChats = userChats.filter({ (userChat) in

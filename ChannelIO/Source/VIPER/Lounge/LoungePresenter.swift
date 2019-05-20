@@ -64,6 +64,19 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           followers: followers
         )
         self?.view?.displayHeader(with: headerModel)
+        
+        let models = userChatsSelector(
+          state: mainStore.state,
+          showCompleted: mainStore.state.userChatsState.showCompletedChats
+        ).map { UserChatCellModel(userChat: $0) }
+        
+        self?.view?.displayMainContent(
+          with: models,
+          welcomeModel: UserChatCellModel.welcome(
+            with: mainStore.state.channel,
+            guest: mainStore.state.guest,
+            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+        ))
       }).disposed(by: self.disposeBag)
     
     self.interactor?.updateChats()
@@ -96,11 +109,47 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.needToFetch = false
       self.fetchData()
     }
+    self.initTemporaryObservers()
     self.interactor?.subscribeDataSource()
   }
   
   func cleanup() {
+    self.notiDisposeBag = DisposeBag()
     self.interactor?.unsubscribeDataSource()
+  }
+  
+  func initTemporaryObservers() {
+    ChannelAvailabilityChecker.shared.updateSignal
+      .observeOn(MainScheduler.instance)
+      .flatMap({ [weak self] (_) -> Observable<CHChannel> in
+        return self?.interactor?.getChannel() ?? .empty()
+      })
+      .subscribe(onNext: { [weak self] (channel) in
+        mainStore.dispatch(UpdateChannel(payload: channel))
+        guard let `self` = self else { return }
+        //update headers
+        let followers = mainStore.state.managersState.followingManagers
+        let headerModel = LoungeHeaderViewModel(
+          chanenl: channel,
+          plugin: mainStore.state.plugin,
+          followers: followers
+        )
+        self.view?.displayHeader(with: headerModel)
+        
+        //update main
+        let chats = userChatsSelector(
+          state: mainStore.state,
+          showCompleted: mainStore.state.userChatsState.showCompletedChats)
+        
+        let models = chats.map { UserChatCellModel(userChat: $0) }
+        self.view?.displayMainContent(
+          with: models,
+          welcomeModel: UserChatCellModel.welcome(
+            with: mainStore.state.channel,
+            guest: mainStore.state.guest,
+            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+        ))
+      }).disposed(by: self.notiDisposeBag)
   }
   
   func didClickOnRefresh(for type: LoungeSectionType) {
@@ -165,6 +214,7 @@ extension LoungePresenter {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, pluginInfo, followers) in
+        mainStore.dispatch(UpdateChannel(payload: channel))
         mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
         mainStore.dispatch(UpdateFollowingManagers(payload: followers))
 
