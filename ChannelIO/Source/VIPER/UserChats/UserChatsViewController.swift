@@ -252,7 +252,7 @@ class UserChatsViewController: BaseViewController {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (pluginInfo, supportEntry) in
         SVProgressHUD.dismiss()
-        mainStore.dispatchOnMain(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
+        mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
         
         if supportEntry.step != nil && supportEntry.supportBot != nil {
           mainStore.dispatch(GetSupportBotEntry(bot: pluginInfo.1, entry: supportEntry))

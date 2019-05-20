@@ -49,9 +49,10 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   func getSupportBot() -> Observable<CHSupportBotEntryInfo> {
     return Observable.create({ (subscriber) -> Disposable in
       let signal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (entry) in
           if entry.step != nil && entry.supportBot != nil {
-            mainStore.dispatchOnMain(GetSupportBotEntry(bot: nil, entry: entry))
+            mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
           }
           subscriber.onNext(entry)
           subscriber.onCompleted()
@@ -68,8 +69,9 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   func getChats() -> Observable<[CHUserChat]> {
     return Observable.create({ (subscriber) -> Disposable in
       let signal = UserChatPromise.getChats(since: nil, limit: 4, showCompleted: true)
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (data) in
-          mainStore.dispatchOnMain(GetUserChats(payload: data))
+          mainStore.dispatch(GetUserChats(payload: data))
           let showCompletion = mainStore.state.userChatsState.showCompletedChats
           let chats = userChatsSelector(state: mainStore.state, showCompleted: showCompletion)
           self?.chats = chats

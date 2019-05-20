@@ -16,6 +16,8 @@ extension Store {
   }
   
   func dispatchOnMain(_ action: Action) {
-    self.dispatch(action)
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now(), execute: {
+      self.dispatch(action)
+    })
   }
 }

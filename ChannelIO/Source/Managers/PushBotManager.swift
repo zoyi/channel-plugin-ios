@@ -67,7 +67,7 @@ class PushBotManager {
         )
         guard ChannelIO.baseNavigation == nil else { return }
         if let chat = chat, let message = message {
-          mainStore.dispatchOnMain(GetPush(payload: CHPush(
+          mainStore.dispatch(GetPush(payload: CHPush(
             chat: chat,
             message: message,
             response: response

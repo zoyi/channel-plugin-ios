@@ -123,10 +123,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     if mainStore.state.messagesState.supportBotEntry != nil && self.userChatId == nil {
       self.setTextInputbarHidden(true, animated: false)
-      mainStore.dispatchOnMain(InsertSupportBotEntry())
+      mainStore.dispatch(InsertSupportBotEntry())
       self.readyToDisplay()
     } else if self.userChatId == nil {
-      mainStore.dispatchOnMain(InsertWelcome())
+      mainStore.dispatch(InsertWelcome())
       self.readyToDisplay()
     } else if self.userChatId?.hasPrefix(CHConstants.nudgeChat) == true {
       self.readyToDisplay()
@@ -327,7 +327,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   // MARK: - Helper methods
 
   fileprivate func initDwifft() {
-    self.tableView.reloadData()
+//    self.tableView.reloadData()
 //    self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
 //      tableView: self.tableView,
 //      initialRows: self.messages,
