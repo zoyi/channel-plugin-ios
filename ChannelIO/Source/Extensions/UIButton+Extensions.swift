@@ -61,4 +61,16 @@ extension Reactive where Base: UIButton {
     
     return boolObservable
   }
+  
+  var isEnabled: Observable<Bool> {
+    let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isEnabled))
+    
+    let boolObservable = anyObservable
+      .flatMap { Observable.from(optional: $0.first as? Bool) }
+      .startWith(self.base.isEnabled)
+      .distinctUntilChanged()
+      .share()
+    
+    return boolObservable
+  }
 }
