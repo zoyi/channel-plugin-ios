@@ -166,7 +166,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       guard self.tableView.contentSize.height > 40 else { return }
       var currInset = self.tableView.contentInset
       currInset.top = chatViewHeight - self.tableView.contentSize.height
-      print("top: \(currInset.top)")
+
       self.tableView.contentInset = currInset
     } else {
       self.tableView.contentInset = UIEdgeInsets(
@@ -487,7 +487,7 @@ extension UserChatViewController: StoreSubscriber {
     
     self.chatUpdateSubject.onNext(nil)
     
-    if userChat?.appMessageId != self.userChat?.appMessageId {
+    if userChat?.appMessageId != self.userChat?.appMessageId || hasNewMessage {
       self.tableView.reloadData()
     }
     

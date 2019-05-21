@@ -299,7 +299,14 @@ class LoungeHeaderView: BaseView {
         CHAssets.getImage(named: "offhoursB")
       
       self.responseLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working")
-      self.responseDescriptionLabel.text = CHAssets.localized("ch.lounge.header.available_time")
+      if let (_, timeLeft) = channel.closestWorkingTime(from: Date()) {
+        self.responseDescriptionLabel.text = timeLeft > 60 ?
+          String(format: CHAssets.localized("ch.navigation.next_operation.hours_left"), timeLeft / 60) :
+          String(format: CHAssets.localized("ch.navigation.next_operation.minutes_left"), max(1, timeLeft))
+      } else {
+        self.responseDescriptionLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.short_description")
+      }
+      
       self.followersView.isHidden = true
       self.offlineImageView.isHidden = false
     }

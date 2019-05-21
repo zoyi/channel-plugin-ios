@@ -72,10 +72,13 @@ class DefaultNavigationTitleView: BaseView {
         CHAssets.getImage(named: "\(channel.expectedResponseDelay)W") :
         CHAssets.getImage(named: "\(channel.expectedResponseDelay)B")
     } else {
-      if let nextOperationTime = channel.nextOperationTime {
-        self.operationLabel.text = CHAssets.localized("상담 가능한 시간") + ", " + nextOperationTime
-      } else {
-        self.operationLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.short_description") // + next day operation time
+      if let (_, timeLeft) = channel.closestWorkingTime(from: Date()) {
+        self.operationLabel.text = timeLeft > 60 ?
+          String(format: CHAssets.localized("ch.navigation.next_operation.hours_left"), timeLeft / 60) :
+          String(format: CHAssets.localized("ch.navigation.next_operation.minutes_left"), max(1, timeLeft))
+      }
+      else {
+        self.operationLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.short_description")
       }
      
       self.statusImageView.image = plugin.textColor == "white" ?

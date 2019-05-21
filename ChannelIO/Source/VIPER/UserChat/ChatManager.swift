@@ -860,12 +860,7 @@ extension ChatManager {
     }
     
     if updatedCount > currentCount {
-      let updatedLast = updated.first!
-      let currLast = current.first!
-      
-      if updatedLast.createdAt > currLast.createdAt {
-        return true
-      }
+      return true
     }
     
     return false

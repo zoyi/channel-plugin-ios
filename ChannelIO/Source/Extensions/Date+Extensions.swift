@@ -109,6 +109,8 @@ extension Date {
   static func from(dateString: String) -> Date? {
     let formatter = DateFormatter()
     formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
+    formatter.timeZone = Calendar.current.timeZone
+    
     return formatter.date(from: dateString)
   }
   
@@ -139,7 +141,14 @@ extension Date {
   //take either timezone string as "ETC/GTM+9" or "GMT+9" or abbreviation
   func convertTimeZone(with string: String) -> Date? {
     var remoteZone: NSTimeZone
-    if let timeZone = NSTimeZone(name: string) {
+    if let timezoneKey = TimeZone
+      .abbreviationDictionary
+      .filter({ $0.value == string })
+      .first?.key,
+      let timeZone = NSTimeZone.init(abbreviation: timezoneKey) {
+      remoteZone = timeZone
+    }
+    else if let timeZone = NSTimeZone(name: string) {
       remoteZone = timeZone
     }
     else if string.contains("/") {
@@ -150,13 +159,7 @@ extension Date {
         return nil
       }
     }
-    else if let timezoneKey = TimeZone
-        .abbreviationDictionary
-        .filter({ $0.value == string })
-        .first?.key,
-      let timeZone = NSTimeZone.init(abbreviation: timezoneKey) {
-      remoteZone = timeZone
-    } else {
+    else {
       print("Unrecognized timezone abbreviation")
       return nil
     }
@@ -167,7 +170,7 @@ extension Date {
     let diff = currentOffset - remoteOffset
 
     if diff == 0 {
-      return Date(timeInterval: currentOffset, since: self)
+      return self
     }
     else {
       return Date(timeInterval: remoteOffset, since: self)

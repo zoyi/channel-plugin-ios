@@ -63,11 +63,11 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
   func presentBusinessHours(from view: UIViewController?) {
     let channel = mainStore.state.channel
     let alertController = UIAlertController(
-      title: "운영시간",
+      title: CHAssets.localized("ch.business_hours"),
       message: channel.workingTimeString,
       preferredStyle: .alert)
     
-    alertController.addAction(UIAlertAction(title: "확인", style: .default) {  _ in
+    alertController.addAction(UIAlertAction(title: CHAssets.localized("ch.button_confirm"), style: .default) {  _ in
       alertController.dismiss(animated: true, completion: nil)
     })
     alertController.modalTransitionStyle = .crossDissolve
@@ -88,7 +88,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       }
     case .link:
       UIPasteboard.general.string = source.value
-      CHNotification.shared.display(message: "Copied completed")
+      CHNotification.shared.display(message: CHAssets.localized("ch.integrations.copy_link.success"))
     case .kakao:
       if let url = URL(string:source.value) {
         UIApplication.shared.openURL(url)

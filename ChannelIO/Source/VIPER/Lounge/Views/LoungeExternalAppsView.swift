@@ -24,7 +24,7 @@ class LoungeExternalAppsView: BaseView {
   let titleLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
     $0.textColor = CHColors.blueyGrey
-    $0.text = CHAssets.localized("ch.lounge.external.title")
+    $0.text = CHAssets.localized("ch.integrations.title")
   }
   
   let containerView = UIStackView().then {

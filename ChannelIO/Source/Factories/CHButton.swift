@@ -13,14 +13,16 @@ struct CHButton {
     textColor: UIColor = mainStore.state.plugin.textUIColor,
     backgroundColor: UIColor? = UIColor(mainStore.state.plugin.color),
     borderColor: UIColor? = UIColor(mainStore.state.plugin.borderColor)) -> UIButton {
-    return UIButton(type: .system).then {
+    let button = UIButton(type: .system).then {
       $0.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysTemplate), for: .normal)
       $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       $0.setTitleColor(textColor, for: .normal)
+      $0.setTitleColor(CHColors.blueyGrey, for: .disabled)
+      $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
       $0.tintColor = textColor
       
-      $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 20)
-      $0.imageEdgeInsets = UIEdgeInsets(top:0, left: -14, bottom: 0, right: 0)
+      $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+      $0.imageEdgeInsets = UIEdgeInsets(top:0, left: -8, bottom: 0, right: 0)
       
       $0.backgroundColor = backgroundColor
       
@@ -32,6 +34,14 @@ struct CHButton {
       $0.layer.shadowRadius = 4
       $0.layer.borderWidth = 1
     }
+    
+    _ = button.rx.isEnabled
+      .subscribe(onNext: { (enabled) in
+        button.tintColor = !enabled ? CHColors.dark50 : textColor
+        button.backgroundColor = !enabled ? CHColors.paleGrey20 : backgroundColor
+        button.layer.borderColor = !enabled ? UIColor.clear.cgColor : borderColor?.cgColor
+      })
+    return button
   }
   
   static func keepNudge() -> UIButton {

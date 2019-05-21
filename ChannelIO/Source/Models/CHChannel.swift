@@ -85,6 +85,11 @@ extension CHChannel {
   var sortedWorkingTime: [SortableWorkingTime]? {
     guard let workingTime = self.workingTime else { return nil }
     
+    var workingTimeDictionary = self.workingTime
+    if let launchTime = self.lunchTime {
+      workingTimeDictionary?["lunch_time"] = launchTime
+    }
+    
     return workingTime.map({ (key, value) -> SortableWorkingTime in
       let fromValue = value.from
       let toValue = value.to
@@ -103,9 +108,11 @@ extension CHChannel {
       let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
       
       let timeStr = String(
-        format: "%d:%02d%@ ~ %d:%02d%@",
+        format: "%@ - %d:%02d%@ ~ %d:%02d%@",
+        CHAssets.localized("ch.out_of_work.\(key)"),
         fromHour, fromMin, fromTxt, toHour, toMin, toTxt
       )
+      
       var order = 0
       switch key.lowercased() {
       case "sun": order = 1
@@ -140,42 +147,8 @@ extension CHChannel {
     return  workingTime ?? "unknown"
   }
   
-  var todayOperationTime: String? {
-    let weekday = Calendar.current.component(.weekday, from: Date())
-    let operationDays = self.sortedWorkingTime ?? []
-    for opTime in operationDays {
-      if opTime.order == weekday {
-        return opTime.value
-      }
-    }
-    
-    return nil
-  }
-  
-  var nextOperationTime: String? {
-    let weekday = Calendar.current.component(.weekday, from: Date())
-    var nextAvailable: SortableWorkingTime? = nil
-    
-    let operationDays = self.sortedWorkingTime ?? []
-    for operationDay in operationDays {
-      if operationDay.order > weekday {
-        nextAvailable = operationDay
-      }
-    }
-    
-    if nextAvailable == nil {
-      nextAvailable = operationDays.first
-    }
-    
-    if let nextAvailable = nextAvailable {
-      return CHAssets.localized("ch.out_of_work.\(nextAvailable.key)") + " " + nextAvailable.value
-    }
-    
-    return nil
-  }
-  
   //return closest weekday and time left in minutes
-  func closestWorkingTime(from date: Date) -> (weekday: Weekday, timeLeft: Int)? {
+  func closestWorkingTime(from date: Date) -> (nextTime: Date, timeLeft: Int)? {
     guard let workingTime = self.workingTime else { return nil }
     
     var workingTimes = DateUtils.emptyArrayWithWeekday()
@@ -211,21 +184,17 @@ extension CHChannel {
     if let result = DateUtils.getClosestTimeFromWeekdayRange(date: remoteTime, weekdayRange: workingTimes) {
       if remoteTime.minutes == result.time && remoteTime.weekday == result.weekday {
         //is in working hour...
-        return (date.weekday, 0)
+        return (date, 0)
       }
       
       //this point, either before working time or after working time
-      guard let nextDate = Date().next(weekday: result.weekday, mintues: result.time) else {
-        return nil
-      }
+      guard let nextDate = Date().next(weekday: result.weekday, mintues: result.time) else { return nil }
       
       //get weekday and left hours
-      let components = date.diff(from: nextDate, components: [.weekday, .hour, .minute,])
-      if let weekday = components.weekday,
-        let hours = components.hour,
-        let minutes = components.minute {
+      let components = date.diff(from: nextDate, components: [.hour, .minute,])
+      if let hours = components.hour, let minutes = components.minute {
         let totalMinutes = hours * 60 + minutes
-        return (Weekday.toWeekday(from: date.weekday.toIndex + weekday), totalMinutes)
+        return (nextDate, totalMinutes)
       }
       return nil
     }
@@ -290,12 +259,26 @@ struct TimeRange {
   var to = 0
 }
 
-extension TimeRange : Mappable {
+extension TimeRange : ExpressibleByArrayLiteral {
+  typealias ArrayLiteralElement = Int
+  
+  init(arrayLiteral elements: Int...) {
+    precondition(elements.count == 2)
+    self.from = elements[0]
+    self.to = elements[1]
+  }
+}
+
+extension TimeRange : Mappable, Equatable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
     from <- map["from"]
     to <- map["to"]
+  }
+  
+  static func == (lhs:TimeRange, rhs:TimeRange) -> Bool {
+    return lhs.from == rhs.from && lhs.to == lhs.to
   }
 }
 

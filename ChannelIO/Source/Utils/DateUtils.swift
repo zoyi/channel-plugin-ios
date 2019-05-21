@@ -59,7 +59,7 @@ struct DateUtils {
       .reduce([], { (result, range) -> [TimeRange] in
         var result = result
         if let lastRange = last {
-          if range.from < lastRange.to {
+          if range.from > lastRange.to {
             last = range
             result.append(range)
           }
@@ -102,20 +102,20 @@ struct DateUtils {
     for op in operations {
       if op.isAddition {
         if op.isFrom {
-          if inSubstraction == nil {
+          if inSubstraction == nil || inSubstraction == false {
             lastFrom = op.time
           }
           inAddition = true
         } else {
-          if inSubstraction == nil {
-            result.append(TimeRange(from: lastFrom, to: op.time))
+          if inSubstraction == nil || inSubstraction == false {
+            result.append([lastFrom, op.time])
           }
           inAddition = false
         }
       } else {
         if op.isFrom {
           if inAddition == true {
-            result.append(TimeRange(from: lastFrom, to: op.time))
+            result.append([lastFrom, op.time])
           }
           inSubstraction = true
         } else {
@@ -144,7 +144,7 @@ struct DateUtils {
             if currentMinutes < eachRange.from {
               return (wd, eachRange.from)
             }
-            if eachRange.from <= currentMinutes && currentMinutes <= eachRange.to {
+            if eachRange.from <= currentMinutes && currentMinutes < eachRange.to {
               return (wd, currentMinutes)
             }
           } else {

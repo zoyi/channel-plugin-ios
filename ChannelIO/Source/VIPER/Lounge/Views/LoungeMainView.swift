@@ -148,7 +148,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
     let view = LoungeTableFooterView()
-    view.setEnableButton(enabled: mainStore.state.channel.working)
+    view.newChatButton.isEnabled = mainStore.state.channel.working
     view.newChatSignal
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)
@@ -205,7 +205,7 @@ class LoungeTableHeaderView: BaseView {
   let recentLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
-    $0.text = CHAssets.localized("ch.lounge.recent_chats")
+    $0.text = CHAssets.localized("ch.lounge.recent_chat")
   }
   let alertCountLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
@@ -214,7 +214,7 @@ class LoungeTableHeaderView: BaseView {
   let seeMoreLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.charcoalGrey
-    $0.text = CHAssets.localized("ch.lounge.chats.see_all")
+    $0.text = CHAssets.localized("ch.lounge.see_all")
   }
   
   var moreSignal = PublishRelay<Any?>()
@@ -296,22 +296,6 @@ class LoungeTableFooterView: BaseView {
       make.centerX.equalToSuperview()
       make.top.equalToSuperview().inset(10)
       make.height.equalTo(46)
-    }
-  }
-  
-  func setEnableButton(enabled: Bool) {
-    if enabled {
-      self.newChatButton.setTitleColor(mainStore.state.plugin.textUIColor, for: .normal)
-      self.newChatButton.tintColor = mainStore.state.plugin.textUIColor
-      self.newChatButton.backgroundColor = UIColor(mainStore.state.plugin.color)
-      self.newChatButton.layer.borderColor = UIColor(mainStore.state.plugin.borderColor)?.cgColor
-      self.newChatButton.isUserInteractionEnabled = true
-    } else {
-      self.newChatButton.setTitleColor(CHColors.blueyGrey, for: .normal)
-      self.newChatButton.tintColor = CHColors.blueyGrey
-      self.newChatButton.backgroundColor = CHColors.paleGrey20
-      self.newChatButton.layer.borderColor = UIColor.clear.cgColor
-      self.newChatButton.isUserInteractionEnabled = false
     }
   }
 }

@@ -22,7 +22,7 @@ class ChannelAvailabilityChecker {
     print("availability run!")
     self.timer?.invalidate()
     self.timer = Timer.scheduledTimer(
-      timeInterval: 10.0,
+      timeInterval: 20.0,
       target: self,
       selector: #selector(checkAvailability),
       userInfo: nil,
@@ -37,16 +37,10 @@ class ChannelAvailabilityChecker {
     let channel = mainStore.state.channel
     let currentTime = Date()
     
-    let nextOpTime = channel.closestWorkingTime(from: currentTime)
+    guard let (nextOpTime, _) = channel.closestWorkingTime(from: currentTime) else { return }
     print("checker running..")
-    //is in working time but channel working is false
-    if nextOpTime?.timeLeft == 0 && !channel.working {
-      print("availability: in to out")
-      self.updateSignal.accept(nil)
-    }
-    //is not in working time but channel working is true
-    else if nextOpTime?.timeLeft != 0 && channel.working {
-      print("availability: out to in")
+
+    if nextOpTime > currentTime {
       self.updateSignal.accept(nil)
     }
   }

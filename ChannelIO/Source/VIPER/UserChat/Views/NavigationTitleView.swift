@@ -73,8 +73,15 @@ class ChatNavigationTitleView : BaseView {
   fileprivate func configureForOff(channel: CHChannel, plugin: CHPlugin) {
     self.titleLabel.fadeTransition(0.4)
     self.titleLabel.text = channel.name
-    self.subtitleLabel.text = CHAssets.localized("상담 가능 시간 ") + (channel.nextOperationTime ?? "")
     self.subtitleLabel.isHidden = false
+    
+    if let (_, timeLeft) = channel.closestWorkingTime(from: Date()) {
+      self.subtitleLabel.text = timeLeft > 60 ?
+        String(format: CHAssets.localized("ch.navigation.next_operation.hours_left"), timeLeft / 60) :
+        String(format: CHAssets.localized("ch.navigation.next_operation.minutes_left"), max(1, timeLeft))
+    } else {
+      self.subtitleLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.short_description")
+    }
     
     self.statusImageView.image = plugin.textColor == "white" ?
       CHAssets.getImage(named: "offhoursW") :

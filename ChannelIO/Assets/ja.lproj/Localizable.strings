@@ -35,7 +35,7 @@
 "ch.toast.reconnecting" = "インターネットに再接続しています。";
 "ch.mobile_verification.locale_en" = "アメリカ";
 "ch.photo.album" = "アルバム";
-"ch.message_input.placeholder" = "メッセージを入力してください";
+"ch.message_input.placeholder" = "メッセージ入力";
 "ch.mobile_verification.reinput.description" = "はい。可能です。回答と本人確認のため携帯番号番の入力をお願いします。";
 "ch.loading_information" = "読み込み中...";
 "ch.photo.url_copied_to_clipboard" = "画像のURLがクリップボードにコピーされました";
@@ -73,14 +73,12 @@
 "ch.chat.delete_menu_title" = "チャットを削除する";
 "ch.camera" = "カメラ";
 "ch.chat.delete_description" = "チャットルームを削除しますか？";
-"ch.chat.empty_description" = "右下のボタンを押して\
-新しい会話を始めてみましょう";
+"ch.chat.empty_description" = "";
 "ch.button_cancel" = "キャンセル";
 "ch.button_reply" = "返信";
 "ch.settings.my_info" = "個人情報と設定";
 "ch.settings.name_placeholder" = "名前を入力";
 "ch.settings.phone_number_placeholder" = "電話番号入力";
-"ch.settings.show_closed_chat" = "評価済みの問合せを確認する";
 "ch.settings.close_chat" = "チャットを削除する";
 "ch.settings.edit.name_label" = "名前を入力する";
 "ch.settings.edit.name_placeholder" = "お名前を入力してください。";
@@ -156,3 +154,8 @@
 "ch.common.open" = "オープン";
 "ch.common.cancel" = "キャンセル";
 "ch.chat.push_bot_like" = "いいね";
+"ch.lounge.recent_chat" = "";
+"ch.integrations.copy_link.success" = "";
+"ch.lounge.see_all" = "";
+"ch.navigation.next_operation.hours_left" = "";
+"ch.navigation.next_operation.minutes_left" = "";
