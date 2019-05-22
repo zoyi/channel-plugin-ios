@@ -10,6 +10,7 @@ import UIKit
 import CHDwifft
 import ReSwift
 import RxSwift
+import RxCocoa
 import RxSwiftExt
 import SnapKit
 import SVProgressHUD
@@ -19,7 +20,6 @@ import MGSwipeTableCell
 class UserChatsViewController: BaseViewController {
 
   // MARK: Properties
-  var errorToastTopConstraint: Constraint?
   var plusBottomConstraint: Constraint?
   var tableViewBottomConstraint: Constraint?
   
@@ -34,7 +34,9 @@ class UserChatsViewController: BaseViewController {
   }
   var userChat: CHUserChat? = nil
   
-  let disposeBag = DisposeBag()
+  var disposeBag = DisposeBag()
+  var notiDisposeBag = DisposeBag()
+  var errorSignal = PublishRelay<Any?>()
   
   let tableView = UITableView().then {
     $0.clipsToBounds = false
@@ -45,10 +47,6 @@ class UserChatsViewController: BaseViewController {
   let emptyView = UserChatsEmptyView().then {
     $0.isHidden = true
   }
-  
-//  let errorToastView = ErrorToastView().then {
-//    $0.isHidden = true
-//  }
 
   let newChatButton = CHButton.newChat()
   
@@ -72,12 +70,9 @@ class UserChatsViewController: BaseViewController {
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.emptyView)
     self.view.addSubview(self.newChatButton)
-    
-    WsService.shared.connect()
-    
+
     self.initTableView()
     self.initActions()
-    self.initNotifications()
     self.setDefaultNavItems()
     
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
@@ -98,45 +93,53 @@ class UserChatsViewController: BaseViewController {
     self.diffCalculator?.deletionAnimation = .none
   }
   
-  func initNotifications() {
+  func initObservers() {
     NotificationCenter.default.rx
       .notification(UIApplication.didBecomeActiveNotification)
       .subscribe(onNext: { [weak self] (_) in
         if let controller = CHUtils.getTopController(), controller == self {
           self?.fetchUserChats(isInit: true, showIndicator: false, isReload: true)
         }
-      }).disposed(by: self.disposeBag)
+      }).disposed(by: self.notiDisposeBag)
     
     if let nav = self.navigationController as? MainNavigationController {
       nav.newState(state: mainStore.state.plugin)
     }
     
+    CHNotification.shared.refreshSignal
+      .subscribe(onNext: { [weak self] (_) in
+        guard let `self` = self else { return }
+        self.nextSeq = nil
+        self.fetchUserChats(isInit: true, showIndicator: true)
+        WsService.shared.connect()
+        _ = AppManager.touch().subscribe(onNext: { (guest) in
+          mainStore.dispatch(UpdateGuest(payload: guest))
+        })
+        
+        CHNotification.shared.dismiss()
+      }).disposed(by: self.notiDisposeBag)
+    
     WsService.shared.error()
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (_) in
-        
-      }).disposed(by: self.disposeBag)
+      .subscribe(onNext: { (_) in
+        CHNotification.shared.display(
+          message: CHAssets.localized("ch.toast.unstable_internet"),
+          config: CHNotificationConfiguration.warningConfig
+        )
+      }).disposed(by: self.notiDisposeBag)
     
     WsService.shared.ready()
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (_) in
-        
-      }).disposed(by: self.disposeBag)
+      .subscribe(onNext: { (_) in
+        CHNotification.shared.dismiss()
+      }).disposed(by: self.notiDisposeBag)
+  }
+  
+  func removeObservers() {
+    self.notiDisposeBag = DisposeBag()
   }
   
   func initActions() {
-//    self.errorToastView.refreshImageView.signalForClick().subscribe { [weak self] _ in
-//      mainStore.dispatch(DeleteUserChatsAll())
-//
-//      self?.errorToastView.dismiss(animated: true)
-//      self?.nextSeq = nil
-//      self?.fetchUserChats(isInit: true, showIndicator: true)
-//      WsService.shared.connect()
-//      AppManager.touch().subscribe(onNext: { (guest) in
-//        mainStore.dispatch(UpdateGuest(payload: guest))
-//      }).disposed(by: (self?.disposeBag)!)
-//    }.disposed(by: self.disposeBag)
-    
     self.newChatButton.signalForClick().subscribe { [weak self] _ in
       self?.showUserChat(hideTable: false)
     }.disposed(by: self.disposeBag)
@@ -147,6 +150,7 @@ class UserChatsViewController: BaseViewController {
     mainStore.subscribe(self)
     //in order to reload if language has been changed
     self.tableView.reloadData()
+    self.initObservers()
     self.navigationController?.setNavigationBarHidden(false, animated: true)
   }
 
@@ -159,6 +163,7 @@ class UserChatsViewController: BaseViewController {
     if let count = self.navigationController?.viewControllers.count, count == 1 {
       self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
+    self.removeObservers()
     mainStore.unsubscribe(self)
   }
 
@@ -191,7 +196,7 @@ class UserChatsViewController: BaseViewController {
   fileprivate func setDefaultNavItems() {
     let tintColor = mainStore.state.plugin.textUIColor
     self.navigationItem.rightBarButtonItem = NavigationItem(
-      image: CHAssets.getImage(named: "exit"),
+      image: CHAssets.getImage(named: "closeWhite"),
       tintColor: tintColor,
       style: .plain,
       actionHandler: {
@@ -309,6 +314,7 @@ extension UserChatsViewController: StoreSubscriber {
     self.tableView.isHidden = (self.userChats.count == 0 || !self.didLoad) || self.shouldHideTable
     self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad || self.showNewChat
     self.newChatButton.isHidden = self.tableView.isHidden && self.showNewChat
+    self.newChatButton.isEnabled = state.channel.allowNewChat
     
     // fetch data
     let showCompleted = state.userChatsState.showCompletedChats

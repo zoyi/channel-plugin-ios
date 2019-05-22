@@ -396,7 +396,7 @@ public final class ChannelIO: NSObject {
   }
   
   /**
-   *  Update user profile (objc)
+   *  Update user profile (objective-c)
    *
    *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
    *                       to remove existing value

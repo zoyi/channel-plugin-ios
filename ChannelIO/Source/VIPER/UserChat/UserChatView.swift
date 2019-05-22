@@ -204,7 +204,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     }
 
     self.navigationItem.rightBarButtonItem = NavigationItem(
-      image: CHAssets.getImage(named: "exit"),
+      image: CHAssets.getImage(named: "close"),
       tintColor: tintColor,
       style: .plain,
       actionHandler: { [weak self] in

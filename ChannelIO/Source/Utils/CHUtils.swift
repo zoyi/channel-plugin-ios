@@ -28,16 +28,16 @@ class CHUtils {
   }
   
   class func getTopNavigation(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UINavigationController? {
-    if let navigation = base as? UINavigationController {
-      return navigation
+    if let presented = base?.presentedViewController {
+      return getTopNavigation(base: presented)
     }
     if let tab = base as? UITabBarController {
       if let selected = tab.selectedViewController {
         return getTopNavigation(base: selected)
       }
     }
-    if let presented = base?.presentedViewController {
-      return getTopNavigation(base: presented)
+    if let navigation = base as? UINavigationController {
+      return navigation
     }
     
     return base?.navigationController

@@ -86,7 +86,7 @@ struct CHButton {
   
   static func dismiss() -> UIButton {
     return UIButton(type: .custom).then {
-      $0.setImage(CHAssets.getImage(named: "exit"), for: .normal)
+      $0.setImage(CHAssets.getImage(named: "closeWhite"), for: .normal)
       $0.imageView?.contentMode = .scaleAspectFit
       $0.layer.cornerRadius = 15.f
       $0.clipsToBounds = true

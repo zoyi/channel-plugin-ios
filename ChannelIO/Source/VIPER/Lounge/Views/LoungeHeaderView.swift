@@ -40,7 +40,7 @@ class LoungeHeaderView: BaseView {
   }
   
   let dismissOverlayButton = UIButton().then {
-    $0.setImage(CHAssets.getImage(named: "exit"), for: .normal)
+    $0.setImage(CHAssets.getImage(named: "closeWhite"), for: .normal)
   }
   
   let responseLabel = UILabel().then {

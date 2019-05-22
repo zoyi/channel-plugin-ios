@@ -19,6 +19,8 @@ struct CHNotificationConfiguration {
   var timeout: TimeInterval
   var alpha: CGFloat
   var margin: CGFloat
+  var actionable: Bool
+  var actionImage: UIImage?
   
   static var succeedConfig: CHNotificationConfiguration {
     return CHNotificationConfiguration(
@@ -28,7 +30,9 @@ struct CHNotificationConfiguration {
       backgroundColor: CHColors.shamrockGreen,
       timeout: 2.0,
       alpha: 0.85,
-      margin: 60.f
+      margin: 44.f,
+      actionable: false,
+      actionImage: nil
     )
   }
   
@@ -40,7 +44,23 @@ struct CHNotificationConfiguration {
       backgroundColor: CHColors.yellowishOrange,
       timeout: 0,
       alpha: 1.f,
-      margin: 60.f
+      margin: 44.f,
+      actionable: true,
+      actionImage: CHAssets.getImage(named: "refresh")
+    )
+  }
+  
+  static var warningNormalConfig: CHNotificationConfiguration {
+    return CHNotificationConfiguration(
+      textColor: .white,
+      font: UIFont.boldSystemFont(ofSize: 13),
+      numberOfLines: 2,
+      backgroundColor: CHColors.yellowishOrange,
+      timeout: 0,
+      alpha: 1.f,
+      margin: 10.f,
+      actionable: true,
+      actionImage: CHAssets.getImage(named: "refresh")
     )
   }
 }
@@ -113,9 +133,7 @@ private class CHNotificationView: BaseView {
     $0.textColor = .white
   }
   
-  let refreshView = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "refresh")
-  }
+  let refreshView = UIImageView()
   
   var disposeBag = DisposeBag()
   
@@ -123,8 +141,8 @@ private class CHNotificationView: BaseView {
     super.initialize()
     
     self.alpha = 0
-    self.layer.cornerRadius = 10.f
-    self.clipsToBounds = true
+    self.contentView.layer.cornerRadius = 10.f
+
     self.layer.shadowColor = CHColors.dark.cgColor
     self.layer.shadowOpacity = 0.4
     self.layer.shadowOffset = CGSize(width: 0, height: 4)
@@ -162,6 +180,8 @@ private class CHNotificationView: BaseView {
     self.messageLabel.numberOfLines = model.numberOfLines
     self.contentView.backgroundColor = model.backgroundColor
     self.contentView.alpha = model.alpha
+    self.refreshView.isHidden = !model.actionable
+    self.refreshView.image = model.actionImage
   }
   
   func display(with message: String) {
