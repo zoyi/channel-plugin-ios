@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownItalic: MarkdownCommonElement {
+class MarkdownItalic: MarkdownCommonElement {
   
   fileprivate static let regex = "(\\s*|^)(\\*)(.+?)(\\2)"
   

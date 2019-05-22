@@ -10,7 +10,7 @@ import UIKit
 
 /// MarkdownLevelElement serves the purpose of handling Elements which may have more than one 
 /// representation (e.g. Headers or Lists)
-public protocol MarkdownLevelElement: MarkdownElement, MarkdownStyle {
+protocol MarkdownLevelElement: MarkdownElement, MarkdownStyle {
   
   /// The maximum level of elements we should parse (e.g. limit the headers to 6 #s)
   var maxLevel: Int { get }
@@ -20,9 +20,7 @@ public protocol MarkdownLevelElement: MarkdownElement, MarkdownStyle {
   func attributesForLevel(_ level: Int) -> [NSAttributedString.Key: Any]
 }
 
-public extension MarkdownLevelElement {
-  
-  
+extension MarkdownLevelElement {
   func regularExpression() throws -> NSRegularExpression {
     return try NSRegularExpression(pattern: regex, options: .anchorsMatchLines)
   }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownMention: MarkdownCommonElement, MarkdownCommonLexElement {  
+class MarkdownMention: MarkdownCommonElement, MarkdownCommonLexElement {  
   fileprivate static let regex = "(?:<@([^<>]+)>)"
   fileprivate static let lexRegex = "(?<!@[^\\s<>]+)"
   

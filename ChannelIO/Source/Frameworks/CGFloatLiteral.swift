@@ -20,13 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public extension IntegerLiteralType {
+extension IntegerLiteralType {
   var f: CGFloat {
     return CGFloat(self)
   }
 }
 
-public extension FloatLiteralType {
+extension FloatLiteralType {
   var f: CGFloat {
     return CGFloat(self)
   }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownUnescaping: MarkdownElement {
+class MarkdownUnescaping: MarkdownElement {
   
   fileprivate static let regex = "\\\\[0-9a-z]{4}"
   

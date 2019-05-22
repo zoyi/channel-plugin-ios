@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownEscaping: MarkdownElement {
+class MarkdownEscaping: MarkdownElement {
 
   fileprivate static let regex = "\\\\."
 

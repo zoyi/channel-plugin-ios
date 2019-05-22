@@ -8,7 +8,7 @@
 
 import Foundation
 
-public extension UIViewController {
+extension UIViewController {
   static let swizzleForTracking: Void = {
     let originalSelector = #selector(viewWillAppear(_:))
     let swizzledSelector = #selector(ch_viewWillAppear(_:))

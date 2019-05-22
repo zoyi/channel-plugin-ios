@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownBold: MarkdownCommonElement {
+class MarkdownBold: MarkdownCommonElement {
   fileprivate static let regex = "(\\s*|^)(\\*\\*)(.+?)(\\2)"
   
   open var font: UIFont?

@@ -9,7 +9,7 @@
 import Foundation
 
 /// The base protocol for all Markdown Elements, it handles parsing through regex.
-public protocol MarkdownElement: class {
+protocol MarkdownElement: class {
   var regex: String { get }
   
   func regularExpression() throws -> NSRegularExpression
@@ -17,7 +17,7 @@ public protocol MarkdownElement: class {
   func match(_ match: NSTextCheckingResult, attributedString: NSMutableAttributedString)
 }
 
-public protocol MarkdownLexElement: class {
+protocol MarkdownLexElement: class {
   var lexRegex: String { get }
   
   func regularLexExpression() throws -> NSRegularExpression
@@ -25,7 +25,7 @@ public protocol MarkdownLexElement: class {
   func match(_ match: NSTextCheckingResult, string: String) -> String
 }
 
-public extension MarkdownElement {
+extension MarkdownElement {
   func parse(_ attributedString: NSMutableAttributedString) {
       var location = 0
       do {
@@ -44,7 +44,7 @@ public extension MarkdownElement {
   }
 }
 
-public extension MarkdownLexElement {
+extension MarkdownLexElement {
   func lexer(_ string: String) -> String {
     var string = string
     var location = 0

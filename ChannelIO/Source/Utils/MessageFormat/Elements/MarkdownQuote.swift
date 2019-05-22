@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownQuote: MarkdownLevelElement {
+class MarkdownQuote: MarkdownLevelElement {
 
   fileprivate static let regex = "^(\\>{1,%@})\\s*(.+)$"
 

@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownParser {
+class MarkdownParser {
 
   // MARK: Element Arrays
   fileprivate var escapingElements: [MarkdownElement]

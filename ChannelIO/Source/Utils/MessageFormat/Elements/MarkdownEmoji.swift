@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownEmoji: MarkdownCommonElement {
+class MarkdownEmoji: MarkdownCommonElement {
   
   fileprivate static let regex = "(:)([a-zA-Z0-9_+-]+)(\\1)"
   
