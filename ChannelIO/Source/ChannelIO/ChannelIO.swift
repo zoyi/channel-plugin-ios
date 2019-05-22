@@ -116,9 +116,9 @@ public final class ChannelIO: NSObject {
   // MARK: Public
 
   /**
-   * Initialize ChannelIO
+   *  Initialize ChannelIO
    *
-   * - parameter application: application instance
+   *  - parameter application: application instance
    */
   @objc
   public class func initialize(_ application: UIApplication) {
@@ -379,22 +379,44 @@ public final class ChannelIO: NSObject {
   /**
    *  Update user profile
    *
-   *  - parameter
+   *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
+   *                       to remove existing value
    */
-//  @objc
-//  private class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
-//    GuestPromise.updateGuest(with: profile)
-//      .subscribe(onNext: { (guest, error) in
-//        if let guest = guest {
-//          completion?(true, Guest(with: guest))
-//        } else {
-//          completion?(false, nil)
-//        }
-//      }, onError: { error in
-//        completion?(false, nil)
-//      }).disposed(by: disposeBag)
-//  }
+  public class func updateGuest(with profile: [String: Any?], completion: ((Bool, Guest?) -> Void)? = nil) {
+    GuestPromise.updateProfile(with: profile)
+      .subscribe(onNext: { (guest, error) in
+        if let guest = guest {
+          completion?(true, Guest(with: guest))
+        } else {
+          completion?(false, nil)
+        }
+      }, onError: { error in
+        completion?(false, nil)
+      }).disposed(by: disposeBag)
+  }
   
+  /**
+   *  Update user profile (objc)
+   *
+   *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
+   *                       to remove existing value
+   */
+  @objc
+  public class func updateGuest(_ profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+    let profile:[String: Any?] = profile.mapValues { (value) -> Any? in
+      return value is NSNull ? nil : value
+    }
+    GuestPromise.updateProfile(with: profile)
+      .subscribe(onNext: { (guest, error) in
+        if let guest = guest {
+          completion?(true, Guest(with: guest))
+        } else {
+          completion?(false, nil)
+        }
+      }, onError: { error in
+        completion?(false, nil)
+      }).disposed(by: disposeBag)
+  }
   /**
    *  Update user profile once. If you provide already existed user profile, it won't update the guest profile.
    *
