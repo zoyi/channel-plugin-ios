@@ -14,8 +14,8 @@ import Reusable
 final class SwitchCell : BaseTableViewCell, Reusable {
   
   let titleLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 16)
-    $0.textColor = CHColors.dark
+    $0.font = UIFont.systemFont(ofSize: 16)
+    $0.textColor = CHColors.charcoalGrey
     $0.numberOfLines = 1
   }
   

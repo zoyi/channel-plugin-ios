@@ -12,13 +12,12 @@ import Reusable
 class KeyValueCell: BaseTableViewCell, Reusable {
  let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.dark
+    $0.textColor = CHColors.blueyGrey
     $0.numberOfLines = 1
   }
   let valueLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 17)
+    $0.font = UIFont.systemFont(ofSize: 17)
     $0.textColor = CHColors.blueyGrey
-    $0.text = CHAssets.localized("settings.profile.empty")
     $0.numberOfLines = 1
   }
   let arrowImageView = UIImageView().then {
@@ -62,9 +61,9 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     }
     if let detail = detail {
       self.valueLabel.text = detail
-      self.valueLabel.textColor = CHColors.dark
+      self.valueLabel.textColor = CHColors.charcoalGrey
     } else {
-      self.valueLabel.text = CHAssets.localized("settings.profile.empty")
+      self.valueLabel.text = CHAssets.localized("ch.settings.empty_content")
       self.valueLabel.textColor = CHColors.blueyGrey
     }
   }

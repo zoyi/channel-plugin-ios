@@ -12,11 +12,6 @@ import SVProgressHUD
 import SnapKit
 
 class ProfileEditorViewController: BaseViewController {
-  let headerLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.blueyGrey
-  }
-
   let footerLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
@@ -47,11 +42,9 @@ class ProfileEditorViewController: BaseViewController {
       self.fieldView = CHEditTextField(
         text: self.text,
         placeholder: CHAssets.localized("ch.settings.edit.name_placeholder"))
-      self.headerLabel.text = CHAssets.localized("ch.settings.edit.name_label")
     case .phone:
       self.text = guest.mobileNumber ?? ""
       self.fieldView = CHPhoneField(text: self.text)
-      self.headerLabel.text = CHAssets.localized("ch.settings.edit.phone_number_label")
       self.footerLabel.text = CHAssets.localized("ch.settings.edit.phone_number_description")
     case .text:
       let key = schema?.key ?? ""
@@ -60,7 +53,6 @@ class ProfileEditorViewController: BaseViewController {
         text: self.text,
         type: .text,
         placeholder: CHAssets.localized("ch.profile_form.placeholder"))
-      self.headerLabel.text = schema?.nameI18n?.getMessage() ?? ""
     case .number:
       let key = schema?.key ?? ""
       if let value = guest.profile?[key] {
@@ -70,7 +62,6 @@ class ProfileEditorViewController: BaseViewController {
         text: self.text,
         type: .number,
         placeholder: CHAssets.localized("ch.profile_form.placeholder"))
-      self.headerLabel.text = schema?.nameI18n?.getMessage() ?? ""
     }
     
     self.schema = schema
@@ -92,7 +83,6 @@ class ProfileEditorViewController: BaseViewController {
     self.setNavigation()
     
     self.view.backgroundColor = .white
-    self.view.addSubview(self.headerLabel)
     self.view.addSubview(self.fieldView as! UIView)
     self.view.addSubview(self.footerLabel)
   }
@@ -100,17 +90,11 @@ class ProfileEditorViewController: BaseViewController {
   override func setupConstraints() {
     super.setupConstraints()
     
-    self.headerLabel.snp.remakeConstraints { (make) in
-      make.leading.equalToSuperview().inset(16)
-      make.top.equalToSuperview().inset(16)
-      make.trailing.equalToSuperview().inset(16)
-    }
-    
     let fieldView = self.fieldView as! UIView
     fieldView.snp.remakeConstraints { [weak self] (make) in
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.top.equalTo((self?.headerLabel.snp.bottom)!).offset(6)
+      make.top.equalToSuperview().inset(38)
       make.height.equalTo(52)
     }
     
@@ -125,7 +109,7 @@ class ProfileEditorViewController: BaseViewController {
     let title = self.schema?.nameI18n?.getMessage() ?? ""
     let titleView = SimpleNavigationTitleView()
     titleView.configure(
-      with: title + " " + CHAssets.localized("ch.input"),
+      with: title,
       textColor: mainStore.state.plugin.textUIColor
     )
     self.navigationItem.titleView = titleView
@@ -139,7 +123,7 @@ class ProfileEditorViewController: BaseViewController {
       })
     
     self.navigationItem.rightBarButtonItem = NavigationItem(
-      title: CHAssets.localized("ch.button_confirm"),
+      title: CHAssets.localized("ch.settings.save"),
       style: .plain,
       textColor: mainStore.state.plugin.textUIColor,
       actionHandler: { [weak self] in

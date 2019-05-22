@@ -33,6 +33,7 @@ class LoungeMainView: BaseView {
     $0.register(cellType: UserChatCell.self)
   }
   
+  var footerView: LoungeTableFooterView = LoungeTableFooterView()
   var errorView: LoungeMainErrorView?
   
   var welcomeModel: UserChatCellModel?
@@ -75,7 +76,11 @@ class LoungeMainView: BaseView {
     self.tableView.layer.cornerRadius = 10
     self.tableView.delegate = self
     self.tableView.dataSource = self
-
+    
+    self.footerView.newChatSignal
+      .bind(to: self.newSignal)
+      .disposed(by: self.disposeBag)
+    
     self.addSubview(self.tableView)
   }
   
@@ -147,12 +152,8 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-    let view = LoungeTableFooterView()
-    view.newChatButton.isEnabled = mainStore.state.channel.working
-    view.newChatSignal
-      .bind(to: self.newSignal)
-      .disposed(by: self.disposeBag)
-    return view
+    self.footerView.newChatButton.isEnabled = mainStore.state.channel.working
+    return self.footerView
   }
   
   func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
