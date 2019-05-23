@@ -23,7 +23,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   struct Metric {
     static let cellTopPadding = 13.f
     static let cellLeftPadding = 14.f
-    static let cellRightPadding = 10.f
+    static let cellRightPadding = 15.f
     static let titleBottomPadding = 7.f
     static let timestampBottomPadding = 13.f
     static let avatarRightPadding = 14.f
@@ -37,14 +37,14 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   struct Font {
     static let titleLabel = UIFont.boldSystemFont(ofSize: 14)
     static let messageLabel = UIFont.systemFont(ofSize: 14)
-    static let timestampLabel = UIFont.systemFont(ofSize: 13)
+    static let timestampLabel = UIFont.systemFont(ofSize: 11)
   }
 
   struct Color {
     static let selectionColor = CHColors.snow
     static let titleLabel = CHColors.dark
     static let messageLabel = CHColors.dark
-    static let timestampLabel = CHColors.gray
+    static let timestampLabel = CHColors.blueyGrey
   }
 
   // MARK: Properties

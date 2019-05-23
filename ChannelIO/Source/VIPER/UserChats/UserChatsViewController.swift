@@ -124,7 +124,7 @@ class UserChatsViewController: BaseViewController {
       .subscribe(onNext: { (_) in
         CHNotification.shared.display(
           message: CHAssets.localized("ch.toast.unstable_internet"),
-          config: CHNotificationConfiguration.warningConfig
+          config: CHNotificationConfiguration.warningNormalConfig
         )
       }).disposed(by: self.notiDisposeBag)
     
@@ -224,14 +224,14 @@ class UserChatsViewController: BaseViewController {
   }
 
   fileprivate func showNewChatButton() {
-    self.plusBottomConstraint?.update(inset: 24)
+    self.plusBottomConstraint?.update(inset: 46)
     UIView.animate(withDuration: 0.3) { 
       self.view.layoutIfNeeded()
     }
   }
   
   fileprivate func hideNewChatButton() {
-    let margin = -24 - self.newChatButton.frame.size.height
+    let margin = -46 - self.newChatButton.frame.size.height
     self.plusBottomConstraint?.update(inset: margin)
     UIView.animate(withDuration: 0.3) {
       self.view.layoutIfNeeded()

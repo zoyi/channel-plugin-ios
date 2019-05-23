@@ -40,7 +40,7 @@ class FollowersView: BaseView {
     static let sizeForOne = 60
     static let sizeForTwo = 48
     static let sizeForThree = 40
-    static let sizeForFour = 40
+    static let sizeForFour = 36
   }
   
   override func initialize() {

@@ -189,17 +189,14 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
 
 extension LoungeView: UIGestureRecognizerDelegate {
   @objc func tapCheck(_ gesture: UITapGestureRecognizer) {
-    if self.headerView.dismissButton.frame
-      .contains(gesture.location(in: self.view)) {
+    if self.headerView.dismissButton.frame.contains(gesture.location(in: self.view)) {
         self.presenter?.didClickOnDismiss()
     }
-    else if self.headerView.settingButton.frame
-      .contains(gesture.location(in: self.view)) {
+    else if self.headerView.settingButton.frame.contains(gesture.location(in: self.view)) {
         self.presenter?.didClickOnSetting(from: self)
     }
-    else if self.headerView.textContainerView.frame
-      .contains(gesture.location(in: self.headerView.textContainerView)) &&
-      self.headerView.operationTimeLabel.isHidden == false {
+    else if self.headerView.operationView.frame.contains(gesture.location(in: self.headerView.textContainerView)) &&
+      self.headerView.operationView.isHidden == false {
       self.presenter?.didClickOnHelp(from: self)
     }
   }

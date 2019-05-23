@@ -430,9 +430,9 @@ final class UserChatViewController: BaseSLKTextViewController {
       alignment: .left,
       textColor: tintColor,
       actionHandler: { [weak self] in
-        mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+        //mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         _ = self?.navigationController?.popViewController(animated: true)
-    })
+      })
     
     if #available(iOS 11, *) {
       self.navigationItem.leftBarButtonItems = [backButton]
@@ -493,6 +493,7 @@ extension UserChatViewController: StoreSubscriber {
     
     self.userChat = userChat
     self.channel = state.channel
+    self.newChatButton.isEnabled = self.channel.allowNewChat
   }
   
   func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
