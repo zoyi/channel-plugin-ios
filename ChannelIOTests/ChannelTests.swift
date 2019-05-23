@@ -18,8 +18,8 @@ class ChannelTests: QuickSpec {
       
     }
     
-    describe("Channel object") {
-      context("a default creation") {
+    describe("default creation") {
+      context("when using default constructor") {
         it("should contain default values") {
           let channel = CHChannel()
           expect(channel.name).to(equal(""))
@@ -32,13 +32,17 @@ class ChannelTests: QuickSpec {
           expect(channel.workingTime).to(beNil())
         }
       }
-
+    }
+    
+    describe("") {
       context("setting properties") {
         it("should contain proper values") {
           
         }
       }
-      
+    }
+    
+    describe("") {
       context("canUseSDK") {
         it("should return true if all state is valid") {
           
@@ -52,7 +56,9 @@ class ChannelTests: QuickSpec {
           
         }
       }
-      
+    }
+    
+    describe("") {
       context("canUsePushBot") {
         it("should return true if all state is valid") {
           
@@ -66,7 +72,9 @@ class ChannelTests: QuickSpec {
           
         }
       }
-      
+    }
+    
+    describe("") {
       context("canUseSupportBot") {
         it("should return true if all state is valid") {
           
@@ -80,25 +88,33 @@ class ChannelTests: QuickSpec {
           
         }
       }
-      
+    }
+    
+    describe("") {
       context("launcher") {
         it("should hide launcher if away and not working") {
           
         }
       }
+    }
 
+    describe("") {
       context("allow new message") {
         it("should return false if away option is not active") {
           
         }
       }
-      
+    }
+    
+    describe("") {
       context("shouldShowWorkingTime") {
         it("should return true if not working and has working hours") {
           
         }
       }
-      
+    }
+    
+    describe("") {
       context("working time") {
         it("should return structure working time dictionary") {
 
@@ -109,7 +125,9 @@ class ChannelTests: QuickSpec {
           
         }
       }
-      
+    }
+    
+    describe("") {
       context("getClosetWorkingTime") {
         it("should return next weekday and hour left") {
           
