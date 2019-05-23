@@ -42,7 +42,9 @@ protocol SettingInteractorProtocol {
   func getCurrentLocale() -> CHLocale?
   func getTranslationEnabled() -> Bool
   
+  func updateGeneral() -> Observable<(CHChannel, CHPlugin)>
   func updateGuest() -> Observable<CHGuest>
+  func updateOptions() -> Observable<Any?>
 }
 
 protocol SettingRouterProtocol {

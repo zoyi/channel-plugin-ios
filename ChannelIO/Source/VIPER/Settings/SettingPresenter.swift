@@ -24,21 +24,38 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
       self.view?.displayVersion(version: "v\(version)")
     }
     
-    let channel = mainStore.state.channel
-    let plugin = mainStore.state.plugin
+    self.interactor?.updateGeneral()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (channel, plugin) in
+        let headerModel = SettingHeaderViewModel(
+          title: channel.name,
+          homepageUrl: channel.homepageUrl,
+          desc: channel.desc,
+          entity: channel,
+          colors:plugin.gradientColors,
+          textColor: plugin.textUIColor)
+        
+        self?.view?.displayHeader(with: headerModel)
+      }).disposed(by: self.disposeBag)
     
-    let headerModel = SettingHeaderViewModel(
-      title: channel.name,
-      homepageUrl: channel.homepageUrl,
-      desc: channel.desc,
-      entity: channel,
-      colors:plugin.gradientColors,
-      textColor: plugin.textUIColor)
+    self.interactor?.updateOptions()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (_) in
+        let settingOptions = SettingOptionModel.generate(
+          options: [.language, .closeChatVisibility, .translation])
+        self?.view?.displayOptions(with: settingOptions)
+      }).disposed(by: self.disposeBag)
     
-    self.view?.displayHeader(with: headerModel)
-    
-    let settingOptions = SettingOptionModel.generate(options: [.language, .closeChatVisibility, .translation])
-    self.view?.displayOptions(with: settingOptions)
+    self.interactor?.updateGuest()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (guest) in
+        let profiles = mainStore.state.guest.profile
+        let models = GuestProfileItemModel.generate(
+          from: profiles,
+          schemas: self?.schemas ?? []
+        )
+        self?.view?.displayProfiles(with: models)
+      }).disposed(by: self.disposeBag)
     
     self.interactor?.getProfileSchemas()
       .observeOn(MainScheduler.instance)
@@ -51,18 +68,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
         self?.schemas = schemas
         self?.view?.displayProfiles(with: models)
       }, onError: { (error) in
-        
-      }).disposed(by: self.disposeBag)
-    
-    self.interactor?.updateGuest()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (guest) in
-        let profiles = mainStore.state.guest.profile
-        let models = GuestProfileItemModel.generate(
-          from: profiles,
-          schemas: self?.schemas ?? []
-        )
-        self?.view?.displayProfiles(with: models)
+          
       }).disposed(by: self.disposeBag)
   }
   
@@ -85,7 +91,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
       mainStore.dispatch(UpdateVisibilityOfTranslation(show: nextValue))
     }
     else if item.type == .closeChatVisibility, let nextValue = nextValue as? Bool {
-       mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: nextValue))
+      mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: nextValue))
     }
   }
   

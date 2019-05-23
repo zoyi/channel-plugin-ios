@@ -53,6 +53,7 @@ class LoungeHeaderView: BaseView {
   let responseDescriptionLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.alpha = 0.8
+    $0.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
   
   let operationView = UIView()
@@ -231,7 +232,7 @@ class LoungeHeaderView: BaseView {
       self.opertionTopConstraint = make.top.equalTo(self.responseDescriptionLabel.snp.bottom).offset(2).constraint
       make.leading.equalToSuperview()
       make.bottom.equalToSuperview()
-      make.trailing.equalToSuperview()
+      make.trailing.lessThanOrEqualToSuperview()
     }
     
     self.operationTimeLabel.snp.makeConstraints { (make) in
@@ -252,7 +253,7 @@ class LoungeHeaderView: BaseView {
     self.followersView.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       make.centerY.equalToSuperview()
-      make.leading.equalTo(self.textContainerView.snp.trailing).offset(10)
+      make.leading.equalTo(self.textContainerView.snp.trailing).offset(-10)
       make.trailing.equalToSuperview().inset(20)
     }
     
@@ -260,7 +261,7 @@ class LoungeHeaderView: BaseView {
       guard let `self` = self else { return }
       make.height.equalTo(60)
       make.width.equalTo(60)
-      make.leading.equalTo(self.textContainerView.snp.trailing).offset(10)
+      make.leading.equalTo(self.textContainerView.snp.trailing).offset(-10)
       make.trailing.equalToSuperview().inset(20)
       make.centerY.equalToSuperview()
     }

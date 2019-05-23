@@ -153,8 +153,10 @@ extension SettingView: SettingViewProtocol {
   }
   
   func displayProfiles(with profiles: [GuestProfileItemModel]) {
-    self.profiles = profiles
-    self.tableView.reloadData()
+    if !self.profiles.elementsEqual(profiles) {
+      self.profiles = profiles
+      self.tableView.reloadData()
+    }
   }
   
   func displayVersion(version: String) {
@@ -240,9 +242,11 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
       case .switchable:
         let cell: SwitchCell = tableView.dequeueReusableCell(for: indexPath)
         let isOn = item.value as? Bool ?? false
-        cell.switchSignal.subscribe { [weak self] event in
-          self?.presenter?.didClickOnOption(item: item, nextValue: event.element, from: self)
-        }.disposed(by: self.disposeBag)
+        cell.switched()
+          .debounce(1.0, scheduler: MainScheduler.instance)
+          .subscribe(onNext: { [weak self] value in
+            self?.presenter?.didClickOnOption(item: item, nextValue: value, from: self)
+          }).disposed(by: self.disposeBag)
         cell.selectionStyle = .none
         cell.configure(title: item.title, isOn: isOn)
         return cell

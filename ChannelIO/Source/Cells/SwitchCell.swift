@@ -9,6 +9,7 @@
 import Foundation
 import SnapKit
 import RxSwift
+import RxCocoa
 import Reusable
 
 final class SwitchCell : BaseTableViewCell, Reusable {
@@ -20,7 +21,7 @@ final class SwitchCell : BaseTableViewCell, Reusable {
   }
   
   let onOffSwitch = UISwitch()
-  let switchSignal = PublishSubject<Bool>()
+  var switchSignal = PublishRelay<Bool>()
   
   override func initialize() {
     super.initialize()
@@ -55,8 +56,13 @@ final class SwitchCell : BaseTableViewCell, Reusable {
     self.onOffSwitch.isOn = isOn
   }
   
+  func switched() -> Observable<Bool> {
+    self.switchSignal = PublishRelay<Bool>()
+    return self.switchSignal.asObservable()
+  }
+  
   @objc func switchChanged(_ sender: UISwitch) {
-    self.switchSignal.onNext(sender.isOn)
+    self.switchSignal.accept(sender.isOn)
   }
 }
 
