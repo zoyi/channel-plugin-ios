@@ -30,6 +30,14 @@ extension UINavigationController {
     self.popToRootViewController(animated: animated)
     CATransaction.commit()
   }
+  
+  func dropShadow() {
+    self.navigationBar.dropShadow(with: CHColors.black10, opacity: 0.5, offset: CGSize(width:0, height:2), radius: 2)
+  }
+  
+  func removeShadow() {
+    self.navigationBar.removeShadow()
+  }
 }
 
 extension UIViewController {
@@ -67,6 +75,7 @@ extension UINavigationBar {
       for: UIBarMetrics.default
     )
   }
+  
 }
 
 extension UIViewController {

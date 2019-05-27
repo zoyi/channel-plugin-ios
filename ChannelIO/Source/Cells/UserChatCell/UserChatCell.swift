@@ -42,8 +42,8 @@ final class UserChatCell: BaseTableViewCell, Reusable {
 
   struct Color {
     static let selectionColor = CHColors.snow
-    static let titleLabel = CHColors.dark
-    static let messageLabel = CHColors.dark
+    static let titleLabel = CHColors.charcoalGrey
+    static let messageLabel = CHColors.charcoalGrey
     static let timestampLabel = CHColors.blueyGrey
   }
 

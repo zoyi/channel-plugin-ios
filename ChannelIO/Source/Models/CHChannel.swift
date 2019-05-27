@@ -78,8 +78,10 @@ extension CHChannel {
   }
   
   func isDiff(from channel: CHChannel) -> Bool {
-    return self.working != channel.working || self.workingType != channel.workingType ||
-      self.expectedResponseDelay != channel.expectedResponseDelay
+    return self.working != channel.working ||
+      self.workingType != channel.workingType ||
+      self.expectedResponseDelay != channel.expectedResponseDelay ||
+      self.allowNewChat != channel.allowNewChat
   }
   
   var sortedWorkingTime: [SortableWorkingTime]? {

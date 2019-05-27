@@ -26,11 +26,12 @@ internal func dlog(_ str: String) {
 public protocol ChannelPluginDelegate: class {
   @objc optional func onChangeBadge(count: Int) -> Void /* notify badge count when changed */
   @objc optional func onClickChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
-  @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
+  @objc optional func willShowMessenger() -> Void /* no                                              tify when chat list is about to show */
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
-  @objc optional func onReceivePush(event: PushEvent) -> Void
-  @objc optional func onClickRedirect(url: URL) -> Bool
-  @objc optional func onChangeGuestProfile(key: String, value: Any?) -> Void
+  @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
+  @objc optional func onClickRedirect(url: URL) -> Bool /* notify when a user click on a link */
+  @objc optional func onChangeGuestProfile(key: String, value: Any?) -> Void /* notify when the guest profile has been changed */
+  @objc optional func onChangeChannelOperationState(isOperating: Bool) -> Void /* notify when channel operation state has been changed */
 }
 
 @objc
@@ -417,24 +418,6 @@ public final class ChannelIO: NSObject {
         completion?(false, nil)
       }).disposed(by: disposeBag)
   }
-  /**
-   *  Update user profile once. If you provide already existed user profile, it won't update the guest profile.
-   *
-   *  - parameter
-   */
-//  @objc
-//  private class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
-//    GuestPromise.updateGuest(with: profile)
-//      .subscribe(onNext: { (guest, error) in
-//        if let guest = guest {
-//          completion?(true, Guest(with: guest))
-//        } else {
-//          completion?(false, nil)
-//        }
-//      }, onError: { error in
-//        completion?(false, nil)
-//      }).disposed(by: disposeBag)
-//  }
   
   /**
    *  Track an event

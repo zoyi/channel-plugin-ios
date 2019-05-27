@@ -68,7 +68,8 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   
   func getChats() -> Observable<[CHUserChat]> {
     return Observable.create({ (subscriber) -> Disposable in
-      let signal = UserChatPromise.getChats(since: nil, limit: 4, showCompleted: true)
+      let showCompletion = PrefStore.getVisibilityOfClosedUserChat()
+      let signal = UserChatPromise.getChats(since: nil, limit: 4, showCompleted: showCompletion)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (data) in
           mainStore.dispatch(GetUserChats(payload: data))

@@ -13,6 +13,7 @@ class SettingView: BaseViewController {
   var presenter: SettingPresenterProtocol?
   
   let headerView = SettingHeaderView()
+  
   let tableView =  UITableView(frame: CGRect.zero, style: .grouped).then {
     $0.register(cellType: LabelCell.self)
     $0.register(cellType: SwitchCell.self)
@@ -43,8 +44,8 @@ class SettingView: BaseViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.view.addSubview(self.headerView)
     self.view.addSubview(self.tableView)
+    self.view.addSubview(self.headerView)
     self.view.addSubview(self.versionLabel)
     
     self.tableView.delegate = self
@@ -83,7 +84,7 @@ class SettingView: BaseViewController {
     self.versionLabel.snp.makeConstraints { (make) in
       make.trailing.equalToSuperview().inset(14)
       if #available(iOS 11.0, *) {
-        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(10)
       } else {
         make.bottom.equalToSuperview().inset(10)
       }
@@ -153,10 +154,8 @@ extension SettingView: SettingViewProtocol {
   }
   
   func displayProfiles(with profiles: [GuestProfileItemModel]) {
-    if !self.profiles.elementsEqual(profiles) {
-      self.profiles = profiles
-      self.tableView.reloadData()
-    }
+    self.profiles = profiles
+    self.tableView.reloadData()
   }
   
   func displayVersion(version: String) {
@@ -192,9 +191,7 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    let view = UIView().then {
-      $0.backgroundColor = .white
-    }
+    let view = UIView()
     let label = UILabel().then {
       $0.font = UIFont.boldSystemFont(ofSize: 13)
       $0.textColor = CHColors.blueyGrey
@@ -243,7 +240,6 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
         let cell: SwitchCell = tableView.dequeueReusableCell(for: indexPath)
         let isOn = item.value as? Bool ?? false
         cell.switched()
-          .debounce(1.0, scheduler: MainScheduler.instance)
           .subscribe(onNext: { [weak self] value in
             self?.presenter?.didClickOnOption(item: item, nextValue: value, from: self)
           }).disposed(by: self.disposeBag)

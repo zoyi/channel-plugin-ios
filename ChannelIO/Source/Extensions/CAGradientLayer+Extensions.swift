@@ -68,4 +68,11 @@ extension UIView {
     self.layer.shadowOffset = offset
     self.layer.shadowRadius = radius
   }
+  
+  func removeShadow() {
+    self.layer.shadowColor = nil
+    self.layer.shadowOpacity = 0
+    self.layer.shadowOffset = .zero
+    self.layer.shadowRadius = 0
+  }
 }

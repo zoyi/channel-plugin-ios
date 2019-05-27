@@ -90,7 +90,7 @@ class LoungeExternalAppsView: BaseView {
         make.width.equalTo(44)
       }
       modelView.configure(with: model)
-      modelView.signalForClick().subscribe(onNext: { [weak self] (_) in
+      modelView.button.signalForClick().subscribe(onNext: { [weak self] (_) in
         self?.clickSignal.accept(model)
       }).disposed(by: self.disposeBag)
       
@@ -100,20 +100,20 @@ class LoungeExternalAppsView: BaseView {
 }
 
 class LoungeExternalAppView: BaseView {
-  let imageView = UIImageView()
-
+  let button = UIButton(type: .system)
+  
   override func initialize() {
     super.initialize()
     
     self.clipsToBounds = true
     self.backgroundColor = CHColors.dark10
-    self.addSubview(self.imageView)
+    self.addSubview(self.button)
   }
   
   override func setLayouts() {
     super.setLayouts()
-    
-    self.imageView.snp.makeConstraints { (make) in
+
+    self.button.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
     }
   }
@@ -124,6 +124,6 @@ class LoungeExternalAppView: BaseView {
   }
   
   func configure(with model: LoungeExternalSourceModel) {
-    self.imageView.image = model.type.image
+    self.button.setImage(model.type.image?.withRenderingMode(.alwaysOriginal), for: .normal)
   }
 }

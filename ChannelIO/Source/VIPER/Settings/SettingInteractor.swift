@@ -71,7 +71,7 @@ extension SettingInteractor: StoreSubscriber {
       self.updateGeneralSignal.accept((state.channel, state.plugin))
     }
     
-    if self.guest == nil || self.guest?.diff(state.guest) == true {
+    if self.guest == nil || self.guest?.isSame(state.guest) == false {
       self.guest = state.guest
       self.updateSignal.accept(state.guest)
     }

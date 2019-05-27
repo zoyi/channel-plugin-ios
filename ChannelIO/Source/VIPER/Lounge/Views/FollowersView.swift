@@ -10,28 +10,28 @@ import UIKit
 
 class FollowersView: BaseView {
   let firstFollowerView = AvatarView().then {
-    $0.layer.shadowColor = CHColors.dark.cgColor
-    $0.layer.shadowOpacity = 0.4
-    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-    $0.layer.shadowRadius = 4
+    $0.layer.shadowColor = CHColors.black10.cgColor
+    $0.layer.shadowOpacity = 1
+    $0.layer.shadowOffset = CGSize(width: 0, height: 2)
+    $0.layer.shadowRadius = 6
   }
   let secondFollowerView = AvatarView().then {
-    $0.layer.shadowColor = CHColors.dark.cgColor
-    $0.layer.shadowOpacity = 0.4
-    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-    $0.layer.shadowRadius = 4
+    $0.layer.shadowColor = CHColors.black10.cgColor
+    $0.layer.shadowOpacity = 1
+    $0.layer.shadowOffset = CGSize(width: 0, height: 2)
+    $0.layer.shadowRadius = 6
   }
   let thirdFollowerView = AvatarView().then {
-    $0.layer.shadowColor = CHColors.dark.cgColor
-    $0.layer.shadowOpacity = 0.4
-    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-    $0.layer.shadowRadius = 4
+    $0.layer.shadowColor = CHColors.black10.cgColor
+    $0.layer.shadowOpacity = 1
+    $0.layer.shadowOffset = CGSize(width: 0, height: 2)
+    $0.layer.shadowRadius = 6
   }
   let forthFollowerView = AvatarView().then {
-    $0.layer.shadowColor = CHColors.dark.cgColor
-    $0.layer.shadowOpacity = 0.4
-    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-    $0.layer.shadowRadius = 4
+    $0.layer.shadowColor = CHColors.black10.cgColor
+    $0.layer.shadowOpacity = 1
+    $0.layer.shadowOffset = CGSize(width: 0, height: 2)
+    $0.layer.shadowRadius = 6
   }
   
   var displayedMembers = 0

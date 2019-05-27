@@ -87,6 +87,16 @@ class ProfileEditorViewController: BaseViewController {
     self.view.addSubview(self.footerLabel)
   }
   
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.navigationController?.removeShadow()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.navigationController?.dropShadow()
+  }
+  
   override func setupConstraints() {
     super.setupConstraints()
     
@@ -135,7 +145,7 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func updateGuestInfo() {
-    SVProgressHUD.show(withStatus: CHAssets.localized("업데이트중..."))
+    SVProgressHUD.show(withStatus: CHAssets.localized("ch.loader.updating"))
     
     let numberFormatter = NumberFormatter()
     numberFormatter.numberStyle = .decimal
@@ -146,9 +156,10 @@ class ProfileEditorViewController: BaseViewController {
       (self.text == "" ? nil : self.text)
     
     self.guest?.updateProfile(key: key, value: value)
+      .debounce(1.0, scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (guest, error) in
-        SVProgressHUD.dismiss()
+        defer { SVProgressHUD.dismiss() } 
         ChannelIO.delegate?.onChangeGuestProfile?(key: key, value: value)
         mainStore.dispatch(UpdateGuest(payload: guest))
         if error == nil {

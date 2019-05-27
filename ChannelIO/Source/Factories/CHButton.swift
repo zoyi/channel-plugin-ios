@@ -15,7 +15,9 @@ struct CHButton {
     borderColor: UIColor? = UIColor(mainStore.state.plugin.borderColor)) -> UIButton {
     let button = UIButton(type: .system).then {
       $0.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysTemplate), for: .normal)
+      $0.setImage(CHAssets.getImage(named: "newChatDisabled"), for: .disabled)
       $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
+      
       $0.setTitleColor(textColor, for: .normal)
       $0.setTitleColor(CHColors.blueyGrey, for: .disabled)
       $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
@@ -26,21 +28,18 @@ struct CHButton {
       
       $0.backgroundColor = backgroundColor
       
-      $0.layer.borderColor = borderColor?.cgColor
       $0.layer.cornerRadius = 23
-      $0.layer.borderWidth = 1
       
-      $0.layer.shadowColor = CHColors.dark.cgColor
-      $0.layer.shadowOpacity = 0.4
+      $0.layer.shadowColor = CHColors.black10.cgColor
+      $0.layer.shadowOpacity = 1
       $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-      $0.layer.shadowRadius = 4
+      $0.layer.shadowRadius = 6
     }
     
     _ = button.rx.isEnabled
       .subscribe(onNext: { (enabled) in
         button.tintColor = !enabled ? CHColors.blueyGrey : textColor
         button.backgroundColor = !enabled ? CHColors.paleGrey20 : backgroundColor
-        button.layer.borderColor = !enabled ? UIColor.clear.cgColor : borderColor?.cgColor
         button.clipsToBounds = !enabled
       })
     return button

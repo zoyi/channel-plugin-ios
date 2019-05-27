@@ -63,9 +63,9 @@ extension CHGuest {
     return data
   }
   
-  func diff(_ otherGuest: CHGuest) -> Bool {
+  func isSame(_ otherGuest: CHGuest) -> Bool {
     if self.type != otherGuest.type { return false }
-
+    
     return self.named == otherGuest.named &&
       self.country == otherGuest.country &&
       self.city == otherGuest.city &&

@@ -74,7 +74,7 @@ class DefaultNavigationTitleView: BaseView {
     } else {
       if let (_, timeLeft) = channel.closestWorkingTime(from: Date()) {
         self.operationLabel.text = timeLeft > 60 ?
-          String(format: CHAssets.localized("ch.navigation.next_operation.hours_left"), timeLeft / 60) :
+          String(format: CHAssets.localized("ch.navigation.next_operation.hour_left"), timeLeft / 60) :
           String(format: CHAssets.localized("ch.navigation.next_operation.minutes_left"), max(1, timeLeft))
       }
       else {

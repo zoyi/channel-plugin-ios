@@ -152,6 +152,7 @@ class UserChatsViewController: BaseViewController {
     self.tableView.reloadData()
     self.initObservers()
     self.navigationController?.setNavigationBarHidden(false, animated: true)
+    self.navigationController?.dropShadow()
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -162,6 +163,7 @@ class UserChatsViewController: BaseViewController {
     super.viewWillDisappear(animated)
     if let count = self.navigationController?.viewControllers.count, count == 1 {
       self.navigationController?.setNavigationBarHidden(true, animated: true)
+      self.navigationController?.removeShadow()
     }
     self.removeObservers()
     mainStore.unsubscribe(self)
@@ -210,6 +212,14 @@ class UserChatsViewController: BaseViewController {
       actionHandler: { [weak self] in
         _ = self?.navigationController?.popViewController(animated: true)
       })
+
+    self.navigationItem.rightBarButtonItem = NavigationItem(
+      image: CHAssets.getImage(named: "closeWhite"),
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
+      actionHandler: {
+        ChannelIO.close(animated: true)
+      })
     
     let titleView = ChatNavigationTitleView()
     titleView.configure(
@@ -224,14 +234,14 @@ class UserChatsViewController: BaseViewController {
   }
 
   fileprivate func showNewChatButton() {
-    self.plusBottomConstraint?.update(inset: 46)
+    self.plusBottomConstraint?.update(inset: 40)
     UIView.animate(withDuration: 0.3) { 
       self.view.layoutIfNeeded()
     }
   }
   
   fileprivate func hideNewChatButton() {
-    let margin = -46 - self.newChatButton.frame.size.height
+    let margin = -40 - self.newChatButton.frame.size.height
     self.plusBottomConstraint?.update(inset: margin)
     UIView.animate(withDuration: 0.3) {
       self.view.layoutIfNeeded()

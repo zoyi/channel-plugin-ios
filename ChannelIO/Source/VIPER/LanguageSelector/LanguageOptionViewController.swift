@@ -54,6 +54,16 @@ class LanguageOptionViewController: BaseViewController {
         _ = self?.navigationController?.popViewController(animated: true)
       })
   }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.navigationController?.dropShadow()
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    self.navigationController?.removeShadow()
+  }
 }
 
 extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelegate {

@@ -17,6 +17,7 @@ struct CHPlugin: ModelType {
   var borderColor = ""
   var textColor = ""
   var botName = ""
+  var profileBotSchemaIds: [String] = []
   
   var mobilePosition = "right"
   var welcomeNamedI18n: CHi18n?
@@ -67,15 +68,16 @@ extension CHPlugin: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    id               <- map["id"]
-    color            <- map["color"]
-    gradientColor    <- map["gradientColor"]
-    borderColor      <- map["borderColor"]
-    textColor        <- map["textColor"]
-    botName          <- map["botName"]
-    welcomeNamedI18n <- map["welcomeNamedI18n"]
-    welcomeI18n      <- map["welcomeI18n"]
-    showPoweredBy    <- map["showPoweredBy"]
+    id                    <- map["id"]
+    color                 <- map["color"]
+    gradientColor         <- map["gradientColor"]
+    borderColor           <- map["borderColor"]
+    textColor             <- map["textColor"]
+    botName               <- map["botName"]
+    welcomeNamedI18n      <- map["welcomeNamedI18n"]
+    welcomeI18n           <- map["welcomeI18n"]
+    showPoweredBy         <- map["showPoweredBy"]
+    profileBotSchemaIds   <- map["profileBotSchemaIds"]
   }
 }
 

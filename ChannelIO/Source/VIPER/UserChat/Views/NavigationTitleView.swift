@@ -24,6 +24,7 @@ class ChatNavigationTitleView : BaseView {
   let subtitleLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
     $0.numberOfLines = 1
+    $0.alpha = 0.7
   }
 
   let disposeBag = DisposeBag()
@@ -77,7 +78,7 @@ class ChatNavigationTitleView : BaseView {
     
     if let (_, timeLeft) = channel.closestWorkingTime(from: Date()) {
       self.subtitleLabel.text = timeLeft > 60 ?
-        String(format: CHAssets.localized("ch.navigation.next_operation.hours_left"), timeLeft / 60) :
+        String(format: CHAssets.localized("ch.navigation.next_operation.hour_left"), timeLeft / 60) :
         String(format: CHAssets.localized("ch.navigation.next_operation.minutes_left"), max(1, timeLeft))
     } else {
       self.subtitleLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.short_description")

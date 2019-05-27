@@ -39,6 +39,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
       }).disposed(by: self.disposeBag)
     
     self.interactor?.updateOptions()
+      .debounce(1, scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         let settingOptions = SettingOptionModel.generate(

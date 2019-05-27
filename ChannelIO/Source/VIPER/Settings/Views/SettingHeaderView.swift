@@ -29,12 +29,22 @@ class SettingHeaderView: BaseView {
   let descriptionLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textAlignment = .left
+    $0.alpha = 0.7
   }
   
   let channelAvatarView = AvatarView()
   
   override func initialize() {
     super.initialize()
+    
+    self.dropShadow(
+      with: CHColors.black10,
+      opacity: 0.5,
+      offset: CGSize(width: 0, height: 2),
+      radius: 2
+    )
+    self.clipsToBounds = false
+    
     self.layer.addSublayer(self.bgLayer)
     self.addSubview(self.channelNameLabel)
     self.addSubview(self.homepageUrlLabel)

@@ -19,6 +19,7 @@ class LoungeMainView: BaseView {
   
   struct Constant {
     static let maxNumberOfCell = 3
+    static let maxNumberOfLines = 2
     static let maxNumberOfLinesForWelcomeCell = 8
     static let defaultCellHeight = 80.f
     static let headerHeight = 30.f
@@ -178,6 +179,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
       let model = self.chats[indexPath.row]
       cell.configure(model)
+      cell.messageLabel.numberOfLines = Constant.maxNumberOfLines
       return cell
     }
     

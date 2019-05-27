@@ -323,6 +323,7 @@
 		65D72A3421B11D5B00EE31B4 /* PushBotManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */; };
 		65D986D3228ABAD400D1D23A /* TLPhotoPicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */; };
 		65EAE11320EF468500D501FC /* TranslateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EAE11220EF468500D501FC /* TranslateView.swift */; };
+		65FB143C2298044F00393AA2 /* UserChatBottomBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB143B2298044F00393AA2 /* UserChatBottomBlockView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -672,6 +673,7 @@
 		65D72A3321B11D5B00EE31B4 /* PushBotManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushBotManager.swift; sourceTree = "<group>"; };
 		65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TLPhotoPicker.framework; path = Carthage/Build/iOS/TLPhotoPicker.framework; sourceTree = "<group>"; };
 		65EAE11220EF468500D501FC /* TranslateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateView.swift; sourceTree = "<group>"; };
+		65FB143B2298044F00393AA2 /* UserChatBottomBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatBottomBlockView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1001,6 +1003,7 @@
 				656C984B1FC6A2EC0064F53E /* NavigationTitleView.swift */,
 				22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */,
 				6597931B1FA7167C00840F6A /* NewMessageBannerView.swift */,
+				65FB143B2298044F00393AA2 /* UserChatBottomBlockView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1887,6 +1890,7 @@
 				65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */,
 				655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */,
 				659793A61FA716CB00840F6A /* BaseView.swift in Sources */,
+				65FB143C2298044F00393AA2 /* UserChatBottomBlockView.swift in Sources */,
 				65121332224DF47F00737089 /* PageIndicator.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,
 				659793B51FA716CB00840F6A /* NewMessageBannerView.swift in Sources */,

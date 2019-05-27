@@ -81,10 +81,10 @@ class LoungeHeaderView: BaseView {
     startPoint: .top,
     endPoint: .bottom).then {
       $0.dropShadow(
-        with: CHColors.dark,
-        opacity: 0.4,
-        offset: CGSize(width: 0, height: 4),
-        radius: 4)
+        with: CHColors.black10,
+        opacity: 1,
+        offset: CGSize(width: 0, height: 2),
+        radius: 6)
     }
   
   let bgView = CAGradientLayer().then {
@@ -311,6 +311,9 @@ class LoungeHeaderView: BaseView {
       self.followersView.isHidden = false
       self.offlineImageView.isHidden = true
       self.operationView.isHidden = false
+      self.operationTimeLabel.alpha = 0.7
+      self.helpImageView.alpha = 0.7
+      
       self.responseDescConstraint?.deactivate()
       self.opertionTopConstraint?.activate()
     } else {
@@ -321,10 +324,13 @@ class LoungeHeaderView: BaseView {
       self.responseLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working")
       if let (_, timeLeft) = channel.closestWorkingTime(from: Date()) {
         self.responseDescriptionLabel.text = timeLeft > 60 ?
-          String(format: CHAssets.localized("ch.navigation.next_operation.hours_left"), timeLeft / 60) :
+          String(format: CHAssets.localized("ch.navigation.next_operation.hour_left"), timeLeft / 60) :
           String(format: CHAssets.localized("ch.navigation.next_operation.minutes_left"), max(1, timeLeft))
         
         self.operationView.isHidden = false
+        self.operationTimeLabel.alpha = 1
+        self.helpImageView.alpha = 1
+        
         self.responseDescConstraint?.deactivate()
         self.opertionTopConstraint?.activate()
       } else {

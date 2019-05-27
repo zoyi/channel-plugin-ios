@@ -47,11 +47,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   var previousMaxContentHeight: CGFloat = 0.f
   
   //var diffCalculator: SingleSectionTableViewDiffCalculator<CHMessage>?
-  var messages = [CHMessage]() {
-    didSet {
-      //self.diffCalculator?.rows = self.messages
-    }
-  }
+  var messages = [CHMessage]()
 
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
@@ -61,12 +57,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
   var chatUpdateSubject = PublishSubject<Any?>()
-  var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?)>()
+  var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?, Bool)>()
   
-  var errorToastView = ErrorToastView().then {
-    $0.isHidden = true
-  }
-  
+
   var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
@@ -74,7 +67,13 @@ final class UserChatViewController: BaseSLKTextViewController {
   var nudgeKeepButton = CHButton.keepNudge().then {
     $0.isHidden = true
   }
+  
   var newChatButton = CHButton.newChat().then {
+    $0.isHidden = true
+  }
+  
+  var chatBlockView = UserChatBottomBlockView().then {
+    $0.configure(message:CHAssets.localized("ch.message_input.placeholder.disabled_new_chat"))
     $0.isHidden = true
   }
   
@@ -136,6 +135,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.setNavigationBarHidden(false, animated: true)
+    self.navigationController?.dropShadow()
     self.initObservers()
     mainStore.subscribe(self)
   }
@@ -144,6 +144,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     super.viewWillDisappear(animated)
     if let count = self.navigationController?.viewControllers.count, count == 1 {
       self.navigationController?.setNavigationBarHidden(true, animated: true)
+      self.navigationController?.removeShadow()
     }
     self.removeObservers()
     mainStore.unsubscribe(self)
@@ -158,31 +159,35 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.adjustTableViewInset()
   }
   
-  func adjustTableViewInset(bottomInset: CGFloat = 0.f) {
+  @discardableResult
+  func adjustTableViewInset(bottomInset: CGFloat = 0.f) -> Bool {
     let chatViewHeight = self.tableView.frame.height
     
     if self.tableView.contentSize.height <= chatViewHeight {
       //NOTE: it shrinks instantly for a sec. But why?
-      guard self.tableView.contentSize.height > 40 else { return }
+      guard self.tableView.contentSize.height > 40 else { return false }
       var currInset = self.tableView.contentInset
       currInset.top = chatViewHeight - self.tableView.contentSize.height
-
+      print("top: \(currInset.top)")
       self.tableView.contentInset = currInset
+      return true
     } else {
       self.tableView.contentInset = UIEdgeInsets(
         top: bottomInset,
         left: 0,
         bottom: self.tableView.contentInset.bottom,
         right: 0)
+      
+      return false
     }
   }
   
   func initUpdaters() {
     self.navigationUpdateSubject
       .takeUntil(self.rx.deallocated)
-      .debounce(1.0, scheduler: MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (state, chat) in
-        self?.updateNavigationIfNeeded(state: state, nextUserChat: chat)
+      .debounce(0.7, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (state, chat, update) in
+        self?.updateNavigationIfNeeded(state: state, nextUserChat: chat, shouldUpdate: update)
       }).disposed(by: self.disposeBag)
     
     self.chatUpdateSubject
@@ -243,9 +248,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.newChatButton.snp.makeConstraints { [weak self] (make) in
       if #available(iOS 11.0, *) {
-        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15).constraint
+        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-40).constraint
       } else {
-        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(15).constraint
+        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
       }
       make.centerX.equalToSuperview()
       make.height.equalTo(Metric.newButtonHeight)
@@ -259,9 +264,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.nudgeKeepButton.snp.makeConstraints { [weak self] (make) in
       if #available(iOS 11.0, *) {
-        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-15).constraint
+        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-40).constraint
       } else {
-        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(15).constraint
+        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
       }
       make.centerX.equalToSuperview()
       make.height.equalTo(Metric.newButtonHeight)
@@ -335,18 +340,6 @@ final class UserChatViewController: BaseSLKTextViewController {
 
   // MARK: - Helper methods
 
-  fileprivate func initDwifft() {
-//    self.tableView.reloadData()
-//    self.diffCalculator = SingleSectionTableViewDiffCalculator<CHMessage>(
-//      tableView: self.tableView,
-//      initialRows: self.messages,
-//      sectionIndex: self.channel.notAllowToUseSDK ? 2 : 1
-//    )
-//    self.diffCalculator?.forceOffAnimationEnabled = true
-//    self.diffCalculator?.insertionAnimation = .none
-//    self.diffCalculator?.deletionAnimation = .none
-  }
-
   fileprivate func initNavigationViews(with userChat: CHUserChat? = nil) {
     self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
     //TODO: take this out from redux
@@ -364,9 +357,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.initNavigationTitle(with: userChat ?? self.userChat)
     //self.initNavigationExtension(with: userChat ?? self.userChat)
-    if let nav = self.navigationController as? MainNavigationController {
-      nav.newState(state: mainStore.state.plugin)
-    }
+//    if let nav = self.navigationController as? MainNavigationController {
+//      nav.newState(state: mainStore.state.plugin)
+//    }
   }
   
   func initNavigationTitle(with userChat: CHUserChat? = nil) {
@@ -392,15 +385,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
 
   fileprivate func initViews() {
-    self.errorToastView.topLayoutGuide = self.topLayoutGuide
-    self.errorToastView.containerView = self.view
-    self.view.addSubview(self.errorToastView)
-    
-    self.errorToastView.refreshImageView.signalForClick()
-      .subscribe(onNext: { [weak self] _ in
-        self?.chatManager?.reconnect()
-      }).disposed(by: self.disposeBag)
-    
     self.view.addSubview(self.newMessageView)
     self.newMessageView.snp.makeConstraints { [weak self] (make) in
       make.height.equalTo(48)
@@ -413,6 +397,18 @@ final class UserChatViewController: BaseSLKTextViewController {
         self?.newMessageView.hide(animated: true)
         self?.scrollToBottom(false)
       }).disposed(by: self.disposeBag)
+    
+    self.view.addSubview(self.chatBlockView)
+    self.chatBlockView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+      } else {
+        make.bottom.equalToSuperview()
+      }
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+    }
   }
   
   fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
@@ -441,8 +437,8 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
     
     self.navigationItem.rightBarButtonItem = NavigationItem(
-      image: CHAssets.getImage(named: "dismissButton")?.withRenderingMode(.alwaysTemplate),
-      tintColor: tintColor,
+      image: CHAssets.getImage(named: "closeWhite"),
+      tintColor: mainStore.state.plugin.textUIColor,
       style: .plain,
       actionHandler: { [weak self] in
         mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
@@ -457,6 +453,7 @@ extension UserChatViewController: StoreSubscriber {
 
   func newState(state: AppState) {
     self.userChatId = self.chatManager.chatId
+    let shouldUpdate = self.channel.isDiff(from: state.channel)
     
     let messages = messagesSelector(state: state, userChatId: self.userChatId)
     self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
@@ -467,44 +464,49 @@ extension UserChatViewController: StoreSubscriber {
     
     //message only needs to be replace if count is differe
     self.messages = messages
-    //fixed contentOffset
-    self.tableView.layoutIfNeeded()
-    self.adjustTableViewInset()
-    
-    // Photo - is this scalable? or doesn't need to care at this moment?
-    self.photoUrls = messages.reversed()
-      .filter({ $0.file?.isPreviewable == true })
-      .map({ (message) -> String in
-        return message.file?.url ?? ""
-      })
-    
+
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     
-    self.navigationUpdateSubject.onNext((state, userChat))
-    self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat)
-    self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
+    self.navigationUpdateSubject.onNext((state, userChat, shouldUpdate))
+    self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat, channel: state.channel)
     self.showErrorIfNeeded(state: state)
-    
     self.chatUpdateSubject.onNext(nil)
     
-    if userChat?.appMessageId != self.userChat?.appMessageId || hasNewMessage {
+    if hasNewMessage {
       self.tableView.reloadData()
+      self.tableView.layoutIfNeeded()
+      
+       // Photo - is this scalable? or doesn't need to care at this moment?
+      self.photoUrls = messages.reversed()
+        .filter({ $0.file?.isPreviewable == true })
+        .map({ (message) -> String in
+          return message.file?.url ?? ""
+        })
     }
     
-    self.userChat = userChat
+    self.fixedOffsetIfNeeded(previousOffset: offset, hasNewMessage: hasNewMessage)
+    self.adjustTableViewInset()
+    
     self.channel = state.channel
+    self.userChat = userChat
     self.newChatButton.isEnabled = self.channel.allowNewChat
   }
   
-  func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?) {
-    if self.userChat?.hostId != nextUserChat?.hostId {
+  func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?, shouldUpdate: Bool) {
+    if shouldUpdate {
       self.initNavigationViews(with: nextUserChat)
-    } else if self.channel.isDiff(from: state.channel) {
+    }
+    else if self.userChat?.hostId != nextUserChat?.hostId {
       self.initNavigationViews(with: nextUserChat)
-    } else if self.currentLocale != ChannelIO.settings?.appLocale {
+    }
+    else if self.channel.isDiff(from: state.channel) {
+      self.initNavigationViews(with: nextUserChat)
+    }
+    else if self.currentLocale != ChannelIO.settings?.appLocale {
       self.initNavigationViews(with: nextUserChat)
       self.currentLocale = ChannelIO.settings?.appLocale
-    } else {
+    }
+    else {
       let userChats = userChatsSelector(
         state: mainStore.state,
         showCompleted: mainStore.state.userChatsState.showCompletedChats
@@ -546,7 +548,7 @@ extension UserChatViewController: StoreSubscriber {
     }
   }
   
-  func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
+  func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?, channel: CHChannel) {
     guard self.isReadyToDisplay else { return }
     
     if let isNudgeChat = userChat?.isNudgeChat(), isNudgeChat {
@@ -563,24 +565,27 @@ extension UserChatViewController: StoreSubscriber {
       self.adjustTableViewInset(bottomInset: 60.f)
       self.newChatButton.isHidden = false
       self.scrollToBottom(false)
+      self.chatBlockView.isHidden = true
     }
     else if nextUserChat?.isNudgeChat() == true {
       self.setTextInputbarHidden(true, animated: false)
       self.adjustTableViewInset(bottomInset: 60.f)
+      self.chatBlockView.isHidden = true
     }
-    else if self.channel.allowNewChat == false && self.textView.text == "" {
+    else if channel.allowNewChat == false && self.textView.text == "" {
       self.setTextInputbarHidden(true, animated: false)
       self.adjustTableViewInset(bottomInset: 60.f)
+      self.chatBlockView.isHidden = false
     }
     else if nextUserChat?.isSupporting() == true ||
       nextUserChat?.isSolved() == true ||
-      self.channel.allowNewChat == false ||
       (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
       self.setTextInputbarHidden(true, animated: false)
+      self.chatBlockView.isHidden = true
     }
     else if !self.chatManager.profileIsFocus {
       self.adjustTableViewInset(bottomInset: 0.f)
-      
+      self.chatBlockView.isHidden = true
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.setTitle("", for: .normal)
@@ -629,7 +634,7 @@ extension UserChatViewController: StoreSubscriber {
       }
       
       self.tableView.contentOffset = offset
-    } else if hasNewMessage {
+    } else if hasNewMessage && self.tableView.contentSize.height > self.tableView.frame.height {
       self.scrollToBottom(false)
     }
   }
@@ -763,9 +768,9 @@ extension UserChatViewController {
     self.newChatButton.isHidden = false
     
     if #available(iOS 11.0, *) {
-      self.newChatBottomConstraint?.update(offset: -15)
+      self.newChatBottomConstraint?.update(offset: -40)
     } else {
-      self.newChatBottomConstraint?.update(inset: 15)
+      self.newChatBottomConstraint?.update(inset: 40)
     }
     UIView.animate(withDuration: 0.3, animations: {
       self.view.layoutIfNeeded()
@@ -780,7 +785,7 @@ extension UserChatViewController {
     }
     self.isAnimating = true
     
-    let margin = -24 - Metric.newButtonHeight //button height
+    let margin = -40 - Metric.newButtonHeight //button height
     if #available(iOS 11.0, *) {
       self.newChatBottomConstraint?.update(offset: -margin)
     } else {
@@ -1066,19 +1071,27 @@ extension UserChatViewController: ChatDelegate {
   
   func showError() {
     self.chatManager?.didChatLoaded = false
-    self.errorToastView.display(animated: true)
+//    self.errorToastView.display(animated: true)
+    CHNotification.shared.display(
+      message: CHAssets.localized("ch.toast.unstable_internet"),
+      config: CHNotificationConfiguration.warningNormalConfig
+    )
   }
   
   func hideError() {
-    self.errorToastView.dismiss(animated: true)
+    CHNotification.shared.dismiss()
+//    self.errorToastView.dismiss(animated: true)
   }
   
   func readyToDisplay() {
-    self.initDwifft()
     self.hideLoader()
     self.isReadyToDisplay = true
     self.tableView.isHidden = false
-    self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: self.userChat)
+    self.updateViewsBasedOnState(
+      userChat: self.userChat,
+      nextUserChat: self.userChat,
+      channel: self.channel
+    )
   }
 }
 
