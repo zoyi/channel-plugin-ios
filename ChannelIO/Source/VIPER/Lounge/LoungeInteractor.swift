@@ -121,17 +121,6 @@ extension LoungeInteractor: StoreSubscriber {
       self.plugin = state.plugin
       self.infoSignal.accept((state.channel, state.plugin))
     }
-    
-//    if !self.sources.elementsEqual(sources) {
-//
-//    }
-//
-//    self.sourceSignal.accept([])
-//    
-    //if language change update
-    //if channel change update
-    //if plugin change update
-    //if userchats changes update
   }
 }
 

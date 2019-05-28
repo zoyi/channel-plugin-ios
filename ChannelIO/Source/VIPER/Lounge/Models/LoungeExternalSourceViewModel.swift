@@ -32,7 +32,7 @@ struct LoungeExternalSourceModel {
   var type: CHExternalSourceType
   var value: String
   
-  static func generate(with channel: CHChannel, thirdParties: [CHExternalSourceType: String]?) -> [LoungeExternalSourceModel] {
+  static func generate(with channel: CHChannel, plugin: CHPlugin, thirdParties: [CHExternalSourceType: String]?) -> [LoungeExternalSourceModel] {
     var sources: [LoungeExternalSourceModel] = []
     
     if let thirdParties = thirdParties {
@@ -41,7 +41,10 @@ struct LoungeExternalSourceModel {
       }
     }
     
-    sources.append(LoungeExternalSourceModel(type: .link, value: channel.defaultPluginLink))
+    if plugin.id == channel.defaultPluginId {
+      sources.append(LoungeExternalSourceModel(type: .link, value: channel.defaultPluginLink))
+    }
+    
     if let phoneNumber = channel.phoneNumber {
       sources.append(LoungeExternalSourceModel(type: .phone, value: "tel://\(phoneNumber)"))
     }

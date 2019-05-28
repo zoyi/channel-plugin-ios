@@ -31,6 +31,40 @@ class CHNavigationBar: UINavigationBar {
   }
 }
 
+class NavigationRoundLabelBackItem: UIBarButtonItem {
+  convenience init(
+    text: String? = "",
+    textColor: UIColor? = .white,
+    textBackgroundColor: UIColor? = .white,
+    actionHandler: (() -> Void)?) {
+    
+    let button = RoundLabelBackButton(frame: .zero)
+    button.configure(text: text, textColor: textColor, tintColor: textBackgroundColor)
+
+    var defaultWidth: CGFloat = 30
+    if let count = text?.count {
+      if count == 1 {
+        defaultWidth = 38
+      } else if count == 2{
+        defaultWidth = 44
+      } else if count > 2 {
+        defaultWidth = 50
+      }
+    }
+    
+    button.widthAnchor.constraint(equalToConstant: defaultWidth).isActive = true
+    button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    button.translatesAutoresizingMaskIntoConstraints = false
+    
+    self.init(customView: button)
+    //TODO: when set target with touchdown, clickable area is somehow too edge
+    //when do with tap gesture, control event not properly called
+    _ = button.signalForClick().subscribe(onNext: { (_) in
+      actionHandler?()
+    })
+  }
+}
+
 class NavigationItem: UIBarButtonItem {
   public var actionHandler: (() -> Void)?
   
@@ -49,10 +83,7 @@ class NavigationItem: UIBarButtonItem {
     
     button.setTitle(text, for: .normal)
     button.setTitleColor(textColor, for: .normal)
-//    button.titleLabel?.layer.cornerRadius = 15
-//    button.titleLabel?.heightAnchor.constraint(equalToConstant: 30).isActive = true
-//    button.titleLabel?.backgroundColor = textBackgroundColor ?? .white
-//    
+  
     if fitToSize {
       button.sizeToFit()
     }

@@ -247,11 +247,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       }).disposed(by: self.disposeBag)
     
     self.newChatButton.snp.makeConstraints { [weak self] (make) in
-      if #available(iOS 11.0, *) {
-        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-40).constraint
-      } else {
-        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
-      }
+      self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
       make.centerX.equalToSuperview()
       make.height.equalTo(Metric.newButtonHeight)
     }
@@ -263,11 +259,7 @@ final class UserChatViewController: BaseSLKTextViewController {
       }).disposed(by: self.disposeBag)
     
     self.nudgeKeepButton.snp.makeConstraints { [weak self] (make) in
-      if #available(iOS 11.0, *) {
-        self?.newChatBottomConstraint = make.bottom.equalTo((self?.view.safeAreaLayoutGuide.snp.bottom)!).offset(-40).constraint
-      } else {
-        self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
-      }
+      self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
       make.centerX.equalToSuperview()
       make.height.equalTo(Metric.newButtonHeight)
     }
@@ -356,10 +348,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     )
     
     self.initNavigationTitle(with: userChat ?? self.userChat)
-    //self.initNavigationExtension(with: userChat ?? self.userChat)
-//    if let nav = self.navigationController as? MainNavigationController {
-//      nav.newState(state: mainStore.state.plugin)
-//    }
+
+    if let nav = self.navigationController as? MainNavigationController {
+      nav.newState(state: mainStore.state.plugin)
+    }
   }
   
   func initNavigationTitle(with userChat: CHUserChat? = nil) {
@@ -419,14 +411,11 @@ final class UserChatViewController: BaseSLKTextViewController {
     let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
     spacer.width = -16
     
-    let backButton = NavigationItem(
-      image: CHAssets.getImage(named: "back"),
-      text: alert == 0 ? "" : alertCount ,
-      fitToSize: true,
-      alignment: .left,
-      textColor: tintColor,
+    let backButton = NavigationRoundLabelBackItem(
+      text: alert == 0 ? "" : alertCount,
+      textColor: mainStore.state.plugin.bgColor,
+      textBackgroundColor: tintColor,
       actionHandler: { [weak self] in
-        //mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
         _ = self?.navigationController?.popViewController(animated: true)
       })
     
@@ -766,12 +755,8 @@ extension UserChatViewController {
     self.isAnimating = true
     
     self.newChatButton.isHidden = false
+    self.newChatBottomConstraint?.update(inset: 40)
     
-    if #available(iOS 11.0, *) {
-      self.newChatBottomConstraint?.update(offset: -40)
-    } else {
-      self.newChatBottomConstraint?.update(inset: 40)
-    }
     UIView.animate(withDuration: 0.3, animations: {
       self.view.layoutIfNeeded()
     }) { (completed) in
@@ -785,12 +770,7 @@ extension UserChatViewController {
     }
     self.isAnimating = true
     
-    let margin = -40 - Metric.newButtonHeight //button height
-    if #available(iOS 11.0, *) {
-      self.newChatBottomConstraint?.update(offset: -margin)
-    } else {
-      self.newChatBottomConstraint?.update(inset: margin)
-    }
+    self.newChatBottomConstraint?.update(inset: -40 - Metric.newButtonHeight)
     
     UIView.animate(withDuration: 0.3, animations: {
       self.view.layoutIfNeeded()

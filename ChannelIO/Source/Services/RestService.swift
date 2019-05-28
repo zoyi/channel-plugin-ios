@@ -67,9 +67,10 @@ enum RestRouter: URLRequestConvertible {
       return url
     }
   }
-  //#endif
+
   typealias ParametersType = Parameters
   static let queue = DispatchQueue(label: "com.zoyi.channel.restapi", qos: .background, attributes: .concurrent)
+  static let packageName = "com.zoyi.channel.plugin.ios"
   
   var method: HTTPMethod {
     switch self {

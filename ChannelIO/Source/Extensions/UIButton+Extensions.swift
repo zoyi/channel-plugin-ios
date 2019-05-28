@@ -49,7 +49,7 @@ extension UIButton {
   }
 }
 
-extension Reactive where Base: UIButton {
+extension Reactive where Base: UIControl {
   var isHighlighted: Observable<Bool> {
     let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isHighlighted))
     

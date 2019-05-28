@@ -88,7 +88,7 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillAppear(animated)
+    super.viewWillDisappear(animated)
     self.navigationController?.removeShadow()
   }
   
@@ -101,7 +101,7 @@ class ProfileEditorViewController: BaseViewController {
     super.setupConstraints()
     
     let fieldView = self.fieldView as! UIView
-    fieldView.snp.remakeConstraints { [weak self] (make) in
+    fieldView.snp.remakeConstraints { (make) in
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.top.equalToSuperview().inset(38)
@@ -159,7 +159,7 @@ class ProfileEditorViewController: BaseViewController {
       .debounce(1.0, scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (guest, error) in
-        defer { SVProgressHUD.dismiss() } 
+        defer { SVProgressHUD.dismiss() }
         ChannelIO.delegate?.onChangeGuestProfile?(key: key, value: value)
         mainStore.dispatch(UpdateGuest(payload: guest))
         if error == nil {

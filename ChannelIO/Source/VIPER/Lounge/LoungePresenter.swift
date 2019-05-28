@@ -262,8 +262,10 @@ extension LoungePresenter {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (sources) in
-        let sources = LoungeExternalSourceModel
-          .generate(with: mainStore.state.channel, thirdParties: sources)
+        let sources = LoungeExternalSourceModel.generate(
+          with: mainStore.state.channel,
+          plugin: mainStore.state.plugin,
+          thirdParties: sources)
         self?.view?.displayExternalSources(with: sources)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .externalSource)

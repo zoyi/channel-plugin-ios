@@ -95,6 +95,8 @@
 		6512BA3E2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA3D2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift */; };
 		6512BA42227C0EA500757CB2 /* CHThirdPartyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA41227C0EA500757CB2 /* CHThirdPartyApp.swift */; };
 		6512BA6922812C0100757CB2 /* SimpleNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA6822812C0000757CB2 /* SimpleNavigationTitleView.swift */; };
+		6517FC37229CF05C00B64DB4 /* FluidButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6517FC36229CF05C00B64DB4 /* FluidButton.swift */; };
+		6517FC39229CF55E00B64DB4 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6517FC38229CF55E00B64DB4 /* UIView+Extensions.swift */; };
 		651A58871E88E3970042A59F /* countryInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 650D7C311E716DBF007DE358 /* countryInfo.json */; };
 		652AE2111E81485D00B7484C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 652AE2131E81485D00B7484C /* Localizable.strings */; };
 		653516E021DCBE43006AB6C3 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653516DF21DCBE43006AB6C3 /* AppManager.swift */; };
@@ -465,6 +467,8 @@
 		6512BA3D2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeExternalSourceViewModel.swift; sourceTree = "<group>"; };
 		6512BA41227C0EA500757CB2 /* CHThirdPartyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHThirdPartyApp.swift; sourceTree = "<group>"; };
 		6512BA6822812C0000757CB2 /* SimpleNavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleNavigationTitleView.swift; sourceTree = "<group>"; };
+		6517FC36229CF05C00B64DB4 /* FluidButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidButton.swift; sourceTree = "<group>"; };
+		6517FC38229CF55E00B64DB4 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		652AE2121E81485D00B7484C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2141E81485F00B7484C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		652AE2151E81485F00B7484C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1098,6 +1102,7 @@
 				654BFF4A1FD93CC80028D364 /* ReSwift+Extensions.swift */,
 				657AF3F821787E88001EAA7A /* Alamofire+Extensions.swift */,
 				22521459224CFB5B00F2C9CE /* PHAsset+Extensions.swift */,
+				6517FC38229CF55E00B64DB4 /* UIView+Extensions.swift */,
 			);
 			name = Extensions;
 			path = Source/Extensions;
@@ -1296,6 +1301,7 @@
 				659793081FA7167C00840F6A /* BaseTableViewCell.swift */,
 				659793091FA7167C00840F6A /* BaseView.swift */,
 				6597930A1FA7167C00840F6A /* NeverClearView.swift */,
+				6517FC36229CF05C00B64DB4 /* FluidButton.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -1754,6 +1760,7 @@
 				65CB1422206A02F200E456B5 /* LabelCell.swift in Sources */,
 				6597936A1FA716CB00840F6A /* URL+Extensions.swift in Sources */,
 				65CB1431206A02F200E456B5 /* TextInputCell.swift in Sources */,
+				6517FC39229CF55E00B64DB4 /* UIView+Extensions.swift in Sources */,
 				653A6C17206C9BD20048163D /* ChannelIO+Helper.swift in Sources */,
 				6597936B1FA716CB00840F6A /* CHReLogger.swift in Sources */,
 				6597936C1FA716CB00840F6A /* CHAssets.swift in Sources */,
@@ -1912,6 +1919,7 @@
 				6590FA952068C8640054B353 /* UserChatProtocol.swift in Sources */,
 				6512BA0A2271758000757CB2 /* DefaultNavigationTitleView.swift in Sources */,
 				659793BF1FA716CB00840F6A /* CountryCodePickerView.swift in Sources */,
+				6517FC37229CF05C00B64DB4 /* FluidButton.swift in Sources */,
 				659793C31FA716CB00840F6A /* ErrorToastView.swift in Sources */,
 				659EAE7F1FDFC31F00041E1E /* ChatManager.swift in Sources */,
 				659793C41FA716CB00840F6A /* LauncherView.swift in Sources */,
