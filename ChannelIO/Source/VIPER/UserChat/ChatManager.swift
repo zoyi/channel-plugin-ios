@@ -15,6 +15,7 @@ import SVProgressHUD
 import Alamofire
 import AVKit
 import Photos
+import MobileCoreServices
 import TLPhotoPicker
 
 enum ChatElement {
@@ -359,7 +360,7 @@ extension ChatManager {
   }
   
   //from images from albums
-  func sendImages(assets: [PHAsset]) {
+  func sendAssets(assets: [PHAsset]) {
     if self.chatId != "" {
       let messages = self.createMessageForImages(assets: assets)
       self.sendMessageRecursively(allMessages: messages, currentIndex: 0)
@@ -855,15 +856,7 @@ extension ChatManager {
       return true
     }
     
-    if updatedCount < currentCount {
-      return false
-    }
-    
-    if updatedCount > currentCount {
-      return true
-    }
-    
-    return false
+    return !current.elementsEqual(updated)
   }
   
   func profileIsFocus(focus: Bool) {
@@ -1027,7 +1020,7 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     from view: UIViewController?) {
     
     let viewController = TLPhotosPickerViewController(withPHAssets: { [weak self] (assets) in // TLAssets
-      self?.sendImages(assets: assets)
+      self?.sendAssets(assets: assets)
     }, didCancel: nil)
     let configure = TLPhotosPickerConfigure()
     viewController.configure = configure
@@ -1038,14 +1031,48 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
   func presentCameraPicker(from view: UIViewController?) {
     let controller = UIImagePickerController()
     controller.sourceType = .camera
+    controller.allowsEditing = true
+    controller.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
+    controller.videoQuality = .typeMedium
+    controller.videoMaximumDuration = 60
+
     controller.delegate = self
     view?.present(controller, animated: true, completion: nil)
   }
   
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-    let capturedImage = info[.originalImage] as! UIImage
-    self.sendImage(imageData: capturedImage.normalizedImage())
-    picker.dismiss(animated: true, completion: nil)
+    if let image = info[.originalImage] as? UIImage {
+      var placeholderAsset: PHObjectPlaceholder? = nil
+      PHPhotoLibrary.shared().performChanges({
+        let newAssetRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
+        placeholderAsset = newAssetRequest.placeholderForCreatedAsset
+      }, completionHandler: { [weak self] (sucess, error) in
+        if sucess, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
+          guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
+          dispatch {
+            picker.dismiss(animated: true, completion: { [weak self] in
+              self?.sendAssets(assets: [asset])
+            })
+          }
+        }
+      })
+    }
+    else if (info[.mediaType] as? String) == kUTTypeMovie as String {
+      var placeholderAsset: PHObjectPlaceholder? = nil
+      PHPhotoLibrary.shared().performChanges({
+        let newAssetRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: info[.mediaURL] as! URL)
+        placeholderAsset = newAssetRequest?.placeholderForCreatedAsset
+      }) { [weak self] (sucess, error) in
+        if sucess, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
+          guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
+          dispatch {
+            picker.dismiss(animated: true, completion: { [weak self] in
+              self?.sendAssets(assets: [asset])
+            })
+          }
+        }
+      }
+    }
   }
 }
 

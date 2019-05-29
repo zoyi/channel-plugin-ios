@@ -31,7 +31,6 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
   @objc optional func onClickRedirect(url: URL) -> Bool /* notify when a user click on a link */
   @objc optional func onChangeGuestProfile(key: String, value: Any?) -> Void /* notify when the guest profile has been changed */
-  @objc optional func onChangeChannelOperationState(isOperating: Bool) -> Void /* notify when channel operation state has been changed */
 }
 
 @objc

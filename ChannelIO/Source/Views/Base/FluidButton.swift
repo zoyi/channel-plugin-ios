@@ -20,10 +20,6 @@ class RoundLabelBackButton: UIControl {
   }()
   
   private var labelContainer = UIView()
-  private var disposeBag = DisposeBag()
-  
-  private var normalColor: UIColor?
-  private var highlightColor: UIColor?
   
   private var label: UILabel = {
     let label = UILabel()
@@ -31,6 +27,14 @@ class RoundLabelBackButton: UIControl {
     label.textAlignment = .center
     return label
   }()
+  
+  private var disposeBag = DisposeBag()
+  
+  private var normalColor: UIColor?
+  private var highlightColor: UIColor?
+  
+  private var imageCenterXConstraint: Constraint?
+  private var labelLeadingConstraint: Constraint?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -47,14 +51,16 @@ class RoundLabelBackButton: UIControl {
     self.addSubview(self.labelContainer)
     self.labelContainer.addSubview(label)
     
-    self.backImageView.snp.makeConstraints { (make) in
+    self.backImageView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
       make.leading.equalToSuperview()
       make.centerY.equalToSuperview()
+      self.imageCenterXConstraint = make.centerX.equalToSuperview().inset(-4).constraint
     }
     
     self.labelContainer.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
-      make.leading.equalTo(self.backImageView.snp.trailing).offset(4)
+      self.labelLeadingConstraint = make.leading.equalTo(self.backImageView.snp.trailing).offset(4).constraint
       make.trailing.equalToSuperview()
       make.height.equalTo(20)
       make.width.greaterThanOrEqualTo(20)
@@ -103,11 +109,15 @@ class RoundLabelBackButton: UIControl {
       CHColors.black10.withAlphaComponent(0.7) :
       tintColor?.withAlphaComponent(0.7)
     
-    if let text = text {
+    if let text = text, text != "" {
       self.label.text = text
       self.labelContainer.isHidden = false
+      self.labelLeadingConstraint?.activate()
+      self.imageCenterXConstraint?.deactivate()
     } else {
       self.labelContainer.isHidden = true
+      self.labelLeadingConstraint?.deactivate()
+      self.imageCenterXConstraint?.activate()
     }
   }
 }
