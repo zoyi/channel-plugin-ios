@@ -76,7 +76,7 @@ class Mute: NSObject {
   
   /// Mute sound url path
   private static var muteSoundUrl: URL {
-    guard let muteSoundUrl = Bundle(for:self).path(forResource: "mute", ofType: "caf") else {
+    guard let muteSoundUrl = CHAssets.getBundle().path(forResource: "mute", ofType: "caf") else {
       fatalError("mute.caf not found")
     }
     return URL(fileURLWithPath: muteSoundUrl)
