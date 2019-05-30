@@ -18,6 +18,8 @@ enum LoungeSectionType {
 protocol LoungeViewProtocol: class {
   var presenter: LoungePresenterProtocol? { get set }
   
+  func reloadContents()
+  
   func displayReady()
   func displayHeader(with model: LoungeHeaderViewModel)
   func displayMainContent(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?)

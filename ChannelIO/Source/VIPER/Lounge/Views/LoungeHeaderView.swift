@@ -60,7 +60,6 @@ class LoungeHeaderView: BaseView {
   
   let operationTimeLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
-    $0.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.detail")
     $0.alpha = 0.8
     $0.isHidden = true
   }
@@ -99,6 +98,8 @@ class LoungeHeaderView: BaseView {
     $0.frame = CGRect(x: 0, y: 206, width: UIScreen.main.bounds.width, height: 100)
     $0.colors = [CHColors.paleGreyFour.cgColor, CHColors.paleGreyFour0.cgColor]
   }
+  
+  var model: LoungeHeaderViewModel? = nil
   
   let triggerPoint:CGFloat = 0.7
   
@@ -281,7 +282,14 @@ class LoungeHeaderView: BaseView {
     self.followersView.configureDefault()
   }
   
+  func reloadContent() {
+    if let model = self.model {
+      self.configure(model: model)
+    }
+  }
+  
   func configure(model: LoungeHeaderViewModel) {
+    self.model = model
     self.configure(channel: model.chanenl, plugin: model.plugin, followers: model.followers)
   }
   
@@ -298,6 +306,7 @@ class LoungeHeaderView: BaseView {
     self.responseDescriptionLabel.textColor = plugin.textUIColor
     self.responseLabel.textColor = plugin.textUIColor
     self.operationTimeLabel.textColor = plugin.textUIColor
+    self.operationTimeLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.detail")
     
     if channel.working {
       self.responseImageView.image = plugin.textColor == "white" ?

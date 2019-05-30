@@ -15,6 +15,7 @@ class LoungeExternalAppsView: BaseView {
     static let iconSize = 44
     static let sideMargin = 8
   }
+  var models: [LoungeExternalSourceModel] = []
   
   var refreshSignal = PublishRelay<Any?>()
   var clickSignal = PublishRelay<LoungeExternalSourceModel>()
@@ -77,11 +78,16 @@ class LoungeExternalAppsView: BaseView {
     self.refreshButton = refreshButton
   }
   
+  func reloadContent() {
+    self.configure(with: self.models)
+  }
+  
   func configure(with models: [LoungeExternalSourceModel]) {
     for each in self.containerView.subviews {
       each.removeFromSuperview()
     }
     
+    self.models = models
     self.titleLabel.text = CHAssets.localized("ch.integrations.title")
     
     for model in models {

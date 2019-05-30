@@ -61,7 +61,7 @@ class WatermarkView : BaseView {
     }
   }
   
-  func reload() {
+  func reloadContent() {
     self.descLabel.attributedText = CHAssets.localized(
       "ch.watermark",
       attributes: [

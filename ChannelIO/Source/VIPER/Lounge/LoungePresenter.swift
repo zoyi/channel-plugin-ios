@@ -21,8 +21,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
   var errorSignal = PublishSubject<Any?>()
+  var locale: CHLocaleString? = ChannelIO.settings?.appLocale
   
   func viewDidLoad() {
+    self.fetchData()
+    
     CHNotification.shared.refreshSignal
       .subscribe(onNext: { [weak self] (_) in
         self?.fetchData()
@@ -108,6 +111,12 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.needToFetch = false
       self.fetchData()
     }
+    
+    if self.locale != ChannelIO.settings?.appLocale {
+      self.locale = ChannelIO.settings?.appLocale
+      self.view?.reloadContents()
+    }
+    
     self.initObservers()
     self.interactor?.subscribeDataSource()
   }

@@ -60,7 +60,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.isNavigationBarHidden = true
-    self.presenter?.prepare(fetch: true)
+    self.presenter?.prepare(fetch: false)
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -190,10 +190,10 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
 extension LoungeView: UIGestureRecognizerDelegate {
   @objc func tapCheck(_ gesture: UITapGestureRecognizer) {
     if self.headerView.dismissButton.frame.contains(gesture.location(in: self.view)) {
-        self.presenter?.didClickOnDismiss()
+      self.presenter?.didClickOnDismiss()
     }
     else if self.headerView.settingButton.frame.contains(gesture.location(in: self.view)) {
-        self.presenter?.didClickOnSetting(from: self)
+      self.presenter?.didClickOnSetting(from: self)
     }
     else if self.headerView.operationView.frame.contains(gesture.location(in: self.headerView.textContainerView)) &&
       self.headerView.operationView.isHidden == false {
@@ -207,13 +207,19 @@ extension LoungeView: UIGestureRecognizerDelegate {
 }
 
 extension LoungeView {
+  func reloadContents() {
+    self.headerView.reloadContent()
+    self.mainView.reloadContent()
+    self.externalView.reloadContent()
+    self.watermarkView.reloadContent()
+  }
+  
   func displayReady() {
     SVProgressHUD.dismiss()
   }
   
   func displayHeader(with model: LoungeHeaderViewModel) {
     self.headerView.configure(model: model)
-    self.watermarkView.reload()
     self.watermarkView.isHidden = model.plugin.showPoweredBy == false
   }
   

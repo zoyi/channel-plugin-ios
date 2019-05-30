@@ -107,6 +107,10 @@ class LoungeMainView: BaseView {
     self.errorView = errorView
   }
   
+  func reloadContent() {
+    self.configure(with: self.chats, welcomeModel: self.welcomeModel)
+  }
+  
   func configure(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
     self.chats = chats
     self.welcomeModel = welcomeModel
