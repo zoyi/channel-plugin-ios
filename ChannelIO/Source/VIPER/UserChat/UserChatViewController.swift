@@ -58,8 +58,8 @@ final class UserChatViewController: BaseSLKTextViewController {
   var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
   var chatUpdateSubject = PublishSubject<Any?>()
   var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?, Bool)>()
+  var fixedInset: Bool = false
   
-
   var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
@@ -161,8 +161,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   @discardableResult
   func adjustTableViewInset(bottomInset: CGFloat = 0.f) -> Bool {
-    let chatViewHeight = self.tableView.frame.height
+    guard !self.fixedInset else { return false }
     
+    let chatViewHeight = self.tableView.frame.height
     if self.tableView.contentSize.height <= chatViewHeight {
       //NOTE: it shrinks instantly for a sec. But why?
       guard self.tableView.contentSize.height > 40 else { return false }
@@ -554,9 +555,12 @@ extension UserChatViewController: StoreSubscriber {
     }
     else if nextUserChat?.isClosed() == true {
       self.setTextInputbarHidden(true, animated: false)
-      self.adjustTableViewInset(bottomInset: 60.f)
+      if !self.adjustTableViewInset(bottomInset: 60.f) {
+        self.fixedInset = true
+        self.scrollToBottom(false)
+      }
       self.newChatButton.isHidden = false
-      self.scrollToBottom(false)
+
       self.chatBlockView.isHidden = true
     }
     else if nextUserChat?.isNudgeChat() == true {
@@ -566,7 +570,10 @@ extension UserChatViewController: StoreSubscriber {
     }
     else if channel.allowNewChat == false && self.textView.text == "" {
       self.setTextInputbarHidden(true, animated: false)
-      self.adjustTableViewInset(bottomInset: self.chatBlockView.viewHeight())
+      if !self.adjustTableViewInset(bottomInset: self.chatBlockView.viewHeight()) {
+        self.fixedInset = true
+        self.scrollToBottom(false)
+      }
       self.chatBlockView.isHidden = false
     }
     else if nextUserChat?.isSupporting() == true ||
@@ -576,6 +583,7 @@ extension UserChatViewController: StoreSubscriber {
       self.chatBlockView.isHidden = true
     }
     else if !self.chatManager.profileIsFocus {
+      self.fixedInset = false
       self.adjustTableViewInset(bottomInset: 0.f)
       self.chatBlockView.isHidden = true
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)

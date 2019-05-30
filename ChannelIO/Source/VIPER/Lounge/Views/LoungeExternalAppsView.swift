@@ -82,6 +82,8 @@ class LoungeExternalAppsView: BaseView {
       each.removeFromSuperview()
     }
     
+    self.titleLabel.text = CHAssets.localized("ch.integrations.title")
+    
     for model in models {
       let modelView = LoungeExternalAppView()
       modelView.layer.cornerRadius = 22

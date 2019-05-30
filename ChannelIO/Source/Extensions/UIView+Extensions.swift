@@ -32,3 +32,30 @@ extension UIView {
   }
   
 }
+
+extension UIViewController {
+  private static let insetBackgroundViewTag = 98721 //Cool number
+  
+  func paintSafeAreaBottomInset(with color: UIColor?) {
+    guard #available(iOS 11.0, *) else {
+      return
+    }
+    if let insetView = view.viewWithTag(UIViewController.insetBackgroundViewTag) {
+      insetView.backgroundColor = color
+      return
+    }
+    
+    let insetView = UIView(frame: .zero)
+    insetView.tag = UIViewController.insetBackgroundViewTag
+    insetView.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(insetView)
+    view.sendSubviewToBack(insetView)
+    
+    insetView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+    insetView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    insetView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    insetView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    
+    insetView.backgroundColor = color
+  }
+}
