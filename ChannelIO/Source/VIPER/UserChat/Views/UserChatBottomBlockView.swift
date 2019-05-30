@@ -9,6 +9,11 @@
 import Foundation
 
 class UserChatBottomBlockView: BaseView {
+  struct Metric {
+    static let sideMargin = 20.f
+    static let topMargin = 12.f
+  }
+  
   let messageLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 14)
     $0.numberOfLines = 0
@@ -37,10 +42,10 @@ class UserChatBottomBlockView: BaseView {
     }
     
     self.messageLabel.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview().inset(20)
-      make.top.equalToSuperview().inset(12)
-      make.bottom.equalToSuperview().inset(12)
-      make.trailing.equalToSuperview().inset(20)
+      make.leading.equalToSuperview().inset(Metric.sideMargin)
+      make.top.equalToSuperview().inset(Metric.topMargin)
+      make.bottom.equalToSuperview().inset(Metric.topMargin)
+      make.trailing.equalToSuperview().inset(Metric.sideMargin)
     }
   }
   
@@ -50,5 +55,13 @@ class UserChatBottomBlockView: BaseView {
       font: UIFont.systemFont(ofSize: 14),
       color: CHColors.blueyGrey
     )
+  }
+  
+  func viewHeight() -> CGFloat {
+    var height = 0.f
+    height += self.messageLabel.attributedText?.height(
+      fits: UIScreen.main.bounds.width - Metric.sideMargin * 2
+    ) ?? 0
+    return Metric.topMargin * 2 + height
   }
 }

@@ -71,7 +71,7 @@
 "ch.chat.delete_menu_title" = "대화 삭제하기";
 "ch.camera" = "카메라";
 "ch.chat.delete_description" = "채팅방을 삭제하시겠습니까?";
-"ch.chat.empty_description" = "진행중이 상담이 없습니다.";
+"ch.chat.empty_description" = "진행 중인 상담이 없습니다.";
 "ch.button_cancel" = "취소";
 "ch.button_reply" = "답장";
 "ch.settings.my_info" = "내 정보 및 설정";
@@ -149,6 +149,7 @@
 "ch.common.open" = "열기";
 "ch.common.cancel" = "취소";
 "ch.chat.push_bot_like" = "저장 및 대화 시작";
+"ch.error.common.description" = "앗, 내용을 불러오는데 실패했습니다.";
 "ch.lounge.recent_chat" = "최근 상담";
 "ch.integrations.title" = "다른 방법으로 문의";
 "ch.integrations.copy_link.success" = "링크가 복사되었습니다!";

@@ -13,8 +13,9 @@ struct CHButton {
     textColor: UIColor = mainStore.state.plugin.textUIColor,
     backgroundColor: UIColor? = UIColor(mainStore.state.plugin.color),
     borderColor: UIColor? = UIColor(mainStore.state.plugin.borderColor)) -> UIButton {
-    let button = UIButton(type: .system).then {
+    let button = UIButton(type: .custom).then {
       $0.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysTemplate), for: .normal)
+      $0.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysTemplate), for: .highlighted)
       $0.setImage(CHAssets.getImage(named: "newChatDisabled"), for: .disabled)
       $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       
@@ -41,6 +42,20 @@ struct CHButton {
         button.tintColor = !enabled ? CHColors.blueyGrey : textColor
         button.backgroundColor = !enabled ? CHColors.paleGrey20 : backgroundColor
         button.clipsToBounds = !enabled
+      })
+    
+    _ = button.rx.isHighlighted
+      .subscribe(onNext: { (highlight) in
+        if highlight {
+          button.imageView?.alpha = 0.3
+          button.titleLabel?.alpha = 0.3
+        }
+        else {
+          UIView.animate(withDuration: 0.2, animations: {
+            button.imageView?.alpha = 1
+            button.titleLabel?.alpha = 1
+          })
+        }
       })
     return button
   }

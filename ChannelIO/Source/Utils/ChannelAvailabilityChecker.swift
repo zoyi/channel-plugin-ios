@@ -19,7 +19,6 @@ class ChannelAvailabilityChecker {
   private init() {}
   
   func run() {
-    print("availability run!")
     self.timer?.invalidate()
     self.timer = Timer.scheduledTimer(
       timeInterval: 20.0,
@@ -37,8 +36,8 @@ class ChannelAvailabilityChecker {
     let channel = mainStore.state.channel
     let currentTime = Date()
     
+    guard channel.workingType == .custom else { return }
     guard let (nextOpTime, _) = channel.closestWorkingTime(from: currentTime) else { return }
-    print("checker running..")
 
     if nextOpTime > currentTime {
       self.updateSignal.accept(nil)

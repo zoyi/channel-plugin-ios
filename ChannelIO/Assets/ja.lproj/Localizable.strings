@@ -154,6 +154,7 @@
 "ch.common.open" = "オープン";
 "ch.common.cancel" = "キャンセル";
 "ch.chat.push_bot_like" = "いいね";
+"ch.error.common.description" = "おっと、内容の読み込みに失敗しました。";
 "ch.lounge.recent_chat" = "直近の問い合わせ";
 "ch.integrations.title" = "他の方法でお問い合わせ";
 "ch.integrations.copy_link.success" = "クリップボードにコピーされました";

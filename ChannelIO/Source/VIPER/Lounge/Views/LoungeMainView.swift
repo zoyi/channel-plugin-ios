@@ -34,7 +34,6 @@ class LoungeMainView: BaseView {
     $0.register(cellType: UserChatCell.self)
   }
   
-  var footerView: LoungeTableFooterView = LoungeTableFooterView()
   var errorView: LoungeMainErrorView?
   
   var welcomeModel: UserChatCellModel?
@@ -77,10 +76,6 @@ class LoungeMainView: BaseView {
     self.tableView.layer.cornerRadius = 16
     self.tableView.delegate = self
     self.tableView.dataSource = self
-    
-    self.footerView.newChatSignal
-      .bind(to: self.newSignal)
-      .disposed(by: self.disposeBag)
     
     self.addSubview(self.tableView)
   }
@@ -153,8 +148,12 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-    self.footerView.newChatButton.isEnabled = mainStore.state.channel.working
-    return self.footerView
+    let view = LoungeMainFooterView()
+    view.newChatButton.isEnabled = mainStore.state.channel.working
+    view.newChatSignal
+      .bind(to: self.newSignal)
+      .disposed(by: self.disposeBag)
+    return view
   }
   
   func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -162,7 +161,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    let view = LoungeTableHeaderView()
+    let view = LoungeMainHeaderView()
     view.configure(guest: mainStore.state.guest, chatModels: self.chats)
     view.moreSignal
       .bind(to: self.moreSignal)
@@ -201,104 +200,5 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       self.newSignal.accept(nil)
     }
     tableView.deselectRow(at: indexPath, animated: true)
-  }
-}
-
-class LoungeTableHeaderView: BaseView {
-  let recentLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.blueyGrey
-    $0.text = CHAssets.localized("ch.lounge.recent_chat")
-  }
-  let alertCountLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.warmPink
-  }
-  let seeMoreLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.charcoalGrey
-    $0.text = CHAssets.localized("ch.lounge.see_all")
-  }
-  
-  var moreSignal = PublishRelay<Any?>()
-  var disposeBag = DisposeBag()
-  
-  override func initialize() {
-    super.initialize()
-    
-    self.addSubview(self.recentLabel)
-    self.addSubview(self.alertCountLabel)
-    self.addSubview(self.seeMoreLabel)
-    self.seeMoreLabel.signalForClick()
-      .bind(to: self.moreSignal)
-      .disposed(by: self.disposeBag)
-  }
-  
-  override func setLayouts() {
-    super.setLayouts()
-    
-    self.recentLabel.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview().inset(16)
-      make.top.equalToSuperview().inset(12)
-    }
-    
-    self.seeMoreLabel.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
-      make.centerY.equalTo(self.recentLabel.snp.centerY)
-      make.trailing.equalToSuperview().inset(16)
-    }
-    
-    self.alertCountLabel.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
-      make.centerY.equalTo(self.recentLabel.snp.centerY)
-      make.trailing.equalTo(self.seeMoreLabel.snp.leading).offset(-5)
-    }
-  }
-  
-  func configure(guest: CHGuest, chatModels: [UserChatCellModel]) {
-    guard let guestAlert = guest.alert else { return }
-    
-    if chatModels.count > 3 {
-      let displayAlertCounts = chatModels[0...2]
-        .map { $0.badgeCount }
-        .reduce(0) { (result, next) in
-          return result + next
-      }
-      let restCount = guestAlert - displayAlertCounts
-      
-      self.seeMoreLabel.font = restCount > 0 ?
-        UIFont.boldSystemFont(ofSize: 13) :
-        UIFont.systemFont(ofSize: 13)
-      
-      self.alertCountLabel.text = "\(guestAlert - displayAlertCounts)"
-      self.alertCountLabel.isHidden = restCount <= 0
-    } else {
-      self.seeMoreLabel.isHidden = true
-    }
-  }
-}
-
-class LoungeTableFooterView: BaseView {
-  let newChatButton = CHButton.newChat()
-  
-  let newChatSignal = PublishRelay<Any?>()
-  var disposeBag = DisposeBag()
-  
-  override func initialize() {
-    super.initialize()
-    self.addSubview(self.newChatButton)
-    
-    self.newChatButton.signalForClick()
-      .bind(to: self.newChatSignal)
-      .disposed(by: self.disposeBag)
-  }
-  
-  override func setLayouts() {
-    super.setLayouts()
-    self.newChatButton.snp.makeConstraints { (make) in
-      make.centerX.equalToSuperview()
-      make.top.equalToSuperview().inset(10)
-      make.height.equalTo(46)
-    }
   }
 }

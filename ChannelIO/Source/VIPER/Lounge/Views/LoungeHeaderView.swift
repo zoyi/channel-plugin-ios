@@ -60,7 +60,7 @@ class LoungeHeaderView: BaseView {
   
   let operationTimeLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
-    $0.text = CHAssets.localized("ch.out_of_work.confirm")
+    $0.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working.detail")
     $0.alpha = 0.8
     $0.isHidden = true
   }
@@ -298,7 +298,6 @@ class LoungeHeaderView: BaseView {
     self.responseDescriptionLabel.textColor = plugin.textUIColor
     self.responseLabel.textColor = plugin.textUIColor
     self.operationTimeLabel.textColor = plugin.textUIColor
-    self.operationTimeLabel.text = CHAssets.localized("ch.out_of_work.confirm")
     
     if channel.working {
       self.responseImageView.image = plugin.textColor == "white" ?
@@ -310,19 +309,28 @@ class LoungeHeaderView: BaseView {
       
       self.followersView.isHidden = false
       self.offlineImageView.isHidden = true
-      self.operationView.isHidden = false
-      self.operationTimeLabel.alpha = 0.7
-      self.helpImageView.alpha = 0.7
       
-      self.responseDescConstraint?.deactivate()
-      self.opertionTopConstraint?.activate()
+      if channel.workingType == .custom {
+        self.operationView.isHidden = false
+        self.operationTimeLabel.alpha = 0.7
+        self.helpImageView.alpha = 0.7
+        self.responseDescConstraint?.deactivate()
+        self.opertionTopConstraint?.activate()
+      } else {
+        self.operationView.isHidden = true
+        self.responseDescConstraint?.activate()
+        self.opertionTopConstraint?.deactivate()
+      }
     } else {
       self.responseImageView.image = plugin.textColor == "white" ?
         CHAssets.getImage(named: "offhoursW") :
         CHAssets.getImage(named: "offhoursB")
       
       self.responseLabel.text = CHAssets.localized("ch.chat.expect_response_delay.out_of_working")
-      if let (_, timeLeft) = channel.closestWorkingTime(from: Date()) {
+      self.followersView.isHidden = true
+      self.offlineImageView.isHidden = false
+      
+      if let (_, timeLeft) = channel.closestWorkingTime(from: Date()), channel.workingType == .custom {
         self.responseDescriptionLabel.text = timeLeft > 60 ?
           String(format: CHAssets.localized("ch.navigation.next_operation.hour_left"), timeLeft / 60) :
           String(format: CHAssets.localized("ch.navigation.next_operation.minutes_left"), max(1, timeLeft))
@@ -340,9 +348,6 @@ class LoungeHeaderView: BaseView {
         self.responseDescConstraint?.activate()
         self.opertionTopConstraint?.deactivate()
       }
-      
-      self.followersView.isHidden = true
-      self.offlineImageView.isHidden = false
     }
   }
   

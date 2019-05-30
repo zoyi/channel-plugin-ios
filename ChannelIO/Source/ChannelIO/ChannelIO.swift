@@ -26,7 +26,7 @@ internal func dlog(_ str: String) {
 public protocol ChannelPluginDelegate: class {
   @objc optional func onChangeBadge(count: Int) -> Void /* notify badge count when changed */
   @objc optional func onClickChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
-  @objc optional func willShowMessenger() -> Void /* no                                              tify when chat list is about to show */
+  @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
   @objc optional func onClickRedirect(url: URL) -> Bool /* notify when a user click on a link */

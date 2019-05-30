@@ -191,8 +191,4 @@ private class CHNotificationView: BaseView {
       self?.alpha = 1
     }
   }
-  
-  func animateRefresh() {
-    
-  }
 }

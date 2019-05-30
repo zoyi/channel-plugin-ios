@@ -42,19 +42,18 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         )
       }).disposed(by: self.disposeBag)
     
-    self.interactor?.updateExternalSource()
-      .observeOn(MainScheduler.instance)
-      .debounce(1, scheduler: MainScheduler.instance)
-      .subscribe(onNext: { (sources) in
-        //
-        //    let sources = LoungeExternalSourceModel
-        //      .generate(with: mainStore.state.channel, thirdparties: [])
-        //    self?.view?.displayExternalSources(with: sources)
-      }).disposed(by: self.disposeBag)
+//    self.interactor?.updateExternalSource()
+//      .observeOn(MainScheduler.instance)
+//      .debounce(1, scheduler: MainScheduler.instance)
+//      .subscribe(onNext: { (sources) in
+//        let sources = LoungeExternalSourceModel
+//          .generate(with: mainStore.state.channel, thirdparties: [])
+//        self?.view?.displayExternalSources(with: sources)
+//      }).disposed(by: self.disposeBag)
     
     self.interactor?.updateGeneralInfo()
       .observeOn(MainScheduler.instance)
-      .debounce(1, scheduler: MainScheduler.instance)
+      .debounce(0.5, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, plugin) in
         //NOTE: check if entities have been changed
         let followers = mainStore.state.managersState.followingManagers
@@ -81,12 +80,9 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     self.interactor?.updateChats()
       .observeOn(MainScheduler.instance)
-      .debounce(1, scheduler: MainScheduler.instance)
+      .debounce(0.5, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats) in
         guard let `self` = self else { return }
-        //guard !chats.elementsEqual(self.chats) else { return }
-        //userchat has been change
-        //welcome message has been changed
         let models = chats.map { UserChatCellModel(userChat: $0) }
         self.view?.displayMainContent(
           with: models,
@@ -109,7 +105,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.needToFetch = false
       self.fetchData()
     }
-    self.initTemporaryObservers()
+    self.initObservers()
     self.interactor?.subscribeDataSource()
   }
   
@@ -118,7 +114,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     self.interactor?.unsubscribeDataSource()
   }
   
-  func initTemporaryObservers() {
+  func initObservers() {
     ChannelAvailabilityChecker.shared.updateSignal
       .observeOn(MainScheduler.instance)
       .flatMap({ [weak self] (_) -> Observable<CHChannel> in
@@ -148,7 +144,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
             with: mainStore.state.channel,
             guest: mainStore.state.guest,
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-        ))
+          ))
       }).disposed(by: self.notiDisposeBag)
   }
   

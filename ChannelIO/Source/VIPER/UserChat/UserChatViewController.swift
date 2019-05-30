@@ -457,7 +457,7 @@ extension UserChatViewController: StoreSubscriber {
     let userChat = userChatSelector(state: state, userChatId: self.userChatId)
     
     self.navigationUpdateSubject.onNext((state, userChat, shouldUpdate))
-    self.updateViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat, channel: state.channel)
+    self.updateInputViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat, channel: state.channel)
     self.showErrorIfNeeded(state: state)
     self.chatUpdateSubject.onNext(nil)
     
@@ -537,7 +537,10 @@ extension UserChatViewController: StoreSubscriber {
     }
   }
   
-  func updateViewsBasedOnState(userChat: CHUserChat?, nextUserChat: CHUserChat?, channel: CHChannel) {
+  func updateInputViewsBasedOnState(
+    userChat: CHUserChat?,
+    nextUserChat: CHUserChat?,
+    channel: CHChannel) {
     guard self.isReadyToDisplay else { return }
     
     if let isNudgeChat = userChat?.isNudgeChat(), isNudgeChat {
@@ -563,7 +566,7 @@ extension UserChatViewController: StoreSubscriber {
     }
     else if channel.allowNewChat == false && self.textView.text == "" {
       self.setTextInputbarHidden(true, animated: false)
-      self.adjustTableViewInset(bottomInset: 60.f)
+      self.adjustTableViewInset(bottomInset: self.chatBlockView.viewHeight())
       self.chatBlockView.isHidden = false
     }
     else if nextUserChat?.isSupporting() == true ||
@@ -841,7 +844,6 @@ extension UserChatViewController {
     }
   }
 
-  //TODO: do for animation, remove Dwifft and refactor chatviewcontroller
   override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) { }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -1051,7 +1053,6 @@ extension UserChatViewController: ChatDelegate {
   
   func showError() {
     self.chatManager?.didChatLoaded = false
-//    self.errorToastView.display(animated: true)
     CHNotification.shared.display(
       message: CHAssets.localized("ch.toast.unstable_internet"),
       config: CHNotificationConfiguration.warningNormalConfig
@@ -1060,14 +1061,13 @@ extension UserChatViewController: ChatDelegate {
   
   func hideError() {
     CHNotification.shared.dismiss()
-//    self.errorToastView.dismiss(animated: true)
   }
   
   func readyToDisplay() {
     self.hideLoader()
     self.isReadyToDisplay = true
     self.tableView.isHidden = false
-    self.updateViewsBasedOnState(
+    self.updateInputViewsBasedOnState(
       userChat: self.userChat,
       nextUserChat: self.userChat,
       channel: self.channel
