@@ -153,7 +153,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
     let view = LoungeMainFooterView()
-    view.newChatButton.isEnabled = mainStore.state.channel.working
+    view.newChatButton.isEnabled = mainStore.state.channel.allowNewChat
     view.newChatSignal
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)

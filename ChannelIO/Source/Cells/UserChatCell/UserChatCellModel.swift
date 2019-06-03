@@ -53,7 +53,7 @@ struct UserChatCellModel: UserChatCellModelType {
   
   static func welcome(with channel: CHChannel, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
     var model = UserChatCellModel()
-    model.avatar = channel
+    model.avatar = defaultBotSelector(state: mainStore.state)
     model.title = channel.name
     model.lastMessage = supportBotMessage?.messageV2?.string ?? guest.getWelcome()
     model.isBadgeHidden = true

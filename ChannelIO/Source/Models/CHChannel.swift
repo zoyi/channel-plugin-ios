@@ -151,9 +151,7 @@ extension CHChannel {
   
   //return closest weekday and time left in minutes
   func closestWorkingTime(from date: Date) -> (nextTime: Date, timeLeft: Int)? {
-    if self.workingType == .never && self.awayOption == .disabled {
-      return nil
-    }
+    guard self.workingType == .custom else { return nil }
     guard let workingTime = self.workingTime else { return nil }
     
     var workingTimes = DateUtils.emptyArrayWithWeekday()

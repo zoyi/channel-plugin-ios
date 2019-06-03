@@ -23,7 +23,7 @@ func personSelector(state: AppState, personType: String?, personId: String?) -> 
   return state.channel
 }
 
-func botSelector(state: AppState) -> CHBot? {
+func defaultBotSelector(state: AppState) -> CHBot? {
   return state.botsState.findDefaultBot().map({ (bot) in
     return CHBot(
       id: bot.id,

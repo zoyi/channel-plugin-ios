@@ -24,7 +24,7 @@ class AvatarView: NeverClearView {
   }
 
   // MARK: Properties
-  let avatarImageView = UIImageView().then {
+  let avatarImageView = FLAnimatedImageView().then {
     $0.clipsToBounds = true
     $0.backgroundColor = UIColor.white
   }
