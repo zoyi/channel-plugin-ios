@@ -161,7 +161,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   @discardableResult
   func adjustTableViewInset(bottomInset: CGFloat = 0.f) -> Bool {
-    guard !self.fixedInset else { return false }
+    
     
     let chatViewHeight = self.tableView.frame.height
     if self.tableView.contentSize.height <= chatViewHeight {
@@ -172,6 +172,8 @@ final class UserChatViewController: BaseSLKTextViewController {
       self.tableView.contentInset = currInset
       return true
     } else {
+      guard !self.fixedInset else { return false }
+      
       self.tableView.contentInset = UIEdgeInsets(
         top: bottomInset,
         left: 0,

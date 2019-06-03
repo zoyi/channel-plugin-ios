@@ -146,14 +146,10 @@ extension ChannelIO {
       if let userChatViewController = topController as? UserChatViewController {
         if userChatViewController.userChatId != userChatId {
           userChatViewController.navigationController?.popToRootViewController(animated: true, completion: {
-//            if let userChatsController = CHUtils.getTopController() as? UserChatsViewController {
-//              userChatsController.showUserChat(userChatId: userChatId)
-//            }
             if let loungeView = CHUtils.getTopController() as? LoungeView,
               let presenter = loungeView.presenter as? LoungePresenter,
               let router = presenter.router {
-              router.pushChat(with: userChatId, from: loungeView)
-//              loungeView.presenter?.didClickOnChat(with: userChatId, from: loungeView)
+              router.pushChat(with: userChatId, animated: animated, from: loungeView)
             }
           })
         }
@@ -164,16 +160,10 @@ extension ChannelIO {
       }
       //no channel views
       else {
-        let userChatsController = UserChatsViewController()
-        userChatsController.showNewChat = userChatId == nil
-        userChatsController.shouldHideTable = true
-        if let userChatId = userChatId {
-          userChatsController.goToUserChatId = userChatId
-        }
-
-        let controller = MainNavigationController(rootViewController: userChatsController)
+        let loungeView = LoungeRouter.createModule(with: userChatId)
+        let controller = MainNavigationController(rootViewController: loungeView)
         ChannelIO.baseNavigation = controller
-      
+        
         topController.present(controller, animated: animated, completion: nil)
       }
     }

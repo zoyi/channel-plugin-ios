@@ -43,7 +43,7 @@ protocol LoungePresenterProtocol: class {
   func didClickOnRefresh(for type: LoungeSectionType)
   func didClickOnSetting(from view: UIViewController?)
   func didClickOnDismiss()
-  func didClickOnChat(with chatId: String?, from view: UIViewController?)
+  func didClickOnChat(with chatId: String?, animated:Bool, from view: UIViewController?)
   func didClickOnNewChat(from view: UIViewController?)
   func didClickOnSeeMoreChat(from view: UIViewController?)
   func didClickOnHelp(from view: UIViewController?)
@@ -73,7 +73,7 @@ protocol LoungeInteractorProtocol: class {
 
 protocol LoungeRouterProtocol: class {
   func pushChatList(from view: UIViewController?)
-  func pushChat(with chatId: String?, from view: UIViewController?)
+  func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?)
   func pushSettings(from view: UIViewController?)
   
   func presentBusinessHours(from view: UIViewController?)

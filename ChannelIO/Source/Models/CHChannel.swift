@@ -219,7 +219,9 @@ extension CHChannel: Equatable {
       lhs.textColor == rhs.textColor &&
       lhs.expectedResponseDelay == rhs.expectedResponseDelay &&
       lhs.messengerPlan == lhs.messengerPlan &&
-      lhs.trial == rhs.trial
+      lhs.trial == rhs.trial &&
+      lhs.awayOption == rhs.awayOption &&
+      lhs.workingType == rhs.workingType
   }
 }
 

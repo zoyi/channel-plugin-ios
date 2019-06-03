@@ -8,6 +8,7 @@
 
 import RxSwift
 import RxSwiftExt
+import RxCocoa
 
 class LoungePresenter: NSObject, LoungePresenterProtocol {
   weak var view: LoungeViewProtocol?
@@ -20,7 +21,13 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
+  
   var errorSignal = PublishSubject<Any?>()
+  
+  var headerCompletion = PublishRelay<Any?>()
+  var mainCompletion = PublishRelay<Any?>()
+  var externalCompletion = PublishRelay<Any?>()
+  
   var locale: CHLocaleString? = ChannelIO.settings?.appLocale
   
   func viewDidLoad() {
@@ -112,6 +119,14 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.fetchData()
     }
     
+    //handle showUserChat
+    if let chatId = chatId, let view = self.view as? UIViewController {
+      self.didClickOnChat(with: chatId, animated: false, from: view)
+      self.chatId = nil
+    } else {
+      self.view?.displayReady()
+    }
+    
     if self.locale != ChannelIO.settings?.appLocale {
       self.locale = ChannelIO.settings?.appLocale
       self.view?.reloadContents()
@@ -158,6 +173,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))
       }).disposed(by: self.notiDisposeBag)
+    
+    Observable.combineLatest(self.headerCompletion, self.mainCompletion, self.externalCompletion)
+      .subscribe(onNext: { [weak self] (_, _, _) in
+        self?.view?.displayReady()
+      }).disposed(by: self.disposeBag)
   }
   
   func didClickOnRefresh(for type: LoungeSectionType) {
@@ -180,12 +200,12 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     ChannelIO.close(animated: true)
   }
   
-  func didClickOnChat(with chatId: String?, from view: UIViewController?) {
-    self.router?.pushChat(with: chatId, from: view)
+  func didClickOnChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
+    self.router?.pushChat(with: chatId, animated: animated, from: view)
   }
   
   func didClickOnNewChat(from view: UIViewController?) {
-    self.router?.pushChat(with: nil, from: view)
+    self.router?.pushChat(with: nil, animated: true, from: view)
   }
   
   func didClickOnSeeMoreChat(from view: UIViewController?) {
@@ -245,6 +265,7 @@ extension LoungePresenter {
           followers: followers
         )
         self?.view?.displayHeader(with: headerModel)
+        self?.mainCompletion.accept(nil)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .header)
       }).disposed(by: self.disposeBag)
@@ -268,6 +289,7 @@ extension LoungePresenter {
             guest: mainStore.state.guest,
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))
+        self?.mainCompletion.accept(nil)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .mainContent)
       }).disposed(by: self.disposeBag)
@@ -289,6 +311,7 @@ extension LoungePresenter {
           thirdParties: sources)
         self?.externalSources = sources
         self?.view?.displayExternalSources(with: sources)
+        self?.externalCompletion.accept(nil)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .externalSource)
       }).disposed(by: self.disposeBag)

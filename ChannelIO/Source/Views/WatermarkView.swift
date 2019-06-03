@@ -19,12 +19,12 @@ class WatermarkView : BaseView {
     $0.attributedText = CHAssets.localized(
       "ch.watermark",
       attributes: [
-        .foregroundColor: CHColors.blueyGrey,
+        .foregroundColor: CHColors.dark,
         .font: UIFont.systemFont(ofSize: 11)
       ],
       tagAttributes: [
         StringTagType.bold:[
-          .foregroundColor: CHColors.blueyGrey,
+          .foregroundColor: CHColors.dark,
           .font: UIFont.boldSystemFont(ofSize: 11)
         ]
       ])

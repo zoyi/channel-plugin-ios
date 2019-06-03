@@ -15,7 +15,7 @@ import MessageUI
 class LoungeRouter: NSObject, LoungeRouterProtocol {
   var disposeBag = DisposeBag()
   
-  func pushChat(with chatId: String?, from view: UIViewController?) {
+  func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
     let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
     let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: chatId == nil)
    
@@ -26,7 +26,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     
     chatView.signalForNewChat().subscribe(onNext: { [weak self] (_) in
       view?.navigationController?.popViewController(animated: true, completion: {
-        self?.pushChat(with: nil, from: view)
+        self?.pushChat(with: nil, animated: true, from: view)
       })
     }).disposed(by: self.disposeBag)
     
@@ -44,7 +44,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
         }
         SVProgressHUD.dismiss()
         
-        view?.navigationController?.pushViewController(chatView, animated: true)
+        view?.navigationController?.pushViewController(chatView, animated: animated)
       }, onError: { (error) in
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)

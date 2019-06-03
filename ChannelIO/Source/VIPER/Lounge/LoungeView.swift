@@ -40,7 +40,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
+    self.view.isHidden = true
     self.view.backgroundColor = .white
     
     self.initViews()
@@ -142,7 +143,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.view.addSubview(self.scrollView)
     self.scrollView.addSubview(self.mainView)
     self.mainView.signalForChat().subscribe(onNext: { [weak self] (chat) in
-      self?.presenter?.didClickOnChat(with: chat.chatId, from: self)
+      self?.presenter?.didClickOnChat(with: chat.chatId, animated: true, from: self)
     }).disposed(by: self.disposeBag)
     self.mainView.signalForNew().subscribe(onNext: { [weak self] (_) in
       self?.presenter?.didClickOnNewChat(from: self)
@@ -215,6 +216,7 @@ extension LoungeView {
   }
   
   func displayReady() {
+    self.view.isHidden = false
     SVProgressHUD.dismiss()
   }
   

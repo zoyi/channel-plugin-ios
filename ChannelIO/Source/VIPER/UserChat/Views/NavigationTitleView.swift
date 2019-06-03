@@ -144,6 +144,7 @@ class ChatNavigationFollowingTitleView : BaseView {
       guard let `self` = self else { return }
       make.leading.equalTo(self.hostView.snp.trailing).offset(5)
       make.centerY.equalToSuperview()
+      make.trailing.equalToSuperview()
     }
   }
   
