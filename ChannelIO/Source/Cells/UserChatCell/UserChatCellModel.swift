@@ -33,7 +33,7 @@ struct UserChatCellModel: UserChatCellModelType {
   
   init(userChat: CHUserChat) {
     self.chatId = userChat.id
-    self.title = userChat.name
+    
     if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
     } else if let msg = userChat.lastMessage?.messageV2?.string, msg != "" {
@@ -43,18 +43,23 @@ struct UserChatCellModel: UserChatCellModelType {
     } else {
       self.lastMessage = userChat.lastMessage?.message ?? ""
     }
-
+    
+    let avatar: CHEntity? = defaultBotSelector(state: mainStore.state) ?? mainStore.state.channel
+    let title = avatar?.name ?? CHAssets.localized("ch.unknown")
+    
+    self.title = userChat.lastTalkedHost?.name ?? title
     self.timestamp = userChat.readableUpdatedAt
-    self.avatar = userChat.lastTalkedHost ?? mainStore.state.channel
+    self.avatar = userChat.lastTalkedHost ?? avatar
     self.badgeCount = userChat.session?.alert ?? 0
     self.isBadgeHidden = self.badgeCount == 0
     self.isClosed = userChat.isClosed()
   }
   
-  static func welcome(with channel: CHChannel, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
+  static func welcome(with plugin: CHPlugin, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
     var model = UserChatCellModel()
-    model.avatar = defaultBotSelector(state: mainStore.state)
-    model.title = channel.name
+    let bot = botSelector(state: mainStore.state, botName: plugin.botName)
+    model.avatar = bot ?? mainStore.state.channel
+    model.title = bot?.name ?? mainStore.state.channel.name
     model.lastMessage = supportBotMessage?.messageV2?.string ?? guest.getWelcome()
     model.isBadgeHidden = true
     model.badgeCount = 0

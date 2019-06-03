@@ -30,7 +30,11 @@ struct LauncherViewModel: LauncherViewModelType {
     let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
     
     self.badge = guest?.alert ?? 0
-    self.gradientColors = plugin.gradientColors
+    self.gradientColors = [
+      self.bgColor.cgColor,
+      self.bgColor.cgColor,
+      gradientColor.cgColor
+    ]
     
     if self.badge == 0 {
       self.launchIcon = plugin.textColor == "white" ?

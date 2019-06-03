@@ -39,6 +39,7 @@ protocol LoungePresenterProtocol: class {
   func prepare(fetch: Bool)
   func cleanup()
   
+  func didClickOnDelete(chatId: String?)
   func didClickOnRefresh(for type: LoungeSectionType)
   func didClickOnSetting(from view: UIViewController?)
   func didClickOnDismiss()
@@ -61,6 +62,7 @@ protocol LoungeInteractorProtocol: class {
   func updateGeneralInfo() -> Observable<(CHChannel, CHPlugin)>
   func updateExternalSource() -> Observable<[Any]>
   
+  func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat>
   func getChannel() -> Observable<CHChannel>
   func getPlugin() -> Observable<(CHPlugin, CHBot?)>
   func getFollowers() -> Observable<[CHManager]>

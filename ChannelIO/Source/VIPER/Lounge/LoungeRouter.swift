@@ -105,6 +105,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     let router = LoungeRouter()
     
     view.presenter = presenter
+    view.mainView.presenter = presenter
     
     presenter.view = view
     presenter.interactor = interactor

@@ -10,6 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import SnapKit
+import MGSwipeTableCell
 
 class LoungeMainView: BaseView {
   struct Metric {
@@ -26,7 +27,7 @@ class LoungeMainView: BaseView {
     static let footerHeight = 70.f
   }
   
-  weak var presenter: LoungePresenter?
+  weak var presenter: LoungePresenterProtocol?
   
   let tableView = UITableView().then {
     $0.isScrollEnabled = false
@@ -183,6 +184,21 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       let model = self.chats[indexPath.row]
       cell.configure(model)
       cell.messageLabel.numberOfLines = Constant.maxNumberOfLines
+      
+      let button = MGSwipeButton(
+        title: CHAssets.localized("ch.chat.delete"),
+        backgroundColor: CHColors.warmPink,
+        insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10)
+      )
+      
+      button.buttonWidth = 70
+      button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+      cell.rightButtons = [
+        button
+      ]
+      cell.rightSwipeSettings.transition = .drag
+      cell.tintColor = CHColors.warmPink
+      cell.delegate = self
       return cell
     }
     
@@ -206,3 +222,18 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
     tableView.deselectRow(at: indexPath, animated: true)
   }
 }
+
+
+extension LoungeMainView: MGSwipeTableCellDelegate {
+  func swipeTableCell(
+    _ cell: MGSwipeTableCell,
+    tappedButtonAt index: Int,
+    direction: MGSwipeDirection,
+    fromExpansion: Bool) -> Bool {
+    
+    guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
+    self.presenter?.didClickOnDelete(chatId: self.chats[indexPath.row].chatId)
+    return true
+  }
+}
+

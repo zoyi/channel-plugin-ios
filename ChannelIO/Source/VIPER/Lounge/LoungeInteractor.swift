@@ -87,6 +87,23 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     })
   }
   
+  func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat> {
+    return Observable.create { subscribe in
+      
+      let observe = userChat.remove()
+        .subscribe(onNext: { (_) in
+          subscribe.onNext(userChat)
+          subscribe.onCompleted()
+        }, onError: { (error) in
+          subscribe.onError(error)
+        })
+      
+      return Disposables.create() {
+        observe.dispose()
+      }
+    }
+  }
+  
   func updateChats() -> Observable<[CHUserChat]> {
     return self.chatSignal.asObservable()
   }

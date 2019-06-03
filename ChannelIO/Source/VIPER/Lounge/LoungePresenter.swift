@@ -78,10 +78,10 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         self?.view?.displayMainContent(
           with: models,
           welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.channel,
+            with: mainStore.state.plugin,
             guest: mainStore.state.guest,
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-        ))
+          ))
       }).disposed(by: self.disposeBag)
     
     self.interactor?.updateChats()
@@ -93,7 +93,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         self.view?.displayMainContent(
           with: models,
           welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.channel,
+            with: mainStore.state.plugin,
             guest: mainStore.state.guest,
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))
@@ -153,7 +153,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         self.view?.displayMainContent(
           with: models,
           welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.channel,
+            with: mainStore.state.plugin,
             guest: mainStore.state.guest,
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))
@@ -198,6 +198,19 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   func didClickOnExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
     self.router?.presentExternalSource(with: source, from: view)
+  }
+  
+  func didClickOnDelete(chatId: String?) {
+    guard
+      let userChat = userChatSelector(state: mainStore.state, userChatId: chatId),
+      let interactor = self.interactor else { return }
+    
+    interactor.deleteChat(userChat: userChat)
+      .subscribe(onNext: { (chat) in
+        mainStore.dispatch(DeleteUserChat(payload: userChat))
+      }, onError: { (error) in
+        
+      }).disposed(by: self.disposeBag)
   }
   
   func didClickOnWatermark() {
@@ -251,7 +264,7 @@ extension LoungePresenter {
         self?.view?.displayMainContent(
           with: models,
           welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.channel,
+            with: mainStore.state.plugin,
             guest: mainStore.state.guest,
             supportBotMessage: supportBotEntrySelector(state: mainStore.state)
           ))

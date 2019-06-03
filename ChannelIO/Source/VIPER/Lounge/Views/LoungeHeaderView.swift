@@ -45,7 +45,6 @@ class LoungeHeaderView: BaseView {
   
   let responseLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 14)
-    $0.alpha = 0.8
   }
   
   let responseImageView = UIImageView()
@@ -111,7 +110,6 @@ class LoungeHeaderView: BaseView {
   var opertionTopConstraint: Constraint?
   
   var disposeBag = DisposeBag()
-  
   
   override func initialize() {
     super.initialize()

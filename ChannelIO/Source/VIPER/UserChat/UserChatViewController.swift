@@ -165,11 +165,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     let chatViewHeight = self.tableView.frame.height
     if self.tableView.contentSize.height <= chatViewHeight {
-      //NOTE: it shrinks instantly for a sec. But why?
       guard self.tableView.contentSize.height > 40 else { return false }
       var currInset = self.tableView.contentInset
       currInset.top = chatViewHeight - self.tableView.contentSize.height
-      print("top: \(currInset.top)")
+
       self.tableView.contentInset = currInset
       return true
     } else {
