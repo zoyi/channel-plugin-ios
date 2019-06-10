@@ -32,7 +32,7 @@ class WatermarkView : BaseView {
   
   override func initialize() {
     super.initialize()
-    self.backgroundColor = UIColor.clear
+    self.backgroundColor = CHColors.paleGreyFour
     self.contentView.backgroundColor = UIColor.clear
     
     self.contentView.addSubview(self.brandImageview)

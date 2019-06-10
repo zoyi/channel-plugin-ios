@@ -88,13 +88,13 @@ class LoungeHeaderView: BaseView {
   let bgView = CAGradientLayer().then {
     $0.startPoint = CAGradientLayer.Point.topLeft.value
     $0.endPoint = CAGradientLayer.Point.bottomRight.value
-    $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 306)
+    $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 270)
   }
   
   let bottomBgView = CAGradientLayer().then {
     $0.startPoint = CAGradientLayer.Point.bottom.value
     $0.endPoint = CAGradientLayer.Point.top.value
-    $0.frame = CGRect(x: 0, y: 206, width: UIScreen.main.bounds.width, height: 100)
+    $0.frame = CGRect(x: 0, y: 170, width: UIScreen.main.bounds.width, height: 100)
     $0.colors = [CHColors.paleGreyFour.cgColor, CHColors.paleGreyFour0.cgColor]
   }
   

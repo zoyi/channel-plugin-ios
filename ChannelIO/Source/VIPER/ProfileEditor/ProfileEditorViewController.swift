@@ -160,7 +160,7 @@ class ProfileEditorViewController: BaseViewController {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (guest, error) in
         defer { SVProgressHUD.dismiss() }
-        ChannelIO.delegate?.onChangeGuestProfile?(key: key, value: value)
+        ChannelIO.delegate?.onChangeProfile?(key: key, value: guest?.profile?[key])
         mainStore.dispatch(UpdateGuest(payload: guest))
         if error == nil {
           _ = self?.navigationController?.popViewController(animated: true)

@@ -31,7 +31,7 @@ final class LauncherView : BaseView {
     $0.layer.shadowRadius = 2
   }
   let disposeBag = DisposeBag()
-  let buttonView = CHButton.launcher()
+  let buttonView = CHButtonFactory.launcher()
   
   //refactor this as general button
   let buttonLayerView = UIView().then {

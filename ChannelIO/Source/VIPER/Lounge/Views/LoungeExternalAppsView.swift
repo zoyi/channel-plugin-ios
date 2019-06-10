@@ -58,7 +58,7 @@ class LoungeExternalAppsView: BaseView {
   }
   
   override func displayError() {
-    let refreshButton = CHButton.errorRefresh()
+    let refreshButton = CHButtonFactory.errorRefresh()
     self.addSubview(refreshButton)
     refreshButton.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }

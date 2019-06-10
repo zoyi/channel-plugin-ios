@@ -20,12 +20,12 @@ import SDWebImage
 final class UserChatViewController: BaseSLKTextViewController {
 
   // MARK: Constants
-  struct Constant {
+  private struct Constants {
     static let messagePerRequest = 30
     static let messageCellMaxWidth = UIScreen.main.bounds.width
   }
   
-  struct Metric {
+  private struct Metrics {
     static let newButtonHeight = 46
   }
   
@@ -64,11 +64,11 @@ final class UserChatViewController: BaseSLKTextViewController {
     $0.isHidden = true
   }
   
-  var nudgeKeepButton = CHButton.keepNudge().then {
+  var nudgeKeepButton = CHButtonFactory.keepNudge().then {
     $0.isHidden = true
   }
   
-  var newChatButton = CHButton.newChat().then {
+  var newChatButton = CHButtonFactory.newChat().then {
     $0.isHidden = true
   }
   
@@ -251,7 +251,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.newChatButton.snp.makeConstraints { [weak self] (make) in
       self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
       make.centerX.equalToSuperview()
-      make.height.equalTo(Metric.newButtonHeight)
+      make.height.equalTo(Metrics.newButtonHeight)
     }
     
     self.view.addSubview(self.nudgeKeepButton)
@@ -263,7 +263,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.nudgeKeepButton.snp.makeConstraints { [weak self] (make) in
       self?.newChatBottomConstraint = make.bottom.equalToSuperview().inset(40).constraint
       make.centerX.equalToSuperview()
-      make.height.equalTo(Metric.newButtonHeight)
+      make.height.equalTo(Metrics.newButtonHeight)
     }
   }
   
@@ -545,16 +545,16 @@ extension UserChatViewController: StoreSubscriber {
     channel: CHChannel) {
     guard self.isReadyToDisplay else { return }
     
-    if let isNudgeChat = userChat?.isNudgeChat(), isNudgeChat {
+    if let isNudgeChat = userChat?.fromNudge, isNudgeChat {
       self.nudgeKeepButton.isHidden = false
     } else {
       self.nudgeKeepButton.isHidden = true
     }
     
-    if nextUserChat?.isRemoved() == true {
+    if nextUserChat?.isRemoved == true {
       _ = self.navigationController?.popViewController(animated: true)
     }
-    else if nextUserChat?.isClosed() == true {
+    else if nextUserChat?.isClosed == true {
       self.setTextInputbarHidden(true, animated: false)
       if !self.adjustTableViewInset(bottomInset: 60.f) {
         self.fixedInset = true
@@ -564,7 +564,7 @@ extension UserChatViewController: StoreSubscriber {
 
       self.chatBlockView.isHidden = true
     }
-    else if nextUserChat?.isNudgeChat() == true {
+    else if nextUserChat?.fromNudge == true {
       self.setTextInputbarHidden(true, animated: false)
       self.adjustTableViewInset(bottomInset: 60.f)
       self.chatBlockView.isHidden = true
@@ -577,8 +577,8 @@ extension UserChatViewController: StoreSubscriber {
       }
       self.chatBlockView.isHidden = false
     }
-    else if nextUserChat?.isSupporting() == true ||
-      nextUserChat?.isSolved() == true ||
+    else if nextUserChat?.isSupporting == true ||
+      nextUserChat?.isSolved == true ||
       (mainStore.state.messagesState.supportBotEntry != nil && nextUserChat == nil) {
       self.setTextInputbarHidden(true, animated: false)
       self.chatBlockView.isHidden = true
@@ -621,17 +621,17 @@ extension UserChatViewController: StoreSubscriber {
       let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
       let viewModel = MessageCellModel(message: lastMessage, previous: previous)
       if lastMessage.messageType == .WebPage {
-        offset.y += WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+        offset.y += WebPageMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Media {
-        offset.y += MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+        offset.y += MediaMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .File {
-        offset.y += FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+        offset.y += FileMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
       } else if lastMessage.messageType == .Profile {
         offset.y += ProfileCell.cellHeight(fits: self.tableView.frame.width, viewModel: viewModel)
       } else if viewModel.shouldDisplayForm {
-        offset.y += ActionMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+        offset.y += ActionMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
       } else {
-        offset.y += MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+        offset.y += MessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
       }
       
       self.tableView.contentOffset = offset
@@ -751,12 +751,12 @@ extension UserChatViewController {
   }
   
   override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    guard scrollView.contentOffset.y < 100 && self.userChat?.isClosed() == true else { return }
+    guard scrollView.contentOffset.y < 100 && self.userChat?.isClosed == true else { return }
     self.showNewChatButton()
   }
 
   override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    guard scrollView.contentOffset.y < 100 && self.userChat?.isClosed() == true else { return }
+    guard scrollView.contentOffset.y < 100 && self.userChat?.isClosed == true else { return }
     self.showNewChatButton()
   }
 }
@@ -782,7 +782,7 @@ extension UserChatViewController {
     }
     self.isAnimating = true
     
-    self.newChatBottomConstraint?.update(inset: -40 - Metric.newButtonHeight)
+    self.newChatBottomConstraint?.update(inset: -40 - Metrics.newButtonHeight)
     
     UIView.animate(withDuration: 0.3, animations: {
       self.view.layoutIfNeeded()
@@ -837,19 +837,19 @@ extension UserChatViewController {
     case .Log:
       return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
     case .Media:
-      return MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return MediaMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
     case .File:
-      return FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return FileMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
     case .WebPage:
-      return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return WebPageMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
     case .Profile:
       return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
     case .Action:
-      return ActionMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return ActionMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
     case .Buttons:
-      return ButtonsMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return ButtonsMessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
     default:
-      return MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
+      return MessageCell.cellHeight(fits: Constants.messageCellMaxWidth, viewModel: viewModel)
     }
   }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct CHButton {
+struct CHButtonFactory {
   static func newChat(
     textColor: UIColor = mainStore.state.plugin.textUIColor,
     backgroundColor: UIColor? = UIColor(mainStore.state.plugin.color),
@@ -65,7 +65,7 @@ struct CHButton {
       $0.setTitle("👍 " + CHAssets.localized("ch.chat.push_bot_like"), for: .normal)
       $0.setTitleColor(CHColors.pumpkinOrange, for: .normal)
       
-      $0.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+      $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
       $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 26, bottom: 0, right: 30)
       $0.backgroundColor = .white
       

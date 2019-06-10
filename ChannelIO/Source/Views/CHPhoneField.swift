@@ -17,11 +17,11 @@ final class CHPhoneField: BaseView {
   fileprivate var code : String = ""
   fileprivate var number : String = ""
   
-  struct Constants {
+  private struct Constants {
     static let defaultDailCode = "82"
   }
   
-  struct Metric {
+  private struct Metrics {
     static let countryLabelLeading = 16
     static let arrowImageLeading = 9
     static let arrowImageTrailing = 3
@@ -154,15 +154,15 @@ final class CHPhoneField: BaseView {
     }
     
     self.countryLabel.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview().inset(Metric.countryLabelLeading)
+      make.leading.equalToSuperview().inset(Metrics.countryLabelLeading)
       make.centerY.equalToSuperview()
     }
     
     self.arrowDownView.snp.makeConstraints { [weak self] (make) in
-      make.size.equalTo(Metric.arrowImageSize)
-      make.left.equalTo((self?.countryLabel.snp.right)!).offset(Metric.arrowImageLeading)
+      make.size.equalTo(Metrics.arrowImageSize)
+      make.left.equalTo((self?.countryLabel.snp.right)!).offset(Metrics.arrowImageLeading)
       make.centerY.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.arrowImageTrailing)
+      make.trailing.equalToSuperview().inset(Metrics.arrowImageTrailing)
     }
     
     self.topDivider.snp.makeConstraints { (make) in
@@ -173,7 +173,7 @@ final class CHPhoneField: BaseView {
     }
     
     self.phoneField.snp.makeConstraints { [weak self] (make) in
-      make.left.equalTo((self?.countryCodeView.snp.right)!).offset(Metric.phoneFieldLeading)
+      make.left.equalTo((self?.countryCodeView.snp.right)!).offset(Metrics.phoneFieldLeading)
       make.trailing.equalToSuperview()
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()

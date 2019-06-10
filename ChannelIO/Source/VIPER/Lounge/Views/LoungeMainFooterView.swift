@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 
 class LoungeMainFooterView: BaseView {
-  let newChatButton = CHButton.newChat()
+  let newChatButton = CHButtonFactory.newChat()
   
   let newChatSignal = PublishRelay<Any?>()
   var disposeBag = DisposeBag()

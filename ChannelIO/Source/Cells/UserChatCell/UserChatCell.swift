@@ -12,15 +12,15 @@ import SnapKit
 
 final class UserChatCell: BaseTableViewCell, Reusable {
 
-  // MARK: Constants
+  // MARK: Constantss
 
-  struct Constant {
+  struct Constants {
     static let titleLabelNumberOfLines = 1
     static let messageLabelNumberOfLines = 2
     static let timestampLabelNumberOfLines = 1
   }
 
-  struct Metric {
+  struct Metrics {
     static let cellTopPadding = 13.f
     static let cellLeftPadding = 14.f
     static let cellRightPadding = 15.f
@@ -56,14 +56,14 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   let titleLabel = UILabel().then {
     $0.font = Font.titleLabel
     $0.textColor = Color.titleLabel
-    $0.numberOfLines = Constant.titleLabelNumberOfLines
+    $0.numberOfLines = Constants.titleLabelNumberOfLines
   }
 
   let timestampLabel = UILabel().then {
     $0.font = Font.timestampLabel
     $0.textColor = Color.timestampLabel
     $0.textAlignment = .right
-    $0.numberOfLines = Constant.timestampLabelNumberOfLines
+    $0.numberOfLines = Constants.timestampLabelNumberOfLines
     $0.setContentCompressionResistancePriority(
       UILayoutPriority(rawValue: 1000), for: .horizontal
     )
@@ -78,7 +78,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   let messageLabel = UILabel().then {
     $0.font = Font.messageLabel
     $0.textColor = Color.messageLabel
-    $0.numberOfLines = Constant.messageLabelNumberOfLines
+    $0.numberOfLines = Constants.messageLabelNumberOfLines
   }
 
   // MARK: Initializing
@@ -92,32 +92,32 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.contentView.addSubview(self.messageLabel)
 
     self.avatarView.snp.makeConstraints { (make) in
-      make.top.equalToSuperview().inset(Metric.cellTopPadding)
-      make.left.equalToSuperview().inset(Metric.cellLeftPadding)
-      make.size.equalTo(CGSize(width: Metric.avatarWidth, height: Metric.avatarHeight))
+      make.top.equalToSuperview().inset(Metrics.cellTopPadding)
+      make.left.equalToSuperview().inset(Metrics.cellLeftPadding)
+      make.size.equalTo(CGSize(width: Metrics.avatarWidth, height: Metrics.avatarHeight))
     }
     
     self.titleLabel.snp.makeConstraints { [weak self] (make) in
-      make.top.equalToSuperview().inset(Metric.cellTopPadding)
-      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metric.avatarRightPadding)
+      make.top.equalToSuperview().inset(Metrics.cellTopPadding)
+      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
     }
     
     self.timestampLabel.snp.makeConstraints { [weak self] (make) in
-      make.top.equalToSuperview().inset(Metric.cellTopPadding)
-      make.right.equalToSuperview().inset(Metric.cellRightPadding)
-      make.left.equalTo((self?.titleLabel.snp.right)!).offset(Metric.cellRightPadding)
+      make.top.equalToSuperview().inset(Metrics.cellTopPadding)
+      make.right.equalToSuperview().inset(Metrics.cellRightPadding)
+      make.left.equalTo((self?.titleLabel.snp.right)!).offset(Metrics.cellRightPadding)
     }
     
     self.messageLabel.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metric.titleBottomPadding)
-      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metric.avatarRightPadding)
+      make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metrics.titleBottomPadding)
+      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
       make.right.equalToSuperview().inset(76)
     }
     
     self.badge.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(Metric.timestampBottomPadding)
-      make.right.equalToSuperview().inset(Metric.cellRightPadding)
-      make.height.equalTo(Metric.badgeHeight)
+      make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(Metrics.timestampBottomPadding)
+      make.right.equalToSuperview().inset(Metrics.cellRightPadding)
+      make.height.equalTo(Metrics.badgeHeight)
     }
   }
 
@@ -160,6 +160,6 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   }
   
   class func height(fits width: CGFloat, viewModel: UserChatCellModelType) -> CGFloat {
-    return Metric.cellHeight
+    return Metrics.cellHeight
   }
 }

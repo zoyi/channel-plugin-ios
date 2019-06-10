@@ -52,7 +52,7 @@ struct UserChatCellModel: UserChatCellModelType {
     self.avatar = userChat.lastTalkedHost ?? avatar
     self.badgeCount = userChat.session?.alert ?? 0
     self.isBadgeHidden = self.badgeCount == 0
-    self.isClosed = userChat.isClosed()
+    self.isClosed = !userChat.isActive
   }
   
   static func welcome(with plugin: CHPlugin, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {

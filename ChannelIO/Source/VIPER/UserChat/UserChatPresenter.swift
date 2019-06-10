@@ -224,7 +224,7 @@ extension UserChatPresenter {
       messages = [CHMessage(chatId: chatId, guest: guest, message: text)]
     }
     
-    if let userChat = self.userChat, userChat.isActive() {
+    if let userChat = self.userChat, userChat.isActive {
       interactor.send(messages: messages).subscribe().disposed(by: self.disposeBag)
     } else if self.userChat == nil {
       interactor.createChat().flatMap({ (userChat) -> Observable<Any?> in

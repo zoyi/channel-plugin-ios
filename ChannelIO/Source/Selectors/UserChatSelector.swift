@@ -23,7 +23,7 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false, limit: Int? 
   
   if !showCompleted {
     userChats = userChats.filter({ (userChat) in
-      return !userChat.isClosed()
+      return !userChat.isClosed
     })
   }
   

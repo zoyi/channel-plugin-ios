@@ -87,7 +87,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
     self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
     self.textView.keyboardType = .default
 
-    if let userChat = self.userChat, userChat.isCompleted() {
+    if let userChat = self.userChat, userChat.isCompleted {
       self.alwaysEnableRightButton = true
     }
   }
@@ -258,7 +258,7 @@ extension UserChatView {
   func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
     let channel = mainStore.state.channel
 
-    if nextUserChat?.isCompleted() == true {
+    if nextUserChat?.isCompleted == true {
       self.textInputbar.barState = .disabled
       self.textInputbar.hideLeftButton()
       self.rightButton.setImage(nil, for: .normal)

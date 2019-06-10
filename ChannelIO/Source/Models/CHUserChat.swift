@@ -120,7 +120,7 @@ extension CHUserChat {
   }
 
   func remove() -> Observable<Any?> {
-    if self.isLocalChat() {
+    if self.isLocal {
       return .just(nil)
     }
     return UserChatPromise.remove(userChatId: self.id)
@@ -153,12 +153,12 @@ extension CHUserChat {
   
   func read() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = self.isLocalChat() ?
+      let signal = self.isLocal ?
         Observable.just(nil) :
         UserChatPromise.setMessageRead(userChatId: self.id)
           
       let dispose = signal.subscribe(onNext: { (_) in
-        if self.isLocalChat() {
+        if self.isLocal {
           let guest = personSelector(
             state: mainStore.state,
             personType: self.personType,
@@ -183,66 +183,66 @@ extension CHUserChat {
 }
 
 extension CHUserChat {
-  func isLocalChat() -> Bool {
+  var isLocal: Bool {
     return self.id.hasPrefix(CHConstants.local)
   }
   
-  func isNudgeChat() -> Bool {
+  var fromNudge: Bool {
     return self.id.hasPrefix(CHConstants.nudgeChat)
   }
   
-  func getNudgeId() -> String {
-    return self.id.components(separatedBy: CHConstants.nudgeChat).last ?? ""
+  var nudgeId: String? {
+    return self.id.components(separatedBy: CHConstants.nudgeChat).last
   }
   
-  func isActive() -> Bool {
+  var isActive: Bool {
     return self.state != .closed && self.state != .solved && self.state != .removed
   }
   
-  func isClosed() -> Bool {
+  var isClosed: Bool {
     return self.state == .closed
   }
   
-  func isRemoved() -> Bool {
+  var isRemoved: Bool {
     return self.state == .removed
   }
   
-  func isSolved() -> Bool {
+  var isSolved: Bool {
     return self.state == .solved
   }
   
-  func isCompleted() -> Bool {
+  var isCompleted: Bool {
     return self.state == .closed || self.state == .solved || self.state == .removed
   }
   
-  func isReadyOrOpen() -> Bool {
+  var isReadyOrOpen: Bool {
     return self.state == .ready || self.state == .open
   }
   
-  func isOpen() -> Bool {
+  var isOpen: Bool {
     return self.state == .open
   }
   
-  func isReady() -> Bool {
+  var isReady: Bool {
     return self.state == .ready
   }
   
-  func isEngaged() -> Bool {
+  var isEngaged: Bool {
     return self.state == .solved || self.state == .closed || self.state == .following
   }
   
-  func isSupporting() -> Bool {
+  var isSupporting: Bool {
     return self.state == .supporting
   }
 
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
-    return current.isReadyOrOpen() && !next.isReadyOrOpen()
+    return current.isReadyOrOpen && !next.isReadyOrOpen
   }
   
   static func becomeOpen(current: CHUserChat?, next: CHUserChat?) -> Bool {
     guard let current = current, let next = next else { return false }
-    return current.isSolved() && next.isReadyOrOpen()
+    return current.isSolved && next.isReadyOrOpen
   }
   
   static func createLocal(writer: CHEntity?, variant: CHNudgeVariant?) -> (CHUserChat?, CHMessage?, CHSession?) {

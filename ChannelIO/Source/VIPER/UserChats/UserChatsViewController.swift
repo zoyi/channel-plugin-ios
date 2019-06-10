@@ -48,7 +48,7 @@ class UserChatsViewController: BaseViewController {
     $0.isHidden = true
   }
 
-  let newChatButton = CHButton.newChat()
+  let newChatButton = CHButtonFactory.newChat()
   
   var showCompleted = false
   var didLoad = false

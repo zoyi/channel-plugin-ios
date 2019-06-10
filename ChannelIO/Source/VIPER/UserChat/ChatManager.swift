@@ -165,7 +165,7 @@ class ChatManager: NSObject {
       .subscribe(onNext: { [weak self] (type, data) in
         guard let newChat = data as? CHUserChat else { return }
         guard let prevChat = self?.chat else { return }
-        if prevChat.isReady() && newChat.isOpen() {
+        if prevChat.isReady && newChat.isOpen {
           mainStore.state.plugin.requestProfileBot(chatId: newChat.id)
         }
         
@@ -389,7 +389,7 @@ extension ChatManager {
 extension ChatManager {  
   func processSendMessage(msg: String) -> Observable<CHUserChat?> {
     return Observable.create({ [weak self] (subscriber) -> Disposable in
-      let createChatSignal = self?.chat?.isActive() == true ?
+      let createChatSignal = self?.chat?.isActive == true ?
         Observable.just(self?.chat?.id ?? "") :
         self?.createChat()
       
@@ -435,9 +435,9 @@ extension ChatManager {
   }
   
   func processNudgeKeepAction(){
-    guard let chat = self.chat, chat.isNudgeChat() else { return }
+    guard let chat = self.chat, chat.fromNudge, let nudgeId = chat.nudgeId else { return }
     
-    self.createNudgeChat(nudgeId: chat.getNudgeId())
+    self.createNudgeChat(nudgeId: nudgeId)
       .observeOn(MainScheduler.instance)
       .flatMap { [weak self] (chatId) -> Observable<CHMessage?> in
         guard let s = self else { return .empty() }
@@ -807,6 +807,8 @@ extension ChatManager {
         .subscribe(onNext: { [weak self] (message) in
           self?.shouldRedrawProfileBot = true
           self?.delegate?.update(for: .profile(obj: message))
+          let updatedValue = message.profileBot?.filter { $0.key == key }.first?.value
+          ChannelIO.delegate?.onChangeProfile?(key: key, value: updatedValue)
           mainStore.dispatch(UpdateMessage(payload: message))
           subscriber.onNext(true)
         }, onError: { (error) in

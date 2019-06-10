@@ -12,9 +12,17 @@ import SnapKit
 import SVProgressHUD
 
 class LoungeView: BaseViewController, LoungeViewProtocol {
-  struct Metric {
+  struct Metrics {
+    static let contentSide = 8.f
+    static let contentBetween = 8.f
+    static let dismissTop = 7.f
+    static let dismissSize = 30.f
+    static let dismissTrailing = 12.f
+    static let externalHeight = 80.f
+    static let headerHeight = 270.f
     static let scrollInsetTop = 140.f
     static let scrollInsetBottom = 20.f
+    static let watermarkHeight = 40.f
   }
   
   var presenter: LoungePresenterProtocol?
@@ -25,7 +33,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   let externalView = LoungeExternalAppsView()
   let watermarkView = WatermarkView()
   
-  var dismissButton = CHButton.dismiss().then {
+  var dismissButton = CHButtonFactory.dismiss().then {
     $0.alpha = 1
   }
   
@@ -42,7 +50,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     super.viewDidLoad()
 
     self.view.isHidden = true
-    self.view.backgroundColor = .white
+    self.view.backgroundColor = CHColors.paleGreyFour
     
     self.initViews()
     self.initScrollView()
@@ -73,7 +81,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     super.setupConstraints()
     
     self.headerView.snp.makeConstraints { (make) in
-      make.height.equalTo(266)
+      make.height.equalTo(Metrics.headerHeight)
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
@@ -82,13 +90,13 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.dismissButton.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       if #available(iOS 11.0, *) {
-        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(6)
+        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(Metrics.dismissTop)
       } else {
-        make.top.equalToSuperview().inset(6)
+        make.top.equalToSuperview().inset(Metrics.dismissTop)
       }
-      make.height.equalTo(30)
-      make.width.equalTo(30)
-      make.trailing.equalToSuperview().inset(12)
+      make.height.equalTo(Metrics.dismissSize)
+      make.width.equalTo(Metrics.dismissSize)
+      make.trailing.equalToSuperview().inset(Metrics.dismissTrailing)
     }
     
     self.scrollView.snp.makeConstraints { [weak self] (make) in
@@ -96,31 +104,29 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       if #available(iOS 11.0, *) {
         self.scrollTopConstraint = make.top
           .equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
-          //.offset(Metric.scrollInsetTop).constraint
       } else {
         self.scrollTopConstraint = make.top
           .equalToSuperview().constraint
-          //.inset(Metric.scrollInsetTop).constraint
       }
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
+      make.leading.equalToSuperview().inset(Metrics.contentSide)
+      make.trailing.equalToSuperview().inset(Metrics.contentSide)
       make.bottom.equalToSuperview()
     }
     
     self.mainView.snp.makeConstraints { [weak self] (make) in
       make.top.equalToSuperview()
-      make.leading.equalToSuperview().inset(8)
-      make.trailing.equalToSuperview().inset(8)
-      make.width.equalTo(UIScreen.main.bounds.width - 16)
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.width.equalTo(UIScreen.main.bounds.width - Metrics.contentSide * 2)
       self?.mainHeightConstraint = make.height.equalTo(340).constraint
     }
     
     self.externalView.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
-      make.height.equalTo(80)
-      make.top.equalTo(self.mainView.snp.bottom).offset(8)
-      make.leading.greaterThanOrEqualToSuperview().inset(8)
-      make.trailing.lessThanOrEqualToSuperview().inset(8)
+      make.height.equalTo(Metrics.externalHeight)
+      make.top.equalTo(self.mainView.snp.bottom).offset(Metrics.contentBetween)
+      make.leading.greaterThanOrEqualToSuperview()
+      make.trailing.lessThanOrEqualToSuperview()
       make.centerX.equalToSuperview()
     }
     
@@ -133,7 +139,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       }
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.height.equalTo(40)
+      make.height.equalTo(Metrics.watermarkHeight)
     }
   }
   
@@ -176,9 +182,9 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.scrollView.showsVerticalScrollIndicator = false
     self.scrollView.showsHorizontalScrollIndicator = false
     self.scrollView.contentInset = UIEdgeInsets(
-      top: Metric.scrollInsetTop,
+      top: Metrics.scrollInsetTop,
       left: 0,
-      bottom: Metric.scrollInsetBottom,
+      bottom: Metrics.scrollInsetBottom,
       right: 0)
     self.scrollView.backgroundColor = .clear
     
@@ -245,7 +251,7 @@ extension LoungeView {
 
 extension LoungeView: UIScrollViewDelegate {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let progress = (Metric.scrollInsetTop + scrollView.contentOffset.y)/Metric.scrollInsetTop
+    let progress = (Metrics.scrollInsetTop + scrollView.contentOffset.y)/Metrics.scrollInsetTop
     self.dismissButton.alpha = progress
     self.headerView.change(with: 1 - progress)
   }

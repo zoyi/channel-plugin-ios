@@ -22,7 +22,7 @@ class LoungeMainErrorView: BaseView {
     $0.text = "다시 시도해주세죠~~~"
     $0.textColor = CHColors.blueyGrey
   }
-  let refreshButton = CHButton.errorRefresh()
+  let refreshButton = CHButtonFactory.errorRefresh()
   
   var refreshSignal = PublishRelay<Any?>()
   var disposeBag = DisposeBag()

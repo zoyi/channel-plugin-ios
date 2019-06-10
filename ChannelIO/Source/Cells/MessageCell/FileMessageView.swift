@@ -13,13 +13,13 @@ import NVActivityIndicatorView
 
 class FileMessageView : BaseView {
   
-  //MARK: Constant
+  //MARK: Constants
   
-  struct Metric {
+  struct Metrics {
     static let HEIGHT = 70.f
   }
   
-  struct Constant {
+  struct Constants {
     static let cornerRadius = 6.f
     static let borderWidth: CGFloat = 1
   }
@@ -71,9 +71,9 @@ class FileMessageView : BaseView {
   override func initialize() {
     super.initialize()
     
-    self.layer.cornerRadius = Constant.cornerRadius
+    self.layer.cornerRadius = Constants.cornerRadius
     self.layer.borderColor = Color.borderColor.cgColor
-    self.layer.borderWidth = Constant.borderWidth
+    self.layer.borderWidth = Constants.borderWidth
     
     self.addSubview(self.imageView)
     self.addSubview(self.titleLabel)

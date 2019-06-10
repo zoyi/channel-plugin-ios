@@ -49,7 +49,7 @@ class ButtonsMessageView: BaseView {
     }
     else if self.buttons.count < model.buttons.count {
       for i in self.buttons.count..<model.buttons.count {
-        let buttonView = CHButton.messageAction()
+        let buttonView = CHButtonFactory.messageAction()
         self.containerView.addSubview(buttonView)
         self.buttons.append(buttonView)
         
