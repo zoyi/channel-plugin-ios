@@ -1,3 +1,10 @@
+# 6.0.0
+## Updates
+* Introduced lounge view 
+* Added `onChnageProfile` delegate method
+* Changed operation time change in real-time
+* Improved test cases
+
 # 5.5.6
 ## Updates
 * Detached TLPhotoPicker from project (added to podspec and cartfile) - Don't forget to add this to your linked frameworks if you use Carthage)
