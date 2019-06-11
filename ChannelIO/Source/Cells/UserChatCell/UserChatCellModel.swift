@@ -16,7 +16,7 @@ protocol UserChatCellModelType {
   var avatar: CHEntity? { get set }
   var badgeCount: Int { get set }
   var isBadgeHidden: Bool { get set }
-  var isClosed: Bool { get set }
+  var isActive: Bool { get set }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
@@ -27,7 +27,7 @@ struct UserChatCellModel: UserChatCellModelType {
   var avatar: CHEntity? = nil
   var badgeCount: Int = 0
   var isBadgeHidden: Bool = false
-  var isClosed: Bool = false
+  var isActive: Bool = false
   
   init() {}
   
@@ -52,7 +52,7 @@ struct UserChatCellModel: UserChatCellModelType {
     self.avatar = userChat.lastTalkedHost ?? avatar
     self.badgeCount = userChat.session?.alert ?? 0
     self.isBadgeHidden = self.badgeCount == 0
-    self.isClosed = !userChat.isActive
+    self.isActive = !userChat.isActive
   }
   
   static func welcome(with plugin: CHPlugin, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {

@@ -21,7 +21,6 @@ class LoungeMainView: BaseView {
     static let headerHeight = 30.f
     static let defaultHeaderHeight = 10.f
     static let newChatFooterHeight = 70.f
-    static let defaultFooterHeight = 16.f
   }
   
   weak var presenter: LoungePresenterProtocol?
@@ -47,7 +46,7 @@ class LoungeMainView: BaseView {
   private var disposeBag = DisposeBag()
   
   private var shouldShowNewChatButton: Bool {
-    return self.chats.filter { !$0.isClosed }.count == 0
+    return self.chats.filter { !$0.isActive }.count == 0
   }
   
   var viewHeight: CGFloat {
@@ -61,11 +60,8 @@ class LoungeMainView: BaseView {
     } else {
       var height = CGFloat(min(self.chats.count, Constants.maxNumberOfCell)) * Constants.defaultCellHeight +
         Constants.headerHeight
-      if self.shouldShowNewChatButton {
-        height += Constants.newChatFooterHeight
-      } else {
-        height += Constants.defaultFooterHeight
-      }
+
+      height += Constants.newChatFooterHeight
       return height
     }
   }
@@ -172,11 +168,11 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
     view.newChatSignal
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)
-    return self.shouldShowNewChatButton ? view : UIView()
+    return view
   }
   
   func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-    return self.shouldShowNewChatButton ? Constants.newChatFooterHeight : Constants.defaultFooterHeight
+    return Constants.newChatFooterHeight
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -227,7 +223,6 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
     tableView.deselectRow(at: indexPath, animated: true)
   }
 }
-
 
 extension LoungeMainView: MGSwipeTableCellDelegate {
   func swipeTableCell(
