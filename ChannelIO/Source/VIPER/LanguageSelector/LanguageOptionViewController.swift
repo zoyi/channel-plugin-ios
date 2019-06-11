@@ -45,14 +45,29 @@ class LanguageOptionViewController: BaseViewController {
   }
   
   func initNavigation() {
-    self.title = CHAssets.localized("ch.user_profile.locale.label")
-    self.navigationItem.leftBarButtonItem = NavigationItem(
+    let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+    spacer.width = -8
+    
+    let backButton = NavigationItem(
       image:  CHAssets.getImage(named: "back"),
       tintColor: mainStore.state.plugin.textUIColor,
       style: .plain,
       actionHandler: { [weak self] in
         _ = self?.navigationController?.popViewController(animated: true)
       })
+    
+    if #available(iOS 11, *) {
+      self.navigationItem.leftBarButtonItems = [backButton]
+    } else {
+      self.navigationItem.leftBarButtonItems = [spacer, backButton]
+    }
+    
+    let titleView = SimpleNavigationTitleView()
+    titleView.configure(
+      with: CHAssets.localized("ch.user_profile.locale.label"),
+      textColor: mainStore.state.plugin.textUIColor
+    )
+    self.navigationItem.titleView = titleView
   }
   
   override func viewWillAppear(_ animated: Bool) {
