@@ -11,49 +11,38 @@ import RxSwift
 import RxCocoa
 
 class LoungeExternalAppsView: BaseView {
-  struct Metric {
+  private struct Metrics {
     static let iconSize = 44
     static let sideMargin = 8
+    static let spacing = UIScreen.main.bounds.width == 320 ? 16.f : 20.f
   }
-  var models: [LoungeExternalSourceModel] = []
+  
+  private let containerView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.spacing = Metrics.spacing
+  }
+  
+  private var refreshButton: UIButton?
+  
+  private var models: [LoungeExternalSourceModel] = []
+  private var disposeBag = DisposeBag()
   
   var refreshSignal = PublishRelay<Any?>()
   var clickSignal = PublishRelay<LoungeExternalSourceModel>()
   
-  var disposeBag = DisposeBag()
-  
-  let titleLabel = UILabel().then {
-    $0.font = UIFont.systemFont(ofSize: 11)
-    $0.textColor = CHColors.blueyGrey
-    $0.text = CHAssets.localized("ch.integrations.title")
-  }
-  
-  let containerView = UIStackView().then {
-    $0.axis = .horizontal
-    $0.spacing = UIScreen.main.bounds.width == 320 ? 16 : 20
-  }
-  
-  var refreshButton: UIButton?
-  
   override func initialize() {
     super.initialize()
-    self.addSubview(self.titleLabel)
     self.addSubview(self.containerView)
   }
   
   override func setLayouts() {
     super.setLayouts()
-    self.titleLabel.snp.makeConstraints { (make) in
-      make.centerX.equalToSuperview()
-      make.top.equalToSuperview().inset(10)
-    }
     
-    self.containerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
-      make.top.equalTo(self.titleLabel.snp.bottom)
+    self.containerView.snp.makeConstraints { (make) in
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.bottom.equalToSuperview()
+      make.centerX.equalToSuperview()
+      make.centerY.equalToSuperview()
     }
   }
   
@@ -62,7 +51,7 @@ class LoungeExternalAppsView: BaseView {
     self.addSubview(refreshButton)
     refreshButton.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
-      make.top.equalTo(self.titleLabel.snp.bottom).offset(3)
+      make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
@@ -88,14 +77,13 @@ class LoungeExternalAppsView: BaseView {
     }
     
     self.models = models
-    self.titleLabel.text = CHAssets.localized("ch.integrations.title")
     
     for model in models {
       let modelView = LoungeExternalAppView()
       modelView.layer.cornerRadius = 22
       modelView.snp.makeConstraints { (make) in
-        make.height.equalTo(44)
-        make.width.equalTo(44)
+        make.height.equalTo(Metrics.iconSize)
+        make.width.equalTo(Metrics.iconSize)
       }
       modelView.configure(with: model)
       modelView.button.signalForClick().subscribe(onNext: { [weak self] (_) in

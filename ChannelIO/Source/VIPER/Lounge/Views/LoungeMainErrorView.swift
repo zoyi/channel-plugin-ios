@@ -19,7 +19,7 @@ class LoungeMainErrorView: BaseView {
   }
   let descLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 14)
-    $0.text = "다시 시도해주세죠~~~"
+    $0.text = CHAssets.localized("ch.error.common.description")
     $0.textColor = CHColors.blueyGrey
   }
   let refreshButton = CHButtonFactory.errorRefresh()
@@ -72,13 +72,5 @@ class LoungeMainErrorView: BaseView {
       make.centerX.equalToSuperview()
       make.centerY.equalToSuperview()
     }
-  }
-  
-  func startAnimation() {
-    
-  }
-  
-  func stopAnimation() {
-    
   }
 }

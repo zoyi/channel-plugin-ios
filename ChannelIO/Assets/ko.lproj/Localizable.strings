@@ -163,3 +163,5 @@
 "ch.settings.edit_profile" = "정보수정";
 "ch.settings.save" = "저장";
 "ch.loader.updating" = "업데이트중 ...";
+"ch.lounge.proceeding_chat" = "진행중인 상담";
+"ch.lounge.show_previous_chats" = "%s건의 이전 상담보기";

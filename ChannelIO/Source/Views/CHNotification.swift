@@ -77,7 +77,7 @@ class CHNotification {
   var disposeBag = DisposeBag()
   
   func display(message: String, config: CHNotificationConfiguration = CHNotificationConfiguration.succeedConfig) {
-    guard let vc = CHUtils.getTopController() else { return }
+    guard let vc = CHUtils.getTopController(), mainStore.state.uiState.isChannelVisible else { return }
     self.notificationView?.removeFromSuperview()
     
     let notificationView = CHNotificationView()

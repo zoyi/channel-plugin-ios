@@ -11,6 +11,7 @@
 		142147891E56D76B004C9FAD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 142147881E56D76B004C9FAD /* libz.tbd */; };
 		1469AF9B1E2F6CF9000A8675 /* UserChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1469AF9A1E2F6CF8000A8675 /* UserChatTests.swift */; };
 		14DFAC681E4A189D00130119 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14DFAC671E4A189D00130119 /* Images.xcassets */; };
+		221EBD7622B0D8E700066E0A /* LoungeMoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221EBD7522B0D8E700066E0A /* LoungeMoreView.swift */; };
 		222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B71FBAAD37002CFA88 /* CHAnimations.swift */; };
 		222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */; };
 		22342CC91FBEF50800425666 /* CountryCodeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22342CC81FBEF50800425666 /* CountryCodeState.swift */; };
@@ -360,6 +361,7 @@
 		14D2AA7D1E24AE07006FEE22 /* ChannelIOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChannelIOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D2AA841E24AE07006FEE22 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14DFAC671E4A189D00130119 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Assets/Images.xcassets; sourceTree = "<group>"; };
+		221EBD7522B0D8E700066E0A /* LoungeMoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeMoreView.swift; sourceTree = "<group>"; };
 		222086B71FBAAD37002CFA88 /* CHAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAnimations.swift; sourceTree = "<group>"; };
 		222086B91FBAB28D002CFA88 /* CHTypingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHTypingEntity.swift; sourceTree = "<group>"; };
 		22342CC81FBEF50800425666 /* CountryCodeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeState.swift; sourceTree = "<group>"; };
@@ -1451,6 +1453,7 @@
 				659C9227229FBDEA005A3EB1 /* LoungeMainHeaderView.swift */,
 				659C9229229FBDF6005A3EB1 /* LoungeMainFooterView.swift */,
 				65AC15D3228160660005643F /* LoungeMainErrorView.swift */,
+				221EBD7522B0D8E700066E0A /* LoungeMoreView.swift */,
 				6512BA352271AA0300757CB2 /* LoungeExternalAppsView.swift */,
 				6512BA372271AA4300757CB2 /* FollowersView.swift */,
 			);
@@ -1825,6 +1828,7 @@
 				65121334224DF47F00737089 /* SwiftSupport.swift in Sources */,
 				659793861FA716CB00840F6A /* EventPromise.swift in Sources */,
 				657AF3EB2178302A001EAA7A /* TargetEvaluatorService.swift in Sources */,
+				221EBD7622B0D8E700066E0A /* LoungeMoreView.swift in Sources */,
 				222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */,
 				656FBFAB20CA51E50062C6A9 /* ActionMessageCell.swift in Sources */,
 				65CB1425206A02F200E456B5 /* FileMessageView.swift in Sources */,

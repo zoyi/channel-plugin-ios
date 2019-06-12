@@ -168,3 +168,5 @@
 "ch.settings.edit_profile" = "編集";
 "ch.settings.save" = "保存";
 "ch.loader.updating" = "更新中 ...";
+"ch.lounge.proceeding_chat" = "会話中のチャット";
+"ch.lounge.show_previous_chats" = "過去の%s件のチャットをみる";

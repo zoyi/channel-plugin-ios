@@ -12,18 +12,13 @@ import RxSwift
 import RxCocoa
 
 class LoungeMainFooterView: BaseView {
-  let newChatButton = CHButtonFactory.newChat()
-  
-  let newChatSignal = PublishRelay<Any?>()
-  var disposeBag = DisposeBag()
+  private let newChatButton = CHButtonFactory.newChat()
+  private var disposeBag = DisposeBag()
+  private var newSignal = PublishRelay<Any?>()
   
   override func initialize() {
     super.initialize()
     self.addSubview(self.newChatButton)
-    
-    self.newChatButton.signalForClick()
-      .bind(to: self.newChatSignal)
-      .disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -33,5 +28,13 @@ class LoungeMainFooterView: BaseView {
       make.top.equalToSuperview().inset(10)
       make.height.equalTo(46)
     }
+  }
+  
+  func newChatSignal() -> Observable<Any?> {
+    self.newSignal = PublishRelay<Any?>()
+    self.newChatButton.signalForClick()
+      .bind(to: self.newSignal)
+      .disposed(by: self.disposeBag)
+    return self.newSignal.asObservable()
   }
 }

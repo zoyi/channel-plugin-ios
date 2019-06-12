@@ -137,7 +137,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
       self.avatarView.configure(channel)
     }
     
-    self.messageLabel.textColor = viewModel.isActive ? CHColors.blueyGrey : Color.messageLabel
+    self.messageLabel.textColor = viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
   }
 
   // MARK: Cell Height

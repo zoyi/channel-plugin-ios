@@ -22,7 +22,7 @@ protocol LoungeViewProtocol: class {
   
   func displayReady()
   func displayHeader(with model: LoungeHeaderViewModel)
-  func displayMainContent(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?)
+  func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?)
   func displayExternalSources(with models: [LoungeExternalSourceModel])
   
   func displayError(for type: LoungeSectionType)

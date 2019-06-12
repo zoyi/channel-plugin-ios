@@ -14,11 +14,11 @@ import SVProgressHUD
 class LoungeView: BaseViewController, LoungeViewProtocol {
   struct Metrics {
     static let contentSide = 8.f
-    static let contentBetween = 8.f
+    static let contentBetween = 20.f
     static let dismissTop = 7.f
     static let dismissSize = 30.f
     static let dismissTrailing = 12.f
-    static let externalHeight = 80.f
+    static let externalHeight = 70.f
     static let headerHeight = 270.f
     static let scrollInsetTop = 140.f
     static let scrollInsetBottom = 20.f
@@ -231,8 +231,8 @@ extension LoungeView {
     self.watermarkView.isHidden = model.plugin.showPoweredBy == false
   }
   
-  func displayMainContent(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
-    self.mainView.configure(with: chats, welcomeModel: welcomeModel)
+  func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
+    self.mainView.configure(activeChats: activeChats, inactiveChats: inactiveChats, welcomeModel: welcomeModel)
     self.mainHeightConstraint?.update(offset: self.mainView.viewHeight)
   }
   
@@ -262,5 +262,6 @@ extension LoungeView: UIScrollViewDelegate {
     height += self.mainView.frame.size.height
     height += self.externalView.frame.size.height
     self.scrollView.contentSize = CGSize(width: self.scrollView.frame.width, height: height)
+    //draw shadow once if watermark doesn't have one
   }
 }

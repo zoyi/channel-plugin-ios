@@ -196,7 +196,7 @@ extension CHUserChat {
   }
   
   var isActive: Bool {
-    return self.state != .closed && self.state != .solved && self.state != .removed && self.state != .supporting
+    return self.state != .closed && self.state != .solved && self.state != .removed
   }
   
   var isClosed: Bool {

@@ -16,7 +16,7 @@ protocol UserChatCellModelType {
   var avatar: CHEntity? { get set }
   var badgeCount: Int { get set }
   var isBadgeHidden: Bool { get set }
-  var isActive: Bool { get set }
+  var isClosed: Bool { get set }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
@@ -27,7 +27,7 @@ struct UserChatCellModel: UserChatCellModelType {
   var avatar: CHEntity? = nil
   var badgeCount: Int = 0
   var isBadgeHidden: Bool = false
-  var isActive: Bool = false
+  var isClosed: Bool = false
   
   init() {}
   
@@ -44,7 +44,19 @@ struct UserChatCellModel: UserChatCellModelType {
       self.lastMessage = userChat.lastMessage?.message ?? ""
     }
     
-    let avatar: CHEntity? = defaultBotSelector(state: mainStore.state) ?? mainStore.state.channel
+    var avatar: CHEntity?
+    if let writer = personSelector(
+      state: mainStore.state,
+      personType: userChat.lastMessage?.personType,
+      personId: userChat.lastMessage?.personId),
+      writer is CHBot {
+      avatar = writer
+    } else if let defaultBot = defaultBotSelector(state: mainStore.state) {
+      avatar = defaultBot
+    } else {
+      avatar = mainStore.state.channel
+    }
+    
     let title = avatar?.name ?? CHAssets.localized("ch.unknown")
     
     self.title = userChat.lastTalkedHost?.name ?? title
@@ -52,7 +64,7 @@ struct UserChatCellModel: UserChatCellModelType {
     self.avatar = userChat.lastTalkedHost ?? avatar
     self.badgeCount = userChat.session?.alert ?? 0
     self.isBadgeHidden = self.badgeCount == 0
-    self.isActive = !userChat.isActive
+    self.isClosed = userChat.isClosed
   }
   
   static func welcome(with plugin: CHPlugin, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {

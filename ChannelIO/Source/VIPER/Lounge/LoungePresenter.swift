@@ -69,26 +69,28 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       .debounce(0.5, scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, plugin) in
         //NOTE: check if entities have been changed
+        guard let `self` = self else { return }
         let followers = mainStore.state.managersState.followingManagers
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: plugin,
           followers: followers
         )
-        self?.view?.displayHeader(with: headerModel)
+        self.view?.displayHeader(with: headerModel)
         
-        let models = userChatsSelector(
-          state: mainStore.state,
-          showCompleted: mainStore.state.userChatsState.showCompletedChats
-        ).map { UserChatCellModel(userChat: $0) }
+        let models = userChatsSelector(state: mainStore.state, showCompleted: true)
+          .map { UserChatCellModel(userChat: $0) }
+
+        let welcome = UserChatCellModel.welcome(
+          with: mainStore.state.plugin,
+          guest: mainStore.state.guest,
+          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+        )
         
-        self?.view?.displayMainContent(
-          with: models,
-          welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.plugin,
-            guest: mainStore.state.guest,
-            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-          ))
+        self.view?.displayMainContent(
+          activeChats: models.filter { !$0.isClosed },
+          inactiveChats: models.filter { $0.isClosed },
+          welcomeModel: welcome)
       }).disposed(by: self.disposeBag)
     
     self.interactor?.updateChats()
@@ -97,13 +99,16 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       .subscribe(onNext: { [weak self] (chats) in
         guard let `self` = self else { return }
         let models = chats.map { UserChatCellModel(userChat: $0) }
+        let welcome = UserChatCellModel.welcome(
+          with: mainStore.state.plugin,
+          guest: mainStore.state.guest,
+          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+        )
+        
         self.view?.displayMainContent(
-          with: models,
-          welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.plugin,
-            guest: mainStore.state.guest,
-            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-          ))
+          activeChats: models.filter { !$0.isClosed },
+          inactiveChats: models.filter { $0.isClosed },
+          welcomeModel: welcome)
       }).disposed(by: self.disposeBag)
   }
   
@@ -160,18 +165,19 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         self.view?.displayHeader(with: headerModel)
         
         //update main
-        let chats = userChatsSelector(
-          state: mainStore.state,
-          showCompleted: mainStore.state.userChatsState.showCompletedChats)
+        let models = userChatsSelector(state: mainStore.state, showCompleted: true)
+          .map { UserChatCellModel(userChat: $0) }
         
-        let models = chats.map { UserChatCellModel(userChat: $0) }
+        let welcome = UserChatCellModel.welcome(
+          with: mainStore.state.plugin,
+          guest: mainStore.state.guest,
+          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+        )
+
         self.view?.displayMainContent(
-          with: models,
-          welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.plugin,
-            guest: mainStore.state.guest,
-            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-          ))
+          activeChats: models.filter { !$0.isClosed },
+          inactiveChats: models.filter { $0.isClosed },
+          welcomeModel: welcome)
       }).disposed(by: self.notiDisposeBag)
     
     Observable.combineLatest(self.headerCompletion, self.mainCompletion, self.externalCompletion)
@@ -282,13 +288,17 @@ extension LoungePresenter {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats, entry) in
         let models = chats.map { UserChatCellModel(userChat: $0) }
+        let welcome = UserChatCellModel.welcome(
+          with: mainStore.state.plugin,
+          guest: mainStore.state.guest,
+          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+        )
+
         self?.view?.displayMainContent(
-          with: models,
-          welcomeModel: UserChatCellModel.welcome(
-            with: mainStore.state.plugin,
-            guest: mainStore.state.guest,
-            supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-          ))
+          activeChats: models.filter { !$0.isClosed },
+          inactiveChats: models.filter { $0.isClosed },
+          welcomeModel: welcome)
+
         self?.mainCompletion.accept(nil)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .mainContent)

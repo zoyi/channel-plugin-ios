@@ -20,7 +20,15 @@ class LoungeMainView: BaseView {
     static let defaultCellHeight = 80.f
     static let headerHeight = 30.f
     static let defaultHeaderHeight = 10.f
+    static let defaultFooterHeight = 16.f
     static let newChatFooterHeight = 70.f
+    static let allChatFooterHeight = 36.f
+    static let tableViewCornerRadius = 16.f
+  }
+  
+  private struct Metrics {
+    static let tableViewBottom = 36.f
+    static let allTop = 12.f
   }
   
   weak var presenter: LoungePresenterProtocol?
@@ -31,37 +39,64 @@ class LoungeMainView: BaseView {
     $0.register(cellType: UserChatCell.self)
   }
   
-  var errorView: LoungeMainErrorView?
+  private let moreView = LoungeMoreView()
   
-  var welcomeModel: UserChatCellModel?
-  var welcomeCellHeight: CGFloat = 0
+  private var errorView: LoungeMainErrorView?
+  private var welcomeModel: UserChatCellModel?
+  private var welcomeCellHeight: CGFloat = 0
   
-  var chats: [UserChatCellModel] = []
+  private var activeChats: [UserChatCellModel] = []
+  private var inactiveChats: [UserChatCellModel] = []
+  private var disposeBag = DisposeBag()
+  
+  private var shouldShowWelcome: Bool {
+    return self.activeChats.count == 0
+  }
+  
+  private var shouldShowAllChat: Bool {
+    return self.inactiveChats.count != 0 ||
+      self.activeChats.count > Constants.maxNumberOfCell
+  }
+  
+  private var otherChatCount: Int {
+    let otherActiveChatCount = self.activeChats.count > Constants.maxNumberOfCell ?
+      self.activeChats.count - Constants.maxNumberOfCell : 0
+    return self.inactiveChats.count + otherActiveChatCount
+  }
+  
+  private var visibleChats: [UserChatCellModel] {
+    return self.activeChats.count > Constants.maxNumberOfCell ?
+      Array(self.activeChats[0...2]) : self.activeChats
+  }
+  
+  private var tableViewBottomConstraint: Constraint? = nil
   
   var chatSignal = PublishRelay<UserChatCellModel>()
   var newSignal = PublishRelay<Any?>()
   var moreSignal = PublishRelay<Any?>()
   var refreshSignal = PublishRelay<Any?>()
   
-  private var disposeBag = DisposeBag()
-  
-  private var shouldShowNewChatButton: Bool {
-    return self.chats.filter { !$0.isActive }.count == 0
-  }
-  
   var viewHeight: CGFloat {
-    if let model = self.welcomeModel, self.chats.count == 0 {
+    if let model = self.welcomeModel, self.shouldShowWelcome {
       self.welcomeCellHeight = UserChatCell.calculateHeight(
         fits: self.frame.width,
         viewModel: model,
-        maxNumberOfLines: 8)
+        maxNumberOfLines: Constants.maxNumberOfLinesForWelcomeCell)
       
-      return self.welcomeCellHeight + Constants.defaultHeaderHeight + Constants.newChatFooterHeight
+      var height = self.welcomeCellHeight +
+        Constants.defaultHeaderHeight +
+        Constants.newChatFooterHeight
+      if self.shouldShowAllChat {
+        height += Constants.allChatFooterHeight
+      }
+      return height
     } else {
-      var height = CGFloat(min(self.chats.count, Constants.maxNumberOfCell)) * Constants.defaultCellHeight +
-        Constants.headerHeight
-
-      height += Constants.newChatFooterHeight
+      var height = CGFloat(min(self.visibleChats.count, Constants.maxNumberOfCell)) * Constants.defaultCellHeight
+      height += Constants.headerHeight
+      height += Constants.defaultFooterHeight
+      if self.shouldShowAllChat {
+        height += Constants.allChatFooterHeight
+      }
       return height
     }
   }
@@ -75,18 +110,33 @@ class LoungeMainView: BaseView {
     self.layer.shadowOpacity = 0.2
     self.layer.masksToBounds = false
     
-    self.tableView.layer.cornerRadius = 16
+    self.tableView.layer.cornerRadius = Constants.tableViewCornerRadius
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
     self.addSubview(self.tableView)
+    self.addSubview(self.moreView)
+    
+    self.moreView.signalForClick()
+      .bind(to: self.moreSignal)
+      .disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
     super.setLayouts()
     
-    self.tableView.snp.makeConstraints { (make) in
-      make.edges.equalToSuperview()
+    self.tableView.snp.makeConstraints { [weak self] (make) in
+      make.leading.equalToSuperview()
+      make.top.equalToSuperview()
+      make.trailing.equalToSuperview()
+      self?.tableViewBottomConstraint = make.bottom.equalToSuperview()
+        .inset(Metrics.tableViewBottom).constraint
+    }
+    
+    self.moreView.snp.makeConstraints { [weak self] (make) in
+      guard let `self` = self else { return }
+      make.top.equalTo(self.tableView.snp.bottom).offset(Metrics.allTop)
+      make.centerX.equalToSuperview()
     }
   }
   
@@ -94,11 +144,10 @@ class LoungeMainView: BaseView {
     self.tableView.isHidden = true
     
     let errorView = LoungeMainErrorView()
-    errorView.layer.cornerRadius = 10
+    errorView.layer.cornerRadius = Constants.tableViewCornerRadius
     
     self.addSubview(errorView)
     errorView.refreshSignal.subscribe(onNext: { [weak self] (_) in
-      errorView.startAnimation()
       self?.refreshSignal.accept(nil)
     }).disposed(by: self.disposeBag)
     
@@ -110,16 +159,28 @@ class LoungeMainView: BaseView {
   }
   
   func reloadContent() {
-    self.configure(with: self.chats, welcomeModel: self.welcomeModel)
+    self.configure(
+      activeChats: self.activeChats,
+      inactiveChats: self.inactiveChats,
+      welcomeModel: self.welcomeModel
+    )
   }
   
-  func configure(with chats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
-    self.chats = chats
+  func configure(
+    activeChats: [UserChatCellModel],
+    inactiveChats: [UserChatCellModel],
+    welcomeModel: UserChatCellModel?) {
+    self.activeChats = activeChats
+    self.inactiveChats = inactiveChats
     self.welcomeModel = welcomeModel
     
-    self.errorView?.stopAnimation()
+    self.moreView.configure(moreCount: self.otherChatCount)
+    
     self.errorView?.removeFromSuperview()
     self.errorView = nil
+
+    self.moreView.configure(moreCount: self.otherChatCount)
+    self.tableViewBottomConstraint?.update(inset: self.otherChatCount != 0 ? Metrics.tableViewBottom : 0)
     
     self.tableView.isHidden = false
     self.tableView.reloadData()
@@ -146,43 +207,41 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.chats.count > 0 ? min(self.chats.count, Constants.maxNumberOfCell) : self.welcomeModel != nil ? 1 : 0
+    return !self.shouldShowWelcome ? min(self.activeChats.count, Constants.maxNumberOfCell) : self.welcomeModel != nil ? 1 : 0
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return self.chats.count != 0 ? Constants.headerHeight : Constants.defaultHeaderHeight
+    return !self.shouldShowWelcome ? Constants.headerHeight : Constants.defaultHeaderHeight
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let view = LoungeMainHeaderView()
-    view.configure(guest: mainStore.state.guest, chatModels: self.chats)
-    view.moreSignal
-      .bind(to: self.moreSignal)
+    view.newChatSignal()
+      .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)
-    return self.chats.count != 0 ? view : UIView()
+    return !self.shouldShowWelcome ? view : UIView()
+  }
+  
+  func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    return !self.shouldShowWelcome ? Constants.defaultFooterHeight : Constants.newChatFooterHeight
   }
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
     let view = LoungeMainFooterView()
-    view.newChatButton.isEnabled = mainStore.state.channel.allowNewChat
-    view.newChatSignal
+    view.newChatSignal()
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)
-    return view
-  }
-  
-  func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-    return Constants.newChatFooterHeight
+    return !self.shouldShowWelcome ? UIView() : view
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return self.chats.count > 0 ? Constants.defaultCellHeight : self.welcomeCellHeight
+    return !self.shouldShowWelcome ? Constants.defaultCellHeight : self.welcomeCellHeight
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if self.chats.count > 0 {
+    if !self.shouldShowWelcome {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
-      let model = self.chats[indexPath.row]
+      let model = self.activeChats[indexPath.row]
       cell.configure(model)
       cell.messageLabel.numberOfLines = Constants.maxNumberOfLines
       
@@ -214,8 +273,8 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if self.chats.count != 0 {
-      let chat = self.chats[indexPath.row]
+    if !self.shouldShowWelcome {
+      let chat = self.activeChats[indexPath.row]
       self.chatSignal.accept(chat)
     } else {
       self.newSignal.accept(nil)
@@ -232,8 +291,7 @@ extension LoungeMainView: MGSwipeTableCellDelegate {
     fromExpansion: Bool) -> Bool {
     
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
-    self.presenter?.didClickOnDelete(chatId: self.chats[indexPath.row].chatId)
+    self.presenter?.didClickOnDelete(chatId: self.activeChats[indexPath.row].chatId)
     return true
   }
 }
-

@@ -163,3 +163,5 @@ Press the button below to refresh.";
 "ch.settings.edit_profile" = "Edit info";
 "ch.settings.save" = "Save";
 "ch.loader.updating" = "Updating ...";
+"ch.lounge.proceeding_chat" = "Ongoing chat";
+"ch.lounge.show_previous_chats" = "See previous %s chats";
