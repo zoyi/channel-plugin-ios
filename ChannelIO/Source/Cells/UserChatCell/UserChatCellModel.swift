@@ -72,7 +72,11 @@ struct UserChatCellModel: UserChatCellModelType {
     let bot = botSelector(state: mainStore.state, botName: plugin.botName)
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
-    model.lastMessage = supportBotMessage?.messageV2?.string ?? guest.getWelcome()
+    
+    let message = supportBotMessage?.messageV2?.string ?? guest.getWelcome()
+    let (mv2, _) =  CustomMessageTransform.markdown.parse(message ?? "")
+    
+    model.lastMessage = mv2?.string ?? ""
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model

@@ -375,26 +375,6 @@ public final class ChannelIO: NSObject {
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
   
-  
-  /**
-   *  Update user profile
-   *
-   *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
-   *                       to remove existing value
-   */
-  public class func updateGuest(with profile: [String: Any?], completion: ((Bool, Guest?) -> Void)? = nil) {
-    GuestPromise.updateProfile(with: profile)
-      .subscribe(onNext: { (guest, error) in
-        if let guest = guest {
-          completion?(true, Guest(with: guest))
-        } else {
-          completion?(false, nil)
-        }
-      }, onError: { error in
-        completion?(false, nil)
-      }).disposed(by: disposeBag)
-  }
-  
   /**
    *  Update user profile (objective-c)
    *
@@ -406,6 +386,16 @@ public final class ChannelIO: NSObject {
     let profile:[String: Any?] = profile.mapValues { (value) -> Any? in
       return value is NSNull ? nil : value
     }
+    ChannelIO.updateGuest(with: profile, completion: completion)
+  }
+  
+  /**
+   *  Update user profile
+   *
+   *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
+   *                       to remove existing value
+   */
+  public class func updateGuest(with profile: [String: Any?], completion: ((Bool, Guest?) -> Void)? = nil) {
     GuestPromise.updateProfile(with: profile)
       .subscribe(onNext: { (guest, error) in
         if let guest = guest {

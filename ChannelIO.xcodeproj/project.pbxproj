@@ -93,7 +93,6 @@
 		6512BA382271AA4300757CB2 /* FollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA372271AA4300757CB2 /* FollowersView.swift */; };
 		6512BA3C2277EBE200757CB2 /* LoungeHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA3B2277EBE200757CB2 /* LoungeHeaderViewModel.swift */; };
 		6512BA3E2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA3D2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift */; };
-		6512BA42227C0EA500757CB2 /* CHThirdPartyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA41227C0EA500757CB2 /* CHThirdPartyApp.swift */; };
 		6512BA6922812C0100757CB2 /* SimpleNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6512BA6822812C0000757CB2 /* SimpleNavigationTitleView.swift */; };
 		6517FC37229CF05C00B64DB4 /* FluidButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6517FC36229CF05C00B64DB4 /* FluidButton.swift */; };
 		6517FC39229CF55E00B64DB4 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6517FC38229CF55E00B64DB4 /* UIView+Extensions.swift */; };
@@ -465,7 +464,6 @@
 		6512BA372271AA4300757CB2 /* FollowersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersView.swift; sourceTree = "<group>"; };
 		6512BA3B2277EBE200757CB2 /* LoungeHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeHeaderViewModel.swift; sourceTree = "<group>"; };
 		6512BA3D2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeExternalSourceViewModel.swift; sourceTree = "<group>"; };
-		6512BA41227C0EA500757CB2 /* CHThirdPartyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHThirdPartyApp.swift; sourceTree = "<group>"; };
 		6512BA6822812C0000757CB2 /* SimpleNavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleNavigationTitleView.swift; sourceTree = "<group>"; };
 		6517FC36229CF05C00B64DB4 /* FluidButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidButton.swift; sourceTree = "<group>"; };
 		6517FC38229CF55E00B64DB4 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
@@ -1215,7 +1213,6 @@
 				657AF3F421784606001EAA7A /* CHSupportBot.swift */,
 				657AF3F0217845D7001EAA7A /* CHTargetCondition.swift */,
 				65CB9931226ECE9A004F9DC7 /* CHProfileSchema.swift */,
-				6512BA41227C0EA500757CB2 /* CHThirdPartyApp.swift */,
 			);
 			name = Models;
 			path = Source/Models;
@@ -1729,7 +1726,6 @@
 				657AF3F921787E88001EAA7A /* Alamofire+Extensions.swift in Sources */,
 				6549CFB2207B6C6A000091D2 /* CheckableLabelCell.swift in Sources */,
 				22F094F62176E8A00035C777 /* Then.swift in Sources */,
-				6512BA42227C0EA500757CB2 /* CHThirdPartyApp.swift in Sources */,
 				655A280420B2699700935C1F /* CompleteActionView.swift in Sources */,
 				65CB1424206A02F200E456B5 /* FileMessageCell.swift in Sources */,
 				6597935D1FA716CB00840F6A /* Array+Extensions.swift in Sources */,

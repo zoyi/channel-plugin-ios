@@ -253,14 +253,6 @@ extension ChannelIO {
       ChannelIO.chatNotificationView = nil
     }
   }
-  
-  internal class func checkOperationTimer() {
-    //timer every n seconds
-    //check current time is in operation time
-    //if not fetch channel, plugin and apply change
-    //1. !working -> working
-    //2. working -> !working
-  }
 }
 
 extension ChannelIO {
