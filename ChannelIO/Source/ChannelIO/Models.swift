@@ -46,7 +46,7 @@ public class Guest: NSObject {
     self.name = guest.name
     self.avatarUrl = guest.avatarUrl
     self.profile = guest.profile
-    self.alert = guest.alert
+    self.alert = guest.alert ?? 0
   }
   
   @objc

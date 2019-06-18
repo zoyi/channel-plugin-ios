@@ -22,3 +22,48 @@ func personSelector(state: AppState, personType: String?, personId: String?) -> 
   }
   return state.channel
 }
+
+func defaultBotSelector(state: AppState) -> CHBot? {
+  return state.botsState.findBy(name: state.plugin.botName).map({ (bot) in
+    return CHBot(
+      id: bot.id,
+      channelId: bot.channelId,
+      name: bot.name,
+      avatarUrl: bot.avatarUrl,
+      initial: bot.initial,
+      color: bot.color,
+      createdAt: bot.createdAt,
+      isDefaultBot: bot.isDefaultBot
+    )
+  })
+}
+
+func botSelector(state: AppState, botName: String?) -> CHBot? {
+  return state.botsState.findBy(name: botName).map({ (bot) in
+    return CHBot(
+      id: bot.id,
+      channelId: bot.channelId,
+      name: bot.name,
+      avatarUrl: bot.avatarUrl,
+      initial: bot.initial,
+      color: bot.color,
+      createdAt: bot.createdAt,
+      isDefaultBot: bot.isDefaultBot
+    )
+  })
+}
+
+func botSelector(state: AppState, botId: String?) -> CHBot? {
+  return state.botsState.findBy(id: botId).map({ (bot) in
+    return CHBot(
+      id: bot.id,
+      channelId: bot.channelId,
+      name: bot.name,
+      avatarUrl: bot.avatarUrl,
+      initial: bot.initial,
+      color: bot.color,
+      createdAt: bot.createdAt,
+      isDefaultBot: bot.isDefaultBot
+    )
+  })
+}

@@ -16,11 +16,27 @@ extension UINavigationController {
     self.popViewController(animated: animated)
     CATransaction.commit()
   }
+  
   func pushViewController(viewController: UIViewController, animated: Bool, completion: @escaping ()->()) {
     CATransaction.begin()
     CATransaction.setCompletionBlock(completion)
     self.pushViewController(viewController, animated: animated)
     CATransaction.commit()
+  }
+  
+  func popToRootViewController(animated: Bool, completion: @escaping () -> ()) {
+    CATransaction.begin()
+    CATransaction.setCompletionBlock(completion)
+    self.popToRootViewController(animated: animated)
+    CATransaction.commit()
+  }
+  
+  func dropShadow() {
+    self.navigationBar.dropShadow(with: CHColors.black10, opacity: 0.5, offset: CGSize(width:0, height:2), radius: 2)
+  }
+  
+  func removeShadow() {
+    self.navigationBar.removeShadow()
   }
 }
 
@@ -43,3 +59,27 @@ extension UIViewController {
   }
 }
 
+extension UINavigationBar {
+  func setGradientBackground(
+    colors: [UIColor],
+    startPoint: CAGradientLayer.Point = .topLeft,
+    endPoint: CAGradientLayer.Point = .bottomLeft) {
+    var updatedFrame = bounds
+    updatedFrame.size.height += self.frame.origin.y
+    let gradientLayer = CAGradientLayer(
+      frame: updatedFrame, colors: colors,
+      startPoint: startPoint, endPoint: endPoint
+    )
+    setBackgroundImage(
+      gradientLayer.createGradientImage(),
+      for: UIBarMetrics.default
+    )
+  }
+  
+}
+
+extension UIViewController {
+  func isVisible() -> Bool {
+    return self.isViewLoaded && self.view.window != nil
+  }
+}

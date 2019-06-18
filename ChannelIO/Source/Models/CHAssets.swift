@@ -50,15 +50,15 @@ class CHAssets {
     if let settings = ChannelIO.settings, let locale = settings.appLocale?.rawValue {
       guard let path = rootBundle.path(forResource: locale, ofType: "lproj") else { return "" }
       guard let bundle = Bundle.init(path: path) else { return "" }
-      return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+      return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "").replace("%s", withString: "%@")
     } else {
-      return NSLocalizedString(key, tableName: nil, bundle: rootBundle, value: "", comment: "")
+      return NSLocalizedString(key, tableName: nil, bundle: rootBundle, value: "", comment: "").replace("%s", withString: "%@")
     }
   }
   
   class func attributedLocalized(_ key: String) -> NSMutableAttributedString {
     let bundle = CHAssets.getBundle()
-    let localizedString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    let localizedString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "").replace("%s", withString: "%@")
     let data = localizedString.data(using: .utf16)
     do {
       let result = try NSMutableAttributedString(
@@ -89,7 +89,7 @@ class CHAssets {
       return NSAttributedString(string: key)
     }
     
-    var keyString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "")
+    var keyString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "").replace("%s", withString: "%@")
     //replace <br /> tag with newline
     keyString = keyString.replace("<br />", withString: "\n")
     

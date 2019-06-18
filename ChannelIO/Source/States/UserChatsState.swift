@@ -22,7 +22,7 @@ struct UserChatsState: StateType {
   }
   
   func findBy(ids: [String]) -> [CHUserChat] {
-    return self.userChats.filter({ ids.index(of: $0.key) != nil }).map({ $1 })
+    return self.userChats.filter({ ids.firstIndex(of: $0.key) != nil }).map({ $1 })
   }
   
   mutating func remove(userChatId: String) -> UserChatsState {

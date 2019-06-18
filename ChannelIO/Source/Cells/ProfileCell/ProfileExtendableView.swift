@@ -32,13 +32,6 @@ class ProfileExtendableView: BaseView {
       .paragraphStyle: paragraph
     ]
     
-//    TODO: refactor idea
-//    let tagsAttributes: [CHStringTagAttribute] = [
-//      CHStringTagAttribute
-//        .tag(.bold).font(11).color(.blueyGrey)
-//        .alignment(.center).lineBreak(.byCharWrapping)
-//    ]
-    
     let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
       .bold:[
         .font: UIFont.boldSystemFont(ofSize: 11),

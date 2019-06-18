@@ -17,8 +17,8 @@ protocol CHGuest: CHEntity {
   var city: String { get set }
   
   var locale: String { get set }
-  var alert: Int { get set }
-  var unread: Int { get set }
+  var alert: Int? { get set }
+  var unread: Int? { get set }
   var segment: String? { get set }
   
   var createdAt: Date? { get set }
@@ -40,10 +40,14 @@ extension CHGuest {
     data["named"] = self.named ? "true" : "false"
     data["country"] = self.country
     data["city"] = self.city
-    data["alert"] = self.alert
-    data["unread"] = self.unread
     data["locale"] = self.locale
     
+    if let alert = self.alert {
+      data["alert"] = alert
+    }
+    if let unread = self.unread {
+      data["unread"] = unread
+    }
     if let profile = self.profile {
       data["profile"] = profile
     }
@@ -58,6 +62,18 @@ extension CHGuest {
     }
     return data
   }
+  
+  func isSame(_ otherGuest: CHGuest) -> Bool {
+    if self.type != otherGuest.type { return false }
+    
+    return self.named == otherGuest.named &&
+      self.country == otherGuest.country &&
+      self.city == otherGuest.city &&
+      self.alert == otherGuest.alert &&
+      self.unread == otherGuest.unread &&
+      self.createdAt == otherGuest.createdAt &&
+      self.updatedAt == otherGuest.updatedAt
+  }
 }
 
 extension CHGuest {
@@ -67,5 +83,9 @@ extension CHGuest {
     } else {
       return mainStore.state.plugin.welcomeI18n?.getMessage()
     }
+  }
+  
+  func updateProfile(key: String, value: Any?) -> Observable<(CHGuest?, Any?)> {
+    return GuestPromise.updateProfile(with: [key: value])
   }
 }

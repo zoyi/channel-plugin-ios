@@ -15,5 +15,7 @@ extension Notification.Name {
     public static let presentKeyboard = Notification.Name(rawValue: "com.zoyi.channel.userchat.keyboard.present")
     public static let updateBadge = Notification.Name(rawValue: "com.zoyi.channel.plugin.update_badge")
     public static let dismissLaunchers = Notification.Name(rawValue: "com.zoyi.channel.plugin.dismiss_launchers")
+    public static let enterForeground = Notification.Name(rawValue: "com.zoyi.channel.plugin.foreground")
+    public static let enterBackground = Notification.Name(rawValue: "com.zoyi.channel.plugin.background")
   }
 }

@@ -24,10 +24,10 @@ import Foundation
 
 #if os(iOS) || os(watchOS) || os(tvOS)
 import UIKit
-public typealias HexColor = UIColor
+typealias HexColor = UIColor
 #else
 import Cocoa
-public typealias HexColor = NSColor
+typealias HexColor = NSColor
 #endif
 
 

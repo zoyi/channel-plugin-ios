@@ -10,15 +10,15 @@ import UIKit
 
 /// MarkdownCommentElement represent the default Markdown elements which only manipulate content 
 /// visually, (e.g. Bold or Italic)
-public protocol MarkdownCommonElement: MarkdownElement, MarkdownStyle {
+protocol MarkdownCommonElement: MarkdownElement, MarkdownStyle {
   func addAttributes(_ attributedString: NSMutableAttributedString, range: NSRange)
 }
 
-public protocol MarkdownCommonLexElement: MarkdownLexElement {
+protocol MarkdownCommonLexElement: MarkdownLexElement {
   
 }
 
-public extension MarkdownCommonElement {
+extension MarkdownCommonElement {
   func regularExpression() throws -> NSRegularExpression {
     return try NSRegularExpression(pattern: regex, options: [])
   }
@@ -37,7 +37,7 @@ public extension MarkdownCommonElement {
   }
 }
 
-public extension MarkdownCommonLexElement {
+extension MarkdownCommonLexElement {
   func regularLexExpression() throws -> NSRegularExpression {
     return try NSRegularExpression(pattern: lexRegex, options: [])
   }

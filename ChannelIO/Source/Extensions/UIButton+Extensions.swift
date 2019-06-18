@@ -29,15 +29,45 @@ extension UIButton {
       top: edgeOffset, left: 0.0,
       bottom: edgeOffset, right: 0.0)
   }
+  
+  private func imageWithColor(_ color: UIColor) -> UIImage? {
+    let rect = CGRect(x: 0.0, y:0.0, width: 1.0, height: 1.0)
+    UIGraphicsBeginImageContext(rect.size)
+    let context = UIGraphicsGetCurrentContext()
+    
+    context?.setFillColor(color.cgColor)
+    context?.fill(rect)
+    
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    
+    return image
+  }
+  
+  func setBackgroundColor(color: UIColor, forUIControlState state: UIControlState) {
+    self.setBackgroundImage(imageWithColor(color), for: state)
+  }
 }
 
-extension Reactive where Base: UIButton {
+extension Reactive where Base: UIControl {
   var isHighlighted: Observable<Bool> {
     let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isHighlighted))
     
     let boolObservable = anyObservable
       .flatMap { Observable.from(optional: $0.first as? Bool) }
       .startWith(self.base.isHighlighted)
+      .distinctUntilChanged()
+      .share()
+    
+    return boolObservable
+  }
+  
+  var isEnabled: Observable<Bool> {
+    let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isEnabled))
+    
+    let boolObservable = anyObservable
+      .flatMap { Observable.from(optional: $0.first as? Bool) }
+      .startWith(self.base.isEnabled)
       .distinctUntilChanged()
       .share()
     

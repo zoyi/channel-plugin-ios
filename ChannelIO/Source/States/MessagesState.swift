@@ -117,6 +117,7 @@ struct MessagesState: StateType {
   mutating func clear() -> MessagesState {
     self.messageDictionary.removeAll()
     self.actionQueue.removeAll()
+    self.supportBotEntry = nil
     return self
   }
 }

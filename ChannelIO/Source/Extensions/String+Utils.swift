@@ -43,6 +43,21 @@ extension String {
     return attributedText
   }
   
+  func addLineHeight(height: CGFloat, font: UIFont, color: UIColor, alignment: NSTextAlignment = .left) -> NSMutableAttributedString {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineBreakMode = .byWordWrapping
+    paragraphStyle.minimumLineHeight = height
+    paragraphStyle.alignment = alignment
+    
+    let attributes: [NSAttributedString.Key: Any] = [
+      .foregroundColor: color,
+      .font: font,
+      .paragraphStyle: paragraphStyle
+    ]
+    
+    return NSMutableAttributedString(string: self, attributes: attributes)
+  }
+  
   func replace(_ target: String, withString: String) -> String {
     return self.replacingOccurrences(of: target, with: withString, options: NSString.CompareOptions.literal, range: nil)
   }

@@ -252,4 +252,25 @@ struct PluginPromise {
       }
     })
   }
+  
+  static func getProfileSchemas(pluginId: String) -> Observable<[CHProfileSchema]> {
+    return Observable.create({ (subscriber) -> Disposable in
+      let req = Alamofire.request(RestRouter.GetProfileBotSchemas(pluginId))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { (response) in
+          switch response.result {
+          case .success(let data):
+            let json = SwiftyJSON.JSON(data)
+            let profiles = Mapper<CHProfileSchema>().mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
+            subscriber.onNext(profiles)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+        })
+      return Disposables.create {
+        req.cancel()
+      }
+    })
+  }
 }

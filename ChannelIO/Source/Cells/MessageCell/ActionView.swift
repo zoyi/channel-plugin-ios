@@ -57,12 +57,12 @@ class ActionButton: UIButton {
     }
   }
   
-  struct Metric {
+  struct Metrics {
     static let topBottomMargin = 10.f
     static let sideMargin = 12.f
   }
   
-  struct Constant {
+  struct Constants {
     static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
   }
   
@@ -81,19 +81,19 @@ class ActionButton: UIButton {
     self.titleLabel?.lineBreakMode = .byTruncatingTail
     self.titleLabel?.numberOfLines = 2
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-    self.titleLabel?.preferredMaxLayoutWidth = Constant.maxWidth
+    self.titleLabel?.preferredMaxLayoutWidth = Constants.maxWidth
  
     self.layer.cornerRadius = 15.f
     self.layer.borderWidth = 1.f
     self.layer.borderColor = CHColors.dark50.cgColor
     
     let size = self.text?.size(
-      fits: CGSize(width: Constant.maxWidth - (Metric.sideMargin * 2), height: 10000),
+      fits: CGSize(width: Constants.maxWidth - (Metrics.sideMargin * 2), height: 10000),
       maximumNumberOfLines: 2) ?? CGSize.zero
     
     self.frame = CGRect(x: 0, y: 0,
-        width: size.width + Metric.sideMargin * 2,
-        height: size.height + Metric.topBottomMargin * 2)
+        width: size.width + Metrics.sideMargin * 2,
+        height: size.height + Metrics.topBottomMargin * 2)
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -107,11 +107,11 @@ class ActionView: BaseView {
   var alignment: ActionAlignment = .right
   var actionSubject = PublishSubject<SubmitForm>()
   
-  struct Constant {
+  struct Constants {
     static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
   }
   
-  struct Metric {
+  struct Metrics {
     static let itemBetweenMargin = 4.f
     static let topBottomMargin = 10.f
     static let sideMargin = 12.f
@@ -157,7 +157,7 @@ class ActionView: BaseView {
     var lastButton: ActionButton!
     
     for (index, button) in self.buttons.enumerated() {
-      if Constant.maxWidth < cx + button.frame.width {
+      if Constants.maxWidth < cx + button.frame.width {
         let height = lastButton?.frame.origin.y ?? 0.f
         let y = lastButton?.frame.height ?? 0.f
         let margin = lastButton != nil ? 4.f : 0.f
@@ -205,17 +205,17 @@ class ActionView: BaseView {
 
     for (index, button) in buttons.enumerated() {
       let size = button.text?.size(
-        fits: CGSize(width: Constant.maxWidth - (Metric.sideMargin * 2), height: 10000),
+        fits: CGSize(width: Constants.maxWidth - (Metrics.sideMargin * 2), height: 10000),
         maximumNumberOfLines: 2) ?? CGSize.zero
       
-      let width = size.width + Metric.sideMargin * 2
-      let height = size.height + Metric.topBottomMargin * 2
+      let width = size.width + Metrics.sideMargin * 2
+      let height = size.height + Metrics.topBottomMargin * 2
       
-      if Constant.maxWidth < cx + width {
-        cy += height + Metric.itemBetweenMargin
-        cx = width  + Metric.itemBetweenMargin
+      if Constants.maxWidth < cx + width {
+        cy += height + Metrics.itemBetweenMargin
+        cx = width  + Metrics.itemBetweenMargin
       } else {
-        cx += width + Metric.itemBetweenMargin
+        cx += width + Metrics.itemBetweenMargin
       }
       
       if index == buttons.count - 1 {

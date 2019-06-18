@@ -26,7 +26,11 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
     return state?.upsert(bot: action.payload.bot) ?? BotsState()
     
   case let action as GetPlugin:
-    return state?.upsert(bot: action.bot) ?? BotsState()
+    if var bot = action.bot {
+      bot.isDefaultBot = true
+      return state?.upsert(bot: bot) ?? BotsState()
+    }
+    return state ?? BotsState()
     
   case let action as GetSupportBotEntry:
     if let bot = action.entry.supportBot {

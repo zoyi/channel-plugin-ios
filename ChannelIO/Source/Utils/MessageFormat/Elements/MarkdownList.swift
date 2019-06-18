@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownList: MarkdownLevelElement {
+class MarkdownList: MarkdownLevelElement {
 
   fileprivate static let regex = "^([\\*\\+\\-]{1,%@})\\s+(.+)$"
 

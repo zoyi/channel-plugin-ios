@@ -24,10 +24,44 @@ class CHNavigationBar: UINavigationBar {
       for subview in self.subviews {
         if String(describing: subview.classForCoder).contains("ContentView") {
           //let oldEdges = subview.layoutMargins
-          subview.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 12)
+          subview.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 12)
         }
       }
     }
+  }
+}
+
+class NavigationRoundLabelBackItem: UIBarButtonItem {
+  convenience init(
+    text: String? = "",
+    textColor: UIColor? = .white,
+    textBackgroundColor: UIColor? = .white,
+    actionHandler: (() -> Void)?) {
+    
+    let button = RoundLabelBackButton(frame: .zero)
+    button.configure(text: text, textColor: textColor, tintColor: textBackgroundColor)
+
+    var defaultWidth: CGFloat = 30
+    if let count = text?.count {
+      if count == 1 {
+        defaultWidth = 38
+      } else if count == 2{
+        defaultWidth = 44
+      } else if count > 2 {
+        defaultWidth = 50
+      }
+    }
+    
+    button.widthAnchor.constraint(equalToConstant: defaultWidth).isActive = true
+    button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    button.translatesAutoresizingMaskIntoConstraints = false
+    
+    self.init(customView: button)
+    //TODO: when set target with touchdown, clickable area is somehow too edge
+    //when do with tap gesture, control event not properly called
+    _ = button.signalForClick().subscribe(onNext: { (_) in
+      actionHandler?()
+    })
   }
 }
 
@@ -39,20 +73,23 @@ class NavigationItem: UIBarButtonItem {
     text: String? = "",
     fitToSize: Bool = false,
     alignment: NavigationItemAlign = .left,
-    textColor: UIColor? = UIColor.white,
+    textColor: UIColor? = .white,
+    textBackgroundColor: UIColor? = .white,
     actionHandler: (() -> Void)?) {
     
     let button = UIButton(type: .custom)
     button.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
-    button.setTitle(text, for: .normal)
     button.imageView?.tintColor = textColor
+    
+    button.setTitle(text, for: .normal)
     button.setTitleColor(textColor, for: .normal)
+  
     if fitToSize {
       button.sizeToFit()
     }
     
     if alignment == .left {
-      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: text == "" ? -20 : -10, bottom: 0, right: 0)
+      button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
       button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
     } else if alignment == .right {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -20)
@@ -61,8 +98,18 @@ class NavigationItem: UIBarButtonItem {
       button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 0)
       button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
     }
+    var defaultWidth: CGFloat = 30
+    if let count = text?.count {
+      if count == 1 {
+        defaultWidth = 38
+      } else if count == 2{
+        defaultWidth = 44
+      } else if count > 2 {
+        defaultWidth = 50
+      }
+    }
     
-    button.widthAnchor.constraint(equalToConstant: 55).isActive = true
+    button.widthAnchor.constraint(equalToConstant: defaultWidth).isActive = true
     button.heightAnchor.constraint(equalToConstant: 40).isActive = true
     button.translatesAutoresizingMaskIntoConstraints = false
     

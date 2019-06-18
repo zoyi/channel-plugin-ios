@@ -22,8 +22,8 @@ struct CHUser: CHGuest, CHEntity {
   var mobileNumber: String?
   var profile: [String : Any]?
   var segment: String?
-  var alert = 0
-  var unread = 0
+  var alert: Int? = nil
+  var unread: Int? = nil
   
   var country: String = ""
   var city:String = ""

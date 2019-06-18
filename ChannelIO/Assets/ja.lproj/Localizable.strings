@@ -35,7 +35,7 @@
 "ch.toast.reconnecting" = "インターネットに再接続しています。";
 "ch.mobile_verification.locale_en" = "アメリカ";
 "ch.photo.album" = "アルバム";
-"ch.message_input.placeholder" = "メッセージを入力してください";
+"ch.message_input.placeholder" = "メッセージ入力";
 "ch.mobile_verification.reinput.description" = "はい。可能です。回答と本人確認のため携帯番号番の入力をお願いします。";
 "ch.loading_information" = "読み込み中...";
 "ch.photo.url_copied_to_clipboard" = "画像のURLがクリップボードにコピーされました";
@@ -73,14 +73,12 @@
 "ch.chat.delete_menu_title" = "チャットを削除する";
 "ch.camera" = "カメラ";
 "ch.chat.delete_description" = "チャットルームを削除しますか？";
-"ch.chat.empty_description" = "右下のボタンを押して\
-新しい会話を始めてみましょう";
+"ch.chat.empty_description" = "対応中のお問い合わせはありません";
 "ch.button_cancel" = "キャンセル";
 "ch.button_reply" = "返信";
 "ch.settings.my_info" = "個人情報と設定";
 "ch.settings.name_placeholder" = "名前を入力";
 "ch.settings.phone_number_placeholder" = "電話番号入力";
-"ch.settings.show_closed_chat" = "評価済みの問合せを確認する";
 "ch.settings.close_chat" = "チャットを削除する";
 "ch.settings.edit.name_label" = "名前を入力する";
 "ch.settings.edit.name_placeholder" = "お名前を入力してください。";
@@ -120,7 +118,7 @@
 "ch.new_message" = "新しいメッセージ";
 "ch.chat.expect_response_delay.instant" = "応答までの時間 早い";
 "ch.chat.expect_response_delay.instant.description" = "通常数分内にご返信致します";
-"ch.chat.expect_response_delay.normal.description" = "通常30分内に返信します";
+"ch.chat.expect_response_delay.normal.description" = "通常、数十分以内にご返信しています";
 "ch.chat.expect_response_delay.normal" = "応答までの時間 普通";
 "ch.chat.expect_response_delay.delayed.description" = "返信まで数時間かかる場合がございます\
 ご理解くださいませ";
@@ -128,7 +126,7 @@
 "ch.chat.expect_response_delay.out_of_working.description" = "ご不明点を送っていただくと、できる限り早く回答をいたします";
 "ch.chat.expect_response_delay.out_of_working" = "運営時間外";
 "ch.chat.expect_response_delay.instant.short_description" = "通常数分内にご返信致します";
-"ch.chat.expect_response_delay.normal.short_description" = "通常30分内に返信します";
+"ch.chat.expect_response_delay.normal.short_description" = "通常、数十分以内にご返信しています";
 "ch.chat.expect_response_delay.delayed.short_description" = "返信が遅くなる場合があります";
 "ch.chat.expect_response_delay.out_of_working.short_description" = "現在は運営時間外です";
 "ch.chat.expect_response_delay.out_of_working.detail" = "営業時間を確認する";
@@ -145,7 +143,7 @@
 "ko" = "한국어";
 "en" = "English";
 "ja" = "日本語";
-"ch.message_input.placeholder.disabled_new_chat" = "問い合わせの受付時間外です";
+"ch.message_input.placeholder.disabled_new_chat" = "只今、営業時間外です。お手数おかけしますが、営業時間に再度お問い合わせ頂けますと幸いです";
 "ch.chat.expect_response_delay.out_of_working.disabled" = "運営時間外には新たな問い合わせを受けられません";
 "ch.profile_form.placeholder" = "ご入力ください";
 "ch.profile_form.error" = "正しい形式でご入力ください";
@@ -156,3 +154,19 @@
 "ch.common.open" = "オープン";
 "ch.common.cancel" = "キャンセル";
 "ch.chat.push_bot_like" = "いいね";
+"ch.error.common.description" = "おっと、内容の読み込みに失敗しました。";
+"ch.lounge.recent_chat" = "直近の問い合わせ";
+"ch.integrations.title" = "他の方法でお問い合わせ";
+"ch.integrations.copy_link.success" = "クリップボードにコピーされました";
+"ch.lounge.see_all" = "一覧";
+"ch.navigation.next_operation.hour_left" = "営業時間%d時間前";
+"ch.navigation.next_operation.minutes_left" = "営業時間%d分前";
+"ch.business_hours" = "営業時間";
+"ch.settings.options" = "オプション";
+"ch.settings.my_profile" = "マイプロフィール";
+"ch.settings.empty_content" = "なし";
+"ch.settings.edit_profile" = "編集";
+"ch.settings.save" = "保存";
+"ch.loader.updating" = "更新中 ...";
+"ch.lounge.proceeding_chat" = "会話中のチャット";
+"ch.lounge.show_previous_chats" = "過去の%s件のチャットをみる";

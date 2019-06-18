@@ -18,6 +18,8 @@ struct CHColors {
   static let gray = UIColor("#7C858C")!
   static let white = UIColor.white
   static let black = UIColor.black
+  static let black60 = UIColor.black.withAlphaComponent(0.6)
+  static let black10 = UIColor.black.withAlphaComponent(0.1)
   static let yellowishOrange = UIColor("#ffa908")!
   static let lightGray = UIColor("#eef1f4")!
   static let darkTwo = UIColor(red: 81/255,
@@ -36,8 +38,10 @@ struct CHColors {
   static let lightSnow = UIColor("#fbfbfc")!
   static let yellow = UIColor("#ffa908")!
   static let defaultTint = UIColor("#007aff")!
-  static let dark10 = UIColor("#3f152128")!
+  static let dark10 = UIColor("#51637819")!
   static let paleGrey = UIColor("#eaeff4")!
+  static let paleGreyFour = UIColor("#fbfbfc")!
+  static let paleGreyFour0 = UIColor("#fbfbfc")!.withAlphaComponent(0.0)
   static let iceBlue = UIColor("#ecf9ff")!
   static let paleSkyBlue = UIColor("#b7e7ff")!
   static let white15 = UIColor("#ffffff26")!
@@ -48,9 +52,11 @@ struct CHColors {
   static let dark80 = UIColor("#516378cc")!
   static let silver = UIColor("#c0c9d0")!
   static let paleGrey20 = UIColor("#eaeff4")!
+  static let paleGrey30 = UIColor("#f3f4f5")!
   static let brightSkyBlue = UIColor("#00c3ff")!
   static let warmGrey = UIColor("#9b9b9b")!
   static let pumpkinOrange = UIColor("#fb8200")!
   static let neonRed = UIColor("#f90d3c")!
+  static let white70 = UIColor("#ffffffb3")!
 }
 

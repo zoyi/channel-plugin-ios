@@ -109,7 +109,7 @@ extension ChannelIO {
             return
           }
 
-          if channel.notAllowToUseSDK && !channel.trial {
+          if !channel.canUseSDK {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }
@@ -145,9 +145,11 @@ extension ChannelIO {
       //chat view but different chatId
       if let userChatViewController = topController as? UserChatViewController {
         if userChatViewController.userChatId != userChatId {
-          userChatViewController.navigationController?.popViewController(animated: true, completion: {
-            if let userChatsController = CHUtils.getTopController() as? UserChatsViewController {
-              userChatsController.showUserChat(userChatId: userChatId)
+          userChatViewController.navigationController?.popToRootViewController(animated: true, completion: {
+            if let loungeView = CHUtils.getTopController() as? LoungeView,
+              let presenter = loungeView.presenter as? LoungePresenter,
+              let router = presenter.router {
+              router.pushChat(with: userChatId, animated: animated, from: loungeView)
             }
           })
         }
@@ -158,14 +160,8 @@ extension ChannelIO {
       }
       //no channel views
       else {
-        let userChatsController = UserChatsViewController()
-        userChatsController.showNewChat = userChatId == nil
-        userChatsController.shouldHideTable = true
-        if let userChatId = userChatId {
-          userChatsController.goToUserChatId = userChatId
-        }
-        
-        let controller = MainNavigationController(rootViewController: userChatsController)
+        let loungeView = LoungeRouter.createModule(with: userChatId)
+        let controller = MainNavigationController(rootViewController: loungeView)
         ChannelIO.baseNavigation = controller
         
         topController.present(controller, animated: animated, completion: nil)
@@ -291,6 +287,7 @@ extension ChannelIO {
   @objc internal class func enterBackground() {
     WsService.shared.disconnect()
     ChannelIO.willBecomeActive = false
+    NotificationCenter.default.post(name: Notification.Name.Channel.enterBackground, object: nil)
   }
   
   @objc internal class func enterForeground() {
@@ -301,6 +298,7 @@ extension ChannelIO {
       mainStore.dispatch(UpdateGuest(payload: guest))
     })
     WsService.shared.connect()
+    NotificationCenter.default.post(name: Notification.Name.Channel.enterForeground, object: nil)
   }
   
   @objc internal class func appBecomeActive(_ application: UIApplication) {

@@ -29,7 +29,11 @@ struct BotsState: StateType {
   }
   
   func findBy(ids: [String]) -> [CHBot] {
-    return self.botDictionary.filter({ ids.index(of: $0.key) != nil }).map({ $1 })
+    return self.botDictionary.filter({ ids.firstIndex(of: $0.key) != nil }).map({ $1 })
+  }
+  
+  func findDefaultBot() -> CHBot? {
+    return self.botDictionary.filter { $1.isDefaultBot }.map { $1 }.first
   }
   
   func findSupportBot() -> CHSupportBot? {

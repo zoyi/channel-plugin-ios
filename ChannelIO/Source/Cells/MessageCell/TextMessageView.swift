@@ -16,14 +16,14 @@ let placeHolder = UITextView()
   }
 
 class TextMessageView : BaseView {
-  struct Metric {
+  struct Metrics {
     static let topBottomPadding = 10.f
     static let leftRightPadding = 12.f
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
   }
 
-  struct Constant {
+  struct Constants {
     static let cornerRadius = 12.f
     static let singleCornerRadius = 2.f
     static let actionViewBottomRadius = 12.f
@@ -66,7 +66,7 @@ class TextMessageView : BaseView {
     super.initialize()
     self.messageView.delegate = self
     
-    self.layer.cornerRadius = Constant.singleCornerRadius
+    self.layer.cornerRadius = Constants.singleCornerRadius
     self.addSubview(self.messageView)
   }
   
@@ -74,10 +74,10 @@ class TextMessageView : BaseView {
     super.setLayouts()
 
     self.messageView.snp.makeConstraints({ [weak self] (make) in
-      self?.leadingConstraint = make.leading.equalToSuperview().inset(Metric.leftRightPadding).constraint
-      self?.topConstraint = make.top.equalToSuperview().inset(Metric.topBottomPadding).constraint
-      self?.trailingConstraint = make.trailing.equalToSuperview().inset(Metric.leftRightPadding).constraint
-      self?.bottomConstraint = make.bottom.equalToSuperview().inset(Metric.topBottomPadding).constraint
+      self?.leadingConstraint = make.leading.equalToSuperview().inset(Metrics.leftRightPadding).constraint
+      self?.topConstraint = make.top.equalToSuperview().inset(Metrics.topBottomPadding).constraint
+      self?.trailingConstraint = make.trailing.equalToSuperview().inset(Metrics.leftRightPadding).constraint
+      self?.bottomConstraint = make.bottom.equalToSuperview().inset(Metrics.topBottomPadding).constraint
     })
   }
 
@@ -88,15 +88,15 @@ class TextMessageView : BaseView {
     self.isHidden = viewModel.message.isEmpty()
     
     if !viewModel.message.onlyEmoji {
-      self.leadingConstraint?.update(inset: Metric.leftRightPadding)
-      self.trailingConstraint?.update(inset: Metric.leftRightPadding)
-      self.topConstraint?.update(inset: Metric.topBottomPadding)
-      self.bottomConstraint?.update(inset: Metric.topBottomPadding)
+      self.leadingConstraint?.update(inset: Metrics.leftRightPadding)
+      self.trailingConstraint?.update(inset: Metrics.leftRightPadding)
+      self.topConstraint?.update(inset: Metrics.topBottomPadding)
+      self.bottomConstraint?.update(inset: Metrics.topBottomPadding)
     } else {
-      self.leadingConstraint?.update(inset: Metric.minimalLeftRightPadding)
-      self.trailingConstraint?.update(inset: Metric.minimalLeftRightPadding)
-      self.topConstraint?.update(inset: Metric.minimalTopBottomPadding)
-      self.bottomConstraint?.update(inset: Metric.minimalTopBottomPadding)
+      self.leadingConstraint?.update(inset: Metrics.minimalLeftRightPadding)
+      self.trailingConstraint?.update(inset: Metrics.minimalLeftRightPadding)
+      self.topConstraint?.update(inset: Metrics.minimalTopBottomPadding)
+      self.bottomConstraint?.update(inset: Metrics.minimalTopBottomPadding)
     }
     
     if viewModel.translateState == .translated {
@@ -120,22 +120,22 @@ class TextMessageView : BaseView {
     super.updateConstraints()
     
     if self.viewModel?.isContinuous == true {
-      self.roundCorners(corners: [.allCorners], radius: Constant.cornerRadius)
+      self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
     } else if self.viewModel?.createdByMe == true {
-      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
     } else {
-      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
     }
   }
   
   override func layoutSubviews() {
     super.layoutSubviews()
     if self.viewModel?.isContinuous == true {
-      self.roundCorners(corners: [.allCorners], radius: Constant.cornerRadius)
+      self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
     } else if self.viewModel?.createdByMe == true {
-      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
     } else {
-      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constant.cornerRadius)
+      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
     }
   }
   
@@ -147,11 +147,11 @@ class TextMessageView : BaseView {
       viewModel.message.translatedText
     
     let maxWidth = !viewModel.message.onlyEmoji ?
-      width - Metric.leftRightPadding * 2 :
-      width - Metric.minimalLeftRightPadding * 2
+      width - Metrics.leftRightPadding * 2 :
+      width - Metrics.minimalLeftRightPadding * 2
     
     let topBottomPadding = viewModel.message.onlyEmoji ?
-      Metric.minimalTopBottomPadding * 2 : Metric.topBottomPadding * 2
+      Metrics.minimalTopBottomPadding * 2 : Metrics.topBottomPadding * 2
     //viewHeight = message.height(fits: maxWidth - 3) + topBottomPadding
     
     placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)

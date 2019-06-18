@@ -18,7 +18,7 @@ final class PhoneActionView: BaseView, Actionable {
     static let defaultDailCode = "+82"
   }
   
-  struct Metric {
+  struct Metrics {
     static let countryLabelLeading = 16.f
     static let arrowImageLeading = 3.f
     static let arrowImageTrailing = 3.f
@@ -155,14 +155,14 @@ final class PhoneActionView: BaseView, Actionable {
     }
     
     self.arrowDownView.snp.makeConstraints { [weak self] (make) in
-      make.size.equalTo(Metric.arrowImageSize)
-      make.left.equalTo((self?.countryLabel.snp.right)!).offset(Metric.arrowImageLeading)
+      make.size.equalTo(Metrics.arrowImageSize)
+      make.left.equalTo((self?.countryLabel.snp.right)!).offset(Metrics.arrowImageLeading)
       make.centerY.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.arrowImageTrailing)
+      make.trailing.equalToSuperview().inset(Metrics.arrowImageTrailing)
     }
     
     self.phoneField.snp.makeConstraints { [weak self] (make) in
-      make.left.equalTo((self?.countryCodeView.snp.right)!).offset(Metric.phoneFieldLeading)
+      make.left.equalTo((self?.countryCodeView.snp.right)!).offset(Metrics.phoneFieldLeading)
       make.right.equalTo((self?.confirmButton.snp.left)!)
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()

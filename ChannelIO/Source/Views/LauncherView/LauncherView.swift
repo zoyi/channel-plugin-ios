@@ -24,13 +24,14 @@ final class LauncherView : BaseView {
   // MARK: Properties 
   
   let badgeView = Badge().then {
+    $0.minWidth = 10.f
     $0.layer.shadowColor = CHColors.dark20.cgColor
     $0.layer.shadowOpacity = 0.2
     $0.layer.shadowOffset = CGSize(width: 0, height: 1)
     $0.layer.shadowRadius = 2
   }
   let disposeBag = DisposeBag()
-  let buttonView = CHButton.launcher()
+  let buttonView = CHButtonFactory.launcher()
   
   //refactor this as general button
   let buttonLayerView = UIView().then {

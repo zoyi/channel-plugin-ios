@@ -18,8 +18,8 @@ struct CHVeil: CHGuest, CHEntity {
   var named = false
   var mobileNumber: String?
   
-  var alert = 0
-  var unread = 0
+  var alert: Int? = nil
+  var unread: Int? = nil
   var segment: String?
   var profile: [String : Any]?
   

@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownLink: MarkdownLinkElement {
+class MarkdownLink: MarkdownLinkElement {
   
   fileprivate static let regex = "(\\[[^\\n\\[]*?\\])?\\<[^<>\\n]+\\>"
   

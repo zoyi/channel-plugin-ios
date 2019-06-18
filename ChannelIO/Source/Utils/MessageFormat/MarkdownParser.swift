@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownParser {
+class MarkdownParser {
 
   // MARK: Element Arrays
   fileprivate var escapingElements: [MarkdownElement]
@@ -70,7 +70,7 @@ open class MarkdownParser {
   }
 
   open func removeCustomElement(_ element: MarkdownElement) {
-    guard let index = customElements.index(where: { someElement -> Bool in
+    guard let index = customElements.firstIndex(where: { someElement -> Bool in
       return element === someElement
     }) else {
       return

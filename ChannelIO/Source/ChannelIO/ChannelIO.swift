@@ -6,23 +6,18 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import Foundation
-import Reusable
 import SnapKit
 import ReSwift
 import RxSwift
 import UserNotifications
-import SVProgressHUD
-import CRToast
-import AVFoundation
 
-let mainStore = Store<AppState>(
+internal let mainStore = Store<AppState>(
   reducer: appReducer,
   state: nil,
   middleware: [loggingMiddleware]
 )
 
-func dlog(_ str: String) {
+internal func dlog(_ str: String) {
   guard ChannelIO.settings?.debugMode == true else { return }
   print("[ChannelIO]: \(str)")
 }
@@ -33,8 +28,9 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func onClickChatLink(url: URL) -> Bool /* notifiy if a link is clicked */
   @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
-  @objc optional func onReceivePush(event: PushEvent) -> Void
-  @objc optional func onClickRedirect(url: URL) -> Bool
+  @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
+  @objc optional func onClickRedirect(url: URL) -> Bool /* notify when a user click on a link */
+  @objc optional func onChangeProfile(key: String, value: Any?) -> Void /* notify when the guest profile has been changed */
 }
 
 @objc
@@ -49,12 +45,20 @@ public final class ChannelIO: NSObject {
   }
   
   internal static var chatNotificationView: ChatNotificationView?
-  internal static var baseNavigation: BaseNavigationController?
+  internal static var baseNavigation: BaseNavigationController? {
+    willSet {
+      if ChannelIO.baseNavigation == nil && newValue != nil {
+        ChannelAvailabilityChecker.shared.run()
+      } else {
+        ChannelAvailabilityChecker.shared.stop()
+      }
+    }
+  }
   internal static var subscriber : CHPluginSubscriber?
 
   internal static var disposeBag = DisposeBag()
   internal static var pushToken: String?
-  internal static var currentAlertCount = 0
+  internal static var currentAlertCount: Int? = nil
 
   static var isValidStatus: Bool {
     return mainStore.state.checkinState.status == .success &&
@@ -99,8 +103,10 @@ public final class ChannelIO: NSObject {
       }
     }
     
-    func handleBadge(_ count: Int) {
-      if ChannelIO.currentAlertCount != count {
+    func handleBadge(_ count: Int?) {
+      guard let count = count else { return }
+      
+      if let curr = ChannelIO.currentAlertCount, curr != count {
         ChannelIO.delegate?.onChangeBadge?(count: count)
       }
       ChannelIO.currentAlertCount = count
@@ -110,9 +116,9 @@ public final class ChannelIO: NSObject {
   // MARK: Public
 
   /**
-   * Initialize ChannelIO
+   *  Initialize ChannelIO
    *
-   * - parameter application: application instance
+   *  - parameter application: application instance
    */
   @objc
   public class func initialize(_ application: UIApplication) {
@@ -323,9 +329,8 @@ public final class ChannelIO: NSObject {
       ChannelIO.delegate?.willShowMessenger?()
 
       mainStore.dispatch(ChatListIsVisible())
-
-      let userChatsController = UserChatsViewController()
-      let controller = MainNavigationController(rootViewController: userChatsController)
+      let loungeView = LoungeRouter.createModule()
+      let controller = MainNavigationController(rootViewController: loungeView)
       ChannelIO.baseNavigation = controller
 
       topController.present(controller, animated: animated, completion: nil)
@@ -370,32 +375,34 @@ public final class ChannelIO: NSObject {
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
   
+  /**
+   *  Update user profile (objective-c)
+   *
+   *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
+   *                       to remove existing value
+   */
+  @objc
+  public class func updateGuest(_ profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+    let profile:[String: Any?] = profile.mapValues { (value) -> Any? in
+      return value is NSNull ? nil : value
+    }
+    ChannelIO.updateGuest(with: profile, completion: completion)
+  }
   
   /**
    *  Update user profile
    *
-   *  - parameter
+   *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
+   *                       to remove existing value
    */
-  @objc
-  private class func updateGuest(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
-    GuestPromise.updateGuest(with: profile)
-      .subscribe(onNext: { (guest) in
-        completion?(true, Guest(with: guest))
-      }, onError: { error in
-        completion?(false, nil)
-      }).disposed(by: disposeBag)
-  }
-  
-  /**
-   *  Update user profile once. If you provide already existed user profile, it won't update the guest profile.
-   *
-   *  - parameter
-   */
-  @objc
-  private class func updateGuestOnce(with profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
-    GuestPromise.updateGuest(with: profile)
-      .subscribe(onNext: { (guest) in
-        completion?(true, Guest(with: guest))
+  public class func updateGuest(with profile: [String: Any?], completion: ((Bool, Guest?) -> Void)? = nil) {
+    GuestPromise.updateProfile(with: profile)
+      .subscribe(onNext: { (guest, error) in
+        if let guest = guest {
+          completion?(true, Guest(with: guest))
+        } else {
+          completion?(false, nil)
+        }
       }, onError: { error in
         completion?(false, nil)
       }).disposed(by: disposeBag)

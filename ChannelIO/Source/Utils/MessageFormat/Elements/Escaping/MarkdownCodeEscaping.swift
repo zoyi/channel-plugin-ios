@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class MarkdownCodeEscaping: MarkdownElement {
+class MarkdownCodeEscaping: MarkdownElement {
 
   fileprivate static let regex = "(?<!\\\\)(?:\\\\\\\\)*+(`+)(.*?[^`].*?)(\\1)(?!`)"
 

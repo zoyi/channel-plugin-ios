@@ -35,7 +35,6 @@ class MessagesStateTests: QuickSpec {
     }
     
     describe("findBy") {
-      
       it("message type") {
         let find = state.findBy(type: .Default)
         
@@ -58,11 +57,9 @@ class MessagesStateTests: QuickSpec {
         expect(find.count).to(equal(1))
         expect(find.first!.id).to(equal("2"))
       }
-      
     }
     
     describe("remove") {
-      
       it("by message") {
         let message = CHMessage(chatId: "1",
           message: "message 1", type: .Default,
@@ -115,7 +112,6 @@ class MessagesStateTests: QuickSpec {
     }
     
     describe("upsert") {
-      
       it("insert new") {
         let message = CHMessage(
           chatId: "dummy",

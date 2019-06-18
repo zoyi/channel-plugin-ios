@@ -16,10 +16,9 @@ final class CountryCodePickerView : BaseView {
   var bottomContraint: Constraint?
   var pickedCode = "" {
     didSet {
-      let index = self.countries.index { (country) -> Bool in
+      if let index = self.countries.firstIndex(where: { (country) -> Bool in
         return country.code == self.pickedCode
-      }
-      if let index = index {
+      }) {
         self.pickerView.selectRow(index, inComponent: 0, animated: false)
         self.selectedIndex = index
       }

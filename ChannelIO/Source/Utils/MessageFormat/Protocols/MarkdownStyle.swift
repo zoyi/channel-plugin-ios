@@ -9,14 +9,13 @@
 import UIKit
 
 /// Styling protocol for all MarkdownElements
-public protocol MarkdownStyle {
-  
+protocol MarkdownStyle {
   var font: UIFont? { get }
   var color: UIColor? { get }
   var attributes: [NSAttributedString.Key: Any] { get }
 }
 
-public extension MarkdownStyle {
+extension MarkdownStyle {
   var attributes: [NSAttributedString.Key: Any] {
     var attributes = [NSAttributedString.Key: Any]()
     if let font = font {

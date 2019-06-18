@@ -24,14 +24,14 @@ class AvatarView: NeverClearView {
   }
 
   // MARK: Properties
-  let avatarImageView = UIImageView().then {
+  let avatarImageView = FLAnimatedImageView().then {
     $0.clipsToBounds = true
     $0.backgroundColor = UIColor.white
   }
   
   let onlineView = UIView().then {
     $0.isHidden = true
-    $0.layer.borderWidth = 2
+    $0.layer.borderWidth = 1
     $0.layer.borderColor = UIColor.white.cgColor
     $0.backgroundColor = CHColors.shamrockGreen
   }
@@ -84,12 +84,12 @@ class AvatarView: NeverClearView {
       make.edges.equalToSuperview().inset(1)
     }
     
-    self.onlineView.layer.cornerRadius = 6
+    self.onlineView.layer.cornerRadius = 4
     self.onlineView.snp.makeConstraints { [weak self] (make) in
       make.bottom.equalTo((self?.avatarImageView.snp.bottom)!)
       make.right.equalTo((self?.avatarImageView.snp.right)!).offset(2)
-      make.height.equalTo(12)
-      make.width.equalTo(12)
+      make.height.equalTo(8)
+      make.width.equalTo(8)
     }
   }
 
@@ -105,10 +105,15 @@ class AvatarView: NeverClearView {
         self.avatarImageView.image = CHAssets.getImage(named: url)
       }
       self.avatarImageView.isHidden = false
+    } else {
+      self.avatarImageView.isHidden = true
     }
     
-    if let manager = avatar as? CHManager, manager.online && self.showOnline {
+    if let manager = avatar as? CHManager, self.showOnline {
       self.onlineView.isHidden = false
+      self.onlineView.backgroundColor = manager.online ?
+        CHColors.shamrockGreen :
+        CHColors.blueyGrey
     } else {
       self.onlineView.isHidden = true
     }

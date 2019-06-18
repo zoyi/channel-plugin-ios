@@ -14,8 +14,8 @@ import SDWebImage
 final class ChatNotificationView : BaseView {
   var topLayoutGuide: UILayoutSupport?
   
-  // MARK: Constants
-  struct Metric {
+  // MARK: Constantss
+  struct Metrics {
     static let AvatarSide = 48.f
     static let AvatarTop = -12.f
     static let AvatarLeading = 14.f
@@ -43,20 +43,20 @@ final class ChatNotificationView : BaseView {
     static let maxWidth = 520.f
   }
   
-  struct Font {
+  struct Fonts {
     static let messageLabel = UIFont.systemFont(ofSize: 14)
     static let nameLabel = UIFont.boldSystemFont(ofSize: 13)
     static let timestampLabel = UIFont.systemFont(ofSize: 11)
   }
   
-  struct Color {
+  struct Colors {
     static let border = CHColors.white.cgColor
     static let messageLabel = CHColors.charcoalGrey
     static let nameLabel = CHColors.charcoalGrey
     static let timeLabel = CHColors.warmGrey
   }
   
-  struct Constant {
+  struct Constants {
     static let titleLabelNumberOfLines = 1
     static let messageLabelNumberOfLines = 4
     static let timestampLabelNumberOfLines = 1
@@ -72,8 +72,8 @@ final class ChatNotificationView : BaseView {
   let messageView = UITextView().then {
     $0.isScrollEnabled = false
     $0.isEditable = false
-    $0.font = Font.messageLabel
-    $0.textColor = Color.messageLabel
+    $0.font = Fonts.messageLabel
+    $0.textColor = Colors.messageLabel
     $0.textContainer.maximumNumberOfLines = 3
     $0.textContainer.lineBreakMode = .byTruncatingTail
     
@@ -88,9 +88,9 @@ final class ChatNotificationView : BaseView {
   }
   
   let nameLabel = UILabel().then {
-    $0.font = Font.nameLabel
-    $0.textColor = Color.nameLabel
-    $0.numberOfLines = Constant.nameLabelNumberOfLines
+    $0.font = Fonts.nameLabel
+    $0.textColor = Colors.nameLabel
+    $0.numberOfLines = Constants.nameLabelNumberOfLines
   }
   
   let titleLabel = UILabel().then {
@@ -100,8 +100,8 @@ final class ChatNotificationView : BaseView {
   }
   
   let timestampLabel = UILabel().then {
-    $0.font = Font.timestampLabel
-    $0.textColor = Color.timeLabel
+    $0.font = Fonts.timestampLabel
+    $0.textColor = Colors.timeLabel
     $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
   
@@ -148,16 +148,16 @@ final class ChatNotificationView : BaseView {
     
     self.backgroundColor = CHColors.white
     
-    self.layer.cornerRadius = Constant.cornerRadius
-    self.layer.shadowColor = Constant.shadowColor
-    self.layer.shadowOffset = Constant.shadowOffset
-    self.layer.shadowRadius = Constant.shadowBlur
-    self.layer.shadowOpacity = Float(Constant.shadowOpacity)
+    self.layer.cornerRadius = Constants.cornerRadius
+    self.layer.shadowColor = Constants.shadowColor
+    self.layer.shadowOffset = Constants.shadowOffset
+    self.layer.shadowRadius = Constants.shadowBlur
+    self.layer.shadowOpacity = Float(Constants.shadowOpacity)
     
     self.avatarView.layer.shadowColor = CHColors.dark10.cgColor
     self.avatarView.layer.shadowOffset = CGSize(width: 0.f, height: 2.f)
     self.avatarView.layer.shadowRadius = 4
-    self.avatarView.layer.shadowOpacity = Float(Constant.shadowOpacity)
+    self.avatarView.layer.shadowOpacity = Float(Constants.shadowOpacity)
     
     self.messageView.delegate = self
     
@@ -185,15 +185,15 @@ final class ChatNotificationView : BaseView {
     super.setLayouts()
     
     self.avatarView.snp.makeConstraints { (make) in
-      make.height.equalTo(Metric.AvatarSide)
-      make.width.equalTo(Metric.AvatarSide)
-      make.leading.equalToSuperview().inset(Metric.AvatarLeading)
-      make.top.equalToSuperview().inset(Metric.AvatarTop)
+      make.height.equalTo(Metrics.AvatarSide)
+      make.width.equalTo(Metrics.AvatarSide)
+      make.leading.equalToSuperview().inset(Metrics.AvatarLeading)
+      make.top.equalToSuperview().inset(Metrics.AvatarTop)
     }
     
     self.nameLabel.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(Metric.NameLeading)
-      make.top.equalToSuperview().inset(Metric.NameTop)
+      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(Metrics.NameLeading)
+      make.top.equalToSuperview().inset(Metrics.NameTop)
     }
     
     self.timestampLabel.snp.makeConstraints { [weak self] (make) in
@@ -202,38 +202,38 @@ final class ChatNotificationView : BaseView {
     }
     
     self.closeView.snp.makeConstraints { [weak self] (make) in
-      make.leading.greaterThanOrEqualTo((self?.timestampLabel.snp.trailing)!).offset(Metric.CloseLeading)
+      make.leading.greaterThanOrEqualTo((self?.timestampLabel.snp.trailing)!).offset(Metrics.CloseLeading)
       make.trailing.equalToSuperview()
       make.top.equalToSuperview()
-      make.height.equalTo(Metric.CloseSide)
-      make.width.equalTo(Metric.CloseSide)
+      make.height.equalTo(Metrics.CloseSide)
+      make.width.equalTo(Metrics.CloseSide)
     }
     
     self.titleLabel.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview().inset(Metric.MessageLeading)
-      make.top.equalToSuperview().inset(Metric.MessageTop)
-      make.trailing.equalToSuperview().inset(Metric.MessageTrailing)
+      make.leading.equalToSuperview().inset(Metrics.MessageLeading)
+      make.top.equalToSuperview().inset(Metrics.MessageTop)
+      make.trailing.equalToSuperview().inset(Metrics.MessageTrailing)
     }
     
     self.messageView.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalToSuperview().inset(Metric.MessageLeading)
-      self?.messageTopConstraint = make.top.equalToSuperview().inset(Metric.MessageTop).constraint
-      make.trailing.equalToSuperview().inset(Metric.MessageTrailing)
+      make.leading.equalToSuperview().inset(Metrics.MessageLeading)
+      self?.messageTopConstraint = make.top.equalToSuperview().inset(Metrics.MessageTop).constraint
+      make.trailing.equalToSuperview().inset(Metrics.MessageTrailing)
     }
     
     self.contentImageView.snp.makeConstraints { [weak self] (make) in
-      make.leading.equalToSuperview().inset(Metric.ImageSideMargin)
-      make.trailing.equalToSuperview().inset(Metric.ImageSideMargin)
-      make.top.equalTo((self?.messageView.snp.bottom)!).offset(Metric.ImageTop)
-      self?.contentImageHeightConstraint = make.height.lessThanOrEqualTo(Metric.ImageMaxHeight).constraint
-      make.bottom.equalToSuperview().inset(Metric.ImageSideMargin)
+      make.leading.equalToSuperview().inset(Metrics.ImageSideMargin)
+      make.trailing.equalToSuperview().inset(Metrics.ImageSideMargin)
+      make.top.equalTo((self?.messageView.snp.bottom)!).offset(Metrics.ImageTop)
+      self?.contentImageHeightConstraint = make.height.lessThanOrEqualTo(Metrics.ImageMaxHeight).constraint
+      make.bottom.equalToSuperview().inset(Metrics.ImageSideMargin)
     }
     
     self.contentButton.snp.makeConstraints { [weak self] (make) in
       make.leading.greaterThanOrEqualToSuperview().inset(20)
       make.trailing.lessThanOrEqualToSuperview().inset(20)
       make.centerX.equalToSuperview()
-      self?.contentButtonTopConstraint = make.top.equalTo((self?.messageView.snp.bottom)!).offset(Metric.ImageTop).constraint
+      self?.contentButtonTopConstraint = make.top.equalTo((self?.messageView.snp.bottom)!).offset(Metrics.ImageTop).constraint
       self?.contentButtonBottomConstraint = make.bottom.equalToSuperview().inset(22).constraint
     }
   }
@@ -247,10 +247,10 @@ final class ChatNotificationView : BaseView {
     if let title = viewModel.title {
       self.titleLabel.text = title
       self.titleLabel.isHidden = false
-      self.messageTopConstraint?.update(inset: Metric.MessageTopToTitle)
+      self.messageTopConstraint?.update(inset: Metrics.MessageTopToTitle)
     } else {
       self.titleLabel.isHidden = true
-      self.messageTopConstraint?.update(inset: Metric.MessageTop)
+      self.messageTopConstraint?.update(inset: Metrics.MessageTop)
     }
     
     if let buttonTitle = viewModel.buttonTitle {
@@ -270,7 +270,7 @@ final class ChatNotificationView : BaseView {
     } else if let url = viewModel.imageUrl {
       self.contentImageView.isHidden = false
       self.contentImageView.sd_setImage(with: url)
-      self.contentImageHeightConstraint?.update(offset: min(Metric.ImageMaxHeight, CGFloat(viewModel.imageHeight)))
+      self.contentImageHeightConstraint?.update(offset: min(Metrics.ImageMaxHeight, CGFloat(viewModel.imageHeight)))
       
       self.contentImageView.signalForClick().subscribe(onNext: { [weak self]  (_) in
         if let url = viewModel.imageRedirect, url != "" {

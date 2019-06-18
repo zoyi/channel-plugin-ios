@@ -9,17 +9,19 @@
 import Foundation
 import SnapKit
 import RxSwift
+import RxCocoa
+import Reusable
 
-final class SwitchCell : BaseTableViewCell {
+final class SwitchCell : BaseTableViewCell, Reusable {
   
   let titleLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 16)
-    $0.textColor = CHColors.dark
+    $0.font = UIFont.systemFont(ofSize: 16)
+    $0.textColor = CHColors.charcoalGrey
     $0.numberOfLines = 1
   }
   
   let onOffSwitch = UISwitch()
-  let switchSignal = PublishSubject<Bool>()
+  var switchSignal = PublishRelay<Bool>()
   
   override func initialize() {
     super.initialize()
@@ -54,8 +56,13 @@ final class SwitchCell : BaseTableViewCell {
     self.onOffSwitch.isOn = isOn
   }
   
+  func switched() -> Observable<Bool> {
+    self.switchSignal = PublishRelay<Bool>()
+    return self.switchSignal.asObservable()
+  }
+  
   @objc func switchChanged(_ sender: UISwitch) {
-    self.switchSignal.onNext(sender.isOn)
+    self.switchSignal.accept(sender.isOn)
   }
 }
 
