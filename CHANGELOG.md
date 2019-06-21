@@ -1,3 +1,7 @@
+# 6.0.1
+## Updates
+* Removed unnecessary public keyword
+
 # 6.0.0
 ## Updates
 * Introduced lounge view 
