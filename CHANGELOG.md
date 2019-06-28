@@ -1,3 +1,9 @@
+# 6.0.3
+## Updates
+* Updated SDWebImage framework
+* Removed FLAnimatedImage framework
+* Removed CHNavBar framework
+
 # 6.0.1
 ## Updates
 * Removed unnecessary public keyword

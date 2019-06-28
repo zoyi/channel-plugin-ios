@@ -299,7 +299,6 @@
 		65CD481821F9BDBF001F0113 /* TableViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD481721F9BDBF001F0113 /* TableViewAnimator.swift */; };
 		65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962962166205E0032F5C5 /* Alamofire.framework */; };
 		65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A7216620600032F5C5 /* CHDwifft.framework */; };
-		65D3562D21BA4BD4001D6A30 /* CHNavBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A22166205F0032F5C5 /* CHNavBar.framework */; };
 		65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */; };
 		65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A52166205F0032F5C5 /* CRToast.framework */; };
 		65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AE216620600032F5C5 /* M13ProgressSuite.framework */; };
@@ -378,7 +377,6 @@
 		2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHSlackTextViewController.framework; path = Carthage/Build/iOS/CHSlackTextViewController.framework; sourceTree = "<group>"; };
 		225962A02166205F0032F5C5 /* PhoneNumberKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhoneNumberKit.framework; path = Carthage/Build/iOS/PhoneNumberKit.framework; sourceTree = "<group>"; };
 		225962A12166205F0032F5C5 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = Carthage/Build/iOS/SDWebImage.framework; sourceTree = "<group>"; };
-		225962A22166205F0032F5C5 /* CHNavBar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHNavBar.framework; path = Carthage/Build/iOS/CHNavBar.framework; sourceTree = "<group>"; };
 		225962A52166205F0032F5C5 /* CRToast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CRToast.framework; path = Carthage/Build/iOS/CRToast.framework; sourceTree = "<group>"; };
 		225962A62166205F0032F5C5 /* ReSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReSwift.framework; path = Carthage/Build/iOS/ReSwift.framework; sourceTree = "<group>"; };
 		225962A7216620600032F5C5 /* CHDwifft.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHDwifft.framework; path = Carthage/Build/iOS/CHDwifft.framework; sourceTree = "<group>"; };
@@ -689,7 +687,6 @@
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
 				65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */,
 				65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */,
-				65D3562D21BA4BD4001D6A30 /* CHNavBar.framework in Frameworks */,
 				65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */,
 				65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */,
 				65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */,
@@ -738,7 +735,6 @@
 				22B443682200342B00EFC637 /* RxAtomic.framework */,
 				225962962166205E0032F5C5 /* Alamofire.framework */,
 				225962A7216620600032F5C5 /* CHDwifft.framework */,
-				225962A22166205F0032F5C5 /* CHNavBar.framework */,
 				2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */,
 				225962A52166205F0032F5C5 /* CRToast.framework */,
 				225962AE216620600032F5C5 /* M13ProgressSuite.framework */,

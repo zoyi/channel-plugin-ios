@@ -12,7 +12,6 @@ import RxSwift
 import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire
-import CHNavBar
 
 class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   struct Constant {

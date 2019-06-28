@@ -116,7 +116,7 @@ final class ChatNotificationView : BaseView {
     $0.layer.shadowOpacity = 0
   }
   
-  let contentImageView = FLAnimatedImageView().then {
+  let contentImageView = SDAnimatedImageView().then {
     $0.layer.cornerRadius = 6.f
     $0.clipsToBounds = true
     $0.contentMode = .scaleAspectFill
