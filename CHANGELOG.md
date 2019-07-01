@@ -1,3 +1,7 @@
+# 6.0.4
+## Updates
+* Excluded UIAlertController from topController
+
 # 6.0.3
 ## Updates
 * Updated SDWebImage framework

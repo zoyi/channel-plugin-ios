@@ -20,6 +20,11 @@ class CHUtils {
         return getTopController(base: selected)
       }
     }
+    if let alert = base as? UIAlertController {
+      if let presenting = alert.presentingViewController {
+        return getTopController(base: presenting)
+      }
+    }
     if let presented = base?.presentedViewController {
       return getTopController(base: presented)
     }
@@ -34,6 +39,11 @@ class CHUtils {
     if let tab = base as? UITabBarController {
       if let selected = tab.selectedViewController {
         return getTopNavigation(base: selected)
+      }
+    }
+    if let alert = base as? UIAlertController {
+      if let presenting = alert.presentingViewController {
+        return getTopNavigation(base: presenting)
       }
     }
     if let navigation = base as? UINavigationController {
