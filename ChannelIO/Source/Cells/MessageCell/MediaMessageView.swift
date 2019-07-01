@@ -11,12 +11,13 @@ import NVActivityIndicatorView
 import M13ProgressSuite
 import SnapKit
 import SDWebImage
+
 import Photos
 
 class MediaMessageView : BaseView {
 
   //MARK: properties
-  let imageView = FLAnimatedImageView()
+  let imageView = SDAnimatedImageView()
   let exportIcon = UIImageView().then {
     $0.image = CHAssets.getImage(named: "exportIcon")
     $0.isHidden = true

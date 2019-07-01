@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 import Reusable
+import SDWebImage
 
 final class TypingIndicatorCell: BaseTableViewCell, Reusable {  
   let multiAvatarView = LiveTypingAvatarsView(avatarSize: 22, coverMargin: 4)
@@ -27,7 +28,7 @@ final class TypingIndicatorCell: BaseTableViewCell, Reusable {
     super.initialize()
     
     if let data = CHAssets.getData(named: "typing", type: "gif") {
-      self.typingImageView.image = UIImage.sd_animatedGIF(with: data)
+      self.typingImageView.image = SDAnimatedImage(data: data)
     }
     
     self.backgroundColor = UIColor.clear

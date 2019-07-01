@@ -7,12 +7,10 @@
 //
 
 import UIKit
-//import CHDwifft
 import ReSwift
 import RxSwift
 import SVProgressHUD
 import CHSlackTextViewController
-import CHNavBar
 import AVKit
 import SnapKit
 import SDWebImage

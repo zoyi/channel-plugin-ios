@@ -13,7 +13,7 @@ import Reusable
 
 final class LogCell : BaseTableViewCell, Reusable {
   let container = UIView().then {
-    $0.backgroundColor = CHColors.paleGrey
+    $0.backgroundColor = .white
   }
   
   let titleLabel = UILabel().then {
@@ -61,9 +61,6 @@ final class LogCell : BaseTableViewCell, Reusable {
       self.titleLabel.text = CHAssets.localized("ch.log.resolved")
       self.timestampLabel.text = message.createdAt.readableShortString()
     }
-    
-    self.setNeedsLayout()
-    self.layoutIfNeeded()
   }
   
   class func cellHeight(fit width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
