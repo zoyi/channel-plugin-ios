@@ -102,11 +102,9 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.scrollView.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
       if #available(iOS 11.0, *) {
-        self.scrollTopConstraint = make.top
-          .equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
+        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
       } else {
-        self.scrollTopConstraint = make.top
-          .equalToSuperview().constraint
+        make.top.equalToSuperview().inset(20).constraint
       }
       make.leading.equalToSuperview().inset(Metrics.contentSide)
       make.trailing.equalToSuperview().inset(Metrics.contentSide)
