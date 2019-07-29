@@ -105,9 +105,9 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func getFollowingManagers() -> Observable<[CHManager]> {
+  static func getOperators() -> Observable<[CHManager]> {
     return Observable.create { (subscriber) in
-      let req = Alamofire.request(RestRouter.GetFollowingManager)
+      let req = Alamofire.request(RestRouter.GetOperators)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result{

@@ -42,8 +42,8 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
   }
   
-  func getFollowers() -> Observable<[CHManager]> {
-    return CHManager.getRecentFollowers()
+  func getOperators() -> Observable<[CHManager]> {
+    return AppManager.getOperators()
   }
   
   func getSupportBot() -> Observable<CHSupportBotEntryInfo> {

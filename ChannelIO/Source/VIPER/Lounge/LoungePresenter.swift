@@ -129,7 +129,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.didClickOnChat(with: chatId, animated: false, from: view)
       self.chatId = nil
     } else {
-      self.view?.displayReady()
+      //self.view?.displayReady()
     }
     
     if self.locale != ChannelIO.settings?.appLocale {
@@ -254,7 +254,7 @@ extension LoungePresenter {
   func loadHeaderInfo() {
     guard let interactor = self.interactor else { return }
     
-    Observable.zip(interactor.getChannel(), interactor.getPlugin(), interactor.getFollowers())
+    Observable.zip(interactor.getChannel(), interactor.getPlugin(), interactor.getOperators())
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
@@ -271,7 +271,7 @@ extension LoungePresenter {
           followers: followers
         )
         self?.view?.displayHeader(with: headerModel)
-        self?.mainCompletion.accept(nil)
+        self?.headerCompletion.accept(nil)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .header)
       }).disposed(by: self.disposeBag)

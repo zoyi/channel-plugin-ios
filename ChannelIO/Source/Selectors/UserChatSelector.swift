@@ -41,14 +41,12 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false, limit: Int? 
       followedAt: userChat.followedAt,
       resolvedAt: userChat.resolvedAt,
       closedAt: userChat.closedAt,
-      followedBy: userChat.followedBy,
-      hostId: userChat.hostId,
-      hostType: userChat.hostType,
+      assigneeId: userChat.assigneeId,
+      assigneeType: userChat.assigneeType,
       appMessageId: userChat.appMessageId,
       resolutionTime: userChat.resolutionTime,
       lastMessage: state.messagesState.findBy(id: userChat.appMessageId),
       session: state.sessionsState.findBy(userChatId: userChat.id),
-      lastTalkedHost: personSelector(state: state, personType: userChat.hostType, personId: userChat.hostId),
       channel: state.channel,
       hasRemoved: userChat.hasRemoved
     )
@@ -73,14 +71,12 @@ func userChatSelector(state: AppState, userChatId: String?) -> CHUserChat? {
     followedAt: userChat.followedAt,
     resolvedAt: userChat.resolvedAt,
     closedAt: userChat.closedAt,
-    followedBy: userChat.followedBy,
-    hostId: userChat.hostId,
-    hostType: userChat.hostType,
+    assigneeId: userChat.assigneeId,
+    assigneeType: userChat.assigneeType,
     appMessageId: userChat.appMessageId,
     resolutionTime: userChat.resolutionTime,
     lastMessage: state.messagesState.findBy(id: userChat.appMessageId),
     session: state.sessionsState.findBy(userChatId: userChat.id),
-    lastTalkedHost: personSelector(state: state, personType: userChat.hostType, personId: userChat.hostId),
     channel: state.channel,
     hasRemoved: userChat.hasRemoved
   )

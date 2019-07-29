@@ -29,7 +29,7 @@ enum RestRouter: URLRequestConvertible {
   case GetGeoIP
   case GetChannel
   case GetCountryCodes
-  case GetFollowingManager
+  case GetOperators
   case GetExternalMessengers
   case GetSupportBot(String)
   case GetSupportBotEntry(String)
@@ -85,7 +85,7 @@ enum RestRouter: URLRequestConvertible {
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
-         .GetFollowingManager,
+         .GetOperators,
          .GetPlugin, .Translate,
          .GetSupportBot, .GetSupportBotEntry,
          .GetNudges,
@@ -132,8 +132,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/channels"
     case .GetExternalMessengers:
       return "/app/channels/messengers"
-    case .GetFollowingManager:
-      return "/app/channels/following_managers"
+    case .GetOperators:
+      return "/app/channels/operators"
     case .GetPlugin(let pluginId):
       return "/app/plugins/\(pluginId)"
     case .GetUserChats:
@@ -272,7 +272,7 @@ enum RestRouter: URLRequestConvertible {
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,
-         .GetFollowingManager,
+         .GetOperators,
          .RequestProfileBot,
          .CreateUserChat,
          .GetSupportBotEntry,

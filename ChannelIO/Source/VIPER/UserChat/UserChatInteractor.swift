@@ -108,7 +108,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   
   func readyToPresent() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = Observable.zip(CHPlugin.get(with: mainStore.state.plugin.id), CHManager.getRecentFollowers())
+      let signal = Observable.zip(CHPlugin.get(with: mainStore.state.plugin.id), AppManager.getOperators())
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (info, managers) in
           mainStore.dispatch(UpdateFollowingManagers(payload: managers))

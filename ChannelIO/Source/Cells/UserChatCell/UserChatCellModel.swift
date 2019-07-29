@@ -59,9 +59,9 @@ struct UserChatCellModel: UserChatCellModelType {
     
     let title = avatar?.name ?? CHAssets.localized("ch.unknown")
     
-    self.title = userChat.lastTalkedHost?.name ?? title
+    self.title = userChat.assignee?.name ?? title
     self.timestamp = userChat.readableUpdatedAt
-    self.avatar = userChat.lastTalkedHost ?? avatar
+    self.avatar = userChat.assignee ?? avatar
     self.badgeCount = userChat.session?.alert ?? 0
     self.isBadgeHidden = self.badgeCount == 0
     self.isClosed = userChat.isClosed

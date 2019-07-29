@@ -356,9 +356,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   func initNavigationTitle(with userChat: CHUserChat? = nil) {
     var navigationTitleView: UIView?
-    if let userChat = userChat, let host = userChat.lastTalkedHost {
+    if let userChat = userChat, let assignee = userChat.assignee {
       let titleView = ChatNavigationFollowingTitleView()
-      titleView.configure(host: host, plugin: mainStore.state.plugin)
+      titleView.configure(host: assignee, plugin: mainStore.state.plugin)
       navigationTitleView = titleView
     } else {
       let titleView = ChatNavigationTitleView()
@@ -485,7 +485,7 @@ extension UserChatViewController: StoreSubscriber {
     if shouldUpdate {
       self.initNavigationViews(with: nextUserChat)
     }
-    else if self.userChat?.hostId != nextUserChat?.hostId {
+    else if self.userChat?.assigneeId != nextUserChat?.assigneeId {
       self.initNavigationViews(with: nextUserChat)
     }
     else if self.channel.isDiff(from: state.channel) {

@@ -65,7 +65,7 @@ protocol LoungeInteractorProtocol: class {
   func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat>
   func getChannel() -> Observable<CHChannel>
   func getPlugin() -> Observable<(CHPlugin, CHBot?)>
-  func getFollowers() -> Observable<[CHManager]>
+  func getOperators() -> Observable<[CHManager]>
   func getChats() -> Observable<[CHUserChat]>
   func getSupportBot() -> Observable<CHSupportBotEntryInfo>
   func getExternalSource() -> Observable<[CHExternalSourceType:String]?>

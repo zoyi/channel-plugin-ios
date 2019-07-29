@@ -41,7 +41,7 @@ struct LoungeExternalSourceModel {
       }
     }
     
-    if plugin.id == channel.defaultPluginId {
+    if plugin.id == channel.defaultPluginId, channel.domain != "" {
       sources.append(LoungeExternalSourceModel(type: .link, value: channel.defaultPluginLink))
     }
     

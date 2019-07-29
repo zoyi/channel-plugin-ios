@@ -18,8 +18,8 @@ enum ReviewType: String {
 enum UserChatState: String {
   case ready
   case supporting
-  case open
-  case following
+  case unassigned
+  case assigned
   case holding
   case solved
   case closed
@@ -41,12 +41,21 @@ struct CHUserChat: ModelType {
   var followedAt: Date?
   var resolvedAt: Date?
   var closedAt: Date?
-  var followedBy: String = ""
-  var hostId: String?
-  var hostType: String?
+  var assigneeId: String? = nil
+  var assigneeType: String? = nil
   
   var appMessageId: String?
   var resolutionTime: Int = 0
+  
+  // Dependencies
+  var lastMessage: CHMessage?
+  var session: CHSession?
+  var channel: CHChannel?
+  var hasRemoved: Bool = false
+  
+  var assignee: CHEntity? {
+    return personSelector(state: mainStore.state, personType: self.assigneeType, personId: self.assigneeId)
+  }
   
   var readableUpdatedAt: String {
     if let updatedAt = self.lastMessage?.createdAt {
@@ -56,19 +65,12 @@ struct CHUserChat: ModelType {
   }
   
   var name: String {
-    if let host = self.lastTalkedHost {
+    if let host = self.assignee {
       return host.name
     }
     
     return self.channel?.name ?? CHAssets.localized("ch.unknown")
   }
-
-  // Dependencies
-  var lastMessage: CHMessage?
-  var session: CHSession?
-  var lastTalkedHost: CHEntity?
-  var channel: CHChannel?
-  var hasRemoved: Bool = false
 }
 
 extension CHUserChat: Mappable {
@@ -95,10 +97,9 @@ extension CHUserChat: Mappable {
     resolvedAt       <- (map["resolvedAt"], CustomDateTransform())
     closedAt         <- (map["closedAt"], CustomDateTransform())
     updatedAt        <- (map["appUpdatedAt"], CustomDateTransform())
-    followedBy       <- map["followedBy"]
     appMessageId     <- map["appMessageId"]
-    hostId           <- map["hostId"]
-    hostType         <- map["hostType"]
+    assigneeId       <- map["assigned"]
+    assigneeType     <- map["assignedType"]
     
     resolutionTime   <- map["resolutionTime"]
   }
@@ -216,11 +217,11 @@ extension CHUserChat {
   }
   
   var isReadyOrOpen: Bool {
-    return self.state == .ready || self.state == .open
+    return self.state == .ready || self.state == .unassigned
   }
   
-  var isOpen: Bool {
-    return self.state == .open
+  var isUnassigned: Bool {
+    return self.state == .unassigned
   }
   
   var isReady: Bool {
@@ -228,7 +229,7 @@ extension CHUserChat {
   }
   
   var isEngaged: Bool {
-    return self.state == .solved || self.state == .closed || self.state == .following
+    return self.state == .solved || self.state == .closed || self.state == .assigned
   }
   
   var isSupporting: Bool {
