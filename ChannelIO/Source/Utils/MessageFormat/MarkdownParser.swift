@@ -18,16 +18,16 @@ class MarkdownParser {
   public var customElements: [MarkdownElement]
 
   // MARK: Basic Elements
-  public let quote: MarkdownQuote
-  public let link: MarkdownLink
-  public let automaticLink: MarkdownAutomaticLink
-  public let bold: MarkdownBold
-  public let italic: MarkdownItalic
-  public let boldItalic: MarkdownBoldItalic
-  public let header: MarkdownHeader
-  public let code: MarkdownCode
-  public let emoji: MarkdownEmoji
-  public let mention: MarkdownMention
+  public var quote: MarkdownQuote
+  public var link: MarkdownLink
+  public var automaticLink: MarkdownAutomaticLink
+  public var bold: MarkdownBold
+  public var italic: MarkdownItalic
+  public var boldItalic: MarkdownBoldItalic
+  public var header: MarkdownHeader
+  public var code: MarkdownCode
+  public var emoji: MarkdownEmoji
+  public var mention: MarkdownMention
   
   // MARK: Escaping Elements
   fileprivate var codeEscaping = MarkdownCodeEscaping()
@@ -37,7 +37,8 @@ class MarkdownParser {
   // MARK: Configuration
   /// Enables or disables detection of URLs even without Markdown format
   public var automaticLinkDetectionEnabled: Bool = true
-  public let font: UIFont
+  public var font: UIFont
+  
   let emojiFont: UIFont = UIFont.systemFont(ofSize: 40)
   
   // MARK: Initializer
@@ -45,22 +46,22 @@ class MarkdownParser {
               automaticLinkDetectionEnabled: Bool = true,
               customElements: [MarkdownElement] = []) {
     self.font = font
-
-    quote = MarkdownQuote(font: font)
-    link = MarkdownLink(font: font)
-    automaticLink = MarkdownAutomaticLink(font: font)
-    bold = MarkdownBold(font: font)
-    boldItalic = MarkdownBoldItalic(font: font)
-    italic = MarkdownItalic(font: font)
-    header = MarkdownHeader(font: font, maxLevel: 5, fontIncrease: 2, color: CHColors.dark)
-    code = MarkdownCode(font: font)
-    emoji = MarkdownEmoji(font: font, map: CHUtils.emojiMap())
-    mention = MarkdownMention(font: font)
     
-    self.automaticLinkDetectionEnabled = automaticLinkDetectionEnabled
+    self.quote = MarkdownQuote(font: font)
+    self.link = MarkdownLink(font: font)
+    self.automaticLink = MarkdownAutomaticLink(font: font)
+    self.bold = MarkdownBold(font: font)
+    self.boldItalic = MarkdownBoldItalic(font: font)
+    self.italic = MarkdownItalic(font: font)
+    self.header = MarkdownHeader(font: font, maxLevel: 5, fontIncrease: 2, color: CHColors.dark)
+    self.code = MarkdownCode(font: font)
+    self.emoji = MarkdownEmoji(font: font, map: CHUtils.emojiMap())
+    self.mention = MarkdownMention(font: font)
+    
     self.escapingElements = [escaping] //[codeEscaping, escaping]
     self.defaultElements = [quote, link, automaticLink, boldItalic, bold, italic, mention, emoji]
     self.unescapingElements = [unescaping] //[code, unescaping]
+    self.automaticLinkDetectionEnabled = automaticLinkDetectionEnabled
     self.customElements = customElements
   }
 

@@ -30,4 +30,12 @@ extension UIFont {
     let descriptor = UIFontDescriptor.init(name: "Helvetica-Bold", matrix: matrix)
     return UIFont(descriptor: descriptor, size: 15)
   }
+  
+  var isBold: Bool {
+    return fontDescriptor.symbolicTraits.contains(.traitBold)
+  }
+  
+  var isItalic: Bool {
+    return fontDescriptor.symbolicTraits.contains(.traitItalic)
+  }
 }

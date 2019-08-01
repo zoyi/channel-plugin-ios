@@ -22,6 +22,7 @@ protocol ChatNotificationViewModelType {
   var buttonTitle: String? { get set }
   var buttonRedirect: String? { get set }
   var themeColor: UIColor? { get set }
+  var pluginTextColor: UIColor? { get set }
 }
 
 enum CHAttachmentType: String {
@@ -44,7 +45,8 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
   var buttonTitle: String? = nil
   var buttonRedirect: String? = nil
   var themeColor: UIColor? = nil
-
+  var pluginTextColor: UIColor? = nil
+  
   init(push: CHPush) {
     if let managerName = push.manager?.name {
       self.name = managerName
@@ -76,17 +78,42 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
     }
     
     self.themeColor = UIColor(mainStore.state.plugin.color)
+    self.pluginTextColor = mainStore.state.plugin.textUIColor
+    
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.alignment = .left
+    paragraphStyle.minimumLineHeight = 18
     
     if let logMessage = push.message?.logMessage, push.showLog {
       let attributedText = NSMutableAttributedString(string: logMessage)
-      attributedText.addAttributes([
-        .font: UIFont.systemFont(ofSize: 14),
-        .foregroundColor: CHColors.charcoalGrey
-      ],
-      range: NSRange(location: 0, length: logMessage.count))
+      attributedText.addAttributes(
+        [.font: UIFont.systemFont(ofSize: 13),
+         .foregroundColor: UIColor.grey900,
+         .paragraphStyle: paragraphStyle
+        ],
+        range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
-    } else {
-      self.message = push.message?.messageV2
+    } else if let message = push.message?.messageV2 {
+      let title = self.title == nil ? "" : self.title! + " "
+      let newAttributedString = NSMutableAttributedString(string: title)
+      newAttributedString.addAttributes(
+        [.font: UIFont.boldSystemFont(ofSize: 13)],
+        range: NSRange(location: 0, length: title.count)
+      )
+      newAttributedString.append(message)
+      newAttributedString.enumerateAttribute(.font, in: NSMakeRange(0, newAttributedString.length), options: []) {
+        value, range, stop in
+        guard let currentFont = value as? UIFont else { return }
+        let newFont = currentFont.isBold ? UIFont.boldSystemFont(ofSize: 13) : UIFont.systemFont(ofSize: 13)
+        newAttributedString.addAttributes([.font: newFont], range: range)
+      }
+
+      newAttributedString.addAttributes(
+        [.foregroundColor: UIColor.grey900,
+         .paragraphStyle: paragraphStyle
+        ],
+        range: NSRange(location: 0, length: message.string.count))
+      self.message = newAttributedString
     }
 
     self.timestamp = push.message?.readableCreatedAt

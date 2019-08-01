@@ -170,13 +170,13 @@ extension ChannelIO {
   }
   
   internal class func showNotification(pushData: CHPush?) {
-    guard let view = CHUtils.getTopController()?.baseController.view else { return }
+    guard let view = CHUtils.getTopController()?.view else { return }
     guard let push = pushData else { return }
 
-    let notificationView = ChannelIO.chatNotificationView ?? ChatNotificationView()
+    let notificationView = ChannelIO.chatNotificationView ?? InAppNotificationView()
     
-    let notificationViewModel = ChatNotificationViewModel(push: push)
-    notificationView.configure(notificationViewModel)
+    let viewModel = ChatNotificationViewModel(push: push)
+    notificationView.configure(viewModel: viewModel)
     
     if let superview = notificationView.superview, superview != view {
       notificationView.removeFromSuperview()
@@ -186,23 +186,21 @@ extension ChannelIO {
       notificationView.insert(on: view, animated: true)
     }
     
-    let viewTopMargin = 20.f
-    let viewSideMargin = 14.f
     let maxWidth = 520.f
     
     notificationView.snp.makeConstraints({ (make) in
-      if UIScreen.main.bounds.width > maxWidth + viewSideMargin * 2 {
+      if UIScreen.main.bounds.width > maxWidth {
         make.centerX.equalToSuperview()
         make.width.equalTo(maxWidth)
       } else {
-        make.leading.equalToSuperview().inset(viewSideMargin)
-        make.trailing.equalToSuperview().inset(viewSideMargin)
+        make.leading.equalToSuperview()
+        make.trailing.equalToSuperview()
       }
       
       if #available(iOS 11.0, *) {
-        make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(viewTopMargin)
+        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
       } else {
-        make.top.equalToSuperview().inset(viewTopMargin)
+        make.bottom.equalToSuperview()
       }
     })
     
@@ -214,8 +212,7 @@ extension ChannelIO {
         ChannelIO.showUserChat(userChatId: push.userChat?.id)
       }).disposed(by: disposeBag)
     
-    notificationView.closeView
-      .signalForClick()
+    notificationView.signalForClose()
       .observeOn(MainScheduler.instance)
       .subscribe { (event) in
         ChannelIO.hideNotification()
@@ -235,7 +232,6 @@ extension ChannelIO {
     
     ChannelIO.chatNotificationView = notificationView
     CHAssets.playPushSound()
-    
   }
   
   internal class func sendDefaultEvent(_ event: CHDefaultEvent, property: [String: Any]? = nil) {

@@ -1,3 +1,7 @@
+# 6.0.6
+## Updates
+* Updated InApp Push Notification view layout
+
 # 6.0.4
 ## Updates
 * Excluded UIAlertController from topController
