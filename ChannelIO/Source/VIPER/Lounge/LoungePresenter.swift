@@ -31,6 +31,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   var locale: CHLocaleString? = ChannelIO.settings?.appLocale
   
   func viewDidLoad() {
+    self.initViews()
     self.fetchData()
     
     CHNotification.shared.refreshSignal
@@ -112,6 +113,17 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       }).disposed(by: self.disposeBag)
   }
   
+  private func initViews() {
+    let followers = mainStore.state.managersState.followingManagers
+    let headerModel = LoungeHeaderViewModel(
+      chanenl: mainStore.state.channel,
+      plugin: mainStore.state.plugin,
+      followers: followers
+    )
+    self.view?.displayHeader(with: headerModel)
+    self.view?.displayMainContent(activeChats: [], inactiveChats: [], welcomeModel: nil)
+  }
+  
   func fetchData() {
     self.loadHeaderInfo()
     self.loadMainContents()
@@ -183,7 +195,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     Observable.combineLatest(self.headerCompletion, self.mainCompletion, self.externalCompletion)
       .subscribe(onNext: { [weak self] (_, _, _) in
         self?.view?.displayReady()
-      }).disposed(by: self.disposeBag)
+      }).disposed(by: self.notiDisposeBag)
   }
   
   func didClickOnRefresh(for type: LoungeSectionType) {

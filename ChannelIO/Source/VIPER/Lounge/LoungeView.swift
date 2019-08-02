@@ -52,7 +52,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.contentView.isHidden = true
+    //self.contentView.isHidden = true
     self.view.backgroundColor = CHColors.paleGreyFour
     
     self.initViews()
@@ -228,7 +228,7 @@ extension LoungeView {
   }
   
   func displayReady() {
-    self.contentView.isHidden = false
+    //self.contentView.isHidden = false
     SVProgressHUD.dismiss()
   }
   
