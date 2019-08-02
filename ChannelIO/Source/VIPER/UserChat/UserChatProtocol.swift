@@ -113,7 +113,6 @@ protocol UserChatInteractorProtocol: class {
   func send(message: CHMessage?) -> Observable<CHMessage?>
   func sendTyping(isStop: Bool)
   func delete(message: CHMessage?)
-  func requestProfileBot() -> Observable<Bool?>
 }
 
 protocol UserChatRouterProtocol: class {

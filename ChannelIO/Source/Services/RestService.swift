@@ -38,7 +38,6 @@ enum RestRouter: URLRequestConvertible {
   case GetMessages(String, ParametersType)
   case GetProfileBotSchemas(String)
   case ReplySupportBot(String, String, ParametersType)
-  case RequestProfileBot(String, String)
   case RegisterToken(ParametersType)
   case RemoveUserChat(String)
   case ReviewUserChat(String, ParametersType)
@@ -76,7 +75,7 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
-         .SendEvent, .Boot, .RequestProfileBot,
+         .SendEvent, .Boot,
          .UpdateProfileItem, .TouchGuest,
          .CreateSupportBotChat, .ReplySupportBot,
          .CheckNudgeReach,
@@ -154,8 +153,6 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/remove"
     case .ReviewUserChat(let userChatId, _):
       return "/app/user_chats/\(userChatId)/review"
-    case .RequestProfileBot(let pluginId, let chatId):
-      return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
     case .RegisterToken:
       return "/app/device_tokens"
     case .ReplySupportBot(let userChatId, let buttonId, _):
@@ -273,7 +270,6 @@ enum RestRouter: URLRequestConvertible {
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,
          .GetOperators,
-         .RequestProfileBot,
          .CreateUserChat,
          .GetSupportBotEntry,
          .CreateSupportBotChat,

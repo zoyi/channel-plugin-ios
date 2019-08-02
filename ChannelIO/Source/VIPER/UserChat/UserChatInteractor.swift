@@ -361,12 +361,6 @@ extension UserChatInteractor {
     })
   }
   
-  func requestProfileBot() -> Observable<Bool?> {
-    return Observable.create({ (subscribe) -> Disposable in
-      return Disposables.create()
-    })
-  }
-  
   func send(message: CHMessage?) {
     guard let message = message else { return }
     message.send().subscribe(onNext: { (message) in
