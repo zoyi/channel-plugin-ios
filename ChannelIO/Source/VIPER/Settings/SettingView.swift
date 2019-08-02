@@ -251,7 +251,7 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
     case (Section.profiles, _):
       let profile = self.profiles[indexPath.row]
       let cell: KeyValueCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(title: profile.profileName, detail: profile.profileValue as? String)
+      cell.configure(title: profile.profileName, detail: profile.profileValue)
       cell.signalForClick().subscribe(onNext: { [weak self] _ in
         self?.presenter?.didClickOnProfileSchema(with: profile, from: self)
       }).disposed(by: self.disposeBag)

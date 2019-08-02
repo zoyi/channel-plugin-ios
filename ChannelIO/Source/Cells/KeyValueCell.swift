@@ -55,12 +55,12 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     }
   }
   
-  func configure(title: String?, detail: String?) {
+  func configure(title: String?, detail: Any?) {
     if let title = title {
       self.titleLabel.text = title
     }
     if let detail = detail {
-      self.valueLabel.text = detail
+      self.valueLabel.text = "\(detail)"
       self.valueLabel.textColor = CHColors.charcoalGrey
     } else {
       self.valueLabel.text = CHAssets.localized("ch.settings.empty_content")

@@ -50,7 +50,7 @@ class LoungeMainView: BaseView {
   private var disposeBag = DisposeBag()
   
   private var shouldShowWelcome: Bool {
-    return self.activeChats.count == 0 && self.welcomeModel != nil
+    return self.activeChats.count == 0 && welcomeModel != nil
   }
   
   private var shouldShowAllChat: Bool {

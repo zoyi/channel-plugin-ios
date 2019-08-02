@@ -11,5 +11,5 @@ import Foundation
 struct LoungeHeaderViewModel {
   let chanenl: CHChannel
   let plugin: CHPlugin
-  let followers: [CHEntity]
+  let operators: [CHEntity]
 }

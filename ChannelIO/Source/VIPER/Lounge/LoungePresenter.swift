@@ -71,11 +71,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       .subscribe(onNext: { [weak self] (channel, plugin) in
         //NOTE: check if entities have been changed
         guard let `self` = self else { return }
-        let followers = mainStore.state.managersState.followingManagers
+        let operators = mainStore.state.managersState.followingManagers
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: plugin,
-          followers: followers
+          operators: operators
         )
         self.view?.displayHeader(with: headerModel)
         
@@ -114,11 +114,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   private func initViews() {
-    let followers = mainStore.state.managersState.followingManagers
+    let operators = mainStore.state.managersState.followingManagers
     let headerModel = LoungeHeaderViewModel(
       chanenl: mainStore.state.channel,
       plugin: mainStore.state.plugin,
-      followers: followers
+      operators: operators
     )
     self.view?.displayHeader(with: headerModel)
     self.view?.displayMainContent(activeChats: [], inactiveChats: [], welcomeModel: nil)
@@ -168,11 +168,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         mainStore.dispatch(UpdateChannel(payload: channel))
         guard let `self` = self else { return }
         //update headers
-        let followers = mainStore.state.managersState.followingManagers
+        let operators = mainStore.state.managersState.followingManagers
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: mainStore.state.plugin,
-          followers: followers
+          operators: operators
         )
         self.view?.displayHeader(with: headerModel)
         
@@ -272,15 +272,15 @@ extension LoungePresenter {
         return true
       })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (channel, pluginInfo, followers) in
+      .subscribe(onNext: { [weak self] (channel, pluginInfo, operators) in
         mainStore.dispatch(UpdateChannel(payload: channel))
         mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
-        mainStore.dispatch(UpdateFollowingManagers(payload: followers))
+        mainStore.dispatch(UpdateFollowingManagers(payload: operators))
 
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: pluginInfo.0,
-          followers: followers
+          operators: operators
         )
         self?.view?.displayHeader(with: headerModel)
         self?.headerCompletion.accept(nil)
