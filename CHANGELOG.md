@@ -1,5 +1,8 @@
-# 6.0.6
+# 6.1.0
 ## Updates
+* Changed some user chats' state
+* Hided delete message from chat
+* Added line integration
 * Updated InApp Push Notification view layout
 
 # 6.0.4

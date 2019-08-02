@@ -93,7 +93,7 @@ class InAppNotificationView: BaseView {
   }
   private let redirectButton = UIButton().then {
     $0.layer.borderWidth = 1.f
-    $0.layer.borderColor = UIColor.grey500.cgColor
+    $0.layer.borderColor = UIColor.black5.cgColor
     $0.layer.cornerRadius = 17.f
   }
   
@@ -210,7 +210,7 @@ class InAppNotificationView: BaseView {
       make.bottom.lessThanOrEqualToSuperview().inset(Metrics.buttonTopBottom)
       make.leading.equalToSuperview().inset(Metrics.buttonSide)
       make.trailing.equalToSuperview().inset(Metrics.buttonSide)
-      make.size.equalTo(Metrics.buttonSide)
+      make.size.equalTo(Metrics.buttonSize)
     }
     
     let image = viewModel.pluginTextColor == CHColors.white ?

@@ -442,7 +442,7 @@ extension UserChatViewController: StoreSubscriber {
 
   func newState(state: AppState) {
     self.userChatId = self.chatManager.chatId
-    let shouldUpdate = self.channel.isDiff(from: state.channel)
+    let shouldUpdate = self.channel != state.channel
     
     let messages = messagesSelector(state: state, userChatId: self.userChatId)
     self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
@@ -488,7 +488,7 @@ extension UserChatViewController: StoreSubscriber {
     else if self.userChat?.assigneeId != nextUserChat?.assigneeId {
       self.initNavigationViews(with: nextUserChat)
     }
-    else if self.channel.isDiff(from: state.channel) {
+    else if self.channel != state.channel {
       self.initNavigationViews(with: nextUserChat)
     }
     else if self.currentLocale != ChannelIO.settings?.appLocale {
