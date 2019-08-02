@@ -89,7 +89,6 @@ extension CHUserChat: Mappable {
     personType       <- map["personType"]
     personId         <- map["personId"]
     channelId        <- map["channelId"]
-    state            <- map["state"]
     review           <- map["review"]
     createdAt        <- (map["createdAt"], CustomDateTransform())
     openedAt         <- (map["openedAt"], CustomDateTransform())
@@ -100,8 +99,13 @@ extension CHUserChat: Mappable {
     appMessageId     <- map["appMessageId"]
     assigneeId       <- map["assigned"]
     assigneeType     <- map["assignedType"]
-    
     resolutionTime   <- map["resolutionTime"]
+    
+    if let s = map["stateV2"].currentValue as? String {
+      state <- map["stateV2"]
+    } else {
+      state <- map["state"]
+    }
   }
 }
 

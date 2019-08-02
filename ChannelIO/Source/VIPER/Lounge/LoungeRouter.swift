@@ -89,12 +89,10 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     case .link:
       UIPasteboard.general.string = source.value
       CHNotification.shared.display(message: CHAssets.localized("ch.integrations.copy_link.success"))
-    case .kakao:
+    default:
       if let url = URL(string:source.value) {
         UIApplication.shared.openURL(url)
       }
-    default:
-      break
     }
   }
   
