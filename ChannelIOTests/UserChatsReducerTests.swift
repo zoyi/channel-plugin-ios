@@ -33,11 +33,11 @@ class UserChatsReducerTests: QuickSpec {
           for i in 0..<10 {
             let userChat = CHUserChat(
               id: "\(i)0", personType: "", personId: "", channelId: "",
-              state: .open, review: "", createdAt: nil, openedAt: nil,
+              state: .unassigned, review: "", createdAt: nil, openedAt: nil,
               updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
-              followedBy: "", hostId: nil, hostType: nil, appMessageId: nil,
-              resolutionTime: 0, lastMessage: nil, session: nil,
-              lastTalkedHost: nil, channel: nil, hasRemoved: false)
+              assigneeId: nil, assigneeType: nil, appMessageId: nil,
+              resolutionTime: 0, lastMessage: nil, session: nil, channel: nil,
+              hasRemoved: false)
             
             userChats?.append(userChat)
           }
@@ -52,13 +52,14 @@ class UserChatsReducerTests: QuickSpec {
     describe("CreateUserChat") {
       context("when its action occurs") {
         it("should insert a new chat and update the state") {
+
           let userChat = CHUserChat(
             id: "10", personType: "", personId: "", channelId: "",
-            state: .open, review: "", createdAt: nil, openedAt: nil,
+            state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
-            followedBy: "", hostId: nil, hostType: nil, appMessageId: nil,
-            resolutionTime: 0, lastMessage: nil, session: nil,
-            lastTalkedHost: nil, channel: nil, hasRemoved: false)
+            assigneeId: nil, assigneeType: nil, appMessageId: nil,
+            resolutionTime: 0, lastMessage: nil, session: nil, channel: nil,
+            hasRemoved: false)
           
           state = userChatsReducer(action: CreateUserChat(payload:userChat), state: state)
           let find = state.findBy(id: "10")
@@ -74,11 +75,11 @@ class UserChatsReducerTests: QuickSpec {
         it("should update existing chat and update the state accordingly") {
           var userChat = CHUserChat(
             id: "10", personType: "", personId: "", channelId: "",
-            state: .open, review: "", createdAt: nil, openedAt: nil,
+            state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
-            followedBy: "", hostId: nil, hostType: nil, appMessageId: nil,
-            resolutionTime: 0, lastMessage: nil, session: nil,
-            lastTalkedHost: nil, channel: nil, hasRemoved: false)
+            assigneeId: nil, assigneeType: nil, appMessageId: nil,
+            resolutionTime: 0, lastMessage: nil, session: nil, channel: nil,
+            hasRemoved: false)
           
           state = userChatsReducer(action: CreateUserChat(payload:userChat), state: state)
           
@@ -102,11 +103,11 @@ class UserChatsReducerTests: QuickSpec {
         it("should mark the chat as delete and update the state") {
           let userChat = CHUserChat(
             id: "10", personType: "", personId: "", channelId: "",
-            state: .open, review: "", createdAt: nil, openedAt: nil,
+            state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
-            followedBy: "", hostId: nil, hostType: nil, appMessageId: nil,
-            resolutionTime: 0, lastMessage: nil, session: nil,
-            lastTalkedHost: nil, channel: nil, hasRemoved: false)
+            assigneeId: nil, assigneeType: nil, appMessageId: nil,
+            resolutionTime: 0, lastMessage: nil, session: nil, channel: nil,
+            hasRemoved: false)
           
           state = userChatsReducer(action: CreateUserChat(payload:userChat), state: state)
           state = userChatsReducer(action: DeleteUserChat(payload:userChat), state: state)
@@ -145,11 +146,11 @@ class UserChatsReducerTests: QuickSpec {
         it("should upsert the chat and update the state") {
           let userChat = CHUserChat(
             id: "10", personType: "", personId: "", channelId: "",
-            state: .open, review: "", createdAt: nil, openedAt: nil,
+            state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
-            followedBy: "", hostId: nil, hostType: nil, appMessageId: nil,
-            resolutionTime: 0, lastMessage: nil, session: nil,
-            lastTalkedHost: nil, channel: nil, hasRemoved: false)
+            assigneeId: nil, assigneeType: nil, appMessageId: nil,
+            resolutionTime: 0, lastMessage: nil, session: nil, channel: nil,
+            hasRemoved: false)
           
           var push = CHPush()
           push.userChat = userChat
@@ -169,11 +170,11 @@ class UserChatsReducerTests: QuickSpec {
         it("should remove all chats and update the state") {
           let userChat = CHUserChat(
             id: "10", personType: "", personId: "", channelId: "",
-            state: .open, review: "", createdAt: nil, openedAt: nil,
+            state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
-            followedBy: "", hostId: nil, hostType: nil, appMessageId: nil,
-            resolutionTime: 0, lastMessage: nil, session: nil,
-            lastTalkedHost: nil, channel: nil, hasRemoved: false)
+            assigneeId: nil, assigneeType: nil, appMessageId: nil,
+            resolutionTime: 0, lastMessage: nil, session: nil, channel: nil,
+            hasRemoved: false)
           
           state = userChatsReducer(action: CreateUserChat(payload:userChat), state: state)
           

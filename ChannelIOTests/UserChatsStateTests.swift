@@ -22,13 +22,13 @@ class UserChatsStateTests: QuickSpec {
       state = UserChatsState()
       userChats = [CHUserChat]()
       for i in 0..<10 {
-          let userChat = CHUserChat(
-            id: "\(i)0", personType: "", personId: "", channelId: "",
-            state: .open, review: "", createdAt: nil, openedAt: nil,
-            updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
-            followedBy: "", hostId: nil, hostType: nil, appMessageId: nil,
-            resolutionTime: 0, lastMessage: nil, session: nil,
-            lastTalkedHost: nil, channel: nil, hasRemoved: false)
+        let userChat = CHUserChat(
+          id: "\(i)0", personType: "", personId: "", channelId: "",
+          state: .unassigned, review: "", createdAt: nil, openedAt: nil,
+          updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
+          assigneeId: nil, assigneeType: nil, appMessageId: nil,
+          resolutionTime: 0, lastMessage: nil, session: nil, channel: nil,
+          hasRemoved: false)
         userChats?.append(userChat)
       }
       
