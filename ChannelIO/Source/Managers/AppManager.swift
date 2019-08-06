@@ -46,8 +46,8 @@ struct AppManager {
     return PluginPromise.checkVersion()
   }
   
-  static func getFollowingManagers() -> Observable<[CHManager]> {
-    return PluginPromise.getFollowingManagers()
+  static func getOperators() -> Observable<[CHManager]> {
+    return PluginPromise.getOperators()
   }
   
   static func touch() -> Observable<CHGuest> {

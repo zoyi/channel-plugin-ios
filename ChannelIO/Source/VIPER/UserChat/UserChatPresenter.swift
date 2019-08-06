@@ -121,7 +121,7 @@ extension UserChatPresenter {
         interactor.createChat().flatMap({ (chat) -> Observable<Any?> in
           return interactor.send(messages: messages)
         }).flatMap({ (completed) -> Observable<Bool?> in
-          return interactor.requestProfileBot()
+          return .just(true)
         }).subscribe(onNext: { (completed) in
           
         }, onError: { (error) in
@@ -230,7 +230,7 @@ extension UserChatPresenter {
       interactor.createChat().flatMap({ (userChat) -> Observable<Any?> in
         return interactor.send(messages: messages)
       }).flatMap({ (messages) -> Observable<Bool?> in
-        return interactor.requestProfileBot()
+        return .just(true)
       }).subscribe(onNext: { (completed) in
         
       }, onError: { (error) in

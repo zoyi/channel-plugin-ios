@@ -105,9 +105,9 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func getFollowingManagers() -> Observable<[CHManager]> {
+  static func getOperators() -> Observable<[CHManager]> {
     return Observable.create { (subscriber) in
-      let req = Alamofire.request(RestRouter.GetFollowingManager)
+      let req = Alamofire.request(RestRouter.GetOperators)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result{
@@ -191,32 +191,6 @@ struct PluginPromise {
             result["veilId"] = json["veilId"].string
             
             subscriber.onNext(result)
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(error)
-          }
-        })
-      
-      return Disposables.create {
-        req.cancel()
-      }
-    }).subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
-  }
-  
-  static func requestProfileBot(pluginId: String, chatId: String?) -> Observable<Bool?> {
-    return Observable.create({ (subscriber) in
-      guard let chatId = chatId else {
-        subscriber.onNext(nil)
-        return Disposables.create()
-      }
-      
-      let req = Alamofire.request(RestRouter.RequestProfileBot(pluginId, chatId))
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { (response) in
-          switch response.result{
-          case .success(let data):
-            let json = JSON(data)
-            subscriber.onNext(json["result"].bool)
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)

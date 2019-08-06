@@ -8,7 +8,7 @@ github "tristanhimmelman/ObjectMapper" ~> 3.4
 github "ninjaprox/NVActivityIndicatorView" ~> 4.4.0
 github "zoyi/Dwifft"
 github "Alamofire/Alamofire" ~> 4.8.2
-github "socketio/socket.io-client-swift" ~> 13.3.1
+github "socketio/socket.io-client-swift" ~> 15.0.0
 github "zoyi/SlackTextViewController"
 github "MortimerGoro/MGSwipeTableCell" ~> 1.6.8
 github "Marxon13/M13ProgressSuite" ~> 1.2.9
@@ -16,4 +16,4 @@ github "SVProgressHUD/SVProgressHUD" ~> 2.2.5
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit" ~> 2.5.0
 github "rs/SDWebImage" ~> 5.0.0
-github "tilltue/TLPhotoPicker"
+github "tilltue/TLPhotoPicker" ~> 1.9.0

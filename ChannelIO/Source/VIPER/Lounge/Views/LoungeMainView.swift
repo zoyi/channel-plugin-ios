@@ -50,7 +50,7 @@ class LoungeMainView: BaseView {
   private var disposeBag = DisposeBag()
   
   private var shouldShowWelcome: Bool {
-    return self.activeChats.count == 0
+    return self.activeChats.count == 0 && welcomeModel != nil
   }
   
   private var shouldShowAllChat: Bool {
@@ -173,8 +173,6 @@ class LoungeMainView: BaseView {
     self.activeChats = activeChats
     self.inactiveChats = inactiveChats
     self.welcomeModel = welcomeModel
-    
-    self.moreView.configure(moreCount: self.otherChatCount)
     
     self.errorView?.removeFromSuperview()
     self.errorView = nil

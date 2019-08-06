@@ -165,3 +165,4 @@ Press the button below to refresh.";
 "ch.loader.updating" = "Updating ...";
 "ch.lounge.proceeding_chat" = "Ongoing chat";
 "ch.lounge.show_previous_chats" = "See previous %s chats";
+"ch.navigation.next_operation" = "We will come back after %s";

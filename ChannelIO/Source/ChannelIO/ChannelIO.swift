@@ -44,7 +44,7 @@ public final class ChannelIO: NSObject {
     return !mainStore.state.channel.shouldHideLauncher && ChannelIO.isValidStatus
   }
   
-  internal static var chatNotificationView: ChatNotificationView?
+  internal static var chatNotificationView: InAppNotificationView?
   internal static var baseNavigation: BaseNavigationController? {
     willSet {
       if ChannelIO.baseNavigation == nil && newValue != nil {
@@ -93,7 +93,9 @@ public final class ChannelIO: NSObject {
     func handlePush (push: CHPush?) {
       guard let push = push else { return }
       
-      if ChannelIO.baseNavigation == nil && ChannelIO.settings?.hideDefaultInAppPush == false {
+      if ChannelIO.baseNavigation == nil &&
+        ChannelIO.settings?.hideDefaultInAppPush == false &&
+        ChannelIO.lastPush != push {
         ChannelIO.showNotification(pushData: push)
       }
       

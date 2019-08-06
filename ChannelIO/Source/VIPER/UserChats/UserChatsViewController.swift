@@ -33,6 +33,8 @@ class UserChatsViewController: BaseViewController {
     }
   }
   var userChat: CHUserChat? = nil
+  var channel: CHChannel? = nil
+  var plugin: CHPlugin? = nil
   
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
@@ -74,7 +76,7 @@ class UserChatsViewController: BaseViewController {
     self.initTableView()
     self.initActions()
     self.setDefaultNavItems()
-    
+
     self.showCompleted = mainStore.state.userChatsState.showCompletedChats
     self.fetchUserChats(isInit: true, showIndicator: true)
   }
@@ -102,6 +104,7 @@ class UserChatsViewController: BaseViewController {
         }
       }).disposed(by: self.notiDisposeBag)
     
+    //manual load of navigation
     if let nav = self.navigationController as? MainNavigationController {
       nav.newState(state: mainStore.state.plugin)
     }
@@ -332,6 +335,13 @@ extension UserChatsViewController: StoreSubscriber {
       self.showCompleted = showCompleted
       self.nextSeq = nil
       self.fetchUserChats(isInit: true, showIndicator: true, isReload: true)
+    }
+    
+    if (self.channel != state.channel || self.plugin != state.plugin),
+      let titleView = self.navigationItem.titleView as? ChatNavigationTitleView {
+      titleView.configure(channel: state.channel, plugin: state.plugin)
+      self.channel = state.channel
+      self.plugin = state.plugin
     }
   }
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import Reusable
+import PhoneNumberKit
 
 class KeyValueCell: BaseTableViewCell, Reusable {
  let titleLabel = UILabel().then {
@@ -41,26 +42,27 @@ class KeyValueCell: BaseTableViewCell, Reusable {
       make.leading.equalToSuperview().inset(16)
     }
     
-    self.valueLabel.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.valueLabel.snp.makeConstraints { (make) in
       make.centerY.equalToSuperview()
       make.leading.equalTo(self.titleLabel.snp.trailing).offset(16)
     }
     
-    self.arrowImageView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.arrowImageView.snp.makeConstraints { (make) in
       make.leading.greaterThanOrEqualTo(self.valueLabel.snp.trailing).offset(10)
       make.centerY.equalToSuperview()
       make.trailing.equalToSuperview().inset(10)
     }
   }
   
-  func configure(title: String?, detail: String?) {
-    if let title = title {
-      self.titleLabel.text = title
-    }
-    if let detail = detail {
-      self.valueLabel.text = detail
+  func configure(profile: GuestProfileItemModel) {
+    self.titleLabel.text = profile.profileName
+    
+    if let value = profile.profileValue {
+      if profile.rawData.key == "mobileNumber" {
+        self.valueLabel.text = PartialFormatter().formatPartial("\(value)")
+      } else {
+        self.valueLabel.text = "\(value)"
+      }
       self.valueLabel.textColor = CHColors.charcoalGrey
     } else {
       self.valueLabel.text = CHAssets.localized("ch.settings.empty_content")

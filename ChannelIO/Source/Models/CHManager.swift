@@ -46,12 +46,6 @@ extension CHManager: Mappable {
   }
 }
 
-extension CHManager {
-  static func getRecentFollowers() -> Observable<[CHManager]> {
-    return PluginPromise.getFollowingManagers()
-  }
-}
-
 extension CHManager: Equatable {
   static func == (lhs:CHManager, rhs:CHManager) -> Bool {
     return lhs.id == rhs.id &&

@@ -40,13 +40,6 @@ struct CHPlugin: ModelType {
     }
   }
   
-  func requestProfileBot(chatId: String) {
-    _ = PluginPromise.requestProfileBot(pluginId: self.id, chatId: chatId)
-      .subscribe(onNext: { (_) in
-        
-      })
-  }
-  
   var gradientColors: [CGColor] {
     let color = UIColor(self.color) ?? .white
     let gradientColor = UIColor(self.gradientColor) ?? .white

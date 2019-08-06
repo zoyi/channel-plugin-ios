@@ -165,10 +165,6 @@ class ChatManager: NSObject {
       .subscribe(onNext: { [weak self] (type, data) in
         guard let newChat = data as? CHUserChat else { return }
         guard let prevChat = self?.chat else { return }
-        if prevChat.isReady && newChat.isOpen {
-          mainStore.state.plugin.requestProfileBot(chatId: newChat.id)
-        }
-        
         if prevChat.shouldRequestRead(otherChat: newChat) {
           self?.requestRead()
         }
@@ -309,13 +305,6 @@ extension ChatManager {
         signal.dispose()
       }
     })
-  }
-  
-  func requestProfileBot() {
-    PluginPromise.requestProfileBot(pluginId: mainStore.state.plugin.id, chatId: self.chatId)
-      .subscribe(onNext: { (_) in
-        
-      }).disposed(by: self.disposeBag)
   }
   
   func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
@@ -501,7 +490,7 @@ extension ChatManager {
       origin.action?.closed = true
       mainStore.dispatch(UpdateMessage(payload: origin))
       if var updatedChat = userChatSelector(state: mainStore.state, userChatId: self.chatId) {
-        updatedChat.state = .following
+        updatedChat.state = updatedChat.assigneeId == nil ? .unassigned : .assigned
         mainStore.dispatch(UpdateUserChat(payload: updatedChat))
       }
     } else if type == .close {
@@ -722,10 +711,6 @@ extension ChatManager {
         signal.dispose()
       }
     })
-  }
-  
-  func requestProfileBot(chatId: String?) -> Observable<Bool?> {
-    return PluginPromise.requestProfileBot(pluginId: mainStore.state.plugin.id, chatId: chatId)
   }
   
   func reconnect() {

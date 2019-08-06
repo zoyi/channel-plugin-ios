@@ -126,7 +126,7 @@
 "ch.chat.expect_response_delay.out_of_working.description" = "ご不明点を送っていただくと、できる限り早く回答をいたします";
 "ch.chat.expect_response_delay.out_of_working" = "運営時間外";
 "ch.chat.expect_response_delay.instant.short_description" = "通常数分内にご返信致します";
-"ch.chat.expect_response_delay.normal.short_description" = "通常、数十分以内にご返信しています";
+"ch.chat.expect_response_delay.normal.short_description" = "通常数十分以内にご返信致します";
 "ch.chat.expect_response_delay.delayed.short_description" = "返信が遅くなる場合があります";
 "ch.chat.expect_response_delay.out_of_working.short_description" = "現在は運営時間外です";
 "ch.chat.expect_response_delay.out_of_working.detail" = "営業時間を確認する";
@@ -170,3 +170,4 @@
 "ch.loader.updating" = "更新中 ...";
 "ch.lounge.proceeding_chat" = "会話中のチャット";
 "ch.lounge.show_previous_chats" = "過去の%s件のチャットをみる";
+"ch.navigation.next_operation" = "営業時間 %s前";

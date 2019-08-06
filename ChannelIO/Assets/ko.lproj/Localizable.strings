@@ -165,3 +165,4 @@
 "ch.loader.updating" = "업데이트중 ...";
 "ch.lounge.proceeding_chat" = "진행중인 상담";
 "ch.lounge.show_previous_chats" = "%s건의 이전 상담보기";
+"ch.navigation.next_operation" = "%s 뒤 상담이 운영됩니다";

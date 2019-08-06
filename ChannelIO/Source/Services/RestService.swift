@@ -29,7 +29,7 @@ enum RestRouter: URLRequestConvertible {
   case GetGeoIP
   case GetChannel
   case GetCountryCodes
-  case GetFollowingManager
+  case GetOperators
   case GetExternalMessengers
   case GetSupportBot(String)
   case GetSupportBotEntry(String)
@@ -38,7 +38,6 @@ enum RestRouter: URLRequestConvertible {
   case GetMessages(String, ParametersType)
   case GetProfileBotSchemas(String)
   case ReplySupportBot(String, String, ParametersType)
-  case RequestProfileBot(String, String)
   case RegisterToken(ParametersType)
   case RemoveUserChat(String)
   case ReviewUserChat(String, ParametersType)
@@ -76,7 +75,7 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
-         .SendEvent, .Boot, .RequestProfileBot,
+         .SendEvent, .Boot,
          .UpdateProfileItem, .TouchGuest,
          .CreateSupportBotChat, .ReplySupportBot,
          .CheckNudgeReach,
@@ -85,7 +84,7 @@ enum RestRouter: URLRequestConvertible {
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
-         .GetFollowingManager,
+         .GetOperators,
          .GetPlugin, .Translate,
          .GetSupportBot, .GetSupportBotEntry,
          .GetNudges,
@@ -132,8 +131,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/channels"
     case .GetExternalMessengers:
       return "/app/channels/messengers"
-    case .GetFollowingManager:
-      return "/app/channels/following_managers"
+    case .GetOperators:
+      return "/app/channels/operators"
     case .GetPlugin(let pluginId):
       return "/app/plugins/\(pluginId)"
     case .GetUserChats:
@@ -154,8 +153,6 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/remove"
     case .ReviewUserChat(let userChatId, _):
       return "/app/user_chats/\(userChatId)/review"
-    case .RequestProfileBot(let pluginId, let chatId):
-      return "/app/user_chats/\(chatId)/plugins/\(pluginId)/profile_bot"
     case .RegisterToken:
       return "/app/device_tokens"
     case .ReplySupportBot(let userChatId, let buttonId, _):
@@ -272,8 +269,7 @@ enum RestRouter: URLRequestConvertible {
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,
-         .GetFollowingManager,
-         .RequestProfileBot,
+         .GetOperators,
          .CreateUserChat,
          .GetSupportBotEntry,
          .CreateSupportBotChat,

@@ -27,6 +27,9 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   
   var presenter: LoungePresenterProtocol?
   
+  let contentView = UIView().then {
+    $0.backgroundColor = CHColors.paleGreyFour
+  }
   var scrollView = UIScrollView()
   let headerView = LoungeHeaderView()
   let mainView = LoungeMainView()
@@ -49,7 +52,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.view.isHidden = true
+    //self.contentView.isHidden = true
     self.view.backgroundColor = CHColors.paleGreyFour
     
     self.initViews()
@@ -80,6 +83,10 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func setupConstraints() {
     super.setupConstraints()
     
+    self.contentView.snp.makeConstraints { (make) in
+      make.edges.equalToSuperview()
+    }
+    
     self.headerView.snp.makeConstraints { (make) in
       make.height.equalTo(Metrics.headerHeight)
       make.top.equalToSuperview()
@@ -99,28 +106,26 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.trailing.equalToSuperview().inset(Metrics.dismissTrailing)
     }
     
-    self.scrollView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.scrollView.snp.makeConstraints { (make) in
       if #available(iOS 11.0, *) {
-        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
+        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
       } else {
-        make.top.equalToSuperview().inset(20).constraint
+        make.top.equalToSuperview().inset(20)
       }
       make.leading.equalToSuperview().inset(Metrics.contentSide)
       make.trailing.equalToSuperview().inset(Metrics.contentSide)
       make.bottom.equalToSuperview()
     }
     
-    self.mainView.snp.makeConstraints { [weak self] (make) in
+    self.mainView.snp.makeConstraints { (make) in
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.width.equalTo(UIScreen.main.bounds.width - Metrics.contentSide * 2)
-      self?.mainHeightConstraint = make.height.equalTo(340).constraint
+      self.mainHeightConstraint = make.height.equalTo(340).constraint
     }
     
-    self.externalView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.externalView.snp.makeConstraints { (make) in
       make.height.equalTo(Metrics.externalHeight)
       make.top.equalTo(self.mainView.snp.bottom).offset(Metrics.contentBetween)
       make.leading.greaterThanOrEqualToSuperview()
@@ -128,8 +133,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.centerX.equalToSuperview()
     }
     
-    self.watermarkView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.watermarkView.snp.makeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
       } else {
@@ -142,9 +146,10 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   }
   
   func initViews() {
-    self.view.addSubview(self.headerView)
+    self.view.addSubview(self.contentView)
+    self.contentView.addSubview(self.headerView)
 
-    self.view.addSubview(self.scrollView)
+    self.contentView.addSubview(self.scrollView)
     self.scrollView.addSubview(self.mainView)
     self.mainView.signalForChat().subscribe(onNext: { [weak self] (chat) in
       self?.presenter?.didClickOnChat(with: chat.chatId, animated: true, from: self)
@@ -166,9 +171,9 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.externalView.refreshSignal.subscribe(onNext: { [weak self] (_) in
       self?.presenter?.didClickOnRefresh(for: .externalSource)
     }).disposed(by: self.disposeBag)
-    self.view.addSubview(self.dismissButton)
+    self.contentView.addSubview(self.dismissButton)
     
-    self.view.addSubview(self.watermarkView)
+    self.contentView.addSubview(self.watermarkView)
     self.watermarkView.signalForClick().subscribe(onNext: { [weak self] _ in
       self?.presenter?.didClickOnWatermark()
     }).disposed(by: self.disposeBag)
@@ -220,7 +225,7 @@ extension LoungeView {
   }
   
   func displayReady() {
-    self.view.isHidden = false
+    //self.contentView.isHidden = false
     SVProgressHUD.dismiss()
   }
   
@@ -239,6 +244,7 @@ extension LoungeView {
   }
   
   func displayError(for type: LoungeSectionType) {
+    self.contentView.isHidden = false
     switch type {
     case .header: self.headerView.displayError()
     case .mainContent: self.mainView.displayError()

@@ -49,8 +49,7 @@ class LoungeExternalAppsView: BaseView {
   override func displayError() {
     let refreshButton = CHButtonFactory.errorRefresh()
     self.addSubview(refreshButton)
-    refreshButton.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    refreshButton.snp.makeConstraints { (make) in
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()

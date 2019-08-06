@@ -14,7 +14,9 @@ struct MessagesState: StateType {
   var supportBotEntry: CHMessage?
   
   func findBy(type: MessageType) -> [CHMessage]? {
-    return self.messageDictionary.filter({$1.messageType == type}).map({ $1 })
+    return self.messageDictionary
+      .filter({$1.messageType == type})
+      .map({ $1 })
   }
   
   func findBy(id: String?) -> CHMessage? {
@@ -24,10 +26,12 @@ struct MessagesState: StateType {
 
   func findBy(userChatId: String?) -> [CHMessage] {
     guard userChatId != nil else {
-      return self.messageDictionary.filter({ $1.id.hasSuffix("dummy")}).map({ $1 })
+      return self.messageDictionary
+        .filter({ $1.id.hasSuffix("dummy")})
+        .map({ $1 })
     }
     return self.messageDictionary
-      .filter({ $1.chatId == userChatId! || $1.id.hasSuffix("dummy") })
+      .filter({ ($1.chatId == userChatId! || $1.id.hasSuffix("dummy")) && $1.log == nil })
       .map({ $1 })
   }
 

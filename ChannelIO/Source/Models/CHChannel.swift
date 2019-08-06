@@ -77,19 +77,11 @@ extension CHChannel {
     return false
   }
   
-  func isDiff(from channel: CHChannel) -> Bool {
-    return self.working != channel.working ||
-      self.workingType != channel.workingType ||
-      self.expectedResponseDelay != channel.expectedResponseDelay ||
-      self.allowNewChat != channel.allowNewChat
-  }
-  
   var sortedWorkingTime: [SortableWorkingTime]? {
-    guard let workingTime = self.workingTime else { return nil }
+    guard var workingTime = self.workingTime else { return nil }
     
-    var workingTimeDictionary = self.workingTime
     if let launchTime = self.lunchTime {
-      workingTimeDictionary?["lunch_time"] = launchTime
+      workingTime["lunch_time"] = launchTime
     }
     
     return workingTime.map({ (key, value) -> SortableWorkingTime in
@@ -136,17 +128,11 @@ extension CHChannel {
   }
   
   var workingTimeString: String {
-    var workingTimeDictionary = self.workingTime
-    if let launchTime = self.lunchTime {
-      workingTimeDictionary?["lunch_time"] = launchTime
-    }
-    
-    let workingTime = self.sortedWorkingTime?
+    return self.sortedWorkingTime?
       .compactMap({ (wt) -> String? in
         return wt.value
-      }).joined(separator: "\n")
-    
-    return  workingTime ?? "unknown"
+      })
+      .joined(separator: "\n") ?? "unknown"
   }
   
   //return closest weekday and time left in minutes
@@ -221,7 +207,8 @@ extension CHChannel: Equatable {
       lhs.messengerPlan == lhs.messengerPlan &&
       lhs.trial == rhs.trial &&
       lhs.awayOption == rhs.awayOption &&
-      lhs.workingType == rhs.workingType
+      lhs.workingType == rhs.workingType &&
+      lhs.allowNewChat == rhs.allowNewChat
   }
 }
 

@@ -31,6 +31,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   var locale: CHLocaleString? = ChannelIO.settings?.appLocale
   
   func viewDidLoad() {
+    self.initViews()
     self.fetchData()
     
     CHNotification.shared.refreshSignal
@@ -70,11 +71,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       .subscribe(onNext: { [weak self] (channel, plugin) in
         //NOTE: check if entities have been changed
         guard let `self` = self else { return }
-        let followers = mainStore.state.managersState.followingManagers
+        let operators = mainStore.state.managersState.followingManagers
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: plugin,
-          followers: followers
+          operators: operators
         )
         self.view?.displayHeader(with: headerModel)
         
@@ -112,6 +113,17 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       }).disposed(by: self.disposeBag)
   }
   
+  private func initViews() {
+    let operators = mainStore.state.managersState.followingManagers
+    let headerModel = LoungeHeaderViewModel(
+      chanenl: mainStore.state.channel,
+      plugin: mainStore.state.plugin,
+      operators: operators
+    )
+    self.view?.displayHeader(with: headerModel)
+    self.view?.displayMainContent(activeChats: [], inactiveChats: [], welcomeModel: nil)
+  }
+  
   func fetchData() {
     self.loadHeaderInfo()
     self.loadMainContents()
@@ -129,7 +141,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.didClickOnChat(with: chatId, animated: false, from: view)
       self.chatId = nil
     } else {
-      self.view?.displayReady()
+      //self.view?.displayReady()
     }
     
     if self.locale != ChannelIO.settings?.appLocale {
@@ -156,11 +168,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         mainStore.dispatch(UpdateChannel(payload: channel))
         guard let `self` = self else { return }
         //update headers
-        let followers = mainStore.state.managersState.followingManagers
+        let operators = mainStore.state.managersState.followingManagers
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: mainStore.state.plugin,
-          followers: followers
+          operators: operators
         )
         self.view?.displayHeader(with: headerModel)
         
@@ -183,7 +195,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     Observable.combineLatest(self.headerCompletion, self.mainCompletion, self.externalCompletion)
       .subscribe(onNext: { [weak self] (_, _, _) in
         self?.view?.displayReady()
-      }).disposed(by: self.disposeBag)
+      }).disposed(by: self.notiDisposeBag)
   }
   
   func didClickOnRefresh(for type: LoungeSectionType) {
@@ -254,24 +266,24 @@ extension LoungePresenter {
   func loadHeaderInfo() {
     guard let interactor = self.interactor else { return }
     
-    Observable.zip(interactor.getChannel(), interactor.getPlugin(), interactor.getFollowers())
+    Observable.zip(interactor.getChannel(), interactor.getPlugin(), interactor.getOperators())
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (channel, pluginInfo, followers) in
+      .subscribe(onNext: { [weak self] (channel, pluginInfo, operators) in
         mainStore.dispatch(UpdateChannel(payload: channel))
         mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
-        mainStore.dispatch(UpdateFollowingManagers(payload: followers))
+        mainStore.dispatch(UpdateFollowingManagers(payload: operators))
 
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: pluginInfo.0,
-          followers: followers
+          operators: operators
         )
         self?.view?.displayHeader(with: headerModel)
-        self?.mainCompletion.accept(nil)
+        self?.headerCompletion.accept(nil)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .header)
       }).disposed(by: self.disposeBag)

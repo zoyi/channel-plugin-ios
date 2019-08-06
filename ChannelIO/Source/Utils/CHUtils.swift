@@ -156,19 +156,17 @@ class CHUtils {
     let components = CHUtils.secondsToComponents(seconds: seconds)
     var durationText = ""
     if components.0 > 0 {
-      durationText += String(format: CHAssets.localized("%d day"), components.0)
+      return String(format: CHAssets.localized("%d day"), components.0)
     }
-    if components.1 > 0 {
-      durationText += "\(components.1)" + CHAssets.localized("ch.review.complete.time.hour")
+    else if components.1 > 0 {
+      return "\(components.1)" + CHAssets.localized("ch.review.complete.time.hour")
     }
-    if components.2 > 0 {
-      durationText += "\(components.2)" + CHAssets.localized("ch.review.complete.time.minute")
+    else if components.2 > 0 {
+      return "\(components.2)" + CHAssets.localized("ch.review.complete.time.minute")
     }
-    if components.2 == 0 && components.3 > 0 {
-      durationText += "1" + CHAssets.localized("ch.review.complete.time.minute")
+    else {
+      return "1" + CHAssets.localized("ch.review.complete.time.minute")
     }
-    
-    return durationText
   }
 
   @discardableResult

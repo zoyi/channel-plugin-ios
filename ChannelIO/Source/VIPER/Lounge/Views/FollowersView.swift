@@ -52,16 +52,7 @@ class FollowersView: BaseView {
     self.addSubview(self.forthFollowerView)
   }
   
-  func resetContraints() {
-    self.firstFollowerView.snp.removeConstraints()
-    self.secondFollowerView.snp.removeConstraints()
-    self.thirdFollowerView.snp.removeConstraints()
-    self.forthFollowerView.snp.removeConstraints()
-  }
-  
   func configure(entities: [CHEntity]) {
-    self.resetContraints()
-    
     if entities.count == 1 {
       self.configureForOneEntity(entities.first)
     } else if entities.count == 2 {
@@ -136,7 +127,7 @@ class FollowersView: BaseView {
   
   func configureForTwoEntities(_ entities: [CHEntity]) {
     self.firstFollowerView.configure(entities[0])
-    self.firstFollowerView.snp.makeConstraints { (make) in
+    self.firstFollowerView.snp.remakeConstraints { (make) in
       make.leading.equalToSuperview()
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
@@ -145,8 +136,7 @@ class FollowersView: BaseView {
     }
     
     self.secondFollowerView.configure(entities[1])
-    self.secondFollowerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.secondFollowerView.snp.remakeConstraints { (make) in
       make.trailing.equalToSuperview()
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
@@ -163,7 +153,7 @@ class FollowersView: BaseView {
   
   func configureForThreeEntities(_ entities: [CHEntity]) {
     self.firstFollowerView.configure(entities[0])
-    self.firstFollowerView.snp.makeConstraints { (make) in
+    self.firstFollowerView.snp.remakeConstraints { (make) in
       make.top.equalToSuperview()
       make.centerX.equalToSuperview()
       make.height.equalTo(Metric.sizeForThree)
@@ -171,8 +161,7 @@ class FollowersView: BaseView {
     }
     
     self.secondFollowerView.configure(entities[1])
-    self.secondFollowerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.secondFollowerView.snp.remakeConstraints { (make) in
       make.leading.equalToSuperview()
       make.bottom.equalToSuperview()
       make.top.equalTo(self.firstFollowerView.snp.bottom).offset(-3)
@@ -181,8 +170,7 @@ class FollowersView: BaseView {
     }
     
     self.thirdFollowerView.configure(entities[2])
-    self.thirdFollowerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.thirdFollowerView.snp.remakeConstraints { (make) in
       make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
       make.leading.equalTo(self.secondFollowerView.snp.trailing).offset(2)
@@ -199,7 +187,7 @@ class FollowersView: BaseView {
   
   func configureForFourEntities(_ entities: [CHEntity]) {
     self.firstFollowerView.configure(entities[0])
-    self.firstFollowerView.snp.makeConstraints { (make) in
+    self.firstFollowerView.snp.remakeConstraints { (make) in
       make.leading.equalToSuperview()
       make.top.equalToSuperview()
       make.height.equalTo(Metric.sizeForFour)
@@ -207,8 +195,7 @@ class FollowersView: BaseView {
     }
     
     self.secondFollowerView.configure(entities[1])
-    self.secondFollowerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.secondFollowerView.snp.remakeConstraints { (make) in
       make.trailing.equalToSuperview()
       make.top.equalToSuperview()
       make.leading.equalTo(self.firstFollowerView.snp.trailing).offset(2)
@@ -217,8 +204,7 @@ class FollowersView: BaseView {
     }
     
     self.thirdFollowerView.configure(entities[2])
-    self.thirdFollowerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.thirdFollowerView.snp.remakeConstraints { (make) in
       make.leading.equalToSuperview()
       make.bottom.equalToSuperview()
       make.top.equalTo(self.firstFollowerView.snp.bottom).offset(2)
@@ -227,8 +213,7 @@ class FollowersView: BaseView {
     }
     
     self.forthFollowerView.configure(entities[3])
-    self.forthFollowerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.forthFollowerView.snp.remakeConstraints { (make) in
       make.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
       make.top.equalTo(self.secondFollowerView.snp.bottom).offset(2)
