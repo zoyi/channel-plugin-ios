@@ -115,6 +115,7 @@ struct CHNudgeVariant: CHImageable {
   var imageUrl: String? = nil
   var imageThumb: CHImageMeta? = nil
   var imageRedirectUrl: String? = nil
+  var mobileExposureType: InAppNotificationType = .banner
   
   var attachment: CHAttachmentType? = nil
   var buttonTitle: String? = nil
@@ -131,23 +132,24 @@ extension CHNudgeVariant : Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    id                <- map["id"]
-    nudgeId           <- map["nudgeId"]
-    name              <- map["name"]
-    title             <- map["title"]
-    attachment        <- map["attachment"]
-    buttonTitle       <- map["buttonTitle"]
-    buttonRedirectUrl <- map["buttonRedirectUrl"]
-    message           <- (map["message"], CustomMessageTransform())
-    weight            <- map["weight"]
-    botName           <- map["botName"]
-    imageKey          <- map["imageKey"]
-    imageMeta         <- map["imageMeta"]
-    imageRedirectUrl  <- map["imageRedirectUrl"]
-    imageUrl          <- map["imageUrl"]
-    imageThumb        <- map["imageThumb"]
-    createdAt         <- (map["createdAt"], CustomDateTransform())
-    updatedAt         <- (map["updatedAt"], CustomDateTransform())
+    id                  <- map["id"]
+    nudgeId             <- map["nudgeId"]
+    name                <- map["name"]
+    title               <- map["title"]
+    attachment          <- map["attachment"]
+    buttonTitle         <- map["buttonTitle"]
+    buttonRedirectUrl   <- map["buttonRedirectUrl"]
+    message             <- (map["message"], CustomMessageTransform())
+    weight              <- map["weight"]
+    botName             <- map["botName"]
+    imageKey            <- map["imageKey"]
+    imageMeta           <- map["imageMeta"]
+    imageRedirectUrl    <- map["imageRedirectUrl"]
+    imageUrl            <- map["imageUrl"]
+    imageThumb          <- map["imageThumb"]
+    mobileExposureType  <- map["mobileExposureType"]
+    createdAt           <- (map["createdAt"], CustomDateTransform())
+    updatedAt           <- (map["updatedAt"], CustomDateTransform())
   }
 }
 
@@ -161,6 +163,7 @@ extension CHNudgeVariant: Equatable {
       lhs.message == rhs.message &&
       lhs.attachment == rhs.attachment &&
       lhs.buttonTitle == rhs.buttonTitle &&
-      lhs.buttonRedirectUrl == rhs.buttonRedirectUrl
+      lhs.buttonRedirectUrl == rhs.buttonRedirectUrl &&
+      lhs.mobileExposureType == rhs.mobileExposureType
   }
 }

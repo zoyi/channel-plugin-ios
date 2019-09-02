@@ -44,7 +44,7 @@ public final class ChannelIO: NSObject {
     return !mainStore.state.channel.shouldHideLauncher && ChannelIO.isValidStatus
   }
   
-  internal static var chatNotificationView: InAppNotificationView?
+  internal static var inAppNotificationView: InAppNotification?
   internal static var baseNavigation: BaseNavigationController? {
     willSet {
       if ChannelIO.baseNavigation == nil && newValue != nil {

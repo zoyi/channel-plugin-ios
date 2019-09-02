@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol ChatNotificationViewModelType {
+protocol InAppNotificationViewModelType {
   var message: NSAttributedString? { get }
   var name: String? { get }
   var timestamp: String? { get }
@@ -23,6 +23,7 @@ protocol ChatNotificationViewModelType {
   var buttonRedirect: String? { get set }
   var themeColor: UIColor? { get set }
   var pluginTextColor: UIColor? { get set }
+  var mobileExposureType: InAppNotificationType { get set }
 }
 
 enum CHAttachmentType: String {
@@ -31,7 +32,7 @@ enum CHAttachmentType: String {
   case image
 }
 
-struct ChatNotificationViewModel: ChatNotificationViewModelType {
+struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var message: NSAttributedString?
   var name: String?
   var timestamp: String?
@@ -42,6 +43,7 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
   var imageHeight: CGFloat = 0.f
   var imageWidth: CGFloat = 0.f
   var imageRedirect: String? = nil
+  var mobileExposureType: InAppNotificationType = .banner
   var buttonTitle: String? = nil
   var buttonRedirect: String? = nil
   var themeColor: UIColor? = nil
@@ -77,6 +79,8 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
       break
     }
     
+    self.mobileExposureType = push.mobileExposureType
+    
     self.themeColor = UIColor(mainStore.state.plugin.color)
     self.pluginTextColor = mainStore.state.plugin.textUIColor
     
@@ -94,17 +98,24 @@ struct ChatNotificationViewModel: ChatNotificationViewModelType {
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
     } else if let message = push.message?.messageV2 {
-      let title = self.title == nil ? "" : self.title! + " "
+      var title = ""
+      if self.mobileExposureType == .banner {
+        title = self.title == nil ? "" : self.title! + " "
+      } else if self.mobileExposureType == .popup {
+        title = self.title == nil ? "" : self.title! + "\n"
+      }
+      
+      let fontSize = self.mobileExposureType == .popup ? 14.f : 13.f
       let newAttributedString = NSMutableAttributedString(string: title)
       newAttributedString.addAttributes(
-        [.font: UIFont.boldSystemFont(ofSize: 13)],
+        [.font: UIFont.boldSystemFont(ofSize: fontSize)],
         range: NSRange(location: 0, length: title.count)
       )
       newAttributedString.append(message)
       newAttributedString.enumerateAttribute(.font, in: NSMakeRange(0, newAttributedString.length), options: []) {
         value, range, stop in
         guard let currentFont = value as? UIFont else { return }
-        let newFont = currentFont.isBold ? UIFont.boldSystemFont(ofSize: 13) : UIFont.systemFont(ofSize: 13)
+        let newFont = currentFont.isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
         newAttributedString.addAttributes([.font: newFont], range: range)
       }
 
