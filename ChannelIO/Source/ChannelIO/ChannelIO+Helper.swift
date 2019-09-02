@@ -158,6 +158,12 @@ extension ChannelIO {
       else if let controller = topController as? UserChatsViewController {
         controller.showUserChat(userChatId: userChatId)
       }
+      //lounge view
+      else if let loungeView = CHUtils.getTopController() as? LoungeView,
+        let presenter = loungeView.presenter as? LoungePresenter,
+        let router = presenter.router {
+        router.pushChat(with: userChatId, animated: animated, from: loungeView)
+      }
       //no channel views
       else {
         let loungeView = LoungeRouter.createModule(with: userChatId)
