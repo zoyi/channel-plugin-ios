@@ -432,4 +432,26 @@ struct UserChatPromise {
       }
     }).subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
+  
+  static func keepNudge(userChatId: String) -> Observable<CHMessage?> {
+    return Observable.create({ (subscriber) in
+      let req = Alamofire.request(RestRouter.KeepNudge(userChatId))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { (response) in
+          switch response.result {
+          case .success(let data):
+            let json = SwiftyJSON.JSON(data)
+            let message = Mapper<CHMessage>().map(JSONObject: json["message"].object)
+            
+            subscriber.onNext(message)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(error)
+          }
+        })
+      return Disposables.create {
+        req.cancel()
+      }
+    })
+  }
 }
