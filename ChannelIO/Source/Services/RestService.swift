@@ -37,6 +37,7 @@ enum RestRouter: URLRequestConvertible {
   case GetUserChat(String)
   case GetMessages(String, ParametersType)
   case GetProfileBotSchemas(String)
+  case KeepNudge(String)
   case ReplySupportBot(String, String, ParametersType)
   case RegisterToken(ParametersType)
   case RemoveUserChat(String)
@@ -79,7 +80,8 @@ enum RestRouter: URLRequestConvertible {
          .UpdateProfileItem, .TouchGuest,
          .CreateSupportBotChat, .ReplySupportBot,
          .CheckNudgeReach,
-         .CreateNudgeChat:
+         .CreateNudgeChat,
+         .KeepNudge:
       return .post
     case .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
@@ -121,10 +123,10 @@ enum RestRouter: URLRequestConvertible {
       return "/app/user_chats/\(userChatId)/messages"
     case .CheckVersion:
       return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
-    case .GetMessages(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages"
     case .CloseUserChat(let userChatId, _):
       return "/app/user_chats/\(userChatId)/close"
+    case .GetMessages(let userChatId, _):
+      return "/app/user_chats/\(userChatId)/messages"
     case .GetCountryCodes:
       return "/available/countries"
     case .GetChannel:
@@ -149,6 +151,8 @@ enum RestRouter: URLRequestConvertible {
       return "/app/plugins/\(pluginId)/nudges"
     case .GetProfileBotSchemas(let pluginId):
       return "/app/plugins/\(pluginId)/profile_bot_schemas"
+    case .KeepNudge(let userChatId):
+      return "/app/user_chats/\(userChatId)/nudge/keep"
     case .RemoveUserChat(let userChatId):
       return "/app/user_chats/\(userChatId)/remove"
     case .ReviewUserChat(let userChatId, _):
@@ -280,7 +284,8 @@ enum RestRouter: URLRequestConvertible {
          .CreateNudgeChat,
          .GetSupportBot,
          .GetExternalMessengers,
-         .GetProfileBotSchemas:
+         .GetProfileBotSchemas,
+         .KeepNudge:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
