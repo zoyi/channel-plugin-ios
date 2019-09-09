@@ -11,7 +11,7 @@ import Foundation
 enum CHExternalSourceType: String {
   case kakao = "appKakaoLink"
   case line = "appLineLink"
-  case talktalk
+  case talktalk = "appNaverTalkLink"
   case facebook
   case email
   case phone
