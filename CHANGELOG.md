@@ -1,3 +1,7 @@
+# 6.1.1
+## Bug fixes
+* Added missing nudge keep API
+
 # 6.1.0
 ## Updates
 * Changed some user chats' state
