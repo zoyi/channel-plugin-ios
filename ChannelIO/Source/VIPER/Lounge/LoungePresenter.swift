@@ -53,64 +53,6 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           config: CHNotificationConfiguration.warningConfig
         )
       }).disposed(by: self.disposeBag)
-    
-//    self.interactor?.updateExternalSource()
-//      .observeOn(MainScheduler.instance)
-//      .debounce(1, scheduler: MainScheduler.instance)
-//      .subscribe(onNext: { [weak self] (sources) in
-//        let sources = LoungeExternalSourceModel.generate(
-//          with: mainStore.state.channel,
-//          plugin: mainStore.state.plugin,
-//          thirdParties: [:])
-//        self?.view?.displayExternalSources(with: sources)
-//      }).disposed(by: self.disposeBag)
-    
-    self.interactor?.updateGeneralInfo()
-      .observeOn(MainScheduler.instance)
-      .debounce(0.5, scheduler: MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (channel, plugin) in
-        //NOTE: check if entities have been changed
-        guard let `self` = self else { return }
-        let operators = mainStore.state.managersState.followingManagers
-        let headerModel = LoungeHeaderViewModel(
-          chanenl: channel,
-          plugin: plugin,
-          operators: operators
-        )
-        self.view?.displayHeader(with: headerModel)
-        
-        let models = userChatsSelector(state: mainStore.state, showCompleted: true)
-          .map { UserChatCellModel(userChat: $0) }
-
-        let welcome = UserChatCellModel.welcome(
-          with: mainStore.state.plugin,
-          guest: mainStore.state.guest,
-          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-        )
-        
-        self.view?.displayMainContent(
-          activeChats: models.filter { !$0.isClosed },
-          inactiveChats: models.filter { $0.isClosed },
-          welcomeModel: welcome)
-      }).disposed(by: self.disposeBag)
-    
-    self.interactor?.updateChats()
-      .observeOn(MainScheduler.instance)
-      .debounce(0.5, scheduler: MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (chats) in
-        guard let `self` = self else { return }
-        let models = chats.map { UserChatCellModel(userChat: $0) }
-        let welcome = UserChatCellModel.welcome(
-          with: mainStore.state.plugin,
-          guest: mainStore.state.guest,
-          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-        )
-        
-        self.view?.displayMainContent(
-          activeChats: models.filter { !$0.isClosed },
-          inactiveChats: models.filter { $0.isClosed },
-          welcomeModel: welcome)
-      }).disposed(by: self.disposeBag)
   }
   
   private func initViews() {
@@ -121,7 +63,6 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       operators: operators
     )
     self.view?.displayHeader(with: headerModel)
-    self.view?.displayMainContent(activeChats: [], inactiveChats: [], welcomeModel: nil)
   }
   
   func fetchData() {
@@ -141,7 +82,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.didClickOnChat(with: chatId, animated: false, from: view)
       self.chatId = nil
     } else {
-      //self.view?.displayReady()
+      self.view?.displayReady()
     }
     
     if self.locale != ChannelIO.settings?.appLocale {
@@ -166,7 +107,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       })
       .subscribe(onNext: { [weak self] (channel) in
         mainStore.dispatch(UpdateChannel(payload: channel))
-        guard let `self` = self else { return }
+        guard let self = self else { return }
         //update headers
         let operators = mainStore.state.managersState.followingManagers
         let headerModel = LoungeHeaderViewModel(
@@ -192,10 +133,26 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           welcomeModel: welcome)
       }).disposed(by: self.notiDisposeBag)
     
-    Observable.combineLatest(self.headerCompletion, self.mainCompletion, self.externalCompletion)
-      .subscribe(onNext: { [weak self] (_, _, _) in
-        self?.view?.displayReady()
-      }).disposed(by: self.notiDisposeBag)
+    self.interactor?.updateChats()
+      .subscribe(onNext: { [weak self] (chats) in
+        guard let self = self else { return }
+        
+        let models = userChatsSelector(state: mainStore.state, showCompleted: true)
+          .map { UserChatCellModel(userChat: $0) }
+        
+        let welcome = UserChatCellModel.welcome(
+          with: mainStore.state.plugin,
+          guest: mainStore.state.guest,
+          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+        )
+        
+        self.view?.displayMainContent(
+          activeChats: models.filter { !$0.isClosed },
+          inactiveChats: models.filter { $0.isClosed },
+          welcomeModel: welcome)
+      }, onError: { (error) in
+          
+      }).disposed(by: self.disposeBag)
   }
   
   func didClickOnRefresh(for type: LoungeSectionType) {
@@ -263,7 +220,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
 }
 
 extension LoungePresenter {
-  func loadHeaderInfo() {
+  private func loadHeaderInfo() {
     guard let interactor = self.interactor else { return }
     
     Observable.zip(interactor.getChannel(), interactor.getPlugin(), interactor.getOperators())
@@ -273,10 +230,14 @@ extension LoungePresenter {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, pluginInfo, operators) in
-        mainStore.dispatch(UpdateChannel(payload: channel))
-        mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
-        mainStore.dispatch(UpdateFollowingManagers(payload: operators))
-
+        mainStore.dispatch(
+          UpdateLoungeInfo(
+            channel: channel,
+            plugin: pluginInfo.0,
+            bot: pluginInfo.1,
+            operators: operators
+          ))
+        
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
           plugin: pluginInfo.0,
@@ -289,7 +250,7 @@ extension LoungePresenter {
       }).disposed(by: self.disposeBag)
   }
   
-  func loadMainContents() {
+  private func loadMainContents() {
     guard let interactor = self.interactor else { return }
     
     Observable.zip(interactor.getChats(), interactor.getSupportBot())
@@ -317,7 +278,7 @@ extension LoungePresenter {
       }).disposed(by: self.disposeBag)
   }
   
-  func loadExternalSources() {
+  private func loadExternalSources() {
     guard let interactor = self.interactor else { return }
     
     interactor.getExternalSource()

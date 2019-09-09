@@ -10,7 +10,7 @@ import UIKit
 import NVActivityIndicatorView
 
 enum IndicatorPosition {
-  case header, footer
+  case header, footer, content
 }
 
 let INDICATOR_SIZE: CGFloat = 20
@@ -37,19 +37,22 @@ extension UITableView {
     let view = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: INDICATOR_WRAPPER_HEIGHT))
     
     let indicator = NVActivityIndicatorView(frame: CGRect(
-      x: view.frame.width / 2 - INDICATOR_SIZE / 2,
-      y: view.frame.height / 2 - INDICATOR_SIZE / 2,
+      x: 0, y: 0,
       width: INDICATOR_SIZE,
       height: INDICATOR_SIZE))
-    indicator.type = .ballClipRotate
+    indicator.type = .ballRotateChase
     indicator.color = CHColors.light
     indicator.startAnimating()
     
     view.addSubview(indicator)
+    indicator.snp.makeConstraints { (make) in
+      make.center.equalToSuperview()
+    }
     
     switch position {
     case .header: self.tableHeaderView = view
     case .footer: self.tableFooterView = view
+    case .content: self.backgroundView = view
     }
   }
   
@@ -58,6 +61,7 @@ extension UITableView {
     switch position {
     case .header: self.tableHeaderView = nil
     case .footer: self.tableFooterView = nil
+    case .content: self.backgroundView = nil
     }
   }
   

@@ -55,7 +55,7 @@ Pod::Spec.new do |s|
   s.dependency 'M13ProgressSuite'
   s.dependency 'SVProgressHUD'
   s.dependency 'CRToast'
-  s.dependency 'PhoneNumberKit', '~> 2.5.0'
+  s.dependency 'PhoneNumberKit', '~> 2.6.0'
   s.dependency 'SDWebImage', '~> 5.0.0'
   s.dependency 'RxSwiftExt'
   s.dependency 'TLPhotoPicker'

@@ -14,6 +14,13 @@ struct CheckInSuccess: Action {
 
 struct CheckOutSuccess: Action {}
 
+struct UpdateLoungeInfo: Action {
+  public let channel: CHChannel
+  public let plugin: CHPlugin
+  public let bot: CHBot?
+  public let operators: [CHManager]
+}
+
 struct GetPlugin: Action {
   public let plugin: CHPlugin
   public let bot: CHBot?

@@ -52,7 +52,6 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    //self.contentView.isHidden = true
     self.view.backgroundColor = CHColors.paleGreyFour
     
     self.initViews()
@@ -94,8 +93,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.trailing.equalToSuperview()
     }
     
-    self.dismissButton.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.dismissButton.snp.makeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(Metrics.dismissTop)
       } else {
@@ -122,7 +120,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.width.equalTo(UIScreen.main.bounds.width - Metrics.contentSide * 2)
-      self.mainHeightConstraint = make.height.equalTo(340).constraint
+      self.mainHeightConstraint = make.height.equalTo(240).constraint
     }
     
     self.externalView.snp.makeConstraints { (make) in
