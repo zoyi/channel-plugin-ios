@@ -45,11 +45,14 @@ class LoungeMainHeaderView: BaseView {
       make.top.equalToSuperview().inset(12)
     }
     
-    self.newChatButton.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.newChatButton.snp.makeConstraints { (make) in
       make.centerY.equalTo(self.recentLabel.snp.centerY)
       make.trailing.equalToSuperview().inset(16)
     }
+  }
+  
+  func configure(channel: CHChannel) {
+    self.newChatButton.isHidden = !channel.allowNewChat
   }
   
   func newChatSignal() -> Observable<Any?> {
