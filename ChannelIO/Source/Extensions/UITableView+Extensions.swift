@@ -17,10 +17,6 @@ let INDICATOR_SIZE: CGFloat = 20
 let INDICATOR_WRAPPER_HEIGHT: CGFloat = 50
 
 extension UITableView {
-  fileprivate var placeholderImageIsShow: Bool {
-    return self.backgroundView != nil
-  }
-  
   func scrollToBottom(_ animated: Bool) {
     guard self.numberOfSections > 0 else { return }
     let indexPath = IndexPath(row: self.numberOfRows(inSection: 0) - 1, section: 0)
@@ -32,8 +28,6 @@ extension UITableView {
   // MARK: indicator related methods
   
   func showIndicatorTo(_ position: IndicatorPosition) {
-    guard !self.placeholderImageIsShow else { return }
-    
     let view = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: INDICATOR_WRAPPER_HEIGHT))
     
     let indicator = NVActivityIndicatorView(frame: CGRect(
@@ -57,7 +51,6 @@ extension UITableView {
   }
   
   func hideIndicatorTo(_ position: IndicatorPosition) {
-    guard !self.placeholderImageIsShow else { return }
     switch position {
     case .header: self.tableHeaderView = nil
     case .footer: self.tableFooterView = nil
