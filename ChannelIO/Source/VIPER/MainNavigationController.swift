@@ -8,6 +8,8 @@
 
 import UIKit
 import ReSwift
+import RxSwift
+import RxCocoa
 
 protocol CHNavigationDelegate: class {
   func willPopViewController(willShow controller:UIViewController)
@@ -23,6 +25,8 @@ class MainNavigationController: BaseNavigationController {
   
   var currentBgColor: UIColor?
   var currentGradientColor: UIColor?
+  
+  let disposeBag = DisposeBag()
   
   struct StatusBar {
     static var isHidden = false
@@ -48,6 +52,21 @@ class MainNavigationController: BaseNavigationController {
     self.delegate = self
     self.interactivePopGestureRecognizer?.delegate = self
     self.navigationBar.isTranslucent = false
+    
+    self.navigationBar.rx.observeWeakly(CGRect.self, "frame")
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (frame) in
+        guard let self = self else { return }
+        let plugin = mainStore.state.plugin
+        let bgColor = UIColor(plugin.color) ?? UIColor.white
+        let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
+        
+        self.navigationBar.setGradientBackground(
+          colors: [bgColor, bgColor, bgColor, gradientColor],
+          startPoint: .topLeft,
+          endPoint: .topRight
+        )
+      }).disposed(by: self.disposeBag)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -104,6 +123,7 @@ extension MainNavigationController: StoreSubscriber {
         startPoint: .topLeft,
         endPoint: .topRight
       )
+//      self.navigationBar.barTintColor = gradientColor
       self.navigationBar.setValue(true, forKey: "hidesShadow")
       self.navigationBar.tintColor = state.textUIColor
       

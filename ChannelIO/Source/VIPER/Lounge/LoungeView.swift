@@ -57,6 +57,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.initViews()
     self.initScrollView()
     self.presenter?.viewDidLoad()
+    self.setupConstraints()
     
     NotificationCenter.default
       .rx.notification(Notification.Name.Channel.enterForeground)
@@ -220,6 +221,10 @@ extension LoungeView {
     self.mainView.reloadContent()
     self.externalView.reloadContent()
     self.watermarkView.reloadContent()
+  }
+
+  func setViewVisible(_ value: Bool) {
+    self.scrollView.isHidden = !value
   }
   
   func displayReady() {

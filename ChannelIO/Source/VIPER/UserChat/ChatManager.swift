@@ -429,8 +429,6 @@ extension ChatManager {
     self.createNudgeChat(nudgeId: nudgeId)
       .observeOn(MainScheduler.instance)
       .flatMap {( chatId) -> Observable<CHMessage?> in
-        let message = CHMessage.createLocal(chatId: chatId, text: "👍", mutable: false)
-        mainStore.dispatch(CreateMessage(payload: message))
         return UserChatPromise.keepNudge(userChatId: chatId)
       }
       .observeOn(MainScheduler.instance)

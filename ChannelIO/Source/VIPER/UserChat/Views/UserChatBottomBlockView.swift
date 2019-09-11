@@ -17,7 +17,6 @@ class UserChatBottomBlockView: BaseView {
   let messageLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 14)
     $0.numberOfLines = 0
-    $0.textColor = CHColors.blueyGrey
   }
   
   let topBorder = UIView().then {
@@ -26,7 +25,7 @@ class UserChatBottomBlockView: BaseView {
   
   override func initialize() {
     super.initialize()
-    self.backgroundColor = CHColors.paleGrey30
+    self.backgroundColor = .grey200
     self.addSubview(self.topBorder)
     self.addSubview(self.messageLabel)
   }
@@ -53,7 +52,7 @@ class UserChatBottomBlockView: BaseView {
     self.messageLabel.attributedText = message.addLineHeight(
       height: 18,
       font: UIFont.systemFont(ofSize: 14),
-      color: CHColors.blueyGrey
+      color: .grey500
     )
   }
   

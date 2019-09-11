@@ -9,6 +9,7 @@
 import RxSwift
 import RxSwiftExt
 import RxCocoa
+import SVProgressHUD
 
 class LoungePresenter: NSObject, LoungePresenterProtocol {
   weak var view: LoungeViewProtocol?
@@ -79,9 +80,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     //handle showUserChat
     if let chatId = chatId, let view = self.view as? UIViewController {
-      self.didClickOnChat(with: chatId, animated: false, from: view)
+      self.view?.setViewVisible(false)
+      self.router?.pushChat(with: chatId, animated: false, from: view)
       self.chatId = nil
     } else {
+      self.view?.setViewVisible(true)
       self.view?.displayReady()
     }
     
@@ -155,6 +158,40 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       }).disposed(by: self.disposeBag)
   }
   
+  func isReadyToPresentChat(chatId: String?) -> Single<Any?> {
+    return Single<Any?>.create { subscriber in
+      guard chatId != nil else {
+        subscriber(.success(nil))
+        return Disposables.create()
+      }
+      
+      let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
+      let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
+      
+      //plugin may not need
+      let signal = Observable.zip(pluginSignal, supportSignal)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          let reloadMessage = CHAssets.localized("plugin.reload.message")
+          SVProgressHUD.show(withStatus: reloadMessage)
+          return true
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (plugin, entry) in
+          if entry.step != nil && entry.supportBot != nil {
+            mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
+          }
+          
+          subscriber(.success(nil))
+        }, onError: { (error) in
+          subscriber(.error(error))
+        })
+      
+      return Disposables.create{
+        signal.dispose()
+      }
+    }
+  }
+  
   func didClickOnRefresh(for type: LoungeSectionType) {
     switch type {
     case .header:
@@ -176,7 +213,27 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    self.router?.pushChat(with: chatId, animated: animated, from: view)
+    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
+    let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: chatId == nil)
+    
+    //plugin may not need
+    Observable.zip(pluginSignal, supportSignal)
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        let reloadMessage = CHAssets.localized("plugin.reload.message")
+        SVProgressHUD.show(withStatus: reloadMessage)
+        return true
+      })
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (plugin, entry) in
+        if entry.step != nil && entry.supportBot != nil {
+          mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
+        }
+        SVProgressHUD.dismiss()
+        self.router?.pushChat(with: chatId, animated: animated, from: view)
+        //view?.navigationController?.pushViewController(chatView, animated: animated)
+      }, onError: { (error) in
+        SVProgressHUD.dismiss()
+      }).disposed(by: self.disposeBag)
   }
   
   func didClickOnNewChat(from view: UIViewController?) {

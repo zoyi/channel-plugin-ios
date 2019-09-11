@@ -16,9 +16,6 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
   var disposeBag = DisposeBag()
   
   func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-    let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: chatId == nil)
-   
     let chatView = UserChatViewController()
     if let userChatId = chatId {
       chatView.userChatId = userChatId
@@ -29,25 +26,8 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
         self?.pushChat(with: nil, animated: true, from: view)
       })
     }).disposed(by: self.disposeBag)
-    
-    //plugin may not need
-    Observable.zip(pluginSignal, supportSignal)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        let reloadMessage = CHAssets.localized("plugin.reload.message")
-        SVProgressHUD.show(withStatus: reloadMessage)
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (plugin, entry) in
-        if entry.step != nil && entry.supportBot != nil {
-          mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
-        }
-        SVProgressHUD.dismiss()
-        
-        view?.navigationController?.pushViewController(chatView, animated: animated)
-      }, onError: { (error) in
-        SVProgressHUD.dismiss()
-      }).disposed(by: self.disposeBag)
+
+    view?.navigationController?.pushViewController(chatView, animated: animated)
   }
   
   func pushChatList(from view: UIViewController?) {

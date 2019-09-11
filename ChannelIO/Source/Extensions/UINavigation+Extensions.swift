@@ -70,10 +70,8 @@ extension UINavigationBar {
       frame: updatedFrame, colors: colors,
       startPoint: startPoint, endPoint: endPoint
     )
-    setBackgroundImage(
-      gradientLayer.createGradientImage(),
-      for: UIBarMetrics.default
-    )
+    
+    setBackgroundImage(gradientLayer.createGradientImage(),for: .default)
   }
   
 }

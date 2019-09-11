@@ -170,7 +170,12 @@ extension ChannelIO {
         let controller = MainNavigationController(rootViewController: loungeView)
         ChannelIO.baseNavigation = controller
         
-        topController.present(controller, animated: animated, completion: nil)
+        loungeView.presenter?.isReadyToPresentChat(chatId: userChatId)
+          .subscribe(onSuccess: { (_) in
+            topController.present(controller, animated: animated, completion: nil)
+          }, onError: { (error) in
+            
+          }).disposed(by: self.disposeBag)
       }
     }
   }

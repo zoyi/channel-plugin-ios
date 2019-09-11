@@ -348,10 +348,6 @@ final class UserChatViewController: BaseSLKTextViewController {
     )
     
     self.initNavigationTitle(with: userChat ?? self.userChat)
-
-    if let nav = self.navigationController as? MainNavigationController {
-      nav.newState(state: mainStore.state.plugin)
-    }
   }
   
   func initNavigationTitle(with userChat: CHUserChat? = nil) {
@@ -439,7 +435,6 @@ final class UserChatViewController: BaseSLKTextViewController {
 // MARK: - StoreSubscriber
 
 extension UserChatViewController: StoreSubscriber {
-
   func newState(state: AppState) {
     self.userChatId = self.chatManager.chatId
     let shouldUpdate = self.channel != state.channel
@@ -549,6 +544,8 @@ extension UserChatViewController: StoreSubscriber {
       self.nudgeKeepButton.isHidden = true
     }
     
+    self.paintSafeAreaBottomInset(with: nil)
+    
     if nextUserChat?.isRemoved == true {
       _ = self.navigationController?.popViewController(animated: true)
     }
@@ -559,7 +556,6 @@ extension UserChatViewController: StoreSubscriber {
         self.scrollToBottom(false)
       }
       self.newChatButton.isHidden = false
-
       self.chatBlockView.isHidden = true
     }
     else if nextUserChat?.fromNudge == true {
@@ -574,6 +570,7 @@ extension UserChatViewController: StoreSubscriber {
         self.scrollToBottom(false)
       }
       self.chatBlockView.isHidden = false
+      self.paintSafeAreaBottomInset(with: .grey200)
     }
     else if nextUserChat?.isSupporting == true ||
       nextUserChat?.isSolved == true ||
