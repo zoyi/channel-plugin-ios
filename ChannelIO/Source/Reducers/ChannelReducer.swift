@@ -21,6 +21,9 @@ func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
     PrefStore.clearAllLocalData()
     return CHChannel()
     
+  case let action as UpdateLoungeInfo:
+    return action.channel
+    
   case let action as UpdateChannel:
     return action.payload
     
