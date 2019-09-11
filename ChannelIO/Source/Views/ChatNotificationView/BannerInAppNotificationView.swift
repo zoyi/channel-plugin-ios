@@ -1,8 +1,8 @@
 //
-//  InAppNotificationView.swift
+//  BannerInAppNotificationView.swift
 //  ChannelIO
 //
-//  Created by intoxicated on 01/08/2019.
+//  Created by Jam on 01/08/2019.
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import SnapKit
 
-class InAppNotificationView: BaseView {
+class BannerInAppNotificationView: BaseView, InAppNotification {
   private struct Metrics {
     static let closeButtonHeight = 28.f
     static let closeLeading = 10.f
@@ -19,7 +19,7 @@ class InAppNotificationView: BaseView {
     static let containerTrailing = 10.f
     static let containerBottom = 12.f
     static let contentSide = 14.f
-    static let messageTop = 12.f
+    static let messageTop = 10.f
     static let writerTop = 4.f
     static let contentBottom = 10.f
     static let avatarSize = CGSize(width: 24.f, height: 24.f)
@@ -30,13 +30,15 @@ class InAppNotificationView: BaseView {
     static let imageSide = 10.f
   }
   
+  let notiType: InAppNotificationType = .banner
+  
   private let closeButton = UIButton().then {
-    $0.setImage(CHAssets.getImage(named: "exitG"), for: .normal)
+    $0.setImage(CHAssets.getImage(named: "exitSmall"), for: .normal)
     $0.setTitle(CHAssets.localized("ch.button_close"), for: .normal)
     $0.setTitleColor(.grey500, for: .normal)
     $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
     
-    $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+    $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 12)
     $0.imageEdgeInsets = UIEdgeInsets(top:0, left: -8, bottom: 0, right: 0)
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 14
@@ -79,7 +81,7 @@ class InAppNotificationView: BaseView {
   private let avatarView = AvatarView()
   private let nameLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 12)
-    $0.textColor = .grey500
+    $0.textColor = .grey900
   }
   private let timestampLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
@@ -174,7 +176,7 @@ class InAppNotificationView: BaseView {
     
     self.writerInfoStackView.snp.makeConstraints { (make) in
       make.leading.equalToSuperview().inset(Metrics.contentSide)
-      make.top.greaterThanOrEqualTo(self.messageView.snp.bottom).offset(Metrics.writerTop)
+      make.top.equalTo(self.messageView.snp.bottom).offset(Metrics.writerTop)
       make.trailing.lessThanOrEqualToSuperview().inset(Metrics.contentSide)
       make.bottom.equalToSuperview().inset(Metrics.contentBottom)
     }
@@ -184,7 +186,7 @@ class InAppNotificationView: BaseView {
     }
   }
   
-  func configure(viewModel: ChatNotificationViewModel) {
+  func configure(with viewModel: InAppNotificationViewModel) {
     self.messageView.attributedText = viewModel.message
     self.avatarView.configure(viewModel.avatar)
     self.nameLabel.text = viewModel.avatar?.name
@@ -199,7 +201,7 @@ class InAppNotificationView: BaseView {
     }
   }
   
-  private func configureForButton(_ viewModel: ChatNotificationViewModel) {
+  private func configureForButton(_ viewModel: InAppNotificationViewModel) {
     self.sideContentView.isHidden = false
     self.sideContentView.subviews.forEach { $0.removeFromSuperview() }
     self.sideContentView.addSubview(self.redirectButton)
@@ -230,7 +232,7 @@ class InAppNotificationView: BaseView {
     }).disposed(by: self.disposeBag)
   }
 
-  private func configureForImage(_ viewModel: ChatNotificationViewModel, url: URL) {
+  private func configureForImage(_ viewModel: InAppNotificationViewModel, url: URL) {
     self.sideContentView.isHidden = false
     self.sideContentView.subviews.forEach { $0.removeFromSuperview() }
     self.sideContentView.addSubview(self.redirectImageView)
@@ -254,6 +256,33 @@ class InAppNotificationView: BaseView {
     }).disposed(by: self.disposeBag)
   }
   
+  func insertView(on view: UIView) {
+    if let superview = self.superview, superview != view {
+      self.removeFromSuperview()
+    }
+    if self.superview != view {
+      self.insert(on: view, animated: true)
+    }
+    
+    let maxWidth = 520.f
+    
+    self.snp.makeConstraints({ (make) in
+      if UIScreen.main.bounds.width > maxWidth {
+        make.centerX.equalToSuperview()
+        make.width.equalTo(maxWidth)
+      } else {
+        make.leading.equalToSuperview()
+        make.trailing.equalToSuperview()
+      }
+      
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+      } else {
+        make.bottom.equalToSuperview()
+      }
+    })
+  }
+  
   func signalForRedirect() -> Observable<String?> {
     self.redirectSignal = PublishSubject<String?>()
     return self.redirectSignal.asObservable()
@@ -267,9 +296,13 @@ class InAppNotificationView: BaseView {
   func signalForClose() -> Observable<Any?> {
     return self.closeButton.signalForClick()
   }
+  
+  func removeView(animated: Bool) {
+    self.remove(animated: animated)
+  }
 }
 
-extension InAppNotificationView : UITextViewDelegate {
+extension BannerInAppNotificationView : UITextViewDelegate {
   func textView(_ textView: UITextView,
                 shouldInteractWith URL: URL,
                 in characterRange: NSRange) -> Bool {

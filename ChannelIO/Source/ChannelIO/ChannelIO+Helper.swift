@@ -178,39 +178,24 @@ extension ChannelIO {
   internal class func showNotification(pushData: CHPush?) {
     guard let view = CHUtils.getTopController()?.view else { return }
     guard let push = pushData else { return }
-
-    let notificationView = ChannelIO.chatNotificationView ?? InAppNotificationView()
     
-    let viewModel = ChatNotificationViewModel(push: push)
-    notificationView.configure(viewModel: viewModel)
-    
-    if let superview = notificationView.superview, superview != view {
-      notificationView.removeFromSuperview()
+    if ChannelIO.inAppNotificationView != nil {
+      ChannelIO.inAppNotificationView?.removeView(animated: true)
+      ChannelIO.inAppNotificationView = nil
     }
     
-    if notificationView.superview != view {
-      notificationView.insert(on: view, animated: true)
+    var notificationView: InAppNotification?
+    if !push.isNudgePush || push.mobileExposureType == .banner {
+      notificationView = BannerInAppNotificationView()
+    } else {
+      notificationView = PopupInAppNotificationView()
     }
     
-    let maxWidth = 520.f
+    let viewModel = InAppNotificationViewModel(push: push)
+    notificationView?.configure(with: viewModel)
+    notificationView?.insertView(on: view)
     
-    notificationView.snp.makeConstraints({ (make) in
-      if UIScreen.main.bounds.width > maxWidth {
-        make.centerX.equalToSuperview()
-        make.width.equalTo(maxWidth)
-      } else {
-        make.leading.equalToSuperview()
-        make.trailing.equalToSuperview()
-      }
-      
-      if #available(iOS 11.0, *) {
-        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-      } else {
-        make.bottom.equalToSuperview()
-      }
-    })
-    
-    notificationView
+    notificationView?
       .signalForChat()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (event) in
@@ -218,13 +203,13 @@ extension ChannelIO {
         ChannelIO.showUserChat(userChatId: push.userChat?.id)
       }).disposed(by: disposeBag)
     
-    notificationView.signalForClose()
+    notificationView?.signalForClose()
       .observeOn(MainScheduler.instance)
       .subscribe { (event) in
         ChannelIO.hideNotification()
       }.disposed(by: disposeBag)
     
-    notificationView
+    notificationView?
       .signalForRedirect()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (urlString) in
@@ -236,7 +221,7 @@ extension ChannelIO {
         ChannelIO.hideNotification()
       }).disposed(by: disposeBag)
     
-    ChannelIO.chatNotificationView = notificationView
+    ChannelIO.inAppNotificationView = notificationView
     CHAssets.playPushSound()
   }
   
@@ -247,12 +232,12 @@ extension ChannelIO {
   }
     
   internal class func hideNotification() {
-    guard ChannelIO.chatNotificationView != nil else { return }
+    guard ChannelIO.inAppNotificationView != nil else { return }
     
     dispatch {
       mainStore.dispatch(RemovePush())
-      ChannelIO.chatNotificationView?.remove(animated: true)
-      ChannelIO.chatNotificationView = nil
+      ChannelIO.inAppNotificationView?.removeView(animated: true)
+      ChannelIO.inAppNotificationView = nil
     }
   }
 }
