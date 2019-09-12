@@ -59,8 +59,8 @@ class MainNavigationController: BaseNavigationController {
       .subscribe(onNext: { [weak self] (frame) in
         self?.navigationBar.setGradientBackground(
           colors: mainStore.state.plugin.gradientColors,
-          startPoint: .topLeft,
-          endPoint: .topRight
+          startPoint: .left,
+          endPoint: .right
         )
       }).disposed(by: self.disposeBag)
   }
@@ -114,8 +114,8 @@ extension MainNavigationController: StoreSubscriber {
 
       self.navigationBar.setGradientBackground(
         colors: state.gradientColors,
-        startPoint: .topLeft,
-        endPoint: .topRight
+        startPoint: .left,
+        endPoint: .right
       )
 
       self.navigationBar.setValue(true, forKey: "hidesShadow")

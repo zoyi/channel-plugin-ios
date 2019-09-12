@@ -72,10 +72,9 @@ extension UINavigationBar {
       startPoint: startPoint,
       endPoint: endPoint
     )
-    
+    gradientLayer.isOpaque = true
     setBackgroundImage(gradientLayer.createGradientImage(),for: .default)
   }
-  
 }
 
 extension UIViewController {

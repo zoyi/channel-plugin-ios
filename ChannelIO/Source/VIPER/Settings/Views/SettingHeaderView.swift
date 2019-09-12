@@ -18,6 +18,8 @@ class SettingHeaderView: BaseView {
     $0.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 86)
   }
   
+  let bgImageView = UIImageView()
+  
   let channelNameLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 24)
     $0.textAlignment = .left
@@ -45,7 +47,9 @@ class SettingHeaderView: BaseView {
     )
     self.clipsToBounds = false
     
-    self.layer.addSublayer(self.bgLayer)
+//    self.layer.addSublayer(self.bgLayer)
+
+    self.addSubview(self.bgImageView)
     self.addSubview(self.channelNameLabel)
     self.addSubview(self.homepageUrlLabel)
     self.addSubview(self.descriptionLabel)
@@ -64,6 +68,13 @@ class SettingHeaderView: BaseView {
   
   override func setLayouts() {
     super.setLayouts()
+    
+    self.bgImageView.snp.makeConstraints { (make) in
+      make.top.equalToSuperview()
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.height.equalTo(86)
+    }
     
     self.channelNameLabel.snp.makeConstraints { [weak self] (make) in
       guard let `self` = self else { return }
@@ -106,5 +117,6 @@ class SettingHeaderView: BaseView {
     self.descriptionLabel.textColor = model.textColor
     self.channelAvatarView.configure(model.entity)
     self.bgLayer.colors = model.colors.map { $0.cgColor }
+    self.bgImageView.image = self.bgLayer.createGradientImage()
   }
 }

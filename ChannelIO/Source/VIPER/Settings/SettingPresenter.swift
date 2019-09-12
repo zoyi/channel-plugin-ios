@@ -27,14 +27,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     self.interactor?.updateGeneral()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, plugin) in
-        let headerModel = SettingHeaderViewModel(
-          title: channel.name,
-          homepageUrl: channel.homepageUrl,
-          desc: channel.desc,
-          entity: channel,
-          colors:plugin.gradientColors,
-          textColor: plugin.textUIColor)
-        
+        let headerModel = SettingHeaderViewModel(channel: channel, plugin: plugin)
         self?.view?.displayHeader(with: headerModel)
       }).disposed(by: self.disposeBag)
     
