@@ -274,7 +274,7 @@ class LoungeHeaderView: BaseView {
   }
   
   func configure(channel: CHChannel, plugin: CHPlugin, operators: [CHEntity]) {
-    self.bgView.colors = plugin.gradientColors
+    self.bgView.colors = plugin.gradientColors.map { $0.cgColor }
     
     self.settingButton.tintColor = plugin.textUIColor
     self.dismissButton.tintColor = plugin.textUIColor

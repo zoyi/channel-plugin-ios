@@ -20,7 +20,9 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     $0.font = UIFont.systemFont(ofSize: 17)
     $0.textColor = CHColors.blueyGrey
     $0.numberOfLines = 1
+    $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue:500), for: .horizontal)
   }
+  
   let arrowImageView = UIImageView().then {
     $0.contentMode = .center
     $0.image = CHAssets.getImage(named: "chevronRightSmall")
@@ -40,6 +42,7 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     self.titleLabel.snp.makeConstraints { (make) in
       make.centerY.equalToSuperview()
       make.leading.equalToSuperview().inset(16)
+      make.width.lessThanOrEqualTo(UIScreen.main.bounds.width / 2)
     }
     
     self.valueLabel.snp.makeConstraints { (make) in
@@ -50,7 +53,7 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     self.arrowImageView.snp.makeConstraints { (make) in
       make.leading.greaterThanOrEqualTo(self.valueLabel.snp.trailing).offset(10)
       make.centerY.equalToSuperview()
-      make.trailing.equalToSuperview().inset(10)
+      make.trailing.equalToSuperview().inset(10).priority(1000)
     }
   }
   

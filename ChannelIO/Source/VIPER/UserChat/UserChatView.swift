@@ -158,9 +158,6 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
     self.navigationItem.titleView = titleView
     self.titleView = titleView
-
-    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-    self.navigationController?.navigationBar.shadowImage = UIImage()
   }
 
   fileprivate func initViews() {

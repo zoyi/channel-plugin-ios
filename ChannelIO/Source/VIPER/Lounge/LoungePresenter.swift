@@ -121,41 +121,32 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         self.view?.displayHeader(with: headerModel)
         
         //update main
-        let models = userChatsSelector(state: mainStore.state, showCompleted: true)
-          .map { UserChatCellModel(userChat: $0) }
-        
-        let welcome = UserChatCellModel.welcome(
-          with: mainStore.state.plugin,
-          guest: mainStore.state.guest,
-          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-        )
-
-        self.view?.displayMainContent(
-          activeChats: models.filter { !$0.isClosed },
-          inactiveChats: models.filter { $0.isClosed },
-          welcomeModel: welcome)
+        self.updateMainContent()
       }).disposed(by: self.notiDisposeBag)
     
     self.interactor?.updateChats()
       .subscribe(onNext: { [weak self] (chats) in
         guard let self = self else { return }
-        
-        let models = userChatsSelector(state: mainStore.state, showCompleted: true)
-          .map { UserChatCellModel(userChat: $0) }
-        
-        let welcome = UserChatCellModel.welcome(
-          with: mainStore.state.plugin,
-          guest: mainStore.state.guest,
-          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-        )
-        
-        self.view?.displayMainContent(
-          activeChats: models.filter { !$0.isClosed },
-          inactiveChats: models.filter { $0.isClosed },
-          welcomeModel: welcome)
+        self.updateMainContent()
       }, onError: { (error) in
           
       }).disposed(by: self.disposeBag)
+  }
+  
+  func updateMainContent() {
+    let models = userChatsSelector(state: mainStore.state, showCompleted: true)
+      .map { UserChatCellModel(userChat: $0) }
+    
+    let welcome = UserChatCellModel.welcome(
+      with: mainStore.state.plugin,
+      guest: mainStore.state.guest,
+      supportBotMessage: supportBotEntrySelector(state: mainStore.state)
+    )
+    
+    self.view?.displayMainContent(
+      activeChats: models.filter { !$0.isClosed },
+      inactiveChats: models.filter { $0.isClosed },
+      welcomeModel: welcome)
   }
   
   func isReadyToPresentChat(chatId: String?) -> Single<Any?> {
@@ -258,8 +249,9 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       let interactor = self.interactor else { return }
     
     interactor.deleteChat(userChat: userChat)
-      .subscribe(onNext: { (chat) in
+      .subscribe(onNext: { [weak self] (chat) in
         mainStore.dispatch(DeleteUserChat(payload: userChat))
+        self?.updateMainContent()
       }, onError: { (error) in
         
       }).disposed(by: self.disposeBag)
@@ -317,18 +309,7 @@ extension LoungePresenter {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats, entry) in
-        let models = chats.map { UserChatCellModel(userChat: $0) }
-        let welcome = UserChatCellModel.welcome(
-          with: mainStore.state.plugin,
-          guest: mainStore.state.guest,
-          supportBotMessage: supportBotEntrySelector(state: mainStore.state)
-        )
-
-        self?.view?.displayMainContent(
-          activeChats: models.filter { !$0.isClosed },
-          inactiveChats: models.filter { $0.isClosed },
-          welcomeModel: welcome)
-
+        self?.updateMainContent()
         self?.mainCompletion.accept(nil)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .mainContent)

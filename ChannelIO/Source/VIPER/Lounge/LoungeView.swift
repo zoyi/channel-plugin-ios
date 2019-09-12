@@ -83,18 +83,18 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func setupConstraints() {
     super.setupConstraints()
     
-    self.contentView.snp.makeConstraints { (make) in
+    self.contentView.snp.remakeConstraints { (make) in
       make.edges.equalToSuperview()
     }
     
-    self.headerView.snp.makeConstraints { (make) in
+    self.headerView.snp.remakeConstraints { (make) in
       make.height.equalTo(Metrics.headerHeight)
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
     }
     
-    self.dismissButton.snp.makeConstraints { (make) in
+    self.dismissButton.snp.remakeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(Metrics.dismissTop)
       } else {
@@ -105,7 +105,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.trailing.equalToSuperview().inset(Metrics.dismissTrailing)
     }
     
-    self.scrollView.snp.makeConstraints { (make) in
+    self.scrollView.snp.remakeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
       } else {
@@ -116,7 +116,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.bottom.equalToSuperview()
     }
     
-    self.mainView.snp.makeConstraints { (make) in
+    self.mainView.snp.remakeConstraints { (make) in
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
@@ -124,7 +124,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       self.mainHeightConstraint = make.height.equalTo(240).constraint
     }
     
-    self.externalView.snp.makeConstraints { (make) in
+    self.externalView.snp.remakeConstraints { (make) in
       make.height.equalTo(Metrics.externalHeight)
       make.top.equalTo(self.mainView.snp.bottom).offset(Metrics.contentBetween)
       make.leading.greaterThanOrEqualToSuperview()
@@ -132,7 +132,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.centerX.equalToSuperview()
     }
     
-    self.watermarkView.snp.makeConstraints { (make) in
+    self.watermarkView.snp.remakeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
       } else {

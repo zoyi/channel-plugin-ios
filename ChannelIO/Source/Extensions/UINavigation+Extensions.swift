@@ -67,8 +67,10 @@ extension UINavigationBar {
     var updatedFrame = bounds
     updatedFrame.size.height += self.frame.origin.y
     let gradientLayer = CAGradientLayer(
-      frame: updatedFrame, colors: colors,
-      startPoint: startPoint, endPoint: endPoint
+      frame: updatedFrame,
+      colors: colors,
+      startPoint: startPoint,
+      endPoint: endPoint
     )
     
     setBackgroundImage(gradientLayer.createGradientImage(),for: .default)

@@ -45,7 +45,7 @@ struct CHChannel: CHEntity {
 
 extension CHChannel {
   var defaultPluginLink: String {
-    return "\(self.domain).channel.io"
+    return "https://\(self.domain).channel.io"
   }
   
   var canUseSDK: Bool {

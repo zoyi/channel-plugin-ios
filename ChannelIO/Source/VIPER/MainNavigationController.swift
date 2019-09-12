@@ -37,7 +37,7 @@ class MainNavigationController: BaseNavigationController {
     didSet {
       if useDefault {
         self.navigationBar.barTintColor = nil
-        self.navigationBar.titleTextAttributes =  [.foregroundColor: UIColor.white]
+        self.navigationBar.titleTextAttributes =  [.foregroundColor: mainStore.state.plugin.textUIColor]
         self.navigationBar.isTranslucent = false
         self.statusBarStyle = .lightContent
         self.setNeedsStatusBarAppearanceUpdate()
@@ -52,17 +52,13 @@ class MainNavigationController: BaseNavigationController {
     self.delegate = self
     self.interactivePopGestureRecognizer?.delegate = self
     self.navigationBar.isTranslucent = false
+    self.navigationBar.barStyle = .black
     
     self.navigationBar.rx.observeWeakly(CGRect.self, "frame")
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (frame) in
-        guard let self = self else { return }
-        let plugin = mainStore.state.plugin
-        let bgColor = UIColor(plugin.color) ?? UIColor.white
-        let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
-        
-        self.navigationBar.setGradientBackground(
-          colors: [bgColor, bgColor, bgColor, gradientColor],
+        self?.navigationBar.setGradientBackground(
+          colors: mainStore.state.plugin.gradientColors,
           startPoint: .topLeft,
           endPoint: .topRight
         )
@@ -114,16 +110,14 @@ extension MainNavigationController: StoreSubscriber {
   func newState(state: CHPlugin) {
     if !self.useDefault {
       // Bar Color
-      //self.navigationBar.barTintColor = UIColor(state.color)
-      let bgColor = UIColor(state.color) ?? UIColor.white
-      let gradientColor = UIColor(state.gradientColor) ?? UIColor.white
-      
+//      self.navigationBar.barTintColor = UIColor(state.color)
+
       self.navigationBar.setGradientBackground(
-        colors: [bgColor, bgColor, bgColor, gradientColor],
+        colors: state.gradientColors,
         startPoint: .topLeft,
         endPoint: .topRight
       )
-//      self.navigationBar.barTintColor = gradientColor
+
       self.navigationBar.setValue(true, forKey: "hidesShadow")
       self.navigationBar.tintColor = state.textUIColor
       
@@ -133,8 +127,7 @@ extension MainNavigationController: StoreSubscriber {
       }
       
       // Title Color
-      let titleColor = state.textColor == "white" ? UIColor.white : UIColor.black
-      self.navigationBar.titleTextAttributes = [.foregroundColor: titleColor]
+      self.navigationBar.titleTextAttributes = [.foregroundColor: state.textUIColor]
       
       // Status bar color
       self.statusBarStyle = state.textColor == "white" ? .lightContent : .default

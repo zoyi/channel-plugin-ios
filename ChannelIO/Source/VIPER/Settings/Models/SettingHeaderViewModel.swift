@@ -13,6 +13,6 @@ struct SettingHeaderViewModel {
   var homepageUrl: String?
   var desc: String?
   var entity: CHEntity
-  var colors: [CGColor]
+  var colors: [UIColor]
   var textColor: UIColor
 }

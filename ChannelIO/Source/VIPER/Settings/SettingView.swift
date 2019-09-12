@@ -44,6 +44,7 @@ class SettingView: BaseViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    self.view.backgroundColor = .white
     self.view.addSubview(self.tableView)
     self.view.addSubview(self.headerView)
     self.view.addSubview(self.versionLabel)
@@ -75,7 +76,7 @@ class SettingView: BaseViewController {
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       if #available(iOS 11.0, *) {
-        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(38)
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(38)
       } else {
         make.bottom.equalToSuperview().inset(38)
       }
@@ -84,7 +85,7 @@ class SettingView: BaseViewController {
     self.versionLabel.snp.makeConstraints { (make) in
       make.trailing.equalToSuperview().inset(14)
       if #available(iOS 11.0, *) {
-        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(10)
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(10)
       } else {
         make.bottom.equalToSuperview().inset(10)
       }

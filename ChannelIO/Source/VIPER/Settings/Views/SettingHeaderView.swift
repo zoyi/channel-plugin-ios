@@ -105,6 +105,6 @@ class SettingHeaderView: BaseView {
     self.descriptionLabel.text = model.desc
     self.descriptionLabel.textColor = model.textColor
     self.channelAvatarView.configure(model.entity)
-    self.bgLayer.colors = model.colors
+    self.bgLayer.colors = model.colors.map { $0.cgColor }
   }
 }
