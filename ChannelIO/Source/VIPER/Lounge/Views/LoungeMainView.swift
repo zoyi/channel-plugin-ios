@@ -229,7 +229,6 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let count = min(self.activeChats.count, Constants.maxNumberOfCell)
     let view = LoungeMainHeaderView()
-    view.configure(channel: mainStore.state.channel)
     view.newChatSignal()
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)

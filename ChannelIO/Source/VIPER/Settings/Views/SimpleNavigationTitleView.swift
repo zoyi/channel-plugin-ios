@@ -47,6 +47,7 @@ class SimpleNavigationTitleView: BaseView {
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {
-    return CGSize(width: UIScreen.main.bounds.width, height: 35)
+    let width = UIScreen.main.bounds.width - 120
+    return CGSize(width: width, height: 44)
   }
 }

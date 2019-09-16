@@ -348,6 +348,13 @@ final class UserChatViewController: BaseSLKTextViewController {
     )
     
     self.initNavigationTitle(with: userChat ?? self.userChat)
+
+    //NOTE: iOS 10 >= doesn't properly call navigationBar frame change rx method
+    //hance it doesn't apply proper navigation tint when it comes from lounge (where navigation is hidden)
+    //Remove this when iOS 10 is not supported
+    if let nav = self.navigationController as? MainNavigationController {
+      nav.newState(state: mainStore.state.plugin)
+    }
   }
   
   func initNavigationTitle(with userChat: CHUserChat? = nil) {
@@ -405,7 +412,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
     let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
     let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-    spacer.width = -16
+    spacer.width = -8
     
     let backButton = NavigationRoundLabelBackItem(
       text: alert == 0 ? "" : alertCount,

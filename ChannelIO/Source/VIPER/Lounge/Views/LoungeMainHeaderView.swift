@@ -50,11 +50,7 @@ class LoungeMainHeaderView: BaseView {
       make.trailing.equalToSuperview().inset(16)
     }
   }
-  
-  func configure(channel: CHChannel) {
-    self.newChatButton.isHidden = !channel.allowNewChat
-  }
-  
+
   func newChatSignal() -> Observable<Any?> {
     self.newSignal = PublishRelay<Any?>()
     self.newChatButton.signalForClick()
