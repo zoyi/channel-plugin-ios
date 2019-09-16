@@ -83,7 +83,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
-    self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
+    self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
     self.textView.keyboardType = .default
 
     if let userChat = self.userChat, userChat.isCompleted {
@@ -273,7 +273,7 @@ extension UserChatView {
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.tintColor = CHColors.cobalt
       self.rightButton.setTitle("", for: .normal)
-      self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
+      self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
 
       self.textInputbar.barState = .normal
       self.textInputbar.setButtonsHidden(false)
