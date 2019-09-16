@@ -32,7 +32,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   var locale: CHLocaleString? = ChannelIO.settings?.appLocale
   
   func viewDidLoad() {
-    self.initViews()
+    self.updateHeaders()
     self.fetchData()
     
     CHNotification.shared.refreshSignal
@@ -56,7 +56,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       }).disposed(by: self.disposeBag)
   }
   
-  private func initViews() {
+  private func updateHeaders() {
     let operators = mainStore.state.managersState.followingManagers
     let headerModel = LoungeHeaderViewModel(
       chanenl: mainStore.state.channel,
@@ -124,7 +124,15 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         self.updateMainContent()
       }).disposed(by: self.notiDisposeBag)
     
+    self.interactor?.updateGeneralInfo()
+      .observeOn(MainScheduler.instance)
+      .debounce(0.5, scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (channel, plugin) in
+        self?.updateHeaders()
+      }).disposed(by: self.disposeBag)
+    
     self.interactor?.updateChats()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats) in
         guard let self = self else { return }
         self.updateMainContent()
@@ -168,10 +176,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         })
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (plugin, entry) in
-          if entry.step != nil && entry.supportBot != nil {
-            mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
-          }
-          
+          mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
           subscriber(.success(nil))
         }, onError: { (error) in
           subscriber(.error(error))
@@ -204,31 +209,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-    let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: chatId == nil)
-    
-    //plugin may not need
-    Observable.zip(pluginSignal, supportSignal)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        let reloadMessage = CHAssets.localized("plugin.reload.message")
-        SVProgressHUD.show(withStatus: reloadMessage)
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (plugin, entry) in
-        if entry.step != nil && entry.supportBot != nil {
-          mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
-        }
-        SVProgressHUD.dismiss()
-        self.router?.pushChat(with: chatId, animated: animated, from: view)
-        //view?.navigationController?.pushViewController(chatView, animated: animated)
-      }, onError: { (error) in
-        SVProgressHUD.dismiss()
-      }).disposed(by: self.disposeBag)
+    self.pushChat(with: chatId, animated: animated, from: view)
   }
   
   func didClickOnNewChat(from view: UIViewController?) {
-    self.router?.pushChat(with: nil, animated: true, from: view)
+    self.pushChat(with: chatId, animated: true, from: view)
   }
   
   func didClickOnSeeMoreChat(from view: UIViewController?) {
@@ -269,6 +254,28 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
 }
 
 extension LoungePresenter {
+  private func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
+    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
+    let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: chatId == nil)
+    
+    //plugin may not need
+    Observable.zip(pluginSignal, supportSignal)
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        let reloadMessage = CHAssets.localized("plugin.reload.message")
+        SVProgressHUD.show(withStatus: reloadMessage)
+        return true
+      })
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (plugin, entry) in
+        mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
+        SVProgressHUD.dismiss()
+        self.router?.pushChat(with: chatId, animated: animated, from: view)
+        //view?.navigationController?.pushViewController(chatView, animated: animated)
+      }, onError: { (error) in
+        SVProgressHUD.dismiss()
+      }).disposed(by: self.disposeBag)
+  }
+  
   private func loadHeaderInfo() {
     guard let interactor = self.interactor else { return }
     

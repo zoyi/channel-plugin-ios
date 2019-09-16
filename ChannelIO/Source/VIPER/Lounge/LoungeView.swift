@@ -44,6 +44,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   
   var scrollTopConstraint: Constraint?
   var mainHeightConstraint: Constraint?
+  var mainHeight: CGFloat = 240.f
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return self.navigationController?.preferredStatusBarStyle ?? .lightContent
@@ -57,7 +58,6 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     self.initViews()
     self.initScrollView()
     self.presenter?.viewDidLoad()
-    self.setupConstraints()
     
     NotificationCenter.default
       .rx.notification(Notification.Name.Channel.enterForeground)
@@ -83,18 +83,18 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func setupConstraints() {
     super.setupConstraints()
     
-    self.contentView.snp.remakeConstraints { (make) in
+    self.contentView.snp.makeConstraints { (make) in
       make.edges.equalToSuperview()
     }
     
-    self.headerView.snp.remakeConstraints { (make) in
+    self.headerView.snp.makeConstraints { (make) in
       make.height.equalTo(Metrics.headerHeight)
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
     }
     
-    self.dismissButton.snp.remakeConstraints { (make) in
+    self.dismissButton.snp.makeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(Metrics.dismissTop)
       } else {
@@ -105,7 +105,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.trailing.equalToSuperview().inset(Metrics.dismissTrailing)
     }
     
-    self.scrollView.snp.remakeConstraints { (make) in
+    self.scrollView.snp.makeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
       } else {
@@ -116,15 +116,15 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.bottom.equalToSuperview()
     }
     
-    self.mainView.snp.remakeConstraints { (make) in
+    self.mainView.snp.makeConstraints { (make) in
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.width.equalTo(UIScreen.main.bounds.width - Metrics.contentSide * 2)
-      self.mainHeightConstraint = make.height.equalTo(240).constraint
+      self.mainHeightConstraint = make.height.equalTo(self.mainHeight).constraint
     }
     
-    self.externalView.snp.remakeConstraints { (make) in
+    self.externalView.snp.makeConstraints { (make) in
       make.height.equalTo(Metrics.externalHeight)
       make.top.equalTo(self.mainView.snp.bottom).offset(Metrics.contentBetween)
       make.leading.greaterThanOrEqualToSuperview()
@@ -132,7 +132,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.centerX.equalToSuperview()
     }
     
-    self.watermarkView.snp.remakeConstraints { (make) in
+    self.watermarkView.snp.makeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
       } else {
@@ -239,7 +239,8 @@ extension LoungeView {
   
   func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
     self.mainView.configure(activeChats: activeChats, inactiveChats: inactiveChats, welcomeModel: welcomeModel)
-    self.mainHeightConstraint?.update(offset: self.mainView.viewHeight)
+    self.mainHeight = self.mainView.viewHeight
+    self.mainHeightConstraint?.update(offset: self.mainHeight)
   }
   
   func displayExternalSources(with models: [LoungeExternalSourceModel]) {
