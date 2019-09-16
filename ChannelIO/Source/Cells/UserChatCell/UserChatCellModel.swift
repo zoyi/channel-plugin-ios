@@ -12,24 +12,24 @@ protocol UserChatCellModelType {
   var chatId: String? { get set }
   var title: String { get set }
   var lastMessage: String? { get set }
+  var attributeLastMessage: NSAttributedString? { get set }
   var timestamp: String { get set }
   var avatar: CHEntity? { get set }
   var badgeCount: Int { get set }
   var isBadgeHidden: Bool { get set }
   var isClosed: Bool { get set }
-  var messageContents: NSAttributedString? { get set }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
   var chatId: String? = nil
   var title: String = ""
   var lastMessage: String? = nil
+  var attributeLastMessage: NSAttributedString? = nil
   var timestamp: String = ""
   var avatar: CHEntity? = nil
   var badgeCount: Int = 0
   var isBadgeHidden: Bool = false
   var isClosed: Bool = false
-  var messageContents: NSAttributedString?
   
   init() {}
   
@@ -55,7 +55,7 @@ struct UserChatCellModel: UserChatCellModelType {
         ],
         range: NSRange(location: 0, length: msg.string.count))
       
-      self.messageContents = newAttributedString
+      self.attributeLastMessage = newAttributedString
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {

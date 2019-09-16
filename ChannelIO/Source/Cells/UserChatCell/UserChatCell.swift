@@ -128,8 +128,8 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.timestampLabel.text = viewModel.timestamp
     self.badge.isHidden = viewModel.isBadgeHidden
     self.badge.configure(viewModel.badgeCount)
-    if let messageContents = viewModel.messageContents {
-      self.messageLabel.attributedText = messageContents
+    if let attributeLastMessage = viewModel.attributeLastMessage {
+      self.messageLabel.attributedText = attributeLastMessage
     } else {
       self.messageLabel.text = viewModel.lastMessage
     }
