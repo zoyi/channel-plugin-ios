@@ -80,7 +80,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     $0.textColor = Color.messageLabel
     $0.numberOfLines = Constants.messageLabelNumberOfLines
   }
-
+  
   // MARK: Initializing
 
   override func initialize() {
@@ -128,7 +128,11 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.timestampLabel.text = viewModel.timestamp
     self.badge.isHidden = viewModel.isBadgeHidden
     self.badge.configure(viewModel.badgeCount)
-    self.messageLabel.text = viewModel.lastMessage
+    if let messageContents = viewModel.messageContents {
+      self.messageLabel.attributedText = messageContents
+    } else {
+      self.messageLabel.text = viewModel.lastMessage
+    }
     
     if let avatar = viewModel.avatar {
       self.avatarView.configure(avatar)

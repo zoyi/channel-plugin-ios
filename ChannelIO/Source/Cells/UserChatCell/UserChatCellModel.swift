@@ -17,6 +17,7 @@ protocol UserChatCellModelType {
   var badgeCount: Int { get set }
   var isBadgeHidden: Bool { get set }
   var isClosed: Bool { get set }
+  var messageContents: NSAttributedString? { get set }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
@@ -28,6 +29,7 @@ struct UserChatCellModel: UserChatCellModelType {
   var badgeCount: Int = 0
   var isBadgeHidden: Bool = false
   var isClosed: Bool = false
+  var messageContents: NSAttributedString?
   
   init() {}
   
@@ -36,8 +38,24 @@ struct UserChatCellModel: UserChatCellModelType {
     
     if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
-    } else if let msg = userChat.lastMessage?.messageV2?.string, msg != "" {
-      self.lastMessage = msg
+    } else if let msg = userChat.lastMessage?.messageV2, msg.string != "" {
+      self.lastMessage = msg.string
+      let paragraphStyle = NSMutableParagraphStyle()
+      paragraphStyle.alignment = .left
+      paragraphStyle.minimumLineHeight = 18
+      paragraphStyle.lineBreakMode = .byTruncatingTail
+      
+      let newAttributedString = NSMutableAttributedString()
+      newAttributedString.append(msg)
+      newAttributedString.changeFont(fontSize: 14.f)
+      
+      newAttributedString.addAttributes(
+        [.foregroundColor: UIColor.grey900,
+         .paragraphStyle: paragraphStyle
+        ],
+        range: NSRange(location: 0, length: msg.string.count))
+      
+      self.messageContents = newAttributedString
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
