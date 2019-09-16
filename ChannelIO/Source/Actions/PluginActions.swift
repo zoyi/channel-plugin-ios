@@ -36,5 +36,5 @@ struct UpdateLocale: Action {
 
 struct GetSupportBotEntry: Action {
   public let bot: CHBot?
-  public let entry: CHSupportBotEntryInfo
+  public let entry: CHSupportBotEntryInfo?
 }

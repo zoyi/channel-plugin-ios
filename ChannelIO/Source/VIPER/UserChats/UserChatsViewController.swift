@@ -271,10 +271,8 @@ class UserChatsViewController: BaseViewController {
       .subscribe(onNext: { [weak self] (pluginInfo, supportEntry) in
         SVProgressHUD.dismiss()
         mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
+        mainStore.dispatch(GetSupportBotEntry(bot: pluginInfo.1, entry: supportEntry))
         
-        if supportEntry.step != nil && supportEntry.supportBot != nil {
-          mainStore.dispatch(GetSupportBotEntry(bot: pluginInfo.1, entry: supportEntry))
-        }
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.isShowingChat = false

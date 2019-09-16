@@ -53,9 +53,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
       let signal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (entry) in
-          if entry.step != nil && entry.supportBot != nil {
-            mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
-          }
+          mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
           subscriber.onNext(entry)
           subscriber.onCompleted()
         }, onError: { (error) in
@@ -131,7 +129,7 @@ extension LoungeInteractor: StoreSubscriber {
       showCompleted: state.userChatsState.showCompletedChats
     )
     
-    if !self.chats.elementsEqual(userChats) && self.needUpdate {
+    if !self.chats.elementsEqual(userChats) || self.needUpdate {
       self.needUpdate = false
       self.chats = userChats
       self.chatSignal.accept(userChats)
