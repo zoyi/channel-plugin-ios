@@ -63,7 +63,8 @@ class LoungeMainView: BaseView {
   private var otherChatCount: Int {
     let otherActiveChatCount = self.activeChats.count > Constants.maxNumberOfCell ?
       self.activeChats.count - Constants.maxNumberOfCell : 0
-    return self.inactiveChats.count + otherActiveChatCount
+    return showCompletedChatsSelector(state: mainStore.state) == true ?
+      self.inactiveChats.count + otherActiveChatCount : otherActiveChatCount
   }
   
   private var visibleChats: [UserChatCellModel] {

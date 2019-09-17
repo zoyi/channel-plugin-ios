@@ -267,7 +267,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
-    self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
+    self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
     self.textView.keyboardType = .default
     self.setTextInputbarHidden(true, animated: false)
   }
@@ -592,7 +592,7 @@ extension UserChatViewController: StoreSubscriber {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.setTitle("", for: .normal)
-      self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
+      self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
       
       self.textInputbar.barState = .normal
       self.textInputbar.setButtonsHidden(false)
