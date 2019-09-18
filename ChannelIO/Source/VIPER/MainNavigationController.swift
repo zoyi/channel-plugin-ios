@@ -27,8 +27,6 @@ class MainNavigationController: BaseNavigationController {
   var currentBgColor: UIColor?
   var currentGradientColor: UIColor?
   
-  let disposeBag = DisposeBag()
-  
   struct StatusBar {
     static var isHidden = false
     static var style = UIStatusBarStyle.default

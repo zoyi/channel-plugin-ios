@@ -134,11 +134,11 @@ extension ChannelIO {
   }
   
   internal class func showUserChat(userChatId: String?, animated: Bool = true) {
-    guard let topController = CHUtils.getTopController() else {
-      return
-    }
-    
     dispatch {
+      guard let topController = CHUtils.getTopController() else {
+        return
+      }
+      
       ChannelIO.launcherView?.isHidden = true
       mainStore.dispatch(ChatListIsVisible())
       
