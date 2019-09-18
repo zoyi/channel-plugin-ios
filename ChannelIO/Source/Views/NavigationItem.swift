@@ -18,16 +18,16 @@ enum NavigationItemAlign {
 class CHNavigationBar: UINavigationBar {
   override func layoutSubviews() {
     super.layoutSubviews()
-
-    if #available(iOS 11, *){
-      self.layoutMargins = UIEdgeInsets.zero
-      for subview in self.subviews {
-        if String(describing: subview.classForCoder).contains("ContentView") {
-          //let oldEdges = subview.layoutMargins
-          subview.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 12)
-        }
-      }
-    }
+      //iOS13 crash due to access denied to private layout
+//    if #available(iOS 11, *){
+//      self.layoutMargins = UIEdgeInsets.zero
+//      for subview in self.subviews {
+//        if String(describing: subview.classForCoder).contains("ContentView") {
+//          //let oldEdges = subview.layoutMargins
+//          subview.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 12)
+//        }
+//      }
+//    }
   }
 }
 
