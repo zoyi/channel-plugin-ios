@@ -157,35 +157,35 @@ class CHAssets {
 }
  
 extension CHAssets {
-  static func normalIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleFilled")!
+  static func normalIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleFilled")
   }
   
-  static func normalBlackIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleStroke")!
+  static func normalBlackIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleStroke")
   }
   
-  static func pushIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleFilledPush")!
+  static func pushIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleFilledPush")
   }
   
-  static func pushBlackIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleStrokePush")!
+  static func pushBlackIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleStrokePush")
   }
   
-  static func upIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleFilledUp")!
+  static func upIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleFilledUp")
   }
   
-  static func upBlackIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleStrokeUp")!
+  static func upBlackIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleStrokeUp")
   }
   
-  static func upRightIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleFilledUpRight")!
+  static func upRightIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleFilledUpRight")
   }
   
-  static func upRightBlackIcon() -> UIImage {
-    return CHAssets.getImage(named: "bubbleStrokeUpRight")!
+  static func upRightBlackIcon() -> UIImage? {
+    return CHAssets.getImage(named: "bubbleStrokeUpRight")
   }
 }
