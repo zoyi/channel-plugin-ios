@@ -1,3 +1,7 @@
+# 6.1.2
+## Bug fixes
+* Fixed iOS 13 crash issue due to private layout change access denied
+ 
 # 6.1.1
 ## Bug fixes
 * Added missing nudge keep API
