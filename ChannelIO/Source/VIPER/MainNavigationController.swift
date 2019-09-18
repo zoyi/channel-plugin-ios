@@ -53,6 +53,10 @@ class MainNavigationController: BaseNavigationController {
     self.interactivePopGestureRecognizer?.delegate = self
     self.navigationBar.isTranslucent = false
     self.navigationBar.barStyle = .black
+
+    if #available(iOS 13, *) {
+      self.presentationController?.delegate = self
+    }
     
     self.navigationBar.rx.observeWeakly(CGRect.self, "frame")
       .observeOn(MainScheduler.instance)
@@ -175,5 +179,16 @@ extension MainNavigationController : UINavigationControllerDelegate {
         }
       })
     }
+  }
+}
+
+@available(iOS 13, *)
+extension MainNavigationController : UIAdaptivePresentationControllerDelegate {
+  func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+    ChannelIO.didDismiss()
+  }
+  
+  func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+    ChannelIO.delegate?.willHideMessenger?()
   }
 }

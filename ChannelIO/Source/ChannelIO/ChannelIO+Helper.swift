@@ -245,6 +245,16 @@ extension ChannelIO {
       ChannelIO.inAppNotificationView = nil
     }
   }
+  
+  internal class func didDismiss() {
+    mainStore.dispatch(ChatListIsHidden())
+    if ChannelIO.launcherVisible {
+      ChannelIO.launcherView?.show(animated: true)
+    }
+    
+    ChannelIO.baseNavigation?.removeFromParent()
+    ChannelIO.baseNavigation = nil
+  }
 }
 
 extension ChannelIO {
