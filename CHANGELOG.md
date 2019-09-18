@@ -1,3 +1,7 @@
+# 6.1.6
+## Updates
+* Updated marketing version 
+
 # 6.1.5
 ## Bug fixes
 * Fixed navigation coloring issue
