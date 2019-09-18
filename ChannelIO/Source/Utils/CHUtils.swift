@@ -12,24 +12,29 @@ import ObjectMapper
 
 class CHUtils {
   class func getTopController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
-    if let navigation = base as? UINavigationController {
-      return getTopController(base: navigation.visibleViewController)
-    }
-    if let tab = base as? UITabBarController {
-      if let selected = tab.selectedViewController {
-        return getTopController(base: selected)
+    var currentVc = base
+    var previousVc = currentVc
+    
+    while !(currentVc is UIAlertController) {
+      previousVc = currentVc
+      if let navigation = (currentVc as? UINavigationController)?.visibleViewController {
+        currentVc = navigation
+      } else if let tab = (currentVc as? UITabBarController)?.selectedViewController {
+        currentVc = tab
+      } else if let presented = currentVc?.presentedViewController {
+        currentVc = presented
+      } else {
+        break
       }
-    }
-    if let alert = base as? UIAlertController {
-      if let presenting = alert.presentingViewController {
-        return getTopController(base: presenting)
-      }
-    }
-    if let presented = base?.presentedViewController {
-      return getTopController(base: presented)
     }
     
-    return base
+    if currentVc is UIAlertController {
+      if let navigation = (previousVc as? UINavigationController)?.viewControllers.last {
+        currentVc = navigation
+      }
+    }
+    
+    return currentVc
   }
   
   class func getTopNavigation(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UINavigationController? {

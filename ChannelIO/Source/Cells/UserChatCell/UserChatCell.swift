@@ -111,7 +111,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.messageLabel.snp.makeConstraints { [weak self] (make) in
       make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metrics.titleBottomPadding)
       make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
-      make.right.equalToSuperview().inset(76)
+      make.right.equalToSuperview().inset(52)
     }
     
     self.badge.snp.makeConstraints { [weak self] (make) in
