@@ -1,4 +1,7 @@
-# 6.1.3
+# 6.1.4
+## Updates
+* Handled swipe to dismiss for iOS 13
+ 
 ## Bug fixes
 * Fixed iOS 13 crash issue due to private layout change access denied
 * Removed image asset forced unwrapping 

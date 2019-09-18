@@ -48,6 +48,10 @@ class MainNavigationController: BaseNavigationController {
     self.delegate = self
     self.interactivePopGestureRecognizer?.delegate = self
     self.navigationBar.isTranslucent = false
+    self.navigationBar.barStyle = .black
+    if #available(iOS 13, *) {
+      self.presentationController?.delegate = self
+    }
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -162,5 +166,16 @@ extension MainNavigationController : UINavigationControllerDelegate {
         }
       })
     }
+  }
+}
+
+@available(iOS 13, *)
+extension MainNavigationController : UIAdaptivePresentationControllerDelegate {
+  func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+    ChannelIO.didDismiss()
+  }
+  
+  func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+    ChannelIO.delegate?.willHideMessenger?()
   }
 }
