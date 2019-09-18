@@ -1,7 +1,8 @@
-# 6.1.2
+# 6.1.3
 ## Bug fixes
 * Fixed iOS 13 crash issue due to private layout change access denied
- 
+* Removed image asset forced unwrapping 
+
 # 6.1.1
 ## Bug fixes
 * Added missing nudge keep API
