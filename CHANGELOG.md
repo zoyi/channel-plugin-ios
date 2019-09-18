@@ -1,3 +1,11 @@
+# 6.1.6
+## Updates
+* Updated marketing version 
+
+# 6.1.5
+## Bug fixes
+* Fixed navigation coloring issue
+
 # 6.1.4
 ## Updates
 * Handled swipe to dismiss for iOS 13

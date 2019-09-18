@@ -17,7 +17,8 @@ protocol CHNavigationDelegate: class {
 }
 
 class MainNavigationController: BaseNavigationController {
-
+  let disposeBag = DisposeBag()
+  
   // MARK: Properties
   weak var chDelegate: CHNavigationDelegate? = nil
   var statusBarStyle = UIStatusBarStyle.default
