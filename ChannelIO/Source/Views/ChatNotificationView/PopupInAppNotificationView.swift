@@ -100,6 +100,9 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     $0.layer.cornerRadius = 8.f
     $0.setTitleColor(.cobalt400, for: .normal)
     $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
+    $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+    $0.titleLabel?.lineBreakMode = .byTruncatingTail
+    $0.titleLabel?.numberOfLines = 1
   }
   
   private var chatSignal = PublishSubject<Any?>()
