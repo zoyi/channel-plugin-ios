@@ -21,6 +21,7 @@ protocol LoungeViewProtocol: class {
   func reloadContents()
   
   func displayReady()
+  func setViewVisible(_ value: Bool)
   func displayHeader(with model: LoungeHeaderViewModel)
   func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?)
   func displayExternalSources(with models: [LoungeExternalSourceModel])
@@ -34,6 +35,8 @@ protocol LoungePresenterProtocol: class {
   var router: LoungeRouterProtocol? { get set }
   
   var needToFetch: Bool { get set }
+  
+  func isReadyToPresentChat(chatId: String?) -> Single<Any?>
   
   func viewDidLoad()
   func prepare(fetch: Bool)

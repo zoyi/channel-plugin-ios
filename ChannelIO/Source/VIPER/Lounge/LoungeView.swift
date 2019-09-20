@@ -44,6 +44,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   
   var scrollTopConstraint: Constraint?
   var mainHeightConstraint: Constraint?
+  var mainHeight: CGFloat = 240.f
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return self.navigationController?.preferredStatusBarStyle ?? .lightContent
@@ -52,7 +53,6 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    //self.contentView.isHidden = true
     self.view.backgroundColor = CHColors.paleGreyFour
     
     self.initViews()
@@ -94,8 +94,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.trailing.equalToSuperview()
     }
     
-    self.dismissButton.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+    self.dismissButton.snp.makeConstraints { (make) in
       if #available(iOS 11.0, *) {
         make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(Metrics.dismissTop)
       } else {
@@ -122,7 +121,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.width.equalTo(UIScreen.main.bounds.width - Metrics.contentSide * 2)
-      self.mainHeightConstraint = make.height.equalTo(340).constraint
+      self.mainHeightConstraint = make.height.equalTo(self.mainHeight).constraint
     }
     
     self.externalView.snp.makeConstraints { (make) in
@@ -223,6 +222,10 @@ extension LoungeView {
     self.externalView.reloadContent()
     self.watermarkView.reloadContent()
   }
+
+  func setViewVisible(_ value: Bool) {
+    self.scrollView.isHidden = !value
+  }
   
   func displayReady() {
     //self.contentView.isHidden = false
@@ -236,7 +239,8 @@ extension LoungeView {
   
   func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
     self.mainView.configure(activeChats: activeChats, inactiveChats: inactiveChats, welcomeModel: welcomeModel)
-    self.mainHeightConstraint?.update(offset: self.mainView.viewHeight)
+    self.mainHeight = self.mainView.viewHeight
+    self.mainHeightConstraint?.update(offset: self.mainHeight)
   }
   
   func displayExternalSources(with models: [LoungeExternalSourceModel]) {

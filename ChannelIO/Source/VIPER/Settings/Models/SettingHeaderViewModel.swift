@@ -13,6 +13,15 @@ struct SettingHeaderViewModel {
   var homepageUrl: String?
   var desc: String?
   var entity: CHEntity
-  var colors: [CGColor]
+  var colors: [UIColor]
   var textColor: UIColor
+  
+  init(channel: CHChannel, plugin: CHPlugin) {
+    self.title = channel.name
+    self.homepageUrl = channel.homepageUrl
+    self.desc = channel.desc
+    self.entity = channel
+    self.colors = plugin.gradientColors
+    self.textColor = plugin.textUIColor
+  }
 }

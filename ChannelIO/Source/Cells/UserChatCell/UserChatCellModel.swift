@@ -12,6 +12,7 @@ protocol UserChatCellModelType {
   var chatId: String? { get set }
   var title: String { get set }
   var lastMessage: String? { get set }
+  var attributeLastMessage: NSAttributedString? { get set }
   var timestamp: String { get set }
   var avatar: CHEntity? { get set }
   var badgeCount: Int { get set }
@@ -23,6 +24,7 @@ struct UserChatCellModel: UserChatCellModelType {
   var chatId: String? = nil
   var title: String = ""
   var lastMessage: String? = nil
+  var attributeLastMessage: NSAttributedString? = nil
   var timestamp: String = ""
   var avatar: CHEntity? = nil
   var badgeCount: Int = 0
@@ -36,8 +38,24 @@ struct UserChatCellModel: UserChatCellModelType {
     
     if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
-    } else if let msg = userChat.lastMessage?.messageV2?.string, msg != "" {
-      self.lastMessage = msg
+    } else if let msg = userChat.lastMessage?.messageV2, msg.string != "" {
+      self.lastMessage = msg.string
+      let paragraphStyle = NSMutableParagraphStyle()
+      paragraphStyle.alignment = .left
+      paragraphStyle.minimumLineHeight = 18
+      paragraphStyle.lineBreakMode = .byTruncatingTail
+      
+      let newAttributedString = NSMutableAttributedString()
+      newAttributedString.append(msg)
+      newAttributedString.changeFont(fontSize: 14.f)
+      
+      newAttributedString.addAttributes(
+        [.foregroundColor: UIColor.grey900,
+         .paragraphStyle: paragraphStyle
+        ],
+        range: NSRange(location: 0, length: msg.string.count))
+      
+      self.attributeLastMessage = newAttributedString
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {

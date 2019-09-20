@@ -23,10 +23,12 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   var channel: CHChannel? = nil
   var sources: [Any] = []
   
+  var needUpdate = false
   var showCompleted = mainStore.state.userChatsState.showCompletedChats
   var showTranslated: CHLocale? = ChannelIO.settings?.locale 
   
   func subscribeDataSource() {
+    self.needUpdate = true
     mainStore.subscribe(self)
   }
   
@@ -51,9 +53,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
       let signal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (entry) in
-          if entry.step != nil && entry.supportBot != nil {
-            mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
-          }
+          mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
           subscriber.onNext(entry)
           subscriber.onCompleted()
         }, onError: { (error) in
@@ -71,6 +71,8 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
       let signal = UserChatPromise.getChats(since: nil, limit: 100, showCompleted: true)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (data) in
+          self?.needUpdate = true
+          
           mainStore.dispatch(GetUserChats(payload: data))
           let showCompletion = mainStore.state.userChatsState.showCompletedChats
           let chats = userChatsSelector(state: mainStore.state, showCompleted: showCompletion)
@@ -127,7 +129,8 @@ extension LoungeInteractor: StoreSubscriber {
       showCompleted: state.userChatsState.showCompletedChats
     )
     
-    if !self.chats.elementsEqual(userChats) {
+    if !self.chats.elementsEqual(userChats) || self.needUpdate {
+      self.needUpdate = false
       self.chats = userChats
       self.chatSignal.accept(userChats)
     }

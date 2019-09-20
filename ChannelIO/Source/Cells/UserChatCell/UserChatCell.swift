@@ -80,7 +80,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     $0.textColor = Color.messageLabel
     $0.numberOfLines = Constants.messageLabelNumberOfLines
   }
-
+  
   // MARK: Initializing
 
   override func initialize() {
@@ -111,7 +111,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.messageLabel.snp.makeConstraints { [weak self] (make) in
       make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metrics.titleBottomPadding)
       make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
-      make.right.equalToSuperview().inset(76)
+      make.right.equalToSuperview().inset(52)
     }
     
     self.badge.snp.makeConstraints { [weak self] (make) in
@@ -128,7 +128,11 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.timestampLabel.text = viewModel.timestamp
     self.badge.isHidden = viewModel.isBadgeHidden
     self.badge.configure(viewModel.badgeCount)
-    self.messageLabel.text = viewModel.lastMessage
+    if let attributeLastMessage = viewModel.attributeLastMessage {
+      self.messageLabel.attributedText = attributeLastMessage
+    } else {
+      self.messageLabel.text = viewModel.lastMessage
+    }
     
     if let avatar = viewModel.avatar {
       self.avatarView.configure(avatar)

@@ -1,3 +1,12 @@
+# 6.1.7
+## Updates
+* Improved view transition
+
+## Bug fixes
+* Fixed SupportBot sync issue
+* Fixed Lounge additional chat count
+* Wrapped `track:` into main thread
+
 # 6.1.6
 ## Updates
 * Updated marketing version 

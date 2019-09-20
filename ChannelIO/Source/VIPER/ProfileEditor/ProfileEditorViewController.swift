@@ -124,14 +124,6 @@ class ProfileEditorViewController: BaseViewController {
     )
     self.navigationItem.titleView = titleView
     
-    self.navigationItem.leftBarButtonItem = NavigationItem(
-      image:  CHAssets.getImage(named: "back"),
-      tintColor: mainStore.state.plugin.textUIColor,
-      style: .plain,
-      actionHandler: { [weak self] in
-        _ = self?.navigationController?.popViewController(animated: true)
-      })
-    
     self.navigationItem.rightBarButtonItem = NavigationItem(
       title: CHAssets.localized("ch.settings.save"),
       style: .plain,
@@ -142,6 +134,23 @@ class ProfileEditorViewController: BaseViewController {
         }
         self?.updateGuestInfo()
       })
+    
+    let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+    spacer.width = -8
+    
+    let backButton = NavigationItem(
+      image:  CHAssets.getImage(named: "back"),
+      tintColor: mainStore.state.plugin.textUIColor,
+      style: .plain,
+      actionHandler: { [weak self] in
+        _ = self?.navigationController?.popViewController(animated: true)
+    })
+    
+    if #available(iOS 11, *) {
+      self.navigationItem.leftBarButtonItems = [backButton]
+    } else {
+      self.navigationItem.leftBarButtonItems = [spacer, backButton]
+    }
   }
   
   func updateGuestInfo() {

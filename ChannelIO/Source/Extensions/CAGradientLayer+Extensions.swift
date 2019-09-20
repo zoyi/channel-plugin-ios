@@ -11,7 +11,7 @@ extension CAGradientLayer {
   enum Point {
     case topRight, topLeft
     case bottomRight, bottomLeft
-    case top, bottom
+    case top, bottom, left, right
     case custom(point: CGPoint)
     
     var value: CGPoint {
@@ -22,6 +22,8 @@ extension CAGradientLayer {
       case .bottomLeft: return CGPoint(x: 0, y: 1)
       case .top: return CGPoint(x: 0.5, y: 0)
       case .bottom: return CGPoint(x: 0.5, y: 1)
+      case .left: return CGPoint(x: 0.0, y: 0.5)
+      case .right: return CGPoint(x: 1.0, y: 0.5)
       case .custom(let point): return point
       }
     }

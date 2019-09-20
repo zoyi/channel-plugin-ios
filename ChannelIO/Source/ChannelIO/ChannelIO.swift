@@ -44,7 +44,7 @@ public final class ChannelIO: NSObject {
     return !mainStore.state.channel.shouldHideLauncher && ChannelIO.isValidStatus
   }
   
-  internal static var chatNotificationView: InAppNotificationView?
+  internal static var inAppNotificationView: InAppNotification?
   internal static var baseNavigation: BaseNavigationController? {
     willSet {
       if ChannelIO.baseNavigation == nil && newValue != nil {
@@ -236,13 +236,13 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func show(animated: Bool) {
-    guard let view = CHUtils.getTopController()?.baseController.view else { return }
-
-    ChannelIO.launcherVisible = true
-    guard ChannelIO.isValidStatus, ChannelIO.canShowLauncher else { return }
-    guard ChannelIO.baseNavigation == nil else { return }
-    
     dispatch {
+      guard let view = CHUtils.getTopController()?.baseController.view else { return }
+      
+      ChannelIO.launcherVisible = true
+      guard ChannelIO.isValidStatus, ChannelIO.canShowLauncher else { return }
+      guard ChannelIO.baseNavigation == nil else { return }
+      
       let launcherView = ChannelIO.launcherView ?? LauncherView()
       
       let viewModel = LauncherViewModel(
@@ -322,11 +322,11 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func open(animated: Bool) {
-    guard ChannelIO.isValidStatus else { return }
-    guard !mainStore.state.uiState.isChannelVisible else { return }
-    guard let topController = CHUtils.getTopController() else { return }
-    
     dispatch {
+      guard ChannelIO.isValidStatus else { return }
+      guard !mainStore.state.uiState.isChannelVisible else { return }
+      guard let topController = CHUtils.getTopController() else { return }
+      
       ChannelIO.launcherView?.isHidden = true
       ChannelIO.delegate?.willShowMessenger?()
 
@@ -417,24 +417,26 @@ public final class ChannelIO: NSObject {
   public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
     guard ChannelIO.isValidStatus else { return }
     
-    let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+    dispatch {
+      let version = Bundle(for: ChannelIO.self)
+        .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+      
+      dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
     
-    dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
-  
-    var sysProperty: [String: Any] = [
-      "pluginVersion": version,
-      "screenWidth": UIScreen.main.bounds.width,
-      "screenHeight": UIScreen.main.bounds.height
-    ]
+      var sysProperty: [String: Any] = [
+        "pluginVersion": version,
+        "screenWidth": UIScreen.main.bounds.width,
+        "screenHeight": UIScreen.main.bounds.height
+      ]
 
-    if let pageName = eventProperty?["url"] {
-      sysProperty["url"] = pageName
-    } else if let controller = CHUtils.getTopController() {
-      sysProperty["url"] = "\(type(of: controller))"
+      if let pageName = eventProperty?["url"] {
+        sysProperty["url"] = pageName
+      } else if let controller = CHUtils.getTopController() {
+        sysProperty["url"] = "\(type(of: controller))"
+      }
+      
+      ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: sysProperty)
     }
-    
-    ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: sysProperty)
   }
   
   /**

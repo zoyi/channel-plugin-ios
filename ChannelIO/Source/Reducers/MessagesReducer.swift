@@ -72,17 +72,19 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     return state?.insert(message: action.payload.message) ?? MessagesState()
     
   case let action as GetSupportBotEntry:
-    if let step = action.entry.step {
+    if let entry = action.entry, let step = entry.step {
       let message = CHMessage(
         chatId: "support_bot_message_dummy",
         message: step.message,
         type: .Action,
         entity: action.bot,
-        action: CHAction.create(botEntry: action.entry),
+        action: CHAction.create(botEntry: entry),
         file: CHFile.create(imageable: step),
         createdAt: Date(),
         id: "support_bot_message_dummy")
       state?.supportBotEntry = message
+    } else {
+      state?.supportBotEntry = nil
     }
     return state ?? MessagesState()
     

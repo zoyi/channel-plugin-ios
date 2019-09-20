@@ -97,8 +97,8 @@ extension CHUserChat: Mappable {
     closedAt         <- (map["closedAt"], CustomDateTransform())
     updatedAt        <- (map["appUpdatedAt"], CustomDateTransform())
     appMessageId     <- map["appMessageId"]
-    assigneeId       <- map["assigned"]
-    assigneeType     <- map["assignedType"]
+    assigneeId       <- map["assigneeId"]
+    assigneeType     <- map["assigneeType"]
     resolutionTime   <- map["resolutionTime"]
     
     if let s = map["stateV2"].currentValue as? String {
@@ -276,7 +276,10 @@ extension CHUserChat: Equatable {
     return lhs.id == rhs.id &&
       lhs.session?.alert == rhs.session?.alert &&
       lhs.state == rhs.state &&
-      lhs.lastMessage == rhs.lastMessage
+      lhs.lastMessage == rhs.lastMessage &&
+      lhs.assigneeId == rhs.assigneeId &&
+      lhs.assigneeType == rhs.assigneeType &&
+      lhs.resolutionTime == rhs.resolutionTime
   }
 }
 

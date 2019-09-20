@@ -267,7 +267,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
-    self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
+    self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
     self.textView.keyboardType = .default
     self.setTextInputbarHidden(true, animated: false)
   }
@@ -349,6 +349,9 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.initNavigationTitle(with: userChat ?? self.userChat)
 
+    //NOTE: iOS 10 >= doesn't properly call navigationBar frame change rx method
+    //hance it doesn't apply proper navigation tint when it comes from lounge (where navigation is hidden)
+    //Remove this when iOS 10 is not supported
     if let nav = self.navigationController as? MainNavigationController {
       nav.newState(state: mainStore.state.plugin)
     }
@@ -409,7 +412,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
     let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
     let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-    spacer.width = -16
+    spacer.width = -8
     
     let backButton = NavigationRoundLabelBackItem(
       text: alert == 0 ? "" : alertCount,
@@ -439,7 +442,6 @@ final class UserChatViewController: BaseSLKTextViewController {
 // MARK: - StoreSubscriber
 
 extension UserChatViewController: StoreSubscriber {
-
   func newState(state: AppState) {
     self.userChatId = self.chatManager.chatId
     let shouldUpdate = self.channel != state.channel
@@ -549,6 +551,8 @@ extension UserChatViewController: StoreSubscriber {
       self.nudgeKeepButton.isHidden = true
     }
     
+    self.paintSafeAreaBottomInset(with: nil)
+    
     if nextUserChat?.isRemoved == true {
       _ = self.navigationController?.popViewController(animated: true)
     }
@@ -559,7 +563,6 @@ extension UserChatViewController: StoreSubscriber {
         self.scrollToBottom(false)
       }
       self.newChatButton.isHidden = false
-
       self.chatBlockView.isHidden = true
     }
     else if nextUserChat?.fromNudge == true {
@@ -574,6 +577,7 @@ extension UserChatViewController: StoreSubscriber {
         self.scrollToBottom(false)
       }
       self.chatBlockView.isHidden = false
+      self.paintSafeAreaBottomInset(with: .grey200)
     }
     else if nextUserChat?.isSupporting == true ||
       nextUserChat?.isSolved == true ||
@@ -588,7 +592,7 @@ extension UserChatViewController: StoreSubscriber {
       self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
       self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
       self.rightButton.setTitle("", for: .normal)
-      self.leftButton.setImage(CHAssets.getImage(named: "add"), for: .normal)
+      self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
       
       self.textInputbar.barState = .normal
       self.textInputbar.setButtonsHidden(false)

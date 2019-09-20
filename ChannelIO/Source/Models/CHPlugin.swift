@@ -32,7 +32,7 @@ struct CHPlugin: ModelType {
     return id != ""
   }
   
-  var textUIColor: UIColor! {
+  var textUIColor: UIColor {
     if self.textColor == "white" {
       return CHColors.white
     } else {
@@ -40,16 +40,11 @@ struct CHPlugin: ModelType {
     }
   }
   
-  var gradientColors: [CGColor] {
+  var gradientColors: [UIColor] {
     let color = UIColor(self.color) ?? .white
     let gradientColor = UIColor(self.gradientColor) ?? .white
     
-    return [
-      color.cgColor,
-      color.cgColor,
-      color.cgColor,
-      gradientColor.cgColor
-    ]
+    return [color, color, color, gradientColor]
   }
   
   var bgColor: UIColor {
