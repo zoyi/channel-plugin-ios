@@ -32,7 +32,6 @@
 		22AE76B220E341CB00C18355 /* Mute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AE76B120E341CB00C18355 /* Mute.swift */; };
 		22AE76B920E347C700C18355 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 22AE76B820E347C700C18355 /* mute.caf */; };
 		22B21863228D9AA000E39FEB /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B21862228D9AA000E39FEB /* DateUtils.swift */; };
-		22B4436D2200342B00EFC637 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B443682200342B00EFC637 /* RxAtomic.framework */; };
 		22D879FC2270208B00CC1DDB /* CHEditTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D879FB2270208B00CC1DDB /* CHEditTextField.swift */; };
 		22E03E8521B38D560009F48E /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6B21B38D560009F48E /* MarkdownParser.swift */; };
 		22E03E8621B38D560009F48E /* String+UTF16.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6D21B38D560009F48E /* String+UTF16.swift */; };
@@ -405,7 +404,6 @@
 		22AE76B120E341CB00C18355 /* Mute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mute.swift; sourceTree = "<group>"; };
 		22AE76B820E347C700C18355 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = mute.caf; path = Assets/mute.caf; sourceTree = "<group>"; };
 		22B21862228D9AA000E39FEB /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
-		22B443682200342B00EFC637 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAtomic.framework; path = Carthage/Build/iOS/RxAtomic.framework; sourceTree = "<group>"; };
 		22D879FB2270208B00CC1DDB /* CHEditTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEditTextField.swift; sourceTree = "<group>"; };
 		22E03E6B21B38D560009F48E /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		22E03E6D21B38D560009F48E /* String+UTF16.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+UTF16.swift"; sourceTree = "<group>"; };
@@ -716,7 +714,6 @@
 				65D3564321BA4BD4001D6A30 /* SwiftyJSON.framework in Frameworks */,
 				65581E611E7BDCC4008B8C70 /* CFNetwork.framework in Frameworks */,
 				65581E5F1E7BDCBD008B8C70 /* Photos.framework in Frameworks */,
-				22B4436D2200342B00EFC637 /* RxAtomic.framework in Frameworks */,
 				65581E5B1E7BDCAB008B8C70 /* CoreImage.framework in Frameworks */,
 				65581E591E7BDCA2008B8C70 /* UIKit.framework in Frameworks */,
 				65581E571E7BDC97008B8C70 /* QuartzCore.framework in Frameworks */,
@@ -742,7 +739,6 @@
 			children = (
 				65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */,
 				22476B962201FDF900DA4FBC /* RxSwiftExt.framework */,
-				22B443682200342B00EFC637 /* RxAtomic.framework */,
 				225962962166205E0032F5C5 /* Alamofire.framework */,
 				225962A7216620600032F5C5 /* CHDwifft.framework */,
 				2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */,

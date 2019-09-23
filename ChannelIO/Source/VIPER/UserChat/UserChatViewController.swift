@@ -185,14 +185,14 @@ final class UserChatViewController: BaseSLKTextViewController {
   func initUpdaters() {
     self.navigationUpdateSubject
       .takeUntil(self.rx.deallocated)
-      .debounce(0.7, scheduler: MainScheduler.instance)
+      .debounce(.milliseconds(700), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (state, chat, update) in
         self?.updateNavigationIfNeeded(state: state, nextUserChat: chat, shouldUpdate: update)
       }).disposed(by: self.disposeBag)
     
     self.chatUpdateSubject
       .takeUntil(self.rx.deallocated)
-      .debounce(0.7, scheduler: ConcurrentMainScheduler.instance)
+      .debounce(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.fetchChatIfNeeded()
       }).disposed(by: self.disposeBag)

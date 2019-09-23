@@ -1,3 +1,7 @@
+# 6.1.9
+## Updates
+* Updated dependencies version
+
 # 6.1.8
 ## Bug fixes
 * Fixed proj file linking problem 

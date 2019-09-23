@@ -764,7 +764,7 @@ extension ChatManager {
 
     self.isRequestingReadAll = true
     chat.read()
-      .debounce(1, scheduler: MainScheduler.instance)
+      .debounce(.seconds(1), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (completed) in
         self?.isRequestingReadAll = false
