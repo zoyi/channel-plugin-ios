@@ -1,3 +1,7 @@
+# 6.1.8
+## Bug fixes
+* Fixed proj file linking problem 
+
 # 6.1.7
 ## Updates
 * Improved view transition
