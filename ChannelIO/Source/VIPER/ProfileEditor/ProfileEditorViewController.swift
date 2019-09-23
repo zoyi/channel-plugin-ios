@@ -165,7 +165,7 @@ class ProfileEditorViewController: BaseViewController {
       (self.text == "" ? nil : self.text)
     
     self.guest?.updateProfile(key: key, value: value)
-      .debounce(1.0, scheduler: MainScheduler.instance)
+      .debounce(.seconds(1), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (guest, error) in
         defer { SVProgressHUD.dismiss() }

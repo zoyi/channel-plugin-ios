@@ -47,7 +47,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       .disposed(by: self.disposeBag)
     
     self.errorSignal
-      .debounce(1.0, scheduler: MainScheduler.instance)
+      .debounce(.seconds(1), scheduler: MainScheduler.instance)
       .subscribe(onNext: { (_) in
         CHNotification.shared.display(
           message: CHAssets.localized("ch.toast.unstable_internet"),
@@ -126,7 +126,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     self.interactor?.updateGeneralInfo()
       .observeOn(MainScheduler.instance)
-      .debounce(0.5, scheduler: MainScheduler.instance)
+      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, plugin) in
         self?.updateHeaders()
       }).disposed(by: self.disposeBag)

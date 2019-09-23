@@ -136,7 +136,7 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     
     SVProgressHUD.show()
     AppManager.touch()
-      .debounce(1.5, scheduler: MainScheduler.instance)
+      .debounce(.milliseconds(1500), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (guest) in
         defer { SVProgressHUD.dismiss() }

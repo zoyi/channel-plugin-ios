@@ -31,12 +31,10 @@ class PushBotManager {
       })
 
     Observable.from(filtered)
-      .toArray()
-      .flatMap { Observable.from($0) }
       .flatMap ({ (nudge) -> Observable<CHNudge> in
         return Observable.just(nudge)
           .delay(
-            Double(nudge.triggerDelay),
+            .seconds(nudge.triggerDelay),
             scheduler: MainScheduler.instance
           )
       })
