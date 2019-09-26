@@ -95,9 +95,16 @@ final class UserChatViewController: BaseSLKTextViewController {
   }
   
   // MARK: View Life Cycle
+  // TODO: migrate into VIPER
   override func viewDidLoad() {
     //this has to be called before super.viewDidLoad
     //for proper layout in SlackTextViewController
+    
+    //temporary disabled darkmode
+    if #available(iOS 13.0, *) {
+      self.overrideUserInterfaceStyle = .light
+    }
+    
     self.textInputBarLRC = 5
     self.textInputBarBC = 5
     

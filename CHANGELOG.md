@@ -1,3 +1,7 @@
+# 6.1.10
+## Updates
+* Disabled darkmode temporary
+
 # 6.1.9
 ## Updates
 * Updated dependencies version

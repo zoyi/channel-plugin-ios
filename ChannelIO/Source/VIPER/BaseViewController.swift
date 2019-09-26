@@ -26,6 +26,10 @@ class BaseViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    //temporary disabled darkmode
+    if #available(iOS 13.0, *) {
+      self.overrideUserInterfaceStyle = .light
+    }
     self.view.setNeedsUpdateConstraints()
   }
 
