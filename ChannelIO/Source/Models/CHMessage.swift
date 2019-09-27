@@ -63,6 +63,21 @@ struct CHMessage: ModelType {
 
   var language: String = ""
   
+  var file: CHFile?
+  var webPage: CHWebPage?
+  var log: CHLog?
+  
+  // Dependencies
+  var entity: CHEntity?
+  var mutable: Bool = true
+  // Used in only client
+  var state: SendingState = .Sent
+  var messageType: MessageType = .Default
+  
+  var progress: CGFloat = 1
+  //var isRemote = true
+  var onlyEmoji: Bool = false
+  
   var translateState: CHMessageTranslateState = .original
   var translatedText: NSAttributedString? = nil
   
@@ -106,20 +121,9 @@ struct CHMessage: ModelType {
     }
   }
 
-  var file: CHFile?
-  var webPage: CHWebPage?
-  var log: CHLog?
-  
-  // Dependencies
-  var entity: CHEntity?
-  var mutable: Bool = true
-  // Used in only client
-  var state: SendingState = .Sent
-  var messageType: MessageType = .Default
-
-  var progress: CGFloat = 1
-  //var isRemote = true
-  var onlyEmoji: Bool = false
+  var isDeleted: Bool {
+    return self.log?.action == "delete_message"
+  }
 }
 
 extension CHMessage: Mappable {
@@ -239,6 +243,11 @@ extension CHMessage: Mappable {
     } else {
       messageType = CHMessage.contextType(self)
     }
+    
+    if self.isDeleted {
+      self.message = MessageFactory.deleted().string
+      self.messageV2 = MessageFactory.deleted()
+    }
   }
   
   func format(message: String) -> String {
@@ -251,7 +260,7 @@ extension CHMessage: Mappable {
   }
   
   static func contextType(_ message: CHMessage) -> MessageType {
-     if message.log != nil {
+     if message.log != nil && message.log?.action != "delete_message" {
       return .Log
     } else if let buttons = message.buttons, buttons.count != 0 {
       return .Buttons

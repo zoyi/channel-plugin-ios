@@ -24,6 +24,7 @@ protocol MessageCellModelType {
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
   var textColor: UIColor { get }
+  var linkColor: UIColor { get }
   var usernameIsHidden: Bool { get }
   var imageIsHidden: Bool { get }
   var fileIsHidden: Bool { get }
@@ -45,6 +46,7 @@ protocol MessageCellModelType {
   var showTranslation: Bool { get }
   var clipType: ClipType { get }
   var buttons: [CHLink] { get }
+  var hasDeleted: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -56,6 +58,7 @@ struct MessageCellModel: MessageCellModelType {
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
   let textColor: UIColor
+  let linkColor: UIColor
   let usernameIsHidden: Bool
   let imageIsHidden: Bool
   let fileIsHidden: Bool
@@ -80,6 +83,7 @@ struct MessageCellModel: MessageCellModelType {
   var translateState: CHMessageTranslateState = .original
   var clipType: ClipType = .None
   var buttons: [CHLink]
+  var hasDeleted: Bool
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
@@ -98,8 +102,9 @@ struct MessageCellModel: MessageCellModelType {
     self.message = message
     self.avatarEntity = message.entity ?? channel
     self.avatarIsHidden = createdByMe || isContinuous
-    self.bubbleBackgroundColor = createdByMe ? pluginColor : CHColors.lightGray
-    self.textColor = plugin.textUIColor
+    self.bubbleBackgroundColor = message.onlyEmoji ? .clear : (createdByMe ? pluginColor : CHColors.lightGray)
+    self.textColor = createdByMe ? plugin.textUIColor : UIColor.grey900
+    self.linkColor = createdByMe ? plugin.textUIColor : UIColor.cobalt400
     self.usernameIsHidden = createdByMe || isContinuous
     self.imageIsHidden = (cType != ClipType.Image)
     self.fileIsHidden = (cType != ClipType.File)
@@ -137,6 +142,7 @@ struct MessageCellModel: MessageCellModelType {
     
     //buttons
     self.buttons = message.buttons ?? []
+    self.hasDeleted = message.isDeleted
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

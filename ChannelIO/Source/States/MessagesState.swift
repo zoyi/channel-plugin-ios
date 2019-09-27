@@ -31,7 +31,11 @@ struct MessagesState: StateType {
         .map({ $1 })
     }
     return self.messageDictionary
-      .filter({ ($1.chatId == userChatId! || $1.id.hasSuffix("dummy")) && $1.log == nil })
+      .filter {
+        ($1.chatId == userChatId! ||
+         $1.id.hasSuffix("dummy")) ||
+         $1.log?.action == "delete_message"
+      }
       .map({ $1 })
   }
 

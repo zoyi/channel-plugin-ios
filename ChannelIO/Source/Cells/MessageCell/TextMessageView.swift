@@ -37,7 +37,7 @@ class TextMessageView : BaseView {
 
   struct Color {
     static let actionLabel = CHColors.blueyGrey
-    static let message = UIColor.black
+    static let message = UIColor.grey900
   }
 
   //MARK: Properties
@@ -83,10 +83,8 @@ class TextMessageView : BaseView {
 
   func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
-    self.backgroundColor = viewModel.message.onlyEmoji == true ?
-      UIColor.clear : viewModel.bubbleBackgroundColor
     self.isHidden = viewModel.message.isEmpty()
-    
+        
     if !viewModel.message.onlyEmoji {
       self.leadingConstraint?.update(inset: Metrics.leftRightPadding)
       self.trailingConstraint?.update(inset: Metrics.leftRightPadding)
@@ -109,11 +107,22 @@ class TextMessageView : BaseView {
       self.messageView.text = viewModel.message.message
     }
     
-    self.messageView.textColor = viewModel.createdByMe ? viewModel.textColor : Color.message
-    let linkColor = viewModel.createdByMe ? viewModel.textColor : CHColors.cobalt
+    if viewModel.hasDeleted {
+      self.backgroundColor = .grey200
+      self.messageView.textColor = .grey500
+      self.layer.borderColor = UIColor.grey300.cgColor
+      self.layer.borderWidth = 1.f
+    } else {
+      self.backgroundColor = viewModel.bubbleBackgroundColor
+      self.messageView.textColor = viewModel.textColor
+      self.layer.borderColor = nil
+      self.layer.borderWidth = 0
+    }
+
     self.messageView.linkTextAttributes = [
-      .foregroundColor: linkColor,
-      .underlineStyle: 1]
+      .foregroundColor: viewModel.linkColor,
+      .underlineStyle: 1
+    ]
   }
   
   override func updateConstraints() {
@@ -139,7 +148,10 @@ class TextMessageView : BaseView {
     }
   }
   
-  class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  class func viewHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType,
+    edgeInset: UIEdgeInsets? = nil) -> CGFloat {
     var viewHeight : CGFloat = 0.0
 
     let text = viewModel.translateState == .loading || viewModel.translateState == .original ?
@@ -152,7 +164,12 @@ class TextMessageView : BaseView {
     
     let topBottomPadding = viewModel.message.onlyEmoji ?
       Metrics.minimalTopBottomPadding * 2 : Metrics.topBottomPadding * 2
-    //viewHeight = message.height(fits: maxWidth - 3) + topBottomPadding
+    
+    if let edgeInset = edgeInset {
+      placeHolder.textContainerInset = edgeInset
+    } else {
+      placeHolder.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+    }
     
     placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
     placeHolder.textContainer.lineFragmentPadding = 0

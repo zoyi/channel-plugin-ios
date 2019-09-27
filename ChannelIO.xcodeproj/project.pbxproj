@@ -31,6 +31,7 @@
 		22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */; };
 		22AE76B220E341CB00C18355 /* Mute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AE76B120E341CB00C18355 /* Mute.swift */; };
 		22AE76B920E347C700C18355 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 22AE76B820E347C700C18355 /* mute.caf */; };
+		22AF7251233DB1CB00CBC005 /* MessageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AF7250233DB1CB00CBC005 /* MessageFactory.swift */; };
 		22B21863228D9AA000E39FEB /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B21862228D9AA000E39FEB /* DateUtils.swift */; };
 		22D879FC2270208B00CC1DDB /* CHEditTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D879FB2270208B00CC1DDB /* CHEditTextField.swift */; };
 		22E03E8521B38D560009F48E /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E03E6B21B38D560009F48E /* MarkdownParser.swift */; };
@@ -403,6 +404,7 @@
 		22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveTypingAvatarsView.swift; sourceTree = "<group>"; };
 		22AE76B120E341CB00C18355 /* Mute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mute.swift; sourceTree = "<group>"; };
 		22AE76B820E347C700C18355 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = mute.caf; path = Assets/mute.caf; sourceTree = "<group>"; };
+		22AF7250233DB1CB00CBC005 /* MessageFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFactory.swift; sourceTree = "<group>"; };
 		22B21862228D9AA000E39FEB /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
 		22D879FB2270208B00CC1DDB /* CHEditTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEditTextField.swift; sourceTree = "<group>"; };
 		22E03E6B21B38D560009F48E /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
@@ -862,6 +864,7 @@
 			children = (
 				2266C0C721C1267300A71398 /* CHButtonFactory.swift */,
 				657DB8732282C1A30023D550 /* CHView.swift */,
+				22AF7250233DB1CB00CBC005 /* MessageFactory.swift */,
 			);
 			name = Factories;
 			path = Source/Factories;
@@ -1796,6 +1799,7 @@
 				22E03E8721B38D560009F48E /* UIFont+Traits.swift in Sources */,
 				659C9228229FBDEA005A3EB1 /* LoungeMainHeaderView.swift in Sources */,
 				65CB992C226ECABE004F9DC7 /* SettingInteractor.swift in Sources */,
+				22AF7251233DB1CB00CBC005 /* MessageFactory.swift in Sources */,
 				657DB87022827C1F0023D550 /* CAGradientLayer+Extensions.swift in Sources */,
 				22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */,
 				659793761FA716CB00840F6A /* CHLog.swift in Sources */,
