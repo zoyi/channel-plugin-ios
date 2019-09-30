@@ -1021,6 +1021,7 @@ extension UserChatViewController {
       }
       
       //TODO: move table position based on image view?
+      viewer.modalPresentationStyle = .currentContext
       self.present(viewer, animated: true, completion: nil)
     }
   }

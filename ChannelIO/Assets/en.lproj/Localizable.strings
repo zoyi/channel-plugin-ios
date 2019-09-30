@@ -165,4 +165,8 @@ Press the button below to refresh.";
 "ch.loader.updating" = "Updating ...";
 "ch.lounge.proceeding_chat" = "Ongoing chat";
 "ch.lounge.show_previous_chats" = "See previous %s chats";
+"message_stream.message.deleted_message" = "The message has been deleted";
 "ch.navigation.next_operation" = "We will come back after %s";
+"ch.minute" = "minute(s)";
+"ch.hour" = "hour(s)";
+"ch.day" = "day(s)";

@@ -890,7 +890,7 @@ extension ChatManager {
       let moviePlayer = AVPlayerViewController()
       let player = AVPlayer(url: URL(string: url)!)
       moviePlayer.player = player
-      moviePlayer.modalPresentationStyle = .overFullScreen
+      moviePlayer.modalPresentationStyle = .currentContext
       moviePlayer.modalTransitionStyle = .crossDissolve
       self.viewController?.present(moviePlayer, animated: true, completion: nil)
       return
@@ -1008,7 +1008,7 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     }, didCancel: nil)
     let configure = TLPhotosPickerConfigure()
     viewController.configure = configure
-    
+    viewController.modalPresentationStyle = .currentContext
     view?.present(viewController, animated: true, completion: nil)
   }
   

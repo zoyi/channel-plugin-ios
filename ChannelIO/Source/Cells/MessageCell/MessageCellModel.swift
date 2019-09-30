@@ -24,6 +24,7 @@ protocol MessageCellModelType {
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
   var textColor: UIColor { get }
+  var selectedTextColor: UIColor { get }
   var linkColor: UIColor { get }
   var usernameIsHidden: Bool { get }
   var imageIsHidden: Bool { get }
@@ -41,7 +42,6 @@ protocol MessageCellModelType {
   var totalCount: Int { get set }
   var pluginColor: UIColor { get }
   var shouldDisplayForm: Bool { get set }
-  var selectedActionText: String { get set }
   var translateState: CHMessageTranslateState { get set }
   var showTranslation: Bool { get }
   var clipType: ClipType { get }
@@ -58,6 +58,7 @@ struct MessageCellModel: MessageCellModelType {
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
   let textColor: UIColor
+  let selectedTextColor: UIColor
   let linkColor: UIColor
   let usernameIsHidden: Bool
   let imageIsHidden: Bool
@@ -77,7 +78,6 @@ struct MessageCellModel: MessageCellModelType {
   var totalCount: Int
   
   var shouldDisplayForm: Bool
-  var selectedActionText: String = ""
   
   var showTranslation: Bool = false
   var translateState: CHMessageTranslateState = .original
@@ -104,6 +104,7 @@ struct MessageCellModel: MessageCellModelType {
     self.avatarIsHidden = createdByMe || isContinuous
     self.bubbleBackgroundColor = message.onlyEmoji ? .clear : (createdByMe ? pluginColor : CHColors.lightGray)
     self.textColor = createdByMe ? plugin.textUIColor : UIColor.grey900
+    self.selectedTextColor = plugin.textUIColor
     self.linkColor = createdByMe ? plugin.textUIColor : UIColor.cobalt400
     self.usernameIsHidden = createdByMe || isContinuous
     self.imageIsHidden = (cType != ClipType.Image)

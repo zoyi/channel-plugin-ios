@@ -27,12 +27,14 @@ class ActionButton: UIButton {
   
   var selectedTextColor: UIColor? = nil {
     didSet {
+      guard let color = self.selectedTextColor else { return }
       let text = self.text?.addFont(
         self.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
-        color: selectedTextColor ?? CHColors.dark80,
+        color: color,
         on: NSRange(location:0, length: self.text?.length ?? 0))
       
       self.setAttributedTitle(text, for: .highlighted)
+      self.setAttributedTitle(text, for: .selected)
     }
   }
   
@@ -142,7 +144,7 @@ class ActionView: BaseView {
     for button in buttons {
       let button = ActionButton(button: button)
       button.selectedColor = viewModel.pluginColor
-      button.selectedTextColor = viewModel.textColor
+      button.selectedTextColor = viewModel.selectedTextColor
       
       self.contentView.addSubview(button)
       self.buttons.append(button)

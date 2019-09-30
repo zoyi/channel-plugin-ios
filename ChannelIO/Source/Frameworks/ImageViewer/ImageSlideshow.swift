@@ -253,6 +253,10 @@ internal class ImageSlideshow: UIView {
         autoresizesSubviews = true
         clipsToBounds = true
 
+        if #available(iOS 13.0, *) {
+          overrideUserInterfaceStyle = .light
+        }
+      
         // scroll view configuration
         scrollView.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height - 50.0)
         scrollView.delegate = self
