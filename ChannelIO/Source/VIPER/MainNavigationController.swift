@@ -21,27 +21,24 @@ class MainNavigationController: BaseNavigationController {
   
   // MARK: Properties
   weak var chDelegate: CHNavigationDelegate? = nil
-  var statusBarStyle = UIStatusBarStyle.default
   var isPushingViewController = false
   
   var currentBgColor: UIColor?
   var currentGradientColor: UIColor?
-  
-  struct StatusBar {
-    static var isHidden = false
-    static var style = UIStatusBarStyle.default
-  }
-  
+
   var useDefault = false {
     didSet {
       if useDefault {
         self.navigationBar.barTintColor = nil
         self.navigationBar.titleTextAttributes =  [.foregroundColor: mainStore.state.plugin.textUIColor]
         self.navigationBar.isTranslucent = false
-        self.statusBarStyle = .lightContent
         self.setNeedsStatusBarAppearanceUpdate()
       }
     }
+  }
+  
+  deinit {
+    dlog("[ChannelIO]: deinit navigation")
   }
   
   // MARK: View Life Cycle
@@ -56,24 +53,10 @@ class MainNavigationController: BaseNavigationController {
     if #available(iOS 13, *) {
       self.presentationController?.delegate = self
     }
-    
-    self.navigationBar.rx.observeWeakly(CGRect.self, "frame")
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (frame) in
-        self?.navigationBar.setGradientBackground(
-          colors: mainStore.state.plugin.gradientColors,
-          startPoint: .left,
-          endPoint: .right
-        )
-      }).disposed(by: self.disposeBag)
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    //legacy support
-    StatusBar.isHidden = UIApplication.shared.isStatusBarHidden
-    StatusBar.style = UIApplication.shared.statusBarStyle
-    UIApplication.shared.isStatusBarHidden = false
     
     mainStore.subscribe(self) {
       $0.select { (state: AppState) in
@@ -84,9 +67,6 @@ class MainNavigationController: BaseNavigationController {
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    //legacy support
-    UIApplication.shared.isStatusBarHidden = StatusBar.isHidden
-    UIApplication.shared.statusBarStyle = StatusBar.style
     mainStore.unsubscribe(self)
   }
 
@@ -95,7 +75,7 @@ class MainNavigationController: BaseNavigationController {
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
-    return self.statusBarStyle
+    return mainStore.state.plugin.textColor == "white" ? .lightContent : .default
   }
   
   override var shouldAutorotate: Bool {
@@ -113,16 +93,14 @@ extension MainNavigationController: StoreSubscriber {
   func newState(state: CHPlugin) {
     if !self.useDefault {
       // Bar Color
-//      self.navigationBar.barTintColor = UIColor(state.color)
-
+      self.navigationBar.setValue(true, forKey: "hidesShadow")
+      self.navigationBar.tintColor = state.textUIColor
+      
       self.navigationBar.setGradientBackground(
         colors: state.gradientColors,
         startPoint: .left,
         endPoint: .right
       )
-
-      self.navigationBar.setValue(true, forKey: "hidesShadow")
-      self.navigationBar.tintColor = state.textUIColor
       
       // Title
       if self.title == nil || self.title == "" {
@@ -131,11 +109,6 @@ extension MainNavigationController: StoreSubscriber {
       
       // Title Color
       self.navigationBar.titleTextAttributes = [.foregroundColor: state.textUIColor]
-      
-      // Status bar color
-      self.statusBarStyle = state.textColor == "white" ? .lightContent : .default
-      //legacy support
-      UIApplication.shared.statusBarStyle = self.statusBarStyle
       self.setNeedsStatusBarAppearanceUpdate()
     }
   }
