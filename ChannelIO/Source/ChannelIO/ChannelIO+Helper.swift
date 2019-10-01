@@ -118,10 +118,11 @@ extension ChannelIO {
           mainStore.dispatch(CheckInSuccess(payload: data))
           
           WsService.shared.connect()
-          WsService.shared.ready().subscribe(onNext: { _ in
-            subscriber.onNext(data)
-            subscriber.onCompleted()
-          }).disposed(by: disposeBag)
+          WsService.shared.ready().take(1)
+            .subscribe(onNext: { _ in
+              subscriber.onNext(data)
+              subscriber.onCompleted()
+            }).disposed(by: disposeBag)
           
         }, onError: { error in
           subscriber.onError(error)
@@ -286,6 +287,10 @@ extension ChannelIO {
       object: nil)
   }
   
+  internal class func removeNotificationObservers() {
+    NotificationCenter.default.removeObserver(self)
+  }
+  
   @objc internal class func enterBackground() {
     WsService.shared.disconnect()
     ChannelIO.willBecomeActive = false
@@ -294,11 +299,15 @@ extension ChannelIO {
   
   @objc internal class func enterForeground() {
     guard self.isValidStatus else { return }
-    _ = AppManager.touch()
-      .observeOn(MainScheduler.instance)
+    _ = WsService.shared.ready()
+      .take(1)
+      .flatMap({ (_) -> Observable<CHGuest> in
+        return AppManager.touch()
+      })
       .subscribe(onNext: { (guest) in
-      mainStore.dispatch(UpdateGuest(payload: guest))
-    })
+        mainStore.dispatch(UpdateGuest(payload: guest))
+      })
+
     WsService.shared.connect()
     NotificationCenter.default.post(name: Notification.Name.Channel.enterForeground, object: nil)
   }

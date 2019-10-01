@@ -79,13 +79,13 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "e09962dd-4722-41c6-98d5-bd39c3a6d9eb"
+      pluginKey = "b84452ae-f2ad-4488-bf46-ac9619fa2012"
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true
-    settings.launcherConfig = LauncherConfig(
-      position: .left, xMargin: 100, yMargin: 200
-    )
+//    settings.launcherConfig = LauncherConfig(
+//      position: .left, xMargin: 100, yMargin: 200
+//    )
     
     let profile = Profile()
     profile.set(propertyKey: "Coin", value: 212)
