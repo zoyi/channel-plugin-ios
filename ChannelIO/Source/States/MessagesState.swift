@@ -25,16 +25,14 @@ struct MessagesState: StateType {
   }
 
   func findBy(userChatId: String?) -> [CHMessage] {
-    guard userChatId != nil else {
+    guard let userChatId = userChatId else {
       return self.messageDictionary
         .filter({ $1.id.hasSuffix("dummy")})
         .map({ $1 })
     }
     return self.messageDictionary
       .filter {
-        ($1.chatId == userChatId! ||
-         $1.id.hasSuffix("dummy")) ||
-         $1.log?.action == "delete_message"
+        ($1.chatId == userChatId || $1.id.hasSuffix("dummy"))
       }
       .map({ $1 })
   }

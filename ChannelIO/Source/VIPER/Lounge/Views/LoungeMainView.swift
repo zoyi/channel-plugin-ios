@@ -289,6 +289,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(welcomeModel)
       cell.messageLabel.numberOfLines = Constants.maxNumberOfLinesForWelcomeCell
+      cell.rightButtons = []
       return cell
     }
     

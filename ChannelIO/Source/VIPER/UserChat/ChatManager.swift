@@ -93,6 +93,11 @@ class ChatManager: NSObject {
     self.chatType = type
     self.setChatEntities(with: id)
     self.observeAppState()
+    
+    if self.chat?.isLocal == true {
+      self.requestRead()
+      self.delegate?.readyToDisplay()
+    }
   }
   
   func fetchChatIfNeeded() {

@@ -289,27 +289,28 @@ extension CHMessage {
     }
   }
   
-  func isSameDate(previous: CHMessage?) -> Bool {
-    if previous == nil { return true }
-    return NSCalendar.current
-      .isDate(self.createdAt, inSameDayAs: previous!.createdAt)
+  func isSameWriter(other message: CHMessage?) -> Bool {
+    return (self.personId == message?.personId
+      && self.personType == message?.personType)
   }
   
-  func isContinue(previous: CHMessage?) -> Bool {
-    if previous == nil { return false }
+  func isSameDate(other message: CHMessage?) -> Bool {
+    guard let message = message else { return false }
+    return NSCalendar.current.isDate(self.createdAt, inSameDayAs: message.createdAt)
+  }
+  
+  func isContinue(other message: CHMessage?) -> Bool {
+    guard let message = message else { return false }
     
-    //check time
     let calendar = NSCalendar.current
-    let previousHour = calendar.component(.hour, from: (previous?.createdAt)!)
+    let previousHour = calendar.component(.hour, from: message.createdAt)
     let currentHour = calendar.component(.hour, from: self.createdAt)
-    let previousMin = calendar.component(.minute, from: (previous?.createdAt)!)
+    let previousMin = calendar.component(.minute, from: message.createdAt)
     let currentMin = calendar.component(.minute, from: self.createdAt)
     
-    if previousHour == currentHour &&
-      previousMin == currentMin &&
-      previous?.personId == self.personId &&
-      previous?.personType == self.personType &&
-      self.personId != "" {
+    if previousHour == currentHour
+      && previousMin == currentMin
+      && self.isSameWriter(other: message) {
       return true
     }
     

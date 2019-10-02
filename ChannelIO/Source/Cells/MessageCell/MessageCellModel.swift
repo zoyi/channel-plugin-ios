@@ -46,7 +46,7 @@ protocol MessageCellModelType {
   var showTranslation: Bool { get }
   var clipType: ClipType { get }
   var buttons: [CHLink] { get }
-  var hasDeleted: Bool { get }
+  var isDeleted: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -83,12 +83,12 @@ struct MessageCellModel: MessageCellModelType {
   var translateState: CHMessageTranslateState = .original
   var clipType: ClipType = .None
   var buttons: [CHLink]
-  var hasDeleted: Bool
+  var isDeleted: Bool
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
-    let isContinuous = message.isContinue(previous: previous) &&
+    let isContinuous = message.isContinue(other: previous) &&
       previous?.action == nil && previous?.profileBot?.count == 0
     
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
@@ -102,7 +102,8 @@ struct MessageCellModel: MessageCellModelType {
     self.message = message
     self.avatarEntity = message.entity ?? channel
     self.avatarIsHidden = createdByMe || isContinuous
-    self.bubbleBackgroundColor = message.onlyEmoji ? .clear : (createdByMe ? pluginColor : CHColors.lightGray)
+    self.bubbleBackgroundColor = message.onlyEmoji ?
+      .clear : (createdByMe ? pluginColor : CHColors.lightGray)
     self.textColor = createdByMe ? plugin.textUIColor : UIColor.grey900
     self.selectedTextColor = plugin.textUIColor
     self.linkColor = createdByMe ? plugin.textUIColor : UIColor.cobalt400
@@ -143,7 +144,7 @@ struct MessageCellModel: MessageCellModelType {
     
     //buttons
     self.buttons = message.buttons ?? []
-    self.hasDeleted = message.isDeleted
+    self.isDeleted = message.isDeleted
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

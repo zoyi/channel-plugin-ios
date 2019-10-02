@@ -107,16 +107,12 @@ class TextMessageView : BaseView {
       self.messageView.text = viewModel.message.message
     }
     
-    if viewModel.hasDeleted {
+    if viewModel.isDeleted {
       self.backgroundColor = .grey200
       self.messageView.textColor = .grey500
-      self.layer.borderColor = UIColor.grey300.cgColor
-      self.layer.borderWidth = 1.f
     } else {
       self.backgroundColor = viewModel.bubbleBackgroundColor
       self.messageView.textColor = viewModel.textColor
-      self.layer.borderColor = nil
-      self.layer.borderWidth = 0
     }
 
     self.messageView.linkTextAttributes = [
@@ -139,6 +135,7 @@ class TextMessageView : BaseView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    
     if self.viewModel?.isContinuous == true {
       self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
     } else if self.viewModel?.createdByMe == true {
