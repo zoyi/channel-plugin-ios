@@ -153,7 +153,8 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     self.view?.displayMainContent(
       activeChats: models.filter { !$0.isClosed },
-      inactiveChats: models.filter { $0.isClosed },
+      inactiveChats: showCompletedChatsSelector(state: mainStore.state) ?
+        models.filter { $0.isClosed } : [],
       welcomeModel: welcome)
   }
   
