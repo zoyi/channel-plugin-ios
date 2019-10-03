@@ -36,7 +36,9 @@ struct UserChatCellModel: UserChatCellModelType {
   init(userChat: CHUserChat) {
     self.chatId = userChat.id
     
-    if userChat.state == .closed && userChat.review != "" {
+    if userChat.lastMessage?.isDeleted == true {
+      self.lastMessage = MessageFactory.deleted().string
+    } else if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
     } else if let msg = userChat.lastMessage?.messageV2, msg.string != "" {
       self.lastMessage = msg.string
