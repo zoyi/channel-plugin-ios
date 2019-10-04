@@ -20,6 +20,8 @@ protocol MessageCellModelType {
   var timestamp: String { get }
   var timestampIsHidden: Bool { get }
   var message: CHMessage { get }
+  var attributedText: NSAttributedString? { get }
+  var translatedText: NSAttributedString? { get }
   var avatarEntity: CHEntity { get }
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
@@ -54,6 +56,8 @@ struct MessageCellModel: MessageCellModelType {
   let timestamp: String
   let timestampIsHidden: Bool
   let message: CHMessage
+  let attributedText: NSAttributedString?
+  let translatedText: NSAttributedString?
   let avatarEntity: CHEntity
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
@@ -100,6 +104,17 @@ struct MessageCellModel: MessageCellModelType {
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
     self.message = message
+    if let mv2 = message.messageV2, message.onlyEmoji {
+      let modifiedText = NSMutableAttributedString(attributedString: mv2)
+      modifiedText.addAttributes(
+        [.font: UIFont.systemFont(ofSize: 40)],
+        range: NSRange(location: 0, length: modifiedText.length)
+      )
+      self.attributedText = modifiedText
+    } else {
+      self.attributedText = message.messageV2
+    }
+    self.translatedText = message.translatedText
     self.avatarEntity = message.entity ?? channel
     self.avatarIsHidden = createdByMe || isContinuous
     self.bubbleBackgroundColor = message.onlyEmoji ?

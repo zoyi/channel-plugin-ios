@@ -42,22 +42,7 @@ struct UserChatCellModel: UserChatCellModelType {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
     } else if let msg = userChat.lastMessage?.messageV2, msg.string != "" {
       self.lastMessage = msg.string
-      let paragraphStyle = NSMutableParagraphStyle()
-      paragraphStyle.alignment = .left
-      paragraphStyle.minimumLineHeight = 18
-      paragraphStyle.lineBreakMode = .byTruncatingTail
-      
-      let newAttributedString = NSMutableAttributedString()
-      newAttributedString.append(msg)
-      newAttributedString.changeFont(fontSize: 14.f)
-      
-      newAttributedString.addAttributes(
-        [.foregroundColor: UIColor.grey900,
-         .paragraphStyle: paragraphStyle
-        ],
-        range: NSRange(location: 0, length: msg.string.count))
-      
-      self.attributeLastMessage = newAttributedString
+      self.attributeLastMessage = msg
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
@@ -87,16 +72,17 @@ struct UserChatCellModel: UserChatCellModelType {
     self.isClosed = userChat.isClosed
   }
   
-  static func welcome(with plugin: CHPlugin, guest: CHGuest, supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
+  static func getWelcomeModel(
+    with plugin: CHPlugin,
+    guest: CHGuest,
+    supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
     var model = UserChatCellModel()
     let bot = botSelector(state: mainStore.state, botName: plugin.botName)
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
     
-    let message = supportBotMessage?.messageV2?.string ?? guest.getWelcome()
-    let (mv2, _) =  CustomMessageTransform.markdown.parse(message ?? "")
-    
-    model.lastMessage = mv2?.string ?? ""
+    model.lastMessage = supportBotMessage?.message ?? guest.getWelcome()
+    model.attributeLastMessage = supportBotMessage?.messageV2
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model

@@ -98,10 +98,10 @@ class TextMessageView : BaseView {
     }
     
     if viewModel.translateState == .translated {
-      if let translated = self.viewModel?.message.translatedText {
+      if let translated = self.viewModel?.translatedText {
         self.messageView.attributedText = translated
       }
-    } else if let attributedText = viewModel.message.messageV2 {
+    } else if let attributedText = viewModel.attributedText {
       self.messageView.attributedText = attributedText
     } else {
       self.messageView.text = viewModel.message.message
@@ -152,15 +152,16 @@ class TextMessageView : BaseView {
     var viewHeight : CGFloat = 0.0
 
     let text = viewModel.translateState == .loading || viewModel.translateState == .original ?
-      viewModel.message.messageV2 :
-      viewModel.message.translatedText
+      viewModel.attributedText :
+      viewModel.translatedText
     
     let maxWidth = !viewModel.message.onlyEmoji ?
       width - Metrics.leftRightPadding * 2 :
       width - Metrics.minimalLeftRightPadding * 2
     
     let topBottomPadding = viewModel.message.onlyEmoji ?
-      Metrics.minimalTopBottomPadding * 2 : Metrics.topBottomPadding * 2
+      Metrics.minimalTopBottomPadding * 2 :
+      Metrics.topBottomPadding * 2
     
     if let edgeInset = edgeInset {
       placeHolder.textContainerInset = edgeInset

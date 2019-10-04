@@ -81,7 +81,7 @@ class ProfileCell : WebPageMessageCell {
   override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.profileExtendableView.configure(model: viewModel, presenter: presenter, redraw: presenter?.shouldRedrawProfileBot ?? false)
-    if viewModel.message.webPage != nil {
+    if viewModel.webpage != nil {
       self.topToMessageConstraint?.deactivate()
       self.topToWebConstraint?.activate()
     } else {

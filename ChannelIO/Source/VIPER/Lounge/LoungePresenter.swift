@@ -145,7 +145,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     let models = userChatsSelector(state: mainStore.state, showCompleted: true)
       .map { UserChatCellModel(userChat: $0) }
     
-    let welcome = UserChatCellModel.welcome(
+    let welcomeModel = UserChatCellModel.getWelcomeModel(
       with: mainStore.state.plugin,
       guest: mainStore.state.guest,
       supportBotMessage: supportBotEntrySelector(state: mainStore.state)
@@ -155,7 +155,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       activeChats: models.filter { !$0.isClosed },
       inactiveChats: showCompletedChatsSelector(state: mainStore.state) ?
         models.filter { $0.isClosed } : [],
-      welcomeModel: welcome)
+      welcomeModel: welcomeModel)
   }
   
   func isReadyToPresentChat(chatId: String?) -> Single<Any?> {

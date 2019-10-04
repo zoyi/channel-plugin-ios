@@ -871,21 +871,21 @@ extension UserChatViewController {
         cell.configure(viewModel, presenter: self.chatManager)
         cell.mediaView.signalForClick().subscribe { [weak self] _ in
           self?.didImageTapped(message: viewModel.message, indexPath: indexPath)
-          }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
         return cell
       } else if viewModel.clipType == .Webpage {
         let cell: ActionWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         cell.webView.signalForClick().subscribe{ [weak self] _ in
           self?.chatManager?.didClickOnWebPage(with: viewModel.message)
-          }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
         return cell
       } else if viewModel.clipType == .File {
         let cell: ActionFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         cell.fileView.signalForClick().subscribe { [weak self] _ in
           self?.chatManager?.didClickOnFile(with: viewModel.message)
-          }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
         return cell
       } else {
         let cell: ActionMessageCell = tableView.dequeueReusableCell(for: indexPath)
