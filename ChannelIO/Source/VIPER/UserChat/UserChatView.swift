@@ -13,12 +13,14 @@ import SVProgressHUD
 import CHSlackTextViewController
 import Alamofire
 
-class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
+class UserChatView: CHMessageViewController, UserChatViewProtocol {
   struct Constant {
     static let messagePerRequest = 30
     static let messageCellMaxWidth = UIScreen.main.bounds.width
   }
 
+  let tableView = UITableView()
+  
   var presenter: UserChatPresenterProtocol? = nil
 
   // MARK: Properties
@@ -55,16 +57,13 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
   // MARK: View Life Cycle
   override func viewDidLoad() {
-    self.textInputBarLRC = 5
-    self.textInputBarBC = 5
-
     super.viewDidLoad()
     self.presenter?.viewDidLoad()
     
     self.edgesForExtendedLayout = UIRectEdge.bottom
     self.view.backgroundColor = UIColor.white
 
-   self.initSLKTextView()
+    self.initSLKTextView()
     self.initTypingCell()
     self.initTableView()
     self.initInputViews()
@@ -83,31 +82,23 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
   // MARK: - Helper methods
   fileprivate func initSLKTextView() {
-    self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
-    self.textView.keyboardType = .default
-
-    if let userChat = self.userChat, userChat.isCompleted {
-      self.alwaysEnableRightButton = true
-    }
+    //self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
   }
 
   func initInputViews() {
-    self.textView.isUserInteractionEnabled = false
-    self.textView.keyboardType = .default
-    self.textView.layer.borderWidth = 0
-    self.textView.text = self.preloadText
+    self.messageView.setPlaceholder(mode: .normal, text: "")
+    self.messageView.setPlaceholder(mode: .highlight, text: "")
+    self.messageView.setPlaceholder(mode: .disabled, text: "")
 
-    //default textinputbar
-    self.textInputbar.barDelegate = self
-    self.textInputbar.contentInset.right = 0
-    self.textInputbar.autoHideRightButton = false
-    self.textInputbar.signalForClick()
-      .subscribe { [weak self] (_) in
-        if self?.textInputbar.barState == .disabled {
-          return
-        }
-        self?.presentKeyboard(self?.menuAccesoryView == nil)
-      }.disposed(by: self.disposeBag)
+    self.messageView.setButton(inset: 10, position: .right)
+    self.messageView.setButton(icon: UIImage(named: "send"), for: .normal, position: .right)
+    self.messageView.addButton(target: self, action: #selector(didPressRightButton), position: .right)
+    self.messageView.rightButtonTint = UIColor.black40
+    self.messageView.rightButton.isEnabled = true
+    self.messageView.emptyTextDisabledRightButton = false
+    self.messageView.textViewInset = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 8)
+    self.messageView.font = UIFont.systemFont(ofSize: 15)
+    self.messageView.maxHeight = 184
   }
 
   fileprivate func initTableView() {
@@ -135,10 +126,7 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
   }
 
   func initNavigationViews(with info: UserChatInfo, guest: CHGuest) {
-    self.userChat = info.userChat
-    
     self.setNavItems(
-      showSetting: info.showSettings,
       currentUserChat: info.userChat,
       guest: guest,
       textColor: info.textColor
@@ -162,12 +150,12 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
 
   fileprivate func initViews() {
     self.view.addSubview(self.newMessageView)
-    self.newMessageView.snp.makeConstraints { [weak self] (make) in
+    self.newMessageView.snp.makeConstraints { make in
       make.height.equalTo(48)
       make.centerX.equalToSuperview()
-      make.bottom.equalTo((self?.textInputbar.snp.top)!).offset(-6)
+      make.bottom.equalTo(self.messageView.snp.top).offset(-6)
     }
-
+    
     self.newMessageView.signalForClick()
       .subscribe(onNext: { [weak self] (event) in
         self?.newMessageView.hide(animated: true)
@@ -175,29 +163,20 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
       }).disposed(by: self.disposeBag)
   }
 
-  fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
+  fileprivate func setNavItems(currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
-    if showSetting {
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "settings"),
-        tintColor: tintColor,
-        style: .plain,
-        actionHandler: { [weak self] in
-          self?.profileSubject.onNext(nil)
-      })
-    } else {
-      let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
-      let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
-      
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "back")?.withRenderingMode(.alwaysTemplate),
-        text: alertCount,
-        textColor: tintColor,
-        actionHandler: { [weak self] in
-          mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-          _ = self?.navigationController?.popViewController(animated: true)
-      })
-    }
+
+    let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
+    let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
+    
+    self.navigationItem.leftBarButtonItem = NavigationItem(
+      image: CHAssets.getImage(named: "back")?.withRenderingMode(.alwaysTemplate),
+      text: alertCount,
+      textColor: tintColor,
+      actionHandler: { [weak self] in
+        mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
+        _ = self?.navigationController?.popViewController(animated: true)
+    })
 
     self.navigationItem.rightBarButtonItem = NavigationItem(
       image: CHAssets.getImage(named: "close"),
@@ -208,6 +187,10 @@ class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
         ChannelIO.close(animated: true)
       }
     )
+  }
+  
+  @objc func didPressRightButton() {
+    //send message
   }
 }
 
@@ -235,54 +218,18 @@ extension UserChatView {
     
   }
   
-  func setChatInfo(info: UserChatInfo) {
-    self.userChat = info.userChat
-    
+  func updateChatInfo(info: UserChatInfo) {
     self.initNavigationViews(with: info, guest: mainStore.state.guest)
+    self.updateInputField(userChat: self.userChat, updatedUserChat: info.userChat)
+    self.userChat = info.userChat
   }
   
   func updateInputField(userChat: CHUserChat?, updatedUserChat: CHUserChat?) {
     
   }
-  
-  func configureNavigation(with userChat: CHUserChat?, unread: Int) {
-    
-  }
 }
 
 extension UserChatView {
-  func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
-    let channel = mainStore.state.channel
-
-    if nextUserChat?.isCompleted == true {
-      self.textInputbar.barState = .disabled
-      self.textInputbar.hideLeftButton()
-      self.rightButton.setImage(nil, for: .normal)
-      self.rightButton.setImage(nil, for: .disabled)
-      self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
-      self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
-      self.textView.isEditable = false
-    } else if (!self.channel.allowNewChat && !channel.allowNewChat) {
-      //self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
-      self.textInputbar.barState = .disabled
-      self.textInputbar.hideAllButtons()
-      self.textView.isEditable = false
-      self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder.disabled_new_chat")
-    } else {
-      self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
-      self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
-      self.rightButton.tintColor = CHColors.cobalt
-      self.rightButton.setTitle("", for: .normal)
-      self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
-
-      self.textInputbar.barState = .normal
-      self.textInputbar.setButtonsHidden(false)
-
-      self.textView.isEditable = true
-      self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
-    }
-  }
-
   //presenter
   func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage], hasNewMessage: Bool) {
     guard let lastMessage = updated.first, !lastMessage.isMine() else {
@@ -328,61 +275,33 @@ extension UserChatView {
   }
 }
 
-// MARK: - SLKTextViewController
-
-extension UserChatView {
-  override func didPressLeftButton(_ sender: Any?) {
-    super.didPressLeftButton(sender)
-    self.presenter?.didClickOnOption(from: self)
-  }
-
-  override func didPressRightButton(_ sender: Any?) {
-    // This little trick validates any pending auto-correction or
-    // auto-spelling just after hitting the 'Send' button
-
-    self.textView.refreshFirstResponder()
-    let msg = self.textView.text!
-    //self.presenter?.send(text: msg, assets: [])
-    self.presenter?.didClickOnRightButton(text: msg, assets: [])
-    super.didPressRightButton(sender)
-  }
-
-  override func forceTextInputbarAdjustment(for responder: UIResponder?) -> Bool {
-    // TODO: check if responder is equal to our text field
-    return true
-  }
-
-  override func textViewDidChange(_ textView: UITextView) {
-    //self.chatManager.sendTyping(isStop: textView.text == "")
-  }
-}
 
 // MARK: - UIScrollViewDelegate
 
 extension UserChatView {
-  override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
     //fetch messages
-//    let yOffset = scrollView.contentOffset.y
-//    let triggerPoint = yOffset + UIScreen.main.bounds.height * 1.5
-//    if triggerPoint > scrollView.contentSize.height && self.chatManager.canLoadMore() {
-//      self.chatManager.fetchMessages()
-//    }
-//
-//    if yOffset < 100 &&
-//      !self.newMessageView.isHidden {
-//      self.newMessageView.hide(animated: false)
-//    }
+    let yOffset = scrollView.contentOffset.y
+    let triggerPoint = yOffset + UIScreen.main.bounds.height * 1.5
+    if triggerPoint > scrollView.contentSize.height {
+      self.presenter?.fetchMessages()
+    }
+
+    if yOffset < 100 &&
+      !self.newMessageView.isHidden {
+      self.newMessageView.hide(animated: false)
+    }
   }
 }
 
 // MARK: - UITableView
 
 extension UserChatView {
-  override func numberOfSections(in tableView: UITableView) -> Int {
+  func numberOfSections(in tableView: UITableView) -> Int {
     return self.channel.canUseSDK ? 2 : 3
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if section == 1 {
@@ -393,7 +312,7 @@ extension UserChatView {
     return 0
   }
 
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     if indexPath.section == 0 {
       return 40
     }
@@ -427,7 +346,7 @@ extension UserChatView {
     }
   }
 
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = indexPath.section
     if section == 0 && self.channel.blocked {
       let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
@@ -497,7 +416,8 @@ extension UserChatView {
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel)
       cell.signalForClick().subscribe { [weak self] _ in
-        self?.presenter?.didClickOnImage(with: message.file?.fileUrl, from: self)
+        let urls = self?.messages.compactMap { $0.file?.fileUrl } ?? []
+        self?.presenter?.didClickOnImage(with: message.file?.fileUrl, photoUrls: urls, from: self)
       }.disposed(by: self.disposeBag)
       return cell
     case .File:
@@ -525,25 +445,5 @@ extension UserChatView {
 
   func signalForNewChat() -> Observable<Any?> {
     return self.newChatSubject
-  }
-}
-
-extension UserChatView : SLKInputBarViewDelegate {
-  func barStateDidChange(_ state: SLKInputBarState) {
-    self.textInputbar.layer.cornerRadius = 5
-    self.textInputbar.clipsToBounds = true
-    self.textInputbar.layer.borderWidth = 2
-
-    if state == .disabled {
-      self.textInputbar.layer.borderColor = CHColors.paleGrey.cgColor
-      self.textInputbar.backgroundColor = CHColors.snow
-      self.textView.backgroundColor = UIColor.clear
-      self.textView.isHidden = false
-    } else {
-      self.textInputbar.layer.borderColor = CHColors.paleGrey.cgColor
-      self.textInputbar.backgroundColor = UIColor.white
-      self.textView.backgroundColor = UIColor.clear
-      self.textView.isHidden = false
-    }
   }
 }

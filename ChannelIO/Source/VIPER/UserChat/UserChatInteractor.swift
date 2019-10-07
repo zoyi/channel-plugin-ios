@@ -31,7 +31,6 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   var didFetchInfo = false
   var didChatLoaded = false
   var didLoad = false
-  var state: ChatState = .idle
   
   fileprivate var typingPersons = [CHEntity]()
   fileprivate var timeStorage = [String: Timer]()
@@ -73,7 +72,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   }
   
   func willAppear() {
-    self.state = .chatJoining
+    self.chatEventSubject.onNext(.state(.chatJoining))
     self.subscribeDataSource()
     self.joinSocket()
   }
@@ -234,12 +233,15 @@ extension UserChatInteractor {
             self?.addTimer(with: manager, delay: 15)
           }
         }
-        self?.chatEventSubject.onNext(.typing(obj: self?.typingPersons ?? [], animated: self?.animateTyping ?? false))
+        self?.chatEventSubject.onNext(
+          .typing(
+            obj: self?.typingPersons ?? [],
+            animated: self?.animateTyping ?? false
+          ))
       })
   }
 }
 
-//API
 extension UserChatInteractor {
   func chatEventSignal() -> Observable<ChatEvent> {
     return self.chatEventSubject
@@ -260,56 +262,58 @@ extension UserChatInteractor {
       userChatId: self.userChatId,
       since: self.nextSeq,
       limit: 30,
-      sortOrder: "DESC").subscribe(onNext: { [weak self] (data) in
+      sortOrder: "DESC")
+      .subscribe(onNext: { [weak self] (data) in
+        //move to presenter
         if let nextSeq = data["next"] {
           self?.nextSeq = nextSeq as! String
         }
-        self?.state = .messageLoaded
+        self?.chatEventSubject.onNext(.state(.messageLoaded))
         mainStore.dispatch(GetMessages(payload: data))
         self?.updateMessages()
       }, onError: { [weak self] error in
         // TODO: show error
         self?.isFetching = false
-        self?.state = .messageNotLoaded
+        if self?.didLoad == false {
+          self?.chatEventSubject.onNext(.state(.messageNotLoaded))
+        }
         self?.chatEventSubject.onNext(.error(obj: error))
       }, onCompleted: { [weak self] in
         self?.isFetching = false
         if self?.didLoad == false {
           self?.didLoad = true
-          self?.state = .chatReady
-          //self?.delegate?.readyToDisplay()
-          //self?.requestReadAll()
+          self?.chatEventSubject.onNext(.state(.chatReady))
         }
       }).disposed(by: self.disposeBag)
   }
   
-//  func showFeedbackIfNeeded(_ userChat: CHUserChat?, lastMessage: CHMessage?) {
-//    guard let newUserChat = userChat else { return }
-//    //it only trigger once if previous state is following and new state is resolved
-//    if newUserChat.isResolved() {
-//      mainStore.dispatch(CreateFeedback())
-//    } else if newUserChat.isClosed()
-//      mainStore.dispatch(CreateCompletedFeedback())
-//    }
-//  }
-
-  func fetchChat() -> Observable<CHUserChat> {
-    return Observable.create({ (subscriber) in
-      //generate feedback message if needed
-      return Disposables.create()
-    })
-  }
-  
-  func createChat() -> Observable<CHUserChat> {
-    return Observable.create({ (subscriber) in
-      return Disposables.create()
+  func fetchChat() -> Observable<CHUserChat?> {
+    return Observable.create({ [weak self] (subscriber) in
+      guard let self = self else {
+        subscriber.onError(CHErrorPool.unknownError)
+        return Disposables.create()
+      }
+      let signal = UserChatPromise.getChat(userChatId: self.userChatId)
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (chatResponse) in
+          mainStore.dispatch(GetUserChat(payload: chatResponse))
+          subscriber.onNext(chatResponse.userChat)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
     })
   }
   
   func requestRead() {
     guard !self.isRequstingReadAll else { return }
-    
-    self.userChat?.read().subscribe(onNext: { [weak self] (completed) in
+    self.isRequstingReadAll = true
+    self.userChat?.read()
+      .subscribe(onNext: { [weak self] (completed) in
       self?.isRequstingReadAll = false
     }, onError: { [weak self] (error) in
       self?.isRequstingReadAll = false
@@ -392,6 +396,7 @@ extension UserChatInteractor {
 //        self.chatEventSubject.onNext(.chat(obj: chat))
 //      }).disposed(by: self.disposeBag)
   }
+  
 }
 
 
@@ -438,7 +443,7 @@ extension UserChatInteractor: StoreSubscriber {
     let socketState = state.socketState.state
 
     if socketState == .reconnecting {
-      self.state = .waitingSocket
+      self.chatEventSubject.onNext(.state(.waitingSocket))
     } else if socketState == .disconnected {
       self.chatEventSubject.onNext(.error(obj: nil))
       //self.showError()
@@ -512,13 +517,120 @@ extension UserChatInteractor {
   }
 }
 
-//interactor
-//extension UserChatView: MWPhotoBrowserDelegate {
-//  func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
-//    return UInt(self.photoUrls.count)
-//  }
+extension UserChatInteractor {
+  func createNudgeChat(nudgeId:String?) -> Observable<String> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      guard let nudgeId = nudgeId else {
+        subscriber.onError(CHErrorPool.paramError)
+        return Disposables.create()
+      }
+      if let chatId = self?.userChatId, chatId != "", !chatId.hasPrefix(CHConstants.nudgeChat) {
+        subscriber.onNext(chatId)
+        return Disposables.create()
+      }
+      //if push bot message is present, create push bot user chat
+      let signal = CHNudge.createChat(nudgeId: nudgeId)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while creating a chat. Attempting to create again")
+          return true
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (chatResponse) in
+          //replace local nudgeChat
+          mainStore.dispatch(GetNudgeChat(nudgeId: nudgeId, payload: chatResponse))
+          
+//          self?.chatNewlyCreated = true
+//          self?.didChatLoaded = true
+//          self?.setChatEntities(with: chatResponse.userChat?.id)
+//          self?.prepareToChat()
+          
+          subscriber.onNext(chatResponse.userChat?.id ?? "")
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+//          self?.didChatLoaded = false
+//            self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+    
+  func createSupportBotChatIfNeeded(originId: String? = nil) -> Observable<(CHUserChat?, CHMessage?)> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      var disposable: Disposable?
+      if let chat = self?.userChat, let message = messageSelector(state: mainStore.state, id: originId) {
+        subscriber.onNext((chat, message))
+        subscriber.onCompleted()
+      } else if let bot = mainStore.state.botsState.findSupportBot() {
+        disposable = CHSupportBot.create(with: bot.id)
+          .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+            dlog("Error while creating a chat. Attempting to create again")
+            return true
+          })
+          .observeOn(MainScheduler.instance)
+          .subscribe(onNext: { (chatResponse) in
+            mainStore.dispatch(GetUserChat(payload: chatResponse))
+            
+//            self?.chatNewlyCreated = true
+//            self?.didChatLoaded = true
+//            self?.setChatEntities(with: chatResponse.userChat?.id)
+//            self?.prepareToChat()
+         
+            subscriber.onNext((chatResponse.userChat, chatResponse.message))
+            subscriber.onCompleted()
+          }, onError: { [weak self] (error) in
+//            self?.didChatLoaded = false
+//              self?.state = .chatNotLoaded
+            subscriber.onError(error)
+          })
+      } else {
+        subscriber.onError(CHErrorPool.unknownError)
+      }
+      return Disposables.create {
+        disposable?.dispose()
+      }
+    })
+  }
+    
+  func createChat() -> Observable<CHUserChat?> {
+    return Observable.create({ [weak self] (subscriber) in
+      if let userChat = self?.userChat {
+        subscriber.onNext(userChat)
+        return Disposables.create()
+      }
+      let pluginId = mainStore.state.plugin.id
+      
+      //if push bot message is present, create push bot user chat
+      let signal = CHUserChat.create(pluginId: pluginId)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while creating a chat. Attempting to create again")
+          return true
+        })
+        .observeOn(MainScheduler.instance).subscribe(onNext: { (chatResponse) in
+          mainStore.dispatch(GetUserChat(payload: chatResponse))
+          
+//          self?.chatNewlyCreated = true
+//          self?.didChatLoaded = true
+//          self?.setChatEntities(with: chatResponse.userChat?.id)
+//          self?.prepareToChat()
 //
-//  func photoBrowser(_ photoBrowser: MWPhotoBrowser!, photoAt index: UInt) -> MWPhotoProtocol! {
-//    return MWPhoto(url: URL(string: self.photoUrls[Int(index)]))
-//  }
-//}
+          subscriber.onNext(userChatSelector(
+            state: mainStore.state,
+            userChatId: chatResponse.userChat?.id
+          ))
+          subscriber.onCompleted()
+        }, onError: { [weak self] (error) in
+//          self?.didChatLoaded = false
+//            self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+}

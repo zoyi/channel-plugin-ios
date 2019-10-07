@@ -12,7 +12,7 @@ import SnapKit
 
 class ProfilePhoneView: ProfileItemBaseView, ProfileContentProtocol {
   let phoneView = PhoneActionView()
-  var firstResponder: UIView {
+  var responder: UIView {
     return self.phoneView.phoneField
   }
   var didFirstResponder: Bool {

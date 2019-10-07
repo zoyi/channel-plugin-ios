@@ -12,21 +12,38 @@ import Photos
 import AVKit
 
 class UserChatRouter: NSObject, UserChatRouterProtocol {
-//  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate) {
-//    guard let url = url else { return }
-//    let index = photoUrls.index { (photoUrl) -> Bool in
-//      return photoUrl.absoluteString == url.absoluteString
+  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?) {
+    let viewer = FullScreenSlideshowViewController()
+    viewer.slideshow.circular = false
+    viewer.slideshow.pageIndicator = LabelPageIndicator(frame: CGRect(x:0,y:0, width: UIScreen.main.bounds.width, height: 60))
+    viewer.slideshow.pageIndicatorPosition = PageIndicatorPosition(horizontal: .center, vertical: .customTop(padding: 5))
+    
+    viewer.inputs = photoUrls.map { (url) -> SDWebImageSource in
+      return SDWebImageSource(url: url)
+    }
+
+    if let url = url, let index = photoUrls.firstIndex(of: url) {
+      viewer.initialPage = index
+    }
+    
+//    let cell = self.tableView.cellForRow(at: indexPath) as? MediaMessageCell
+//    if let cell = cell {
+//      self.viewerTransitionDelegate = ZoomAnimatedTransitioningDelegate(
+//        imageView: cell.mediaView.imageView,
+//        slideshowController: viewer)
+//      viewer.transitioningDelegate = self.viewerTransitionDelegate
 //    }
-//
-//    let browser = MWPhotoBrowser(delegate: dataSource)
-//    browser?.zoomPhotosToFill = false
-//
-//    let navigation = MainNavigationController(rootViewController: browser!)
-//    if index != nil {
-//      browser?.setCurrentPhotoIndex(UInt(index!))
-//    }
-//    view?.present(navigation, animated: true, completion: nil)
-//  }
+    
+    viewer.slideshow.currentPageChanged = { [weak self] page in
+//      if let cell = cell {
+//        self?.viewerTransitionDelegate?.referenceImageView = page != index ? nil : cell.mediaView.imageView
+//      }
+    }
+    
+    //TODO: move table position based on image view?
+    viewer.modalPresentationStyle = .currentContext
+    view?.present(viewer, animated: true, completion: nil)
+  }
   
   func presentVideoPlayer(with url: URL?, from view: UIViewController?) {
     guard let url = url else { return }
@@ -38,11 +55,7 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     moviePlayer.modalTransitionStyle = .crossDissolve
     view?.present(moviePlayer, animated: true, completion: nil)
   }
-  
-  func presentSettings(from view: UIViewController?) {
 
-  }
-  
   func showNewChat(with text: String, from view: UINavigationController?) {
     view?.popViewController(animated: false, completion: {
       let controller = UserChatRouter.createModule(userChatId: nil)

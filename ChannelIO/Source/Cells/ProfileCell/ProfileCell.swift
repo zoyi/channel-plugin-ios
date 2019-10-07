@@ -30,7 +30,7 @@ extension Actionable where Self: UIView {
 
 protocol ProfileContentProtocol: class {
   var view: UIView { get }
-  var firstResponder: UIView { get }
+  var responder: UIView { get }
   var didFirstResponder: Bool { get }
 }
 

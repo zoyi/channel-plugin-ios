@@ -29,8 +29,8 @@ struct CHChannel: CHEntity {
   var lunchTime: TimeRange?
   var phoneNumber: String?
   var requestGuestInfo = true
-  var messengerPlan: ChannelPlanType = .pro
-  var pushBotPlan: ChannelPlanType = .pro
+  var messengerPlan: ChannelPlanType = .none
+  var pushBotPlan: ChannelPlanType = .none
   var supportBotPlan: ChannelPlanType = .none
   var blocked = false
   var homepageUrl = ""

@@ -13,7 +13,7 @@ import SnapKit
 
 class ProfileTextView: ProfileItemBaseView, ProfileContentProtocol {
   let textView = TextActionView()
-  var firstResponder: UIView {
+  var responder: UIView {
     return self.textView.textField
   }
   var didFirstResponder: Bool {

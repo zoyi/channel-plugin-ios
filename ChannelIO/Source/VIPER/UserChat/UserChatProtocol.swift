@@ -17,6 +17,7 @@ enum ChatEvent {
   case chat(obj: CHUserChat?)
   case typing(obj: [CHEntity], animated: Bool)
   case error(obj: Error?)
+  case state(_ state: ChatState)
 }
 
 enum ChatState {
@@ -35,6 +36,14 @@ enum ChatState {
   case chatReady
 }
 
+struct UserChatInfo {
+  var userChat: CHUserChat?
+  var channel: CHChannel
+  var plugin: CHPlugin
+  var managers: [CHManager]
+  var textColor: UIColor
+}
+
 protocol UserChatViewProtocol: class {
   var presenter: UserChatPresenterProtocol? { get set }
   
@@ -43,42 +52,36 @@ protocol UserChatViewProtocol: class {
   func display(error: Error?, visible: Bool)
   func displayNewBanner()
   
-  func updateInputField(userChat: CHUserChat?, updatedUserChat: CHUserChat?)
-  
-  func configureNavigation(with userChat: CHUserChat?, unread: Int)
-  func setChatInfo(info: UserChatInfo)
+  func updateChatInfo(info: UserChatInfo)
 }
 
 protocol UserChatPresenterProtocol: class {
   var view: UserChatViewProtocol? { get set }
   var interactor: UserChatInteractorProtocol? { get set }
   var router: UserChatRouterProtocol? { get set }
+
+  func viewDidLoad()
+  func prepareDataSource()
+  func cleanDataSource()
   
+  func reload()
+  func readyToDisplay() -> Observable<Bool>?
   func fetchMessages()
   
-  func didClickOnRightButton(text: String, assets: [PHAsset])
-  func send(text: String, assets: [PHAsset])
   func sendTyping(isStop: Bool)
   
+  func didClickOnLeftButton(from view: UIViewController?)
+  func didClickOnRightButton(text: String, assets: [PHAsset])
   func didClickOnFeedback(rating: String, from view: UIViewController?)
-  
-  func didClickOnMessageButton(originId: String?, key: String?, value: String?)
+  func didClickOnActionButton(originId: String?, key: String?, value: String?)
   func didClickOnOption(from view: UIViewController?)
-  func didClickOnManager(from view: UIViewController?)
   func didClickOnFile(with message: CHMessage?, from view: UIViewController?)
-  func didClickOnImage(with url: URL?, from view: UIViewController?)
+  func didClickOnImage(with url: URL?, photoUrls: [URL], from view: UIViewController?)
   func didClickOnVideo(with url: URL?, from view: UIViewController?)
   func didClickOnWeb(with url: String?, from view: UIViewController?)
   func didClickOnTranslate(for message: CHMessage?)
   func didClickOnRetry(for message: CHMessage?, from view: UIViewController?)
   func didClickOnNewChat(with text: String, from view: UINavigationController?)
-  func didClickOnSettings(from view: UIViewController?)
-  
-  func reload()
-  func readyToDisplay() -> Observable<Bool>?
-  func viewDidLoad()
-  func prepareDataSource()
-  func cleanDataSource()
 }
 
 protocol UserChatInteractorProtocol: class {
@@ -100,8 +103,10 @@ protocol UserChatInteractorProtocol: class {
   func leaveSocket()
   
   func canLoadMore() -> Bool
-  func createChat() -> Observable<CHUserChat>
-  func fetchChat() -> Observable<CHUserChat>
+  func createChat() -> Observable<CHUserChat?>
+  func createNudgeChat(nudgeId:String?) -> Observable<String>
+  func createSupportBotChatIfNeeded(originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
+  func fetchChat() -> Observable<CHUserChat?>
   func fetchMessages()
   func chatEventSignal() -> Observable<ChatEvent>
   func translate(for message: CHMessage)
@@ -120,21 +125,11 @@ protocol UserChatRouterProtocol: class {
   
   //func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate)
   func presentVideoPlayer(with url: URL?, from view: UIViewController?)
-  func presentSettings(from view: UIViewController?)
+  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?)
   func pushFileView(with url: URL?, from view: UIViewController?)
   
   func showNewChat(with text: String, from view: UINavigationController?)
-  
   func showRetryActionSheet(from view: UIViewController?) -> Observable<Bool?>
   func showOptionActionSheet(from view: UIViewController?) -> Observable<[PHAsset]>
   func showOptionPicker(max: Int, from view: UIViewController?) -> Observable<[PHAsset]>
-}
-
-struct UserChatInfo {
-  var userChat: CHUserChat?
-  var channel: CHChannel
-  var plugin: CHPlugin
-  var managers: [CHManager]
-  var showSettings: Bool
-  var textColor: UIColor
 }

@@ -108,11 +108,6 @@ extension ChannelIO {
             subscriber.onError(CHErrorPool.unknownError)
             return
           }
-
-          if !channel.canUseSDK {
-            subscriber.onError(CHErrorPool.serviceBlockedError)
-            return
-          }
           
           data["settings"] = settings
           mainStore.dispatch(CheckInSuccess(payload: data))

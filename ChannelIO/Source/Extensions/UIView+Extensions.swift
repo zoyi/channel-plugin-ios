@@ -8,8 +8,7 @@
 
 import Foundation
 
-extension UIView {
-  
+internal extension UIView {
   static func activate(constraints: [NSLayoutConstraint]) {
     constraints.forEach { ($0.firstItem as? UIView)?.translatesAutoresizingMaskIntoConstraints = false }
     NSLayoutConstraint.activate(constraints)
@@ -31,7 +30,47 @@ extension UIView {
     ])
   }
   
+  var util_safeAreaInsets: UIEdgeInsets {
+    if #available(iOS 11.0, *) {
+      return safeAreaInsets
+    } else {
+      return .zero
+    }
+  }
+  
+  var firstResponder: UIView? {
+    guard !isFirstResponder else { return self }
+
+    for subview in subviews {
+      if let firstResponder = subview.firstResponder {
+        return firstResponder
+      }
+    }
+
+    return nil
+  }
 }
+
+internal extension UIScrollView {
+  var util_adjustedContentInset: UIEdgeInsets {
+    if #available(iOS 11.0, *) {
+      return adjustedContentInset
+    } else {
+      return contentInset
+    }
+  }
+  
+  func stopScrolling() {
+    guard isDragging else { return }
+
+    var offset = contentOffset
+    offset.y -= 1
+    self.setContentOffset(offset, animated: false)
+    offset.y += 1
+    self.setContentOffset(offset, animated: false)
+  }
+}
+
 
 extension UIViewController {
   private static let insetBackgroundViewTag = 98721 //Cool number

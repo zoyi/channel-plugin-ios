@@ -11,7 +11,7 @@ import UIKit
 import SVProgressHUD
 import Photos
 
-class UserChatPresenter: NSObject, UserChatPresenterProtocol {
+class UserChatPresenter: NSObject, UserChatPresenterProtocol {  
   weak var view: UserChatViewProtocol? = nil
   var interactor: UserChatInteractorProtocol? = nil
   var router: UserChatRouterProtocol? = nil
@@ -19,31 +19,26 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   var userChatId: String?
   var userChat: CHUserChat?
   
+  var state: ChatState = .idle
   var disposeBag = DisposeBag()
   
   func viewDidLoad() {
-    //fetchWelcomeInfoIfNeeded
-    self.refreshChat()
-      
+    //other socket or state event handling
     self.interactor?.chatEventSignal()
       .observeOn(MainScheduler.instance)
       .subscribe (onNext: { [weak self] chatEvent in
+        guard let self = self else { return }
         switch chatEvent {
+        case .state(let state):
+          self.state = state
         case .messages(let messages, _):
-          //self?.userChat?.readAll()
-          self?.view?.display(messages: messages)
+          self.view?.display(messages: messages)
         case .manager(_):
           break
         case .chat(_):
-          self?.refreshChat()
-//          if chat?.isResolved() == true {
-//            //self.view?.updateInputField(userChat: self?.userChat, updatedUserChat: chat)
-//            //display resolved
-//          } else if chat?.isClosed() == true {
-//            //display closed
-//          }
+          self.refreshChat()
         case .typing(let typers, _):
-          self?.view?.display(typers: typers)
+          self.view?.display(typers: typers)
         default:
           break
         }
@@ -64,35 +59,6 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     
   }
   
-//  func resetUserChat() -> Observable<String?> {
-//    return Observable.create({ [weak self] (subscribe) in
-//      //guard let s = self else { return Disposables.create() }
-//      self?.nextSeq = ""
-//      var signal: Disposable?
-//      
-//      if let chatId = self?.chatId, chatId != "" {
-//        signal = self?.fetchChat().subscribe(onNext: { _ in
-//          mainStore.dispatch(RemoveMessages(payload: chatId))
-//          subscribe.onNext(chatId)
-//        }, onError: { error in
-//          subscribe.onError(error)
-//        })
-//      } else {
-//        signal = self?.createChat().subscribe(onNext: { chatId in
-//          subscribe.onNext(chatId)
-//        }, onError: { error in
-//          subscribe.onError(error)
-//        })
-//      }
-//      
-//      return Disposables.create {
-//        signal?.dispose()
-//      }
-//    })
-//  }
-//  
-
-  //presenter
   private func isNewChat(with current: CHUserChat?, nextUserChat: CHUserChat?) -> Bool {
     return self.userChat == nil && nextUserChat == nil
   }
@@ -118,6 +84,7 @@ extension UserChatPresenter {
           
         }).disposed(by: (self?.disposeBag)!)
       } else {
+        //could be nudge or normal chat
         interactor.createChat().flatMap({ (chat) -> Observable<Any?> in
           return interactor.send(messages: messages)
         }).flatMap({ (completed) -> Observable<Bool?> in
@@ -143,7 +110,6 @@ extension UserChatPresenter {
     }).disposed(by: self.disposeBag)
   }
   
-  func didClickOnManager(from view: UIViewController?) { }
   func didClickOnVideo(with url: URL?, from view: UIViewController?) {
     guard let url = url else { return }
     self.router?.presentVideoPlayer(with: url, from: view)
@@ -177,8 +143,8 @@ extension UserChatPresenter {
       }).disposed(by: self.disposeBag)
   }
   
-  func didClickOnImage(with url: URL?, from view: UIViewController?) {
-
+  func didClickOnImage(with url: URL?, photoUrls: [URL], from view: UIViewController?) {
+    self.router?.presentImageViewer(with: url, photoUrls: photoUrls, from: view)
   }
 
   func didClickOnWeb(with url: String?, from view: UIViewController?) {
@@ -195,17 +161,9 @@ extension UserChatPresenter {
     self.router?.showNewChat(with: text, from: view)
   }
   
-  func didClickOnSettings(from view: UIViewController?) {
-    self.router?.presentSettings(from: view)
-  }
-  
-  func readyToDisplay() -> Observable<Bool>? {
-    return self.interactor?.readyToPresent()
-  }
-
-  func fetchMessages() {
-    guard self.interactor?.canLoadMore() == true else { return }
-    self.interactor?.fetchMessages()
+  func didClickOnLeftButton(from view: UIViewController?) {
+    self.router?.showOptionActionSheet(from: view)
+    //interator send image(s)
   }
   
   func didClickOnRightButton(text: String, assets: [PHAsset]) {
@@ -239,12 +197,10 @@ extension UserChatPresenter {
     }
     else {
       mainStore.dispatch(RemoveMessages(payload: userChatId))
-      //open new chat if text
-      //self.newChatSubject.onNext(self.textView.text)
     }
   }
   
-  func didClickOnMessageButton(originId: String?, key: String?, value: String?) {
+  func didClickOnActionButton(originId: String?, key: String?, value: String?) {
     guard let originId = originId, let key = key, let value = value else { return }
     guard let interactor = self.interactor else { return }
     
@@ -254,6 +210,20 @@ extension UserChatPresenter {
     }, onError: { [weak self] (error) in
       self?.view?.display(error: error, visible: true)
     }).disposed(by: self.disposeBag)
+  }
+  
+  func readyToDisplay() -> Observable<Bool>? {
+    //load flow
+    //1. join if needed (newly create or local chat just return true
+    //2. fetch chat (newly create or local chat just return
+    //3. fetch message (newly create or local chat just return
+    //4. subscriber onNext ...
+    return self.interactor?.readyToPresent()
+  }
+
+  func fetchMessages() {
+    guard self.interactor?.canLoadMore() == true else { return }
+    self.interactor?.fetchMessages()
   }
   
   func send(text: String, assets: [PHAsset]) {
@@ -268,17 +238,177 @@ extension UserChatPresenter {
 extension UserChatPresenter {
   func refreshChat() {
     let userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-    let userChats = userChatsSelector(
-      state: mainStore.state,
-      showCompleted: mainStore.state.userChatsState.showCompletedChats
-    )
     
-    self.view?.setChatInfo(info: UserChatInfo(
+    self.view?.updateChatInfo(info: UserChatInfo(
       userChat: userChat,
       channel: mainStore.state.channel,
       plugin: mainStore.state.plugin,
       managers: [],
-      showSettings: userChats.count == 0,
       textColor: mainStore.state.plugin.textUIColor))
+  }
+  
+  func sendMessage(message: CHMessage, local: Bool = false) -> Observable<CHMessage?> {
+    var message = message
+    return Observable.create({ [weak self] (subscriber) in
+      if local {
+        subscriber.onNext(message)
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
+      
+      let signal = message.send()
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while sending message. Attempting to send again")
+          return true
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (updated) in
+        dlog("Message has been sent successfully")
+        self?.sendTyping(isStop: true)
+        subscriber.onNext(updated)
+        subscriber.onCompleted()
+      }, onError: { (error) in
+        dlog("Message has been failed to send")
+        message.state = .Failed
+        self?.sendTyping(isStop: true)
+        subscriber.onNext(message)
+        subscriber.onCompleted()
+      })
+      
+      return Disposables.create {
+        signal.dispose()
+      }
+    })
+  }
+  
+  func processSendMessage(msg: String) -> Observable<CHUserChat?> {
+    return Observable.create({ [weak self] (subscriber) -> Disposable in
+      let createChatSignal = self?.userChat?.isActive == true ?
+        Observable.just(self?.userChat) : self?.interactor?.createChat()
+      
+      createChatSignal?
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while creating a chat. Attempting to create again")
+          return true
+        })
+        .observeOn(MainScheduler.instance)
+        .flatMap({ (userChat) -> Observable<CHMessage?> in
+          guard let self = self, let userChat = userChat else { return .empty() }
+          
+          self.userChat = userChat
+          self.userChatId = userChat.id
+          let message = CHMessage.createLocal(chatId: userChat.id, text: msg)
+          mainStore.dispatch(CreateMessage(payload: message))
+          return self.sendMessage(message: message, local: false)
+        })
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (message) in
+          mainStore.dispatch(CreateMessage(payload: message))
+          subscriber.onNext(self?.userChat)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          self?.state = .chatNotLoaded
+          subscriber.onError(error)
+        }).disposed(by: self!.disposeBag)
+      return Disposables.create()
+    })
+  }
+  
+  private func processPostAction(originId: String?, key: String, value: String) {
+    guard let chatId = self.userChatId else { return }
+    let message = CHMessage.createLocal(chatId: chatId, text: value, originId: originId, key: key)
+    mainStore.dispatch(CreateMessage(payload: message))
+    
+    self.sendMessage(message: message, local: false)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (message) in
+        mainStore.dispatch(CreateMessage(payload:message))
+      }, onError: { (error) in
+        //handle error
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func processNudgeKeepAction(){
+    guard
+      let chat = self.userChat,
+      chat.fromNudge,
+      let nudgeId = chat.nudgeId else {
+        return
+      }
+    
+    self.interactor?.createNudgeChat(nudgeId: nudgeId)
+      .observeOn(MainScheduler.instance)
+      .flatMap {( chatId) -> Observable<CHMessage?> in
+        return UserChatPromise.keepNudge(userChatId: chatId)
+      }
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (message) in
+        mainStore.dispatch(CreateMessage(payload: message))
+      }, onError: { (erro) in
+        //?
+      }).disposed(by: self.disposeBag)
+  }
+  
+  private func processSupportBotAction(originId: String?, key: String?, value: String?) {
+//    guard !self.isRequestingAction else { return }
+//    self.isRequestingAction = true
+    
+    self.interactor?.createSupportBotChatIfNeeded(originId: originId)
+      .observeOn(MainScheduler.instance)
+      .flatMap({ (chat, message) -> Observable<CHMessage> in
+        let msg = CHMessage.createLocal(chatId: chat!.id, text: value, originId: originId, key: key)
+        mainStore.dispatch(CreateMessage(payload: msg))
+        return CHSupportBot.reply(with: msg, actionId: message?.id)
+      })
+      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+        dlog("Error while replying supportBot. Attempting to reply again")
+        return true
+      })
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (updated) in
+//        self?.isRequestingAction = false
+        mainStore.dispatch(CreateMessage(payload: updated))
+      }, onError: { [weak self] (error) in
+//        self?.isRequestingAction = false
+        //handle error
+      }).disposed(by: self.disposeBag)
+  }
+  
+  private func processUserChatAction(originId: String?, key: String?, value: String?) {
+    guard var origin = messageSelector(state: mainStore.state, id: originId),
+      let type = origin.action?.type,
+      let key = key, let value = value else { return }
+    
+    var msg: CHMessage?
+    guard let userChatId = self.userChatId else { return }
+    if (type == .solve && key == "close") || type == .close {
+      msg = CHMessage.createLocal(chatId: userChatId, text: value, originId: originId, key: key)
+      mainStore.dispatch(CreateMessage(payload: msg))
+    }
+    
+    if type == .solve && key == "close" {
+      self.userChat?.close(mid: origin.id, requestId: msg?.requestId ?? "")
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (chat) in
+          mainStore.dispatch(UpdateUserChat(payload:chat))
+        }, onError: { (error) in
+          //handle error
+        }).disposed(by: self.disposeBag)
+    } else if type == .solve && key == "reopen" {
+      origin.action?.closed = true
+      mainStore.dispatch(UpdateMessage(payload: origin))
+      if var updatedChat = userChatSelector(state: mainStore.state, userChatId: userChatId) {
+        updatedChat.state = updatedChat.assigneeId == nil ? .unassigned : .assigned
+        mainStore.dispatch(UpdateUserChat(payload: updatedChat))
+      }
+    } else if type == .close {
+      self.userChat?.review(mid: origin.id, rating: ReviewType(rawValue: key)!, requestId:msg?.requestId ?? "")
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (chat) in
+          mainStore.dispatch(UpdateUserChat(payload:chat))
+        }, onError: { (error) in
+          
+        }).disposed(by: self.disposeBag)
+    }
   }
 }

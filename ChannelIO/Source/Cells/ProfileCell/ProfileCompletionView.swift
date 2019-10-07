@@ -13,7 +13,7 @@ import PhoneNumberKit
 
 class ProfileCompletionView: ProfileItemBaseView, ProfileContentProtocol {
   let contentView = CompleteActionView()
-  var firstResponder: UIView {
+  var responder: UIView {
     return self
   }
   var didFirstResponder: Bool {

@@ -15,7 +15,7 @@ enum UIViewTransition : Int {
   case RightToLeft
 }
 
-extension UIView {
+internal extension UIView {
   func insert(on view: UIView, animated: Bool) {
     view.addSubview(self)
     
@@ -91,7 +91,7 @@ extension UIView {
   }
 }
 
-extension UIView {
+internal extension UIView {
   func fadeTransition(_ duration:CFTimeInterval) {
     let animation = CATransition()
     animation.timingFunction = CAMediaTimingFunction(name:

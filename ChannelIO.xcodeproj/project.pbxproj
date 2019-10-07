@@ -28,7 +28,14 @@
 		22634860209DC83C0072801B /* ChannelIOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2263485F209DC83B0072801B /* ChannelIOTests.swift */; };
 		2266C0C821C1267300A71398 /* CHButtonFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2266C0C721C1267300A71398 /* CHButtonFactory.swift */; };
 		22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A20FB81FE22A54006C81F3 /* BotActions.swift */; };
+		22A306992352B30A008B7ADE /* channel.json in Resources */ = {isa = PBXBuildFile; fileRef = 22A306922352ABCB008B7ADE /* channel.json */; };
 		22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */; };
+		22A917E0234BC42C00674083 /* CHMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A917DA234BC42B00674083 /* CHMessageView.swift */; };
+		22A917E1234BC42C00674083 /* CHMessageViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A917DB234BC42B00674083 /* CHMessageViewDelegate.swift */; };
+		22A917E2234BC42C00674083 /* CHMessageViewController+MessageViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A917DC234BC42B00674083 /* CHMessageViewController+MessageViewDelegate.swift */; };
+		22A917E3234BC42C00674083 /* CHMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A917DD234BC42B00674083 /* CHMessageViewController.swift */; };
+		22A917E4234BC42C00674083 /* CHMessageTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A917DE234BC42B00674083 /* CHMessageTextView.swift */; };
+		22A917E5234BC42C00674083 /* CHMessageViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 22A917DF234BC42B00674083 /* CHMessageViewController.h */; };
 		22AE76B220E341CB00C18355 /* Mute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AE76B120E341CB00C18355 /* Mute.swift */; };
 		22AE76B920E347C700C18355 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 22AE76B820E347C700C18355 /* mute.caf */; };
 		22AF7251233DB1CB00CBC005 /* MessageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AF7250233DB1CB00CBC005 /* MessageFactory.swift */; };
@@ -401,7 +408,14 @@
 		2263485F209DC83B0072801B /* ChannelIOTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelIOTests.swift; sourceTree = "<group>"; };
 		2266C0C721C1267300A71398 /* CHButtonFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHButtonFactory.swift; sourceTree = "<group>"; };
 		22A20FB81FE22A54006C81F3 /* BotActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotActions.swift; sourceTree = "<group>"; };
+		22A306922352ABCB008B7ADE /* channel.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = channel.json; sourceTree = "<group>"; };
 		22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveTypingAvatarsView.swift; sourceTree = "<group>"; };
+		22A917DA234BC42B00674083 /* CHMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHMessageView.swift; sourceTree = "<group>"; };
+		22A917DB234BC42B00674083 /* CHMessageViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHMessageViewDelegate.swift; sourceTree = "<group>"; };
+		22A917DC234BC42B00674083 /* CHMessageViewController+MessageViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CHMessageViewController+MessageViewDelegate.swift"; sourceTree = "<group>"; };
+		22A917DD234BC42B00674083 /* CHMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHMessageViewController.swift; sourceTree = "<group>"; };
+		22A917DE234BC42B00674083 /* CHMessageTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHMessageTextView.swift; sourceTree = "<group>"; };
+		22A917DF234BC42B00674083 /* CHMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHMessageViewController.h; sourceTree = "<group>"; };
 		22AE76B120E341CB00C18355 /* Mute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mute.swift; sourceTree = "<group>"; };
 		22AE76B820E347C700C18355 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = mute.caf; path = Assets/mute.caf; sourceTree = "<group>"; };
 		22AF7250233DB1CB00CBC005 /* MessageFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFactory.swift; sourceTree = "<group>"; };
@@ -838,6 +852,7 @@
 		14D2AA811E24AE07006FEE22 /* ChannelIOTests */ = {
 			isa = PBXGroup;
 			children = (
+				22A306932352AC36008B7ADE /* MockData */,
 				2263485F209DC83B0072801B /* ChannelIOTests.swift */,
 				650D7C371E724E3B007DE358 /* States */,
 				650D7C361E724DFB007DE358 /* Reducers */,
@@ -868,6 +883,27 @@
 			);
 			name = Factories;
 			path = Source/Factories;
+			sourceTree = "<group>";
+		};
+		22A306932352AC36008B7ADE /* MockData */ = {
+			isa = PBXGroup;
+			children = (
+				22A306922352ABCB008B7ADE /* channel.json */,
+			);
+			name = MockData;
+			sourceTree = "<group>";
+		};
+		22A917D9234BC41600674083 /* MessageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				22A917DE234BC42B00674083 /* CHMessageTextView.swift */,
+				22A917DA234BC42B00674083 /* CHMessageView.swift */,
+				22A917DF234BC42B00674083 /* CHMessageViewController.h */,
+				22A917DD234BC42B00674083 /* CHMessageViewController.swift */,
+				22A917DC234BC42B00674083 /* CHMessageViewController+MessageViewDelegate.swift */,
+				22A917DB234BC42B00674083 /* CHMessageViewDelegate.swift */,
+			);
+			path = MessageViewController;
 			sourceTree = "<group>";
 		};
 		22D879FA2270207D00CC1DDB /* Views */ = {
@@ -1479,6 +1515,7 @@
 		65CB9924226EC087004F9DC7 /* UserChat */ = {
 			isa = PBXGroup;
 			children = (
+				22A917D9234BC41600674083 /* MessageViewController */,
 				6512BA6B2281346300757CB2 /* Views */,
 				659EAE7E1FDFC31F00041E1E /* ChatManager.swift */,
 				659792C91FA7167B00840F6A /* UserChatViewController.swift */,
@@ -1527,6 +1564,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22A917E5234BC42C00674083 /* CHMessageViewController.h in Headers */,
 				2263481D209DB5C00072801B /* ChannelIO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1624,6 +1662,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22A306992352B30A008B7ADE /* channel.json in Resources */,
 				655D89C92126754F00ACE89B /* emojis.json in Resources */,
 				652AE2111E81485D00B7484C /* Localizable.strings in Resources */,
 				14DFAC681E4A189D00130119 /* Images.xcassets in Resources */,
@@ -1714,6 +1753,7 @@
 				65D358D021BE4E3D001D6A30 /* ButtonsMessageCell.swift in Sources */,
 				659793531FA716CB00840F6A /* UserChatActions.swift in Sources */,
 				65CB142B206A02F200E456B5 /* WebPageMessageCell.swift in Sources */,
+				22A917E3234BC42C00674083 /* CHMessageViewController.swift in Sources */,
 				22E03E8521B38D560009F48E /* MarkdownParser.swift in Sources */,
 				659793541FA716CB00840F6A /* WSocketActions.swift in Sources */,
 				659793551FA716CB00840F6A /* BaseNavigationController.swift in Sources */,
@@ -1816,6 +1856,7 @@
 				657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */,
 				2252145A224CFB5B00F2C9CE /* PHAsset+Extensions.swift in Sources */,
 				6597937B1FA716CB00840F6A /* CHImageMeta.swift in Sources */,
+				22A917E2234BC42C00674083 /* CHMessageViewController+MessageViewDelegate.swift in Sources */,
 				65121333224DF47F00737089 /* InputSource.swift in Sources */,
 				6597937C1FA716CB00840F6A /* CHPush.swift in Sources */,
 				656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */,
@@ -1880,6 +1921,7 @@
 				659793981FA716CB00840F6A /* MessagesSelector.swift in Sources */,
 				65D72A3421B11D5B00EE31B4 /* PushBotManager.swift in Sources */,
 				65D358CD21BE4E1F001D6A30 /* CHLink.swift in Sources */,
+				22A917E0234BC42C00674083 /* CHMessageView.swift in Sources */,
 				22E03E8821B38D560009F48E /* MarkdownAutomaticLink.swift in Sources */,
 				659793991FA716CB00840F6A /* PersonSelector.swift in Sources */,
 				22E03E8B21B38D560009F48E /* MarkdownCodeEscaping.swift in Sources */,
@@ -1900,6 +1942,7 @@
 				22E213B2233935F6002B3EF4 /* ShowCompletedChatsSelector.swift in Sources */,
 				22E03E8F21B38D560009F48E /* MarkdownEmoji.swift in Sources */,
 				65CB991D226EC040004F9DC7 /* LoungeView.swift in Sources */,
+				22A917E1234BC42C00674083 /* CHMessageViewDelegate.swift in Sources */,
 				22F0ED9220B53C55008924C1 /* Models.swift in Sources */,
 				22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */,
 				653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */,
@@ -1927,6 +1970,7 @@
 				6512BA07226EFFA000757CB2 /* SettingHeaderViewModel.swift in Sources */,
 				6512BA05226EF15A00757CB2 /* KeyValueCell.swift in Sources */,
 				659793BD1FA716CB00840F6A /* CHPhoneField.swift in Sources */,
+				22A917E4234BC42C00674083 /* CHMessageTextView.swift in Sources */,
 				6590FA952068C8640054B353 /* UserChatProtocol.swift in Sources */,
 				6512BA0A2271758000757CB2 /* DefaultNavigationTitleView.swift in Sources */,
 				659793BF1FA716CB00840F6A /* CountryCodePickerView.swift in Sources */,

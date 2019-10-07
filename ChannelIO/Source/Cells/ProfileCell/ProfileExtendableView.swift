@@ -138,7 +138,7 @@ class ProfileExtendableView: BaseView {
         }
         
         if self.shouldBecomeFirstResponder {
-          itemView?.firstResponder.becomeFirstResponder()
+          itemView?.responder.becomeFirstResponder()
         }
         
         itemView?.view.snp.makeConstraints({ (make) in
