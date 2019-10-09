@@ -20,10 +20,14 @@ protocol MessageCellModelType {
   var timestamp: String { get }
   var timestampIsHidden: Bool { get }
   var message: CHMessage { get }
+  var attributedText: NSAttributedString? { get }
+  var translatedText: NSAttributedString? { get }
   var avatarEntity: CHEntity { get }
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
   var textColor: UIColor { get }
+  var selectedTextColor: UIColor { get }
+  var linkColor: UIColor { get }
   var usernameIsHidden: Bool { get }
   var imageIsHidden: Bool { get }
   var fileIsHidden: Bool { get }
@@ -40,11 +44,11 @@ protocol MessageCellModelType {
   var totalCount: Int { get set }
   var pluginColor: UIColor { get }
   var shouldDisplayForm: Bool { get set }
-  var selectedActionText: String { get set }
   var translateState: CHMessageTranslateState { get set }
   var showTranslation: Bool { get }
   var clipType: ClipType { get }
   var buttons: [CHLink] { get }
+  var isDeleted: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -52,10 +56,14 @@ struct MessageCellModel: MessageCellModelType {
   let timestamp: String
   let timestampIsHidden: Bool
   let message: CHMessage
+  let attributedText: NSAttributedString?
+  let translatedText: NSAttributedString?
   let avatarEntity: CHEntity
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
   let textColor: UIColor
+  let selectedTextColor: UIColor
+  let linkColor: UIColor
   let usernameIsHidden: Bool
   let imageIsHidden: Bool
   let fileIsHidden: Bool
@@ -74,17 +82,17 @@ struct MessageCellModel: MessageCellModelType {
   var totalCount: Int
   
   var shouldDisplayForm: Bool
-  var selectedActionText: String = ""
   
   var showTranslation: Bool = false
   var translateState: CHMessageTranslateState = .original
   var clipType: ClipType = .None
   var buttons: [CHLink]
+  var isDeleted: Bool
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
-    let isContinuous = message.isContinue(previous: previous) &&
+    let isContinuous = message.isContinue(other: previous) &&
       previous?.action == nil && previous?.profileBot?.count == 0
     
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
@@ -96,10 +104,24 @@ struct MessageCellModel: MessageCellModelType {
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
     self.message = message
+    if let mv2 = message.messageV2, message.onlyEmoji {
+      let modifiedText = NSMutableAttributedString(attributedString: mv2)
+      modifiedText.addAttributes(
+        [.font: UIFont.systemFont(ofSize: 40)],
+        range: NSRange(location: 0, length: modifiedText.length)
+      )
+      self.attributedText = modifiedText
+    } else {
+      self.attributedText = message.messageV2
+    }
+    self.translatedText = message.translatedText
     self.avatarEntity = message.entity ?? channel
     self.avatarIsHidden = createdByMe || isContinuous
-    self.bubbleBackgroundColor = createdByMe ? pluginColor : CHColors.lightGray
-    self.textColor = plugin.textUIColor
+    self.bubbleBackgroundColor = message.onlyEmoji ?
+      .clear : (createdByMe ? pluginColor : CHColors.lightGray)
+    self.textColor = createdByMe ? plugin.textUIColor : UIColor.grey900
+    self.selectedTextColor = plugin.textUIColor
+    self.linkColor = createdByMe ? plugin.textUIColor : UIColor.cobalt400
     self.usernameIsHidden = createdByMe || isContinuous
     self.imageIsHidden = (cType != ClipType.Image)
     self.fileIsHidden = (cType != ClipType.File)
@@ -137,6 +159,7 @@ struct MessageCellModel: MessageCellModelType {
     
     //buttons
     self.buttons = message.buttons ?? []
+    self.isDeleted = message.isDeleted
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

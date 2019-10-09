@@ -73,7 +73,6 @@ class ChatManager: NSObject {
   fileprivate var messageDispose: Disposable?
   fileprivate var typingDispose: Disposable?
   fileprivate var chatDispose: Disposable?
-  fileprivate var readyDispose: Disposable?
   
   var typers: [CHEntity] {
     get {
@@ -94,7 +93,23 @@ class ChatManager: NSObject {
     self.chatType = type
     self.setChatEntities(with: id)
     self.observeAppState()
-    self.requestRead()
+    
+    if self.chat?.isLocal == true {
+      self.requestRead()
+      self.delegate?.readyToDisplay()
+    }
+  }
+  
+  func fetchChatIfNeeded() {
+    if self.needToFetchChat() {
+      self.fetchChat().subscribe(onNext: { [weak self] (response) in
+        self?.fetchMessages(completion: {
+          self?.requestRead()
+        })
+      }, onError: { (error) in
+        //fetching error pop?
+      }).disposed(by: self.disposeBag)
+    }
   }
   
   fileprivate func setChatEntities(with chatId: String?) {
@@ -119,7 +134,6 @@ class ChatManager: NSObject {
     self.messageDispose?.dispose()
     self.typingDispose?.dispose()
     self.messageDispose?.dispose()
-    self.readyDispose?.dispose()
   }
   
   fileprivate func observeAppState() {
@@ -181,6 +195,7 @@ class ChatManager: NSObject {
         if self?.chatNewlyCreated == false {
           self?.didChatLoaded = false
         }
+        self?.fetchChatIfNeeded()
     })
   }
   
@@ -571,21 +586,22 @@ extension ChatManager {
         })
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (response) in
-        self?.didChatLoaded = true
-        self?.state = .chatLoaded
-        //due to message update step were not desirable
-        var response = response
-        response.message = nil
-        mainStore.dispatch(GetUserChat(payload: response))
-      
-        self?.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
-        subscriber.onNext(response)
-        subscriber.onCompleted()
-      }, onError: { (error) in
-        self?.state = .chatNotLoaded
-        self?.didChatLoaded = false
-        subscriber.onError(error)
-      })
+          self?.didChatLoaded = true
+          self?.state = .chatLoaded
+          
+          //due to message update step were not desirable
+          var response = response
+          response.message = nil
+          mainStore.dispatch(GetUserChat(payload: response))
+        
+          self?.chat = userChatSelector(state: mainStore.state, userChatId: s.chatId)
+          subscriber.onNext(response)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          self?.state = .chatNotLoaded
+          self?.didChatLoaded = false
+          subscriber.onError(error)
+        })
       
       return Disposables.create {
         signal.dispose()
@@ -647,20 +663,20 @@ extension ChatManager {
           })
           .observeOn(MainScheduler.instance)
           .subscribe(onNext: { (chatResponse) in
-          mainStore.dispatch(GetUserChat(payload: chatResponse))
+            mainStore.dispatch(GetUserChat(payload: chatResponse))
             
-          self?.chatNewlyCreated = true
-          self?.didChatLoaded = true
-          self?.setChatEntities(with: chatResponse.userChat?.id)
-          self?.prepareToChat()
+            self?.chatNewlyCreated = true
+            self?.didChatLoaded = true
+            self?.setChatEntities(with: chatResponse.userChat?.id)
+            self?.prepareToChat()
          
-          subscriber.onNext((chatResponse.userChat, chatResponse.message))
-          subscriber.onCompleted()
-        }, onError: { [weak self] (error) in
-          self?.didChatLoaded = false
-          self?.state = .chatNotLoaded
-          subscriber.onError(error)
-        })
+            subscriber.onNext((chatResponse.userChat, chatResponse.message))
+            subscriber.onCompleted()
+          }, onError: { [weak self] (error) in
+            self?.didChatLoaded = false
+            self?.state = .chatNotLoaded
+            subscriber.onError(error)
+          })
       } else {
         subscriber.onError(CHErrorPool.unknownError)
       }
@@ -720,7 +736,7 @@ extension ChatManager {
     }).disposed(by: self.disposeBag)
   }
   
-  func fetchMessages() {
+  func fetchMessages(completion: (() -> ())? = nil) {
     if self.isFetching {
       return
     }
@@ -748,6 +764,7 @@ extension ChatManager {
         self?.isFetching = false
         self?.state = .messageNotLoaded
         self?.delegate?.showError()
+        completion?()
       }, onCompleted: { [weak self] in
         self?.isFetching = false
         if self?.didLoad == false {
@@ -755,16 +772,17 @@ extension ChatManager {
           self?.state = .chatReady
           self?.delegate?.readyToDisplay()
         }
+        completion?()
       }).disposed(by: self.disposeBag)
   }
   
-  func requestRead() {
+  func requestRead(shouldDebounce: Bool = false) {
     guard !self.isRequestingReadAll else { return }
     guard let chat = userChatSelector(state: mainStore.state, userChatId: self.chatId) else { return }
 
     self.isRequestingReadAll = true
     chat.read()
-      .debounce(.seconds(1), scheduler: MainScheduler.instance)
+      .debounce(.seconds(shouldDebounce ? 1 : 0), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (completed) in
         self?.isRequestingReadAll = false
@@ -811,9 +829,6 @@ extension ChatManager {
     self.observeSocketEvents()
     
     WsService.shared.join(chatId: self.chatId)
-    self.readyDispose = WsService.shared.ready().subscribe(onNext: { (_) in
-       WsService.shared.join(chatId: self.chatId)
-    })
   }
   
   func prepareToLeave() {
@@ -890,7 +905,7 @@ extension ChatManager {
       let moviePlayer = AVPlayerViewController()
       let player = AVPlayer(url: URL(string: url)!)
       moviePlayer.player = player
-      moviePlayer.modalPresentationStyle = .overFullScreen
+      moviePlayer.modalPresentationStyle = .currentContext
       moviePlayer.modalTransitionStyle = .crossDissolve
       self.viewController?.present(moviePlayer, animated: true, completion: nil)
       return
@@ -1008,7 +1023,7 @@ extension ChatManager: UIImagePickerControllerDelegate, UINavigationControllerDe
     }, didCancel: nil)
     let configure = TLPhotosPickerConfigure()
     viewController.configure = configure
-    
+    viewController.modalPresentationStyle = .currentContext
     view?.present(viewController, animated: true, completion: nil)
   }
   

@@ -57,7 +57,7 @@ class WebPageMessageCell: MessageCell {
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
     height += 3
-    height += WebPageMessageView.viewHeight(fits: width, webpage: viewModel.message.webPage)
+    height += WebPageMessageView.viewHeight(fits: width, webpage: viewModel.webpage)
     return height
   }
 }

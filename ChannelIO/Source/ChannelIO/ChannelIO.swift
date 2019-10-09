@@ -333,11 +333,7 @@ public final class ChannelIO: NSObject {
       mainStore.dispatch(ChatListIsVisible())
       let loungeView = LoungeRouter.createModule()
       let controller = MainNavigationController(rootViewController: loungeView)
-//      if #available(iOS 13, *) {
-//        controller.isModalInPresentation = true
-//      }
       ChannelIO.baseNavigation = controller
-
       topController.present(controller, animated: animated, completion: nil)
     }
   }

@@ -16,4 +16,4 @@ github "SVProgressHUD/SVProgressHUD" ~> 2.2.5
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit" ~> 2.5.0
 github "rs/SDWebImage" ~> 5.0.0
-github "tilltue/TLPhotoPicker" ~> 1.9.0
+github "tilltue/TLPhotoPicker" ~> 2.0.0

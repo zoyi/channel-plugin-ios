@@ -14,13 +14,14 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   private struct Metrics {
     static let containerWidth = 320.f
     static let buttonViewTop = 8.f
-    static let buttonTop = 18.f
+    static let closeButtonTop = 2.f
+    static let closeButtonTrailing = 2.f
     static let imageTop = -8.f
     static let contentSide = 18.f
     static let messageTop = 8.f
     static let writerTop = 14.f
     static let contentBottom = 18.f
-    static let closeSize = CGSize(width: 12.f, height: 12.f)
+    static let closeSize = CGSize(width: 44.f, height: 44.f)
     static let avatarSize = CGSize(width: 34.f, height: 34.f)
     static let buttonSize = CGSize(width: 320.f, height: 38.f)
     static let imageSize = CGSize(width: 320.f, height: 176.f)
@@ -188,8 +189,8 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     
     self.closeButton.snp.makeConstraints { (make) in
       make.size.equalTo(Metrics.closeSize)
-      make.trailing.equalToSuperview().inset(Metrics.contentSide)
-      make.top.equalToSuperview().inset(Metrics.buttonTop)
+      make.trailing.equalToSuperview().inset(Metrics.closeButtonTrailing)
+      make.top.equalToSuperview().inset(Metrics.closeButtonTop)
     }
     
     self.messageView.snp.makeConstraints { (make) in

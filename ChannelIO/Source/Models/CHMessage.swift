@@ -63,6 +63,21 @@ struct CHMessage: ModelType {
 
   var language: String = ""
   
+  var file: CHFile?
+  var webPage: CHWebPage?
+  var log: CHLog?
+  
+  // Dependencies
+  var entity: CHEntity?
+  var mutable: Bool = true
+  // Used in only client
+  var state: SendingState = .Sent
+  var messageType: MessageType = .Default
+  
+  var progress: CGFloat = 1
+  //var isRemote = true
+  var onlyEmoji: Bool = false
+  
   var translateState: CHMessageTranslateState = .original
   var translatedText: NSAttributedString? = nil
   
@@ -106,20 +121,9 @@ struct CHMessage: ModelType {
     }
   }
 
-  var file: CHFile?
-  var webPage: CHWebPage?
-  var log: CHLog?
-  
-  // Dependencies
-  var entity: CHEntity?
-  var mutable: Bool = true
-  // Used in only client
-  var state: SendingState = .Sent
-  var messageType: MessageType = .Default
-
-  var progress: CGFloat = 1
-  //var isRemote = true
-  var onlyEmoji: Bool = false
+  var isDeleted: Bool {
+    return self.log?.action == "delete_message"
+  }
 }
 
 extension CHMessage: Mappable {
@@ -239,6 +243,11 @@ extension CHMessage: Mappable {
     } else {
       messageType = CHMessage.contextType(self)
     }
+    
+    if self.isDeleted {
+      self.message = MessageFactory.deleted().string
+      self.messageV2 = MessageFactory.deleted()
+    }
   }
   
   func format(message: String) -> String {
@@ -251,7 +260,7 @@ extension CHMessage: Mappable {
   }
   
   static func contextType(_ message: CHMessage) -> MessageType {
-     if message.log != nil {
+     if message.log != nil && message.log?.action != "delete_message" {
       return .Log
     } else if let buttons = message.buttons, buttons.count != 0 {
       return .Buttons
@@ -280,27 +289,28 @@ extension CHMessage {
     }
   }
   
-  func isSameDate(previous: CHMessage?) -> Bool {
-    if previous == nil { return true }
-    return NSCalendar.current
-      .isDate(self.createdAt, inSameDayAs: previous!.createdAt)
+  func isSameWriter(other message: CHMessage?) -> Bool {
+    return (self.personId == message?.personId
+      && self.personType == message?.personType)
   }
   
-  func isContinue(previous: CHMessage?) -> Bool {
-    if previous == nil { return false }
+  func isSameDate(other message: CHMessage?) -> Bool {
+    guard let message = message else { return false }
+    return NSCalendar.current.isDate(self.createdAt, inSameDayAs: message.createdAt)
+  }
+  
+  func isContinue(other message: CHMessage?) -> Bool {
+    guard let message = message else { return false }
     
-    //check time
     let calendar = NSCalendar.current
-    let previousHour = calendar.component(.hour, from: (previous?.createdAt)!)
+    let previousHour = calendar.component(.hour, from: message.createdAt)
     let currentHour = calendar.component(.hour, from: self.createdAt)
-    let previousMin = calendar.component(.minute, from: (previous?.createdAt)!)
+    let previousMin = calendar.component(.minute, from: message.createdAt)
     let currentMin = calendar.component(.minute, from: self.createdAt)
     
-    if previousHour == currentHour &&
-      previousMin == currentMin &&
-      previous?.personId == self.personId &&
-      previous?.personType == self.personType &&
-      self.personId != "" {
+    if previousHour == currentHour
+      && previousMin == currentMin
+      && self.isSameWriter(other: message) {
       return true
     }
     
