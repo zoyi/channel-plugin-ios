@@ -13,13 +13,18 @@ import RxSwift
 import SVProgressHUD
 
 class LanguageOptionViewController: BaseViewController {
-  let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
+  private let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
     $0.separatorStyle = .none
   }
   
-  let locales = [CHLocaleString.korean, CHLocaleString.english, CHLocaleString.japanese]
-  let currentLocale: CHLocaleString? = CHUtils.getLocale()
-  let disposeBag = DisposeBag()
+  private let locales = [
+    CHLocaleString.korean,
+    CHLocaleString.english,
+    CHLocaleString.japanese
+  ]
+  
+  private let currentLocale: CHLocaleString? = CHUtils.getLocale()
+  private let disposeBag = DisposeBag()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -39,8 +44,8 @@ class LanguageOptionViewController: BaseViewController {
     self.tableView.dataSource = self
     self.tableView.delegate = self
     self.tableView.sectionHeaderHeight = 30
+    self.tableView.backgroundColor = .white
     self.tableView.register(cellType: CheckableLabelCell.self)
-    self.tableView.backgroundColor = CHColors.lightSnow
     self.view.addSubview(self.tableView)
   }
   
