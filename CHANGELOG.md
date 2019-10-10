@@ -5,6 +5,7 @@
 
 ## Bug fixes
 * Fixed presentation style for image viewer
+* Fixed dark mode issue
 
 # 6.1.10
 ## Updates

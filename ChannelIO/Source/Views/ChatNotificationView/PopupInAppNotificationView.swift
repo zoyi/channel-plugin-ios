@@ -59,7 +59,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   private let messageView = UITextView().then {
     $0.isScrollEnabled = false
     $0.isEditable = false
-    
+    $0.backgroundColor = .white
     $0.font = UIFont.systemFont(ofSize: 14)
     $0.textColor = UIColor.grey900
     $0.textContainer.maximumNumberOfLines = 9
@@ -67,7 +67,6 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     $0.dataDetectorTypes = [.link, .phoneNumber]
     $0.textContainer.lineFragmentPadding = 0
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    
     $0.linkTextAttributes = [
       .foregroundColor: CHColors.cobalt,
       .underlineStyle: 0

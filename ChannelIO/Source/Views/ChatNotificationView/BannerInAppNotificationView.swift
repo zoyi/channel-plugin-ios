@@ -48,6 +48,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     $0.layer.cornerRadius = 10.f                                    
     $0.backgroundColor = .white
   }
+  
   private let contentView = UIStackView().then {
     $0.axis = .horizontal
   }
@@ -56,12 +57,11 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   private let messageView = UITextView().then {
     $0.isScrollEnabled = false
     $0.isEditable = false
-    
+    $0.backgroundColor = .white
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = UIColor.grey900
     $0.textContainer.maximumNumberOfLines = 2
     $0.textContainer.lineBreakMode = .byTruncatingTail
-    
     $0.dataDetectorTypes = [.link, .phoneNumber]
     $0.textContainer.lineFragmentPadding = 0
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
