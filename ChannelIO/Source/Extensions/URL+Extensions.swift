@@ -18,6 +18,7 @@ extension URL {
         let scheme = self.scheme ?? ""
         if !completed && (scheme == "http" || scheme == "https") {
           let controller = SFSafariViewController(url: self)
+          controller.modalPresentationStyle = .currentContext
           CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
         } else {
           UIApplication.shared.openURL(self)
@@ -25,6 +26,7 @@ extension URL {
       }
     } else {
       let controller = SFSafariViewController(url: self)
+      controller.modalPresentationStyle = .currentContext
       CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
     }
   }
@@ -34,6 +36,7 @@ extension URL {
     
     if let scheme = self.scheme, scheme == "http" || scheme == "https" {
       let controller = SFSafariViewController(url: self)
+      controller.modalPresentationStyle = .currentContext
       CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
     } else {
       UIApplication.shared.openURL(self)

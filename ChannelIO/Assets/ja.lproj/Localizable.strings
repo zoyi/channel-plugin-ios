@@ -170,4 +170,8 @@
 "ch.loader.updating" = "更新中 ...";
 "ch.lounge.proceeding_chat" = "会話中のチャット";
 "ch.lounge.show_previous_chats" = "過去の%s件のチャットをみる";
+"message_stream.message.deleted_message" = "削除されたメッセージです";
 "ch.navigation.next_operation" = "営業時間 %s前";
+"ch.minute" = "分";
+"ch.hour" = "時間";
+"ch.day" = "日";

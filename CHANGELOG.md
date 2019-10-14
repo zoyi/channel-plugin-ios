@@ -1,3 +1,12 @@
+# 6.1.11
+## Updates
+* Added deleted message cell
+* Updates dependencies
+
+## Bug fixes
+* Fixed presentation style for image viewer
+* Fixed dark mode issue
+
 # 6.1.10
 ## Updates
 * Disabled darkmode temporary

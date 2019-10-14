@@ -38,14 +38,15 @@ class MarkdownParser {
   /// Enables or disables detection of URLs even without Markdown format
   public var automaticLinkDetectionEnabled: Bool = true
   public var font: UIFont
-  
-  let emojiFont: UIFont = UIFont.systemFont(ofSize: 40)
+//  public var emojiFont: UIFont = UIFont.systemFont(ofSize: 40)
   
   // MARK: Initializer
   public init(font: UIFont = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize),
+//              emojiFont: UIFont = UIFont.systemFont(ofSize: 40),
               automaticLinkDetectionEnabled: Bool = true,
               customElements: [MarkdownElement] = []) {
     self.font = font
+//    self.emojiFont = emojiFont
     
     self.quote = MarkdownQuote(font: font)
     self.link = MarkdownLink(font: font)
@@ -80,7 +81,7 @@ class MarkdownParser {
   }
 
   // MARK: Parsing
-  open func parse(_ markdown: String) -> (NSAttributedString?, Bool) {
+  open func parse(_ markdown: String) -> (NSAttributedString, Bool) {
     let tokens = markdown.components(separatedBy: "```")
     let attributedString = NSMutableAttributedString(string: markdown)
 
@@ -107,14 +108,20 @@ class MarkdownParser {
     }
 
     let onlyEmoji = attributedString.string.containsOnlyEmoji
-    if onlyEmoji {
-      let paragraphStyle = NSMutableParagraphStyle()
-      paragraphStyle.alignment = .left
-      paragraphStyle.minimumLineHeight = 20
-      attributedString.addAttributes(
-        [.font: self.emojiFont, .paragraphStyle:paragraphStyle],
-        range: NSRange(location: 0, length: attributedString.length))
-    }
+//    if onlyEmoji {
+//      let paragraphStyle = NSMutableParagraphStyle()
+//      paragraphStyle.alignment = .left
+//      paragraphStyle.minimumLineHeight = 20
+//      attributedString.addAttributes(
+//        [.font: self.emojiFont, .paragraphStyle:paragraphStyle],
+//        range: NSRange(location: 0, length: attributedString.length))
+//    }
+//
+    attributedString.addAttribute(
+      .foregroundColor,
+      value: UIColor.grey900,
+      range: NSRange(location: 0, length: attributedString.length)
+    )
     
     return (attributedString, onlyEmoji)
   }

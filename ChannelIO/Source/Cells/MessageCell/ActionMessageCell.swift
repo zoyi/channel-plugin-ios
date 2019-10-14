@@ -50,7 +50,7 @@ class ActionMessageCell: MessageCell {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     
-    if let msg = viewModel.message.messageV2?.string, msg == "" {
+    if let msg = viewModel.attributedText, msg.string == "" {
       self.topConstraint?.activate()
       self.topToTextViewConstraint?.deactivate()
     } else {

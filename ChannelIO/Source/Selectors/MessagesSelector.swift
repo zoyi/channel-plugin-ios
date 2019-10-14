@@ -33,8 +33,6 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
         submit: $0.submit,
         createdAt: $0.createdAt,
         language: $0.language,
-        translateState: $0.translateState,
-        translatedText: $0.translatedText,
         file: $0.file,
         webPage: $0.webPage,
         log: $0.log,
@@ -43,7 +41,9 @@ func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
         state: $0.state,
         messageType: $0.messageType,
         progress: $0.progress,
-        onlyEmoji: $0.onlyEmoji
+        onlyEmoji: $0.onlyEmoji,
+        translateState: $0.translateState,
+        translatedText: $0.translatedText
       )
     }).sorted(by: { (m1, m2) -> Bool in
       return m1.createdAt > m2.createdAt
@@ -79,8 +79,6 @@ func messageSelector(state: AppState, id: String?) -> CHMessage? {
         submit: $0.submit,
         createdAt: $0.createdAt,
         language: $0.language,
-        translateState: $0.translateState,
-        translatedText: $0.translatedText,
         file: $0.file,
         webPage: $0.webPage,
         log: $0.log,
@@ -89,7 +87,9 @@ func messageSelector(state: AppState, id: String?) -> CHMessage? {
         state: $0.state,
         messageType: $0.messageType,
         progress: $0.progress,
-        onlyEmoji: $0.onlyEmoji
+        onlyEmoji: $0.onlyEmoji,
+        translateState: $0.translateState,
+        translatedText: $0.translatedText
       )
     })
 }
@@ -114,8 +114,6 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
       submit: $0.submit,
       createdAt: $0.createdAt,
       language: $0.language,
-      translateState: $0.translateState,
-      translatedText: $0.translatedText,
       file: $0.file,
       webPage: $0.webPage,
       log: $0.log,
@@ -124,7 +122,9 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
       state: $0.state,
       messageType: $0.messageType,
       progress: $0.progress,
-      onlyEmoji: $0.onlyEmoji
+      onlyEmoji: $0.onlyEmoji,
+      translateState: $0.translateState,
+      translatedText: $0.translatedText
     )
   })
 }

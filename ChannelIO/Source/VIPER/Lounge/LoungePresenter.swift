@@ -25,9 +25,9 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var errorSignal = PublishSubject<Any?>()
   
-  var headerCompletion = PublishRelay<Any?>()
-  var mainCompletion = PublishRelay<Any?>()
-  var externalCompletion = PublishRelay<Any?>()
+  var headerCompletion = BehaviorRelay<Bool>(value: false)
+  var mainCompletion = BehaviorRelay<Bool>(value: false)
+  var externalCompletion = BehaviorRelay<Bool>(value: false)
   
   var locale: CHLocaleString? = ChannelIO.settings?.appLocale
   
@@ -133,11 +133,11 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     self.interactor?.updateChats()
       .observeOn(MainScheduler.instance)
+      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats) in
-        guard let self = self else { return }
-        self.updateMainContent()
-      }, onError: { (error) in
-          
+        if self?.mainCompletion.value == true {
+          self?.updateMainContent()
+        }
       }).disposed(by: self.disposeBag)
   }
   
@@ -145,7 +145,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     let models = userChatsSelector(state: mainStore.state, showCompleted: true)
       .map { UserChatCellModel(userChat: $0) }
     
-    let welcome = UserChatCellModel.welcome(
+    let welcomeModel = UserChatCellModel.getWelcomeModel(
       with: mainStore.state.plugin,
       guest: mainStore.state.guest,
       supportBotMessage: supportBotEntrySelector(state: mainStore.state)
@@ -153,38 +153,85 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     self.view?.displayMainContent(
       activeChats: models.filter { !$0.isClosed },
-      inactiveChats: models.filter { $0.isClosed },
-      welcomeModel: welcome)
+      inactiveChats: showCompletedChatsSelector(state: mainStore.state) ?
+        models.filter { $0.isClosed } : [],
+      welcomeModel: welcomeModel)
   }
   
   func isReadyToPresentChat(chatId: String?) -> Single<Any?> {
-    return Single<Any?>.create { subscriber in
+    return Single<Any?>.create { [weak self] subscriber in
+      guard let self = self else {
+        subscriber(.error(CHErrorPool.unknownError))
+        return Disposables.create()
+      }
+      
       guard chatId != nil else {
         subscriber(.success(nil))
         return Disposables.create()
       }
       
+      SVProgressHUD.show()
+      
       let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-      let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
+      let supportSignal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
+      let chatSignal = self.fetchChatIfNeeded(chatId: chatId)
       
       //plugin may not need
-      let signal = Observable.zip(pluginSignal, supportSignal)
+      let signal = Observable.zip(pluginSignal, supportSignal, chatSignal)
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           let reloadMessage = CHAssets.localized("plugin.reload.message")
           SVProgressHUD.show(withStatus: reloadMessage)
           return true
         })
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (plugin, entry) in
+        .subscribe(onNext: { (plugin, entry, chatResponse) in
+          if let response = chatResponse {
+            mainStore.dispatch(GetUserChat(payload: response))
+          }
           mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
           subscriber(.success(nil))
+          SVProgressHUD.dismiss()
         }, onError: { (error) in
           subscriber(.error(error))
+          SVProgressHUD.dismiss()
         })
       
       return Disposables.create{
         signal.dispose()
       }
+    }
+  }
+  
+  func fetchChatIfNeeded(chatId: String? = nil) -> Observable<ChatResponse?> {
+    return Observable.create { subscriber in
+      let chat = userChatSelector(state: mainStore.state, userChatId: chatId)
+      guard let chatId = chatId else {
+        subscriber.onNext(nil)
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
+      
+      guard chat == nil else {
+        subscriber.onNext(nil)
+        subscriber.onCompleted()
+        return Disposables.create()
+      }
+      
+      let signal = CHUserChat.get(userChatId: chatId)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while fetching chat. Attempting to fetch again")
+          return true
+        })
+        .subscribe(onNext: { (response) in
+          subscriber.onNext(response)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          subscriber.onError(error)
+        })
+     
+     return Disposables.create {
+       signal.dispose()
+     }
     }
   }
   
@@ -300,9 +347,10 @@ extension LoungePresenter {
           operators: operators
         )
         self?.view?.displayHeader(with: headerModel)
-        self?.headerCompletion.accept(nil)
+        self?.headerCompletion.accept(true)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .header)
+        self?.headerCompletion.accept(false)
       }).disposed(by: self.disposeBag)
   }
   
@@ -317,9 +365,10 @@ extension LoungePresenter {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats, entry) in
         self?.updateMainContent()
-        self?.mainCompletion.accept(nil)
+        self?.mainCompletion.accept(true)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .mainContent)
+        self?.mainCompletion.accept(false)
       }).disposed(by: self.disposeBag)
   }
   
@@ -339,9 +388,10 @@ extension LoungePresenter {
           thirdParties: sources)
         self?.externalSources = sources
         self?.view?.displayExternalSources(with: sources)
-        self?.externalCompletion.accept(nil)
+        self?.externalCompletion.accept(true)
       }, onError: { [weak self] (error) in
         self?.view?.displayError(for: .externalSource)
+        self?.externalCompletion.accept(false)
       }).disposed(by: self.disposeBag)
   }
 }

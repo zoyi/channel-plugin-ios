@@ -65,7 +65,7 @@ extension UINavigationBar {
     startPoint: CAGradientLayer.Point = .topLeft,
     endPoint: CAGradientLayer.Point = .bottomLeft) {
     var updatedFrame = bounds
-    updatedFrame.size.height += self.frame.origin.y
+    updatedFrame.size.height += UIApplication.shared.statusBarFrame.height
     let gradientLayer = CAGradientLayer(
       frame: updatedFrame,
       colors: colors,

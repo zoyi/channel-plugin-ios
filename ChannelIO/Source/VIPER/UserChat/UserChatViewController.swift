@@ -54,8 +54,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   var chatManager : ChatManager!
   
   var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
-  var chatUpdateSubject = PublishSubject<Any?>()
-  var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?, Bool)>()
+  var navigationUpdateSubject = PublishSubject<(AppState, CHUserChat?)>()
   var fixedInset: Bool = false
   
   var newMessageView = NewMessageBannerView().then {
@@ -166,8 +165,6 @@ final class UserChatViewController: BaseSLKTextViewController {
   
   @discardableResult
   func adjustTableViewInset(bottomInset: CGFloat = 0.f) -> Bool {
-    
-    
     let chatViewHeight = self.tableView.frame.height
     if self.tableView.contentSize.height <= chatViewHeight {
       guard self.tableView.contentSize.height > 40 else { return false }
@@ -192,16 +189,9 @@ final class UserChatViewController: BaseSLKTextViewController {
   func initUpdaters() {
     self.navigationUpdateSubject
       .takeUntil(self.rx.deallocated)
-      .debounce(.milliseconds(700), scheduler: MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (state, chat, update) in
-        self?.updateNavigationIfNeeded(state: state, nextUserChat: chat, shouldUpdate: update)
-      }).disposed(by: self.disposeBag)
-    
-    self.chatUpdateSubject
-      .takeUntil(self.rx.deallocated)
-      .debounce(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
-      .subscribe(onNext: { [weak self] _ in
-        self?.fetchChatIfNeeded()
+      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (state, chat) in
+        self?.updateNavigationIfNeeded(state: state, nextUserChat: chat)
       }).disposed(by: self.disposeBag)
   }
   
@@ -211,7 +201,8 @@ final class UserChatViewController: BaseSLKTextViewController {
       .observeOn(MainScheduler.instance)
       .subscribe { [weak self] (event) in
         let userInfo = event.element?.userInfo
-        guard let keyboardEndFrame = (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        guard let keyboardEndFrame =
+          (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
         guard let s = self else { return }
         let keyboardFrame = s.view.convert(keyboardEndFrame, from: nil)
         let newHeight = s.view.frame.size.height - keyboardFrame.origin.y
@@ -340,21 +331,15 @@ final class UserChatViewController: BaseSLKTextViewController {
   // MARK: - Helper methods
 
   fileprivate func initNavigationViews(with userChat: CHUserChat? = nil) {
-    self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
-    //TODO: take this out from redux
-    let userChats = userChatsSelector(
-      state: mainStore.state,
-      showCompleted: mainStore.state.userChatsState.showCompletedChats
-    )
+    let prevUserChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
     
     self.setNavItems(
-      showSetting: userChats.count == 0,
-      currentUserChat: userChat ?? self.userChat,
+      currentUserChat: userChat ?? prevUserChat,
       guest: mainStore.state.guest,
       textColor: mainStore.state.plugin.textUIColor
     )
     
-    self.initNavigationTitle(with: userChat ?? self.userChat)
+    self.initNavigationTitle(with: userChat ?? prevUserChat)
 
     //NOTE: iOS 10 >= doesn't properly call navigationBar frame change rx method
     //hance it doesn't apply proper navigation tint when it comes from lounge (where navigation is hidden)
@@ -413,7 +398,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
   }
   
-  fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
+  fileprivate func setNavItems(currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
     
     let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
@@ -451,8 +436,6 @@ final class UserChatViewController: BaseSLKTextViewController {
 extension UserChatViewController: StoreSubscriber {
   func newState(state: AppState) {
     self.userChatId = self.chatManager.chatId
-    let shouldUpdate = self.channel != state.channel
-    
     let messages = messagesSelector(state: state, userChatId: self.userChatId)
     self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
     
@@ -463,13 +446,16 @@ extension UserChatViewController: StoreSubscriber {
     //message only needs to be replace if count is differe
     self.messages = messages
 
-    let userChat = userChatSelector(state: state, userChatId: self.userChatId)
-    
-    self.navigationUpdateSubject.onNext((state, userChat, shouldUpdate))
-    self.updateInputViewsBasedOnState(userChat: self.userChat, nextUserChat: userChat, channel: state.channel)
+    let nextUserChat = userChatSelector(state: state, userChatId: self.userChatId)
+//    self.updateNavigationIfNeeded(state: state, nextUserChat: nextUserChat)
+    self.navigationUpdateSubject.onNext((state, nextUserChat))
+    self.updateInputViewsBasedOnState(
+      userChat: self.userChat,
+      nextUserChat: nextUserChat,
+      channel: state.channel
+    )
     self.showErrorIfNeeded(state: state)
-    self.chatUpdateSubject.onNext(nil)
-    
+
     if hasNewMessage {
       self.tableView.reloadData()
       self.tableView.layoutIfNeeded()
@@ -486,15 +472,18 @@ extension UserChatViewController: StoreSubscriber {
     self.adjustTableViewInset()
     
     self.channel = state.channel
-    self.userChat = userChat
+    self.userChat = nextUserChat
     self.newChatButton.isEnabled = self.channel.allowNewChat
   }
   
-  func updateNavigationIfNeeded(state: AppState, nextUserChat: CHUserChat?, shouldUpdate: Bool) {
+  func updateNavigationIfNeeded(
+    state: AppState,
+    nextUserChat: CHUserChat?,
+    shouldUpdate: Bool = false) {
     if shouldUpdate {
       self.initNavigationViews(with: nextUserChat)
     }
-    else if self.userChat?.assigneeId != nextUserChat?.assigneeId {
+    else if self.userChat != nextUserChat {
       self.initNavigationViews(with: nextUserChat)
     }
     else if self.channel != state.channel {
@@ -505,32 +494,11 @@ extension UserChatViewController: StoreSubscriber {
       self.currentLocale = ChannelIO.settings?.appLocale
     }
     else {
-      let userChats = userChatsSelector(
-        state: mainStore.state,
-        showCompleted: mainStore.state.userChatsState.showCompletedChats
-      )
-      
       self.setNavItems(
-        showSetting: userChats.count == 0,
         currentUserChat: nextUserChat,
         guest: state.guest,
         textColor: state.plugin.textUIColor
       )
-    }
-  }
-  
-  func fetchChatIfNeeded() {
-    if self.chatManager.needToFetchChat() == true {
-      self.chatManager.fetchChat()
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (event) in
-          self?.chatManager.fetchMessages()
-          self?.scrollToBottom(false)
-          dlog("fetched chat info")
-        }, onError: { [weak self] error in
-          dlog("failed to fetch chat info - \(error.localizedDescription)")
-          self?.navigationController?.popViewController(animated: true)
-        }).disposed(by: self.disposeBag)
     }
   }
   
@@ -903,21 +871,21 @@ extension UserChatViewController {
         cell.configure(viewModel, presenter: self.chatManager)
         cell.mediaView.signalForClick().subscribe { [weak self] _ in
           self?.didImageTapped(message: viewModel.message, indexPath: indexPath)
-          }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
         return cell
       } else if viewModel.clipType == .Webpage {
         let cell: ActionWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         cell.webView.signalForClick().subscribe{ [weak self] _ in
           self?.chatManager?.didClickOnWebPage(with: viewModel.message)
-          }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
         return cell
       } else if viewModel.clipType == .File {
         let cell: ActionFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, presenter: self.chatManager)
         cell.fileView.signalForClick().subscribe { [weak self] _ in
           self?.chatManager?.didClickOnFile(with: viewModel.message)
-          }.disposed(by: self.disposeBag)
+        }.disposed(by: self.disposeBag)
         return cell
       } else {
         let cell: ActionMessageCell = tableView.dequeueReusableCell(for: indexPath)
@@ -1021,6 +989,7 @@ extension UserChatViewController {
       }
       
       //TODO: move table position based on image view?
+      viewer.modalPresentationStyle = .currentContext
       self.present(viewer, animated: true, completion: nil)
     }
   }

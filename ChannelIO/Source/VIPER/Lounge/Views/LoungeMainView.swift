@@ -63,7 +63,7 @@ class LoungeMainView: BaseView {
   private var otherChatCount: Int {
     let otherActiveChatCount = self.activeChats.count > Constants.maxNumberOfCell ?
       self.activeChats.count - Constants.maxNumberOfCell : 0
-    return showCompletedChatsSelector(state: mainStore.state) == true ?
+    return showCompletedChatsSelector(state: mainStore.state) ?
       self.inactiveChats.count + otherActiveChatCount : otherActiveChatCount
   }
   
@@ -289,6 +289,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(welcomeModel)
       cell.messageLabel.numberOfLines = Constants.maxNumberOfLinesForWelcomeCell
+      cell.rightButtons = []
       return cell
     }
     

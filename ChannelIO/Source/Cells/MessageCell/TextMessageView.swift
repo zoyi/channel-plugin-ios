@@ -37,7 +37,7 @@ class TextMessageView : BaseView {
 
   struct Color {
     static let actionLabel = CHColors.blueyGrey
-    static let message = UIColor.black
+    static let message = UIColor.grey900
   }
 
   //MARK: Properties
@@ -83,10 +83,8 @@ class TextMessageView : BaseView {
 
   func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
-    self.backgroundColor = viewModel.message.onlyEmoji == true ?
-      UIColor.clear : viewModel.bubbleBackgroundColor
     self.isHidden = viewModel.message.isEmpty()
-    
+        
     if !viewModel.message.onlyEmoji {
       self.leadingConstraint?.update(inset: Metrics.leftRightPadding)
       self.trailingConstraint?.update(inset: Metrics.leftRightPadding)
@@ -100,20 +98,27 @@ class TextMessageView : BaseView {
     }
     
     if viewModel.translateState == .translated {
-      if let translated = self.viewModel?.message.translatedText {
+      if let translated = self.viewModel?.translatedText {
         self.messageView.attributedText = translated
       }
-    } else if let attributedText = viewModel.message.messageV2 {
+    } else if let attributedText = viewModel.attributedText {
       self.messageView.attributedText = attributedText
     } else {
       self.messageView.text = viewModel.message.message
     }
     
-    self.messageView.textColor = viewModel.createdByMe ? viewModel.textColor : Color.message
-    let linkColor = viewModel.createdByMe ? viewModel.textColor : CHColors.cobalt
+    if viewModel.isDeleted {
+      self.backgroundColor = .grey200
+      self.messageView.textColor = .grey500
+    } else {
+      self.backgroundColor = viewModel.bubbleBackgroundColor
+      self.messageView.textColor = viewModel.textColor
+    }
+
     self.messageView.linkTextAttributes = [
-      .foregroundColor: linkColor,
-      .underlineStyle: 1]
+      .foregroundColor: viewModel.linkColor,
+      .underlineStyle: 1
+    ]
   }
   
   override func updateConstraints() {
@@ -130,6 +135,7 @@ class TextMessageView : BaseView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    
     if self.viewModel?.isContinuous == true {
       self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
     } else if self.viewModel?.createdByMe == true {
@@ -139,20 +145,29 @@ class TextMessageView : BaseView {
     }
   }
   
-  class func viewHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  class func viewHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType,
+    edgeInset: UIEdgeInsets? = nil) -> CGFloat {
     var viewHeight : CGFloat = 0.0
 
     let text = viewModel.translateState == .loading || viewModel.translateState == .original ?
-      viewModel.message.messageV2 :
-      viewModel.message.translatedText
+      viewModel.attributedText :
+      viewModel.translatedText
     
     let maxWidth = !viewModel.message.onlyEmoji ?
       width - Metrics.leftRightPadding * 2 :
       width - Metrics.minimalLeftRightPadding * 2
     
     let topBottomPadding = viewModel.message.onlyEmoji ?
-      Metrics.minimalTopBottomPadding * 2 : Metrics.topBottomPadding * 2
-    //viewHeight = message.height(fits: maxWidth - 3) + topBottomPadding
+      Metrics.minimalTopBottomPadding * 2 :
+      Metrics.topBottomPadding * 2
+    
+    if let edgeInset = edgeInset {
+      placeHolder.textContainerInset = edgeInset
+    } else {
+      placeHolder.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+    }
     
     placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
     placeHolder.textContainer.lineFragmentPadding = 0

@@ -48,7 +48,7 @@ struct LocalMessageFactory {
         indexes.append((index, msg.readableDate))
         lastDateMsg = msg
         chatId = msg.chatId
-      } else if lastDateMsg?.isSameDate(previous: msg) == false {
+      } else if lastDateMsg?.isSameDate(other: msg) == false {
         indexes.append((index, msg.readableDate))
         lastDateMsg = msg
       }
