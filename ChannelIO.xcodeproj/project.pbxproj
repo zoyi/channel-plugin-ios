@@ -73,6 +73,8 @@
 		22F094F72176E8A00035C777 /* HexColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F094F52176E8A00035C777 /* HexColors.swift */; };
 		22F0ED9220B53C55008924C1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F0ED9120B53C55008924C1 /* Models.swift */; };
 		22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */; };
+		3961C1C8235601E300850EC7 /* userChats.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C7235601E300850EC7 /* userChats.json */; };
+		3961C1CA235601F500850EC7 /* messages.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C9235601F500850EC7 /* messages.json */; };
 		650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650C48D1219E5F1B00713AD9 /* Tracking.swift */; };
 		650D7C351E724AD7007DE358 /* LocalMessageFactorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */; };
 		650D7C3B1E72546B007DE358 /* MessagesStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C3A1E72546B007DE358 /* MessagesStateTests.swift */; };
@@ -453,6 +455,8 @@
 		22F094F52176E8A00035C777 /* HexColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexColors.swift; sourceTree = "<group>"; };
 		22F0ED9120B53C55008924C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatLiteral.swift; sourceTree = "<group>"; };
+		3961C1C7235601E300850EC7 /* userChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = userChats.json; sourceTree = "<group>"; };
+		3961C1C9235601F500850EC7 /* messages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = messages.json; sourceTree = "<group>"; };
 		650C48D1219E5F1B00713AD9 /* Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracking.swift; sourceTree = "<group>"; };
 		650D7C311E716DBF007DE358 /* countryInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = countryInfo.json; path = Assets/countryInfo.json; sourceTree = "<group>"; };
 		650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalMessageFactorTests.swift; sourceTree = "<group>"; };
@@ -889,6 +893,8 @@
 			isa = PBXGroup;
 			children = (
 				22A306922352ABCB008B7ADE /* channel.json */,
+				3961C1C7235601E300850EC7 /* userChats.json */,
+				3961C1C9235601F500850EC7 /* messages.json */,
 			);
 			name = MockData;
 			sourceTree = "<group>";
@@ -1662,7 +1668,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3961C1C8235601E300850EC7 /* userChats.json in Resources */,
 				22A306992352B30A008B7ADE /* channel.json in Resources */,
+				3961C1CA235601F500850EC7 /* messages.json in Resources */,
 				655D89C92126754F00ACE89B /* emojis.json in Resources */,
 				652AE2111E81485D00B7484C /* Localizable.strings in Resources */,
 				14DFAC681E4A189D00130119 /* Images.xcassets in Resources */,
