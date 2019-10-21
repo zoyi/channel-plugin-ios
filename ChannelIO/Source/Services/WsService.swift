@@ -134,16 +134,13 @@ class WsService {
   private var startTypingThrottleFnc: ((CHUserChat?) -> Void)?
   
   init() {
-    if let staging = CHUtils.getCurrentStage() {
-      if staging == "PROD" {
-        self.baseUrl = WSType.PRODUCTION.rawValue
-      } else if staging == "ALPHA" {
-        self.baseUrl = WSType.ALPHA.rawValue
-      } else if staging == "BETA" {
-        self.baseUrl = WSType.BETA.rawValue
-      } else {
-        // error
-      }
+    switch CHUtils.getCurrentStage() {
+    case .production:
+      self.baseUrl = WSType.PRODUCTION.rawValue
+    case .development:
+      self.baseUrl = WSType.ALPHA.rawValue
+    case .staging:
+      self.baseUrl = WSType.BETA.rawValue
     }
     
     self.stopTypingThrottleFnc = throttle(

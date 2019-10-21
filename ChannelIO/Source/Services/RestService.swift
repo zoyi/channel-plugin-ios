@@ -55,14 +55,13 @@ enum RestRouter: URLRequestConvertible {
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
-      if let stage = CHUtils.getCurrentStage() {
-        if stage == "PROD" {
-          url = EPType.PRODUCTION.rawValue
-        } else if stage == "ALPHA" {
-          url = EPType.ALPHA.rawValue
-        } else if stage == "BETA" {
-          url = EPType.BETA.rawValue
-        }
+      switch CHUtils.getCurrentStage() {
+      case .development:
+        url = EPType.ALPHA.rawValue
+      case .staging:
+        url = EPType.BETA.rawValue
+      case .production:
+        url = EPType.PRODUCTION.rawValue
       }
       return url
     }

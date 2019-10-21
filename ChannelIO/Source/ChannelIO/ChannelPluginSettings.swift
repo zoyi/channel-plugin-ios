@@ -19,6 +19,12 @@ struct ChannelPluginSettingKey {
   static let locale = "ch_locale"
 }
 
+public enum ChannelStage {
+  case development
+  case staging
+  case production
+}
+
 @objc
 public class ChannelPluginSettings: NSObject, NSCoding {
   /* pluinkey that you can obtain from channel desk */
@@ -60,6 +66,8 @@ public class ChannelPluginSettings: NSObject, NSCoding {
       }
     }
   }
+  
+  public var stage: ChannelStage = .production
   
   var appLocale: CHLocaleString? = nil
   

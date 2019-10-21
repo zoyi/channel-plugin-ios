@@ -146,8 +146,8 @@ class CHUtils {
     }
   }
   
-  class func getCurrentStage() -> String? {
-    return Bundle(for: self).object(forInfoDictionaryKey: "Stage") as? String
+  class func getCurrentStage() -> ChannelStage {
+    return ChannelIO.settings?.stage ?? .production
   }
   
   class func secondsToComponents(seconds: Int) -> (Int, Int, Int, Int) {
