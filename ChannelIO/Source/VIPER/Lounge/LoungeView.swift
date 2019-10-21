@@ -181,6 +181,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   func initScrollView() {
     self.scrollView.delegate = self
     self.scrollView.bounces = false
+    self.scrollView.clipsToBounds = false
     self.scrollView.showsVerticalScrollIndicator = false
     self.scrollView.showsHorizontalScrollIndicator = false
     self.scrollView.contentInset = UIEdgeInsets(

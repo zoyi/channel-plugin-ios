@@ -119,6 +119,7 @@ class LoungeHeaderView: BaseView {
   override func initialize() {
     super.initialize()
     
+    self.clipsToBounds = false
     self.layer.addSublayer(self.bgView)
     self.layer.addSublayer(self.bottomBgView)
     

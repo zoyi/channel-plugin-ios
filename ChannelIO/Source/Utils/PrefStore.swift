@@ -151,7 +151,7 @@ class MockUserDefaults: UserDefaults {
     self.init(suiteName: "test user defaults")!
   }
   
-  override init?(suiteName suiteName: String?) {
+  override init?(suiteName: String?) {
     UserDefaults().removePersistentDomain(forName: suiteName!)
     super.init(suiteName: suiteName)
   }
