@@ -8,7 +8,6 @@
 
 import Foundation
 import SnapKit
-import M13ProgressSuite
 import NVActivityIndicatorView
 
 class FileMessageView : BaseView {

@@ -1,3 +1,7 @@
+# 6.1.12
+## Updates
+* Removed M13ProgressView
+
 # 6.1.11
 ## Updates
 * Added deleted message cell
