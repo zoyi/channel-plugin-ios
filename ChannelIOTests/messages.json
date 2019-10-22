@@ -1,0 +1,19 @@
+{
+  "messages":
+    [
+      {
+        "channelId":"7",
+        "id":"5da5990e71ed9f2e",
+        "chatType":"Group",
+        "chatId":"1234",
+        "personType":"Manager",
+        "personId":"217",
+        "message":"test",
+        "format":"v2",
+        "language":"ko",
+        "requestId":"a997c216-d054-426b-9efe-9ca4f7c98b80",
+        "createdAt":1571133710466,
+        "messageV2":"test"
+      }
+    ]
+}
