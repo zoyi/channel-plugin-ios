@@ -8,10 +8,8 @@
 
 import Foundation
 import NVActivityIndicatorView
-import M13ProgressSuite
 import SnapKit
 import SDWebImage
-
 import Photos
 
 class MediaMessageView : BaseView {
@@ -42,10 +40,11 @@ class MediaMessageView : BaseView {
     $0.startAnimating()
   }
   
-  var progressView = M13ProgressViewRing().then {
-    $0.showPercentage = false
-    $0.primaryColor = UIColor.white
-    $0.secondaryColor = UIColor.white
+  var progressView = TYProgressBar().then {
+    $0.font = UIFont.systemFont(ofSize: 17)
+    $0.textColor = .white
+    $0.lineDashPattern = [2, 5]   // lineWidth, lineGap
+    $0.lineHeight = 5
   }
   
   //MARK: methods
@@ -91,7 +90,7 @@ class MediaMessageView : BaseView {
       }
       
       //change to delegation to update ui rather using redux
-      self.progressView.setProgress(message.progress, animated: false)
+      self.progressView.progress = Double(message.progress)
       
     } else if let image = file.imageData, message.progress != 1.0 {
       self.indicatorView.isHidden = true
@@ -100,7 +99,7 @@ class MediaMessageView : BaseView {
       self.imageView.image = image
       self.placeholder = image
       
-      self.progressView.setProgress(message.progress, animated: false)
+      self.progressView.progress = Double(message.progress)
     } else {
       self.indicatorView.isHidden = false
       self.progressView.isHidden = true
@@ -135,8 +134,8 @@ class MediaMessageView : BaseView {
     }
     
     self.progressView.snp.remakeConstraints { (make) in
-      make.width.equalTo(44)
-      make.height.equalTo(44)
+      make.width.equalTo(100)
+      make.height.equalTo(100)
       make.centerX.equalToSuperview()
       make.centerY.equalToSuperview()
     }
@@ -150,7 +149,7 @@ class MediaMessageView : BaseView {
   }
   
   func setProgress(value: CGFloat) {
-    self.progressView.setProgress(value, animated: true)
+    self.progressView.progress = Double(value)
   }
 
   class func getThumbnailImageSize(imageSize: CGSize) -> CGSize {
