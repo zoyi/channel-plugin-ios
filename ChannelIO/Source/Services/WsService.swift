@@ -63,8 +63,7 @@ struct WsServiceType: OptionSet {
   static let Manager = WsServiceType(rawValue: 1 << 6)
   static let Channel = WsServiceType(rawValue: 1 << 7)
   static let UserChat = WsServiceType(rawValue: 1 << 8)
-  static let Veil = WsServiceType(rawValue: 1 << 9)
-  static let User = WsServiceType(rawValue: 1 << 10)
+  static let User = WsServiceType(rawValue: 1 << 9)
   
   static let CreateMessage = WsServiceType.Create.union(WsServiceType.Message)
   static let UpdateMessage = WsServiceType.Update.union(WsServiceType.Message)
@@ -82,7 +81,6 @@ struct WsServiceType: OptionSet {
   static let DeleteUserChat = WsServiceType.Delete.union(WsServiceType.UserChat)
   
   static let UpdateUser = WsServiceType.Update.union(WsServiceType.User)
-  static let UpdateVeil = WsServiceType.Update.union(WsServiceType.Veil)
   
   let rawValue: Int
   init(rawValue: Int) { self.rawValue = rawValue }
@@ -99,7 +97,6 @@ struct WsServiceType: OptionSet {
     case "Manager": self = WsServiceType.Manager
     case "Channel": self = WsServiceType.Channel
     case "UserChat": self = WsServiceType.UserChat
-    case "Veil": self = WsServiceType.Veil
     case "User" : self = WsServiceType.User
       
     default: return nil
@@ -406,13 +403,9 @@ fileprivate extension WsService {
         self?.eventSubject.onNext((type, message))
       case WsServiceType.UpdateUser:
         guard let user = Mapper<CHUser>().map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatchOnMain(UpdateGuest(payload: user))
+        mainStore.dispatchOnMain(UpdateUser(payload: user))
         print("\(user)")
         self?.eventSubject.onNext((type, user))
-      case WsServiceType.UpdateVeil:
-        guard let veil = Mapper<CHVeil>().map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatchOnMain(UpdateGuest(payload: veil))
-        self?.eventSubject.onNext((type, veil))
       case WsServiceType.UpdateManager:
         guard let manager = Mapper<CHManager>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateManager(payload: manager))

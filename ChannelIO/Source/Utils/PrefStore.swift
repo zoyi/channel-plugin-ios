@@ -10,7 +10,6 @@ import Foundation
 
 class PrefStore {
   static let CHANNEL_ID_KEY = "CHPlugin_ChannelId"
-  static let VEIL_ID_KEY = "CHPlugin_VeilId"
   static let USER_ID_KEY = "CHPlugin_UserId"
   static let PUSH_OPTION_KEY = "CHPlugin_PushOption"
   static let VISIBLE_CLOSED_USERCHAT_KEY = "CHPlugin_show_closed_userchat"
@@ -37,10 +36,6 @@ class PrefStore {
     return PrefStore.getStorage().string(forKey: CHANNEL_ID_KEY)
   }
   
-  static func getCurrentVeilId() -> String? {
-    return PrefStore.getStorage().string(forKey: VEIL_ID_KEY)
-  }
-  
   static func getCurrentUserId() -> String? {
     return PrefStore.getStorage().string(forKey: USER_ID_KEY)
   }
@@ -48,13 +43,6 @@ class PrefStore {
   static func setCurrentChannelId(channelId: String) {
     PrefStore.getStorage().set(channelId, forKey: CHANNEL_ID_KEY)
     PrefStore.getStorage().synchronize()
-  }
-  
-  static func setCurrentVeilId(veilId: String?) {
-    if let veilId = veilId {
-      PrefStore.getStorage().set(veilId, forKey: VEIL_ID_KEY)
-      PrefStore.getStorage().synchronize()
-    }
   }
   
   static func setCurrentUserId(userId: String?) {
@@ -66,11 +54,6 @@ class PrefStore {
   
   static func clearCurrentChannelId() {
     PrefStore.getStorage().removeObject(forKey: CHANNEL_ID_KEY)
-    PrefStore.getStorage().synchronize()
-  }
-  
-  static func clearCurrentVeilId() {
-    PrefStore.getStorage().removeObject(forKey: VEIL_ID_KEY)
     PrefStore.getStorage().synchronize()
   }
   
@@ -139,7 +122,6 @@ class PrefStore {
   
   static func clearAllLocalData() {
     PrefStore.clearCurrentUserId()
-    PrefStore.clearCurrentVeilId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()
     PrefStore.clearCurrentGuestKey()

@@ -15,12 +15,16 @@ func personSelector(state: AppState, personType: String?, personId: String?) -> 
   
   if personType == "Manager" {
     return state.managersState.findBy(id: personId)
-  } else if personType == "User" || personType == "Veil" {
-    return state.guest
+  } else if personType == "User" {
+    return state.user
   } else if personType == "Bot" {
     return state.botsState.findBy(id: personId)
   }
   return state.channel
+}
+
+func userSelector(state: AppState) -> CHUser {
+  return state.user
 }
 
 func defaultBotSelector(state: AppState) -> CHBot? {

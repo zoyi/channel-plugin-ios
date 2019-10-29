@@ -321,8 +321,8 @@ extension UserChatInteractor {
   }
 
   func send(text: String, assets: [PHAsset])  {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: self.userChatId, guest: me, message: text)
+    let me = mainStore.state.user
+    var message = CHMessage(chatId: self.userChatId, user: me, message: text)
     
     mainStore.dispatch(CreateMessage(payload: message))
     self.updateMessages()

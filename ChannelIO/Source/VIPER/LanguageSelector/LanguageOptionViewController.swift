@@ -138,9 +138,9 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     AppManager.touch()
       .debounce(.milliseconds(1500), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (guest) in
+      .subscribe(onNext: { [weak self] (user) in
         defer { SVProgressHUD.dismiss() }
-        mainStore.dispatch(UpdateGuest(payload: guest))
+        mainStore.dispatch(UpdateUser(payload: user))
         tableView.deselectRow(at: indexPath, animated: true)
         self?.navigationController?.popViewController(animated: true)
       }, onError: { (error) in

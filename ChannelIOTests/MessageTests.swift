@@ -36,7 +36,7 @@ class MessageTests: QuickSpec {
       
       let settings = ChannelPluginSettings(pluginKey: "06ccfc12-a9fd-4c68-b364-5d19f81a60dd")
       waitUntil(timeout: 10) { done in
-        ChannelIO.boot(with: settings) { (completion, guest) in
+        ChannelIO.boot(with: settings) { (completion, user) in
           done()
         }
       }
@@ -354,9 +354,9 @@ class MessageTests: QuickSpec {
       }
       
       describe("isMine") {
-        context("message has same guest id") {
+        context("message has same user id") {
           it("should return true") {
-            self.loadedMessage?.entity = mainStore.state.guest
+            self.loadedMessage?.entity = mainStore.state.user
             expect(self.loadedMessage?.isMine()).to(beTrue())
           }
         }

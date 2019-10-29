@@ -97,7 +97,7 @@ struct MessageCellModel: MessageCellModelType {
     
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
     let cType = MessageCellModel.getClipType(message: message)
-    let createdByMe = message.entity is CHUser || message.entity is CHVeil
+    let createdByMe = message.entity is CHUser
 
     self.clipType = cType
     self.name = message.entity?.name ?? ""

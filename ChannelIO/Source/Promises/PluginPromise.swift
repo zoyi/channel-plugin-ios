@@ -165,8 +165,7 @@ struct PluginPromise {
             var result = [String: Any]()
             
             result["user"] = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            result["veil"] = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-            if result["user"] == nil && result["veil"] == nil {
+            if result["user"] == nil {
               subscriber.onError(CHErrorPool.pluginParseError)
               break
             }
@@ -187,8 +186,6 @@ struct PluginPromise {
               let caseInsensitiveHeaders = Dictionary(uniqueKeysWithValues: tupleArray)
               result["guestKey"] = caseInsensitiveHeaders["x-guest-jwt"]
             }
-
-            result["veilId"] = json["veilId"].string
             
             subscriber.onNext(result)
             subscriber.onCompleted()

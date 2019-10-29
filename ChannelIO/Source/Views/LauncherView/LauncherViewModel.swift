@@ -24,12 +24,12 @@ struct LauncherViewModel: LauncherViewModelType {
   var position = LauncherPosition.right
   var launchIcon: UIImage?
   
-  init(plugin: CHPlugin, guest: CHGuest? = nil, push: CHPush? = nil) {
+  init(plugin: CHPlugin, user: CHUser? = nil, push: CHPush? = nil) {
     
     self.bgColor = UIColor(plugin.color) ?? UIColor.white
     let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
     
-    self.badge = guest?.alert ?? 0
+    self.badge = user?.alert ?? 0
     self.gradientColors = [
       self.bgColor.cgColor,
       self.bgColor.cgColor,

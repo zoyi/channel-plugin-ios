@@ -48,7 +48,7 @@ class ChatManager: NSObject {
     }
   }
   
-  var guest: CHGuest? = nil
+  var user: CHUser? = nil
   
   var didFetchInfo = false
   var didChatLoaded = false
@@ -117,10 +117,7 @@ class ChatManager: NSObject {
     self.chat = userChatSelector(
       state: mainStore.state,
       userChatId: chatId)
-    self.guest = personSelector(
-      state: mainStore.state,
-      personType: self.chat?.personType,
-      personId: self.chat?.personId) as? CHGuest
+    self.user = userSelector(state: mainStore.stae)
   }
   
   fileprivate func observeSocketEvents() {
@@ -346,14 +343,14 @@ extension ChatManager {
   func sendImage(imageData: UIImage) {
   
     if self.chatId != "" {
-      let message = CHMessage(chatId: self.chatId, guest: mainStore.state.guest, image: imageData)
+      let message = CHMessage(chatId: self.chatId, user: mainStore.state.user, image: imageData)
       mainStore.dispatch(CreateMessage(payload: message))
       self.sendMessageRecursively(allMessages: [message], currentIndex: 0)
     } else {
       self.createChat()
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatId) in
-          var message = CHMessage(chatId: chatId, guest: mainStore.state.guest, image: imageData)
+          var message = CHMessage(chatId: chatId, user: mainStore.state.user, image: imageData)
           message.createdAt = Date()
           mainStore.dispatch(CreateMessage(payload: message))
           self?.sendMessageRecursively(allMessages: [message], currentIndex: 0)
@@ -382,7 +379,7 @@ extension ChatManager {
   
   private func createMessageForImages(assets: [PHAsset], requestBot: Bool = false) -> [CHMessage] {
     let messages = assets.map({ (asset) -> CHMessage in
-      return CHMessage(chatId: self.chatId, guest: mainStore.state.guest, asset: asset)
+      return CHMessage(chatId: self.chatId, user: mainStore.state.user, asset: asset)
     })
     
     messages.forEach({ mainStore.dispatch(CreateMessage(payload: $0)) })
@@ -732,7 +729,7 @@ extension ChatManager {
     WsService.shared.connect()
     
     AppManager.touch().observeOn(MainScheduler.instance).subscribe(onNext: { (user) in
-      mainStore.dispatch(UpdateGuest(payload: user))
+      mainStore.dispatch(UpdateUser(payload: user))
     }).disposed(by: self.disposeBag)
   }
   

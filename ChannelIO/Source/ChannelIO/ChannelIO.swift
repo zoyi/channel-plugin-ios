@@ -30,7 +30,7 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
   @objc optional func onClickRedirect(url: URL) -> Bool /* notify when a user click on a link */
-  @objc optional func onChangeProfile(key: String, value: Any?) -> Void /* notify when the guest profile has been changed */
+  @objc optional func onChangeProfile(key: String, value: Any?) -> Void /* notify when the user profile has been changed */
 }
 
 @objc
@@ -78,12 +78,12 @@ public final class ChannelIO: NSObject {
     //refactor into two selectors
     func newState(state: AppState) {
       dispatch {
-        self.handleBadge(state.guest.alert)
+        self.handleBadge(state.user.alert)
         self.handlePush(push: state.push)
         
         let viewModel = LauncherViewModel(
           plugin: state.plugin,
-          guest: state.guest,
+          user: state.user,
           push: ChannelIO.lastPush
         )
         ChannelIO.launcherView?.configure(viewModel)
@@ -133,14 +133,14 @@ public final class ChannelIO: NSObject {
    *   Boot up ChannelIO and make it ready to use
    *
    *   - parameter settings: ChannelPluginSettings object
-   *   - parameter guest: Guest object
+   *   - parameter user: User object
    *   - parameter compeltion: ChannelPluginCompletionStatus indicating status of boot phase
    */
   @objc
   public class func boot(
     with settings: ChannelPluginSettings,
     profile: Profile? = nil,
-    completion: ((ChannelPluginCompletionStatus, Guest?) -> Void)? = nil) {
+    completion: ((ChannelPluginCompletionStatus, User?) -> Void)? = nil) {
     
     dispatch {
       ChannelIO.prepare()
@@ -164,7 +164,7 @@ public final class ChannelIO: NSObject {
         if ChannelIO.launcherVisible {
           ChannelIO.show(animated: true)
         }
-        completion?(.success, Guest(with: mainStore.state.guest))
+        completion?(.success, User(with: mainStore.state.user))
       }, onError: { error in
         let code = (error as NSError).code
         if code == -1001 {
@@ -247,7 +247,7 @@ public final class ChannelIO: NSObject {
       
       let viewModel = LauncherViewModel(
         plugin: mainStore.state.plugin,
-        guest: mainStore.state.guest,
+        user: mainStore.state.user,
         push: mainStore.state.push
       )
       
@@ -377,11 +377,11 @@ public final class ChannelIO: NSObject {
    *                       to remove existing value
    */
   @objc
-  public class func updateGuest(_ profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+  public class func updateUser(_ profile: [String: Any], completion: ((Bool, User?) -> Void)? = nil) {
     let profile:[String: Any?] = profile.mapValues { (value) -> Any? in
       return value is NSNull ? nil : value
     }
-    ChannelIO.updateGuest(with: profile, completion: completion)
+    ChannelIO.updateUser(with: profile, completion: completion)
   }
   
   /**
@@ -390,11 +390,11 @@ public final class ChannelIO: NSObject {
    *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
    *                       to remove existing value
    */
-  public class func updateGuest(with profile: [String: Any?], completion: ((Bool, Guest?) -> Void)? = nil) {
-    GuestPromise.updateProfile(with: profile)
-      .subscribe(onNext: { (guest, error) in
-        if let guest = guest {
-          completion?(true, Guest(with: guest))
+  public class func updateUser(with profile: [String: Any?], completion: ((Bool, User?) -> Void)? = nil) {
+    UserPromise.updateProfile(with: profile)
+      .subscribe(onNext: { (user, error) in
+        if let user = user {
+          completion?(true, User(with: user))
         } else {
           completion?(false, nil)
         }
@@ -449,15 +449,10 @@ public final class ChannelIO: NSObject {
     guard let pushChannelId = userInfo["channelId"] as? String else { return false }
 
     let userId = PrefStore.getCurrentUserId() ?? ""
-    let veilId = PrefStore.getCurrentVeilId() ?? ""
     let channelId = PrefStore.getCurrentChannelId() ?? ""
     
     if personType == "User" {
       return personId == userId && pushChannelId == channelId
-    }
-    
-    if personType == "Veil" {
-      return personId == veilId && pushChannelId == channelId
     }
     
     return false
@@ -504,7 +499,7 @@ public final class ChannelIO: NSObject {
       settings.userId = userId
     }
     
-    ChannelIO.boot(with: settings, profile: profile) { (status, guest) in
+    ChannelIO.boot(with: settings, profile: profile) { (status, user) in
       if status == .success {
         ChannelIO.showUserChat(userChatId:userChatId)
       }
