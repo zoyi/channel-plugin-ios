@@ -46,7 +46,7 @@ class ProfileItemBaseView: BaseView {
   var fieldType: ProfileInputType = .text
   
   let disposeBag = DisposeBag()
-  weak var presenter: ChatManager? = nil
+  weak var presenter: UserChatPresenterProtocol? = nil
   
   override func initialize() {
     super.initialize()
@@ -65,7 +65,7 @@ class ProfileItemBaseView: BaseView {
     self.fieldView?.signalForAction().subscribe(onNext: { [weak self] (value) in
       if let index = self?.index, let item = self?.model?.profileItems[index] {
         self?.fieldView?.setLoading()
-        _ = self?.presenter?.updateProfileItem(with: self?.model?.message, key: item.key, value: value)
+        _ = self?.presenter?.didClickOnProfileUpdate(with: self?.model?.message, key: item.key, value: value)
           .subscribe(onNext: { (completed) in
             if !completed {
               self?.fieldView?.setInvalid()
@@ -97,7 +97,7 @@ class ProfileItemBaseView: BaseView {
     })
   }
   
-  func configure(model: MessageCellModelType, index: Int?, presenter: ChatManager?) {
+  func configure(model: MessageCellModelType, index: Int?, presenter: UserChatPresenterProtocol?) {
     guard let index = index else { return }
     self.presenter = presenter
     self.item = model.profileItems[index]

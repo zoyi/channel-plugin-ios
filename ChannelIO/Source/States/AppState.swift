@@ -22,6 +22,7 @@ struct AppState: StateType {
   var uiState: UIState
   var socketState: WSocketState
   var countryCodeState: CountryCodeState
+  var chatState: ChatState
 }
 
 @objc public enum CHLocale: Int {

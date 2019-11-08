@@ -8,7 +8,7 @@
 
 import Foundation
 import ObjectMapper
-
+import RxSwift
 
 struct CHChannel: CHEntity {
   // ModelType
@@ -189,6 +189,12 @@ extension CHChannel {
     }
     
     return nil
+  }
+}
+
+extension CHChannel {
+  static func get() -> Observable<CHChannel> {
+    return ChannelPromise.getChannel()
   }
 }
 

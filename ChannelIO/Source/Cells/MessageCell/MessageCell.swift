@@ -8,10 +8,12 @@
 
 import UIKit
 import Reusable
+import RxSwift
+import ReSwift
 import SnapKit
 
 class MessageCell: BaseTableViewCell, Reusable {
-  weak var presenter: ChatManager? = nil
+  weak var presenter: UserChatPresenterProtocol?
   // MARK: Constants
   struct Font {
     static let usernameLabel = UIFont.boldSystemFont(ofSize: 12)
@@ -85,19 +87,21 @@ class MessageCell: BaseTableViewCell, Reusable {
     self.contentView.addSubview(self.resendButtonView)
 
     self.resendButtonView.signalForClick()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
-        self?.presenter?.didClickOnRetry(for: self?.viewModel?.message, sender: self?.resendButtonView)
+        self?.presenter?.didClickOnRetry(for: self?.viewModel?.message, from: self?.resendButtonView)
         self?.resendButtonView.isHidden = true
       }).disposed(by :self.disposeBag)
     
     self.translateView.signalForClick()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.presenter?.didClickOnTranslate(for: self?.viewModel?.message)
       }).disposed(by: self.disposeBag)
   }
 
   // MARK: Configuring
-  func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+  func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     self.presenter = presenter 
     self.viewModel = viewModel
     

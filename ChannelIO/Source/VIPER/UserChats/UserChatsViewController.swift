@@ -255,8 +255,7 @@ class UserChatsViewController: BaseViewController {
     guard !self.isShowingChat else { return }
     self.isShowingChat = true
     self.tableView.isHidden = hideTable
-    
-    let controller = self.prepareUserChat(userChatId: userChatId, text: text)
+    self.showNewChat = true
    
     let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
     let supportSignal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil)
@@ -272,7 +271,7 @@ class UserChatsViewController: BaseViewController {
         SVProgressHUD.dismiss()
         mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
         mainStore.dispatch(GetSupportBotEntry(bot: pluginInfo.1, entry: supportEntry))
-        
+        let controller = UserChatRouter.createModule(userChatId: userChatId, text: text)
         self?.navigationController?.pushViewController(controller, animated: animated)
         self?.showNewChat = false
         self?.isShowingChat = false
@@ -286,25 +285,6 @@ class UserChatsViewController: BaseViewController {
       }, onDisposed: {
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)
-  }
-  
-  func prepareUserChat(userChatId: String? = nil, text: String = "") -> UserChatViewController {
-    let controller = UserChatViewController()
-    if let userChatId = userChatId {
-      controller.userChatId = userChatId
-    }
-    
-    self.showNewChat = true
-    
-    controller.preloadText = text
-    controller.signalForNewChat().subscribe (onNext: { [weak self] text in
-      let text = text as? String ?? ""
-      self?.navigationController?.popViewController(animated: true, completion: {
-        self?.showUserChat(text: text, hideTable: false, animated: true)
-      })
-    }).disposed(by: self.disposeBag)
-    
-    return controller
   }
   
   func showProfileView() {

@@ -47,6 +47,8 @@ public final class CHMessageView: UIView, MessageTextViewListener {
   internal var rightButtonAction: Selector?
   internal var leftButtonInset: CGFloat = 0
   internal var rightButtonInset: CGFloat = 0
+  internal var leftButtonSize: CGSize = .zero
+  internal var rightButtonSize: CGSize = .zero
   internal var ignoreLineHeight = false
   internal var suppressKVO = false
 
@@ -186,13 +188,24 @@ public final class CHMessageView: UIView, MessageTextViewListener {
 
   /// - Parameter accessibilityLabel: A custom `accessibilityLabel` to set on the button.
   /// If none is supplied, it will default to the icon's `accessibilityLabel`.
-  public func setButton(icon: UIImage?, for state: UIControl.State, position: ButtonPosition, accessibilityLabel: String? = nil) {
+  public func setButton(
+    icon: UIImage?,
+    for state: UIControl.State,
+    position: ButtonPosition,
+    size: CGSize? = nil,
+    accessibilityLabel: String? = nil) {
     let button: UIButton
     switch position {
     case .left:
-        button = leftButton
+      if let size = size {
+        leftButtonSize = size
+      }
+      button = leftButton
     case .right:
-        button = rightButton
+      if let size = size {
+        rightButtonSize = size
+      }
+      button = rightButton
     }
     button.setImage(icon, for: state)
     button.accessibilityLabel = accessibilityLabel ?? icon?.accessibilityIdentifier
@@ -393,6 +406,8 @@ public final class CHMessageView: UIView, MessageTextViewListener {
         self.toolbarView?.backgroundColor = .white
         self.topBorderLayer.backgroundColor = UIColor.grey300.cgColor
         self.textView.textColor = UIColor.grey900
+        self.rightButton.tintColor = self.text == "" ?
+          .sendDisable : .cobalt400
       case .highlight:
         self.textContainerView.backgroundColor = UIColor.orange100
         self.toolbarView?.backgroundColor = UIColor.orange100
@@ -403,6 +418,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
         self.toolbarView?.backgroundColor = UIColor.grey200
         self.topBorderLayer.backgroundColor = UIColor.grey300.cgColor
         self.textView.textColor = UIColor.black20
+        self.rightButton.tintColor = .sendDisable
       }
       self.textView.placeholderText = self.placeholders[newValue] ?? ""
       self.delegate?.modeDidChange(mode: newValue)
@@ -427,10 +443,14 @@ public final class CHMessageView: UIView, MessageTextViewListener {
       width: bounds.width - util_safeAreaInsets.left - util_safeAreaInsets.right,
       height: bounds.height - util_safeAreaInsets.top - util_safeAreaInsets.bottom
     )
-
-    let leftButtonSize = leftButton.bounds.size
-    let rightButtonSize = rightButton.bounds.size
-
+    
+    let leftButtonSize = self.leftButtonSize == .zero ?
+      leftButton.bounds.size : self.leftButtonSize
+    let rightButtonSize = self.leftButtonSize == .zero ?
+      leftButton.bounds.size : self.rightButtonSize
+    let leftImageHeight = leftButton.imageView?.image?.size.height ?? 0.f
+    let rightImageHeight = rightButton.imageView?.image?.size.height ?? 0.f
+    
     let textViewY = safeBounds.minY
     let textViewHeight = self.textViewHeight
     let textViewMaxY = textViewY + textViewHeight
@@ -445,11 +465,13 @@ public final class CHMessageView: UIView, MessageTextViewListener {
       pointSize = 0
     }
     let buttonYStarter = textViewMaxY - textViewInset.bottom - (pointSize - descender)/2
-
     // adjust by bottom offset so content is flush w/ text view
     let leftButtonFrame = CGRect(
       x: safeBounds.minX + leftButtonInset,
-      y: buttonYStarter - leftButtonSize.height/2 + leftButton.bottomHeightOffset,
+      y: buttonYStarter -
+        (leftButtonSize.height)/2 +
+        leftButton.bottomHeightOffset -
+        (leftButtonSize.height - leftImageHeight)/2,
       width: leftButtonSize.width,
       height: leftButtonSize.height
     )
@@ -470,7 +492,10 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     // adjust by bottom offset so content is flush w/ text view
     let rightButtonFrame = CGRect(
       x: textViewFrame.maxX,
-      y: buttonYStarter - rightButtonSize.height/2 + rightButton.bottomHeightOffset,
+      y: buttonYStarter -
+        rightButtonSize.height/2 +
+        rightButton.bottomHeightOffset -
+        (rightButtonSize.height - rightImageHeight)/2,
       width: rightButtonSize.width,
       height: rightButtonSize.height
     )

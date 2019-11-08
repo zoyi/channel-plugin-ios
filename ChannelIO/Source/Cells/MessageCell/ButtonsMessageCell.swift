@@ -43,7 +43,7 @@ class ButtonsMessageCell: MessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.buttonView.configure(model: viewModel)
   }

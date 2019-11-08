@@ -135,6 +135,10 @@ extension CHUserChat {
     return UserChatPromise.close(userChatId: self.id, formId: mid, requestId: requestId)
   }
   
+  func keepNudge() -> Observable<CHMessage?> {
+    return UserChatPromise.keepNudge(userChatId: self.id)
+  }
+  
   func review(mid: String, rating: ReviewType, requestId: String) -> Observable<CHUserChat> {
     return UserChatPromise.review(userChatId: self.id, formId: mid, rating: rating, requestId: requestId)
   }

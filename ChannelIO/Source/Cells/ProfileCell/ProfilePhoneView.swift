@@ -34,7 +34,7 @@ class ProfilePhoneView: ProfileItemBaseView, ProfileContentProtocol {
     super.setLayouts()
   }
   
-  override func configure(model: MessageCellModelType, index: Int?, presenter: ChatManager?) {
+  override func configure(model: MessageCellModelType, index: Int?, presenter: UserChatPresenterProtocol?) {
     super.configure(model: model, index: index, presenter: presenter)
     guard let item = self.item else { return }
     

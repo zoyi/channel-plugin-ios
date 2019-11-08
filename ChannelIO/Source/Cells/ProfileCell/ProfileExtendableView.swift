@@ -77,14 +77,14 @@ class ProfileExtendableView: BaseView {
     }
   }
   
-  func configure(model: MessageCellModelType, presenter: ChatManager? = nil, redraw: Bool = false) {
+  func configure(model: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil, redraw: Bool = false) {
     if redraw {
       presenter?.shouldRedrawProfileBot = false
       self.drawViews(model: model, presenter: presenter)
     } 
   }
   
-  func drawViews(model: MessageCellModelType, presenter: ChatManager? = nil) {
+  func drawViews(model: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     for item in self.items {
       if item.didFirstResponder {
         self.shouldBecomeFirstResponder = true

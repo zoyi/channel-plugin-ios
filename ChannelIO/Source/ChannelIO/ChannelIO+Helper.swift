@@ -144,9 +144,9 @@ extension ChannelIO {
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
-      if let userChatViewController = topController as? UserChatViewController {
-        if userChatViewController.userChatId != userChatId {
-          userChatViewController.navigationController?.popToRootViewController(animated: true, completion: {
+      if let userChatView = topController as? UserChatView {
+        if userChatView.presenter?.userChatId != userChatId {
+          userChatView.navigationController?.popToRootViewController(animated: true, completion: {
             if let loungeView = CHUtils.getTopController() as? LoungeView,
               let presenter = loungeView.presenter as? LoungePresenter,
               let router = presenter.router {

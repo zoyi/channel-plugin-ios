@@ -328,4 +328,8 @@ internal extension UIColor {
   @nonobjc class var white: UIColor {
     return UIColor(white: 1.0, alpha: 1.0)
   }
+  
+  @nonobjc class var sendDisable: UIColor {
+    return UIColor(red: 152.0 / 255.0, green: 167.0 / 255.0, blue: 179.0 / 255.0, alpha: 1.0)
+  }
 }

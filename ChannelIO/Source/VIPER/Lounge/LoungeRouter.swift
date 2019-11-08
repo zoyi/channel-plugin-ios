@@ -16,18 +16,8 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
   var disposeBag = DisposeBag()
   
   func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    let chatView = UserChatViewController()
-    if let userChatId = chatId {
-      chatView.userChatId = userChatId
-    }
-    
-    chatView.signalForNewChat().subscribe(onNext: { [weak self] (_) in
-      view?.navigationController?.popViewController(animated: true, completion: {
-        self?.pushChat(with: nil, animated: true, from: view)
-      })
-    }).disposed(by: self.disposeBag)
-
-    view?.navigationController?.pushViewController(chatView, animated: animated)
+    let controller = UserChatRouter.createModule(userChatId: chatId)
+    view?.navigationController?.pushViewController(controller, animated: animated)
   }
   
   func pushChatList(from view: UIViewController?) {

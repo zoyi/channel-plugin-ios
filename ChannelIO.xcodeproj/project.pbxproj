@@ -74,6 +74,9 @@
 		22F0ED9220B53C55008924C1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F0ED9120B53C55008924C1 /* Models.swift */; };
 		22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */; };
 		22F9CF1D2355517A0013197E /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F9CF1C2355517A0013197E /* APITests.swift */; };
+		3910AC24237AC172000549B5 /* ChatState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910AC23237AC172000549B5 /* ChatState.swift */; };
+		3910AC26237AC1A1000549B5 /* ChatReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910AC25237AC1A1000549B5 /* ChatReducer.swift */; };
+		3910AC29237AC218000549B5 /* ChatAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910AC28237AC218000549B5 /* ChatAction.swift */; };
 		3961C1C8235601E300850EC7 /* userChats.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C7235601E300850EC7 /* userChats.json */; };
 		3961C1CA235601F500850EC7 /* messages.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C9235601F500850EC7 /* messages.json */; };
 		650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650C48D1219E5F1B00713AD9 /* Tracking.swift */; };
@@ -447,6 +450,9 @@
 		22F0ED9120B53C55008924C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatLiteral.swift; sourceTree = "<group>"; };
 		22F9CF1C2355517A0013197E /* APITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITests.swift; sourceTree = "<group>"; };
+		3910AC23237AC172000549B5 /* ChatState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatState.swift; sourceTree = "<group>"; };
+		3910AC25237AC1A1000549B5 /* ChatReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatReducer.swift; sourceTree = "<group>"; };
+		3910AC28237AC218000549B5 /* ChatAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAction.swift; sourceTree = "<group>"; };
 		3961C1C7235601E300850EC7 /* userChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = userChats.json; sourceTree = "<group>"; };
 		3961C1C9235601F500850EC7 /* messages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = messages.json; sourceTree = "<group>"; };
 		650C48D1219E5F1B00713AD9 /* Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracking.swift; sourceTree = "<group>"; };
@@ -1221,6 +1227,7 @@
 				659792D21FA7167B00840F6A /* WSocketState.swift */,
 				22342CC81FBEF50800425666 /* CountryCodeState.swift */,
 				65AA7AE41FD64CC100D2A8B1 /* BotsState.swift */,
+				3910AC23237AC172000549B5 /* ChatState.swift */,
 			);
 			name = States;
 			path = Source/States;
@@ -1293,6 +1300,7 @@
 				659792FB1FA7167B00840F6A /* WSocketReducer.swift */,
 				223726061FBEEF370097F22B /* CountryCodeReducer.swift */,
 				65AA7AE61FD64CCF00D2A8B1 /* BotReducer.swift */,
+				3910AC25237AC1A1000549B5 /* ChatReducer.swift */,
 			);
 			name = Reducers;
 			path = Source/Reducers;
@@ -1383,6 +1391,7 @@
 				659793441FA7167C00840F6A /* WSocketActions.swift */,
 				223726081FBEEFA20097F22B /* CountryCodeActions.swift */,
 				22A20FB81FE22A54006C81F3 /* BotActions.swift */,
+				3910AC28237AC218000549B5 /* ChatAction.swift */,
 			);
 			name = Actions;
 			path = Source/Actions;
@@ -1752,6 +1761,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3910AC26237AC1A1000549B5 /* ChatReducer.swift in Sources */,
 				650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
 				6597934E1FA716CB00840F6A /* PluginActions.swift in Sources */,
@@ -1831,6 +1841,7 @@
 				6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */,
 				657AF3F72178750F001EAA7A /* SupportBotPromise.swift in Sources */,
 				659793701FA716CB00840F6A /* Profile.swift in Sources */,
+				3910AC24237AC172000549B5 /* ChatState.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
 				6512BA362271AA0300757CB2 /* LoungeExternalAppsView.swift in Sources */,
 				6512BA03226EDA2700757CB2 /* SettingHeaderView.swift in Sources */,
@@ -1951,6 +1962,7 @@
 				22E03E8F21B38D560009F48E /* MarkdownEmoji.swift in Sources */,
 				65CB991D226EC040004F9DC7 /* LoungeView.swift in Sources */,
 				22A917E1234BC42C00674083 /* CHMessageViewDelegate.swift in Sources */,
+				3910AC29237AC218000549B5 /* ChatAction.swift in Sources */,
 				22F0ED9220B53C55008924C1 /* Models.swift in Sources */,
 				22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */,
 				653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */,

@@ -70,4 +70,3 @@ extension CHUser: Equatable {}
 func ==(lhs: CHUser, rhs: CHUser) -> Bool {
   return lhs.id == rhs.id
 }
-
