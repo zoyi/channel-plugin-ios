@@ -16,6 +16,20 @@ enum ActionAlignment {
   case right
 }
 
+struct ActionViewMarginLayout {
+  let left: CGFloat = 65.f
+  let right: CGFloat = 10.f
+  var totalWidth: CGFloat = 0.f
+  
+  var widthIncludeMargins: CGFloat {
+    return self.totalWidth - self.left - self.right
+  }
+  
+  init() {
+    self.totalWidth = CHUtils.getCurrentSize().width
+  }
+}
+
 typealias SubmitForm = (String, String)
 
 //make it more user friendly with uicontrol`
@@ -64,10 +78,6 @@ class ActionButton: UIButton {
     static let sideMargin = 12.f
   }
   
-  struct Constants {
-    static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
-  }
-  
   required init(button: CHActionButton) {
     super.init(frame: CGRect.zero)
     self.text = button.text
@@ -79,23 +89,31 @@ class ActionButton: UIButton {
       color: CHColors.dark80,
       on: NSRange(location:0, length: button.text?.length ?? 0))
     
+    let layout = ActionViewMarginLayout()
+    
     self.setAttributedTitle(self.text, for: .normal)
     self.titleLabel?.lineBreakMode = .byTruncatingTail
     self.titleLabel?.numberOfLines = 2
     self.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-    self.titleLabel?.preferredMaxLayoutWidth = Constants.maxWidth
+    self.titleLabel?.preferredMaxLayoutWidth = layout.widthIncludeMargins
  
     self.layer.cornerRadius = 15.f
     self.layer.borderWidth = 1.f
     self.layer.borderColor = CHColors.dark50.cgColor
     
     let size = self.text?.size(
-      fits: CGSize(width: Constants.maxWidth - (Metrics.sideMargin * 2), height: 10000),
-      maximumNumberOfLines: 2) ?? CGSize.zero
+      fits: CGSize(
+        width: layout.widthIncludeMargins - (Metrics.sideMargin * 2),
+        height: 10000
+      ),
+      maximumNumberOfLines: 2
+    ) ?? CGSize.zero
     
-    self.frame = CGRect(x: 0, y: 0,
-        width: size.width + Metrics.sideMargin * 2,
-        height: size.height + Metrics.topBottomMargin * 2)
+    self.frame = CGRect(
+      x: 0, y: 0,
+      width: size.width + Metrics.sideMargin * 2,
+      height: size.height + Metrics.topBottomMargin * 2
+    )
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -109,10 +127,6 @@ class ActionView: BaseView {
   var alignment: ActionAlignment = .right
   var actionSubject = PublishSubject<SubmitForm>()
   
-  struct Constants {
-    static let maxWidth = UIScreen.main.bounds.width - 10.f - 65.f
-  }
-  
   struct Metrics {
     static let itemBetweenMargin = 4.f
     static let topBottomMargin = 10.f
@@ -121,7 +135,6 @@ class ActionView: BaseView {
   
   override func initialize() {
     super.initialize()
-    
     self.addSubview(self.contentView)
   }
   
@@ -138,9 +151,13 @@ class ActionView: BaseView {
     }
     self.buttons.removeAll()
     
-    guard viewModel.shouldDisplayForm else { return }
-    guard let buttons = viewModel.message.action?.buttons, buttons.count > 0 else { return }
+    let layout = ActionViewMarginLayout()
     
+    guard
+      let buttons = viewModel.message.action?.buttons,
+      viewModel.shouldDisplayForm,
+      buttons.count > 0 else { return }
+
     for button in buttons {
       let button = ActionButton(button: button)
       button.selectedColor = viewModel.pluginColor
@@ -159,7 +176,7 @@ class ActionView: BaseView {
     var lastButton: ActionButton!
     
     for (index, button) in self.buttons.enumerated() {
-      if Constants.maxWidth < cx + button.frame.width {
+      if layout.widthIncludeMargins < cx + button.frame.width {
         let height = lastButton?.frame.origin.y ?? 0.f
         let y = lastButton?.frame.height ?? 0.f
         let margin = lastButton != nil ? 4.f : 0.f
@@ -167,8 +184,10 @@ class ActionView: BaseView {
         button.frame.origin = CGPoint(x: 0.f, y: y + height + margin)
         
         if self.alignment == .right {
-          let buttons = Array(self.buttons[firstRowIndex..<index])
-          self.realignItemsToRight(buttons: buttons)
+          self.realignItemsToRight(
+            maxWidth: layout.totalWidth - layout.right,
+            buttons: Array(self.buttons[firstRowIndex..<index])
+          )
         }
 
         cx = button.frame.width + 4.f
@@ -183,18 +202,24 @@ class ActionView: BaseView {
     }
     
     if self.alignment == .right {
-      let buttons = Array(self.buttons[firstRowIndex..<self.buttons.count])
-      self.realignItemsToRight(buttons: buttons)
+      self.realignItemsToRight(
+        maxWidth: layout.totalWidth - layout.right,
+        buttons: Array(self.buttons[firstRowIndex..<self.buttons.count])
+      )
     }
   }
   
-  private func realignItemsToRight(buttons: [ActionButton]) {
-    let leftOverMargin =  UIScreen.main.bounds.width - 10 -
-      (buttons.last?.frame.origin.x ?? 0) - (buttons.last?.frame.width ?? 0)
+  private func realignItemsToRight(maxWidth: CGFloat, buttons: [ActionButton]) {
+    let leftOverMargin =  maxWidth -
+      (buttons.last?.frame.origin.x ?? 0) -
+      (buttons.last?.frame.width ?? 0)
     guard  leftOverMargin > 0 else { return }
     
     for button in buttons {
-      button.frame.origin = CGPoint(x: button.frame.origin.x + leftOverMargin, y: button.frame.origin.y)
+      button.frame.origin = CGPoint(
+        x: button.frame.origin.x + leftOverMargin,
+        y: button.frame.origin.y
+      )
     }
   }
 
@@ -205,15 +230,20 @@ class ActionView: BaseView {
   class func viewHeight(fits width: CGFloat, buttons: [CHActionButton]) -> CGFloat {
     var cx = 0.f, cy = 0.f
 
+    let layout = ActionViewMarginLayout()
+    
     for (index, button) in buttons.enumerated() {
       let size = button.text?.size(
-        fits: CGSize(width: Constants.maxWidth - (Metrics.sideMargin * 2), height: 10000),
+        fits: CGSize(
+          width: layout.widthIncludeMargins - (Metrics.sideMargin * 2),
+          height: 10000
+        ),
         maximumNumberOfLines: 2) ?? CGSize.zero
       
       let width = size.width + Metrics.sideMargin * 2
       let height = size.height + Metrics.topBottomMargin * 2
       
-      if Constants.maxWidth < cx + width {
+      if layout.widthIncludeMargins < cx + width {
         cy += height + Metrics.itemBetweenMargin
         cx = width  + Metrics.itemBetweenMargin
       } else {

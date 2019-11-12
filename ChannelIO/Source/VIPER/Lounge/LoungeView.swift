@@ -120,7 +120,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.width.equalTo(UIScreen.main.bounds.width - Metrics.contentSide * 2)
+      make.width.equalToSuperview()
       self.mainHeightConstraint = make.height.equalTo(self.mainHeight).constraint
     }
     

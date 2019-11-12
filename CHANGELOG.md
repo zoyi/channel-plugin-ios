@@ -1,3 +1,7 @@
+# 6.1.13
+## Bug fixes
+* Fixed iOS 13 layout (Dicarded some UIScreen.main usage due to changing default present style)
+
 # 6.1.12
 ## Updates
 * Removed M13ProgressView

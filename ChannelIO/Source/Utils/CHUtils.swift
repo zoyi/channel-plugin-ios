@@ -58,6 +58,11 @@ class CHUtils {
     return base?.navigationController
   }
   
+  class func getCurrentSize() -> CGSize {
+    let controller = CHUtils.getTopController()
+    return controller?.view.bounds.size ?? UIScreen.main.bounds.size
+  }
+  
   class func nameToExt(name: String) -> String {
     switch name {
       case "png", "image":
