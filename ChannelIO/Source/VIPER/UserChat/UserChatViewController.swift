@@ -579,14 +579,18 @@ extension UserChatViewController: StoreSubscriber {
   }
   
   func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
-    guard let lastMessage = updated.first, !lastMessage.isMine() else {
+    guard
+      let currentLastMessage = current.first,
+      let updatedLastMessage = updated.first,
+      currentLastMessage != updatedLastMessage,
+      !updatedLastMessage.isMine() else {
         return
     }
     
     let offset = self.tableView.contentOffset.y
     if self.chatManager.hasNewMessage(current: current, updated: updated) &&
       offset > UIScreen.main.bounds.height * 0.5 {
-      self.newMessageView.configure(message: lastMessage)
+      self.newMessageView.configure(message: updatedLastMessage)
       self.newMessageView.show(animated: true)
     }
   }
