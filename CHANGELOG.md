@@ -1,3 +1,8 @@
+# 6.1.14
+## Bug fixes
+* Fixed new banner logic
+* Added missing video type
+
 # 6.1.13
 ## Bug fixes
 * Fixed iOS 13 layout (Dicarded some UIScreen.main usage due to changing default present style)
