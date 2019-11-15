@@ -11,11 +11,14 @@ import ReSwift
 func userReducer(action: Action, user: CHUser?) -> CHUser {
   switch action {
   case let action as CheckInSuccess:
-    if let key = action.payload["guestKey"] as? String {
-      PrefStore.setCurrentGuestKey(key)
+    if let jwt = action.payload.sessionJWT {
+      PrefStore.setSessionJWT(jwt)
     }
-    if let user = action.payload["user"] as? CHUser {
-      PrefStore.setCurrentUserId(userId: user.id)
+    if let veilId = action.payload.veilId {
+      PrefStore.setVeilId(veilId)
+    }
+    if let user = action.payload.user {
+      PrefStore.setCurrentUserId(user.id)
       return user
     }
     return user ?? CHUser()

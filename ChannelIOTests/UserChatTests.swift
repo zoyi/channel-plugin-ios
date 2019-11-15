@@ -16,7 +16,12 @@ import RxSwift
 
 class UserChatTests: QuickSpec {
   var loadedChat: CHUserChat?
-  let manager: CHManager = CHManager(id: "22136", name: "manager_name", avatarUrl: "url", username: "user_name")
+  let manager: CHManager = CHManager(
+    id: "22136",
+    name: "manager_name",
+    avatarUrl: "url",
+    username: "user_name"
+  )
   var createdUserChats: [CHUserChat?] = []
   var data: Data?
   var json: JSON?

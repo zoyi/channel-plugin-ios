@@ -26,6 +26,7 @@ enum RestRouter: URLRequestConvertible {
   case CreateNudgeChat(String)
   case GetNudges(String)
   case GetPlugin(String)
+  case GetPluginWithKey(String)
   case GetGeoIP
   case GetChannel
   case GetCountryCodes
@@ -49,7 +50,7 @@ enum RestRouter: URLRequestConvertible {
   case Translate(String, ParametersType)
   case UpdateUser(ParametersType)
   case UpdateProfileItem(String, ParametersType)
-  case UnregisterToken(String, ParametersType)
+  case UnregisterToken(String)
   case UploadFile(String, ParametersType)
 
   var baseURL: String {
@@ -86,7 +87,9 @@ enum RestRouter: URLRequestConvertible {
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetOperators,
-         .GetPlugin, .Translate,
+         .GetPlugin,
+         .GetPluginWithKey,
+         .Translate,
          .GetSupportBot, .GetSupportBotEntry,
          .GetNudges,
          .GetExternalMessengers,
@@ -109,88 +112,100 @@ enum RestRouter: URLRequestConvertible {
   var path: String {
     switch self {
     case .Boot(let pluginKey, _):
-      return "/app/plugins/\(pluginKey)/boot/v2"
+      return "/front/plugins/\(pluginKey)/boot"
     case .CheckNudgeReach(let nudgeId):
-      return "/app/nudges/\(nudgeId)/reach"
+      return "/front/nudges/\(nudgeId)/reach"
     case .CreateNudgeChat(let nudgeId):
-      return "/app/nudges/\(nudgeId)/user_chats"
+      return "/front/nudges/\(nudgeId)/user_chats"
     case .CreateUserChat(let pluginId):
-      return "/app/plugins/\(pluginId)/user_chats"
+      return "/front/plugins/\(pluginId)/user_chats"
     case .CreateSupportBotChat(let supportBotId):
-      return "/app/support_bots/\(supportBotId)/user_chats"
+      return "/front/support_bots/\(supportBotId)/user_chats"
     case .CreateMessage(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages"
+      return "/front/user_chats/\(userChatId)/messages"
     case .CheckVersion:
       return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
     case .CloseUserChat(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/close"
+      return "/front/user_chats/\(userChatId)/close"
     case .GetMessages(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages"
+      return "/front/user_chats/\(userChatId)/messages"
     case .GetCountryCodes:
       return "/available/countries"
     case .GetChannel:
-      return "/app/channels"
+      return "/front/channels"
     case .GetExternalMessengers:
-      return "/app/channels/messengers"
+      return "/front/channels/messengers"
     case .GetOperators:
-      return "/app/channels/operators"
+      return "/front/channels/operators"
     case .GetPlugin(let pluginId):
-      return "/app/plugins/\(pluginId)"
+      return "/front/plugins/\(pluginId)"
+    case .GetPluginWithKey(let key):
+      return "/front/plugins/\(key)"
     case .GetUserChats:
-      return "/app/user_chats"
+      return "/front/user_chats"
     case .GetGeoIP:
       return "/geoip"
     case .GetUserChat(let userChatId):
-      return "/app/user_chats/\(userChatId)"
+      return "/front/user_chats/\(userChatId)"
     case .GetSupportBot(let pluginId):
-      return "/app/plugins/\(pluginId)/support_bot"
+      return "/front/plugins/\(pluginId)/support_bot"
     case .GetSupportBotEntry(let supportBotId):
-      return "/app/support_bots/\(supportBotId)/entry"
+      return "/front/support_bots/\(supportBotId)/entry"
     case .GetNudges(let pluginId):
-      return "/app/plugins/\(pluginId)/nudges"
+      return "/front/plugins/\(pluginId)/nudges"
     case .GetProfileBotSchemas(let pluginId):
-      return "/app/plugins/\(pluginId)/profile_bot_schemas"
+      return "/front/plugins/\(pluginId)/profile_bot_schemas"
     case .KeepNudge(let userChatId):
-      return "/app/user_chats/\(userChatId)/nudge/keep"
+      return "/front/user_chats/\(userChatId)/nudge/keep"
     case .RemoveUserChat(let userChatId):
-      return "/app/user_chats/\(userChatId)/remove"
+      return "/front/user_chats/\(userChatId)/remove"
     case .ReviewUserChat(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/review"
+      return "/front/user_chats/\(userChatId)/review"
     case .RegisterToken:
-      return "/app/device_tokens"
+      return "/front/push_tokens"
     case .ReplySupportBot(let userChatId, let buttonId, _):
-      return "/app/user_chats/\(userChatId)/support_bot/buttons/\(buttonId)"
+      return "/front/user_chats/\(userChatId)/support_bot/buttons/\(buttonId)"
     case .SetMessagesRead(let userChatId):
-      return "/app/user_chats/\(userChatId)/messages/read"
+      return "/front/user_chats/\(userChatId)/messages/read"
     case .SendPushAck(let userChatId):
-      return "/app/user_chats/\(userChatId)/messages/receive"
+      return "/front/user_chats/\(userChatId)/messages/receive"
     case .SendEvent(let pluginId, _):
-      return "/app/plugins/\(pluginId)/events/v2"
+      return "/front/plugins/\(pluginId)/events"
     case .Translate(let messageId, _):
-      return "/app/messages/\(messageId)/translate"
+      return "/front/messages/\(messageId)/translate"
     case .TouchUser:
-      return "/app/users/touch"
+      return "/front/users/touch"
     case .UpdateProfileItem(let messageId, _):
-      return "/app/messages/\(messageId)/profile_bot"
+      return "/front/messages/\(messageId)/profile_bot"
     case .UploadFile(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages/file"
+      return "/front/user_chats/\(userChatId)/messages/file"
     case .UpdateUser(_):
-      return "/app/users"
-    case .UnregisterToken(let key, _):
-      return "/app/device_tokens/ios/\(key)"
+      return "/front/users"
+    case .UnregisterToken(let key):
+      return "/front/push_tokens/\(key)"
     }
+  }
+  
+  func addAuthForSimple(request: URLRequest) -> URLRequest {
+    var req = request
+    var headers = req.allHTTPHeaderFields ?? [String: String]()
+    
+    headers["Accept"] = "application/json"
+    headers["User-Agent"] = CHUtils.generateUserAgent()
+    req.allHTTPHeaderFields = headers
+    return req
   }
   
   func addAuthHeaders(request: URLRequest) -> URLRequest {
     var req = request
     var headers = req.allHTTPHeaderFields ?? [String: String]()
     
-    if let key = PrefStore.getCurrentGuestKey() {
-      headers["X-Guest-Jwt"] = key
+    if let jwt = PrefStore.getSessionJWT() {
+      headers["x-session"] = jwt
     }
     
     if let locale = CHUtils.getLocale() {
-      headers["X-Locale"] = locale.rawValue
+      headers["X-language"] = locale.rawValue
     }
     
     headers["Accept"] = "application/json"
@@ -234,7 +249,8 @@ enum RestRouter: URLRequestConvertible {
       }
     }
     
-    if let headers = parameters?["headers"] as? ParametersType, var req = try? request.asURLRequest() {
+    if let headers = parameters?["headers"] as? ParametersType,
+      var req = try? request.asURLRequest() {
       for (key, val) in headers {
         if let value = val as? String, value != "" {
           req.setValue(value, forHTTPHeaderField: key)
@@ -255,22 +271,21 @@ enum RestRouter: URLRequestConvertible {
     urlRequest.timeoutInterval = 5
     
     switch self {
-    case .Boot(_, let params),
-         .GetMessages(_, let params),
+    case .GetMessages(_, let params),
          .CreateMessage(_, let params),
          .UploadFile(_, let params),
          .GetUserChats(let params),
          .RegisterToken(let params),
-         .SendEvent(_, let params),
          .UpdateProfileItem(_, let params),
          .Translate(_, let params),
          .CloseUserChat(_, let params),
          .ReviewUserChat(_, let params),
-         .UnregisterToken(_, let params),
          .ReplySupportBot(_, _, let params),
          .UpdateUser(let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
-    case .GetUserChat, .GetPlugin,
+    case .GetUserChat,
+         .GetPlugin,
+         .GetPluginWithKey,
          .GetCountryCodes,
          .GetOperators,
          .CreateUserChat,
@@ -284,8 +299,14 @@ enum RestRouter: URLRequestConvertible {
          .GetSupportBot,
          .GetExternalMessengers,
          .GetProfileBotSchemas,
-         .KeepNudge:
+         .KeepNudge,
+         .UnregisterToken:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
+    case .TouchUser:
+      urlRequest = try encode(addAuthForSimple(request: urlRequest), with: nil)
+    case .Boot(_, let params),
+         .SendEvent(_, let params):
+      urlRequest = try encode(addAuthForSimple(request: urlRequest), with: params)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     }

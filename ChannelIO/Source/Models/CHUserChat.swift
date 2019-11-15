@@ -100,18 +100,12 @@ extension CHUserChat: Mappable {
     assigneeId       <- map["assigneeId"]
     assigneeType     <- map["assigneeType"]
     resolutionTime   <- map["resolutionTime"]
-    
-    if let s = map["stateV2"].currentValue as? String {
-      state <- map["stateV2"]
-    } else {
-      state <- map["state"]
-    }
+    state <- map["state"]
   }
 }
 
 //TODO: Refactor to AsyncActionCreator
 extension CHUserChat {
-  
   static func get(userChatId: String) -> Observable<ChatResponse> {
     return UserChatPromise.getChat(userChatId: userChatId)
   }
@@ -164,7 +158,7 @@ extension CHUserChat {
           
       let dispose = signal.subscribe(onNext: { (_) in
         if self.isLocal {
-          let user = userSelector(state: mainStore.stae)
+          let user = userSelector(state: mainStore.state)
           mainStore.dispatch(UpdateUserWithLocalRead(user:user, session:self.session))
         } else {
           mainStore.dispatch(ReadSession(payload: self.session))

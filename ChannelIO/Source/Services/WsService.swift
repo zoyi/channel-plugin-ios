@@ -536,7 +536,7 @@ fileprivate extension WsService {
   
   func emitAuth() {
     dlog("socket submitting auth")
-    guard let jwt = PrefStore.getCurrentGuestKey() else { return }
+    guard let jwt = PrefStore.getSessionJWT() else { return }
     self.socket?.emit("authentication", ["jwt":jwt])
   }
 }

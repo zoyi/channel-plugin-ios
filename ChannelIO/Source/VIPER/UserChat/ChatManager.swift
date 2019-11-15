@@ -117,7 +117,7 @@ class ChatManager: NSObject {
     self.chat = userChatSelector(
       state: mainStore.state,
       userChatId: chatId)
-    self.user = userSelector(state: mainStore.stae)
+    self.user = userSelector(state: mainStore.state)
   }
   
   fileprivate func observeSocketEvents() {
@@ -728,9 +728,11 @@ extension ChatManager {
     self.didChatLoaded = false
     WsService.shared.connect()
     
-    AppManager.touch().observeOn(MainScheduler.instance).subscribe(onNext: { (user) in
-      mainStore.dispatch(UpdateUser(payload: user))
-    }).disposed(by: self.disposeBag)
+    AppManager.touch()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (result) in
+        mainStore.dispatch(GetTouchSuccess(payload: result))
+      }).disposed(by: self.disposeBag)
   }
   
   func fetchMessages(completion: (() -> ())? = nil) {

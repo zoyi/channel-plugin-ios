@@ -132,15 +132,16 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let locale = self.locales[indexPath.row]
-    ChannelIO.settings?.locale = CHUtils.stringToLocale(locale.rawValue)
+    ChannelIO.settings?.language = CHUtils.stringToLocale(locale.rawValue)
     
     SVProgressHUD.show()
+    
     AppManager.touch()
       .debounce(.milliseconds(1500), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (user) in
+      .subscribe(onNext: { [weak self] (result) in
         defer { SVProgressHUD.dismiss() }
-        mainStore.dispatch(UpdateUser(payload: user))
+        mainStore.dispatch(GetTouchSuccess(payload: result))
         tableView.deselectRow(at: indexPath, animated: true)
         self?.navigationController?.popViewController(animated: true)
       }, onError: { (error) in

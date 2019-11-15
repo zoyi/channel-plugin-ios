@@ -20,23 +20,25 @@ struct EventPromise {
     sysProperty: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
     return Observable.create { subscriber in
       var params = [
-        "body": [String:AnyObject]()
+        "url": [String:String]()
       ]
       
       var event = [String: Any]()
       event["name"] = name
-      
       if let property = property, property.count != 0 {
         event["property"] = property
       }
-      
       if let sysProperty = sysProperty, sysProperty.count != 0 {
         event["sysProperty"] = sysProperty
       }
       
-      params["body"]?["event"] = event as AnyObject?
-      params["body"]?["user"] = mainStore.state.user.dict as AnyObject?
-      
+      if let eventData = CHUtils.jsonStringify(data: event) {
+        params["url"]?["event"] = eventData
+      }
+      if let userData = CHUtils.jsonStringify(data: mainStore.state.user.dict) {
+        params["url"]?["user"] = userData
+      }
+
       Alamofire.request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in

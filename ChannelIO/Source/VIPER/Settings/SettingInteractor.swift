@@ -19,7 +19,7 @@ class SettingInteractor: SettingInteractorProtocol {
   var user: CHUser? = nil
   var showCloseChat: Bool? = nil
   var showTranslation: Bool? = nil
-  var locale: CHLocale? = nil
+  var language: CHLocale? = nil
   
   var updateSignal = PublishRelay<CHUser>()
   var updateOptionSignal = PublishRelay<Any?>()
@@ -42,7 +42,7 @@ class SettingInteractor: SettingInteractorProtocol {
   }
   
   func getCurrentLocale() -> CHLocale? {
-    return ChannelIO.settings?.locale
+    return ChannelIO.settings?.language
   }
   
   func getTranslationEnabled() -> Bool {
@@ -76,10 +76,10 @@ extension SettingInteractor: StoreSubscriber {
       self.updateSignal.accept(state.user)
     }
     
-    if self.locale != ChannelIO.settings?.locale ||
+    if self.language != ChannelIO.settings?.language ||
       self.showTranslation != state.userChatsState.showTranslation ||
       self.showCloseChat != state.userChatsState.showCompletedChats {
-      self.locale = ChannelIO.settings?.locale
+      self.language = ChannelIO.settings?.language
       self.showTranslation = state.userChatsState.showTranslation
       self.showCloseChat = state.userChatsState.showCompletedChats
       self.updateOptionSignal.accept(nil)

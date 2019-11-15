@@ -16,17 +16,17 @@ protocol ParamBuilder {
 
 class BootParamBuilder: ParamBuilder {
   var data = [String: Any]()
-  
-  var userId: String? = nil
+  var memberId: String? = nil
   var profile: Profile?
   var profileData: [String: Any]?
-  var sysProfile: [String: Any]?
-  var includeDefaultSysProfile = false
+  var sessionJWT: String?
+  var veilId: String?
   
   struct ParamKey {
     static let profile = "profile"
-    static let sysProfile = "sysProfile"
-    static let userId = "userId"
+    static let memberId = "memberId"
+    static let session = "sessionJWT"
+    static let veilId = "veilId"
   }
   
   @discardableResult
@@ -42,15 +42,20 @@ class BootParamBuilder: ParamBuilder {
   }
   
   @discardableResult
-  func with(userId: String?) -> BootParamBuilder {
-    self.userId = userId
+  func with(memberId: String?) -> BootParamBuilder {
+    self.memberId = memberId
     return self
   }
   
   @discardableResult
-  func with(sysProfile: [String: Any]?, includeDefault: Bool) -> BootParamBuilder {
-    self.sysProfile = sysProfile
-    self.includeDefaultSysProfile = includeDefault
+  func with(sessionJWT: String?) -> BootParamBuilder {
+    self.sessionJWT = sessionJWT
+    return self
+  }
+  
+  @discardableResult
+  func with(veilId: String?) -> BootParamBuilder {
+    self.veilId = veilId
     return self
   }
   
@@ -72,45 +77,41 @@ class BootParamBuilder: ParamBuilder {
     return merged
   }
   
-  private func buildSysProps() -> [String: Any]? {
-    var params = [String :Any]()
-    if let sysProfile = self.sysProfile {
-      params = sysProfile
-    }
-    
-    if !self.includeDefaultSysProfile {
-      return [ParamKey.sysProfile:params]
-    }
-    
-    params["platform"] = "iOS"
-    params["version"] = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    
-    return params
-  }
-  
   func build() -> CHParam {
     var data = [String: Any]()
-    if let profile = self.buildProfile() {
-      data[ParamKey.profile] = profile
+    if let profile = self.buildProfile(),
+      let jsonData = CHUtils.jsonStringify(data: profile) {
+      data[ParamKey.profile] = jsonData
     }
     
     if let profileData = self.buildProfileData() {
       if let profile = data[ParamKey.profile] as? [String: Any] {
-        data[ParamKey.profile] = profile.merging(profileData, uniquingKeysWith: { (_, second) in second })
-      } else {
-        data[ParamKey.profile] = profileData
+        let merged = profile.merging(profileData, uniquingKeysWith: { (_, second) in second })
+        let jsonData = CHUtils.jsonStringify(data: merged)
+        if let jsonData = jsonData {
+          data[ParamKey.profile] = jsonData
+        }
+      } else if let jsonData = CHUtils.jsonStringify(data: profileData) {
+        data[ParamKey.profile] = jsonData
       }
     }
     
-    if let sysProfile = self.buildSysProps() {
-      data[ParamKey.sysProfile] = sysProfile
+    if let memberId = self.memberId {
+      data[ParamKey.memberId] = memberId
     }
     
-    if let userId = self.userId {
-      data[ParamKey.userId] = userId
+    if let veilId = self.veilId {
+      data[ParamKey.veilId] = veilId
+    } else if let veilId = PrefStore.getVeilId() {
+      data[ParamKey.veilId] = veilId
     }
     
-    return ["body": data]
+//    if let sessionJWT = self.sessionJWT {
+//      data[ParamKey.session] = sessionJWT
+//    } else if let sessionJWT = PrefStore.getSessionJWT() {
+//      data[ParamKey.session] = sessionJWT
+//    }
+    
+    return ["url": data]
   }
 }

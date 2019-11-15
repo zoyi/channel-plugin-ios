@@ -235,7 +235,7 @@ extension CHMessage: Mappable {
     submit      <- map["submit"]
     language    <- map["language"]
     
-    let msgv2 = map["messageV2"].currentValue as? String ?? ""
+    let msgv2 = map["message"].currentValue as? String ?? ""
     (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
     if self.action != nil {

@@ -14,19 +14,20 @@ import ObjectMapper
 import CRToast
 
 struct UserPromise {
-  static func touch() -> Observable<CHUser> {
+  static func touch() -> Observable<BootResponse> {
     return Observable.create { subscriber in
-      let req = Alamofire.request(RestRouter.TouchUser)
+      let req = Alamofire
+        .request(RestRouter.TouchUser)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json:JSON = JSON(data)
-            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
-              subscriber.onError(CHErrorPool.userParseError)
+            guard let result = Mapper<BootResponse>().map(JSONObject: json.object) else {
+              subscriber.onError(CHErrorPool.pluginParseError)
               break
             }
-            subscriber.onNext(user)
+            subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)

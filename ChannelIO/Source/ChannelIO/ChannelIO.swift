@@ -153,38 +153,39 @@ public final class ChannelIO: NSObject {
         return
       }
       
-      AppManager.checkVersion().flatMap { (event) in
-        return ChannelIO.checkInChannel(profile: profile)
-      }
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (_) in
-        PrefStore.setChannelPluginSettings(pluginSetting: settings)
-        AppManager.registerPushToken()
+      AppManager.checkVersion()
+        .flatMap { (event) in
+          return ChannelIO.checkInChannel(profile: profile)
+        }
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (_) in
+          PrefStore.setChannelPluginSettings(pluginSetting: settings)
+          AppManager.registerPushToken()
         
-        if ChannelIO.launcherVisible {
-          ChannelIO.show(animated: true)
-        }
-        completion?(.success, User(with: mainStore.state.user))
-      }, onError: { error in
-        let code = (error as NSError).code
-        if code == -1001 {
-          dlog("network timeout")
-          mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
-          completion?(.networkTimeout, nil)
-        } else if code == CHErrorCode.versionError.rawValue {
-          dlog("version is not compatiable. please update sdk version")
-          mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
-          completion?(.notAvailableVersion, nil)
-        } else if code == CHErrorCode.serviceBlockedError.rawValue {
-          dlog("require payment. free plan is not eligible to use SDK")
-          mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
-          completion?(.requirePayment, nil)
-        } else {
-          dlog("unknown")
-          mainStore.dispatch(UpdateCheckinState(payload: .unknown))
-          completion?(.unknown, nil)
-        }
-      }).disposed(by: disposeBag)
+          if ChannelIO.launcherVisible {
+            ChannelIO.show(animated: true)
+          }
+          completion?(.success, User(with: mainStore.state.user))
+        }, onError: { error in
+          let code = (error as NSError).code
+          if code == -1001 {
+            dlog("network timeout")
+            mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
+            completion?(.networkTimeout, nil)
+          } else if code == CHErrorCode.versionError.rawValue {
+            dlog("version is not compatiable. please update sdk version")
+            mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
+            completion?(.notAvailableVersion, nil)
+          } else if code == CHErrorCode.serviceBlockedError.rawValue {
+            dlog("require payment. free plan is not eligible to use SDK")
+            mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
+            completion?(.requirePayment, nil)
+          } else {
+            dlog("unknown")
+            mainStore.dispatch(UpdateCheckinState(payload: .unknown))
+            completion?(.unknown, nil)
+          }
+        }).disposed(by: disposeBag)
     }
   }
 
@@ -221,11 +222,10 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func shutdown() {
-    let guestToken = PrefStore.getCurrentGuestKey() ?? ""
     dispatch {
       ChannelIO.reset()
     }
-    AppManager.unregisterToken(token: guestToken)
+    AppManager.unregisterToken()
   }
     
   /**
@@ -414,11 +414,8 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isValidStatus else { return }
     
     dispatch {
-      let version = Bundle(for: ChannelIO.self)
-        .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-      
       dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
-    
+      let version = CHUtils.getSdkVersion() ?? "unknown"
       var sysProperty: [String: Any] = [
         "pluginVersion": version,
         "screenWidth": UIScreen.main.bounds.width,
@@ -495,8 +492,8 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    if let userId = PrefStore.getCurrentUserId() {
-      settings.userId = userId
+    if let memberId = PrefStore.getCurrentMemberId() {
+      settings.memberId = memberId
     }
     
     ChannelIO.boot(with: settings, profile: profile) { (status, user) in

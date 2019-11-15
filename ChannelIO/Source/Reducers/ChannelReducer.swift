@@ -11,7 +11,7 @@ import ReSwift
 func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
   switch action {
   case let action as CheckInSuccess:
-    if let channel = action.payload["channel"] as? CHChannel {
+    if let channel = action.payload.channel {
       PrefStore.setCurrentChannelId(channelId: channel.id)
       return channel
     }

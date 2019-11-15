@@ -19,8 +19,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
   var disposeBag = DisposeBag()
   
   func viewDidLoad() {
-    if let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String {
+    if let version = CHUtils.getSdkVersion() {
       self.view?.displayVersion(version: "v\(version)")
     }
     
