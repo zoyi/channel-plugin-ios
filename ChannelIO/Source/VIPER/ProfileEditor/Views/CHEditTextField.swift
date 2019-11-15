@@ -27,7 +27,7 @@ enum EditFieldType {
 }
 
 enum EntityType {
-  case guest
+  case user
   case none
 }
 

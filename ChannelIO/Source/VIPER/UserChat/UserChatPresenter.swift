@@ -74,7 +74,7 @@ extension UserChatPresenter {
     
     self.router?.showOptionActionSheet(from: view).subscribe(onNext: { [weak self] assets in
       let messages = assets.map({ (asset) -> CHMessage in
-        return CHMessage(chatId: self?.userChatId ?? "", guest: mainStore.state.guest, asset: asset)
+        return CHMessage(chatId: self?.userChatId ?? "", user: mainStore.state.user, asset: asset)
       })
       
       if let userChatId = self?.userChatId, userChatId != "" {
@@ -169,17 +169,17 @@ extension UserChatPresenter {
   func didClickOnRightButton(text: String, assets: [PHAsset]) {
     guard let interactor = self.interactor else { return }
     guard let chatId = self.userChatId else { return }
-    let guest = mainStore.state.guest
+    let user = mainStore.state.user
     
     var messages = assets.enumerated().map { (index, asset) -> CHMessage in
       if index == 0 {
-        return CHMessage(chatId: chatId, guest: guest, message: text, asset: asset)
+        return CHMessage(chatId: chatId, user: user, message: text, asset: asset)
       }
-      return CHMessage(chatId: chatId, guest: guest, asset: asset)
+      return CHMessage(chatId: chatId, user: user, asset: asset)
     }
     
     if messages.count == 0 {
-      messages = [CHMessage(chatId: chatId, guest: guest, message: text)]
+      messages = [CHMessage(chatId: chatId, user: user, message: text)]
     }
     
     if let userChat = self.userChat, userChat.isActive {

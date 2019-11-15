@@ -40,9 +40,9 @@ extension TargetEvaluatorService {
     
     var testValue: Any?
     switch key {
-    case .guestProfile:
+    case .userProfile:
       guard let subKey = condition.subKey else { return false }
-      guard let profiles = userInfo[TargetKey.guestProfile.rawValue] as? [String : Any] else { return false }
+      guard let profiles = userInfo[TargetKey.userProfile.rawValue] as? [String : Any] else { return false }
       testValue = profiles[subKey]
     default:
       testValue = userInfo[key.rawValue]

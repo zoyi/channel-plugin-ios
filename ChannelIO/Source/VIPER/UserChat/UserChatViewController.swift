@@ -335,7 +335,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     
     self.setNavItems(
       currentUserChat: userChat ?? prevUserChat,
-      guest: mainStore.state.guest,
+      user: mainStore.state.user,
       textColor: mainStore.state.plugin.textUIColor
     )
     
@@ -398,10 +398,10 @@ final class UserChatViewController: BaseSLKTextViewController {
     }
   }
   
-  fileprivate func setNavItems(currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
+  fileprivate func setNavItems(currentUserChat: CHUserChat?, user: CHUser, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
     
-    let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
+    let alert = (user.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
     let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
     let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
     spacer.width = -8
@@ -496,7 +496,7 @@ extension UserChatViewController: StoreSubscriber {
     else {
       self.setNavItems(
         currentUserChat: nextUserChat,
-        guest: state.guest,
+        user: state.user,
         textColor: state.plugin.textUIColor
       )
     }

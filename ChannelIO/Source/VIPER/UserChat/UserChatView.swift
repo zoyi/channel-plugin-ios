@@ -125,10 +125,10 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     self.typingCell = cell
   }
 
-  func initNavigationViews(with info: UserChatInfo, guest: CHGuest) {
+  func initNavigationViews(with info: UserChatInfo, user: CHUser) {
     self.setNavItems(
       currentUserChat: info.userChat,
-      guest: guest,
+      user: user,
       textColor: info.textColor
     )
 
@@ -163,10 +163,10 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       }).disposed(by: self.disposeBag)
   }
 
-  fileprivate func setNavItems(currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
+  fileprivate func setNavItems(currentUserChat: CHUserChat?, user: CHUser, textColor: UIColor) {
     let tintColor = mainStore.state.plugin.textUIColor
 
-    let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
+    let alert = (user.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
     let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
     
     self.navigationItem.leftBarButtonItem = NavigationItem(
@@ -219,7 +219,7 @@ extension UserChatView {
   }
   
   func updateChatInfo(info: UserChatInfo) {
-    self.initNavigationViews(with: info, guest: mainStore.state.guest)
+    self.initNavigationViews(with: info, user: mainStore.state.user)
     self.updateInputField(userChat: self.userChat, updatedUserChat: info.userChat)
     self.userChat = info.userChat
   }

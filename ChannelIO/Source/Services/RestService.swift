@@ -45,9 +45,9 @@ enum RestRouter: URLRequestConvertible {
   case SendEvent(String, ParametersType)
   case SetMessagesRead(String)
   case SendPushAck(String)
-  case TouchGuest
+  case TouchUser
   case Translate(String, ParametersType)
-  case UpdateGuest(ParametersType)
+  case UpdateUser(ParametersType)
   case UpdateProfileItem(String, ParametersType)
   case UnregisterToken(String, ParametersType)
   case UploadFile(String, ParametersType)
@@ -76,7 +76,7 @@ enum RestRouter: URLRequestConvertible {
     case .CreateMessage,
          .CreateUserChat, .UploadFile, .RegisterToken,
          .SendEvent, .Boot,
-         .UpdateProfileItem, .TouchGuest,
+         .UpdateProfileItem, .TouchUser,
          .CreateSupportBotChat, .ReplySupportBot,
          .CheckNudgeReach,
          .CreateNudgeChat,
@@ -98,7 +98,7 @@ enum RestRouter: URLRequestConvertible {
          .CloseUserChat,
          .ReviewUserChat,
          .SendPushAck,
-         .UpdateGuest:
+         .UpdateUser:
       return .put
     case .UnregisterToken:
       return .delete
@@ -168,14 +168,14 @@ enum RestRouter: URLRequestConvertible {
       return "/app/plugins/\(pluginId)/events/v2"
     case .Translate(let messageId, _):
       return "/app/messages/\(messageId)/translate"
-    case .TouchGuest:
-      return "/app/guests/touch"
+    case .TouchUser:
+      return "/app/users/touch"
     case .UpdateProfileItem(let messageId, _):
       return "/app/messages/\(messageId)/profile_bot"
     case .UploadFile(let userChatId, _):
       return "/app/user_chats/\(userChatId)/messages/file"
-    case .UpdateGuest(_):
-      return "/app/guests"
+    case .UpdateUser(_):
+      return "/app/users"
     case .UnregisterToken(let key, _):
       return "/app/device_tokens/ios/\(key)"
     }
@@ -268,7 +268,7 @@ enum RestRouter: URLRequestConvertible {
          .ReviewUserChat(_, let params),
          .UnregisterToken(_, let params),
          .ReplySupportBot(_, _, let params),
-         .UpdateGuest(let params):
+         .UpdateUser(let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetUserChat, .GetPlugin,
          .GetCountryCodes,

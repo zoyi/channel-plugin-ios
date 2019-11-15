@@ -14,7 +14,7 @@ protocol SettingViewProtocol: class {
   
   func displayHeader(with model: SettingHeaderViewModel)
   func displayOptions(with options: [SettingOptionModel])
-  func displayProfiles(with profiles: [GuestProfileItemModel])
+  func displayProfiles(with profiles: [UserProfileItemModel])
   func displayVersion(version: String)
 }
 
@@ -28,7 +28,7 @@ protocol SettingPresenterProtocol: class {
   func cleanup()
   
   func didClickOnOption(item: SettingOptionModel, nextValue: Any?, from view: UIViewController?)
-  func didClickOnProfileSchema(with item: GuestProfileItemModel, from view: UIViewController?)
+  func didClickOnProfileSchema(with item: UserProfileItemModel, from view: UIViewController?)
 }
 
 protocol SettingInteractorProtocol {
@@ -43,14 +43,14 @@ protocol SettingInteractorProtocol {
   func getTranslationEnabled() -> Bool
   
   func updateGeneral() -> Observable<(CHChannel, CHPlugin)>
-  func updateGuest() -> Observable<CHGuest>
+  func updateUser() -> Observable<CHUser>
   func updateOptions() -> Observable<Any?>
 }
 
 protocol SettingRouterProtocol {
   
   func pushLanguageSelector(from view: UIViewController?)
-  func pushProfileSchemaEditor(with item: GuestProfileItemModel, from view: UIViewController?)
+  func pushProfileSchemaEditor(with item: UserProfileItemModel, from view: UIViewController?)
   
   static func createModule() -> SettingView
 }

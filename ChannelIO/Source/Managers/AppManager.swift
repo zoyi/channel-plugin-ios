@@ -50,7 +50,7 @@ struct AppManager {
     return PluginPromise.getOperators()
   }
   
-  static func touch() -> Observable<CHGuest> {
-    return GuestPromise.touch()
+  static func touch() -> Observable<CHUser> {
+    return UserPromise.touch()
   }
 }

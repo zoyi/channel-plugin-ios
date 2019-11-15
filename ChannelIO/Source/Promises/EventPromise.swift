@@ -35,7 +35,7 @@ struct EventPromise {
       }
       
       params["body"]?["event"] = event as AnyObject?
-      params["body"]?["guest"] = mainStore.state.guest.dict as AnyObject?
+      params["body"]?["user"] = mainStore.state.user.dict as AnyObject?
       
       Alamofire.request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)

@@ -301,11 +301,11 @@ extension ChannelIO {
     guard self.isValidStatus else { return }
     _ = WsService.shared.ready()
       .take(1)
-      .flatMap({ (_) -> Observable<CHGuest> in
+      .flatMap({ (_) -> Observable<CHUser> in
         return AppManager.touch()
       })
-      .subscribe(onNext: { (guest) in
-        mainStore.dispatch(UpdateGuest(payload: guest))
+      .subscribe(onNext: { (user) in
+        mainStore.dispatch(UpdateUser(payload: user))
       })
 
     WsService.shared.connect()

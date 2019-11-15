@@ -54,21 +54,22 @@ class APITests: QuickSpec {
           self.settings.pluginKey = ""
 
           waitUntil(timeout: self.defaultTimeout) { done in
-            ChannelIO.boot(with: self.settings, profile: nil) { (status, guest) in
+            ChannelIO.boot(with: settings, profile: nil) { (status, user) in
               expect(status).to(equal(.notInitialized))
-              expect(guest).to(beNil())
+              expect(user).to(beNil())
               done()
             }
           }
         }
         
-        it("should return success status and guest object if valid") {
-          self.settings.pluginKey = self.validPluginKey
+        it("should return success status and user object if valid") {
+          let settings = ChannelPluginSettings()
+          settings.pluginKey = "b84452ae-f2ad-4488-bf46-ac9619fa2012"
 
           waitUntil(timeout: self.defaultTimeout) { done in
-            ChannelIO.boot(with: self.settings, profile: nil) { (status, guest) in
+            ChannelIO.boot(with: settings, profile: nil) { (status, user) in
               expect(status).to(equal(.success))
-              expect(guest).notTo(beNil())
+              expect(user).notTo(beNil())
               done()
             }
           }
@@ -78,9 +79,9 @@ class APITests: QuickSpec {
           self.settings.pluginKey = self.freePluginKey
           
           waitUntil(timeout: self.defaultTimeout) { done in
-            ChannelIO.boot(with: self.settings, profile: nil) { (status, guest) in
+            ChannelIO.boot(with: settings, profile: nil) { (status, user) in
               expect(status).to(equal(.requirePayment))
-              expect(guest).to(beNil())
+              expect(user).to(beNil())
               done()
             }
           }
@@ -90,7 +91,7 @@ class APITests: QuickSpec {
       context("when dealing with locale") {
         it("should have default language as locale if not provided") {
           waitUntil(timeout: self.defaultTimeout) { done in
-            ChannelIO.boot(with: self.settings, profile: nil) { (_, _) in
+            ChannelIO.boot(with: settings, profile: nil) { (status, user) in
               expect(ChannelIO.settings?.locale).to(equal(.english))
               done()
             }
@@ -101,7 +102,7 @@ class APITests: QuickSpec {
           self.settings.locale = .japanese
           
           waitUntil(timeout: self.defaultTimeout) { done in
-            ChannelIO.boot(with: self.settings, profile: nil) { (_, _) in
+            ChannelIO.boot(with: settings, profile: nil) { (status, user) in
               expect(ChannelIO.settings?.locale).to(equal(.japanese))
               done()
             }
