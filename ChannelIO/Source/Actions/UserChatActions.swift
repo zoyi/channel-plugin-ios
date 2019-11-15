@@ -78,12 +78,12 @@ struct LeavedUserChat: Action {
 }
 
 //Update user
-struct UpdateGuest: Action {
-  public let payload: CHGuest?
+struct UpdateUser: Action {
+  public let payload: CHUser?
 }
 
-struct UpdateGuestWithLocalRead: Action {
-  public let guest: CHGuest?
+struct UpdateUserWithLocalRead: Action {
+  public let user: CHUser?
   public let session: CHSession?
 }
 

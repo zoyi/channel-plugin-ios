@@ -39,7 +39,7 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
     session?.unread = 0
     return state?.upsert(session: session) ?? SessionsState()
   
-  case let action as UpdateGuestWithLocalRead:
+  case let action as UpdateUserWithLocalRead:
     var session = action.session
     session?.alert = 0
     session?.unread = 0

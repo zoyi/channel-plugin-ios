@@ -48,7 +48,7 @@ class ProfileTextView: ProfileItemBaseView, ProfileContentProtocol {
     super.configure(model: model, index: index, presenter: presenter)
     guard let item = self.item else { return }
     
-    if let value = mainStore.state.guest.profile?[item.key] {
+    if let value = mainStore.state.user.profile?[item.key] {
       self.textView.setIntialValue(with: "\(value)")
     }
   }

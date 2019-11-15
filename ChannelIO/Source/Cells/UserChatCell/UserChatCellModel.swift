@@ -74,14 +74,14 @@ struct UserChatCellModel: UserChatCellModelType {
   
   static func getWelcomeModel(
     with plugin: CHPlugin,
-    guest: CHGuest,
+    user: CHUser,
     supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
     var model = UserChatCellModel()
     let bot = botSelector(state: mainStore.state, botName: plugin.botName)
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
     
-    model.lastMessage = supportBotMessage?.message ?? guest.getWelcome()
+    model.lastMessage = supportBotMessage?.message ?? user.getWelcome()
     model.attributeLastMessage = supportBotMessage?.messageV2
     model.isBadgeHidden = true
     model.badgeCount = 0

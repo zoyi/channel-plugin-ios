@@ -28,7 +28,7 @@ struct CHChannel: CHEntity {
   var workingTime: [String:TimeRange]?
   var lunchTime: TimeRange?
   var phoneNumber: String?
-  var requestGuestInfo = true
+  var requestUserInfo = true
   var messengerPlan: ChannelPlanType = .none
   var pushBotPlan: ChannelPlanType = .none
   var supportBotPlan: ChannelPlanType = .none
@@ -230,7 +230,7 @@ extension CHChannel: Mappable {
     working                 <- map["working"]
     workingTime             <- map["workingTime"]
     lunchTime               <- map["lunchTime"]
-    requestGuestInfo        <- map["requestGuestInfo"]
+    requestUserInfo        <- map["requestUserInfo"]
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]

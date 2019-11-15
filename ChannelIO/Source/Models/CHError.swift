@@ -13,7 +13,7 @@ enum CHErrorCode: Int {
   case pluginParseError = 8001
   case registerParseError = 8002
   case eventParseError = 8003
-  case guestParseError = 8004
+  case userParseError = 8004
   case scriptParseError = 8005
   case userChatParseError = 8006
   case chatResponseParseError = 8007
@@ -33,7 +33,7 @@ enum CHErrorCode: Int {
 enum CHErrorDomain: String {
   case pluginPromise = "PluginPromise"
   case eventPromise = "EventPromise"
-  case guestPromise = "GuestPromise"
+  case userPromise = "UserPromise"
   case scriptPromise = "ScriptPromise"
   case userChatPromise = "UserChatPromise"
   case utilityPromise = "UtilityPromise"
@@ -59,7 +59,7 @@ struct CHErrorPool {
   static let unregisterError = CHError(domain: .pluginPromise, code: .unregisterError)
   static let versionError = CHError(domain: .pluginPromise, code: .versionError)
   static let eventParseError = CHError(domain: .eventPromise, code: .eventParseError)
-  static let guestParseError = CHError(domain: .guestPromise, code: .guestParseError)
+  static let userParseError = CHError(domain: .userPromise, code: .userParseError)
   static let userChatParseError = CHError(domain: .userChatPromise, code: .userChatParseError)
   static let chatResponseParseError = CHError(domain: .userChatPromise, code: .chatResponseParseError)
   static let userChatRemoveError = CHError(domain: .userChatPromise, code: .userChatRemoveError)

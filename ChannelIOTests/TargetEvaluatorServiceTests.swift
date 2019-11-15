@@ -21,16 +21,15 @@ class TargetEvaluatorTests: QuickSpec {
         let userInfo:[String: Any] = [
           TargetKey.device.rawValue: "iPhone 7",
           TargetKey.os.rawValue: "iOS 11",
-          TargetKey.guestProfile.rawValue: [
-            TargetKey.guestType.rawValue: "veil",
-            TargetKey.guestId.rawValue: "123"
+          TargetKey.userProfile.rawValue: [
+            TargetKey.userId.rawValue: "123"
           ]
         ]
         
         let conditions: [[CHTargetCondition]] = [
           [CHTargetCondition(key: .os, value: TargetValue("iOS 11"), op: .equal, subKey: nil)],
           [CHTargetCondition(key: .device, value: TargetValue("iPhone"), op: .contain, subKey: nil)],
-          [CHTargetCondition(key: .guestProfile, value: TargetValue("veil"), op: .equal, subKey: TargetSubKey(TargetKey.guestType.rawValue))]
+          [CHTargetCondition(key: .userProfile, value: TargetValue("user"), op: .equal, subKey: TargetSubKey("user"))]
         ]
         
         let evaluated = TargetEvaluatorService.evaluate(with: conditions, userInfo: userInfo)
@@ -45,16 +44,15 @@ class TargetEvaluatorTests: QuickSpec {
         let userInfo:[String: Any] = [
           TargetKey.device.rawValue: "iPhone 7",
           TargetKey.os.rawValue: "iOS 12",
-          TargetKey.guestProfile.rawValue: [
-            TargetKey.guestType.rawValue: "veil",
-            TargetKey.guestId.rawValue: "123"
+          TargetKey.userProfile.rawValue: [
+            TargetKey.userId.rawValue: "123"
           ]
         ]
         
         let conditions: [CHTargetCondition] = [
           CHTargetCondition(key: .os, value: TargetValue("iOS 11"), op: .equal, subKey: nil),
           CHTargetCondition(key: .device, value: TargetValue("Nexus"), op: .contain, subKey: nil),
-          CHTargetCondition(key: .guestProfile, value: TargetValue("veil"), op: .equal, subKey: TargetSubKey(TargetKey.guestType.rawValue))
+          CHTargetCondition(key: .userProfile, value: TargetValue("user"), op: .equal, subKey: TargetSubKey("user"))
         ]
         
         let evaluated = TargetEvaluatorService.evaluate(conditions, userInfo: userInfo)
@@ -67,15 +65,15 @@ class TargetEvaluatorTests: QuickSpec {
         let userInfo:[String: Any] = [
           TargetKey.device.rawValue: "iPhone 7",
           TargetKey.os.rawValue: "iOS 12",
-          TargetKey.guestProfile.rawValue: [
-            TargetKey.guestId.rawValue: "123"
+          TargetKey.userProfile.rawValue: [
+            TargetKey.userId.rawValue: "123"
           ]
         ]
         
         let conditions: [CHTargetCondition] = [
           CHTargetCondition(key: .os, value: TargetValue("iOS 11"), op: .equal, subKey: nil),
           CHTargetCondition(key: .device, value: TargetValue("Nexus"), op: .contain, subKey: nil),
-          CHTargetCondition(key: .guestProfile, value: TargetValue("veil"), op: .equal, subKey: TargetSubKey(TargetKey.guestType.rawValue))
+          CHTargetCondition(key: .userProfile, value: TargetValue("user"), op: .equal, subKey: TargetSubKey("user"))
         ]
         
         let evaluated = TargetEvaluatorService.evaluate(conditions, userInfo: userInfo)

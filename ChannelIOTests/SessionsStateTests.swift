@@ -103,7 +103,7 @@ class SessionsStateTests: QuickSpec {
           let i = 0
           let session = CHSession(
             id: "12\(i)", chatType: "UserChat", chatId: "333",
-            personType: "Veil", personId: "123", unread: i,
+            personType: "User", personId: "123", unread: i,
             alert: 0, readAt: nil, postedAt: nil)
           
           state = state.upsert(sessions: [session])

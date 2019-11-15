@@ -20,14 +20,13 @@ enum TargetKey: String {
   case cookie = "cookie" //x subkey required
   case locale = "locale"
   case urlPath = "urlPath" //x
-  case guestId = "guest.id"
-  case guestType = "guest.type"
-  case guestCreatedAt = "guest.createdAt"
-  case guestUpdatedAt = "guest.updatedAt"
-  case guestMobileNumber = "guest.mobileNumber"
-  case guestName = "guest.name"
-  case guestProfile = "guest.profile" //subkey required
-  case guestSegment = "guest.segment"
+  case userId = "user.id"
+  case userCreatedAt = "user.createdAt"
+  case userUpdatedAt = "user.updatedAt"
+  case userMobileNumber = "user.mobileNumber"
+  case userName = "user.name"
+  case userProfile = "user.profile" //subkey required
+  case userSegment = "user.segment"
 }
 
 typealias TargetValue = String

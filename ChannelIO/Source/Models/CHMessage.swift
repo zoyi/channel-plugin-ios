@@ -154,7 +154,7 @@ extension CHMessage: Mappable {
     self.progress = 1
   }
   
-  init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
+  init(chatId: String, user: CHUser, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
@@ -162,8 +162,8 @@ extension CHMessage: Mappable {
     self.id = requestId
     self.chatType = "UserChat"
     self.chatId = chatId
-    self.personType = guest.type
-    self.personId = guest.id
+    self.personType = "User"
+    self.personId = user.id
     self.requestId = requestId
     self.createdAt = now
     self.state = .New
@@ -198,8 +198,8 @@ extension CHMessage: Mappable {
     self.messageType = CHMessage.contextType(self)
   }
   
-  init(chatId: String, guest: CHGuest, message: String = "", asset: PHAsset? = nil, image: UIImage? = nil) {
-    self.init(chatId: chatId, guest: guest, message: message, messageType: .Media)
+  init(chatId: String, user: CHUser, message: String = "", asset: PHAsset? = nil, image: UIImage? = nil) {
+    self.init(chatId: chatId, user: user, message: message, messageType: .Media)
     if let image = image {
       self.file = CHFile(imageData: image)
     } else if let asset = asset {
@@ -330,8 +330,8 @@ extension CHMessage {
     originId: String? = nil,
     key: String? = nil,
     mutable: Bool = true) -> CHMessage {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
+    let me = mainStore.state.user
+    var message = CHMessage(chatId: chatId, user: me, message: text ?? "")
     if let originId = originId, let key = key {
       message.submit = CHSubmit(id: originId, key: key)
     }
@@ -353,7 +353,7 @@ extension CHMessage {
   }
   
   func isMine() -> Bool {
-    let me = mainStore.state.guest
+    let me = mainStore.state.user
     return self.entity?.id == me.id
   }
   

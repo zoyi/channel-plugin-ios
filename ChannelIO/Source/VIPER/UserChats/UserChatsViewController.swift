@@ -115,8 +115,8 @@ class UserChatsViewController: BaseViewController {
         self.nextSeq = nil
         self.fetchUserChats(isInit: true, showIndicator: true)
         WsService.shared.connect()
-        _ = AppManager.touch().subscribe(onNext: { (guest) in
-          mainStore.dispatch(UpdateGuest(payload: guest))
+        _ = AppManager.touch().subscribe(onNext: { (user) in
+          mainStore.dispatch(UpdateUser(payload: user))
         })
         
         CHNotification.shared.dismiss()

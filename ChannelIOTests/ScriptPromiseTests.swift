@@ -16,7 +16,7 @@ class ScriptPromiseTests: QuickSpec {
   override func spec() {
     beforeEach {
       PrefStore.setCurrentChannelId(channelId: "7")
-      PrefStore.setCurrentVeilId(veilId: "58a154dec843f78f")
+      PrefStore.setCurrentUserId(userId: "58a154dec843f78f")
     }
     
     it("normal") {

@@ -164,12 +164,8 @@ extension CHUserChat {
           
       let dispose = signal.subscribe(onNext: { (_) in
         if self.isLocal {
-          let guest = personSelector(
-            state: mainStore.state,
-            personType: self.personType,
-            personId: self.personId
-          ) as? CHGuest
-          mainStore.dispatch(UpdateGuestWithLocalRead(guest:guest, session:self.session))
+          let user = userSelector(state: mainStore.stae)
+          mainStore.dispatch(UpdateUserWithLocalRead(user:user, session:self.session))
         } else {
           mainStore.dispatch(ReadSession(payload: self.session))
         }
@@ -265,7 +261,7 @@ extension CHUserChat {
       file: file,
       buttons: button)
     
-    let session = CHSession(id: chatId, chatId: chatId, guest: mainStore.state.guest, alert: 1)
+    let session = CHSession(id: chatId, chatId: chatId, user: mainStore.state.user, alert: 1)
     let userChat = CHUserChat(chatId: chatId, lastMessageId: message.id)
     return (userChat, message, session)
   }

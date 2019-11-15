@@ -40,7 +40,7 @@
       "trialEndDate":"2016-05-23",
       "autoSolvingTimeMinutes":1440,
       "defaultPluginId":"28",
-      "requestGuestInfo":true,
+      "requestUserInfo":true,
       "expectedResponseDelay":"instant",
       "workingType":"custom",
       "awayOption":"active",
