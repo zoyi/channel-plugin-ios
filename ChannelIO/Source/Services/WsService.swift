@@ -19,15 +19,13 @@ enum WSType: String {
   case BETA = "http://ws.staging.channel.io"
 }
 
-enum CHSocketRequest : String {
-  case authentication = "authentication"
-  case join = "join"
-  case leave = "leave"
-  case heartbeat = "heartbeat"
-  
-  var value: String {
-    return self.rawValue
-  }
+struct SocketCommand {
+  static let join = "join"
+  static let leave = "leave"
+  static let heartbeat = "heartbeat"
+  static let terminate = "terminate"
+  static let typing = "typing"
+  static let authentication = "authentication"
 }
 
 enum CHSocketResponse : String {
@@ -195,7 +193,7 @@ class WsService {
         .reconnectWait(10)
       ])
 
-    self.socket = self.manager?.socket(forNamespace: "/app")
+    self.socket = self.manager?.socket(forNamespace: "/front")
     self.socket?.removeAllHandlers()
     self.addSocketHandlers()
     self.socket?.connect()
@@ -220,7 +218,7 @@ class WsService {
     
     self.currentChatId = chatId
     if let socket = self.socket, socket.status == .connected {
-      socket.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
+      socket.emit(SocketCommand.join, "/user_chats/\(chatId)")
     }
   }
   
@@ -229,7 +227,7 @@ class WsService {
     
     self.currentChatId = ""
     if let socket = self.socket, socket.status == .connected {
-      socket.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
+      socket.emit(SocketCommand.leave, "/user_chats/\(chatId)")
     }
   }
   
@@ -269,10 +267,16 @@ class WsService {
   
   @objc func heartbeat() {
     dlog("heartbeat")
-    if self.socket != nil {
-      self.socket?.emit(CHSocketRequest.heartbeat.value)
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(SocketCommand.heartbeat)
     } else {
       self.invalidateTimer()
+    }
+  }
+  
+  func terminate() {
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(SocketCommand.terminate)
     }
   }
   
@@ -537,6 +541,6 @@ fileprivate extension WsService {
   func emitAuth() {
     dlog("socket submitting auth")
     guard let jwt = PrefStore.getSessionJWT() else { return }
-    self.socket?.emit("authentication", ["jwt":jwt])
+    self.socket?.emit("authentication", jwt)
   }
 }
