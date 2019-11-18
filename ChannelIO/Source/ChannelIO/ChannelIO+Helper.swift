@@ -14,7 +14,6 @@ import SVProgressHUD
 extension ChannelIO {
   
   internal class func reset() {
-    PushBotManager.reset()
     ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.close(animated: false)
     ChannelIO.hideNotification()
@@ -62,9 +61,9 @@ extension ChannelIO {
         dlog("Error while sending the event \(eventName). Attempting to send again")
         return true
       })
-      .subscribe(onNext: { (event, nudges) in
+      .subscribe(onNext: { (event) in
         dlog("\(eventName) event sent successfully")
-        PushBotManager.process(with: nudges, property: eventProperty ?? [:])
+
       }, onError: { (error) in
         dlog("\(eventName) event failed")
       }).disposed(by: disposeBag)

@@ -19,6 +19,12 @@ func pluginReducer(action: Action, plugin: CHPlugin?) -> CHPlugin {
     }
     return plugin ?? CHPlugin()
     
+  case let action as GetTouchSuccess:
+    if let plugin = action.payload.plugin {
+      return plugin
+    }
+    return plugin ?? CHPlugin()
+    
   case let action as UpdateLoungeInfo:
     return action.plugin
     

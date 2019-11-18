@@ -225,7 +225,7 @@ extension UserChatInteractor {
         else if typingEntity.action == "start" {
           if let manager = personSelector(
             state: mainStore.state,
-            personType: typingEntity.personType ?? "",
+            personType: typingEntity.personType,
             personId: typingEntity.personId) as? CHManager {
             if self?.getTypingIndex(of: typingEntity) == nil {
               self?.typingPersons.append(manager)
@@ -512,7 +512,7 @@ extension UserChatInteractor {
   
   fileprivate func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
     return self.typingPersons.firstIndex(where: {
-      $0.id == typingEntity.personId && $0.kind == typingEntity.personType
+      $0.id == typingEntity.personId
     })
   }
 }

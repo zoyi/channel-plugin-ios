@@ -44,11 +44,7 @@ struct CHNudge: CHEvaluatable {
   static func createChat(nudgeId: String) -> Observable<ChatResponse> {
     return NudgePromise.createNudgeUserChat(nudgeId: nudgeId)
   }
-  
-  static func getList(pluginId: String) -> Observable<[CHNudge]> {
-    return NudgePromise.getNudges(pluginId: pluginId)
-  }
-  
+    
   func reach() -> Observable<NudgeReachResponse> {
     return NudgePromise.requestReach(nudgeId: self.id)
   }

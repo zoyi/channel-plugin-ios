@@ -9,18 +9,17 @@
 import Foundation
 import ReSwift
 
-func personSelector(state: AppState, personType: String?, personId: String?) -> CHEntity? {
-  guard let personType = personType else { return nil }
-  guard let personId = personId else { return nil }
+func personSelector(state: AppState, personType: PersonType?, personId: String?) -> CHEntity? {
+  guard let personType = personType, let personId = personId else { return nil }
   
-  if personType == "Manager" {
+  switch personType {
+  case .manager:
     return state.managersState.findBy(id: personId)
-  } else if personType == "User" {
+  case .user:
     return state.user
-  } else if personType == "Bot" {
+  case .bot:
     return state.botsState.findBy(id: personId)
   }
-  return state.channel
 }
 
 func userSelector(state: AppState) -> CHUser {

@@ -23,6 +23,19 @@ func userReducer(action: Action, user: CHUser?) -> CHUser {
     }
     return user ?? CHUser()
     
+  case let action as GetTouchSuccess:
+    if let jwt = action.payload.sessionJWT {
+      PrefStore.setSessionJWT(jwt)
+    }
+    if let veilId = action.payload.veilId {
+      PrefStore.setVeilId(veilId)
+    }
+    if let user = action.payload.user {
+      PrefStore.setCurrentUserId(user.id)
+      return user
+    }
+    return user ?? CHUser()
+    
   case let action as UpdateUser:
     if var user = action.payload, let alert = user.alert {
       let count = mainStore.state.sessionsState.localSessions

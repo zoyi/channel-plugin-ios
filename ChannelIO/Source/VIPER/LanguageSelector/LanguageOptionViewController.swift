@@ -17,7 +17,11 @@ class LanguageOptionViewController: BaseViewController {
     $0.separatorStyle = .none
   }
   
-  let locales = [CHLocaleString.korean, CHLocaleString.english, CHLocaleString.japanese]
+  let locales = [
+    CHLocaleString.korean,
+    CHLocaleString.english,
+    CHLocaleString.japanese
+  ]
   let currentLocale: CHLocaleString? = CHUtils.getLocale()
   let disposeBag = DisposeBag()
   

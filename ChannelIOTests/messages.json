@@ -6,7 +6,7 @@
         "id":"5da5990e71ed9f2e",
         "chatType":"Group",
         "chatId":"1234",
-        "personType":"Manager",
+        "personType":"manager",
         "personId":"217",
         "message":"test",
         "format":"v2",

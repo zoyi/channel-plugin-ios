@@ -250,7 +250,7 @@ class WsService {
     socket.emit("typing", CHTypingEntity(
       action: "start",
       chatId: chat.id,
-      chatType: "UserChat")
+      chatType: .userChat)
     )
   }
   
@@ -261,7 +261,7 @@ class WsService {
     let entity = CHTypingEntity(
       action: "stop",
       chatId: chat.id,
-      chatType: "UserChat")
+      chatType: .userChat)
     
     socket.emit("typing", entity)
     self.typingSubject.onNext(entity)

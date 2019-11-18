@@ -336,6 +336,7 @@
 		65EAE11320EF468500D501FC /* TranslateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EAE11220EF468500D501FC /* TranslateView.swift */; };
 		65FB143C2298044F00393AA2 /* UserChatBottomBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB143B2298044F00393AA2 /* UserChatBottomBlockView.swift */; };
 		9C41611E22F1F21D0035232D /* UIColor+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41611D22F1F21D0035232D /* UIColor+Additions.swift */; };
+		9CB8549823826C9300C60474 /* CHOnline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB8549723826C9300C60474 /* CHOnline.swift */; };
 		9CCB5FB3237E98110030ED66 /* BootResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCB5FB2237E98110030ED66 /* BootResponse.swift */; };
 		9CCB5FB5237E9B350030ED66 /* DataTransferObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCB5FB4237E9B350030ED66 /* DataTransferObject.swift */; };
 /* End PBXBuildFile section */
@@ -690,6 +691,7 @@
 		65EAE11220EF468500D501FC /* TranslateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateView.swift; sourceTree = "<group>"; };
 		65FB143B2298044F00393AA2 /* UserChatBottomBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatBottomBlockView.swift; sourceTree = "<group>"; };
 		9C41611D22F1F21D0035232D /* UIColor+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Additions.swift"; sourceTree = "<group>"; };
+		9CB8549723826C9300C60474 /* CHOnline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHOnline.swift; sourceTree = "<group>"; };
 		9CCB5FB2237E98110030ED66 /* BootResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BootResponse.swift; path = ChannelIO/Source/DTO/BootResponse.swift; sourceTree = SOURCE_ROOT; };
 		9CCB5FB4237E9B350030ED66 /* DataTransferObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataTransferObject.swift; path = ChannelIO/Source/DTO/DataTransferObject.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1259,6 +1261,7 @@
 				657AF3F421784606001EAA7A /* CHSupportBot.swift */,
 				657AF3F0217845D7001EAA7A /* CHTargetCondition.swift */,
 				65CB9931226ECE9A004F9DC7 /* CHProfileSchema.swift */,
+				9CB8549723826C9300C60474 /* CHOnline.swift */,
 			);
 			name = Models;
 			path = Source/Models;
@@ -1908,6 +1911,7 @@
 				6597938B1FA716CB00840F6A /* UtilityPromise.swift in Sources */,
 				22E2138A23392E7C002B3EF4 /* InAppNotificationViewModel.swift in Sources */,
 				22E03E8E21B38D560009F48E /* MarkdownQuote.swift in Sources */,
+				9CB8549823826C9300C60474 /* CHOnline.swift in Sources */,
 				6597938C1FA716CB00840F6A /* AppReducer.swift in Sources */,
 				6597938D1FA716CB00840F6A /* ChannelReducer.swift in Sources */,
 				6597938E1FA716CB00840F6A /* UserReducer.swift in Sources */,

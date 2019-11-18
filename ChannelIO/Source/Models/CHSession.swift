@@ -13,9 +13,9 @@ struct CHSession: ModelType {
   // ModelType
   var id = ""
   // Session
-  var chatType = ""
+  var chatType: ChatType!
   var chatId = ""
-  var personType = ""
+  var personType: PersonType!
   var personId = ""
   var unread = 0
   var alert = 0
@@ -26,10 +26,10 @@ struct CHSession: ModelType {
 extension CHSession: Mappable {
   init?(map: Map) { }
   
-  init(id: String, chatId: String, user: CHUser, alert: Int, type: String = "UserChat") {
+  init(id: String, chatId: String, user: CHUser, alert: Int, type: ChatType = .userChat) {
     self.id = id
     self.chatId = chatId
-    self.personType = "User"
+    self.personType = .user
     self.personId = user.id
     self.alert = alert
     self.chatType = type

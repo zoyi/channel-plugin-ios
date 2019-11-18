@@ -257,19 +257,19 @@ struct UserChatPromise {
     mutable: Bool? = nil) -> Observable<CHMessage> {
     return Observable.create { subscriber in
       var params = [
-        "query": [String: AnyObject](),
-        "body": [String: AnyObject]()
+        "query": [String: Any](),
+        "body": [String: Any]()
       ]
       
       if let mutable = mutable {
-        params["query"]?["mutable"] = mutable as AnyObject?
+        params["query"]?["mutable"] = mutable
       }
       
-      params["body"]?["message"] = message as AnyObject?
-      params["body"]?["requestId"] = requestId as AnyObject?
+      params["body"]?["message"] = message
+      params["body"]?["requestId"] = requestId
       
       if let submit = submit {
-        params["body"]?["submit"] = submit.toJSON() as AnyObject?
+        params["body"]?["submit"] = submit.toJSON()
       }
       
       let req = Alamofire.request(RestRouter.CreateMessage(userChatId, params as RestRouter.ParametersType))

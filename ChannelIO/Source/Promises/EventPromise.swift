@@ -17,7 +17,7 @@ struct EventPromise {
     pluginId: String,
     name: String,
     property: [String: Any?]? = nil,
-    sysProperty: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
+    sysProperty: [String: Any?]? = nil) -> Observable<CHEvent> {
     return Observable.create { subscriber in
       var params = [
         "url": [String:String]()
@@ -49,9 +49,7 @@ struct EventPromise {
               subscriber.onError(CHErrorPool.eventParseError)
               return
             }
-            let nudges = Mapper<CHNudge>().mapArray(JSONObject: json["nudgeCandidates"].object) ?? []
-            
-            subscriber.onNext((event, nudges))
+            subscriber.onNext(event)
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)

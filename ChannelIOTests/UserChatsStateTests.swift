@@ -23,7 +23,7 @@ class UserChatsStateTests: QuickSpec {
       userChats = [CHUserChat]()
       for i in 0..<10 {
         let userChat = CHUserChat(
-          id: "\(i)0", personType: "", personId: "", channelId: "",
+          id: "\(i)0", personType: .manager, personId: "", channelId: "",
           state: .unassigned, review: "", createdAt: nil, openedAt: nil,
           updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
           assigneeId: nil, assigneeType: nil, appMessageId: nil,

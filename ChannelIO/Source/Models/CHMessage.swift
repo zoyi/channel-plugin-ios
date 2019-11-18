@@ -46,15 +46,14 @@ struct CHMessage: ModelType {
   var id: String = ""
   // Message
   var channelId: String = ""
-  var chatType: String = ""
+  var chatType: ChatType!
   var chatId: String = ""
-  var personType: String = ""
+  var personType: PersonType!
   var personId: String = ""
   var title: String? = nil
   var message: String?
   var messageV2: NSAttributedString?
   var requestId: String?
-  var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
   var action: CHAction? = nil
   var buttons: [CHLink]? = []
@@ -114,11 +113,12 @@ struct CHMessage: ModelType {
   }
   
   var isWelcome: Bool {
-    if let option = self.botOption, option["welcome"] == true {
-      return true
-    } else {
-      return false
-    }
+//    if let option = self.botOption, option["welcome"] == true {
+//      return true
+//    } else {
+//      return false
+//    }
+    return false
   }
 
   var isDeleted: Bool {
@@ -150,7 +150,7 @@ extension CHMessage: Mappable {
     self.action = action
     self.file = file
     self.personId = entity?.id ?? ""
-    self.personType = entity?.kind ?? ""
+    self.personType = entity?.entityType
     self.progress = 1
   }
   
@@ -160,9 +160,9 @@ extension CHMessage: Mappable {
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = requestId
-    self.chatType = "UserChat"
+    self.chatType = .userChat
     self.chatId = chatId
-    self.personType = "User"
+    self.personType = .user
     self.personId = user.id
     self.requestId = requestId
     self.createdAt = now
@@ -183,9 +183,9 @@ extension CHMessage: Mappable {
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     
     self.id = requestId
-    self.chatType = "UserChat"
+    self.chatType = .userChat
     self.chatId = chatId
-    self.personType = entity.kind
+    self.personType = entity.entityType
     self.personId = entity.id
     self.requestId = requestId
     self.createdAt = now
@@ -229,7 +229,6 @@ extension CHMessage: Mappable {
     buttons     <- map["buttons"]
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
-    botOption   <- map["botOption"]
     profileBot  <- map["profileBot"]
     action      <- map["action"]
     submit      <- map["submit"]

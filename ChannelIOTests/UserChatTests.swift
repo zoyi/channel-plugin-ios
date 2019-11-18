@@ -70,7 +70,6 @@ class UserChatTests: QuickSpec {
         it("should contain defualt value") {
           let userChat = CHUserChat()
           expect(userChat.id).to(equal(""))
-          expect(userChat.personType).to(equal(""))
           expect(userChat.channelId).to(equal(""))
           expect(userChat.state).to(equal(.ready))
           expect(userChat.review).to(equal(""))
@@ -94,7 +93,6 @@ class UserChatTests: QuickSpec {
           }
           
           expect(userChat.id).to(equal("4677418"))
-          expect(userChat.personType).to(equal("User"))
           expect(userChat.personId).to(equal("33"))
           expect(userChat.channelId).to(equal("7"))
           expect(userChat.review).to(equal("test"))

@@ -14,7 +14,7 @@ import ObjectMapper
 
 struct SupportBotPromise {
   static func getSupportBot(pluginId: String) -> Observable<CHSupportBotEntryInfo> {
-    return Observable.create({ (subscriber) in
+    return Observable.create { (subscriber) in
       let req = Alamofire.request(RestRouter.GetSupportBot(pluginId))
         .validate(statusCode: 200..<300)
         .asyncResponse(completionHandler: { (response) in
@@ -36,11 +36,11 @@ struct SupportBotPromise {
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
   
   static func createSupportBotUserChat(supportBotId: String) -> Observable<ChatResponse> {
-    return Observable.create({ (subscriber) in
+    return Observable.create { (subscriber) in
       let req = Alamofire.request(RestRouter.CreateSupportBotChat(supportBotId))
         .validate(statusCode: 200..<300)
         .asyncResponse(completionHandler: { (response) in
@@ -60,15 +60,23 @@ struct SupportBotPromise {
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
   
-  static func replySupportBot(userChatId: String?, actionId: String?, buttonId: String?, requestId: String? = nil) -> Observable<CHMessage> {
-    return Observable.create({ (subscriber) in
-      guard let chatId = userChatId, let buttonId = buttonId, let actionId = actionId , let requestId = requestId else {
-        subscriber.onError(CHErrorPool.unknownError)
-        return Disposables.create()
-      }
+  static func replySupportBot(
+    userChatId: String?,
+    actionId: String?,
+    buttonId: String?,
+    requestId: String? = nil) -> Observable<CHMessage> {
+    return Observable.create { (subscriber) in
+      guard
+        let chatId = userChatId,
+        let buttonId = buttonId,
+        let actionId = actionId,
+        let requestId = requestId else {
+          subscriber.onError(CHErrorPool.unknownError)
+          return Disposables.create()
+        }
       
       let params = [
         "query": [
@@ -83,7 +91,8 @@ struct SupportBotPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            guard let message = Mapper<CHMessage>().map(JSONObject: json["message"].object) else {
+            guard let message = Mapper<CHMessage>()
+              .map(JSONObject: json["message"].object) else {
               subscriber.onError(CHErrorPool.messageParseError)
               break
             }
@@ -96,6 +105,6 @@ struct SupportBotPromise {
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
 }

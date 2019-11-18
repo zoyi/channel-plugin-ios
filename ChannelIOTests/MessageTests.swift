@@ -232,7 +232,7 @@ class MessageTests: QuickSpec {
             var firstMessage = self.loadedMessage
             var secondMessage = self.loadedMessage
             firstMessage?.personId = "123"
-            firstMessage?.personType = "Manager"
+            firstMessage?.personType = .manager
             secondMessage?.personId = "123"
             secondMessage?.personType = "Manager"
             expect(firstMessage?.isSameWriter(other: secondMessage)).to(beTrue())
@@ -244,9 +244,9 @@ class MessageTests: QuickSpec {
             var firstMessage = self.loadedMessage
             var secondMessage = self.loadedMessage
             firstMessage?.personId = "123"
-            firstMessage?.personType = "Manager"
+            firstMessage?.personType = .manager
             secondMessage?.personId = "124"
-            secondMessage?.personType = "Manager"
+            secondMessage?.personType = .manager
             expect(firstMessage?.isSameWriter(other: secondMessage)).to(beFalse())
           }
         }
@@ -280,10 +280,10 @@ class MessageTests: QuickSpec {
             var firstMessage = self.loadedMessage
             var secondMessage = self.loadedMessage
             firstMessage?.personId = "123"
-            firstMessage?.personType = "Manager"
+            firstMessage?.personType = .manager
             firstMessage?.createdAt = Date(timeIntervalSinceNow: 1)
             secondMessage?.personId = "123"
-            secondMessage?.personType = "Manager"
+            secondMessage?.personType = .manager
             secondMessage?.createdAt = Date(timeIntervalSinceNow: 1)
             expect(firstMessage?.isContinue(other: secondMessage)).to(beTrue())
           }
@@ -294,21 +294,21 @@ class MessageTests: QuickSpec {
             var firstMessage = self.loadedMessage
             var secondMessage = self.loadedMessage
             firstMessage?.personId = "123"
-            firstMessage?.personType = "Manager"
+            firstMessage?.personType = .manager
             firstMessage?.createdAt = Date(timeIntervalSinceNow: 1)
             
             secondMessage?.personId = "123"
-            secondMessage?.personType = "Manager"
+            secondMessage?.personType = .manager
             secondMessage?.createdAt = Date(timeIntervalSinceNow: 10000)
             expect(firstMessage?.isContinue(other: secondMessage)).to(beFalse())
             
             secondMessage?.personId = "124"
-            secondMessage?.personType = "Manager"
+            secondMessage?.personType = .manager
             secondMessage?.createdAt = Date(timeIntervalSinceNow: 1)
             expect(firstMessage?.isContinue(other: secondMessage)).to(beFalse())
             
             secondMessage?.personId = "124"
-            secondMessage?.personType = "Manager"
+            secondMessage?.personType = .manager
             secondMessage?.createdAt = Date(timeIntervalSinceNow: 1000)
             expect(firstMessage?.isContinue(other: secondMessage)).to(beFalse())
           }

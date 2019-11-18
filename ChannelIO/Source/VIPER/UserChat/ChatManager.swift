@@ -43,7 +43,7 @@ class ChatManager: NSObject {
     willSet {
       if let chat = newValue {
         self.chatId = chat.id
-        self.chatType = "UserChat"
+        //self.chatType = "UserChat"
       }
     }
   }
@@ -169,8 +169,7 @@ class ChatManager: NSObject {
       .filter({ [weak self] (type, data) -> Bool in
         guard let userChat = data as? CHUserChat else { return false }
         return type == WsServiceType.UpdateUserChat &&
-          userChat.id == self?.chat?.id &&
-          userChat.personId == self?.chat?.personId
+          userChat.id == self?.chat?.id
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (type, data) in
@@ -209,7 +208,7 @@ class ChatManager: NSObject {
         else if typingEntity.action == "start" {
           if let typer = personSelector(
             state: mainStore.state,
-            personType: typingEntity.personType ?? "",
+            personType: typingEntity.personType,
             personId: typingEntity.personId) {
             if self?.getTypingIndex(of: typingEntity) == nil {
               self?.typingPersons.append(typer)
@@ -280,7 +279,7 @@ extension ChatManager {
   
   fileprivate func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
     return self.typingPersons.firstIndex(where: {
-      $0.id == typingEntity.personId && $0.kind == typingEntity.personType
+      $0.id == typingEntity.personId
     })
   }
 }
