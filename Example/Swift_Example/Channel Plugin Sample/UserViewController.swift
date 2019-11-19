@@ -41,7 +41,7 @@ class UserViewController : UIViewController {
     }
     
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
-    settings.userId = self.idField.text
+    settings.memberId = self.idField.text
     settings.debugMode = true
     
     ChannelIO.boot(with: settings, profile: profile) { (completion, guest) in

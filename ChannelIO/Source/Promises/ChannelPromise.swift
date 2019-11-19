@@ -27,7 +27,8 @@ struct ChannelPromise {
           switch response.result{
           case .success(let data):
             let json = JSON(data)
-            guard let channel = Mapper<CHChannel>().map(JSONObject: json["channel"].object) else { return }
+            guard let channel = Mapper<CHChannel>()
+              .map(JSONObject: json["channel"].object) else { return }
             
             subscriber.onNext(channel)
             subscriber.onCompleted()

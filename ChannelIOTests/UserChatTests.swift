@@ -16,7 +16,12 @@ import RxSwift
 
 class UserChatTests: QuickSpec {
   var loadedChat: CHUserChat?
-  let manager: CHManager = CHManager(id: "22136", name: "manager_name", avatarUrl: "url", username: "user_name")
+  let manager: CHManager = CHManager(
+    id: "22136",
+    name: "manager_name",
+    avatarUrl: "url",
+    username: "user_name"
+  )
   var createdUserChats: [CHUserChat?] = []
   var data: Data?
   var json: JSON?
@@ -36,7 +41,7 @@ class UserChatTests: QuickSpec {
       
       let settings = ChannelPluginSettings(pluginKey: "06ccfc12-a9fd-4c68-b364-5d19f81a60dd")
       waitUntil(timeout: 10) { done in
-        ChannelIO.boot(with: settings) { (completion, guest) in
+        ChannelIO.boot(with: settings) { (completion, user) in
           done()
         }
       }
@@ -65,7 +70,6 @@ class UserChatTests: QuickSpec {
         it("should contain defualt value") {
           let userChat = CHUserChat()
           expect(userChat.id).to(equal(""))
-          expect(userChat.personType).to(equal(""))
           expect(userChat.channelId).to(equal(""))
           expect(userChat.state).to(equal(.ready))
           expect(userChat.review).to(equal(""))
@@ -89,7 +93,6 @@ class UserChatTests: QuickSpec {
           }
           
           expect(userChat.id).to(equal("4677418"))
-          expect(userChat.personType).to(equal("User"))
           expect(userChat.personId).to(equal("33"))
           expect(userChat.channelId).to(equal("7"))
           expect(userChat.review).to(equal("test"))

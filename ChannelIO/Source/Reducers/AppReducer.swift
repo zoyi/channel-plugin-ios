@@ -13,7 +13,7 @@ func appReducer(action: Action, state: AppState?) -> AppState {
     checkinState: checkinReducer(action: action, state: state?.checkinState),
     plugin: pluginReducer(action: action, plugin: state?.plugin),
     channel: channelReducer(action: action, channel: state?.channel),
-    guest: guestReducer(action: action, guest: state?.guest),
+    user: userReducer(action: action, user: state?.user),
     userChatsState: userChatsReducer(action: action, state: state?.userChatsState),
     push: pushReducer(action: action, push: state?.push),
     managersState: managersReducer(action: action, state: state?.managersState),

@@ -16,8 +16,6 @@ enum ReviewType: String {
 }
 
 enum UserChatState: String {
-  case ready
-  case supporting
   case unassigned
   case assigned
   case holding
@@ -26,14 +24,57 @@ enum UserChatState: String {
   case removed
 }
 
+enum ChatType: String {
+  case userChat = "userChat"
+//  case groupChat = "group"
+//  case directChat = "directChat"
+
+  init?(_ type: String?) {
+    guard let type = type else { return nil }
+    switch type {
+    case "userChat": self = .userChat
+//    case "group": self = .groupChat
+//    case "directChat": self = .directChat
+    default: return nil
+    }
+  }
+
+  var url: String {
+    switch self {
+    case .userChat: return "userChat"
+//    case .groupChat: return "groups"
+//    case .directChat: return "direct_chats"
+    }
+  }
+}
+
+enum PersonType: String {
+  case manager = "manager"
+  case user = "user"
+  case bot = "bot"
+
+  init?(_ type: String?) {
+    guard let type = type else { return nil }
+    switch type {
+    case "manager": self = .manager
+    case "user": self = .user
+    case "bot": self = .bot
+    default: return nil
+    }
+  }
+}
+
+enum ChatHandlingStatus: String {
+  case support
+}
+
 struct CHUserChat: ModelType {
   // ModelType
   var id = ""
   // UserChat
-  var personType: String = ""
-  var personId: String = ""
+  var userId: String = ""
   var channelId: String = ""
-  var state: UserChatState = .ready
+  var state: UserChatState?
   var review: String = ""
   var createdAt: Date?
   var openedAt: Date?
@@ -42,8 +83,8 @@ struct CHUserChat: ModelType {
   var resolvedAt: Date?
   var closedAt: Date?
   var assigneeId: String? = nil
-  var assigneeType: String? = nil
-  
+  var managerIds: [String] = []
+  var handling: ChatHandlingStatus?
   var appMessageId: String?
   var resolutionTime: Int = 0
   
@@ -54,7 +95,11 @@ struct CHUserChat: ModelType {
   var hasRemoved: Bool = false
   
   var assignee: CHEntity? {
-    return personSelector(state: mainStore.state, personType: self.assigneeType, personId: self.assigneeId)
+    return personSelector(
+      state: mainStore.state,
+      personType: .manager,
+      personId: self.assigneeId
+    )
   }
   
   var readableUpdatedAt: String {
@@ -78,7 +123,7 @@ extension CHUserChat: Mappable {
   
   init(chatId: String, lastMessageId: String) {
     self.id = chatId
-    self.state = .ready
+    self.state = nil
     self.appMessageId = lastMessageId
     self.createdAt = Date()
     self.updatedAt = Date()
@@ -86,9 +131,9 @@ extension CHUserChat: Mappable {
   
   mutating func mapping(map: Map) {
     id               <- map["id"]
-    personType       <- map["personType"]
-    personId         <- map["personId"]
+    userId           <- map["userId"]
     channelId        <- map["channelId"]
+    managerIds       <- map["managerIds"]
     review           <- map["review"]
     createdAt        <- (map["createdAt"], CustomDateTransform())
     openedAt         <- (map["openedAt"], CustomDateTransform())
@@ -96,22 +141,16 @@ extension CHUserChat: Mappable {
     resolvedAt       <- (map["resolvedAt"], CustomDateTransform())
     closedAt         <- (map["closedAt"], CustomDateTransform())
     updatedAt        <- (map["appUpdatedAt"], CustomDateTransform())
+    handling         <- map["handling"]
     appMessageId     <- map["appMessageId"]
     assigneeId       <- map["assigneeId"]
-    assigneeType     <- map["assigneeType"]
     resolutionTime   <- map["resolutionTime"]
-    
-    if let s = map["stateV2"].currentValue as? String {
-      state <- map["stateV2"]
-    } else {
-      state <- map["state"]
-    }
+    state            <- map["state"]
   }
 }
 
 //TODO: Refactor to AsyncActionCreator
 extension CHUserChat {
-  
   static func get(userChatId: String) -> Observable<ChatResponse> {
     return UserChatPromise.getChat(userChatId: userChatId)
   }
@@ -168,12 +207,8 @@ extension CHUserChat {
           
       let dispose = signal.subscribe(onNext: { (_) in
         if self.isLocal {
-          let guest = personSelector(
-            state: mainStore.state,
-            personType: self.personType,
-            personId: self.personId
-          ) as? CHGuest
-          mainStore.dispatch(UpdateGuestWithLocalRead(guest:guest, session:self.session))
+          let user = userSelector(state: mainStore.state)
+          mainStore.dispatch(UpdateUserWithLocalRead(user:user, session:self.session))
         } else {
           mainStore.dispatch(ReadSession(payload: self.session))
         }
@@ -225,7 +260,7 @@ extension CHUserChat {
   }
   
   var isReadyOrOpen: Bool {
-    return self.state == .ready || self.state == .unassigned
+    return self.state == nil || self.state == .unassigned
   }
   
   var isUnassigned: Bool {
@@ -233,7 +268,7 @@ extension CHUserChat {
   }
   
   var isReady: Bool {
-    return self.state == .ready
+    return self.state == nil && self.handling == nil
   }
   
   var isEngaged: Bool {
@@ -241,7 +276,7 @@ extension CHUserChat {
   }
   
   var isSupporting: Bool {
-    return self.state == .supporting
+    return self.state == nil && self.handling == .support
   }
 
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
@@ -269,7 +304,7 @@ extension CHUserChat {
       file: file,
       buttons: button)
     
-    let session = CHSession(id: chatId, chatId: chatId, guest: mainStore.state.guest, alert: 1)
+    let session = CHSession(id: chatId, chatId: chatId, user: mainStore.state.user, alert: 1)
     let userChat = CHUserChat(chatId: chatId, lastMessageId: message.id)
     return (userChat, message, session)
   }
@@ -282,7 +317,6 @@ extension CHUserChat: Equatable {
       lhs.state == rhs.state &&
       lhs.lastMessage == rhs.lastMessage &&
       lhs.assigneeId == rhs.assigneeId &&
-      lhs.assigneeType == rhs.assigneeType &&
       lhs.resolutionTime == rhs.resolutionTime
   }
 }

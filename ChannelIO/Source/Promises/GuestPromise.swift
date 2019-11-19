@@ -1,5 +1,5 @@
 //
-//  GuestPromise.swift
+//  UserPromise.swift
 //  CHPlugin
 //
 //  Created by Haeun Chung on 06/02/2017.
@@ -13,29 +13,24 @@ import SwiftyJSON
 import ObjectMapper
 import CRToast
 
-struct GuestPromise {
-  static func touch() -> Observable<CHGuest> {
+struct UserPromise {
+  static func touch() -> Observable<BootResponse> {
     return Observable.create { subscriber in
-      let req = Alamofire.request(RestRouter.TouchGuest)
+      let req = Alamofire
+        .request(RestRouter.TouchUser)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json:JSON = JSON(data)
-            
-            let user:CHUser? = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            let veil:CHVeil? = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-            
-            if user == nil && veil == nil {
-              subscriber.onError(CHErrorPool.guestParseError)
-            } else {
-              user == nil ? subscriber.onNext(veil!) : subscriber.onNext(user!)
-              subscriber.onCompleted()
+            guard let result = Mapper<BootResponse>().map(JSONObject: json.object) else {
+              subscriber.onError(CHErrorPool.pluginParseError)
+              break
             }
-            break
+            subscriber.onNext(result)
+            subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(error)
-            break
           }
         })
       
@@ -45,28 +40,24 @@ struct GuestPromise {
     }
   }
   
-  static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHGuest?, Any?)> {
+  static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHUser?, Any?)> {
     return Observable.create({ (subscriber) -> Disposable in
       let params = [
         "body": profiles
       ]
       
-      let req = Alamofire.request(RestRouter.UpdateGuest(params as RestRouter.ParametersType))
+      let req = Alamofire.request(RestRouter.UpdateUser(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json:JSON = JSON(data)
-            
-            let user:CHUser? = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            let veil:CHVeil? = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-            
-            if user == nil && veil == nil {
-              subscriber.onError(CHErrorPool.guestParseError)
-            } else {
-              user != nil ? subscriber.onNext((user, nil)) : subscriber.onNext((veil, nil))
-              subscriber.onCompleted()
+            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
+              subscriber.onError(CHErrorPool.userParseError)
+              break
             }
+            subscriber.onNext((user, nil))
+            subscriber.onCompleted()
           case .failure(let error):
             if let data = response.data {
               CRToastManager.showErrorFromData(data)
@@ -75,7 +66,7 @@ struct GuestPromise {
             subscriber.onCompleted()
           }
         })
-      
+
       return Disposables.create {
         req.cancel()
       }

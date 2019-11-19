@@ -12,7 +12,7 @@ import RxSwift
 struct AppManager {
   static let disposeBag = DisposeBag()
   
-  static func boot(pluginKey: String, params: CHParam) -> Observable<[String: Any]> {
+  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
     return PluginPromise.boot(pluginKey: pluginKey, params: params)
   }
   
@@ -32,8 +32,8 @@ struct AppManager {
     return PluginPromise.sendPushAck(chatId: userChatId)
   }
   
-  static func unregisterToken(token: String) {
-    PluginPromise.unregisterPushToken(guestToken: token)
+  static func unregisterToken() {
+    PluginPromise.unregisterPushToken()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { _ in
         dlog("shutdown success")
@@ -50,7 +50,7 @@ struct AppManager {
     return PluginPromise.getOperators()
   }
   
-  static func touch() -> Observable<CHGuest> {
-    return GuestPromise.touch()
+  static func touch() -> Observable<BootResponse> {
+    return UserPromise.touch()
   }
 }

@@ -27,30 +27,7 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false, limit: Int? 
     })
   }
   
-  return userChats.map({ (userChat) in
-    return CHUserChat(
-      id: userChat.id,
-      personType: userChat.personType,
-      personId: userChat.personId,
-      channelId: userChat.channelId,
-      state: userChat.state,
-      review: userChat.review,
-      createdAt: userChat.createdAt,
-      openedAt: userChat.openedAt,
-      updatedAt: userChat.updatedAt,
-      followedAt: userChat.followedAt,
-      resolvedAt: userChat.resolvedAt,
-      closedAt: userChat.closedAt,
-      assigneeId: userChat.assigneeId,
-      assigneeType: userChat.assigneeType,
-      appMessageId: userChat.appMessageId,
-      resolutionTime: userChat.resolutionTime,
-      lastMessage: state.messagesState.findBy(id: userChat.appMessageId),
-      session: state.sessionsState.findBy(userChatId: userChat.id),
-      channel: state.channel,
-      hasRemoved: userChat.hasRemoved
-    )
-  })
+  return userChats.compactMap { userChatSelector(state: state, userChatId: $0.id) }
 }
 
 func userChatSelector(state: AppState, userChatId: String?) -> CHUserChat? {
@@ -60,8 +37,7 @@ func userChatSelector(state: AppState, userChatId: String?) -> CHUserChat? {
   
   return CHUserChat(
     id: userChat.id,
-    personType: userChat.personType,
-    personId: userChat.personId,
+    userId: userChat.userId,
     channelId: userChat.channelId,
     state: userChat.state,
     review: userChat.review,
@@ -72,7 +48,8 @@ func userChatSelector(state: AppState, userChatId: String?) -> CHUserChat? {
     resolvedAt: userChat.resolvedAt,
     closedAt: userChat.closedAt,
     assigneeId: userChat.assigneeId,
-    assigneeType: userChat.assigneeType,
+    managerIds: userChat.managerIds,
+    handling: userChat.handling,
     appMessageId: userChat.appMessageId,
     resolutionTime: userChat.resolutionTime,
     lastMessage: state.messagesState.findBy(id: userChat.appMessageId),

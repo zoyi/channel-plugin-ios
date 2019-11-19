@@ -20,7 +20,7 @@ struct CHEvent {
   var id: String = ""
   var channelId: String = ""
   var personId: String = ""
-  var personType: String = ""
+  var personType: PersonType!
   var name: String = ""
   var properties: [String: AnyObject] = [:]
   var sysProperties: [String: AnyObject] = [:]
@@ -33,8 +33,13 @@ extension CHEvent {
     pluginId: String,
     name: String,
     property: [String: Any?]? = nil,
-    sysProperty: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
-    return EventPromise.sendEvent(pluginId: pluginId, name: name, property: property, sysProperty: sysProperty)
+    sysProperty: [String: Any?]? = nil) -> Observable<CHEvent> {
+    return EventPromise.sendEvent(
+      pluginId: pluginId,
+      name: name,
+      property: property,
+      sysProperty: sysProperty
+    )
   }
 }
 

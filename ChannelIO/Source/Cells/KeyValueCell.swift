@@ -57,7 +57,7 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     }
   }
   
-  func configure(profile: GuestProfileItemModel) {
+  func configure(profile: UserProfileItemModel) {
     self.titleLabel.text = profile.profileName
     
     if let value = profile.profileValue {

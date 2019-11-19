@@ -13,12 +13,12 @@ import ObjectMapper
 struct CHTypingEntity: SocketData {
   var action = ""
   var chatId = ""
-  var chatType = ""
-  var personId: String? = nil
-  var personType: String? = nil
+  var chatType: ChatType?
+  var personId: String?
+  var personType: PersonType?
 
-  init(action: String, chatId: String, chatType: String,
-       personId: String? = nil, personType: String? = nil) {
+  init(action: String, chatId: String, chatType: ChatType?,
+       personId: String? = nil, personType: PersonType? = nil) {
     self.action = action
     self.chatId = chatId
     self.chatType = chatType
@@ -30,7 +30,7 @@ struct CHTypingEntity: SocketData {
     return [
       "action": self.action,
       "chatId": self.chatId,
-      "chatType": self.chatType,
+      "chatType": self.chatType?.rawValue ?? "userChat",
     ]
   }
   

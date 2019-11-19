@@ -1,5 +1,5 @@
 //
-//  GuestProfileItemModel.swift
+//  UserProfileItemModel.swift
 //  ChannelIO
 //
 //  Created by Haeun Chung on 23/04/2019.
@@ -8,16 +8,16 @@
 
 import Foundation
 
-struct GuestProfileItemModel: Equatable {
+struct UserProfileItemModel: Equatable {
   var profileName: String = ""
   var profileType: ProfileSchemaType = .string
   var profileValue: Any? = nil
 
   var rawData: CHProfileSchema
   
-  static func generate(from profiles: [String: Any]?, schemas: [CHProfileSchema]) -> [GuestProfileItemModel] {
+  static func generate(from profiles: [String: Any]?, schemas: [CHProfileSchema]) -> [UserProfileItemModel] {
     return schemas.map({ (schema) in
-      return GuestProfileItemModel(
+      return UserProfileItemModel(
         profileName: schema.nameI18n?.getMessage() ?? "",
         profileType: schema.type,
         profileValue: profiles?[schema.key],
@@ -26,7 +26,7 @@ struct GuestProfileItemModel: Equatable {
     })
   }
   
-  static func == (lhs:GuestProfileItemModel, rhs:GuestProfileItemModel) -> Bool {
+  static func == (lhs:UserProfileItemModel, rhs:UserProfileItemModel) -> Bool {
     if lhs.profileType != rhs.profileType {
       return false
     }

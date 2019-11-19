@@ -14,7 +14,6 @@ import SVProgressHUD
 extension ChannelIO {
   
   internal class func reset() {
-    PushBotManager.reset()
     ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.close(animated: false)
     ChannelIO.hideNotification()
@@ -62,15 +61,15 @@ extension ChannelIO {
         dlog("Error while sending the event \(eventName). Attempting to send again")
         return true
       })
-      .subscribe(onNext: { (event, nudges) in
+      .subscribe(onNext: { (event) in
         dlog("\(eventName) event sent successfully")
-        PushBotManager.process(with: nudges, property: eventProperty ?? [:])
+
       }, onError: { (error) in
         dlog("\(eventName) event failed")
       }).disposed(by: disposeBag)
   }
 
-  internal class func checkInChannel(profile: Profile? = nil) -> Observable<Any?> {
+  internal class func checkInChannel(profile: Profile? = nil) -> Observable<BootResponse> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
         subscriber.onError(CHErrorPool.unknownError)
@@ -82,19 +81,17 @@ extension ChannelIO {
         return Disposables.create()
       }
       
-      if let userId = settings.userId, userId != "" {
-        PrefStore.setCurrentUserId(userId: userId)
+      if let memberId = settings.memberId, memberId != "" {
+        PrefStore.setCurrentMemberId(memberId)
       } else {
-        PrefStore.clearCurrentUserId()
+        PrefStore.clearCurrentMemberId()
       }
 
       let params = BootParamBuilder()
-        .with(userId: settings.userId)
+        .with(memberId: settings.memberId)
         .with(profile: profile)
-        .with(sysProfile: nil, includeDefault: true)
         .build()
       
-      //refactor into one class
       AppManager
         .boot(pluginKey: settings.pluginKey, params: params)
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
@@ -102,25 +99,23 @@ extension ChannelIO {
           return true
         })
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (data) in
-          var data = data
-          guard let channel = data["channel"] as? CHChannel else {
+        .subscribe(onNext: { (result) in
+          guard let result = result else {
             subscriber.onError(CHErrorPool.unknownError)
             return
           }
           
-          if !channel.canUseSDK {
+          if result.channel?.canUseSDK == false {
             subscriber.onError(CHErrorPool.serviceBlockedError)
             return
           }
           
-          data["settings"] = settings
-          mainStore.dispatch(CheckInSuccess(payload: data))
+          mainStore.dispatch(CheckInSuccess(payload: result))
           
           WsService.shared.connect()
           WsService.shared.ready().take(1)
             .subscribe(onNext: { _ in
-              subscriber.onNext(data)
+              subscriber.onNext(result)
               subscriber.onCompleted()
             }).disposed(by: disposeBag)
           
@@ -301,11 +296,11 @@ extension ChannelIO {
     guard self.isValidStatus else { return }
     _ = WsService.shared.ready()
       .take(1)
-      .flatMap({ (_) -> Observable<CHGuest> in
+      .flatMap({ (_) -> Observable<BootResponse> in
         return AppManager.touch()
       })
-      .subscribe(onNext: { (guest) in
-        mainStore.dispatch(UpdateGuest(payload: guest))
+      .subscribe(onNext: { (result) in
+        mainStore.dispatch(GetTouchSuccess(payload: result))
       })
 
     WsService.shared.connect()

@@ -32,7 +32,7 @@ class UserChatsReducerTests: QuickSpec {
           userChats = [CHUserChat]()
           for i in 0..<10 {
             let userChat = CHUserChat(
-              id: "\(i)0", personType: "", personId: "", channelId: "",
+              id: "\(i)0", personType: .manager, personId: "", channelId: "",
               state: .unassigned, review: "", createdAt: nil, openedAt: nil,
               updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
               assigneeId: nil, assigneeType: nil, appMessageId: nil,
@@ -54,7 +54,7 @@ class UserChatsReducerTests: QuickSpec {
         it("should insert a new chat and update the state") {
 
           let userChat = CHUserChat(
-            id: "10", personType: "", personId: "", channelId: "",
+            id: "10", personType: .manager, personId: "", channelId: "",
             state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
             assigneeId: nil, assigneeType: nil, appMessageId: nil,
@@ -74,7 +74,7 @@ class UserChatsReducerTests: QuickSpec {
       context("when its action occurs") {
         it("should update existing chat and update the state accordingly") {
           var userChat = CHUserChat(
-            id: "10", personType: "", personId: "", channelId: "",
+            id: "10", personType: .manager, personId: "", channelId: "",
             state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
             assigneeId: nil, assigneeType: nil, appMessageId: nil,
@@ -102,7 +102,7 @@ class UserChatsReducerTests: QuickSpec {
       context("when its action occurs") {
         it("should mark the chat as delete and update the state") {
           let userChat = CHUserChat(
-            id: "10", personType: "", personId: "", channelId: "",
+            id: "10", personType: .manager, personId: "", channelId: "",
             state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
             assigneeId: nil, assigneeType: nil, appMessageId: nil,
@@ -145,7 +145,7 @@ class UserChatsReducerTests: QuickSpec {
       context("when its action occurs") {
         it("should upsert the chat and update the state") {
           let userChat = CHUserChat(
-            id: "10", personType: "", personId: "", channelId: "",
+            id: "10", personType: .manager, personId: "", channelId: "",
             state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
             assigneeId: nil, assigneeType: nil, appMessageId: nil,
@@ -169,7 +169,7 @@ class UserChatsReducerTests: QuickSpec {
       context("when its action occurs") {
         it("should remove all chats and update the state") {
           let userChat = CHUserChat(
-            id: "10", personType: "", personId: "", channelId: "",
+            id: "10", personType: .manager, personId: "", channelId: "",
             state: .unassigned, review: "", createdAt: nil, openedAt: nil,
             updatedAt: nil, followedAt: nil, resolvedAt: nil, closedAt: nil,
             assigneeId: nil, assigneeType: nil, appMessageId: nil,

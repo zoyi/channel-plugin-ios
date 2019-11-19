@@ -19,8 +19,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
   var disposeBag = DisposeBag()
   
   func viewDidLoad() {
-    if let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String {
+    if let version = CHUtils.getSdkVersion() {
       self.view?.displayVersion(version: "v\(version)")
     }
     
@@ -40,11 +39,11 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
         self?.view?.displayOptions(with: settingOptions)
       }).disposed(by: self.disposeBag)
     
-    self.interactor?.updateGuest()
+    self.interactor?.updateUser()
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (guest) in
-        let profiles = mainStore.state.guest.profile
-        let models = GuestProfileItemModel.generate(
+      .subscribe(onNext: { [weak self] (user) in
+        let profiles = mainStore.state.user.profile
+        let models = UserProfileItemModel.generate(
           from: profiles,
           schemas: self?.schemas ?? []
         )
@@ -54,8 +53,8 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     self.interactor?.getProfileSchemas()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (schemas) in
-        let profiles = mainStore.state.guest.profile
-        let models = GuestProfileItemModel.generate(
+        let profiles = mainStore.state.user.profile
+        let models = UserProfileItemModel.generate(
           from: profiles,
           schemas: schemas
         )
@@ -89,7 +88,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     }
   }
   
-  func didClickOnProfileSchema(with item: GuestProfileItemModel, from view: UIViewController?) {
+  func didClickOnProfileSchema(with item: UserProfileItemModel, from view: UIViewController?) {
     self.router?.pushProfileSchemaEditor(with: item, from: view)
   }
 }

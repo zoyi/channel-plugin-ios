@@ -147,7 +147,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     let welcomeModel = UserChatCellModel.getWelcomeModel(
       with: mainStore.state.plugin,
-      guest: mainStore.state.guest,
+      user: mainStore.state.user,
       supportBotMessage: supportBotEntrySelector(state: mainStore.state)
     )
     

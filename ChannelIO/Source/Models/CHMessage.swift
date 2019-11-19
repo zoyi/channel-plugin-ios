@@ -46,15 +46,14 @@ struct CHMessage: ModelType {
   var id: String = ""
   // Message
   var channelId: String = ""
-  var chatType: String = ""
+  var chatType: ChatType!
   var chatId: String = ""
-  var personType: String = ""
+  var personType: PersonType!
   var personId: String = ""
   var title: String? = nil
   var message: String?
   var messageV2: NSAttributedString?
   var requestId: String?
-  var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
   var action: CHAction? = nil
   var buttons: [CHLink]? = []
@@ -114,11 +113,12 @@ struct CHMessage: ModelType {
   }
   
   var isWelcome: Bool {
-    if let option = self.botOption, option["welcome"] == true {
-      return true
-    } else {
-      return false
-    }
+//    if let option = self.botOption, option["welcome"] == true {
+//      return true
+//    } else {
+//      return false
+//    }
+    return false
   }
 
   var isDeleted: Bool {
@@ -150,20 +150,20 @@ extension CHMessage: Mappable {
     self.action = action
     self.file = file
     self.personId = entity?.id ?? ""
-    self.personType = entity?.kind ?? ""
+    self.personType = entity?.entityType
     self.progress = 1
   }
   
-  init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
+  init(chatId: String, user: CHUser, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = requestId
-    self.chatType = "UserChat"
+    self.chatType = .userChat
     self.chatId = chatId
-    self.personType = guest.type
-    self.personId = guest.id
+    self.personType = .user
+    self.personId = user.id
     self.requestId = requestId
     self.createdAt = now
     self.state = .New
@@ -183,9 +183,9 @@ extension CHMessage: Mappable {
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     
     self.id = requestId
-    self.chatType = "UserChat"
+    self.chatType = .userChat
     self.chatId = chatId
-    self.personType = entity.kind
+    self.personType = entity.entityType
     self.personId = entity.id
     self.requestId = requestId
     self.createdAt = now
@@ -198,8 +198,8 @@ extension CHMessage: Mappable {
     self.messageType = CHMessage.contextType(self)
   }
   
-  init(chatId: String, guest: CHGuest, message: String = "", asset: PHAsset? = nil, image: UIImage? = nil) {
-    self.init(chatId: chatId, guest: guest, message: message, messageType: .Media)
+  init(chatId: String, user: CHUser, message: String = "", asset: PHAsset? = nil, image: UIImage? = nil) {
+    self.init(chatId: chatId, user: user, message: message, messageType: .Media)
     if let image = image {
       self.file = CHFile(imageData: image)
     } else if let asset = asset {
@@ -229,13 +229,12 @@ extension CHMessage: Mappable {
     buttons     <- map["buttons"]
     log         <- map["log"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
-    botOption   <- map["botOption"]
     profileBot  <- map["profileBot"]
     action      <- map["action"]
     submit      <- map["submit"]
     language    <- map["language"]
     
-    let msgv2 = map["messageV2"].currentValue as? String ?? ""
+    let msgv2 = map["message"].currentValue as? String ?? ""
     (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
     
     if self.action != nil {
@@ -330,8 +329,8 @@ extension CHMessage {
     originId: String? = nil,
     key: String? = nil,
     mutable: Bool = true) -> CHMessage {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
+    let me = mainStore.state.user
+    var message = CHMessage(chatId: chatId, user: me, message: text ?? "")
     if let originId = originId, let key = key {
       message.submit = CHSubmit(id: originId, key: key)
     }
@@ -353,7 +352,7 @@ extension CHMessage {
   }
   
   func isMine() -> Bool {
-    let me = mainStore.state.guest
+    let me = mainStore.state.user
     return self.entity?.id == me.id
   }
   

@@ -22,6 +22,10 @@ extension CHEntity {
     }
   }
   
+  var entityType: PersonType {
+    return PersonType(self.kind) ?? .manager
+  }
+  
   var key: String {
     get {
       return "\(self.name):\(self.id)"

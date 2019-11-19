@@ -213,31 +213,41 @@ class CHUtils {
     }
   }
   
-  class func bootQueryParams() -> [String: Any] {
-    var params = [String :Any]()
-    params["sysProfile.platform"] = "iOS"
-    params["sysProfile.version"] = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    return params
-  }
-  
   class func generateUserAgent() -> String {
-    let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    
+    let version = CHUtils.getSdkVersion() ?? "unknown"
+    let appBundleId = Bundle.main.bundleIdentifier ?? "unknown"
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     let deviceType = UIDevice.current.model.hasPrefix("iPad") ? "iPad" : "iPhone"
-    var ua = "Mozilla/5.0"
+    var ua = "\(appBundleId)/\(appVersion)"
+    ua += " Mozilla/5.0"
     ua += " (\(deviceType);"
     ua += " CPU"
     ua += deviceType == "iPhone" ? " iPhone" : ""
     ua += " OS \(UIDevice.current.systemVersion.replace(".", withString: "_"))"
-    //iphone or ipad
-    //os version
     ua += " like Mac OS X)"
     ua += " Mobile"
     ua += " ChannelSDK/\(version)"
+
     //Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) Mobile ChannelPlugin/1.0.0
     return ua
+  }
+  
+  static func getSdkVersion() -> String? {
+    let version = Bundle(for: ChannelIO.self)
+      .infoDictionary?["CFBundleShortVersionString"] as? String
+    return version
+  }
+  
+  class func jsonStringify(data: Any?) -> String? {
+    guard let data = data else { return nil }
+    
+    do {
+      let jsonData = try JSONSerialization.data(withJSONObject: data, options: .fragmentsAllowed)
+      let jsonString = String(data: jsonData, encoding: .utf8)
+      return jsonString
+    } catch {
+      return nil
+    }
   }
 }
 

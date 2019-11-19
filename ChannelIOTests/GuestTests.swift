@@ -1,5 +1,5 @@
 //
-//  GuestTests.swift
+//  UserTests.swift
 //  CHPlugin
 //
 //  Created by R3alFr3e on 2/11/17.
@@ -10,13 +10,16 @@ import Quick
 import Nimble
 @testable import ChannelIO
 
-class GuestTests: QuickSpec {
+class UserTests: QuickSpec {
   
   override func spec() {
     
     beforeEach {
       PrefStore.setCurrentChannelId(channelId: "7")
-      PrefStore.setCurrentVeilId(veilId: "58a154dec843f78f")
+      PrefStore.setCurrentUserId(userId: "58a154dec843f78f")
+    }
+    
+    afterEach {
       PrefStore.clearCurrentUserId()
     }
     
@@ -51,7 +54,6 @@ class GuestTests: QuickSpec {
       it("normal") {
         let user = CHUser(id: "123", name: "user",
                         avatarUrl: "www.zoyi.co",
-                        named: false,
                         mobileNumber: "+8201032314123",
                         profile: ["userInfo":"test"])
         
@@ -82,29 +84,6 @@ class GuestTests: QuickSpec {
 //            expect(error).to(beNil())
 //          })
 //        }
-      }
-    }
-    
-    describe("Veil") {
-      it("default") {
-        let veil = CHVeil()
-        
-        expect(veil.id).to(equal(""))
-        expect(veil.name).to(equal(""))
-        expect(veil.avatarUrl).to(beNil())
-        expect(veil.mobileNumber).to(beNil())
-      }
-      
-      it("normal") {
-        let veil = CHVeil(id: "123", name: "user",
-                        avatarUrl: "www.zoyi.co",
-                        named: false,
-                        mobileNumber: "+8201032314123",
-                        profile: ["userInfo":"test"])
-        expect(veil.id).to(equal("123"))
-        expect(veil.name).to(equal("user"))
-        expect(veil.avatarUrl).to(equal("www.zoyi.co"))
-        expect(veil.mobileNumber).to(equal("+8201032314123"))
       }
     }
   }

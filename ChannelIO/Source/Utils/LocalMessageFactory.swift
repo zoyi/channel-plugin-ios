@@ -72,8 +72,8 @@ struct LocalMessageFactory {
   
   private static func getWelcomeMessage() -> CHMessage? {
     // TODO: consider to cut coupling between main store states    
-    let guest = mainStore.state.guest
-    let msg = guest.getWelcome() ?? ""
+    let user = mainStore.state.user
+    let msg = user.getWelcome() ?? ""
     let bot = mainStore.state.botsState.getDefaultBot()
     return CHMessage(
       chatId: "welcome_dummy", message: msg, type: .WelcomeMessage, entity: bot, id: "welcome_dummy"

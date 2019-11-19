@@ -12,7 +12,7 @@ struct AppState: StateType {
   var checkinState: CheckinState
   var plugin: CHPlugin
   var channel: CHChannel
-  var guest: CHGuest
+  var user: CHUser
   var userChatsState: UserChatsState
   var push: CHPush?
   var managersState: ManagersState

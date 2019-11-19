@@ -14,7 +14,7 @@ class SettingRouter: SettingRouterProtocol {
     view?.navigationController?.pushViewController(viewController, animated: true)
   }
   
-  func pushProfileSchemaEditor(with item: GuestProfileItemModel, from view: UIViewController?) {
+  func pushProfileSchemaEditor(with item: UserProfileItemModel, from view: UIViewController?) {
     var type: EditFieldType
     if item.rawData.key == "mobileNumber" {
       type = .phone
@@ -23,7 +23,7 @@ class SettingRouter: SettingRouterProtocol {
     } else {
       type = .text
     }
-    let viewController = ProfileEditorViewController(type: type, guest: mainStore.state.guest, schema: item.rawData)
+    let viewController = ProfileEditorViewController(type: type, user: mainStore.state.user, schema: item.rawData)
     view?.navigationController?.pushViewController(viewController, animated: true)
   }
   

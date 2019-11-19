@@ -38,7 +38,7 @@ class ProfilePhoneView: ProfileItemBaseView, ProfileContentProtocol {
     super.configure(model: model, index: index, presenter: presenter)
     guard let item = self.item else { return }
     
-    if let value = mainStore.state.guest.profile?[item.key] as? String {
+    if let value = mainStore.state.user.profile?[item.key] as? String {
       self.phoneView.setIntialValue(with: value)
     }
   }

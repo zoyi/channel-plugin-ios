@@ -37,7 +37,7 @@ class SettingView: BaseViewController {
   }
 
   var options: [SettingOptionModel] = []
-  var profiles: [GuestProfileItemModel] = []
+  var profiles: [UserProfileItemModel] = []
   
   var disposeBag = DisposeBag()
   
@@ -154,7 +154,7 @@ extension SettingView: SettingViewProtocol {
     self.tableView.reloadData()
   }
   
-  func displayProfiles(with profiles: [GuestProfileItemModel]) {
+  func displayProfiles(with profiles: [UserProfileItemModel]) {
     self.profiles = profiles
     self.tableView.reloadData()
   }
