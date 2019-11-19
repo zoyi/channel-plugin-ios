@@ -238,7 +238,9 @@ class CHUtils {
     return version
   }
   
-  class func jsonStringify(data: Any) -> String? {
+  class func jsonStringify(data: Any?) -> String? {
+    guard let data = data else { return nil }
+    
     do {
       let jsonData = try JSONSerialization.data(withJSONObject: data, options: .fragmentsAllowed)
       let jsonString = String(data: jsonData, encoding: .utf8)

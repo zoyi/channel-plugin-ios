@@ -23,20 +23,15 @@ struct EventPromise {
         "url": [String:String]()
       ]
       
-      var event = [String: Any]()
-      event["name"] = name
-      if let property = property, property.count != 0 {
-        event["property"] = property
+      params["url"]?["name"] = name
+      if let property = CHUtils.jsonStringify(data: property) {
+        params["url"]?["property"] = property
       }
-      if let sysProperty = sysProperty, sysProperty.count != 0 {
-        event["sysProperty"] = sysProperty
+      if let sysProperty = CHUtils.jsonStringify(data: sysProperty) {
+        params["url"]?["sysProperty"] = sysProperty
       }
-      
-      if let eventData = CHUtils.jsonStringify(data: event) {
-        params["url"]?["event"] = eventData
-      }
-      if let userData = CHUtils.jsonStringify(data: mainStore.state.user.dict) {
-        params["url"]?["user"] = userData
+      if let jwt = PrefStore.getSessionJWT() {
+        params["url"]?["sessionJWT"] = jwt
       }
 
       Alamofire.request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
