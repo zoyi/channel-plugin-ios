@@ -142,7 +142,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   private func initNavigationViews(with userChat: CHUserChat?) {
     self.setNavItems(
       currentUserChat: userChat,
-      guest: mainStore.state.guest
+      user: mainStore.state.user
     )
     self.initNavigationTitle(with: userChat)
     
@@ -303,10 +303,10 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     }
   }
 
-  private func setNavItems(currentUserChat: CHUserChat?, guest: CHGuest) {
+  private func setNavItems(currentUserChat: CHUserChat?, user: CHUser) {
     let tintColor = mainStore.state.plugin.textUIColor
     
-    let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
+    let alert = (user.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
     let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
     let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
     spacer.width = -8

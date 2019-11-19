@@ -119,7 +119,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         } else if typingEntity.action == "start" {
           if let typer = personSelector(
             state: mainStore.state,
-            personType: typingEntity.personType ?? "",
+            personType: typingEntity.personType,
             personId: typingEntity.personId) {
             if self?.getTypingIndex(of: typingEntity) == nil {
               self?.typingPersons.append(typer)
@@ -256,7 +256,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   private func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
     return self.typingPersons.firstIndex(where: {
-      $0.id == typingEntity.personId && $0.kind == typingEntity.personType
+      $0.id == typingEntity.personId && $0.kind == typingEntity.personType?.rawValue
     })
   }
 
@@ -551,7 +551,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   private func createMessageForImages(assets: [PHAsset], requestBot: Bool = false) -> [CHMessage] {
     let messages = assets.map({ (asset) -> CHMessage in
-      return CHMessage(chatId: self.userChatId ?? "", guest: mainStore.state.guest, asset: asset)
+      return CHMessage(chatId: self.userChatId ?? "", user: mainStore.state.user, asset: asset)
     })
     messages.forEach { mainStore.dispatch(CreateMessage(payload: $0)) }
     return messages
