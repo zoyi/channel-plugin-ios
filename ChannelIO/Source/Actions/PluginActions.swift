@@ -23,6 +23,8 @@ struct UpdateLoungeInfo: Action {
   public let plugin: CHPlugin
   public let bot: CHBot?
   public let operators: [CHManager]
+  public let userChatsResponse: UserChatsResponse?
+  public let supportBotEntryInfo: CHSupportBotEntryInfo?
 }
 
 struct GetPlugin: Action {
@@ -36,9 +38,4 @@ struct UpdateChannel: Action {
 
 struct UpdateLocale: Action {
   public let payload: CHLocaleString
-}
-
-struct GetSupportBotEntry: Action {
-  public let bot: CHBot?
-  public let entry: CHSupportBotEntryInfo?
 }

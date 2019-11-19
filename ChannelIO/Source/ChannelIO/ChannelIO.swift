@@ -143,9 +143,9 @@ public final class ChannelIO: NSObject {
     completion: ((ChannelPluginCompletionStatus, User?) -> Void)? = nil) {
     
     dispatch {
-      ChannelIO.prepare()
       ChannelIO.settings = settings
       ChannelIO.profile = profile
+      ChannelIO.prepare()
       
       if settings.pluginKey == "" {
         mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
@@ -172,18 +172,21 @@ public final class ChannelIO: NSObject {
             dlog("network timeout")
             mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
             completion?(.networkTimeout, nil)
-          } else if code == CHErrorCode.versionError.rawValue {
-            dlog("version is not compatiable. please update sdk version")
-            mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
-            completion?(.notAvailableVersion, nil)
-          } else if code == CHErrorCode.serviceBlockedError.rawValue {
-            dlog("require payment. free plan is not eligible to use SDK")
-            mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
-            completion?(.requirePayment, nil)
-          } else {
-            dlog("unknown")
-            mainStore.dispatch(UpdateCheckinState(payload: .unknown))
-            completion?(.unknown, nil)
+          } else if let error = error as? ChannelError {
+            switch error {
+            case .versionError:
+              dlog("version is not compatiable. please update sdk version")
+              mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
+              completion?(.notAvailableVersion, nil)
+            case .serviceBlockedError:
+              dlog("require payment. free plan is not eligible to use SDK")
+              mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
+              completion?(.requirePayment, nil)
+            default:
+              dlog("unknown")
+              mainStore.dispatch(UpdateCheckinState(payload: .unknown))
+              completion?(.unknown, nil)
+            }
           }
         }).disposed(by: disposeBag)
     }

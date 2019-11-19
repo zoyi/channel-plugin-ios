@@ -48,7 +48,6 @@ extension CHAction: Mappable {
 }
 
 struct CHActionButton {
-  var id: String = ""
   var key: String = ""
   var text: NSAttributedString? = nil
   
@@ -59,7 +58,6 @@ extension CHActionButton: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    id          <- map["id"]
     key         <- map["key"]
     let rawText = map["text"].currentValue as? String ?? ""
     (text, onlyEmoji) = CustomMessageTransform.markdown.parse(rawText)

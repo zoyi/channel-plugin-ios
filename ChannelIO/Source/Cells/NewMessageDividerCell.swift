@@ -6,10 +6,9 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import Reusable
 import SnapKit
 
-final class NewMessageDividerCell: BaseTableViewCell, Reusable {
+final class NewMessageDividerCell: BaseTableViewCell {
   // MARK: constant
   
   // MARK: properties

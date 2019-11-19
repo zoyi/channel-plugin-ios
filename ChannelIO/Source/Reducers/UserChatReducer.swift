@@ -30,6 +30,12 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   
   case let action as DeleteUserChats:
     return state?.remove(userChatIds: action.payload.map { $0.id }) ?? UserChatsState()
+    
+  case let action as UpdateLoungeInfo:
+    guard let userChats = action.userChatsResponse?.userChats else {
+      return state ?? UserChatsState()
+    }
+    return state?.upsert(userChats: userChats) ?? UserChatsState()
   
   case _ as DeleteUserChatsAll:
     return state?.clear() ?? UserChatsState()
@@ -61,11 +67,6 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   
   case let action as CreateLocalUserChat:
     return state?.upsert(userChat: action.chat) ?? UserChatsState()
-  
-  case let action as GetNudgeChat:
-    return state?.replace(
-      chatId: CHConstants.nudgeChat + action.nudgeId,
-      userChat: action.payload.userChat) ?? UserChatsState()
   
   case _ as CheckOutSuccess:
     return state?.clear() ?? UserChatsState()

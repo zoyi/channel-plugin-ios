@@ -121,7 +121,6 @@ class ActionView: BaseView {
   
   override func initialize() {
     super.initialize()
-    
     self.addSubview(self.contentView)
   }
   

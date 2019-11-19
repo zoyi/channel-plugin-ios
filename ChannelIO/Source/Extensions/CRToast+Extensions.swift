@@ -13,20 +13,27 @@ import SwiftyJSON
 
 extension CRToastManager {
   static func showErrorFromData(_ data: Data?) {
-    guard data != nil else { return }
-    do {
-      let json = try JSON(data: data!)
-      guard let errors: [CHErrorResponse] = Mapper<CHErrorResponse>()
-        .mapArray(JSONObject: json["errors"].object) else { return }
-      errors.forEach { (error) -> () in
+    guard let data = data else { return }
+    
+    let json = SwiftyJSON.JSON(data)
+    
+    guard let errors: [CHError] = Mapper<CHError>()
+      .mapArray(JSONObject: json["errors"].object) else {
+      return
+    }
+    
+    errors.forEach { error -> Void in
+      dispatch {
+        CRToastManager.dismissAllNotifications(false)
         CRToastManager.showErrorMessage(error.message)
       }
-    } catch {
-      return
     }
   }
   
   static func showErrorMessage(_ message: String) {
-    CRToastManager.showNotification(withMessage: message, completionBlock: nil)
+    dispatch {
+      CRToastManager.dismissNotification(false)
+      CRToastManager.showNotification(withMessage: message, completionBlock: nil)
+    }
   }
 }

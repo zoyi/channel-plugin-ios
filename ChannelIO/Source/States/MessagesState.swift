@@ -108,7 +108,7 @@ struct MessagesState: StateType {
     //actioanble message click -> message created (update actionable while created) -- optimize
     for (key, message) in self.actionQueue {
       var updated = message
-      updated.messageType = CHMessage.contextType(message)
+      updated.messageType = message.contextType()
       self.messageDictionary[key] = updated
     }
     

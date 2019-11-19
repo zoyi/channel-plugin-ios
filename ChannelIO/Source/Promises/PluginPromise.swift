@@ -13,33 +13,37 @@ import ObjectMapper
 import SwiftyJSON
 
 struct PluginPromise {
-  static func registerPushToken(channelId: String, token: String) -> Observable<Any?> {
+  static func registerPushToken(channelId: String, user: CHUser, token: String) -> Observable<Any?> {
     return Observable.create { subscriber in
-      let key = UIDevice.current.identifierForVendor?.uuidString
+      let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let params = [
         "body": [
           "channelId": channelId,
-          "key": key,
+          "key": "ios-" + key,
+          "ios": true,
           "token": token,
-          "platform": "ios"
+          "personKey": user.entityType.rawValue + user.id
         ]
       ]
       
-      let req = Alamofire.request(RestRouter.RegisterToken(
-          params as RestRouter.ParametersType))
+      let req = Alamofire
+        .request(RestRouter.RegisterToken(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            if json["deviceToken"] == JSON.null {
-              subscriber.onError(CHErrorPool.registerParseError)
+            if json["pushToken"] == JSON.null {
+              subscriber.onError(ChannelError.parseError)
+              return
             }
 
             subscriber.onNext(nil)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
@@ -53,14 +57,18 @@ struct PluginPromise {
     return Observable.create { subscriber in
 
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
-      let req = Alamofire.request(RestRouter.UnregisterToken(key))
+      let req = Alamofire
+        .request(RestRouter.UnregisterToken(key))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
-          if response.response?.statusCode == 200 {
+          switch response.result {
+          case .success:
             subscriber.onNext(nil)
             subscriber.onCompleted()
-          } else {
-            subscriber.onError(CHErrorPool.unregisterError)
+          case .failure(let error):
+            subscriber.onError(ChannelError.serverError(msg:
+              error.localizedDescription
+            ))
           }
         })
       
@@ -72,7 +80,8 @@ struct PluginPromise {
   
   static func checkVersion() -> Observable<Any?> {
     return Observable.create { subscriber in
-      let req = Alamofire.request(RestRouter.CheckVersion)
+      let req = Alamofire
+        .request(RestRouter.CheckVersion)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -81,20 +90,21 @@ struct PluginPromise {
             let minVersion = json["minCompatibleVersion"].string ?? ""
             
             guard let version = CHUtils.getSdkVersion() else {
-              subscriber.onError(CHErrorPool.versionError)
+              subscriber.onError(ChannelError.versionError)
               return
             }
             
             if version.versionToInt().lexicographicallyPrecedes(minVersion.versionToInt()) {
-              subscriber.onError(CHErrorPool.versionError)
+              subscriber.onError(ChannelError.versionError)
               return
             }
             
             subscriber.onNext(nil)
             subscriber.onCompleted()
-            break
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
@@ -103,32 +113,11 @@ struct PluginPromise {
       }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
-  
-  static func getOperators() -> Observable<[CHManager]> {
-    return Observable.create { (subscriber) in
-      let req = Alamofire.request(RestRouter.GetOperators)
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
-          switch response.result{
-          case .success(let data):
-            let json = JSON(data)
-            let managers = Mapper<CHManager>()
-              .mapArray(JSONObject: json["managers"].object)
-            subscriber.onNext(managers ?? [])
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(error)
-          }
-        })
-      return Disposables.create {
-        req.cancel()
-      }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
-  }
 
-  static func getPlugin(pluginId: String) -> Observable<(CHPlugin, CHBot?)> {
+  static func getPlugin(pluginKey: String) -> Observable<(CHPlugin, CHBot?)> {
     return Observable.create { (subscriber) in
-      let req = Alamofire.request(RestRouter.GetPlugin(pluginId))
+      let req = Alamofire
+        .request(RestRouter.GetPlugin(pluginKey))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result{
@@ -136,15 +125,17 @@ struct PluginPromise {
             let json = JSON(data)
             guard let plugin = Mapper<CHPlugin>()
               .map(JSONObject: json["plugin"].object) else {
-              subscriber.onError(CHErrorPool.pluginParseError)
-              return
-            }
+                subscriber.onError(ChannelError.parseError)
+                return
+              }
             let bot = Mapper<CHBot>()
               .map(JSONObject: json["bot"].object)
             subscriber.onNext((plugin, bot))
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       return Disposables.create {
@@ -167,7 +158,9 @@ struct PluginPromise {
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         }
       
@@ -188,11 +181,14 @@ struct PluginPromise {
         .request(RestRouter.SendPushAck(chatId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
-          if response.response?.statusCode == 200 {
+          switch response.result {
+          case .success(let data):
             subscriber.onNext(true)
             subscriber.onCompleted()
-          } else {
-            subscriber.onError(CHErrorPool.unregisterError)
+          case .failure(let error):
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
@@ -211,11 +207,14 @@ struct PluginPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            let profiles = Mapper<CHProfileSchema>().mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
+            let profiles = Mapper<CHProfileSchema>()
+              .mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
             subscriber.onNext(profiles)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       return Disposables.create {

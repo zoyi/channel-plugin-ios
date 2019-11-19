@@ -7,10 +7,9 @@
 //
 
 import UIKit
-import Reusable
 import SnapKit
 
-final class UserChatCell: BaseTableViewCell, Reusable {
+final class UserChatCell: BaseTableViewCell {
 
   // MARK: Constantss
 

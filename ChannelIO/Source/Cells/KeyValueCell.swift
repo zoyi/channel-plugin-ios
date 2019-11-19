@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import Reusable
 import PhoneNumberKit
 
-class KeyValueCell: BaseTableViewCell, Reusable {
+class KeyValueCell: BaseTableViewCell {
  let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey

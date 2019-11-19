@@ -30,7 +30,6 @@ struct CHChannel: CHEntity {
   var phoneNumber: String?
   var requestUserInfo = true
   var messengerPlan: ChannelPlanType = .none
-  var pushBotPlan: ChannelPlanType = .none
   var supportBotPlan: ChannelPlanType = .none
   var blocked = false
   var homepageUrl = ""
@@ -51,11 +50,7 @@ extension CHChannel {
   var canUseSDK: Bool {
     return !self.blocked && (self.messengerPlan == .pro || self.trial)
   }
-  
-  var canUsePushBot: Bool {
-    return !self.blocked && (self.pushBotPlan != .none || self.trial)
-  }
-  
+
   var canUseSupportBot: Bool {
     return !self.blocked && (self.supportBotPlan != .none || self.trial)
   }
@@ -242,7 +237,6 @@ extension CHChannel: Mappable {
     timeZone                <- map["timeZone"]
     utcOffset               <- map["utcOffset"]
     messengerPlan           <- map["messengerPlan"]
-    pushBotPlan             <- map["pushBotPlan"]
     supportBotPlan          <- map["supportBotPlan"]
     blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom

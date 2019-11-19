@@ -70,8 +70,8 @@ extension CHPlugin: Mappable {
 }
 
 extension CHPlugin {
-  static func get(with id: String) -> Observable<(CHPlugin, CHBot?)> {
-    return PluginPromise.getPlugin(pluginId: id)
+  static func get(with key: String) -> Observable<(CHPlugin, CHBot?)> {
+    return PluginPromise.getPlugin(pluginKey: key)
   }
 }
 

@@ -33,7 +33,7 @@ protocol MessageCellModelType {
   var fileIsHidden: Bool { get }
   var webpageIsHidden: Bool { get }
   var webpage: CHWebPage? { get }
-  var file: CHFile? { get }
+  var files: [CHFile] { get }
   var createdByMe: Bool { get }
   var isContinuous: Bool { get }
   var messageType: MessageType { get }
@@ -49,6 +49,7 @@ protocol MessageCellModelType {
   var clipType: ClipType { get }
   var buttons: [CHLink] { get }
   var isDeleted: Bool { get }
+  var canTranslate: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -69,7 +70,7 @@ struct MessageCellModel: MessageCellModelType {
   let fileIsHidden: Bool
   let webpageIsHidden: Bool
   let webpage: CHWebPage?
-  let file: CHFile?
+  let files: [CHFile]
   let createdByMe: Bool
   let isContinuous: Bool
   let messageType: MessageType
@@ -88,6 +89,7 @@ struct MessageCellModel: MessageCellModelType {
   var clipType: ClipType = .None
   var buttons: [CHLink]
   var isDeleted: Bool
+  let canTranslate: Bool
   
   init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
     let channel = mainStore.state.channel
@@ -127,11 +129,13 @@ struct MessageCellModel: MessageCellModelType {
     self.fileIsHidden = (cType != ClipType.File)
     self.webpageIsHidden = (cType != ClipType.Webpage)
     self.webpage = message.webPage
-    self.file = message.file
+    self.files = message.files
     self.createdByMe = createdByMe
     self.isContinuous = isContinuous
     self.pluginColor = pluginColor
-    
+    self.canTranslate = message.language != "" &&
+      message.language != CHUtils.deviceLanguage() &&
+      message.log == nil
     self.messageType = message.messageType
     self.progress = message.progress
     self.isFailed = message.state == .Failed
@@ -163,11 +167,9 @@ struct MessageCellModel: MessageCellModelType {
   }
 
   static func getClipType(message: CHMessage) -> ClipType {
-    if message.file?.isPreviewable == true ||
-      message.file?.mimeType == .image || message.file?.mimeType == .gif ||
-      message.file?.imageData != nil {
+    if message.files.filter({ $0.type == .image}).count > 0 {
       return .Image
-    } else if message.file != nil {
+    } else if !message.files.isEmpty {
       return .File
     } else if message.webPage != nil {
       return .Webpage
@@ -175,5 +177,4 @@ struct MessageCellModel: MessageCellModelType {
       return .None
     }
   }
-
 }

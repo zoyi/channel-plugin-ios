@@ -29,7 +29,11 @@ func managersReducer(action: Action, state: ManagersState?) -> ManagersState {
     return state?.upsert(manager: action.payload.manager) ?? ManagersState()
     
   case let action as UpdateLoungeInfo:
+    if let managers = action.userChatsResponse?.managers {
+       _ = state?.upsert(managers: managers) ?? ManagersState()
+    }
     return state?.upsert(managers: action.operators) ?? ManagersState()
+   
     
   case _ as CheckOutSuccess:
     return state?.clear() ?? ManagersState()

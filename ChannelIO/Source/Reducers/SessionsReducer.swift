@@ -18,9 +18,6 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
   case let action as GetUserChat:
     return state?.upsert(session: action.payload.session) ?? SessionsState()
   
-  case let action as GetNudgeChat:
-    return state?.upsert(session: action.payload.session) ?? SessionsState()
-  
   case let action as CreateSession:
     return state?.upsert(session: action.payload) ?? SessionsState()
   
@@ -29,6 +26,12 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
   
   case let action as DeleteSession:
     return state?.remove(session: action.payload) ?? SessionsState()
+    
+  case let action as UpdateLoungeInfo:
+    guard let sessions = action.userChatsResponse?.sessions else {
+      return state ?? SessionsState()
+    }
+    return state?.upsert(sessions: sessions) ?? SessionsState()
   
   case let action as CreateLocalUserChat:
     return state?.upsert(session: action.session) ?? SessionsState()

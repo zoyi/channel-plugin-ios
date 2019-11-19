@@ -1,5 +1,5 @@
 //
-//  CHNudgeCondition.swift
+//  CHTargetCondition.swift
 //  ch-desk-ios
 //
 //  Created by R3alFr3e on 5/2/18.

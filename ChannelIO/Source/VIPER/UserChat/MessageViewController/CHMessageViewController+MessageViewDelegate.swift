@@ -10,8 +10,7 @@ import UIKit
 
 extension CHMessageViewController: CHMessageViewDelegate {
   @objc func textDidChange(text: String) {
-    self.messageView.rightButton.tintColor = text == "" ?
-      .sendDisable : .cobalt400
+    self.messageView.rightButtonIsEnable = self.messageView.shouldEnabledSend
   }
 
   internal func sizeDidChange(messageView: CHMessageView) {

@@ -119,7 +119,7 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
   }
   
   func showRetryActionSheet(from view: UIView?) -> Observable<Bool?> {
-    return Observable.create({ (subscriber) in
+    return Observable.create { (subscriber) in
       let alertView = UIAlertController(
         title:nil,
         message:nil,
@@ -149,7 +149,7 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
       
       CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
       return Disposables.create()
-    })
+    }
   }
 }
 

@@ -15,16 +15,16 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false, limit: Int? 
       return m1Last.createdAt > m2Last.createdAt
     }
     return c1.updatedAt! > c2.updatedAt!
-  }.filter ({ $0.state != .removed && $0.appMessageId != nil && !$0.hasRemoved })
+  }.filter { $0.state != .trash && $0.frontMessageId != nil && !$0.hasRemoved }
   
   if let limit = limit, userChats.count > limit {
     userChats = Array(userChats[0..<limit])
   }
   
   if !showCompleted {
-    userChats = userChats.filter({ (userChat) in
+    userChats = userChats.filter { (userChat) in
       return !userChat.isClosed
-    })
+    }
   }
   
   return userChats.compactMap { userChatSelector(state: state, userChatId: $0.id) }
@@ -50,9 +50,9 @@ func userChatSelector(state: AppState, userChatId: String?) -> CHUserChat? {
     assigneeId: userChat.assigneeId,
     managerIds: userChat.managerIds,
     handling: userChat.handling,
-    appMessageId: userChat.appMessageId,
+    frontMessageId: userChat.frontMessageId,
     resolutionTime: userChat.resolutionTime,
-    lastMessage: state.messagesState.findBy(id: userChat.appMessageId),
+    lastMessage: state.messagesState.findBy(id: userChat.frontMessageId),
     session: state.sessionsState.findBy(userChatId: userChat.id),
     channel: state.channel,
     hasRemoved: userChat.hasRemoved

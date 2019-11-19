@@ -20,7 +20,10 @@ struct AppManager {
     guard let pushToken = ChannelIO.pushToken else { return }
 
     PluginPromise
-      .registerPushToken(channelId: mainStore.state.channel.id, token: pushToken)
+      .registerPushToken(
+        channelId: mainStore.state.channel.id,
+        user: mainStore.state.user,
+        token: pushToken)
       .subscribe(onNext: { (result) in
         dlog("register token success")
       }, onError:{ error in
@@ -46,11 +49,7 @@ struct AppManager {
     return PluginPromise.checkVersion()
   }
   
-  static func getOperators() -> Observable<[CHManager]> {
-    return PluginPromise.getOperators()
-  }
-  
   static func touch() -> Observable<BootResponse> {
-    return UserPromise.touch()
+    return UserPromise.touch(pluginId: mainStore.state.plugin.id)
   }
 }

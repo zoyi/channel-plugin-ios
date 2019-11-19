@@ -244,6 +244,14 @@ public final class CHMessageView: UIView, MessageTextViewListener {
       rightButton.imageView?.tintColor = newValue
     }
   }
+  
+  public var rightButtonIsEnable: Bool {
+    get { return rightButton.isEnabled }
+    set {
+      rightButton.isEnabled = newValue
+      rightButton.tintColor = self.shouldEnabledSend ?.cobalt400 : .sendDisable
+    }
+  }
 
   public var rightButtonVerticalPosition: ButtonVerticalPosition = .top
 
@@ -406,8 +414,8 @@ public final class CHMessageView: UIView, MessageTextViewListener {
         self.toolbarView?.backgroundColor = .white
         self.topBorderLayer.backgroundColor = UIColor.grey300.cgColor
         self.textView.textColor = UIColor.grey900
-        self.rightButton.tintColor = self.text == "" ?
-          .sendDisable : .cobalt400
+        self.rightButton.tintColor = self.shouldEnabledSend ?
+          .cobalt400 : .sendDisable
       case .highlight:
         self.textContainerView.backgroundColor = UIColor.orange100
         self.toolbarView?.backgroundColor = UIColor.orange100

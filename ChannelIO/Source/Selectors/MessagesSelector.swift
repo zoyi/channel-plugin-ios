@@ -46,7 +46,7 @@ func messageSelector(state: AppState, id: String?) -> CHMessage? {
         submit: $0.submit,
         createdAt: $0.createdAt,
         language: $0.language,
-        file: $0.file,
+        files: $0.files,
         webPage: $0.webPage,
         log: $0.log,
         entity: personSelector(state: state, personType: $0.personType, personId: $0.personId),
@@ -55,6 +55,7 @@ func messageSelector(state: AppState, id: String?) -> CHMessage? {
         messageType: $0.messageType,
         progress: $0.progress,
         onlyEmoji: $0.onlyEmoji,
+        sortedFiles: $0.sortedFiles,
         translateState: $0.translateState,
         translatedText: $0.translatedText
       )
@@ -80,7 +81,7 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
       submit: $0.submit,
       createdAt: $0.createdAt,
       language: $0.language,
-      file: $0.file,
+      files: $0.files,
       webPage: $0.webPage,
       log: $0.log,
       entity: personSelector(state: state, personType: $0.personType, personId: $0.personId),
@@ -89,6 +90,7 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
       messageType: $0.messageType,
       progress: $0.progress,
       onlyEmoji: $0.onlyEmoji,
+      sortedFiles: $0.sortedFiles,
       translateState: $0.translateState,
       translatedText: $0.translatedText
     )

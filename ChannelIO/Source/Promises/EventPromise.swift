@@ -34,20 +34,24 @@ struct EventPromise {
         params["url"]?["sessionJWT"] = jwt
       }
 
-      Alamofire.request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
+      Alamofire
+        .request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            guard let event = Mapper<CHEvent>().map(JSONObject: json["event"].object) else {
-              subscriber.onError(CHErrorPool.eventParseError)
-              return
+            guard let event = Mapper<CHEvent>()
+              .map(JSONObject: json["event"].object) else {
+                subscriber.onError(ChannelError.parseError)
+                return
             }
             subscriber.onNext(event)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       

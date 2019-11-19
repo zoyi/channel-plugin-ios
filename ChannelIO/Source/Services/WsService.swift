@@ -86,16 +86,16 @@ struct WsServiceType: OptionSet {
   init?(string: String) {
     switch string {
     // event
-    case "Create": self = WsServiceType.Create
-    case "Update": self = WsServiceType.Update
-    case "Delete": self = WsServiceType.Delete
+    case "create": self = WsServiceType.Create
+    case "update": self = WsServiceType.Update
+    case "delete": self = WsServiceType.Delete
     // type
-    case "Message": self = WsServiceType.Message
-    case "Session": self = WsServiceType.Session
-    case "Manager": self = WsServiceType.Manager
-    case "Channel": self = WsServiceType.Channel
-    case "UserChat": self = WsServiceType.UserChat
-    case "User" : self = WsServiceType.User
+    case "message": self = WsServiceType.Message
+    case "chatSession": self = WsServiceType.Session
+    case "manager": self = WsServiceType.Manager
+    case "channel": self = WsServiceType.Channel
+    case "userChat": self = WsServiceType.UserChat
+    case "user" : self = WsServiceType.User
       
     default: return nil
     }
@@ -350,7 +350,6 @@ fileprivate extension WsService {
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.CreateMessage:
         guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
-        guard message.isWelcome == false else { return }
         
         if let bot = Mapper<CHBot>()
           .map(JSONObject: json["refers"]["bot"].object) {
@@ -389,8 +388,7 @@ fileprivate extension WsService {
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
         if let lastMessage = Mapper<CHMessage>()
-          .map(JSONObject: json["refers"]["message"].object),
-          !lastMessage.isWelcome {
+          .map(JSONObject: json["refers"]["message"].object) {
           mainStore.dispatchOnMain(UpdateMessage(payload: lastMessage))
         }
         if let manager = Mapper<CHManager>()

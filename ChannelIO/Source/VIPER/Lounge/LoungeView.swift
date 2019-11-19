@@ -160,7 +160,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       self?.presenter?.didClickOnSeeMoreChat(from: self)
     }).disposed(by: self.disposeBag)
     self.mainView.refreshSignal.subscribe(onNext: { [weak self] (_) in
-      self?.presenter?.didClickOnRefresh(for: .mainContent)
+      self?.presenter?.didClickOnRefresh()
     }).disposed(by: self.disposeBag)
     
     self.scrollView.addSubview(self.externalView)
@@ -168,7 +168,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       self?.presenter?.didClickOnExternalSource(with: source, from: self)
     }).disposed(by: self.disposeBag)
     self.externalView.refreshSignal.subscribe(onNext: { [weak self] (_) in
-      self?.presenter?.didClickOnRefresh(for: .externalSource)
+      self?.presenter?.didClickOnRefresh()
     }).disposed(by: self.disposeBag)
     self.contentView.addSubview(self.dismissButton)
     
@@ -248,13 +248,11 @@ extension LoungeView {
     self.externalView.configure(with: models)
   }
   
-  func displayError(for type: LoungeSectionType) {
+  func displayError() {
     self.contentView.isHidden = false
-    switch type {
-    case .header: self.headerView.displayError()
-    case .mainContent: self.mainView.displayError()
-    case .externalSource: self.externalView.displayError()
-    }
+    self.headerView.displayError()
+    self.mainView.displayError()
+    self.externalView.displayError()
   }
 }
 

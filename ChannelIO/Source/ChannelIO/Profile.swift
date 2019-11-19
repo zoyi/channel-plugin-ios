@@ -9,11 +9,11 @@ import Foundation
 
 @objc
 public class Profile : NSObject {
-  @objc var name: String = ""
-  @objc var avatarUrl: String = ""
-  @objc var mobileNumber: String = ""
-  @objc var email: String = ""
-  @objc var property:[String:Any] = [:]
+  @objc var name: String? = nil
+  @objc var avatarUrl: String? = nil
+  @objc var mobileNumber: String? = nil
+  @objc var email: String? = nil
+  var property:[String:AnyObject?] = [:]
   
   @discardableResult
   @objc public func set(name: String) -> Profile {
@@ -40,33 +40,8 @@ public class Profile : NSObject {
   }
   
   @discardableResult
-  @objc public func set(propertyKey:String, value:Any) -> Profile {
+  @objc public func set(propertyKey:String, value:AnyObject?) -> Profile {
     self.property[propertyKey] = value
     return self
-  }
-  
-  internal func generateParams() -> [String: Any] {
-    var params = [String: Any]()
-    if self.name != "" {
-      params["name"] = self.name
-    }
-    
-    if self.email != "" {
-      params["email"] = self.email
-    }
-    
-    if self.mobileNumber != "" {
-      params["mobileNumber"] = self.mobileNumber
-    }
-    
-    if self.avatarUrl != "" {
-      params["avatarUrl"] = self.avatarUrl
-    }
-    
-    if self.property.count != 0 {
-      params["property"] = self.property
-    }
-    
-    return params
   }
 }

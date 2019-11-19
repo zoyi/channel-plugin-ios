@@ -10,9 +10,8 @@ import Foundation
 import SnapKit
 import RxSwift
 import RxCocoa
-import Reusable
 
-final class SwitchCell : BaseTableViewCell, Reusable {
+final class SwitchCell : BaseTableViewCell {
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 16)

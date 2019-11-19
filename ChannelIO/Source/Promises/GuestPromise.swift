@@ -14,23 +14,25 @@ import ObjectMapper
 import CRToast
 
 struct UserPromise {
-  static func touch() -> Observable<BootResponse> {
+  static func touch(pluginId: String) -> Observable<BootResponse> {
     return Observable.create { subscriber in
       let req = Alamofire
-        .request(RestRouter.TouchUser)
+        .request(RestRouter.TouchUser(pluginId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json:JSON = JSON(data)
             guard let result = Mapper<BootResponse>().map(JSONObject: json.object) else {
-              subscriber.onError(CHErrorPool.pluginParseError)
-              break
+              subscriber.onError(ChannelError.parseError)
+              return
             }
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
@@ -41,7 +43,7 @@ struct UserPromise {
   }
   
   static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHUser?, Any?)> {
-    return Observable.create({ (subscriber) -> Disposable in
+    return Observable.create { (subscriber) -> Disposable in
       let params = [
         "body": profiles
       ]
@@ -53,8 +55,8 @@ struct UserPromise {
           case .success(let data):
             let json:JSON = JSON(data)
             guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
-              subscriber.onError(CHErrorPool.userParseError)
-              break
+              subscriber.onError(ChannelError.parseError)
+              return
             }
             subscriber.onNext((user, nil))
             subscriber.onCompleted()
@@ -70,7 +72,7 @@ struct UserPromise {
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
 }
 

@@ -26,7 +26,7 @@ protocol LoungeViewProtocol: class {
   func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?)
   func displayExternalSources(with models: [LoungeExternalSourceModel])
   
-  func displayError(for type: LoungeSectionType)
+  func displayError()
 }
 
 protocol LoungePresenterProtocol: class {
@@ -36,23 +36,22 @@ protocol LoungePresenterProtocol: class {
   
   var needToFetch: Bool { get set }
   
-  func isReadyToPresentChat(chatId: String?) -> Single<Any?>
-  
   func viewDidLoad()
   func prepare(fetch: Bool)
   func cleanup()
   
   func didClickOnDelete(chatId: String?)
-  func didClickOnRefresh(for type: LoungeSectionType)
+  func didClickOnRefresh()
   func didClickOnSetting(from view: UIViewController?)
   func didClickOnDismiss()
   func didClickOnChat(with chatId: String?, animated:Bool, from view: UIViewController?)
   func didClickOnNewChat(from view: UIViewController?)
   func didClickOnSeeMoreChat(from view: UIViewController?)
   func didClickOnHelp(from view: UIViewController?)
-  
   func didClickOnExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   func didClickOnWatermark()
+  
+  func isReadyToPresentChat(chatId: String?) -> Single<Any?>
 }
 
 protocol LoungeInteractorProtocol: class {
@@ -66,12 +65,9 @@ protocol LoungeInteractorProtocol: class {
   func updateExternalSource() -> Observable<[Any]>
   
   func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat>
+  func getLounge() -> Observable<LoungeResponse>
   func getChannel() -> Observable<CHChannel>
-  func getPlugin() -> Observable<(CHPlugin, CHBot?)>
-  func getOperators() -> Observable<[CHManager]>
   func getChats() -> Observable<[CHUserChat]>
-  func getSupportBot() -> Observable<CHSupportBotEntryInfo>
-  func getExternalSource() -> Observable<[CHExternalSourceType:String]?>
 }
 
 protocol LoungeRouterProtocol: class {

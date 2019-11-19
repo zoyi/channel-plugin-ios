@@ -39,9 +39,6 @@ struct LauncherViewModel: LauncherViewModelType {
     if self.badge == 0 {
       self.launchIcon = plugin.textColor == "white" ?
         CHAssets.normalIcon() : CHAssets.normalBlackIcon()
-    } else if let push = push, push.isNudgePush {
-      self.launchIcon = plugin.textColor == "white" ?
-        CHAssets.pushIcon() : CHAssets.pushBlackIcon()
     } else if self.badge >= 10 {
       self.launchIcon = plugin.textColor == "white" ?
         CHAssets.upRightIcon() : CHAssets.upRightBlackIcon()

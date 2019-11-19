@@ -8,10 +8,9 @@
 import Foundation
 import UIKit
 import SnapKit
-import Reusable
 import SDWebImage
 
-final class TypingIndicatorCell: BaseTableViewCell, Reusable {  
+final class TypingIndicatorCell: BaseTableViewCell {  
   let multiAvatarView = LiveTypingAvatarsView(avatarSize: 22, coverMargin: 4)
   
   let personCountLabel = UILabel().then {

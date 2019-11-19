@@ -35,11 +35,6 @@ struct RemoveMessages: Action {
   public let payload: String?
 }
 
-struct GetNudgeChat: Action {
-  public let nudgeId: String
-  public let payload: ChatResponse
-}
-
 struct GetUserChat: Action {
   public let payload: ChatResponse
 }

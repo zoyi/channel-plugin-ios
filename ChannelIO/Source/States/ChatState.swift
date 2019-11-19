@@ -37,7 +37,7 @@ struct ChatState: StateType {
     
     for (key, message) in self.actionQueue {
       var updated = message
-      updated.messageType = CHMessage.contextType(message)
+      updated.messageType = message.contextType()
       self.messageDictionary[key] = updated
     }
     
@@ -52,7 +52,7 @@ struct ChatState: StateType {
   mutating func replace(userChat: CHUserChat?) -> ChatState {
     guard let userChat = userChat else { return self }
     self.userChat = userChat
-    if let lastId = userChat.appMessageId {
+    if let lastId = userChat.frontMessageId {
       self.lastMessage = lastId
     }
     
@@ -80,7 +80,7 @@ struct ChatState: StateType {
   mutating func upsert(userChat: CHUserChat?) -> ChatState {
     guard let userChat = userChat else { return self }
     self.userChat = userChat
-    if let lastId = userChat.appMessageId {
+    if let lastId = userChat.frontMessageId {
       self.lastMessage = lastId
     }
     
