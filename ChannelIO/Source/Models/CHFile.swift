@@ -129,7 +129,7 @@ struct CHFile {
       return .gif
     case "json":
       return .json
-    case "mp4", String(kUTTypeVideo), String(kUTTypeQuickTimeMovie), String(kUTTypeMovie):
+    case "mp4", "public.mpeg-4", String(kUTTypeVideo), String(kUTTypeQuickTimeMovie), String(kUTTypeMovie):
       return .video
     case "mp3", "wav", "ogg", String(kUTTypeAudio):
       return .audio

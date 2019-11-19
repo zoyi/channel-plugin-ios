@@ -168,7 +168,7 @@ class WsService {
     return self.messageOnCreateSubject
   }
   
-  func joined() -> PublishSubject<String> {
+  func observeJoin() -> PublishSubject<String> {
     return self.joinSubject
   }
   

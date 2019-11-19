@@ -28,8 +28,9 @@ class ActionMessageCell: MessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -46,7 +47,7 @@ class ActionMessageCell: MessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager?) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     
@@ -96,8 +97,9 @@ class ActionWebMessageCell: WebPageMessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -113,7 +115,7 @@ class ActionWebMessageCell: WebPageMessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager?) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
@@ -142,8 +144,9 @@ class ActionMediaMessageCell: MediaMessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -159,7 +162,7 @@ class ActionMediaMessageCell: MediaMessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager?) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
@@ -188,8 +191,9 @@ class ActionFileMessageCell: FileMessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.onClickActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
       }).disposed(by: self.disposeBag)
   }
   
@@ -205,7 +209,7 @@ class ActionFileMessageCell: FileMessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager?) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)

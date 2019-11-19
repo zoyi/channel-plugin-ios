@@ -78,7 +78,7 @@ class ProfileCell : WebPageMessageCell {
     super.prepareForReuse()
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.profileExtendableView.configure(model: viewModel, presenter: presenter, redraw: presenter?.shouldRedrawProfileBot ?? false)
     if viewModel.webpage != nil {

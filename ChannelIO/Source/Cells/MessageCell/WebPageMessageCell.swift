@@ -39,7 +39,7 @@ class WebPageMessageCell: MessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
+  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.webView.configure(message: viewModel)
     

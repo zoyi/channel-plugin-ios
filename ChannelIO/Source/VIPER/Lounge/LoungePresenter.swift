@@ -176,7 +176,6 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       let supportSignal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
       let chatSignal = self.fetchChatIfNeeded(chatId: chatId)
       
-      //plugin may not need
       let signal = Observable.zip(pluginSignal, supportSignal, chatSignal)
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           let reloadMessage = CHAssets.localized("plugin.reload.message")
@@ -314,10 +313,10 @@ extension LoungePresenter {
       })
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (plugin, entry) in
+        mainStore.dispatch(GetPlugin(plugin: plugin.0, bot: plugin.1))
         mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
         SVProgressHUD.dismiss()
         self.router?.pushChat(with: chatId, animated: animated, from: view)
-        //view?.navigationController?.pushViewController(chatView, animated: animated)
       }, onError: { (error) in
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)

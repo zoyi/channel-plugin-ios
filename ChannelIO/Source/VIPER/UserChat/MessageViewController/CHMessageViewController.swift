@@ -39,6 +39,10 @@ class CHMessageViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    //temporary disabled darkmode
+    if #available(iOS 13.0, *) {
+      self.overrideUserInterfaceStyle = .light
+    }
     view.addSubview(messageView)
   }
 

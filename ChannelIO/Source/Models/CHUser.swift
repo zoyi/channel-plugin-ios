@@ -130,3 +130,4 @@ extension CHUser {
     return UserPromise.updateProfile(with: [key: value])
   }
 }
+
