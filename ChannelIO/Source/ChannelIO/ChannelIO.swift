@@ -71,7 +71,7 @@ public final class ChannelIO: NSObject {
   
   internal static var launcherView: LauncherView? = nil
   internal static var launcherVisible: Bool = false
-  internal static var willBecomeActive: Bool = true
+  internal static var willBecomeActive: Bool = false
   
   // MARK: StoreSubscriber
   class CHPluginSubscriber : StoreSubscriber {
@@ -478,7 +478,7 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
     guard let userChatId = userInfo["chatId"] as? String else { return }
     
-    //not tap and signal server to acknowledgement
+    //NOTE: if push was received on background, just send ack to the server
     if !ChannelIO.willBecomeActive {
       AppManager.sendAck(userChatId: userChatId).subscribe(onNext: { (completed) in
         completion?()
@@ -488,6 +488,7 @@ public final class ChannelIO: NSObject {
       return
     }
     
+    //NOTE: handler when push was clicked by user
     if ChannelIO.isValidStatus {
       ChannelIO.showUserChat(userChatId:userChatId)
       completion?()

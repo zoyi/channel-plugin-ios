@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ChannelIO'
-  s.version          = '6.1.14'
+  s.version          = '6.1.15'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'SDK', :file => 'LICENSE' }
   s.author           = { 'ZOYI' => 'eng@zoyi.co' }
   s.source           = { :git => 'https://github.com/zoyi/channel-plugin-ios.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '9.1'
+  s.ios.deployment_target = '10.0'
   #s.script_phase = {
   #  :name => 'ChannelIO Emoji Sync',
   #  :script => '${PODS_TARGET_SRCROOT}/Assets/setup.sh',
@@ -39,14 +39,14 @@ Pod::Spec.new do |s|
 
   s.frameworks = 'CoreTelephony'
  
-  s.dependency 'Reusable', '~> 4.0'
-  s.dependency 'SnapKit', '~> 4.0'
-  s.dependency 'SwiftyJSON', '~> 4.0'
+  s.dependency 'Reusable', '~> 4.1'
+  s.dependency 'SnapKit', '~> 5.0'
+  s.dependency 'SwiftyJSON', '~> 5.0'
   s.dependency 'ReSwift', '~> 4.0'
   s.dependency 'RxSwift', '~> 5.0'
   s.dependency 'RxCocoa', '~> 5.0'
-  s.dependency 'ObjectMapper', '~> 3.3'
-  s.dependency 'NVActivityIndicatorView', '~> 4.4'
+  s.dependency 'ObjectMapper', '~> 3.5'
+  s.dependency 'NVActivityIndicatorView', '~> 4.7'
   s.dependency 'CHDwifft'
   s.dependency 'Alamofire', '~> 4.9'
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
@@ -54,7 +54,7 @@ Pod::Spec.new do |s|
   s.dependency 'MGSwipeTableCell'
   s.dependency 'SVProgressHUD'
   s.dependency 'CRToast'
-  s.dependency 'PhoneNumberKit', '~> 2.6'
+  s.dependency 'PhoneNumberKit', '~> 3.0'
   s.dependency 'SDWebImage', '~> 5.0'
   s.dependency 'RxSwiftExt', '~> 5.1'
   s.dependency 'TLPhotoPicker'

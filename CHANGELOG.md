@@ -1,3 +1,11 @@
+# 6.1.15
+## Updates
+* Changed minimum os version to 10
+* Updated depandencies versions for swift 5 (Reusable, SnapKit, SwiftyJSON, ObjectMapper, NVActivityIndicatorView, PhoneNumberKit)
+
+## Bug fixes
+* Fixed becoming online bug when app is not running
+
 # 6.1.14
 ## Bug fixes
 * Fixed new banner logic
