@@ -116,6 +116,7 @@ extension ChannelIO {
           
           data["settings"] = settings
           mainStore.dispatch(CheckInSuccess(payload: data))
+          ChannelIO.sendDefaultEvent(.boot)
           
           WsService.shared.connect()
           WsService.shared.ready().take(1)

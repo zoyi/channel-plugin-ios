@@ -179,8 +179,9 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       //plugin may not need
       let signal = Observable.zip(pluginSignal, supportSignal, chatSignal)
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-          let reloadMessage = CHAssets.localized("plugin.reload.message")
-          SVProgressHUD.show(withStatus: reloadMessage)
+//          let reloadMessage = CHAssets.localized("plugin.reload.message")
+//          SVProgressHUD.show(withStatus: reloadMessage)
+          SVProgressHUD.show()
           return true
         })
         .observeOn(MainScheduler.instance)
@@ -308,8 +309,9 @@ extension LoungePresenter {
     //plugin may not need
     Observable.zip(pluginSignal, supportSignal)
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        let reloadMessage = CHAssets.localized("plugin.reload.message")
-        SVProgressHUD.show(withStatus: reloadMessage)
+//        let reloadMessage = CHAssets.localized("plugin.reload.message")
+//        SVProgressHUD.show(withStatus: reloadMessage)
+        SVProgressHUD.show()
         return true
       })
       .observeOn(MainScheduler.instance)
