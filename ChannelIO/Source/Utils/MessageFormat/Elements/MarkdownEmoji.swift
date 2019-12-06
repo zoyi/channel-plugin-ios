@@ -30,7 +30,7 @@ class MarkdownEmoji: MarkdownCommonElement {
     let matchString = attributedString.attributedSubstring(from: keyRange).string
     guard let emoji = self.emojiMap[matchString] else { return }
     attributedString.replaceCharacters(in: match.range, with: emoji)
-    attributedString.addAttributes(attributes, range: NSRange(location: match.range.location, length: emoji.count))
+    attributedString.addAttributes(attributes, range: NSRange(location: match.range.location, length: emoji.utf16.count))
   }
   
 //  open func addAttributes(_ attributedString: NSMutableAttributedString, range: NSRange) {

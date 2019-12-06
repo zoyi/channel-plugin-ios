@@ -112,6 +112,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
       make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metrics.titleBottomPadding)
       make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
       make.right.equalToSuperview().inset(52)
+      make.bottom.equalToSuperview().inset(5)
     }
     
     self.badge.snp.makeConstraints { [weak self] (make) in
@@ -152,10 +153,9 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     var height: CGFloat = 0.0
     height += 13.f //top
     height += 18.f
-    height += viewModel.lastMessage?
+    height += viewModel.attributeLastMessage?
       .height(
         fits: width - 62.f - 52.f,
-        font: UIFont.systemFont(ofSize: 14),
         maximumNumberOfLines: maxNumberOfLines
       ) ?? 0
     height += 9

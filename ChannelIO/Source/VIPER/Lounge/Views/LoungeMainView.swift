@@ -37,6 +37,7 @@ class LoungeMainView: BaseView {
     $0.isScrollEnabled = false
     $0.separatorStyle = .none
     $0.register(cellType: UserChatCell.self)
+    $0.estimatedRowHeight = UITableView.automaticDimension
   }
 
   private let moreView = LoungeMoreView().then {
@@ -255,10 +256,6 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       return view
     }
     return self.otherChatCount != 0 ? UIView() : nil
-  }
-  
-  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return !self.shouldShowWelcome ? Constants.defaultCellHeight : self.welcomeCellHeight
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -1,3 +1,8 @@
+# 6.1.16
+## Bug fixes
+* Fixed some broken emoji display
+* Changed user chat cell height calculation to automatic
+
 # 6.1.15
 ## Updates
 * Changed minimum os version to 10
