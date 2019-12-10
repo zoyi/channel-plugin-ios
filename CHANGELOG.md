@@ -1,6 +1,7 @@
-# 6.1.16
+# 6.1.17
 ## Bug fixes
 * Fixed some broken emoji display
+* Fixed text height calculation for welcome
 * Changed user chat cell height calculation to automatic
 
 # 6.1.15

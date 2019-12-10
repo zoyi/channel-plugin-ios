@@ -150,14 +150,24 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   static func calculateHeight(fits width: CGFloat, viewModel: UserChatCellModelType?, maxNumberOfLines: Int) -> CGFloat {
     guard let viewModel = viewModel else { return 0 }
     
+    var textHeight: CGFloat = 0
+    if let attributedText = viewModel.attributeLastMessage {
+      textHeight = attributedText.height(
+        fits: width - 62.f - 52.f,
+        maximumNumberOfLines: maxNumberOfLines
+      )
+    } else if let text = viewModel.lastMessage {
+      textHeight = text.height(
+        fits: width - 62.f - 52.f,
+        font: UIFont.systemFont(ofSize: 14),
+        maximumNumberOfLines: maxNumberOfLines
+      )
+    }
+    
     var height: CGFloat = 0.0
     height += 13.f //top
     height += 18.f
-    height += viewModel.attributeLastMessage?
-      .height(
-        fits: width - 62.f - 52.f,
-        maximumNumberOfLines: maxNumberOfLines
-      ) ?? 0
+    height += textHeight
     height += 9
     return height
   }
