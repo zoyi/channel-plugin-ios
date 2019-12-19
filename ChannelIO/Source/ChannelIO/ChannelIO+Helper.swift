@@ -140,7 +140,7 @@ extension ChannelIO {
         return
       }
       
-      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.launcherView?.hide(animated: false)
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
@@ -182,7 +182,7 @@ extension ChannelIO {
   }
   
   internal class func showNotification(pushData: CHPush?) {
-    guard let view = CHUtils.getTopController()?.view else { return }
+    guard let view = ChannelIO.launcherWindow?.rootViewController?.view else { return }
     guard let push = pushData else { return }
     
     if ChannelIO.inAppNotificationView != nil {
@@ -209,7 +209,8 @@ extension ChannelIO {
         ChannelIO.showUserChat(userChatId: push.userChat?.id)
       }).disposed(by: disposeBag)
     
-    notificationView?.signalForClose()
+    notificationView?
+      .signalForClose()
       .observeOn(MainScheduler.instance)
       .subscribe { (event) in
         ChannelIO.hideNotification()

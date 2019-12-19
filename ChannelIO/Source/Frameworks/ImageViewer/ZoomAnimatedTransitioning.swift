@@ -77,7 +77,7 @@ class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioning
         gestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ZoomAnimatedTransitioningDelegate.handleSwipe(_:)))
         gestureRecognizer.delegate = self
         // Append it to a window otherwise it will be canceled during the transition
-        UIApplication.shared.keyWindow?.addGestureRecognizer(gestureRecognizer)
+        CHUtils.getKeyWindow()?.addGestureRecognizer(gestureRecognizer)
     }
 
     @objc func handleSwipe(_ gesture: UIPanGestureRecognizer) {
@@ -357,7 +357,7 @@ class ZoomOutAnimator: ZoomAnimator, UIViewControllerAnimatedTransitioning {
 
             if completed {
                 fromViewController.view.removeFromSuperview()
-                UIApplication.shared.keyWindow?.removeGestureRecognizer(self.parent.gestureRecognizer)
+                CHUtils.getKeyWindow()?.removeGestureRecognizer(self.parent.gestureRecognizer)
                 // Unpauses slideshow
                 self.referenceSlideshowView?.unpauseTimer()
             } else {
