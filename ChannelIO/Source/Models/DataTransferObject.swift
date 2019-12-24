@@ -96,3 +96,25 @@ struct CHErrorResponse: Mappable {
   }
 }
 
+struct BootResult: Mappable {
+  var user: CHUser?
+  var veil: CHVeil?
+  var channel: CHChannel?
+  var plugin: CHPlugin?
+  var guestKey: Any?
+  var veilId: String?
+  
+  init() {}
+  
+  init?(map: Map) {}
+  
+  mutating func mapping(map: Map) {
+    user        <- map["user"]
+    veil        <- map["veil"]
+    channel     <- map["channel"]
+    plugin      <- map["plugin"]
+    guestKey    <- map["guestKey"]
+    veilId      <- map["veilId"]
+  }
+}
+

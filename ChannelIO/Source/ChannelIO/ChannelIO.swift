@@ -38,7 +38,7 @@ public final class ChannelIO: NSObject {
   //MARK: Properties
   @objc public static weak var delegate: ChannelPluginDelegate?
   @objc public static var isBooted: Bool {
-    return mainStore.state.checkinState.status == .success
+    return mainStore.state.bootState.status == .success
   }
   @objc public static var canShowLauncher: Bool {
     return !mainStore.state.channel.shouldHideLauncher && ChannelIO.isValidStatus
@@ -68,7 +68,7 @@ public final class ChannelIO: NSObject {
   internal static var currentAlertCount: Int?
 
   static var isValidStatus: Bool {
-    return mainStore.state.checkinState.status == .success &&
+    return mainStore.state.bootState.status == .success &&
       mainStore.state.channel.id != ""
   }
 
@@ -163,47 +163,51 @@ public final class ChannelIO: NSObject {
       ChannelIO.profile = profile
       
       if settings.pluginKey == "" {
-        mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
+        mainStore.dispatch(UpdateBootState(payload: .notInitialized))
         completion?(.notInitialized, nil)
         return
       }
       
-      AppManager.checkVersion().flatMap { (event) in
-        return ChannelIO.checkInChannel(profile: profile)
-      }
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (_) in
-        PrefStore.setChannelPluginSettings(pluginSetting: settings)
-        AppManager.registerPushToken()
-        
-        if ChannelIO.launcherWindow == nil {
-          ChannelIO.launcherWindow = LauncherWindow()
+      AppManager
+        .checkVersion()
+        .flatMap { (event) -> Observable<BootResult> in
+          return ChannelIO.bootChannel(profile: profile)
         }
-        
-        if ChannelIO.launcherVisible {
-          ChannelIO.show(animated: true)
-        }
-        completion?(.success, Guest(with: mainStore.state.guest))
-      }, onError: { error in
-        let code = (error as NSError).code
-        if code == -1001 {
-          dlog("network timeout")
-          mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
-          completion?(.networkTimeout, nil)
-        } else if code == CHErrorCode.versionError.rawValue {
-          dlog("version is not compatiable. please update sdk version")
-          mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
-          completion?(.notAvailableVersion, nil)
-        } else if code == CHErrorCode.serviceBlockedError.rawValue {
-          dlog("require payment. free plan is not eligible to use SDK")
-          mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
-          completion?(.requirePayment, nil)
-        } else {
-          dlog("unknown")
-          mainStore.dispatch(UpdateCheckinState(payload: .unknown))
-          completion?(.unknown, nil)
-        }
-      }).disposed(by: disposeBag)
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (_) in
+          PrefStore.setChannelPluginSettings(pluginSetting: settings)
+          AppManager.registerPushToken()
+          
+          if ChannelIO.launcherWindow == nil {
+            ChannelIO.launcherWindow = LauncherWindow()
+          }
+          
+          mainStore.dispatch(ReadyToShow())
+          
+          if ChannelIO.launcherVisible {
+            ChannelIO.show(animated: true)
+          }
+          completion?(.success, Guest(with: mainStore.state.guest))
+        }, onError: { error in
+          let code = (error as NSError).code
+          if code == -1001 {
+            dlog("network timeout")
+            mainStore.dispatch(UpdateBootState(payload: .networkTimeout))
+            completion?(.networkTimeout, nil)
+          } else if code == CHErrorCode.versionError.rawValue {
+            dlog("version is not compatiable. please update sdk version")
+            mainStore.dispatch(UpdateBootState(payload: .notAvailableVersion))
+            completion?(.notAvailableVersion, nil)
+          } else if code == CHErrorCode.serviceBlockedError.rawValue {
+            dlog("require payment. free plan is not eligible to use SDK")
+            mainStore.dispatch(UpdateBootState(payload: .requirePayment))
+            completion?(.requirePayment, nil)
+          } else {
+            dlog("unknown")
+            mainStore.dispatch(UpdateBootState(payload: .unknown))
+            completion?(.unknown, nil)
+          }
+        }).disposed(by: disposeBag)
     }
   }
 
@@ -308,8 +312,8 @@ public final class ChannelIO: NSObject {
         }
         
         if #available(iOS 11.0, *) {
-          if let view = ChannelIO.launcherWindow?.rootViewController?.view {
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-yMargin)
+          if let view = launcherView.superview {
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(yMargin)
           }
         } else {
           make.bottom.equalToSuperview().inset(yMargin)

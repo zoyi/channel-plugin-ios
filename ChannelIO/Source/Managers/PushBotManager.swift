@@ -43,7 +43,7 @@ class PushBotManager {
         return nudge.reach()
       })
       .single { $0.reach == true }
-      .filter { _ in mainStore.state.checkinState.status == .success }
+      .filter { _ in mainStore.state.bootState.status == .success }
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (response) in
         if let nudge = response.nudge {

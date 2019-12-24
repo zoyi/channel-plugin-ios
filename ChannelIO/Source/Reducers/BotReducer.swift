@@ -47,7 +47,7 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
   case let action as UpdateLoungeInfo:
     return state?.upsert(bot: action.bot) ?? BotsState()
     
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return state?.clear() ?? BotsState()
     
   default:

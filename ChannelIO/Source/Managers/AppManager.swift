@@ -12,7 +12,7 @@ import RxSwift
 struct AppManager {
   static let disposeBag = DisposeBag()
   
-  static func boot(pluginKey: String, params: CHParam) -> Observable<[String: Any]> {
+  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResult> {
     return PluginPromise.boot(pluginKey: pluginKey, params: params)
   }
   
