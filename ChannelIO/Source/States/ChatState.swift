@@ -35,11 +35,11 @@ struct ChatState: StateType {
       self.messageDictionary[message.requestId!] = nil
     }
     
-    for (key, message) in self.actionQueue {
-      var updated = message
-      updated.messageType = message.contextType()
-      self.messageDictionary[key] = updated
-    }
+//    for (key, message) in self.actionQueue {
+//      var updated = message
+//      updated.messageType = message.contextType()
+//      self.messageDictionary[key] = updated
+//    }
     
     self.messageDictionary[message.id] = message
     if message.action != nil {

@@ -53,7 +53,8 @@ class VideoPlayerView: BaseView {
     self.containerView.addSubview(self.playerController.view)
     self.addSubview(self.containerView)
 
-    self.playButton.rxForClick()
+    self.playButton
+      .signalForClick()
       .subscribe(onNext: { [weak self] _ in
         self?.play(with: self?.url, at: self?.currSeconds)
         self?.setVisibilityOfViews(isPlaying: true)

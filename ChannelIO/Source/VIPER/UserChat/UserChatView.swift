@@ -220,12 +220,10 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       target: self,
       action: #selector(self.didPressSendButton),
       position: .right)
-    self.messageView.rightButton.isEnabled = false
+    self.messageView.rightButtonIsEnable = false
     self.messageView.textViewInset = UIEdgeInsets(top: 12, left: 5, bottom: 12, right: 8)
     self.messageView.font = UIFont.systemFont(ofSize: 14)
     self.messageView.maxHeight = 184
-    self.messageView.rightButton.tintColor = self.messageView.shouldEnabledSend ?
-      .cobalt400: .sendDisable
     self.messageView.textContainerView
       .signalForClick()
       .observeOn(MainScheduler.instance)
@@ -845,14 +843,15 @@ extension UserChatView: UICollectionViewDelegate,
     let file = files[indexPath.row]
     if file.type == .video || file.type == .image {
       let cell: MediaCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
-      cell.rxForClick().subscribe(onNext: { [weak self] _ in
-        self?.presenter?.didClickOnFile(
-          with: file,
-          on: cell.imageView,
-          path: indexPath,
-          from: self
-        )
-      }).disposed(by: self.disposeBag)
+      cell.signalForClick()
+        .subscribe(onNext: { [weak self] _ in
+          self?.presenter?.didClickOnFile(
+            with: file,
+            on: cell.imageView,
+            path: indexPath,
+            from: self
+          )
+        }).disposed(by: self.disposeBag)
       cell.videoView.signalForPlay()
         .subscribe(onNext: { [weak self] play, seconds in
           if !play {
@@ -863,14 +862,15 @@ extension UserChatView: UICollectionViewDelegate,
       return cell
     } else {
       let cell: FileCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
-      cell.rxForClick().subscribe(onNext: { [weak self] _ in
-        self?.presenter?.didClickOnFile(
-          with: file,
-          on: nil,
-          path: indexPath,
-          from: self
-        )
-      }).disposed(by: self.disposeBag)
+      cell.signalForClick()
+        .subscribe(onNext: { [weak self] _ in
+          self?.presenter?.didClickOnFile(
+            with: file,
+            on: nil,
+            path: indexPath,
+            from: self
+          )
+        }).disposed(by: self.disposeBag)
       cell.configure(with: file)
       return cell
     }

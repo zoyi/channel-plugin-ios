@@ -12,7 +12,7 @@ class MediaCollectionView: BaseView {
   private struct Constants {
     static let MediaMessageCellSide = 115.f
   }
-  var collectionView: ResizableCollectionView!
+  var collectionView: UICollectionView!
 
   override func initialize() {
     super.initialize()
@@ -36,7 +36,7 @@ class MediaCollectionView: BaseView {
       $0.minimumInteritemSpacing = 8
       $0.minimumLineSpacing = 8
     }
-    self.collectionView = ResizableCollectionView(
+    self.collectionView = UICollectionView(
       frame: CGRect.zero, collectionViewLayout: flowLayout
     )
     

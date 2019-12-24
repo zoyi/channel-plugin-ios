@@ -511,55 +511,39 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       .showOptionActionSheet(from: view)
       .subscribe(onNext: { [weak self] assets in
         guard let self = self else { return }
-        guard let chat = self.userChat, chat.isActive else {
-          interactor
-            .createChat()
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self] (chat) in
-              guard let self = self, let chat = chat else { return }
-              self.userChatId = chat.id
-              self.userChat = chat
-              self.joinSocket()
-              self.observeFileQueue()
-              let files = assets.map { CHFile(asset: $0) }
-              self.uploadFile(files: files)
-            }, onError: { [weak self] (error) in
-              self?.view?.display(error: error.localizedDescription, visible: false)
-            }).disposed(by: self.disposeBag)
-          return
-        }
-          
-        let files = assets.map { CHFile(asset: $0) }
-        self.uploadFile(files: files)
+        interactor
+        .createChatIfNeeded()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { [weak self] (chat) in
+          guard let self = self, let chat = chat else { return }
+          self.userChatId = chat.id
+          self.userChat = chat
+          self.joinSocket()
+          self.observeFileQueue()
+          let files = assets.map { CHFile(asset: $0) }
+          self.uploadFile(files: files)
+        }, onError: { [weak self] (error) in
+          self?.view?.display(error: error.localizedDescription, visible: false)
+        }).disposed(by: self.disposeBag)
       }).disposed(by: self.disposeBag)
   }
   
   func didClickOnSendButton(text: String) {
-    guard
-      let chatId = self.userChatId,
-      let chat = self.userChat,
-      chat.isActive else {
-      self.interactor?
-        .createChat()
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (chat) in
-          guard let chat = chat else { return }
-          self?.userChatId = chat.id
-          self?.userChat = chat
-          self?.joinSocket()
-          let message = CHMessage.createLocal(chatId: chat.id, text: text)
-          mainStore.dispatch(CreateMessage(payload: message))
-          self?.observeFileQueue()
-          self?.sendMessage(with: message)
-        }, onError: { [weak self] (error) in
-          self?.view?.display(error: error.localizedDescription, visible: false)
-        }).disposed(by: self.disposeBag)
-      return
-    }
-    
-    let message = CHMessage.createLocal(chatId: chatId, text: text)
-    mainStore.dispatch(CreateMessage(payload: message))
-    self.sendMessage(with: message)
+    self.interactor?
+    .createChatIfNeeded()
+    .observeOn(MainScheduler.instance)
+    .subscribe(onNext: { [weak self] (chat) in
+      guard let chat = chat else { return }
+      self?.userChatId = chat.id
+      self?.userChat = chat
+      self?.joinSocket()
+      let message = CHMessage.createLocal(chatId: chat.id, text: text)
+      mainStore.dispatch(CreateMessage(payload: message))
+      self?.observeFileQueue()
+      self?.sendMessage(with: message)
+    }, onError: { [weak self] (error) in
+      self?.view?.display(error: error.localizedDescription, visible: false)
+    }).disposed(by: self.disposeBag)
   }
   
   func didClickOnRetryFile(with item: ChatFileQueueItem) {

@@ -320,8 +320,12 @@ extension UserChatInteractor {
       }
     }
   }
+  
+  func createChatIfNeeded() -> Observable<CHUserChat?> {
+    guard self.userChat == nil || self.userChat?.isActive == false else {
+      return .just(self.userChat)
+    }
     
-  func createChat() -> Observable<CHUserChat?> {
     return Observable.create { [weak self] (subscriber) in
       if let userChat = self?.userChat {
         subscriber.onNext(userChat)

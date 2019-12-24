@@ -165,7 +165,7 @@ struct CHFile: ThumbDisplayable {
   }
 }
 
-extension CHFile: Mappable, Hashable, Comparable {
+extension CHFile: Mappable, Hashable {
   init?(map: Map) {}
 
   mutating func mapping(map: Map) {
@@ -181,17 +181,6 @@ extension CHFile: Mappable, Hashable, Comparable {
     key <- map["key"]
     previewKey <- map["previewKey"]
     thumb <- map["thumb"]
-  }
-  
-  static func < (lhs: CHFile, rhs: CHFile) -> Bool {
-    if lhs.type == rhs.type {
-      return StringUtils.customSort(lhs.name, str2: rhs.name)
-    } else if lhs.type == .video {
-      return true
-    } else if lhs.type == .image && rhs.type != .video {
-      return true
-    }
-    return false
   }
 
   static func == (lhs: CHFile, rhs: CHFile) -> Bool {

@@ -115,8 +115,8 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
   }
 
   func setDataSource(
-    _ source: UICollectionViewDataSource &
-    UICollectionViewDelegateFlowLayout, at row: Int) {
+    _ source: UICollectionViewDataSource & UICollectionViewDelegateFlowLayout,
+    at row: Int) {
     self.mediaCollectionView.setDataSource(source, at: row)
   }
 }

@@ -7,10 +7,6 @@
 
 import Foundation
 
-protocol CHClip {
-  var id: String { get set }
-}
-
 protocol ThumbDisplayable {
   var width: Int { get set }
   var height: Int { get set }

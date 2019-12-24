@@ -118,7 +118,7 @@ protocol UserChatInteractorProtocol: class {
   func leaveSocket()
   func getChannel() -> Observable<CHChannel>
   func canLoadMore() -> Bool
-  func createChat() -> Observable<CHUserChat?>
+  func createChatIfNeeded() -> Observable<CHUserChat?>
   func createSupportBotChatIfNeeded(
     originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
   func fetchChat() -> Observable<CHUserChat?>

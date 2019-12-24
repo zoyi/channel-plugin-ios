@@ -204,10 +204,10 @@ extension MessageCell {
   }
   
   func layoutCoutinuousByMe() {
-    self.textMessageView.snp.remakeConstraints { [weak self] (make) in
+    self.textMessageView.snp.remakeConstraints { make in
       make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
-      if self?.textMessageView.messageView.text == "" {
+      if self.textMessageView.messageView.text == "" {
         make.top.equalToSuperview()
       } else {
         make.top.equalToSuperview().inset(Metric.cellTopPaddingOfContinous)

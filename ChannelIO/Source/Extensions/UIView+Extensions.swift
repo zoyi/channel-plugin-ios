@@ -52,43 +52,6 @@ internal extension UIView {
   }
 }
 
-protocol RxGesture {
-  var subscriber: AnyObserver<Any?> { get set }
-}
-
-class RxClickGesture: UITapGestureRecognizer, RxGesture {
-  var subscriber: AnyObserver<Any?>
-
-  init(container: UIView, target: AnyObserver<Any?>, action: Selector?) {
-    self.subscriber = target
-    super.init(target: container, action: action)
-  }
-}
-
-extension UIView {
-  @objc func rxOnNext(_ gesture: UIGestureRecognizer) {
-    if let rxGesture = gesture as? RxGesture {
-      rxGesture.subscriber.onNext(gesture)
-    }
-  }
-  
-  func rxForClick(cancelTouches: Bool = true) -> Observable<Any?> {
-    self.isUserInteractionEnabled = true
-
-    return Observable.create { [weak self] subscriber in
-      let gesture = RxClickGesture(container: self!, target: subscriber, action: #selector(self!.rxOnNext(_:)))
-      gesture.numberOfTapsRequired = 1
-      gesture.cancelsTouchesInView = cancelTouches
-      self?.addGestureRecognizer(gesture)
-
-      return Disposables.create {
-        subscriber.onCompleted()
-        self?.removeGestureRecognizer(gesture)
-      }
-    }
-  }
-}
-
 internal extension UIScrollView {
   var util_adjustedContentInset: UIEdgeInsets {
     if #available(iOS 11.0, *) {
