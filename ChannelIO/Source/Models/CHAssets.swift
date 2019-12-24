@@ -56,6 +56,10 @@ class CHAssets {
     }
   }
   
+  class func unlocalized(_ key: String) -> String {
+    return key
+  }
+  
   class func attributedLocalized(_ key: String) -> NSMutableAttributedString {
     let bundle = CHAssets.getBundle()
     let localizedString = NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "").replace("%s", withString: "%@")
