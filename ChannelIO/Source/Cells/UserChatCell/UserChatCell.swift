@@ -14,6 +14,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
   struct Constants {
     static let titleLabelNumberOfLines = 1
     static let messageLabelNumberOfLines = 2
+    static let welcomeNumberOfLines = 8
     static let timestampLabelNumberOfLines = 1
   }
 
@@ -111,7 +112,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
       make.top.equalTo(self.titleLabel.snp.bottom).offset(Metrics.titleBottomPadding)
       make.leading.equalTo(self.avatarView.snp.trailing).offset(Metrics.avatarTrailingPadding)
       make.trailing.equalToSuperview().inset(Metrics.messageLabelTrailingPadding)
-      make.bottom.equalToSuperview().inset(Metrics.messageLabelBottomPadding)
+      make.bottom.lessThanOrEqualToSuperview().inset(Metrics.messageLabelBottomPadding)
     }
     
     self.badge.snp.makeConstraints { make in
@@ -131,6 +132,9 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     } else {
       self.messageLabel.text = viewModel.lastMessage
     }
+    self.messageLabel.numberOfLines = viewModel.isWelcome ?
+      Constants.welcomeNumberOfLines :
+      Constants.messageLabelNumberOfLines
     
     if let avatar = viewModel.avatar {
       self.avatarView.configure(avatar)
@@ -142,9 +146,13 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.messageLabel.textColor = viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
   }
   
-  static func calculateHeight(fits width: CGFloat, viewModel: UserChatCellModelType?, maxNumberOfLines: Int) -> CGFloat {
+  static func calculateHeight(
+    fits width: CGFloat,
+    viewModel: UserChatCellModelType?) -> CGFloat {
     guard let viewModel = viewModel else { return 0 }
-    
+    let maxLines = viewModel.isWelcome ?
+      Constants.welcomeNumberOfLines :
+      Constants.messageLabelNumberOfLines
     var textHeight: CGFloat = 0
     if let attributedText = viewModel.attributeLastMessage {
       textHeight = attributedText.height(
@@ -153,7 +161,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
           Metrics.avatarWidth -
           Metrics.avatarTrailingPadding -
           Metrics.messageLabelTrailingPadding,
-        maximumNumberOfLines: maxNumberOfLines
+        maximumNumberOfLines: maxLines
       )
     } else if let text = viewModel.lastMessage {
       textHeight = text.height(
@@ -163,16 +171,17 @@ final class UserChatCell: BaseTableViewCell, Reusable {
           Metrics.avatarTrailingPadding -
           Metrics.messageLabelTrailingPadding,
         font: UIFont.systemFont(ofSize: 14),
-        maximumNumberOfLines: maxNumberOfLines
+        maximumNumberOfLines: maxLines
       )
     }
     
     var height: CGFloat = 0.0
     height += Metrics.cellTopPadding
     height += Metrics.titleHeight
+    height += Metrics.messageLabelBottomPadding
     height += textHeight
     height += Metrics.messageLabelBottomPadding
-    return height
+    return viewModel.isWelcome ? max(Metrics.cellHeight, height) : Metrics.cellHeight
   }
   
   class func height(fits width: CGFloat, viewModel: UserChatCellModelType) -> CGFloat {

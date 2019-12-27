@@ -21,7 +21,7 @@ class TextMessageView : BaseView {
     static let leftRightPadding = 12.f
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
-    static let textViewMinimalWidth = 13.f
+    static let textViewMinimalWidth = 20.f
   }
 
   struct Constants {
@@ -131,6 +131,18 @@ class TextMessageView : BaseView {
     }
   }
   
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    if self.viewModel?.isContinuous == true {
+      self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
+    } else if self.viewModel?.createdByMe == true {
+      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
+    } else {
+      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
+    }
+  }
+  
   class func viewHeight(
     fits width: CGFloat,
     viewModel: MessageCellModelType,
@@ -144,10 +156,9 @@ class TextMessageView : BaseView {
     let maxWidth = !viewModel.message.onlyEmoji ?
       width - Metrics.leftRightPadding * 2 :
       width - Metrics.minimalLeftRightPadding * 2
-    
+
     let topBottomPadding = viewModel.message.onlyEmoji ?
-      Metrics.minimalTopBottomPadding * 2 :
-      Metrics.topBottomPadding * 2
+      Metrics.minimalTopBottomPadding : Metrics.topBottomPadding
     
     if let edgeInset = edgeInset {
       placeHolder.textContainerInset = edgeInset
@@ -160,7 +171,7 @@ class TextMessageView : BaseView {
     placeHolder.attributedText = text
     placeHolder.sizeToFit()
     
-    viewHeight += placeHolder.frame.size.height + topBottomPadding
+    viewHeight += placeHolder.frame.size.height + topBottomPadding * 2
     return viewHeight
   }
 }

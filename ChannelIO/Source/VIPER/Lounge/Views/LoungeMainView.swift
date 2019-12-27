@@ -37,7 +37,6 @@ class LoungeMainView: BaseView {
     $0.isScrollEnabled = false
     $0.separatorStyle = .none
     $0.register(cellType: UserChatCell.self)
-    $0.estimatedRowHeight = UITableView.automaticDimension
   }
 
   private let moreView = LoungeMoreView().then {
@@ -84,8 +83,8 @@ class LoungeMainView: BaseView {
     if let model = self.welcomeModel, self.shouldShowWelcome {
       self.welcomeCellHeight = UserChatCell.calculateHeight(
         fits: self.frame.width,
-        viewModel: model,
-        maxNumberOfLines: Constants.maxNumberOfLinesForWelcomeCell)
+        viewModel: model
+      )
       
       var height = self.welcomeCellHeight +
         Constants.defaultHeaderHeight +
@@ -258,12 +257,22 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
     return self.otherChatCount != 0 ? UIView() : nil
   }
   
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    let model = !self.shouldShowWelcome ?
+      self.activeChats[indexPath.row] :
+      self.welcomeModel
+    
+    return UserChatCell.calculateHeight(
+      fits: tableView.frame.width,
+      viewModel: model
+    )
+  }
+  
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if !self.shouldShowWelcome {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
       let model = self.activeChats[indexPath.row]
       cell.configure(model)
-      cell.messageLabel.numberOfLines = Constants.maxNumberOfLines
       
       let button = MGSwipeButton(
         title: CHAssets.localized("ch.chat.delete"),
@@ -285,7 +294,6 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
     if let welcomeModel = self.welcomeModel {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(welcomeModel)
-      cell.messageLabel.numberOfLines = Constants.maxNumberOfLinesForWelcomeCell
       cell.rightButtons = []
       return cell
     }

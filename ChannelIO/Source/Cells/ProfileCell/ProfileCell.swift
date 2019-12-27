@@ -65,9 +65,9 @@ class ProfileCell : WebPageMessageCell {
   
   override func setLayouts() {
     super.setLayouts()
-    self.profileExtendableView.snp.makeConstraints { [weak self] (make) in
-      self?.topToMessageConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(Metric.viewTop).constraint
-      self?.topToWebConstraint =  make.top.equalTo((self?.webView.snp.bottom)!).offset(Metric.viewTop).priority(750).constraint
+    self.profileExtendableView.snp.makeConstraints { (make) in
+      self.topToMessageConstraint = make.top.equalTo(self.textMessageView.snp.bottom).offset(Metric.viewTop).constraint
+      self.topToWebConstraint =  make.top.equalTo(self.webView.snp.bottom).offset(Metric.viewTop).priority(750).constraint
       make.left.equalToSuperview().inset(Metric.viewLeading)
       make.right.equalToSuperview().inset(Metric.viewTrailing)
       make.bottom.equalToSuperview().inset(Metric.viewBottom)
@@ -80,7 +80,11 @@ class ProfileCell : WebPageMessageCell {
   
   override func configure(_ viewModel: MessageCellModelType, presenter: ChatManager? = nil) {
     super.configure(viewModel, presenter: presenter)
-    self.profileExtendableView.configure(model: viewModel, presenter: presenter, redraw: presenter?.shouldRedrawProfileBot ?? false)
+    self.profileExtendableView.configure(
+      model: viewModel,
+      presenter: presenter,
+      redraw: presenter?.shouldRedrawProfileBot ?? false
+    )
     if viewModel.webpage != nil {
       self.topToMessageConstraint?.deactivate()
       self.topToWebConstraint?.activate()
@@ -91,10 +95,14 @@ class ProfileCell : WebPageMessageCell {
   }
   
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
-    var height = super.cellHeight(fits: width, viewModel: viewModel) + 20
-    height += ProfileExtendableView.viewHeight(
-      fit: width - Metric.viewLeading - Metric.viewTrailing,
-      model: viewModel)
+    var height = super.cellHeight(fits: width, viewModel: viewModel)
+    height += Metric.viewTop
+      + Metric.viewBottom
+      + ProfileExtendableView.viewHeight(
+          fit: width - Metric.viewLeading - Metric.viewTrailing,
+          model: viewModel
+        )
+
     return height
   }
 }

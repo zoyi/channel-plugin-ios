@@ -18,6 +18,7 @@ protocol UserChatCellModelType {
   var badgeCount: Int { get set }
   var isBadgeHidden: Bool { get set }
   var isClosed: Bool { get set }
+  var isWelcome: Bool { get set }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
@@ -30,6 +31,7 @@ struct UserChatCellModel: UserChatCellModelType {
   var badgeCount: Int = 0
   var isBadgeHidden: Bool = false
   var isClosed: Bool = false
+  var isWelcome: Bool = false
   
   init() {}
   
@@ -77,6 +79,8 @@ struct UserChatCellModel: UserChatCellModelType {
     guest: CHGuest,
     supportBotMessage: CHMessage? = nil) -> UserChatCellModel {
     var model = UserChatCellModel()
+    model.isWelcome = true
+    
     let bot = botSelector(state: mainStore.state, botName: plugin.botName)
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
