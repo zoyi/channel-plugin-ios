@@ -98,7 +98,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     }
     return state ?? MessagesState()
     
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return state?.clear() ?? MessagesState()
     
   default:

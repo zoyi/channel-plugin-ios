@@ -19,24 +19,26 @@ final class LauncherWindow: UIWindow {
   }
   
   internal override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+    var result: Bool = false
+    
     if let popupView = self.inAppNotificationView as? PopupInAppNotificationView,
       popupView.alpha != 0 {
       let popupPoint = convert(point, to: popupView)
-      return popupView.point(inside: popupPoint, with: event)
+      result = result || popupView.point(inside: popupPoint, with: event)
     }
     
     if let bannerView = self.inAppNotificationView as? BannerInAppNotificationView,
       bannerView.alpha != 0 {
       let bannerPoint = convert(point, to: bannerView)
-      return bannerView.point(inside: bannerPoint, with: event)
+      result = result || bannerView.point(inside: bannerPoint, with: event)
     }
     
     if let launchView = self.launcherView, launchView.alpha != 0 {
       let launchViewPoint = convert(point, to: launchView)
-      return launchView.point(inside: launchViewPoint, with: event)
+      result = result || launchView.point(inside: launchViewPoint, with: event)
     }
     
-    return false
+    return result
   }
   
   override func makeKey() {
@@ -52,7 +54,9 @@ final class LauncherWindow: UIWindow {
   
   func addCustomView(with view: UIView) {
     self.rootViewController?.view.addSubview(view)
-    if let view = view as? LauncherView {
+    if let view = view as? PopupInAppNotificationView {
+      view.layer.zPosition = 1
+    } else if let view = view as? BannerInAppNotificationView {
       view.layer.zPosition = 1
     }
   }

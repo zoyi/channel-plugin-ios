@@ -9,7 +9,7 @@
 import ReSwift
 
 struct AppState: StateType {
-  var checkinState: CheckinState
+  var bootState: BootState
   var plugin: CHPlugin
   var channel: CHChannel
   var guest: CHGuest
