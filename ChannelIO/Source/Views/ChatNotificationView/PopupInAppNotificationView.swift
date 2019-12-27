@@ -277,18 +277,9 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
       self.insert(on: view, animated: true)
     }
     
-    self.snp.makeConstraints({ (make) in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-      
-      if #available(iOS 11.0, *) {
-        make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-      } else {
-        make.top.equalToSuperview()
-        make.bottom.equalToSuperview()
-      }
-    })
+    self.snp.makeConstraints { make in
+      make.edges.equalToSuperview()
+    }
   }
   
   func signalForRedirect() -> Observable<String?> {
