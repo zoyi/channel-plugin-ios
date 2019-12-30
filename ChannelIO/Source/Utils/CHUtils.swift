@@ -14,14 +14,10 @@ class CHUtils {
   class func getKeyWindow() -> UIWindow? {
     let window: UIWindow?
     if #available(iOS 13.0, *) {
-      window = UIApplication
-        .shared
-        .connectedScenes
-        .filter { $0.activationState == .foregroundActive }
+      window = UIApplication.shared.connectedScenes
         .map { $0 as? UIWindowScene }
         .compactMap { $0 }
-        .first?
-        .windows
+        .first?.windows
         .filter { $0.isKeyWindow }
         .first
     } else {
