@@ -218,7 +218,7 @@ class WsService {
     
     self.currentChatId = chatId
     if let socket = self.socket, socket.status == .connected {
-      socket.emit(SocketCommand.join, "/user_chats/\(chatId)")
+      socket.emit(SocketCommand.join, "/user-chats/\(chatId)")
     }
   }
   
@@ -227,7 +227,7 @@ class WsService {
     
     self.currentChatId = ""
     if let socket = self.socket, socket.status == .connected {
-      socket.emit(SocketCommand.leave, "/user_chats/\(chatId)")
+      socket.emit(SocketCommand.leave, "/user-chats/\(chatId)")
     }
   }
   
