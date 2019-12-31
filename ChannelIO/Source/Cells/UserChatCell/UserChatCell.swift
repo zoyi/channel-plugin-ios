@@ -11,27 +11,28 @@ import Reusable
 import SnapKit
 
 final class UserChatCell: BaseTableViewCell, Reusable {
-
-  // MARK: Constantss
-
   struct Constants {
     static let titleLabelNumberOfLines = 1
     static let messageLabelNumberOfLines = 2
+    static let welcomeNumberOfLines = 8
     static let timestampLabelNumberOfLines = 1
   }
 
   struct Metrics {
     static let cellTopPadding = 13.f
-    static let cellLeftPadding = 14.f
-    static let cellRightPadding = 15.f
-    static let titleBottomPadding = 7.f
-    static let timestampBottomPadding = 13.f
-    static let avatarRightPadding = 14.f
+    static let cellLeadingPadding = 16.f
+    static let cellTrailingPadding = 16.f
+    static let titleHeight = 18.f
+    static let titleBottomPadding = 3.f
+    static let timestampBottomPadding = 16.f
+    static let avatarTrailingPadding = 10.f
     static let avatarWidth = 36.f
     static let avatarHeight = 36.f
     static let badgeHeight = 22.f
-    static let badgeLeftPadding = 20.f
+    static let badgeLeadingPadding = 20.f
     static let cellHeight = 80.f
+    static let messageLabelTrailingPadding = 52.f
+    static let messageLabelBottomPadding = 5.f
   }
 
   struct Font {
@@ -46,9 +47,7 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     static let messageLabel = CHColors.charcoalGrey
     static let timestampLabel = CHColors.blueyGrey
   }
-
-  // MARK: Properties
-
+  
   let bgView = UIView().then {
     $0.backgroundColor = Color.selectionColor
   }
@@ -91,38 +90,38 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.contentView.addSubview(self.badge)
     self.contentView.addSubview(self.messageLabel)
 
-    self.avatarView.snp.makeConstraints { (make) in
+    self.avatarView.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
-      make.left.equalToSuperview().inset(Metrics.cellLeftPadding)
+      make.leading.equalToSuperview().inset(Metrics.cellLeadingPadding)
       make.size.equalTo(CGSize(width: Metrics.avatarWidth, height: Metrics.avatarHeight))
     }
     
-    self.titleLabel.snp.makeConstraints { [weak self] (make) in
+    self.titleLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
-      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
+      make.height.equalTo(Metrics.titleHeight)
+      make.leading.equalTo(self.avatarView.snp.trailing).offset(Metrics.avatarTrailingPadding)
     }
     
-    self.timestampLabel.snp.makeConstraints { [weak self] (make) in
+    self.timestampLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
-      make.right.equalToSuperview().inset(Metrics.cellRightPadding)
-      make.left.equalTo((self?.titleLabel.snp.right)!).offset(Metrics.cellRightPadding)
+      make.trailing.equalToSuperview().inset(Metrics.cellTrailingPadding)
+      make.leading.equalTo(self.titleLabel.snp.trailing).offset(Metrics.cellTrailingPadding)
     }
     
-    self.messageLabel.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metrics.titleBottomPadding)
-      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
-      make.right.equalToSuperview().inset(52)
+    self.messageLabel.snp.makeConstraints { make in
+      make.top.equalTo(self.titleLabel.snp.bottom).offset(Metrics.titleBottomPadding)
+      make.leading.equalTo(self.avatarView.snp.trailing).offset(Metrics.avatarTrailingPadding)
+      make.trailing.equalToSuperview().inset(Metrics.messageLabelTrailingPadding)
+      make.bottom.lessThanOrEqualToSuperview().inset(Metrics.messageLabelBottomPadding)
     }
     
-    self.badge.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(Metrics.timestampBottomPadding)
-      make.right.equalToSuperview().inset(Metrics.cellRightPadding)
+    self.badge.snp.makeConstraints { make in
+      make.top.equalTo(self.timestampLabel.snp.bottom).offset(Metrics.timestampBottomPadding)
+      make.trailing.equalToSuperview().inset(Metrics.cellTrailingPadding)
       make.height.equalTo(Metrics.badgeHeight)
     }
   }
-
-  // MARK: Configuring
-
+  
   func configure(_ viewModel: UserChatCellModelType) {
     self.titleLabel.text = viewModel.title
     self.timestampLabel.text = viewModel.timestamp
@@ -133,6 +132,9 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     } else {
       self.messageLabel.text = viewModel.lastMessage
     }
+    self.messageLabel.numberOfLines = viewModel.isWelcome ?
+      Constants.welcomeNumberOfLines :
+      Constants.messageLabelNumberOfLines
     
     if let avatar = viewModel.avatar {
       self.avatarView.configure(avatar)
@@ -143,23 +145,43 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     
     self.messageLabel.textColor = viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
   }
-
-  // MARK: Cell Height
-
-  static func calculateHeight(fits width: CGFloat, viewModel: UserChatCellModelType?, maxNumberOfLines: Int) -> CGFloat {
+  
+  static func calculateHeight(
+    fits width: CGFloat,
+    viewModel: UserChatCellModelType?) -> CGFloat {
     guard let viewModel = viewModel else { return 0 }
+    let maxLines = viewModel.isWelcome ?
+      Constants.welcomeNumberOfLines :
+      Constants.messageLabelNumberOfLines
+    var textHeight: CGFloat = 0
+    if let attributedText = viewModel.attributeLastMessage {
+      textHeight = attributedText.height(
+        fits: width -
+          Metrics.cellLeadingPadding -
+          Metrics.avatarWidth -
+          Metrics.avatarTrailingPadding -
+          Metrics.messageLabelTrailingPadding,
+        maximumNumberOfLines: maxLines
+      )
+    } else if let text = viewModel.lastMessage {
+      textHeight = text.height(
+        fits: width -
+          Metrics.cellLeadingPadding -
+          Metrics.avatarWidth -
+          Metrics.avatarTrailingPadding -
+          Metrics.messageLabelTrailingPadding,
+        font: UIFont.systemFont(ofSize: 14),
+        maximumNumberOfLines: maxLines
+      )
+    }
     
     var height: CGFloat = 0.0
-    height += 13.f //top
-    height += 18.f
-    height += viewModel.lastMessage?
-      .height(
-        fits: width - 62.f - 52.f,
-        font: UIFont.systemFont(ofSize: 14),
-        maximumNumberOfLines: maxNumberOfLines
-      ) ?? 0
-    height += 9
-    return height
+    height += Metrics.cellTopPadding
+    height += Metrics.titleHeight
+    height += Metrics.messageLabelBottomPadding
+    height += textHeight
+    height += Metrics.messageLabelBottomPadding
+    return viewModel.isWelcome ? max(Metrics.cellHeight, height) : Metrics.cellHeight
   }
   
   class func height(fits width: CGFloat, viewModel: UserChatCellModelType) -> CGFloat {

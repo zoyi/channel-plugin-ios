@@ -18,7 +18,7 @@ extension ChannelIO {
     ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.close(animated: false)
     ChannelIO.hideNotification()
-    mainStore.dispatch(CheckOutSuccess())
+    mainStore.dispatch(ShutdownSuccess())
     WsService.shared.disconnect()
     disposeBag = DisposeBag()
   }
@@ -70,7 +70,7 @@ extension ChannelIO {
       }).disposed(by: disposeBag)
   }
 
-  internal class func checkInChannel(profile: Profile? = nil) -> Observable<Any?> {
+  internal class func bootChannel(profile: Profile? = nil) -> Observable<BootResult> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
         subscriber.onError(CHErrorPool.unknownError)
@@ -103,8 +103,7 @@ extension ChannelIO {
         })
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (data) in
-          var data = data
-          guard let channel = data["channel"] as? CHChannel else {
+          guard let channel = data.channel else {
             subscriber.onError(CHErrorPool.unknownError)
             return
           }
@@ -114,17 +113,17 @@ extension ChannelIO {
             return
           }
           
-          data["settings"] = settings
-          mainStore.dispatch(CheckInSuccess(payload: data))
+          mainStore.dispatch(BootSuccess(payload: data))
           ChannelIO.sendDefaultEvent(.boot)
-          
+                            
           WsService.shared.connect()
-          WsService.shared.ready().take(1)
+          WsService.shared
+            .ready()
+            .take(1)
             .subscribe(onNext: { _ in
               subscriber.onNext(data)
               subscriber.onCompleted()
             }).disposed(by: disposeBag)
-          
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {
@@ -141,7 +140,7 @@ extension ChannelIO {
         return
       }
       
-      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.launcherView?.hide(animated: false)
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
@@ -183,7 +182,7 @@ extension ChannelIO {
   }
   
   internal class func showNotification(pushData: CHPush?) {
-    guard let view = CHUtils.getTopController()?.view else { return }
+    guard let view = ChannelIO.launcherWindow?.rootViewController?.view else { return }
     guard let push = pushData else { return }
     
     if ChannelIO.inAppNotificationView != nil {
@@ -210,7 +209,8 @@ extension ChannelIO {
         ChannelIO.showUserChat(userChatId: push.userChat?.id)
       }).disposed(by: disposeBag)
     
-    notificationView?.signalForClose()
+    notificationView?
+      .signalForClose()
       .observeOn(MainScheduler.instance)
       .subscribe { (event) in
         ChannelIO.hideNotification()

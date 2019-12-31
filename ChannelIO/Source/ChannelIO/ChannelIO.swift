@@ -36,15 +36,22 @@ public protocol ChannelPluginDelegate: class {
 @objc
 public final class ChannelIO: NSObject {
   //MARK: Properties
-  @objc public static weak var delegate: ChannelPluginDelegate? = nil
+  @objc public static weak var delegate: ChannelPluginDelegate?
   @objc public static var isBooted: Bool {
-    return mainStore.state.checkinState.status == .success
+    return mainStore.state.bootState.status == .success
   }
   @objc public static var canShowLauncher: Bool {
     return !mainStore.state.channel.shouldHideLauncher && ChannelIO.isValidStatus
   }
   
-  internal static var inAppNotificationView: InAppNotification?
+  internal static var inAppNotificationView: InAppNotification? {
+    get {
+      return ChannelIO.launcherWindow?.inAppNotificationView
+    }
+    set {
+      ChannelIO.launcherWindow?.inAppNotificationView = newValue
+    }
+  }
   internal static var baseNavigation: BaseNavigationController? {
     willSet {
       if ChannelIO.baseNavigation == nil && newValue != nil {
@@ -58,18 +65,26 @@ public final class ChannelIO: NSObject {
 
   internal static var disposeBag = DisposeBag()
   internal static var pushToken: String?
-  internal static var currentAlertCount: Int? = nil
+  internal static var currentAlertCount: Int?
 
   static var isValidStatus: Bool {
-    return mainStore.state.checkinState.status == .success &&
+    return mainStore.state.bootState.status == .success &&
       mainStore.state.channel.id != ""
   }
 
-  internal static var settings: ChannelPluginSettings? = nil
-  internal static var profile: Profile? = nil
+  internal static var settings: ChannelPluginSettings?
+  internal static var profile: Profile?
   internal static var lastPush: CHPush?
   
-  internal static var launcherView: LauncherView? = nil
+  internal static var launcherView: LauncherView? {
+    get {
+      return ChannelIO.launcherWindow?.launcherView
+    }
+    set {
+      ChannelIO.launcherWindow?.launcherView = newValue
+    }
+  }
+  internal static var launcherWindow: LauncherWindow?
   internal static var launcherVisible: Bool = false
   internal static var willBecomeActive: Bool = false
   
@@ -148,43 +163,51 @@ public final class ChannelIO: NSObject {
       ChannelIO.profile = profile
       
       if settings.pluginKey == "" {
-        mainStore.dispatch(UpdateCheckinState(payload: .notInitialized))
+        mainStore.dispatch(UpdateBootState(payload: .notInitialized))
         completion?(.notInitialized, nil)
         return
       }
       
-      AppManager.checkVersion().flatMap { (event) in
-        return ChannelIO.checkInChannel(profile: profile)
-      }
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (_) in
-        PrefStore.setChannelPluginSettings(pluginSetting: settings)
-        AppManager.registerPushToken()
-        
-        if ChannelIO.launcherVisible {
-          ChannelIO.show(animated: true)
+      AppManager
+        .checkVersion()
+        .flatMap { (event) -> Observable<BootResult> in
+          return ChannelIO.bootChannel(profile: profile)
         }
-        completion?(.success, Guest(with: mainStore.state.guest))
-      }, onError: { error in
-        let code = (error as NSError).code
-        if code == -1001 {
-          dlog("network timeout")
-          mainStore.dispatch(UpdateCheckinState(payload: .networkTimeout))
-          completion?(.networkTimeout, nil)
-        } else if code == CHErrorCode.versionError.rawValue {
-          dlog("version is not compatiable. please update sdk version")
-          mainStore.dispatch(UpdateCheckinState(payload: .notAvailableVersion))
-          completion?(.notAvailableVersion, nil)
-        } else if code == CHErrorCode.serviceBlockedError.rawValue {
-          dlog("require payment. free plan is not eligible to use SDK")
-          mainStore.dispatch(UpdateCheckinState(payload: .requirePayment))
-          completion?(.requirePayment, nil)
-        } else {
-          dlog("unknown")
-          mainStore.dispatch(UpdateCheckinState(payload: .unknown))
-          completion?(.unknown, nil)
-        }
-      }).disposed(by: disposeBag)
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (_) in
+          PrefStore.setChannelPluginSettings(pluginSetting: settings)
+          AppManager.registerPushToken()
+          
+          if ChannelIO.launcherWindow == nil {
+            ChannelIO.launcherWindow = LauncherWindow()
+          }
+          
+          mainStore.dispatch(ReadyToShow())
+          
+          if ChannelIO.launcherVisible {
+            ChannelIO.show(animated: true)
+          }
+          completion?(.success, Guest(with: mainStore.state.guest))
+        }, onError: { error in
+          let code = (error as NSError).code
+          if code == -1001 {
+            dlog("network timeout")
+            mainStore.dispatch(UpdateBootState(payload: .networkTimeout))
+            completion?(.networkTimeout, nil)
+          } else if code == CHErrorCode.versionError.rawValue {
+            dlog("version is not compatiable. please update sdk version")
+            mainStore.dispatch(UpdateBootState(payload: .notAvailableVersion))
+            completion?(.notAvailableVersion, nil)
+          } else if code == CHErrorCode.serviceBlockedError.rawValue {
+            dlog("require payment. free plan is not eligible to use SDK")
+            mainStore.dispatch(UpdateBootState(payload: .requirePayment))
+            completion?(.requirePayment, nil)
+          } else {
+            dlog("unknown")
+            mainStore.dispatch(UpdateBootState(payload: .unknown))
+            completion?(.unknown, nil)
+          }
+        }).disposed(by: disposeBag)
     }
   }
 
@@ -237,11 +260,13 @@ public final class ChannelIO: NSObject {
   @objc
   public class func show(animated: Bool) {
     dispatch {
-      guard let view = CHUtils.getTopController()?.baseController.view else { return }
-      
       ChannelIO.launcherVisible = true
-      guard ChannelIO.isValidStatus, ChannelIO.canShowLauncher else { return }
-      guard ChannelIO.baseNavigation == nil else { return }
+      guard
+        ChannelIO.isValidStatus,
+        ChannelIO.canShowLauncher,
+        ChannelIO.baseNavigation == nil else {
+        return
+      }
       
       let launcherView = ChannelIO.launcherView ?? LauncherView()
       
@@ -255,27 +280,29 @@ public final class ChannelIO: NSObject {
       let yMargin = ChannelIO.settings?.launcherConfig?.yMargin ?? 24
       let position = ChannelIO.settings?.launcherConfig?.position ?? .right
       
-      if launcherView.superview == nil ||
-        launcherView.superview != view ||
-        launcherView.alpha == 0 {
+      if ChannelIO.launcherView == nil ||
+        ChannelIO.launcherView?.alpha == 0 {
         if let topController = CHUtils.getTopController() {
-          ChannelIO.sendDefaultEvent(.pageView, property: [
-            TargetKey.url.rawValue: "\(type(of: topController))"
-          ])
-        } else {
-          ChannelIO.sendDefaultEvent(.pageView)
+          ChannelIO.sendDefaultEvent(
+            .pageView,
+            property: [TargetKey.url.rawValue: "\(type(of: topController))"]
+          )
         }
+      } else {
+        ChannelIO.sendDefaultEvent(.pageView)
+      }
+
+      launcherView.configure(viewModel)
+      launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
+        ChannelIO.hideNotification()
+        ChannelIO.open(animated: true)
+      }).disposed(by: disposeBag)
+      
+      if ChannelIO.launcherView == nil {
+        ChannelIO.launcherWindow?.addCustomView(with: launcherView)
       }
       
-      if let superview = launcherView.superview, superview != view {
-        launcherView.removeFromSuperview()
-      }
-      
-      launcherView.superview != view ?
-        launcherView.insert(on: view, animated: animated) :
-        launcherView.show(animated: animated)
-      
-      launcherView.snp.remakeConstraints ({ (make) in
+      launcherView.snp.remakeConstraints { make in
         make.size.equalTo(CGSize(width:50.f, height:50.f))
         
         if position == LauncherPosition.right {
@@ -285,27 +312,23 @@ public final class ChannelIO: NSObject {
         }
         
         if #available(iOS 11.0, *) {
-          make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-yMargin)
+          if let view = launcherView.superview {
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(yMargin)
+          }
         } else {
           make.bottom.equalToSuperview().inset(yMargin)
         }
-      })
-      
-      launcherView.configure(viewModel)
-      launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
-        guard ChannelIO.isValidStatus else { return }
-        ChannelIO.hideNotification()
-        ChannelIO.open(animated: true)
-      }).disposed(by: disposeBag)
+      }
       
       ChannelIO.launcherView = launcherView
+      ChannelIO.launcherView?.show(animated: false)
     }
   }
   
   /**
    *  Hide channel launcher from application
    *
-   *  - parameter animated: if true, the view is being added to the window using an animation
+   *  - parameter animated: if true, the view is being removed to the window using an animation
    */
   @objc
   public class func hide(animated: Bool) {
@@ -323,11 +346,14 @@ public final class ChannelIO: NSObject {
   @objc
   public class func open(animated: Bool) {
     dispatch {
-      guard ChannelIO.isValidStatus else { return }
-      guard !mainStore.state.uiState.isChannelVisible else { return }
-      guard let topController = CHUtils.getTopController() else { return }
+      guard
+        ChannelIO.isValidStatus,
+        !mainStore.state.uiState.isChannelVisible,
+        let topController = CHUtils.getTopController() else {
+        return
+      }
       
-      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.launcherView?.hide(animated: false)
       ChannelIO.delegate?.willShowMessenger?()
 
       mainStore.dispatch(ChatListIsVisible())

@@ -16,8 +16,10 @@ struct ChatListIsVisible: Action {}
 
 struct ChatListIsHidden: Action {}
 
-//checkinState
+// boot state
 
-struct UpdateCheckinState: Action {
+struct UpdateBootState: Action {
   public let payload: ChannelPluginCompletionStatus
 }
+
+struct ReadyToShow: Action {}

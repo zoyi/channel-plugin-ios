@@ -1,3 +1,17 @@
+# 6.1.18
+## Updates
+* Changed plugin button and InappNotification present on UIWindow
+## Bug fixes
+* Fixed Badge minus display
+* Fixed wrong user chat cell height calculate
+* Solved conflict with SkeletonView
+
+# 6.1.17
+## Bug fixes
+* Fixed some broken emoji display
+* Fixed text height calculation for welcome
+* Changed user chat cell height calculation to automatic
+
 # 6.1.15
 ## Updates
 * Changed minimum os version to 10

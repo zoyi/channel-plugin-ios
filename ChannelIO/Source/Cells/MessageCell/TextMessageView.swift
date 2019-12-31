@@ -21,6 +21,7 @@ class TextMessageView : BaseView {
     static let leftRightPadding = 12.f
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
+    static let textViewMinimalWidth = 20.f
   }
 
   struct Constants {
@@ -73,12 +74,13 @@ class TextMessageView : BaseView {
   override func setLayouts() {
     super.setLayouts()
 
-    self.messageView.snp.makeConstraints({ [weak self] (make) in
-      self?.leadingConstraint = make.leading.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self?.topConstraint = make.top.equalToSuperview().inset(Metrics.topBottomPadding).constraint
-      self?.trailingConstraint = make.trailing.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self?.bottomConstraint = make.bottom.equalToSuperview().inset(Metrics.topBottomPadding).constraint
-    })
+    self.messageView.snp.makeConstraints { make in
+      self.leadingConstraint = make.leading.equalToSuperview().inset(Metrics.leftRightPadding).constraint
+      self.topConstraint = make.top.equalToSuperview().inset(Metrics.topBottomPadding).constraint
+      self.trailingConstraint = make.trailing.equalToSuperview().inset(Metrics.leftRightPadding).constraint
+      self.bottomConstraint = make.bottom.equalToSuperview().inset(Metrics.topBottomPadding).constraint
+      make.width.greaterThanOrEqualTo(Metrics.textViewMinimalWidth)
+    }
   }
 
   func configure(_ viewModel: MessageCellModelType) {
@@ -119,10 +121,6 @@ class TextMessageView : BaseView {
       .foregroundColor: viewModel.linkColor,
       .underlineStyle: 1
     ]
-  }
-  
-  override func updateConstraints() {
-    super.updateConstraints()
     
     if self.viewModel?.isContinuous == true {
       self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
@@ -158,10 +156,9 @@ class TextMessageView : BaseView {
     let maxWidth = !viewModel.message.onlyEmoji ?
       width - Metrics.leftRightPadding * 2 :
       width - Metrics.minimalLeftRightPadding * 2
-    
+
     let topBottomPadding = viewModel.message.onlyEmoji ?
-      Metrics.minimalTopBottomPadding * 2 :
-      Metrics.topBottomPadding * 2
+      Metrics.minimalTopBottomPadding : Metrics.topBottomPadding
     
     if let edgeInset = edgeInset {
       placeHolder.textContainerInset = edgeInset
@@ -174,7 +171,7 @@ class TextMessageView : BaseView {
     placeHolder.attributedText = text
     placeHolder.sizeToFit()
     
-    viewHeight += placeHolder.frame.size.height + topBottomPadding
+    viewHeight += placeHolder.frame.size.height + topBottomPadding * 2
     return viewHeight
   }
 }

@@ -192,7 +192,7 @@ class ProfileExtendableView: BaseView {
       height += text.height(fits: width - Metric.footerLeading - Metric.footerTrailing)
       height += Metric.footerBottom
     }
-    height += 3 //off value
+
     return height
   }
 }

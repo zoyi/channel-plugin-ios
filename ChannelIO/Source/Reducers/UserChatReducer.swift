@@ -67,7 +67,7 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
       chatId: CHConstants.nudgeChat + action.nudgeId,
       userChat: action.payload.userChat) ?? UserChatsState()
   
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return state?.clear() ?? UserChatsState()
   
   default:

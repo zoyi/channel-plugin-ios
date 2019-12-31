@@ -154,7 +154,7 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func boot(pluginKey: String, params: CHParam) -> Observable<[String: Any]> {
+  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResult> {
     return Observable.create({ (subscriber) in      
       let req = Alamofire.request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
@@ -162,22 +162,21 @@ struct PluginPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            var result = [String: Any]()
             
-            result["user"] = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            result["veil"] = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-            if result["user"] == nil && result["veil"] == nil {
+            guard var result = Mapper<BootResult>().map(JSONObject: json.object) else {
+              subscriber.onError(CHErrorPool.pluginParseError)
+              return
+            }
+
+            if result.user == nil && result.veil == nil {
               subscriber.onError(CHErrorPool.pluginParseError)
               break
             }
             
-            result["channel"] = Mapper<CHChannel>().map(JSONObject: json["channel"].object)
-            result["plugin"] = Mapper<CHPlugin>().map(JSONObject: json["plugin"].object)
-            if result["channel"] == nil || result["plugin"] == nil {
+            if result.channel == nil || result.plugin == nil {
               subscriber.onError(CHErrorPool.pluginParseError)
               break
             }
-            
             //swift bug, header should be case insensitive
             //TODO: move to request extension
             if let headers = response.response?.allHeaderFields {
@@ -185,11 +184,9 @@ struct PluginPromise {
                 return ((key as? String)?.lowercased() ?? "", value)
               }
               let caseInsensitiveHeaders = Dictionary(uniqueKeysWithValues: tupleArray)
-              result["guestKey"] = caseInsensitiveHeaders["x-guest-jwt"]
+              result.guestKey = caseInsensitiveHeaders["x-guest-jwt"]
             }
 
-            result["veilId"] = json["veilId"].string
-            
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
