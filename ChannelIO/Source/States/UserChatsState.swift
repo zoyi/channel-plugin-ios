@@ -52,7 +52,7 @@ struct UserChatsState: StateType {
     guard let userChat = userChat else { return self }
     self.userChats.removeValue(forKey: chatId)
     self.userChats[userChat.id] = userChat
-    if let lastId = userChat.appMessageId {
+    if let lastId = userChat.frontMessageId {
       self.lastMessages[lastId] = lastId
     }
     
@@ -62,7 +62,7 @@ struct UserChatsState: StateType {
   mutating func upsert(userChat: CHUserChat?) -> UserChatsState {
     guard let userChat = userChat else { return self }
     self.userChats[userChat.id] = userChat
-    if let lastId = userChat.appMessageId {
+    if let lastId = userChat.frontMessageId {
       self.lastMessages[lastId] = lastId
     }
     

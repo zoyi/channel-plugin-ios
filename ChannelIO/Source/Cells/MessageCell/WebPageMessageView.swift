@@ -30,6 +30,14 @@ class WebPageMessageView : BaseView {
     $0.clipsToBounds = true
   }
   
+  let videoView = VideoPlayerView().then {
+    $0.clipsToBounds = true
+    $0.layer.cornerRadius = 6.f
+    $0.layer.borderColor = UIColor.grey300.cgColor
+    $0.layer.borderWidth = 1
+    $0.isHidden = true
+  }
+  
   let detailView = UIView()
   
   let titleLabel = UILabel().then {
@@ -54,6 +62,7 @@ class WebPageMessageView : BaseView {
     self.clipsToBounds = true
     
     self.addSubview(self.thumbnailImageView)
+    self.addSubview(self.videoView)
     self.addSubview(self.detailView)
     self.detailView.addSubview(self.titleLabel)
     self.detailView.addSubview(self.descLabel)
@@ -84,6 +93,14 @@ class WebPageMessageView : BaseView {
       } else {
         make.height.equalTo(0)
       }
+    }
+    
+    self.videoView.snp.makeConstraints { make in
+      make.width.equalToSuperview()
+      make.leading.equalToSuperview()
+      make.top.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.height.equalTo(self.thumbnailImageView.snp.height)
     }
     
     self.detailView.snp.remakeConstraints { [weak self] (make) in

@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import Reusable
 import MGSwipeTableCell
 import RxSwift
 
-class BaseTableViewCell: MGSwipeTableCell {
+class BaseTableViewCell: MGSwipeTableCell, Reusable  {
 
   // MARK: Initializing
   var disposeBag = DisposeBag()

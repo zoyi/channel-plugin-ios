@@ -108,15 +108,6 @@ class AvatarView: NeverClearView {
     } else {
       self.avatarImageView.isHidden = true
     }
-    
-    if let manager = avatar as? CHManager, self.showOnline {
-      self.onlineView.isHidden = false
-      self.onlineView.backgroundColor = manager.online != nil ?
-        CHColors.shamrockGreen :
-        CHColors.blueyGrey
-    } else {
-      self.onlineView.isHidden = true
-    }
   }
 
   // MARK: Layout

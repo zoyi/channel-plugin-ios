@@ -9,9 +9,8 @@
 import Foundation
 import UIKit
 import SnapKit
-import Reusable
 
-final class LogCell : BaseTableViewCell, Reusable {
+final class LogCell : BaseTableViewCell {
   let container = UIView().then {
     $0.backgroundColor = .white
   }

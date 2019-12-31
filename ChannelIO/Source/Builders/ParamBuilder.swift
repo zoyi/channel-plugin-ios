@@ -18,7 +18,6 @@ class BootParamBuilder: ParamBuilder {
   var data = [String: Any]()
   var memberId: String? = nil
   var profile: Profile?
-  var profileData: [String: Any]?
   var sessionJWT: String?
   var veilId: String?
   
@@ -27,12 +26,6 @@ class BootParamBuilder: ParamBuilder {
     static let memberId = "memberId"
     static let session = "sessionJWT"
     static let veilId = "veilId"
-  }
-  
-  @discardableResult
-  func with(profile: [String: Any]) -> BootParamBuilder {
-    self.profileData = profile
-    return self
   }
   
   @discardableResult
@@ -59,19 +52,14 @@ class BootParamBuilder: ParamBuilder {
     return self
   }
   
-  private func buildProfileData() -> [String: Any]? {
-    guard let profileData = self.profileData else { return nil }
-    return profileData
-  }
-  
-  private func buildProfile() -> [String: Any?]? {
+  private func buildProfile() -> [String: AnyObject?]? {
     guard let profile = self.profile else { return nil }
     
-    var params = [String: Any?]()
-    params["name"] = profile.name
-    params["email"] = profile.email
-    params["mobileNumber"] = profile.mobileNumber
-    params["avatarUrl"] = profile.avatarUrl
+    var params = [String: AnyObject?]()
+    params["name"] = profile.name as AnyObject?
+    params["email"] = profile.email as AnyObject?
+    params["mobileNumber"] = profile.mobileNumber as AnyObject?
+    params["avatarUrl"] = profile.avatarUrl as AnyObject?
     
     let merged = params.merging(profile.property, uniquingKeysWith: { (first, _) in first })
     return merged
@@ -82,18 +70,6 @@ class BootParamBuilder: ParamBuilder {
     if let profile = self.buildProfile(),
       let jsonData = CHUtils.jsonStringify(data: profile) {
       data[ParamKey.profile] = jsonData
-    }
-    
-    if let profileData = self.buildProfileData() {
-      if let profile = data[ParamKey.profile] as? [String: Any] {
-        let merged = profile.merging(profileData, uniquingKeysWith: { (_, second) in second })
-        let jsonData = CHUtils.jsonStringify(data: merged)
-        if let jsonData = jsonData {
-          data[ParamKey.profile] = jsonData
-        }
-      } else if let jsonData = CHUtils.jsonStringify(data: profileData) {
-        data[ParamKey.profile] = jsonData
-      }
     }
     
     if let memberId = self.memberId {

@@ -62,22 +62,22 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
       self.title = title
     }
     
-    switch push.attachmentType {
-    case .image:
-      if let file = push.message?.file, file.image {
-        self.imageUrl = URL(string: file.url)
-        self.imageWidth = file.previewThumb?.width ?? 0.f
-        self.imageHeight = file.previewThumb?.height ?? 0.f
-      }
-      self.imageRedirect = push.redirectUrl
-    case .button:
-      if let buttonTitle = push.buttonTitle {
-        self.buttonTitle = buttonTitle
-      }
-      self.buttonRedirect = push.redirectUrl
-    default:
-      break
-    }
+//    switch push.attachmentType {
+//    case .image:
+//      if let file = push.message?.file, file.image {
+//        self.imageUrl = URL(string: file.url)
+//        self.imageWidth = file.previewThumb?.width ?? 0.f
+//        self.imageHeight = file.previewThumb?.height ?? 0.f
+//      }
+//      self.imageRedirect = push.redirectUrl
+//    case .button:
+//      if let buttonTitle = push.buttonTitle {
+//        self.buttonTitle = buttonTitle
+//      }
+//      self.buttonRedirect = push.redirectUrl
+//    default:
+//      break
+//    }
     
     self.mobileExposureType = push.mobileExposureType
     

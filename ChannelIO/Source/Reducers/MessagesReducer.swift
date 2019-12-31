@@ -20,17 +20,6 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     _ = state?.removeLocalMessages()
   
     return state?.insert(message: message) ?? MessagesState()
-    //insert only if local dummy is not exist
-    //if state?.findBy(id: "welcome_dummy") == nil {
-//    if let message = message {
-//      return state?.upsert(messages: [message]) ?? MessagesState()
-//    }
-//
-//    return state ?? MessagesState()
-  case let action as GetNudgeChat:
-    let message = action.payload.message
-    _ = state?.removeLocalMessages()
-    return state?.insert(message: message) ?? MessagesState()
     
   case let action as GetMessages:
     var messages = (action.payload["messages"] as? [CHMessage]) ?? []
@@ -42,6 +31,28 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
         userChat: userChat)
     }
     return state?.upsert(messages: messages) ?? MessagesState()
+    
+  case let action as UpdateLoungeInfo:
+    let lastMessages = action.userChatsResponse?.messages ?? []
+    lastMessages.forEach {
+      _ = state?.insert(message: $0) ?? MessagesState()
+    }
+    
+    if let entry = action.supportBotEntryInfo, let step = entry.step {
+      let message = CHMessage(
+        chatId: "support_bot_message_dummy",
+        message: step.message?.message ?? "",
+        type: .Action,
+        entity: action.bot,
+        action: CHAction.create(botEntry: entry),
+        createdAt: Date(),
+        id: "support_bot_message_dummy")
+        state?.supportBotEntry = message
+      } else {
+        state?.supportBotEntry = nil
+      }
+    
+    return state ?? MessagesState()
     
   case let action as RemoveMessages:
     let userChatId = action.payload ?? ""
@@ -70,23 +81,6 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     
   case let action as GetPush:
     return state?.insert(message: action.payload.message) ?? MessagesState()
-    
-  case let action as GetSupportBotEntry:
-    if let entry = action.entry, let step = entry.step {
-      let message = CHMessage(
-        chatId: "support_bot_message_dummy",
-        message: step.message,
-        type: .Action,
-        entity: action.bot,
-        action: CHAction.create(botEntry: entry),
-        file: CHFile.create(imageable: step),
-        createdAt: Date(),
-        id: "support_bot_message_dummy")
-      state?.supportBotEntry = message
-    } else {
-      state?.supportBotEntry = nil
-    }
-    return state ?? MessagesState()
     
   case _ as InsertSupportBotEntry:
     let message = state?.supportBotEntry

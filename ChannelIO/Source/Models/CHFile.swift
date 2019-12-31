@@ -6,174 +6,235 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import Foundation
-import ObjectMapper
-import MobileCoreServices
-import RxSwift
 import Alamofire
+import Foundation
+import MobileCoreServices
+import ObjectMapper
 import Photos
+import RxSwift
 
-enum Mimetype: String {
-  case image = "image/png"
-  case video = "video/mp4"
-  case gif = "image/gif"
+enum FileType: String {
+  case video
+  case image
+  case audio
+  case file
   
-  //TBD
-  case json = "application/json"
-  case plain = "text/plain"
-  case pdf = "application/pdf"
-  case audio = "audio/aac"
-  case ppt = "application/vnd.ms-powerpoint"
+  init(assetType: PHAssetMediaType) {
+    switch assetType {
+    case .audio: self = .audio
+    case .image: self = .image
+    case .video: self = .video
+    default: self = .file
+    }
+  }
 }
 
-struct CHFile {
-  var url = ""
-  var name = ""
-  var filename = ""
-  var size = 0
-  var category = ""
-  var image = false
-  var previewThumb: CHImageMeta?
-  var imageRedirectUrl: String?
-  
-  var isPreviewable: Bool! {
-    return self.image == true && self.previewThumb != nil
-  }
-  
+struct CHFile: ThumbDisplayable {
+  var type: FileType = .file
+  var id: String = ""
+  var name: String = ""
+  var size: Int = 0
+  var contentType: String?
+  var duration: Double = 0.0
+  var width: Int = 0
+  var height: Int = 0
+  var bucket: String = ""
+  var key: String = ""
+  var previewKey: String = ""
+  var thumb: Bool = false
+
   //local
   var rawData: Data?
-  var asset: PHAsset?
   var imageData: UIImage?
-  var downloaded: Bool = false
-  var localUrl: URL?
-  var fileUrl: URL?
-  
-  var mimeType: Mimetype? {
-    if let identifier = self.asset?.value(forKey: "uniformTypeIdentifier") as? String {
-      return CHFile.convertToMimetype(from: identifier)
-    } else if self.imageData != nil {
-      return .image
-    }
-    return nil
-  }
-  
-  var readableSize: String {
-    get {
-      let KB = ceil(Double(self.size / 1024))
-      let MB = ceil(Double(self.size / 1024 / 1024))
-      if KB < 1024 {
-        return "\(KB) KB"
-      } else {
-        return "\(MB) MB"
-      }
-    }
-  }
-  
-  var urlInDocumentsDirectoryString = ""
-  var urlInDocumentsDirectory: URL? {
-    set {
-      if let path = newValue?.path {
-        self.urlInDocumentsDirectoryString = path
-      }
-    }
-    get {
-      return URL(fileURLWithPath: self.urlInDocumentsDirectoryString)
-    }
-  }
-  
-  var isDownloaded: Bool {
-    get {
-      return FileManager.default.fileExists(atPath: self.urlInDocumentsDirectoryString)
-    }
-  }
-  
-  init() {
-    
-  }
-  
-  init(data: Data, category: String? = nil) {
-    self.rawData = data
-    self.image = false
-    self.category = category ?? ""
-  }
-  
-  init(asset: PHAsset) {
-    self.asset = asset
-    self.image = self.mimeType == .image || self.mimeType == .gif
-    
-    if let mineType = self.mimeType {
-      switch mineType {
-      case .image:
-        self.category = "image"
-      case .video:
-        self.category = "video"
-      case .gif:
-        self.category = "gif"
-      default:
-        self.category = ""
-      }
-    }
-  }
-  
-  init(imageData: UIImage) {
-    self.imageData = imageData
-    self.image = true
-    self.category = "image"
-  }
-  
-  static func convertToMimetype(from name: String) -> Mimetype {
-    switch name {
-    case "png", "image", "public.heic", String(kUTTypeImage), String(kUTTypeJPEG), String(kUTTypePNG):
-      return .image
-    case "gif", String(kUTTypeGIF):
-      return .gif
-    case "json":
-      return .json
-    case "mp4", "public.mpeg-4", String(kUTTypeVideo), String(kUTTypeQuickTimeMovie), String(kUTTypeMovie):
-      return .video
-    case "mp3", "wav", "ogg", String(kUTTypeAudio):
-      return .audio
-    default:
-      return .plain
-    }
-  }
-  
-  static func create(imageable: CHImageable) -> CHFile? {
-    if let url = imageable.imageUrl {
-      var file = CHFile()
-      file.url = url
-      file.image = true
-      file.previewThumb = imageable.imageMeta
-      file.imageRedirectUrl = imageable.imageRedirectUrl
-      return file
-    }
+  var asset: PHAsset?
+  var filePath: URL?
 
-    return nil
+  init(data: Data?, name: String = "") {
+    self.id = "\(Date().timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
+    self.rawData = data
+    self.name = name
+  }
+
+  init(asset: PHAsset, name: String = "") {
+    self.id = "\(Date().timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
+    self.asset = asset
+    self.name = name
+    self.type = FileType(assetType: asset.mediaType)
+  }
+
+  init(image: UIImage?, name: String = "") {
+    self.id = "\(Date().timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
+    self.imageData = image
+    self.name = name
+  }
+
+  init(path: URL?, name: String = "") {
+    self.id = "\(Date().timeIntervalSince1970 * 1000)" + String.randomString(length: 4)
+    self.filePath = url
+    self.name = name
+  }
+
+  func getData() -> Observable<(Data?, String?)> {
+    return Observable.create { subscriber in
+      if let rawData = self.rawData {
+        subscriber.onNext((rawData, self.name))
+        subscriber.onCompleted()
+      } else if let imageData = self.imageData,
+        let data = imageData.jpegData(compressionQuality: 1.0) {
+        subscriber.onNext((data, self.name))
+        subscriber.onCompleted()
+      } else if let asset = self.asset {
+        if self.type == .image {
+          let filename = PHAssetResource.assetResources(for: asset).first?.originalFilename
+          asset.fetchOriginalImage { image, _ in
+            if let data = image?.jpegData(compressionQuality: 1.0) {
+              subscriber.onNext((data, filename))
+              subscriber.onCompleted()
+            }
+          }
+        } else if self.type == .video {
+          let filename = PHAssetResource.assetResources(for: asset).first?.originalFilename
+          asset.fetchAVAsset(options: nil, completeBlock: { asset, _ in
+            if let asset = asset as? AVURLAsset {
+              if let data = try? Data(contentsOf: asset.url) {
+                subscriber.onNext((data, filename))
+                subscriber.onCompleted()
+              }
+            }
+          })
+        } else {
+          subscriber.onNext((nil, nil))
+          subscriber.onCompleted()
+        }
+      } else if let url = self.filePath {
+        let data = try? Data(contentsOf: url)
+        subscriber.onNext((data, self.name))
+        subscriber.onCompleted()
+      } else {
+        subscriber.onNext((nil, nil))
+        subscriber.onCompleted()
+      }
+      
+      return Disposables.create()
+    }
+  }
+
+  var url: URL? {
+    guard !self.bucket.isEmpty && !self.key.isEmpty else { return nil }
+    let bucket = self.bucket.replace("bin", withString: "cf")
+    let urlString = "https://" + bucket + "/" + self.key
+    return URL(string: urlString)
+  }
+  
+
+
+  var thumbUrl: URL? {
+    guard !self.bucket.isEmpty else { return nil }
+    guard self.type == .video || self.type == .image else { return nil }
+
+    let key = !self.previewKey.isEmpty ? self.previewKey : self.key
+    let width = Int(self.thumbSize.width)
+    let height = Int(self.thumbSize.height)
+    let bucket = self.bucket.replace("bin", withString: "cf")
+    let thumbable = self.thumb ? "/thumb/" + "\(width)x\(height)/" : "/"
+    let urlString = "https://" + bucket + thumbable + key
+    return URL(string: urlString)
+  }
+
+  var ext: String {
+    //parse contentType
+    if let contentType = self.contentType {
+      return contentType
+    }
+    return ""
+  }
+
+  var urlInDocumentsDirectory: URL? {
+    let directoryUrl = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+    let pathUrl = URL(fileURLWithPath: directoryUrl, isDirectory: true)
+    let fileUrl = pathUrl.appendingPathComponent(self.id)
+    return FileManager.default.fileExists(atPath: fileUrl.path) ? fileUrl : nil
+  }
+
+  var isDownloaded: Bool {
+    return self.urlInDocumentsDirectory != nil
+  }
+
+  var hasData: Bool {
+    return self.rawData != nil || self.asset != nil || self.imageData != nil
   }
 }
 
-extension CHFile: Mappable {
-  init?(map: Map) { }
-  
+extension CHFile: Mappable, Hashable {
+  init?(map: Map) {}
+
   mutating func mapping(map: Map) {
-    url                 <- map["url"]
-    name                <- map["name"]
-    filename            <- map["filename"]
-    size                <- map["size"]
-    category            <- map["extension"]
-    image               <- map["image"]
-    previewThumb        <- map["previewThumb"]
-    imageRedirectUrl    <- map["imageRedirectUrl"]
-    fileUrl = URL(string: url)
+    type <- map["type"]
+    id <- map["id"]
+    name <- map["name"]
+    size <- map["size"]
+    contentType <- map["contentType"]
+    duration <- map["duration"]
+    width <- map["width"]
+    height <- map["height"]
+    bucket <- map["bucket"]
+    key <- map["key"]
+    previewKey <- map["previewKey"]
+    thumb <- map["thumb"]
+  }
+
+  static func == (lhs: CHFile, rhs: CHFile) -> Bool {
+    return lhs.id == rhs.id &&
+      lhs.name == rhs.name &&
+      lhs.size == rhs.size &&
+      lhs.type == rhs.type &&
+      lhs.contentType == rhs.contentType &&
+      lhs.duration == rhs.duration &&
+      lhs.bucket == rhs.bucket &&
+      lhs.url == rhs.url &&
+      lhs.thumb == rhs.thumb
   }
 }
 
 extension CHFile {
+  static var imageSize = imageDefaultSize
+  static var thumbnailImageSize: CGSize {
+    let ratio = max(self.imageSize.width / CHFile.imageMaxSize.width,
+                   self.imageSize.height / CHFile.imageMaxSize.height)
+    if ratio >= 1.0 {
+      return CGSize(width: self.imageSize.width / ratio, height: self.imageSize.height / ratio)
+    } else {
+      return self.imageSize
+    }
+  }
+
+  static var imageMaxSize: CGSize = {
+    let screenSize = UIScreen.main.bounds.size
+    return CGSize(width: screenSize.width * 2 / 3, height: screenSize.height / 2)
+  }()
+
+  static var imageDefaultSize: CGSize = {
+    let screenSize = UIScreen.main.bounds.size
+    return CGSize(width: screenSize.width / 2, height: screenSize.height / 4)
+  }()
+}
+
+extension CHFile {
+  static func upload(
+    channelId: String,
+    filename: String,
+    data: Data) -> Observable<([String:Any]?, Double)> {
+    return FilePromise.uploadFile(
+      channelId: channelId,
+      filename: filename,
+      data: data
+    )
+  }
+  
   func download() -> Observable<(URL?, Float)> {
-    return Observable.create({ (subscriber) in
-      let error: NSError = NSError(domain: "download", code: 404, userInfo: nil)
-      guard let url = self.fileUrl else {
-        subscriber.onError(error)
+    return Observable.create { (subscriber) in
+      guard let url = self.url else {
+        subscriber.onError(ChannelError.notFoundError)
         return Disposables.create()
       }
       
@@ -197,9 +258,8 @@ extension CHFile {
           }
         }.validate(statusCode: 200..<300)
         .response { (response) in
-          //SVProgressHUD.dismiss()
           guard response.response?.statusCode == 200 else {
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.notFoundError)
             return
           }
           
@@ -214,6 +274,6 @@ extension CHFile {
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
 }

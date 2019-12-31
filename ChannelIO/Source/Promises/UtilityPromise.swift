@@ -15,7 +15,8 @@ import ObjectMapper
 struct UtilityPromise {
   static func getGeoIP() -> Observable<GeoIPInfo> {
     return Observable.create { subscriber in
-      Alamofire.request(RestRouter.GetGeoIP)
+      Alamofire
+        .request(RestRouter.GetGeoIP)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
           switch response.result {
@@ -23,7 +24,7 @@ struct UtilityPromise {
             let json = SwiftyJSON.JSON(data)
             guard let geoData: GeoIPInfo = Mapper<GeoIPInfo>()
               .map(JSONObject: json["geoIP"].object) else {
-                subscriber.onError(CHErrorPool.geoParseError)
+                subscriber.onError(ChannelError.parseError)
                 break
             }
             
@@ -31,7 +32,7 @@ struct UtilityPromise {
             subscriber.onCompleted()
             break
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
             break
           }
           
@@ -66,7 +67,7 @@ struct UtilityPromise {
             subscriber.onNext(countries)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
           }
           
         })

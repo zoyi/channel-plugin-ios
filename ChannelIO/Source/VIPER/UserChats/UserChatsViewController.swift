@@ -111,14 +111,14 @@ class UserChatsViewController: BaseViewController {
     
     CHNotification.shared.refreshSignal
       .subscribe(onNext: { [weak self] (_) in
-        guard let `self` = self else { return }
+        guard let self = self else { return }
         self.nextSeq = nil
         self.fetchUserChats(isInit: true, showIndicator: true)
         WsService.shared.connect()
-        _ = AppManager.touch()
+        AppManager.touch()
           .subscribe(onNext: { (result) in
             mainStore.dispatch(GetTouchSuccess(payload: result))
-          })
+          }).disposed(by: self.disposeBag)
         
         CHNotification.shared.dismiss()
       }).disposed(by: self.notiDisposeBag)
@@ -254,38 +254,13 @@ class UserChatsViewController: BaseViewController {
   
   func showUserChat(userChatId: String? = nil, text:String = "", hideTable: Bool = true, animated: Bool = true) {
     guard !self.isShowingChat else { return }
-    self.isShowingChat = true
     self.tableView.isHidden = hideTable
-    self.showNewChat = true
-   
-    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-    let supportSignal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: userChatId == nil)
     
-    Observable.zip(pluginSignal, supportSignal)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        SVProgressHUD.show()
-        dlog("Error while opening chat. Attempting to open again")
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (pluginInfo, supportEntry) in
-        SVProgressHUD.dismiss()
-        mainStore.dispatch(GetPlugin(plugin: pluginInfo.0, bot: pluginInfo.1))
-        mainStore.dispatch(GetSupportBotEntry(bot: pluginInfo.1, entry: supportEntry))
-        let controller = UserChatRouter.createModule(userChatId: userChatId, text: text)
-        self?.navigationController?.pushViewController(controller, animated: animated)
-        self?.showNewChat = false
-        self?.isShowingChat = false
-        self?.shouldHideTable = false
-      }, onError: { [weak self] (error) in
-        SVProgressHUD.dismiss()
-        dlog("error getting following managers: \(error.localizedDescription)")
-        self?.showNewChat = false
-        self?.isShowingChat = false
-        //self?.errorToastView.display(animated: true)
-      }, onDisposed: {
-        SVProgressHUD.dismiss()
-      }).disposed(by: self.disposeBag)
+    let controller = UserChatRouter.createModule(userChatId: userChatId, text: text)
+    self.navigationController?.pushViewController(controller, animated: animated)
+    self.showNewChat = false
+    self.isShowingChat = false
+    self.shouldHideTable = false
   }
   
   func showProfileView() {

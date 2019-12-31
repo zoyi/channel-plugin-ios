@@ -58,14 +58,6 @@ func ChatReducer(action: Action, state: ChatState?) -> ChatState {
     let userChat = action.payload.userChat
     return state?.upsert(userChat: userChat) ?? ChatState()
     
-  case let action as GetNudgeChat:
-    let message = action.payload.message
-    _ = state?.removeLocalMessages()
-    _ = state?.insert(message: message)
-    _ = state?.upsert(session: action.payload.session)
-    return state?.replace(
-      userChat: action.payload.userChat) ?? ChatState()
-    
   case let action as UpdateSession:
     return state?.upsert(session: action.payload) ?? ChatState()
     

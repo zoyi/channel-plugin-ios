@@ -12,13 +12,10 @@ import M13ProgressSuite
 import NVActivityIndicatorView
 
 class FileMessageView : BaseView {
-  
-  //MARK: Constants
-  
-  struct Metrics {
-    static let HEIGHT = 70.f
-  }
-  
+//  struct Metrics {
+//    static let HEIGHT = 70.f
+//  }
+//  
   struct Constants {
     static let cornerRadius = 6.f
     static let borderWidth: CGFloat = 1
@@ -84,26 +81,26 @@ class FileMessageView : BaseView {
   }
   
   func configure(message: MessageCellModelType) {
-    guard let file = message.file else { return }
-    self.titleLabel.text = file.name
-    self.infoLabel.text = "\(file.readableSize) • \(file.category)"
-
-    self.progressBackgroundView.isHidden = message.progress == 1.0
-    self.progressView.isHidden = message.progress == 1.0
-    
-    switch file.category {
-    case "zip", "archive":
-      self.imageView.image = CHAssets.getImage(named: "zip")
-      break
-    case "pdf", "image", "psd", "text", "audio", "sketch",
-         "font", "vector", "pages", "numbers", "xls", "data",
-         "ppt", "system", "script", "key", "hwp", "video":
-      self.imageView.image = CHAssets.getImage(named: file.category)
-      break
-    default:
-      self.imageView.image = CHAssets.getImage(named: "else")
-      break
-    }
+//    guard let file = message.file else { return }
+//    self.titleLabel.text = file.name
+//    self.infoLabel.text = "\(file.readableSize) • \(file.category)"
+//
+//    self.progressBackgroundView.isHidden = message.progress == 1.0
+//    self.progressView.isHidden = message.progress == 1.0
+//    
+//    switch file.category {
+//    case "zip", "archive":
+//      self.imageView.image = CHAssets.getImage(named: "zip")
+//      break
+//    case "pdf", "image", "psd", "text", "audio", "sketch",
+//         "font", "vector", "pages", "numbers", "xls", "data",
+//         "ppt", "system", "script", "key", "hwp", "video":
+//      self.imageView.image = CHAssets.getImage(named: file.category)
+//      break
+//    default:
+//      self.imageView.image = CHAssets.getImage(named: "else")
+//      break
+//    }
   }
   
   //MARK: layout
@@ -123,16 +120,16 @@ class FileMessageView : BaseView {
       make.trailing.equalToSuperview().inset(6)
     }
     
-    self.titleLabel.snp.makeConstraints { [weak self] (make) in
-      make.left.equalTo((self?.imageView.snp.right)!).offset(12)
-      make.right.equalTo((self?.arrowImageView.snp.left)!).offset(6)
+    self.titleLabel.snp.makeConstraints { (make) in
+      make.left.equalTo(self.imageView.snp.right).offset(12)
+      make.right.equalTo(self.arrowImageView.snp.left).offset(6)
       make.top.equalToSuperview().inset(14)
     }
     
-    self.infoLabel.snp.makeConstraints { [weak self] (make) in
-      make.left.equalTo((self?.titleLabel.snp.left)!)
-      make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(1)
-      make.bottom.equalTo((self?.imageView.snp.bottom)!)
+    self.infoLabel.snp.makeConstraints { (make) in
+      make.left.equalTo(self.titleLabel.snp.left)
+      make.top.equalTo(self.titleLabel.snp.bottom).offset(1)
+      make.bottom.equalTo(self.imageView.snp.bottom)
     }
     
     self.progressBackgroundView.snp.makeConstraints { (make) in

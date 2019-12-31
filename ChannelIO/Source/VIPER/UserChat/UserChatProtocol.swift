@@ -41,8 +41,12 @@ protocol UserChatViewProtocol: class {
   
   func display(userChat: CHUserChat?, channel: CHChannel)
   func display(messages: [CHMessage], userChat: CHUserChat?, channel: CHChannel)
-  func display(typers: [CHEntity], channel: CHChannel)
+  func display(typers: [CHEntity])
   func display(error: String?, visible: Bool)
+  func display(loadingFile: ChatFileQueueItem, count: Int)
+  func display(errorFiles: [ChatFileQueueItem])
+  func hideLodingFile()
+  func dismissKeyboard(_ animated: Bool)
   
   func updateNavigation(userChat: CHUserChat?)
   func updateInputBar(state: MessageViewState)
@@ -64,27 +68,26 @@ protocol UserChatPresenterProtocol: class {
   func prepareDataSource()
   func cleanDataSource()
   func fetchMessages()
-  func handleError(with error: String?, visible: Bool, state: ChatProcessState)
+  func handleError(with error: String?, visible: Bool, state: ChatProcessState?)
   func hasNewMessage(current: [CHMessage], updated: [CHMessage]) -> Bool
   func sendTyping(isStop: Bool)
   func updateMessages(with messages: [CHMessage], userChat: CHUserChat?, channel: CHChannel)
   func profileIsFocus(focus: Bool)
+  func sendFiles(fileDictionary: [String:Any]?)
   
   func didClickOnProfileUpdate(
     with message: CHMessage?,
     key: String?,
     value: Any?) -> Observable<Bool>
   func didClickOnRightNaviItem(from view: UIViewController?)
-  func didClickOnAssetButton(from view: UIViewController?)
-  func didClickOnNudgeKeepAction()
+  func didClickOnClipButton(from view: UIViewController?)
   func didClickOnSendButton(text: String)
   func didClickOnActionButton(originId: String?, key: String?, value: String?)
   func didClickOnRedirectUrl(with url: String)
-  func didClickOnFile(with message: CHMessage?, from view: UIViewController?)
-  func didClickOnImage(
-    with url: URL?,
-    photoUrls: [URL],
-    imageView: UIImageView,
+  func didClickOnFile(
+    with file: CHFile?,
+    on imageView: UIImageView?,
+    path indexPath: IndexPath,
     from view: UIViewController?)
   func didClickOnVideo(with url: URL?, from view: UIViewController?)
   func didClickOnWeb(with url: String?, from view: UIViewController?)
@@ -92,6 +95,8 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnRetry(for message: CHMessage?, from view: UIView?)
   func didClickOnNewChat(with text: String, from view: UINavigationController?)
   func didClickOnWaterMark()
+  func didClickOnRetryFile(with item: ChatFileQueueItem)
+  func didClickOnRemoveFile(with item: ChatFileQueueItem)
 }
 
 protocol UserChatInteractorProtocol: class {
@@ -99,6 +104,8 @@ protocol UserChatInteractorProtocol: class {
   
   var userChat: CHUserChat? { get set }
   var userChatId: String { get set }
+  
+  var photoUrls: [URL] { get }
   
   func readyToPresent() -> Observable<Bool>
   func subscribeDataSource()
@@ -111,17 +118,17 @@ protocol UserChatInteractorProtocol: class {
   func leaveSocket()
   func getChannel() -> Observable<CHChannel>
   func canLoadMore() -> Bool
-  func createChat() -> Observable<CHUserChat?>
-  func createNudgeChat(nudgeId:String?) -> Observable<CHUserChat?>
+  func createChatIfNeeded() -> Observable<CHUserChat?>
   func createSupportBotChatIfNeeded(
     originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
   func fetchChat() -> Observable<CHUserChat?>
   func fetchMessages() -> Observable<ChatProcessState>
   func translate(for message: CHMessage) -> Observable<String?>
   func send(message: CHMessage?) -> Observable<CHMessage?>
-  func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int)
   func sendTyping(isStop: Bool)
   func delete(message: CHMessage?)
+  
+  func upload(files: [CHFile]) -> Observable<ChatQueueKey>
 }
 
 protocol UserChatRouterProtocol: class {
@@ -137,4 +144,5 @@ protocol UserChatRouterProtocol: class {
   func showNewChat(with text: String, from view: UINavigationController?)
   func showRetryActionSheet(from view: UIView?) -> Observable<Bool?>
   func showOptionActionSheet(from view: UIViewController?) -> PublishSubject<[PHAsset]>
+  
 }

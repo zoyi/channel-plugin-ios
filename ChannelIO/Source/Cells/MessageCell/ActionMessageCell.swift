@@ -11,15 +11,15 @@ import RxSwift
 import SnapKit
 
 class ActionMessageCell: MessageCell {
-  let actionView = ActionView()
-  var messageId = ""
+  private let actionView = ActionView()
+  private var messageId = ""
   
-  var topConstraint: Constraint? = nil
-  var topToTextViewConstraint: Constraint? = nil
+  var topConstraint: Constraint?
+  var topToTextViewConstraint: Constraint?
   
-  struct Metric {
-    static let top = 16.f
-    static let trailing = 10.f
+  private struct Metric {
+    static let ActionViewTop = 16.f
+    static let ActionViewTrailing = 10.f
   }
   
   override func initialize() {
@@ -30,24 +30,30 @@ class ActionMessageCell: MessageCell {
     self.actionView.observeAction()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(
+          originId: self?.messageId,
+          key: key,
+          value: value
+        )
       }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
     super.setLayouts()
-    
-    self.actionView.snp.makeConstraints { [weak self] (make) in
-      self?.topConstraint = make.top.equalToSuperview().inset(Metric.top).constraint
-      self?.topToTextViewConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!)
-        .offset(Metric.top).priority(750).constraint
+    self.actionView.snp.makeConstraints { make in
+      self.topConstraint = make.top.equalToSuperview()
+        .inset(Metric.ActionViewTop).constraint
+      self.topToTextViewConstraint = make.top.equalTo(self.textMessageView.snp.bottom)
+        .offset(Metric.ActionViewTop).priority(750).constraint
       make.leading.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.trailing)
+      make.trailing.equalToSuperview().inset(Metric.ActionViewTrailing)
       make.bottom.equalToSuperview()
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     
@@ -62,7 +68,9 @@ class ActionMessageCell: MessageCell {
     self.actionView.configure(viewModel)
   }
   
-  override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  override class func cellHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType) -> CGFloat {
     var height = 0.f
     
     if viewModel.clipType == .File {
@@ -75,20 +83,23 @@ class ActionMessageCell: MessageCell {
       height = super.cellHeight(fits: width, viewModel: viewModel)
     }
     
-    height += viewModel.shouldDisplayForm ? ActionView.viewHeight(
-      fits: width, buttons: viewModel.message.action?.buttons ?? []) + Metric.top : 0
+    height += viewModel.shouldDisplayForm ?
+      ActionView.viewHeight(
+        fits: width,
+        buttons: viewModel.message.action?.buttons ?? []
+      ) + Metric.ActionViewTop : 0
     
     return height
   }
 }
 
 class ActionWebMessageCell: WebPageMessageCell {
-  let actionView = ActionView()
-  var messageId = ""
+  private let actionView = ActionView()
+  private var messageId = ""
   
-  struct Metric {
-    static let top = 16.f
-    static let trailing = 10.f
+  private struct Metric {
+    static let ActionWebTop = 16.f
+    static let ActionWebTrailing = 10.f
   }
   
   override func initialize() {
@@ -99,43 +110,50 @@ class ActionWebMessageCell: WebPageMessageCell {
     self.actionView.observeAction()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(
+          originId: self?.messageId,
+          key: key,
+          value: value
+        )
       }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
     super.setLayouts()
     
-    self.actionView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.webView.snp.bottom)!).offset(Metric.top)
-      
+    self.actionView.snp.makeConstraints { make in
+      make.top.equalTo(self.webView.snp.bottom).offset(Metric.ActionWebTop)
       make.leading.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.trailing)
+      make.trailing.equalToSuperview().inset(Metric.ActionWebTrailing)
       make.bottom.equalToSuperview()
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
   }
   
-  override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  override class func cellHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
-    return height + Metric.top + ActionView.viewHeight(
+    return height + Metric.ActionWebTop + ActionView.viewHeight(
       fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 
 
 class ActionMediaMessageCell: MediaMessageCell {
-  let actionView = ActionView()
-  var messageId = ""
+  private let actionView = ActionView()
+  private var messageId = ""
   
-  struct Metric {
-    static let top = 16.f
-    static let trailing = 10.f
+  private struct Metric {
+    static let ActionMediaTop = 16.f
+    static let ActionMediaTrailing = 10.f
   }
   
   override func initialize() {
@@ -146,43 +164,49 @@ class ActionMediaMessageCell: MediaMessageCell {
     self.actionView.observeAction()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(
+          originId: self?.messageId,
+          key: key,
+          value: value)
       }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
     super.setLayouts()
     
-    self.actionView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.mediaView.snp.bottom)!).offset(Metric.top)
-      
+    self.actionView.snp.makeConstraints { make in
+      make.top.equalTo(self.mediaCollectionView.snp.bottom).offset(Metric.ActionMediaTop)
       make.leading.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.trailing)
+      make.trailing.equalToSuperview().inset(Metric.ActionMediaTrailing)
       make.bottom.equalToSuperview()
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
   }
   
-  override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  override class func cellHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
-    return height + Metric.top + ActionView.viewHeight(
+    return height + Metric.ActionMediaTop + ActionView.viewHeight(
       fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }
 
 
 class ActionFileMessageCell: FileMessageCell {
-  let actionView = ActionView()
-  var messageId = ""
+  private let actionView = ActionView()
+  private var messageId = ""
   
-  struct Metric {
-    static let top = 16.f
-    static let trailing = 10.f
+  private struct Metric {
+    static let ActionFileTop = 16.f
+    static let ActionFileTrailing = 10.f
   }
   
   override func initialize() {
@@ -193,31 +217,38 @@ class ActionFileMessageCell: FileMessageCell {
     self.actionView.observeAction()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
-        self?.presenter?.didClickOnActionButton(originId: self?.messageId, key: key, value: value)
+        self?.presenter?.didClickOnActionButton(
+          originId: self?.messageId,
+          key: key,
+          value: value
+        )
       }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
     super.setLayouts()
     
-    self.actionView.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.fileView.snp.bottom)!).offset(Metric.top)
-      
+    self.actionView.snp.makeConstraints { make in
+      make.top.equalTo(self.fileView.snp.bottom).offset(Metric.ActionFileTop)
       make.leading.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.trailing)
+      make.trailing.equalToSuperview().inset(Metric.ActionFileTrailing)
       make.bottom.equalToSuperview()
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
   }
   
-  override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  override class func cellHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
-    return height + Metric.top + ActionView.viewHeight(
+    return height + Metric.ActionFileTop + ActionView.viewHeight(
       fits: width, buttons: viewModel.message.action?.buttons ?? [])
   }
 }

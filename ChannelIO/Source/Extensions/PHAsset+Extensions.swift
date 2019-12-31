@@ -6,44 +6,96 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import Foundation
 import Photos
 
 extension PHAsset {
-  func fetchImage(size: CGSize? = nil, options: PHImageRequestOptions? = nil, completion: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
-    let screenSize = size ?? UIScreen.main.bounds.size
-    
-    let imageOption = options ?? PHImageRequestOptions()
-    imageOption.deliveryMode = .highQualityFormat
-    //imageOption.resizeMode = .exact
-    
-    PHImageManager.default().requestImage(
-      for: self,
-      targetSize: screenSize,
-      contentMode: .aspectFit, options: imageOption) { (image, info) in
-        completion(image, info)
-      }
+  private struct FetchKeys {
+    fileprivate static var requestIDs: UInt8 = 0
+    fileprivate static var fullScreenImage: UInt8 = 0
   }
-  
-  func fetchImageData(options: PHImageRequestOptions? = nil, completion: @escaping (Data?, String?, UIImage.Orientation, [AnyHashable:Any]?) -> Void) {
-    let options = options ?? PHImageRequestOptions()
-    //options.deliveryMode = .highQualityFormat
-    //options.resizeMode = .exact
-    
-    PHImageManager.default().requestImageData(
-      for: self,
-      options: options) { (data, dataUTI, orientation, info) in
-        completion(data, dataUTI, orientation, info)
-      }
+
+  private var requestIDs: NSMutableArray? {
+    get { return getAssociatedObject(key: &FetchKeys.requestIDs) as? NSMutableArray }
+    set { setAssociatedObject(key: &FetchKeys.requestIDs, value: newValue) }
   }
-  
-  func fetchVideo(completion: @escaping (AVAsset?, AVAudioMix?, [AnyHashable: Any]?) -> Void) {
-    let options = PHVideoRequestOptions()
-    
-    PHImageManager.default().requestAVAsset(
-      forVideo: self,
-      options: options) { (asset, mix, info) in
-        completion(asset, mix, info)
-      }
+
+  private(set) var fullScreenImage: (image: UIImage?, info: [AnyHashable: Any]?)? {
+    get { return getAssociatedObject(key: &FetchKeys.fullScreenImage) as? (image: UIImage?, info: [AnyHashable: Any]?) }
+    set { setAssociatedObject(key: &FetchKeys.fullScreenImage, value: newValue) }
+  }
+
+  internal func setAssociatedObject(
+    key: UnsafePointer<UInt8>,
+    value: Any?,
+    policy: objc_AssociationPolicy = .OBJC_ASSOCIATION_RETAIN) {
+    objc_setAssociatedObject(self, key, value, policy)
+  }
+
+  internal func getAssociatedObject(key: UnsafePointer<UInt8>) -> Any? {
+    return objc_getAssociatedObject(self, key)
+  }
+
+  private func add(requestID: ImageRequestId) {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+
+    var requestIDs: NSMutableArray! = self.requestIDs
+    if requestIDs == nil {
+        requestIDs = NSMutableArray()
+        self.requestIDs = requestIDs
+    }
+
+    requestIDs.add(requestID)
+  }
+
+  @objc func cancelRequests() {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+
+    if let requestIDs = self.requestIDs as? [ImageRequestId] {
+      AssetManager.shared.cancelRequests(requestIDs: requestIDs)
+      self.requestIDs?.removeAllObjects()
+    }
+  }
+
+  @objc func fetchOriginalImage(
+    options: PHImageRequestOptions? = nil,
+    completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
+    self.add(requestID: AssetManager.shared
+      .fetchImageData(
+        for: self,
+        options: options,
+        completeBlock: { data, info in
+          var image: UIImage?
+          if let data = data {
+              image = UIImage(data: data)
+          }
+          completeBlock(image, info)
+        }
+      ))
+    }
+
+  @objc func fetchImageData(
+    options: PHImageRequestOptions? = nil,
+    completeBlock: @escaping (_ imageData: Data?, _ info: [AnyHashable: Any]?) -> Void) {
+    self.add(requestID: AssetManager.shared
+      .fetchImageData(
+        for: self,
+        options: options,
+        completeBlock: completeBlock
+      )
+    )
+  }
+
+  @objc func fetchAVAsset(
+    options: PHVideoRequestOptions? = nil,
+    completeBlock: @escaping (_ AVAsset: AVAsset?, _ info: [AnyHashable: Any]?) -> Void) {
+    self.add(requestID: AssetManager.shared
+      .fetchAVAsset(
+        for: self,
+        options: options,
+        completeBlock: completeBlock
+      )
+    )
   }
 }

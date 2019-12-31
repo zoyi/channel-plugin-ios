@@ -7,68 +7,56 @@
 //
 
 import Foundation
+import ObjectMapper
 
-enum CHErrorCode: Int {
-  case unknownError = 8000
-  case pluginParseError = 8001
-  case registerParseError = 8002
-  case eventParseError = 8003
-  case userParseError = 8004
-  case scriptParseError = 8005
-  case userChatParseError = 8006
-  case chatResponseParseError = 8007
-  case messageParseError = 8008
-  case geoParseError = 8009
-  case paramError = 8010
-  case unregisterError = 9000
-  case versionError = 9001
-  case userChatRemoveError = 9002
-  case uploadError = 9003
-  case readAllError = 9004
-  case sendFileError = 9005
-  case serviceBlockedError = 9006
-  case pluginKeyError = 9007
-}
+struct CHError: Mappable {
+  var message: String = ""
+  var field: String?
 
-enum CHErrorDomain: String {
-  case pluginPromise = "PluginPromise"
-  case eventPromise = "EventPromise"
-  case userPromise = "UserPromise"
-  case scriptPromise = "ScriptPromise"
-  case userChatPromise = "UserChatPromise"
-  case utilityPromise = "UtilityPromise"
-  case message = "CHMessage"
-  case channelPlugin = "ChannelPlugin"
-}
-
-class CHError: NSError {
-  init(domain: CHErrorDomain, code: CHErrorCode) {
-    super.init(domain: domain.rawValue, code: code.rawValue, userInfo: nil)
+  init?(map: Map) {
+    // initialize CHError
   }
-  
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
+
+  mutating func mapping(map: Map) {
+    message <- map["message"]
+    field <- map["field"]
   }
 }
 
-struct CHErrorPool {
-  static let unknownError = CHError(domain: .channelPlugin, code: .unknownError)
-  static let pluginKeyError = CHError(domain: .channelPlugin, code: .pluginKeyError)
-  static let pluginParseError = CHError(domain: .pluginPromise, code: .pluginParseError)
-  static let registerParseError = CHError(domain: .pluginPromise, code: .registerParseError)
-  static let unregisterError = CHError(domain: .pluginPromise, code: .unregisterError)
-  static let versionError = CHError(domain: .pluginPromise, code: .versionError)
-  static let eventParseError = CHError(domain: .eventPromise, code: .eventParseError)
-  static let userParseError = CHError(domain: .userPromise, code: .userParseError)
-  static let userChatParseError = CHError(domain: .userChatPromise, code: .userChatParseError)
-  static let chatResponseParseError = CHError(domain: .userChatPromise, code: .chatResponseParseError)
-  static let userChatRemoveError = CHError(domain: .userChatPromise, code: .userChatRemoveError)
-  static let messageParseError = CHError(domain: .userChatPromise, code: .messageParseError)
-  static let uploadError = CHError(domain: .userChatPromise, code: .uploadError)
-  static let readAllError = CHError(domain: .userChatPromise, code: .readAllError)
-  static let geoParseError = CHError(domain: .utilityPromise, code: .geoParseError)
-  static let sendFileError = CHError(domain: .message, code: .sendFileError)
-  static let serviceBlockedError = CHError(domain: .channelPlugin, code: .serviceBlockedError)
-  static let paramError = CHError(domain: .channelPlugin, code: .paramError)
+enum ChannelError: Error {
+  case entityError
+  case networkError
+  case parseError
+  case serverError(msg: String)
+  case unknownError
+  case notFoundError
+  case parameterError
+  case pathError
+  case sendFileError
+  case serviceBlockedError
+  case versionError
+
+  init(msg: String) {
+    self = .serverError(msg: msg)
+  }
 }
+
+extension ChannelError: LocalizedError {
+  var errorDescription: String? {
+    switch self {
+    case .entityError: return "Entity error"
+    case .networkError: return "Network error"
+    case .parseError: return "Parse error"
+    case .unknownError: return "Unknown error"
+    case .serverError(let msg): return "\(msg)"
+    case .notFoundError: return "Not found"
+    case .parameterError: return "Parameter invalid"
+    case .pathError: return "path error"
+    case .sendFileError: return "send file error"
+    case .serviceBlockedError: return "service block error"
+    case .versionError: return "sdk version error"
+    }
+  }
+}
+
 

@@ -21,11 +21,23 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
     }
   }
   var userChat: CHUserChat? = nil
+  private let chatType: ChatType = .userChat
+  
+  var photoUrls: [URL] {
+    let messages = messagesSelector(state: mainStore.state, userChatId: self.userChatId)
+    return messages.reversed()
+      .reduce([]) { $0 + $1.files }
+      .filter { $0.type == .image }
+      .compactMap { $0.url }
+  }
   
   private var isFetching = false
   private var nextSeq = ""
   
   private let disposeBag = DisposeBag()
+  private var queueKey: ChatQueueKey {
+    return ChatQueueKey(chatType: self.chatType, chatId: self.userChatId)
+  }
   
   func subscribeDataSource() {
     mainStore.subscribe(self) { subcription in
@@ -38,9 +50,15 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   }
 
   func readyToPresent() -> Observable<Bool> {
+    guard
+      let pluginKey = ChannelIO.settings?.pluginKey,
+      pluginKey != "" else {
+      return .just(false)
+    }
+    
     return Observable.create { (subscriber) in
       let signal = CHPlugin
-        .get(with: mainStore.state.plugin.id)
+        .get(with: pluginKey)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (info) in
           mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
@@ -73,6 +91,30 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
 extension UserChatInteractor {
   func canLoadMore() -> Bool {
     return self.nextSeq != ""
+  }
+  
+  func upload(files: [CHFile]) -> Observable<ChatQueueKey> {
+    return Observable
+      .just(files.map {
+        ChatFileQueueItem(
+          channelId: mainStore.state.channel.id,
+          type: self.chatType,
+          chatId: self.userChatId,
+          file: $0,
+          completion: self.presenter?.sendFiles
+        )
+      })
+      .flatMap { items in
+        return Observable.combineLatest(items.map { $0.prepare() })
+      }
+      .flatMap { [weak self] items -> Observable<ChatQueueKey> in
+        guard let self = self else {
+          return .error(ChannelError.unknownError)
+        }
+        
+        ChatQueueService.shared.enqueue(items: items)
+        return .just(self.queueKey)
+      }
   }
   
   func fetchMessages() -> Observable<ChatProcessState> {
@@ -148,6 +190,7 @@ extension UserChatInteractor {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (updated) in
           dlog("Message has been sent successfully")
+          message.state = .Sent
           self?.sendTyping(isStop: true)
           subscriber.onNext(updated)
           subscriber.onCompleted()
@@ -163,27 +206,6 @@ extension UserChatInteractor {
         signal.dispose()
       }
     }
-  }
-  
-  func sendMessageRecursively(allMessages: [CHMessage], currentIndex: Int) {
-    var message = allMessages.get(index: currentIndex)
-    
-    message?
-      .send()
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        dlog("Error while sending message. Attempting to send again")
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (updated) in
-        message?.state = .Sent
-        mainStore.dispatch(CreateMessage(payload: updated))
-        self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
-      }, onError: { [weak self] (error) in
-        message?.state = .Failed
-        mainStore.dispatch(CreateMessage(payload: message))
-        self?.sendMessageRecursively(allMessages: allMessages, currentIndex: currentIndex + 1)
-      }).disposed(by: self.disposeBag)
   }
   
   func delete(message: CHMessage?) {
@@ -259,50 +281,13 @@ extension UserChatInteractor: StoreSubscriber {
         with: CHAssets.localized("ch.toast.unstable_internet"),
         visible: true,
         state: .socketDisconnected)
+    } else {
+      self.presenter?.handleError(with: nil, visible: false, state: nil)
     }
   }
 }
 
 extension UserChatInteractor {
-  func createNudgeChat(nudgeId:String?) -> Observable<CHUserChat?> {
-    return Observable.create({ [weak self] (subscriber) -> Disposable in
-      guard let nudgeId = nudgeId else {
-        subscriber.onError(CHErrorPool.paramError)
-        return Disposables.create()
-      }
-      
-      if let chatId = self?.userChatId,
-        chatId != "",
-        !chatId.hasPrefix(CHConstants.nudgeChat) {
-        subscriber.onNext(
-          userChatSelector(state: mainStore.state, userChatId: chatId)
-        )
-        return Disposables.create()
-      }
-      
-      let signal = CHNudge
-        .createChat(nudgeId: nudgeId)
-        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-          dlog("Error while creating a chat. Attempting to create again")
-          return true
-        })
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (chatResponse) in
-          mainStore.dispatch(GetNudgeChat(nudgeId: nudgeId, payload: chatResponse))
-          subscriber.onNext(
-            userChatSelector(state: mainStore.state, userChatId: chatResponse.userChat?.id)
-          )
-          subscriber.onCompleted()
-        }, onError: { (error) in
-          subscriber.onError(error)
-        })
-      
-      return Disposables.create {
-        signal.dispose()
-      }
-    })
-  }
-    
   func createSupportBotChatIfNeeded(originId: String? = nil) -> Observable<(CHUserChat?, CHMessage?)> {
     return Observable.create { [weak self] (subscriber) -> Disposable in
       var disposable: Disposable?
@@ -327,7 +312,7 @@ extension UserChatInteractor {
             subscriber.onError(error)
           })
       } else {
-        subscriber.onError(CHErrorPool.unknownError)
+        subscriber.onError(ChannelError.unknownError)
       }
       
       return Disposables.create {
@@ -335,8 +320,12 @@ extension UserChatInteractor {
       }
     }
   }
+  
+  func createChatIfNeeded() -> Observable<CHUserChat?> {
+    guard self.userChat == nil || self.userChat?.isActive == false else {
+      return .just(self.userChat)
+    }
     
-  func createChat() -> Observable<CHUserChat?> {
     return Observable.create { [weak self] (subscriber) in
       if let userChat = self?.userChat {
         subscriber.onNext(userChat)

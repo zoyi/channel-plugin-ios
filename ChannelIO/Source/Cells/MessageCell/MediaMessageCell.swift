@@ -7,88 +7,116 @@
 //
 
 import UIKit
-import Reusable
+import RxSwift
 import SnapKit
+import AlignedCollectionViewFlowLayout
 
-class MediaMessageCell: MessageCell {
-  let mediaView = MediaMessageView().then {
-    $0.backgroundColor = UIColor.white
+protocol MediaMessageProtocol {
+  var mediaCollectionView: MediaCollectionView { get set }
+}
+
+class MediaMessageCell: MessageCell, MediaMessageProtocol {
+  private struct Metric {
+    static let mediaInSideMargin = 40.f
+    static let mediaOutSideMargin = 75.f
+    static let mediaTop = 6.f
+    static let mediaTopToName = 8.f
+    static let mediaTopToText = 8.f
+    static let mediaTopToTextTranslate = 20.f
   }
+
+  var mediaCollectionView = MediaCollectionView()
+  var gesture: UILongPressGestureRecognizer?
+
+  private var mediaTopConstraint: Constraint?
+  private var mediaTopToNameTopConstraint: Constraint?
+  private var mediaTopToTextViewTopContraint: Constraint?
   
-  var leftConstraint: Constraint? = nil
-  var rightConstraint: Constraint? = nil
-  var widthConstraint: Constraint? = nil
-  var heightConstraint: Constraint? = nil
-  
-  var topConstraint: Constraint? = nil
-  var topToTextConstraint: Constraint? = nil
-  var topToTimeConstraint: Constraint? = nil
-  
-  override func prepareForReuse() {
-    self.mediaView.imageView.image = nil
-  }
-  
+  var leftTextViewConstraint: Constraint?
+  var leftConstraint: Constraint?
+  var rightConstraint: Constraint?
+
   override func initialize() {
     super.initialize()
-    self.contentView.addSubview(self.mediaView)
+    self.contentView.addSubview(self.mediaCollectionView)
   }
-  
+
   override func setLayouts() {
     super.setLayouts()
-    self.mediaView.snp.remakeConstraints { [weak self] (make) in
-      self?.widthConstraint = make.width.equalTo(0).constraint
-      self?.heightConstraint = make.height.equalTo(0).constraint
+    self.messageBottomConstraint?.deactivate()
+
+    self.mediaCollectionView.snp.makeConstraints { make in
+      self.mediaTopConstraint = make.top.equalToSuperview()
+        .inset(Metric.mediaTop).priority(750).constraint
+      self.mediaTopToNameTopConstraint = make.top.equalTo(self.usernameLabel.snp.bottom)
+        .offset(Metric.mediaTopToName).priority(850).constraint
+      self.mediaTopToTextViewTopContraint = make.top.equalTo(self.textMessageView.snp.bottom)
+        .offset(Metric.mediaTopToText).constraint
       
-      self?.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
-      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.bubbleLeftMargin).constraint
-      
-      self?.topToTimeConstraint = make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(3).priority(800).constraint
-      self?.topToTextConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3).priority(750).constraint
-      self?.topConstraint = make.top.equalToSuperview().inset(5).constraint
-    }
-    
-    self.resendButtonView.snp.remakeConstraints { [weak self] (make) in
-      make.size.equalTo(CGSize(width: 40, height: 40))
-      make.bottom.equalTo((self?.mediaView.snp.bottom)!).offset(10)
-      make.right.equalTo((self?.mediaView.snp.left)!).offset(4)
+      self.leftTextViewConstraint = make.leading.equalTo(self.textMessageView.snp.leading)
+        .priority(750).constraint
+      self.leftConstraint = make.leading.equalToSuperview()
+        .inset(Metric.mediaInSideMargin).priority(850).constraint
+      self.rightConstraint = make.trailing.equalToSuperview()
+        .inset(Metric.mediaOutSideMargin).constraint
+      make.bottom.equalToSuperview()
     }
   }
-  
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
+
+  override func prepareForReuse() {
+    super.prepareForReuse()
+  }
+
+  override class func cellHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType) -> CGFloat {
+    var height = super.cellHeight(fits: width, viewModel: viewModel)
+    height += MediaCollectionView.viewHeight(fit: width, models: viewModel.files) + 8
+    return height
+  }
+
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
-    self.mediaView.configure(message: viewModel, isThumbnail: true)
-    
-    let size = MediaMessageView.viewSize(fits: self.frame.width, viewModel: viewModel)
-    self.widthConstraint?.update(offset: size.width)
-    self.heightConstraint?.update(offset: size.height)
-    
-    if self.textMessageView.messageView.text != "" {
-      self.topConstraint?.deactivate()
-      self.topToTimeConstraint?.deactivate()
-      self.topToTextConstraint?.activate()
-    } else if !viewModel.isContinuous {
-      self.topConstraint?.deactivate()
-      self.topToTimeConstraint?.activate()
-      self.topToTextConstraint?.deactivate()
+    self.mediaCollectionView.configure(models: viewModel.files)
+
+    if viewModel.canTranslate {
+      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTopToTextTranslate)
+      self.mediaTopToTextViewTopContraint?.activate()
+      self.mediaTopConstraint?.deactivate()
+      self.mediaTopToNameTopConstraint?.deactivate()
+    } else if self.textMessageView.messageView.text != "" {
+      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTopToText)
+      self.mediaTopToTextViewTopContraint?.activate()
+      self.mediaTopConstraint?.deactivate()
+      self.mediaTopToNameTopConstraint?.deactivate()
+    } else if viewModel.isContinuous {
+      self.mediaTopToTextViewTopContraint?.deactivate()
+      self.mediaTopConstraint?.activate()
+      self.mediaTopToNameTopConstraint?.deactivate()
     } else {
-      self.topConstraint?.activate()
-      self.topToTimeConstraint?.deactivate()
-      self.topToTextConstraint?.deactivate()
+      self.mediaTopToTextViewTopContraint?.deactivate()
+      self.mediaTopConstraint?.deactivate()
+      self.mediaTopToNameTopConstraint?.activate()
     }
     
     if self.viewModel?.createdByMe == true {
-      self.rightConstraint?.activate()
-      self.leftConstraint?.deactivate()
-    } else {
-      self.rightConstraint?.deactivate()
+      self.leftTextViewConstraint?.deactivate()
       self.leftConstraint?.activate()
+      self.rightConstraint?.update(inset: Metric.cellRightPadding)
+      self.mediaCollectionView.changeFlowLayout(horizontalAlignment: .right)
+    } else {
+      self.leftTextViewConstraint?.activate()
+      self.leftConstraint?.deactivate()
+      self.rightConstraint?.update(inset: 75)
+      self.mediaCollectionView.changeFlowLayout(horizontalAlignment: .left)
     }
   }
-  
-  override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
-    var height = super.cellHeight(fits: width, viewModel: viewModel)
-    height += 3
-    height += MediaMessageView.viewSize(fits: width, viewModel: viewModel).height
-    return height
+
+  func setDataSource(
+    _ source: UICollectionViewDataSource & UICollectionViewDelegateFlowLayout,
+    at row: Int) {
+    self.mediaCollectionView.setDataSource(source, at: row)
   }
 }

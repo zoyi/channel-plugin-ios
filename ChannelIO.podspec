@@ -57,6 +57,8 @@ Pod::Spec.new do |s|
   s.dependency 'CRToast'
   s.dependency 'PhoneNumberKit', '~> 2.6'
   s.dependency 'SDWebImage', '~> 5.0'
+  s.dependency 'SDWebImageWebPCoder'
   s.dependency 'RxSwiftExt', '~> 5.1'
   s.dependency 'TLPhotoPicker'
+  s.dependency 'AlignedCollectionViewFlowLayout'
 end

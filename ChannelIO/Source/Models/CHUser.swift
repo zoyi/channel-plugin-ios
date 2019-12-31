@@ -27,8 +27,6 @@ struct CHUser: CHEntity {
   var segment: String?
   var avatarUrl: String?
   var mobileNumber: String?
-  
-  var named = false
   }
 
 extension CHUser: Mappable {
@@ -115,6 +113,11 @@ extension CHUser {
     }
     return data
   }
+  
+  var named: Bool {
+    return self.profile?["name"] != nil
+  }
+    
 }
 
 extension CHUser {

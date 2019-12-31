@@ -16,7 +16,6 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   
   var chatSignal = PublishRelay<[CHUserChat]>()
   var infoSignal = PublishRelay<(CHChannel, CHPlugin)>()
-  var sourceSignal = PublishRelay<[Any?]>()
   
   var chats: [CHUserChat] = []
   var plugin: CHPlugin? = nil
@@ -35,39 +34,21 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   func unsubscribeDataSource() {
     mainStore.unsubscribe(self)
   }
+  
+  func getLounge() -> Observable<LoungeResponse> {
+    var url = ""
+    if let controller = CHUtils.getTopController() {
+      url = "\(type(of: controller))"
+    }
+    return LoungePromise.getLounge(pluginId: mainStore.state.plugin.id, url: url)
+  }
 
   func getChannel() -> Observable<CHChannel> {
-    return ChannelPromise.getChannel()
-  }
-  
-  func getPlugin() -> Observable<(CHPlugin, CHBot?)> {
-    return PluginPromise.getPlugin(pluginId: mainStore.state.plugin.id)
-  }
-  
-  func getOperators() -> Observable<[CHManager]> {
-    return AppManager.getOperators()
-  }
-  
-  func getSupportBot() -> Observable<CHSupportBotEntryInfo> {
-    return Observable.create({ (subscriber) -> Disposable in
-      let signal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (entry) in
-          mainStore.dispatch(GetSupportBotEntry(bot: nil, entry: entry))
-          subscriber.onNext(entry)
-          subscriber.onCompleted()
-        }, onError: { (error) in
-          subscriber.onError(error)
-        })
-
-      return Disposables.create {
-        signal.dispose()
-      }
-    })
+    return CHChannel.get()
   }
   
   func getChats() -> Observable<[CHUserChat]> {
-    return Observable.create({ (subscriber) -> Disposable in
+    return Observable.create { (subscriber) -> Disposable in
       let signal = UserChatPromise.getChats(since: nil, limit: 100, showCompleted: true)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (data) in
@@ -85,7 +66,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
       return Disposables.create {
         signal.dispose()
       }
-    })
+    }
   }
   
   func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat> {
@@ -107,10 +88,6 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   
   func updateChats() -> Observable<[CHUserChat]> {
     return self.chatSignal.asObservable()
-  }
-  
-  func getExternalSource() -> Observable<[CHExternalSourceType:String]?> {
-    return ChannelPromise.getExternalMessengers()
   }
   
   func updateExternalSource() -> Observable<[Any]> {

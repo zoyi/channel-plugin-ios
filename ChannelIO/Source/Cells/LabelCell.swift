@@ -8,10 +8,8 @@
 
 import Foundation
 import SnapKit
-import Reusable
 
-final class LabelCell : BaseTableViewCell, Reusable {
-  
+final class LabelCell : BaseTableViewCell {  
   let titleLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 16)
     $0.textColor = CHColors.charcoalGrey

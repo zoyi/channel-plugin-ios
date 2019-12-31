@@ -11,33 +11,39 @@ import ReSwift
 import UIKit
 import SVProgressHUD
 import Photos
+import AVKit
 
 class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   weak var view: UserChatViewProtocol?
   var interactor: UserChatInteractorProtocol?
   var router: UserChatRouterProtocol?
   
-  var userChatId: String?
   private var userChat: CHUserChat?
+  private var chatType: ChatType = .userChat
+  private var state: ChatProcessState = .idle
   
   private var navigationUpdateSubject = PublishSubject<CHUserChat?>()
   
-  private var state: ChatProcessState = .idle
   private var didChatLoaded: Bool = false
   private var didMessageLoaded: Bool = false
   private var isRequestingAction = false
   private var isRequestingReadAll = false
   
-  var shouldRedrawProfileBot = true
-  var isProfileFocus = false
-  
   private var typingPersons = [CHEntity]()
   private var timeStorage = [String: Timer]()
-  private var animateTyping = false
   
+  private var queueKey: ChatQueueKey? {
+    guard let chatId = self.userChatId else { return nil }
+    return ChatQueueKey(chatType: self.chatType, chatId: chatId)
+  }
+  
+  var userChatId: String?
+  var shouldRedrawProfileBot = true
+  var isProfileFocus = false
   var preloadText: String = ""
   
   private var disposeBag = DisposeBag()
+  private var fileDisposable: Disposable?
   
   deinit {
     self.leaveSocket()
@@ -58,10 +64,27 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       .readyToPresent()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
-        self?.showLocalMessageIfNeed()
+        guard let self = self else { return }
+        self.showLocalMessageIfNeed()
+        if let queueKey = self.queueKey, let queue = ChatQueueService.shared.find(key: queueKey) {
+          self.displayFileStatus(with: queue.items)
+          self.observeFileQueue()
+        }
       }, onError: { [weak self] (error) in
         self?.view?.display(error: error.localizedDescription, visible: true)
       }).disposed(by: self.disposeBag)
+  }
+  
+  private func displayFileStatus(with items: [ChatQueuable]) {
+    guard let items = items as? [ChatFileQueueItem] else { return }
+    
+    self.view?.display(errorFiles: items.filter { $0.status == .error })
+    if let item = items.filter({ $0.status == .progress }).first {
+      let count = items.filter { $0.status == .initial}.count
+      self.view?.display(loadingFile: item, count: count)
+    } else {
+      self.view?.hideLodingFile()
+    }
   }
   
   private func showLocalMessageIfNeed() {
@@ -71,9 +94,6 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       self.view?.display(userChat: self.userChat, channel: mainStore.state.channel)
     } else if self.userChatId == nil {
       mainStore.dispatch(InsertWelcome())
-      self.requestRead()
-      self.view?.display(userChat: self.userChat, channel: mainStore.state.channel)
-    } else if self.userChatId?.hasPrefix(CHConstants.nudgeChat) == true {
       self.requestRead()
       self.view?.display(userChat: self.userChat, channel: mainStore.state.channel)
     }
@@ -127,10 +147,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
             self?.addTimer(with: typer, delay: 15)
           }
         }
-        self?.view?.display(
-          typers: self?.typingPersons ?? [],
-          channel: mainStore.state.channel
-        )
+        self?.view?.display(typers: self?.typingPersons ?? [])
       }).disposed(by: self.disposeBag)
     
     WsService.shared.mOnCreate()
@@ -140,12 +157,36 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         if let index = self?.getTypingIndex(of: typing) {
           let person = self?.typingPersons.remove(at: index)
           self?.removeTimer(with: person)
-          self?.view?.display(
-            typers: self?.typingPersons ?? [],
-            channel: mainStore.state.channel)
+          self?.view?.display(typers: self?.typingPersons ?? [])
         }
         self?.shouldRedrawProfileBot = message.profileBot?.count != 0
       }).disposed(by: self.disposeBag)
+  }
+  
+  private func observeFileQueue() {
+    guard let queueKey = self.queueKey else { return }
+    
+    self.fileDisposable?.dispose()
+    self.fileDisposable = ChatQueueService.shared
+      .status(key: queueKey)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (status) in
+        guard let self = self else { return }
+        switch status {
+        case .loading(let items):
+          self.displayFileStatus(with: items)
+        case .error(_, let items):
+          self.displayFileStatus(with: items)
+        case .completed(let items):
+          self.displayFileStatus(with: items)
+        case .idle:
+          break
+        case .enqueue(let items):
+          self.displayFileStatus(with: items)
+        }
+      }, onError: { [weak self] (error) in
+        self?.view?.display(error: error.localizedDescription, visible: true)
+      })
   }
   
   private func prepareChat() {
@@ -173,8 +214,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   private func leaveSocket() {
     guard
       let chatId = self.userChatId,
-      chatId != "",
-      !chatId.hasPrefix(CHConstants.nudgeChat) else {
+      chatId != "" else {
       return
     }
     WsService.shared.leave(chatId: chatId)
@@ -189,10 +229,9 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   private func needToFetchChat() -> Bool {
     guard
-      let chatId = self.userChatId,
+      self.userChatId != nil,
       !self.didChatLoaded,
-      self.state != .chatLoading,
-      !chatId.hasPrefix(CHConstants.nudgeChat) else {
+      self.state != .chatLoading else {
       return false
     }
     return true
@@ -256,7 +295,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   private func getTypingIndex(of typingEntity: CHTypingEntity) -> Int? {
     return self.typingPersons.firstIndex(where: {
-      $0.id == typingEntity.personId && $0.kind == typingEntity.personType?.rawValue
+      $0.id == typingEntity.personId && $0.entityType.rawValue == typingEntity.personType?.rawValue
     })
   }
 
@@ -301,8 +340,10 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     )
   }
   
-  func handleError(with error: String?, visible: Bool, state: ChatProcessState) {
-    self.state = state
+  func handleError(with error: String?, visible: Bool, state: ChatProcessState?) {
+    if let state = state {
+      self.state = state
+    }
     self.view?.display(error: error, visible: visible)
   }
   
@@ -311,7 +352,10 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.view?.updateInputBar(state: focus ? .disabled : .normal)
   }
   
-  func didClickOnProfileUpdate(with message: CHMessage?, key: String?, value: Any?) -> Observable<Bool> {
+  func didClickOnProfileUpdate(
+    with message: CHMessage?,
+    key: String?,
+    value: Any?) -> Observable<Bool> {
     guard let message = message, let key = key, let value = value else {
       return .just(false)
     }
@@ -322,10 +366,10 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (message) in
           self?.shouldRedrawProfileBot = true
-          self?.view?.reloadTableView()
           let updatedValue = message.profileBot?.filter { $0.key == key }.first?.value
           ChannelIO.delegate?.onChangeProfile?(key: key, value: updatedValue)
           mainStore.dispatch(UpdateMessage(payload: message))
+          self?.view?.reloadTableView()
           subscriber.onNext(true)
           subscriber.onCompleted()
         }, onError: { (error) in
@@ -373,46 +417,47 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.router?.presentVideoPlayer(with: url, from: view)
   }
   
-  func didClickOnFile(with message: CHMessage?, from view: UIViewController?) {
-    guard var message = message else { return }
-    guard let file = message.file else { return }
-    
-    if file.category == "video" {
-      self.didClickOnVideo(with: file.fileUrl!, from: view)
-      return
-    }
-    
-    SVProgressHUD.showProgress(0)
-    file
-      .download()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (fileURL, progress) in
-        if let fileURL = fileURL {
-          SVProgressHUD.dismiss()
-          message.file?.urlInDocumentsDirectory = fileURL
-          mainStore.dispatch(UpdateMessage(payload: message))
-          self?.router?.pushFileView(with: fileURL, from: view)
-        }
-        if progress < 1 {
-          SVProgressHUD.showProgress(progress)
-        }
-      }, onError: { (error) in
-        SVProgressHUD.dismiss()
-      }, onCompleted: {
-        SVProgressHUD.dismiss()
-      }).disposed(by: self.disposeBag)
-  }
-  
-  func didClickOnImage(
-    with url: URL?,
-    photoUrls: [URL],
-    imageView: UIImageView,
+  func didClickOnFile(
+    with file: CHFile?,
+    on imageView: UIImageView?,
+    path indexPath: IndexPath,
     from view: UIViewController?) {
-    self.router?.presentImageViewer(
-      with: url, photoUrls: photoUrls,
-      imageView: imageView,
-      from: view
-    )
+    if file?.type == .image, let imageView = imageView {
+      self.view?.dismissKeyboard(false)
+      self.router?.presentImageViewer(
+        with: file?.url,
+        photoUrls: self.interactor?.photoUrls ?? [],
+        imageView: imageView,
+        from: view
+      )
+    } else if file?.type == .video, let url = file?.url {
+      let controller = AVPlayerViewController()
+      controller.player = AVPlayer(url: url)
+      controller.showsPlaybackControls = true
+      if #available(iOS 11.0, *) {
+        controller.exitsFullScreenWhenPlaybackEnds = true
+      }
+      view?.present(controller, animated: true, completion: nil)
+    } else {
+      guard let file = file else { return }
+      SVProgressHUD.showProgress(0)
+      file
+        .download()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { [weak self] (fileURL, progress) in
+          if let fileURL = fileURL {
+            SVProgressHUD.dismiss()
+            self?.router?.pushFileView(with: fileURL, from: view)
+          }
+          if progress < 1 {
+            SVProgressHUD.showProgress(progress)
+          }
+        }, onError: { (error) in
+          SVProgressHUD.dismiss()
+        }, onCompleted: {
+          SVProgressHUD.dismiss()
+        }).disposed(by: self.disposeBag)
+    }
   }
 
   func didClickOnWeb(with url: String?, from view: UIViewController?) {
@@ -456,67 +501,79 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   func didClickOnNewChat(with text: String, from view: UINavigationController?) {
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
-    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-    let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
-  
-    Observable
-      .zip(pluginSignal, supportSignal)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        let reloadMessage = CHAssets.localized("plugin.reload.message")
-        SVProgressHUD.show(withStatus: reloadMessage)
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (plugin, entry) in
-        mainStore.dispatch(GetPlugin(plugin: plugin.0, bot: plugin.1))
-        mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
-        SVProgressHUD.dismiss()
-        self?.router?.showNewChat(with: text, from: view)
-      }, onError: { (error) in
-        SVProgressHUD.dismiss()
-      }).disposed(by: self.disposeBag)
+    self.router?.showNewChat(with: text, from: view)
   }
   
-  func didClickOnAssetButton(from view: UIViewController?) {
+  func didClickOnClipButton(from view: UIViewController?) {
+    guard let interactor = self.interactor else { return }
+    
     self.router?
       .showOptionActionSheet(from: view)
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (assets) in
-        self?.sendAssets(assets: assets)
-      }, onError: { [weak self] (error) in
-        self?.view?.display(error: error.localizedDescription, visible: true)
+      .subscribe(onNext: { [weak self] assets in
+        guard let self = self else { return }
+        interactor
+        .createChatIfNeeded()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { [weak self] (chat) in
+          guard let self = self, let chat = chat else { return }
+          self.userChatId = chat.id
+          self.userChat = chat
+          self.joinSocket()
+          self.observeFileQueue()
+          let files = assets.map { CHFile(asset: $0) }
+          self.uploadFile(files: files)
+        }, onError: { [weak self] (error) in
+          self?.view?.display(error: error.localizedDescription, visible: false)
+        }).disposed(by: self.disposeBag)
       }).disposed(by: self.disposeBag)
   }
   
   func didClickOnSendButton(text: String) {
-    guard
-      let chatId = self.userChatId,
-      let chat = self.userChat,
-      chat.isActive else {
-      self.interactor?
-        .createChat()
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (chat) in
-          guard let chat = chat else { return }
-          self?.userChatId = chat.id
-          self?.userChat = chat
-          self?.sendMessage(with: text, chatId: chat.id)
-        }, onError: { [weak self] (error) in
-          self?.view?.display(error: error.localizedDescription, visible: false)
-        }).disposed(by: self.disposeBag)
-      return
-    }
-
-    self.sendMessage(with: text, chatId: chatId)
-  }
-    
-  private func sendMessage(with text: String, chatId: String) {
-    let message = CHMessage.createLocal(chatId: chatId, text: text)
-    mainStore.dispatch(CreateMessage(payload: message))
-    self.sendMessage(with: message, chatId: chatId)
+    self.interactor?
+    .createChatIfNeeded()
+    .observeOn(MainScheduler.instance)
+    .subscribe(onNext: { [weak self] (chat) in
+      guard let chat = chat else { return }
+      self?.userChatId = chat.id
+      self?.userChat = chat
+      self?.joinSocket()
+      let message = CHMessage.createLocal(chatId: chat.id, text: text)
+      mainStore.dispatch(CreateMessage(payload: message))
+      self?.observeFileQueue()
+      self?.sendMessage(with: message)
+    }, onError: { [weak self] (error) in
+      self?.view?.display(error: error.localizedDescription, visible: false)
+    }).disposed(by: self.disposeBag)
   }
   
-  private func sendMessage(with message: CHMessage, chatId: String) {
+  func didClickOnRetryFile(with item: ChatFileQueueItem) {
+    guard
+      let queueKey = self.queueKey,
+      let queue = ChatQueueService.shared.find(key: queueKey) else {
+      return
+    }
+    queue.remove(item: item)
+    item.status = .initial
+    queue.enqueue(item: item)
+  }
+  
+  func didClickOnRemoveFile(with item: ChatFileQueueItem) {
+    guard
+      let queueKey = self.queueKey,
+      let queue = ChatQueueService.shared.find(key: queueKey) else {
+      return
+    }
+    queue.remove(item: item)
+    self.displayFileStatus(with: queue.items)
+  }
+  
+  private func uploadFile(files: [CHFile]) {
+    self.interactor?
+      .upload(files: files)
+      .subscribe()
+      .disposed(by: self.disposeBag)
+  }
+  private func sendMessage(with message: CHMessage) {
     self.interactor?
       .send(message: message)
       .observeOn(MainScheduler.instance)
@@ -527,34 +584,13 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       }).disposed(by: self.disposeBag)
   }
   
-  private func sendAssets(assets: [PHAsset]) {
-    guard let chat = self.userChat, chat.isActive else {
-      self.interactor?
-        .createChat()
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (chat) in
-          guard let chat = chat else { return }
-          self?.userChatId = chat.id
-          self?.userChat = chat
-          let messages = self?.createMessageForImages(assets: assets, requestBot: true) ?? []
-          self?.interactor?.sendMessageRecursively(allMessages: messages, currentIndex: 0)
-        }, onError: { [weak self] (error) in
-          self?.state = .chatNotLoaded
-          self?.view?.display(error: error.localizedDescription, visible: false)
-        }).disposed(by: self.disposeBag)
-      return
-    }
-    
-    let messages = self.createMessageForImages(assets: assets)
-    self.interactor?.sendMessageRecursively(allMessages: messages, currentIndex: 0)
-  }
-  
-  private func createMessageForImages(assets: [PHAsset], requestBot: Bool = false) -> [CHMessage] {
-    let messages = assets.map({ (asset) -> CHMessage in
-      return CHMessage(chatId: self.userChatId ?? "", user: mainStore.state.user, asset: asset)
-    })
-    messages.forEach { mainStore.dispatch(CreateMessage(payload: $0)) }
-    return messages
+  func sendFiles(fileDictionary: [String: Any]?) {
+    let message = CHMessage(
+      chatId: self.userChatId ?? "",
+      user: mainStore.state.user,
+      fileDictionary: fileDictionary
+    )
+    self.sendMessage(with: message)
   }
   
   func didClickOnActionButton(originId: String?, key: String?, value: String?) {
@@ -568,34 +604,6 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     } else {
       self.processUserChatAction(originId: originId, key: key, value: value)
     }
-  }
-  
-  func didClickOnNudgeKeepAction(){
-    guard
-      let chat = self.userChat,
-      chat.fromNudge,
-      let nudgeId = chat.nudgeId else {
-      return
-    }
-    
-    self.interactor?
-      .createNudgeChat(nudgeId: nudgeId)
-      .observeOn(MainScheduler.instance)
-      .flatMap { [weak self](chat) -> Observable<CHMessage?> in
-        guard let chat = chat else {
-            return .empty()
-        }
-        self?.userChat = chat
-        self?.userChatId = chat.id
-        self?.joinSocket()
-        return chat.keepNudge()
-      }
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (message) in
-        mainStore.dispatch(CreateMessage(payload: message))
-      }, onError: { [weak self](error) in
-        self?.view?.display(error: error.localizedDescription, visible: false)
-      }).disposed(by: self.disposeBag)
   }
   
   func didClickOnWaterMark() {
@@ -650,10 +658,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     }) {
       self.typingPersons.remove(at: index)
       self.timeStorage.removeValue(forKey: person.key)
-      self.view?.display(
-        typers: self.typingPersons,
-        channel: mainStore.state.channel
-      )
+      self.view?.display(typers: self.typingPersons)
     }
   }
   
@@ -677,7 +682,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     let message = CHMessage.createLocal(chatId: chatId, text: value, originId: originId, key: key)
     mainStore.dispatch(CreateMessage(payload: message))
      
-    self.sendMessage(with: message, chatId: chatId)
+    self.sendMessage(with: message)
   }
    
   private func processSupportBotAction(originId: String?, key: String?, value: String?) {
@@ -687,7 +692,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.interactor?
       .createSupportBotChatIfNeeded(originId: originId)
       .observeOn(MainScheduler.instance)
-      .flatMap({ [weak self] (chat, message) -> Observable<CHMessage> in
+      .flatMap { [weak self] (chat, message) -> Observable<CHMessage> in
         guard let chat = chat else { return .empty() }
         self?.userChatId = chat.id
         self?.userChat = chat
@@ -699,7 +704,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           key: key)
         mainStore.dispatch(CreateMessage(payload: msg))
         return CHSupportBot.reply(with: msg, actionId: message?.id)
-      })
+      }
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while replying supportBot. Attempting to reply again")
         return true
@@ -732,7 +737,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
      
     if type == .solve && key == "close" {
       self.userChat?
-        .close(mid: origin.id, requestId: message?.requestId ?? "")
+        .close(actionId: origin.id, requestId: message?.requestId ?? "")
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (chat) in
           mainStore.dispatch(UpdateUserChat(payload:chat))
@@ -749,7 +754,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     } else if type == .close, let review = ReviewType(rawValue: key) {
       self.userChat?
         .review(
-          mid: origin.id,
+          actionId: origin.id,
           rating: review,
           requestId: message?.requestId ?? "")
         .observeOn(MainScheduler.instance)

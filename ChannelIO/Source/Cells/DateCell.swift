@@ -6,10 +6,9 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import Reusable
 import SnapKit
 
-final class DateCell : BaseTableViewCell, Reusable {
+final class DateCell : BaseTableViewCell {
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 12)
     $0.textColor = CHColors.blueyGrey

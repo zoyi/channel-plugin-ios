@@ -28,29 +28,10 @@ struct CHPush: CHPushDisplayable {
   
   var attachmentType: CHAttachmentType = .none
   var redirectUrl: String? = nil
-  
-  var isNudgePush: Bool = false
 }
 
 extension CHPush : Mappable {
   init?(map: Map) { }
-  
-  init(chat: CHUserChat, message: CHMessage, response: NudgeReachResponse) {
-    self.bot = response.bot
-    self.message = message
-    self.userChat = chat
-    self.mobileExposureType = response.variant?.mobileExposureType ?? .banner
-    self.attachmentType = response.variant?.attachment ?? .none
-    self.buttonTitle = response.variant?.buttonTitle
-    self.showLog = false
-    self.isNudgePush = true
-    
-    if self.attachmentType == .image, let url = response.variant?.imageRedirectUrl {
-      self.redirectUrl = url
-    } else if self.attachmentType == .button, let url = response.variant?.buttonRedirectUrl {
-      self.redirectUrl = url
-    }
-  }
   
   mutating func mapping(map: Map) {
     message   <- map["entity"]
@@ -69,8 +50,7 @@ extension CHPush: Equatable {
       lhs.bot == rhs.bot &&
       lhs.manager == rhs.manager &&
       lhs.mobileExposureType == rhs.mobileExposureType &&
-      lhs.attachmentType == rhs.attachmentType &&
-      lhs.isNudgePush == rhs.isNudgePush
+      lhs.attachmentType == rhs.attachmentType
   }
 }
 

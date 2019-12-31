@@ -72,12 +72,12 @@ extension ChannelIO {
   internal class func checkInChannel(profile: Profile? = nil) -> Observable<BootResponse> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
-        subscriber.onError(CHErrorPool.unknownError)
+        subscriber.onError(ChannelError.unknownError)
         return Disposables.create()
       }
       
       guard settings.pluginKey != "" else {
-        subscriber.onError(CHErrorPool.pluginKeyError)
+        subscriber.onError(ChannelError.parameterError)
         return Disposables.create()
       }
       
@@ -101,12 +101,12 @@ extension ChannelIO {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (result) in
           guard let result = result else {
-            subscriber.onError(CHErrorPool.unknownError)
+            subscriber.onError(ChannelError.unknownError)
             return
           }
           
           if result.channel?.canUseSDK == false {
-            subscriber.onError(CHErrorPool.serviceBlockedError)
+            subscriber.onError(ChannelError.serviceBlockedError)
             return
           }
           
@@ -165,12 +165,13 @@ extension ChannelIO {
         let loungeView = LoungeRouter.createModule(with: userChatId)
         let controller = MainNavigationController(rootViewController: loungeView)
         ChannelIO.baseNavigation = controller
-        
-        loungeView.presenter?.isReadyToPresentChat(chatId: userChatId)
+        loungeView
+          .presenter?
+          .isReadyToPresentChat(chatId: userChatId)
           .subscribe(onSuccess: { (_) in
             topController.present(controller, animated: animated, completion: nil)
-          }, onError: { (error) in
-            
+          }, onError: { error in
+            ChannelIO.open(animated: false)
           }).disposed(by: self.disposeBag)
       }
     }
@@ -186,7 +187,8 @@ extension ChannelIO {
     }
     
     var notificationView: InAppNotification?
-    if !push.isNudgePush || push.mobileExposureType == .banner {
+    
+    if push.mobileExposureType == .banner {
       notificationView = BannerInAppNotificationView()
     } else {
       notificationView = PopupInAppNotificationView()

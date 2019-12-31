@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import SDWebImageWebPCoder
 import ChannelIO
 
 @UIApplicationMain
@@ -20,6 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     registerForRemoteNotification(application)
     ChannelIO.initialize(application)
+    let coder = SDImageWebPCoder.shared
+    SDImageCodersManager.shared.addCoder(coder)
+    
     return true
   }
 

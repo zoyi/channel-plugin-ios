@@ -28,21 +28,47 @@ extension ChatResponse : Mappable {
   }
 }
 
-struct NudgeReachResponse {
-  var reach: Bool?
-  var nudge: CHNudge?
-  var variant: CHNudgeVariant?
+struct LoungeResponse {
+  var channel: CHChannel?
+  var plugin: CHPlugin?
   var bot: CHBot?
+  var operators: [CHManager]?
+  var userChatsResponse: UserChatsResponse?
+  var supportBotEntryInfo: CHSupportBotEntryInfo?
 }
 
-extension NudgeReachResponse : Mappable {
-  init?(map: Map) { }
+extension LoungeResponse : Mappable {
+  init?(map: Map) {}
   
   mutating func mapping(map: Map) {
-    reach             <- map["reach"]
-    nudge             <- map["nudge"]
-    variant           <- map["nudgeVariant"]
-    bot               <- map["bot"]
+    channel                 <- map["channel"]
+    plugin                  <- map["plugin"]
+    bot                     <- map["bot"]
+    operators               <- map["operators"]
+    userChatsResponse       <- map["userChats"]
+    supportBotEntryInfo     <- map["supportBot"]
+  }
+}
+
+struct UserChatsResponse {
+  var sessions: [CHSession]?
+  var next: String?
+  var userChats: [CHUserChat]?
+  var messages: [CHMessage]?
+  var managers: [CHManager]?
+  var bots: [CHBot]?
+}
+
+extension UserChatsResponse : Mappable {
+  init?(map: Map) {}
+  
+  mutating func mapping(map: Map) {
+    sessions          <- map["sessions"]
+    next              <- map["next"]
+    userChats         <- map["userChats"]
+    messages          <- map["messages"]
+    managers          <- map["managers"]
+    bots              <- map["bots"]
   }
 }
 

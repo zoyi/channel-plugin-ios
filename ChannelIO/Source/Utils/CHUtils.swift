@@ -115,6 +115,13 @@ class CHUtils {
     return nil
   }
   
+  class func deviceLanguage() -> String? {
+    guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
+    let start = str.startIndex
+    let end = str.index(str.startIndex, offsetBy: 2)
+    return String(str[start..<end])
+  }
+  
   class func stringToLocale(_ localeString: String) -> CHLocale {
     if localeString == "en" {
       return .english
@@ -255,6 +262,18 @@ typealias dispatchClosure = () -> Void
 
 func dispatch(delay: Double = 0.0, execute: @escaping dispatchClosure) {
   DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay, execute: {
+    execute()
+  })
+}
+
+func dispatchSyncOnBack (execute: @escaping dispatchClosure) {
+  DispatchQueue.global(qos: .background).sync {
+    execute()
+  }
+}
+
+func dispatchAsyncOnBack (delay: Double = 0.0, execute: @escaping dispatchClosure) {
+  DispatchQueue.global(qos: .background).asyncAfter(deadline: DispatchTime.now() + delay, execute: {
     execute()
   })
 }

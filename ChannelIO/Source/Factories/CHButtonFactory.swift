@@ -60,24 +60,6 @@ struct CHButtonFactory {
     return button
   }
   
-  static func keepNudge() -> UIButton {
-    return UIButton(type: .system).then {
-      $0.setTitle("👍 " + CHAssets.localized("ch.chat.push_bot_like"), for: .normal)
-      $0.setTitleColor(CHColors.pumpkinOrange, for: .normal)
-      
-      $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
-      $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 26, bottom: 0, right: 30)
-      $0.backgroundColor = .white
-      
-      $0.layer.cornerRadius = 23
-      $0.layer.shadowColor = CHColors.dark.cgColor
-      $0.layer.shadowOpacity = 0.2
-      $0.layer.shadowOffset = CGSize(width: 0, height: 2)
-      $0.layer.shadowRadius = 3
-      $0.isHidden = true
-    }
-  }
-  
   static func messageAction() -> UIButton {
     return UIButton(type: .system).then {
       $0.setTitleColor(CHColors.azure, for: .normal)
