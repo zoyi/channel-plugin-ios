@@ -104,17 +104,17 @@ enum RestRouter: URLRequestConvertible {
     case .Boot(let pluginKey, _):
       return "/front/plugins/\(pluginKey)/boot"
     case .CreateUserChat(let pluginId):
-      return "/front/plugins/\(pluginId)/user_chats"
+      return "/front/plugins/\(pluginId)/user-chats"
     case .CreateSupportBotChat(let supportBotId):
-      return "/front/support_bots/\(supportBotId)/user_chats"
+      return "/front/support-bots/\(supportBotId)/user-chats"
     case .CreateMessage(let userChatId, _):
-      return "/front/user_chats/\(userChatId)/messages"
+      return "/front/user-chats/\(userChatId)/messages"
     case .CheckVersion:
       return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
     case .CloseUserChat(let userChatId, _):
-      return "/front/user_chats/\(userChatId)/close"
+      return "/front/user-chats/\(userChatId)/close"
     case .GetMessages(let userChatId, _):
-      return "/front/user_chats/\(userChatId)/messages"
+      return "/front/user-chats/\(userChatId)/messages"
     case .GetCountryCodes:
       return "/available/countries"
     case .GetChannel:
@@ -124,39 +124,39 @@ enum RestRouter: URLRequestConvertible {
     case .GetPlugin(let pluginKey):
       return "/front/plugins/\(pluginKey)"
     case .GetUserChats:
-      return "/front/user_chats"
+      return "/front/user-chats"
     case .GetGeoIP:
       return "/geoip"
     case .GetUserChat(let userChatId):
-      return "/front/user_chats/\(userChatId)"
+      return "/front/user-chats/\(userChatId)"
     case .GetProfileBotSchemas(let pluginId):
-      return "/front/plugins/\(pluginId)/profile_bot_schemas"
+      return "/front/plugins/\(pluginId)/profile-bot-schemas"
     case .RemoveUserChat(let userChatId):
-      return "/front/user_chats/\(userChatId)"
+      return "/front/user-chats/\(userChatId)"
     case .ReviewUserChat(let userChatId, _):
-      return "/front/user_chats/\(userChatId)/review"
+      return "/front/user-chats/\(userChatId)/review"
     case .RegisterToken:
-      return "/front/push_tokens"
+      return "/front/push-tokens"
     case .ReplySupportBot(let userChatId, let buttonKey, _):
-      return "/front/user_chats/\(userChatId)/support_bot/buttons/\(buttonKey)"
+      return "/front/user-chats/\(userChatId)/support-bot/buttons/\(buttonKey)"
     case .SetMessagesRead(let userChatId):
-      return "/front/user_chats/\(userChatId)/messages/read"
+      return "/front/user-chats/\(userChatId)/messages/read"
     case .SendPushAck(let userChatId):
-      return "/front/user_chats/\(userChatId)/messages/receive"
+      return "/front/user-chats/\(userChatId)/messages/receive"
     case .SendEvent(let pluginId, _):
       return "/front/plugins/\(pluginId)/events"
     case .Translate(let userChatId, let messageId, _):
-      return "/front/user_chats/\(userChatId)/messages/\(messageId)/translate"
+      return "/front/user-chats/\(userChatId)/messages/\(messageId)/translate"
     case .TouchUser(let pluginId):
       return "/front/plugins/\(pluginId)/touch"
     case .UpdateProfileItem(let userChatId, let messageId, _):
-      return "/front/user_chats/\(userChatId)/messages/\(messageId)/profile_bot"
+      return "/front/user-chats/\(userChatId)/messages/\(messageId)/profile-bot"
     case .UploadFile(let userChatId, _):
-      return "/front/user_chats/\(userChatId)/messages/file"
+      return "/front/user-chats/\(userChatId)/messages/file"
     case .UpdateUser(_):
       return "/front/users/me"
     case .UnregisterToken(let key):
-      return "/front/push_tokens/\(key)"
+      return "/front/push-tokens/\(key)"
     }
   }
   
