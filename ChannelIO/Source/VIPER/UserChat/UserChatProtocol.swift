@@ -90,7 +90,7 @@ protocol UserChatPresenterProtocol: class {
     path indexPath: IndexPath,
     from view: UIViewController?)
   func didClickOnVideo(with url: URL?, from view: UIViewController?)
-  func didClickOnWeb(with url: String?, from view: UIViewController?)
+  func didClickOnWeb(with url: URL?, from view: UIViewController?)
   func didClickOnTranslate(for message: CHMessage?)
   func didClickOnRetry(for message: CHMessage?, from view: UIView?)
   func didClickOnNewChat(with text: String, from view: UINavigationController?)

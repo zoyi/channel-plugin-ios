@@ -24,6 +24,7 @@ struct FileCellModel: FileCellModelType, VideoPlayable, ThumbDisplayable {
   var height: Int
   var width: Int
   var isPlayable: Bool
+  var youtubeId: String?
 
   init(_ file: CHFile, seconds: Double? = nil) {
     self.type = file.type
@@ -33,6 +34,7 @@ struct FileCellModel: FileCellModelType, VideoPlayable, ThumbDisplayable {
     self.currSeconds = seconds
     self.height = file.height
     self.width = file.width
-    self.isPlayable = file.type == .video && file.duration != 0
+    self.isPlayable = file.isPlayable
+    self.youtubeId = file.youtubeId
   }
 }

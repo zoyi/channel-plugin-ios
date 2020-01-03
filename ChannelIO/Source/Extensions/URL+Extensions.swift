@@ -43,4 +43,15 @@ extension URL {
     }
     
   }
+  
+  var allQueryItems: [URLQueryItem] {
+    let components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
+    let allQueryItems = components.queryItems ?? []
+    return allQueryItems as [URLQueryItem]
+  }
+
+  func queryItemForKey(_ key: String) -> URLQueryItem? {
+    let predicate = NSPredicate(format: "name=%@", key)
+    return (allQueryItems as NSArray).filtered(using: predicate).first as? URLQueryItem
+  }
 }

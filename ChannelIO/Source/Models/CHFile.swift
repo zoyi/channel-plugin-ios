@@ -140,6 +140,15 @@ struct CHFile: ThumbDisplayable {
     let urlString = "https://" + bucket + thumbable + key
     return URL(string: urlString)
   }
+  
+  var isPlayable: Bool {
+    guard self.type == .video else { return false }
+    return self.duration != 0
+  }
+
+  var youtubeId: String? {
+    return nil
+  }
 
   var ext: String {
     //parse contentType
