@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 import SnapKit
-import AlignedCollectionViewFlowLayout
 
 protocol MediaMessageProtocol {
   var mediaCollectionView: MediaCollectionView { get set }
