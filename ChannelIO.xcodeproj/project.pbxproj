@@ -66,6 +66,7 @@
 		22F094F72176E8A00035C777 /* HexColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F094F52176E8A00035C777 /* HexColors.swift */; };
 		22F0ED9220B53C55008924C1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F0ED9120B53C55008924C1 /* Models.swift */; };
 		22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */; };
+		3931CB5223C3441A005E8444 /* LauncherWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CB5123C3441A005E8444 /* LauncherWindow.swift */; };
 		650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650C48D1219E5F1B00713AD9 /* Tracking.swift */; };
 		650D7C351E724AD7007DE358 /* LocalMessageFactorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */; };
 		650D7C3B1E72546B007DE358 /* MessagesStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D7C3A1E72546B007DE358 /* MessagesStateTests.swift */; };
@@ -438,6 +439,7 @@
 		22F094F52176E8A00035C777 /* HexColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexColors.swift; sourceTree = "<group>"; };
 		22F0ED9120B53C55008924C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatLiteral.swift; sourceTree = "<group>"; };
+		3931CB5123C3441A005E8444 /* LauncherWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LauncherWindow.swift; sourceTree = "<group>"; };
 		650C48D1219E5F1B00713AD9 /* Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracking.swift; sourceTree = "<group>"; };
 		650D7C311E716DBF007DE358 /* countryInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = countryInfo.json; path = Assets/countryInfo.json; sourceTree = "<group>"; };
 		650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalMessageFactorTests.swift; sourceTree = "<group>"; };
@@ -1028,6 +1030,7 @@
 		6556A2981FA7316C00B80F4E /* ChannelIO */ = {
 			isa = PBXGroup;
 			children = (
+				3931CB5123C3441A005E8444 /* LauncherWindow.swift */,
 				6556A2991FA7316C00B80F4E /* ChannelIO.swift */,
 				653A6C16206C9BD20048163D /* ChannelIO+Helper.swift */,
 				653A6C14206C893F0048163D /* ChannelPluginSettings.swift */,
@@ -1897,6 +1900,7 @@
 				659793A01FA716CB00840F6A /* LocalMessageFactory.swift in Sources */,
 				659793A11FA716CB00840F6A /* PrefStore.swift in Sources */,
 				659793A21FA716CB00840F6A /* AvatarView.swift in Sources */,
+				3931CB5223C3441A005E8444 /* LauncherWindow.swift in Sources */,
 				22E213B2233935F6002B3EF4 /* ShowCompletedChatsSelector.swift in Sources */,
 				22E03E8F21B38D560009F48E /* MarkdownEmoji.swift in Sources */,
 				65CB991D226EC040004F9DC7 /* LoungeView.swift in Sources */,
