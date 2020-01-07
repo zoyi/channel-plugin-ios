@@ -1,3 +1,7 @@
+# 6.1.19
+## Bug fixes
+* Fixed missing files
+
 # 6.1.18
 ## Updates
 * Changed plugin button and InappNotification present on UIWindow
