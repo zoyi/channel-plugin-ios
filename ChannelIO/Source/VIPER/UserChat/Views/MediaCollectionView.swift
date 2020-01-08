@@ -5,7 +5,6 @@
 //  Created by Jam on 2019/12/16.
 //
 
-import AlignedCollectionViewFlowLayout
 import UIKit
 
 class MediaCollectionView: BaseView {
