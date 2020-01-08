@@ -15,6 +15,10 @@ protocol VideoPlayerDelegate: class {
 }
 
 class VideoPlayerView: BaseView {
+  private struct Metrics {
+    static let durationHeight = 28.f
+  }
+  
   private let containerView = UIView()
   private let imageView = SDAnimatedImageView().then {
     $0.clipsToBounds = true
@@ -37,6 +41,16 @@ class VideoPlayerView: BaseView {
   private var playerController = AVPlayerViewController().then {
     $0.showsPlaybackControls = true
   }
+  
+  private var youtubePlayer = YoutubePlayerView()
+  private var youtubeParams = [
+    "controls": 1,
+    "modestbranding": 0,
+    "playsinline": 1,
+    "rel": 0,
+    "autoplay": 0
+  ]
+  
   private var playSignal = PublishSubject<(Bool, Double)>()
   private var url: URL?
   private var currSeconds: Double? = 0.0
@@ -50,9 +64,9 @@ class VideoPlayerView: BaseView {
     self.containerView.addSubview(self.imageView)
     self.containerView.addSubview(self.playButton)
     self.containerView.addSubview(self.durationView)
+    self.containerView.addSubview(self.youtubePlayer)
     self.containerView.addSubview(self.playerController.view)
     self.addSubview(self.containerView)
-
     self.playButton
       .signalForClick()
       .subscribe(onNext: { [weak self] _ in
@@ -71,6 +85,10 @@ class VideoPlayerView: BaseView {
     self.playerController.view.snp.makeConstraints { make in
       make.edges.equalToSuperview()
     }
+    
+    self.youtubePlayer.snp.makeConstraints { make in
+      make.edges.equalToSuperview()
+    }
 
     self.containerView.snp.makeConstraints { make in
       make.edges.equalToSuperview()
@@ -85,7 +103,7 @@ class VideoPlayerView: BaseView {
     }
 
     self.durationView.snp.makeConstraints { make in
-      make.height.equalTo(28)
+      make.height.equalTo(Metrics.durationHeight)
       make.bottom.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
@@ -107,6 +125,7 @@ class VideoPlayerView: BaseView {
             let item = notification.object as? AVPlayerItem,
             let currItem = self.player?.currentItem,
             item == currItem else { return }
+          self.currSeconds = 0.0
           self.setPlayItem(with: self.url)
           self.setVisibilityOfViews(isPlaying: false)
           self.playSignal.onNext((false, 0))
@@ -119,18 +138,27 @@ class VideoPlayerView: BaseView {
     self.url = url
     self.currSeconds = model.currSeconds
 
-    self.setVisibilityOfViews(isPlaying: false)
-    self.imageView.sd_setImage(with: model.thumbUrl)
-    self.durationView.configure(with: PlayDurationModel(duration: model.duration))
-
-    let item = AVPlayerItem(url: url)
-
-    if self.player != nil {
-      self.player?.pause()
-      self.player?.replaceCurrentItem(with: item)
+    if let id = model.youtubeId {
+      self.setVisibilityOfViews(forceOption: false)
+      self.youtubePlayer.loadWithVideoId(id, with: self.youtubeParams)
+      self.youtubePlayer.isHidden = false
     } else {
-      let player = self.getPlayer(with: item)
-      self.playerController.player = player
+      self.setVisibilityOfViews(isPlaying: false)
+      self.youtubePlayer.isHidden = true
+      self.imageView.sd_setImage(with: model.thumbUrl)
+
+      self.durationView.isHidden = model.duration == 0.0
+      self.durationView.configure(with: PlayDurationModel(duration: model.duration))
+
+      let item = AVPlayerItem(url: url)
+      
+      if self.player != nil {
+        self.pause()
+        self.player?.replaceCurrentItem(with: item)
+      } else {
+        let player = self.getPlayer(with: item)
+        self.playerController.player = player
+      }
     }
   }
 
@@ -145,7 +173,11 @@ class VideoPlayerView: BaseView {
   }
 
   func pause() {
-    self.player?.pause()
+    if !self.playerController.view.isHidden {
+      self.player?.pause()
+    } else if !self.youtubePlayer.isHidden {
+      self.youtubePlayer.pause()
+    }
   }
 
   func willDisplay(in controller: UIViewController) {
@@ -166,11 +198,19 @@ class VideoPlayerView: BaseView {
     return self.playSignal.asObservable()
   }
 
-  private func setVisibilityOfViews(isPlaying: Bool) {
-    self.imageView.isHidden = isPlaying
-    self.playButton.isHidden = isPlaying
-    self.durationView.isHidden = isPlaying
-    self.playerController.view.isHidden = !isPlaying
+  private func setVisibilityOfViews(forceOption: Bool? = nil, isPlaying: Bool = false) {
+    if let option = forceOption {
+      self.imageView.isHidden = !option
+      self.playButton.isHidden = !option
+      self.durationView.isHidden = !option
+      self.playerController.view.isHidden = !option
+    } else {
+      self.imageView.isHidden = isPlaying
+      self.playButton.isHidden = isPlaying
+      self.durationView.isHidden = isPlaying
+      self.playerController.view.isHidden = !isPlaying
+      self.youtubePlayer.isHidden = !isPlaying
+    }
   }
 
   private func setPlayItem(with url: URL? = nil) {

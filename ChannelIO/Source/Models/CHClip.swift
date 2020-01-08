@@ -31,4 +31,5 @@ protocol VideoPlayable {
   var url: URL? { get }
   var currSeconds: Double? { get }
   var isPlayable: Bool { get }
+  var youtubeId: String? { get }
 }

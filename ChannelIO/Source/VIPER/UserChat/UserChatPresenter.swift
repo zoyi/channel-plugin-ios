@@ -460,9 +460,12 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     }
   }
 
-  func didClickOnWeb(with url: String?, from view: UIViewController?) {
-    guard let url = URL(string: url ?? "") else { return }
-    UIApplication.shared.openURL(url)
+  func didClickOnWeb(with url: URL?, from view: UIViewController?) {
+    guard let url = url else { return }
+    let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
+    if shouldHandle == false || shouldHandle == nil {
+      url.openWithUniversal()
+    }
   }
   
   func didClickOnTranslate(for message: CHMessage?) {

@@ -103,6 +103,9 @@
 		3931CB5423C34693005E8444 /* AlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */; };
 		3961C1C8235601E300850EC7 /* userChats.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C7235601E300850EC7 /* userChats.json */; };
 		3961C1CA235601F500850EC7 /* messages.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C9235601F500850EC7 /* messages.json */; };
+		39A328C523C4780D0029AFEE /* YoutubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */; };
+		39A328C623C4780D0029AFEE /* YoutubePlayerUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */; };
+		39A328C823C478180029AFEE /* VideoProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C723C478180029AFEE /* VideoProviderView.swift */; };
 		39F4B98623C42CC00043B25A /* TokenStreamRewriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */; };
 		39F4B98723C42CC00043B25A /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */; };
 		39F4B98823C42CC00043B25A /* TokenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E823C42CBF0043B25A /* TokenExtension.swift */; };
@@ -659,6 +662,9 @@
 		3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		3961C1C7235601E300850EC7 /* userChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = userChats.json; sourceTree = "<group>"; };
 		3961C1C9235601F500850EC7 /* messages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = messages.json; sourceTree = "<group>"; };
+		39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerView.swift; sourceTree = "<group>"; };
+		39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerUtils.swift; sourceTree = "<group>"; };
+		39A328C723C478180029AFEE /* VideoProviderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoProviderView.swift; sourceTree = "<group>"; };
 		39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenStreamRewriter.swift; sourceTree = "<group>"; };
 		39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		39F4B8E823C42CBF0043B25A /* TokenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenExtension.swift; sourceTree = "<group>"; };
@@ -1371,6 +1377,15 @@
 			name = "Use cases";
 			sourceTree = "<group>";
 		};
+		39A328C223C4780D0029AFEE /* Youtube */ = {
+			isa = PBXGroup;
+			children = (
+				39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */,
+				39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */,
+			);
+			path = Youtube;
+      sourceTree = "<group>";
+    };
 		3931CAFD23C33432005E8444 /* ChatQueueService */ = {
 			isa = PBXGroup;
 			children = (
@@ -1974,6 +1989,8 @@
 		659793031FA7167C00840F6A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				39A328C723C478180029AFEE /* VideoProviderView.swift */,
+				39A328C223C4780D0029AFEE /* Youtube */,
 				3931CAF823C333FC005E8444 /* GradientView.swift */,
 				659793041FA7167C00840F6A /* AvatarView.swift */,
 				659793051FA7167C00840F6A /* Badge.swift */,
@@ -2486,6 +2503,7 @@
 				22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */,
 				65CB1429206A02F200E456B5 /* MessageCellModel.swift in Sources */,
 				659793621FA716CB00840F6A /* UIButton+Extensions.swift in Sources */,
+				39A328C523C4780D0029AFEE /* YoutubePlayerView.swift in Sources */,
 				39F4B9E723C42CC00043B25A /* DecisionInfo.swift in Sources */,
 				39F4BA1923C42CC10043B25A /* RuleTransition.swift in Sources */,
 				3931CAF623C333C3005E8444 /* FileCollectionViewCell.swift in Sources */,
@@ -2751,6 +2769,7 @@
 				659793A51FA716CB00840F6A /* BaseTableViewCell.swift in Sources */,
 				39F4BA0D23C42CC10043B25A /* StarBlockStartState.swift in Sources */,
 				22B21863228D9AA000E39FEB /* DateUtils.swift in Sources */,
+				39A328C823C478180029AFEE /* VideoProviderView.swift in Sources */,
 				65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */,
 				39F4B9E323C42CC00043B25A /* RuleStopState.swift in Sources */,
 				39F4B98B23C42CC00043B25A /* CharacterExtension.swift in Sources */,
@@ -2772,6 +2791,7 @@
 				39F4B99323C42CC00043B25A /* IntervalSet.swift in Sources */,
 				65121331224DF47F00737089 /* ImageSlideshowItem.swift in Sources */,
 				65BC6408229262D6000F8508 /* ChannelAvailabilityChecker.swift in Sources */,
+				39A328C623C4780D0029AFEE /* YoutubePlayerUtils.swift in Sources */,
 				39F4B9A023C42CC00043B25A /* SyntaxTree.swift in Sources */,
 				3931CB1023C334F1005E8444 /* AssetManager.swift in Sources */,
 				39F4B9A423C42CC00043B25A /* TokenTagToken.swift in Sources */,

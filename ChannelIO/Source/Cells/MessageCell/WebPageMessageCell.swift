@@ -11,13 +11,18 @@ import Reusable
 import SnapKit
 
 class WebPageMessageCell: MessageCell {
+  private struct Metrics {
+    static let webViewWithTranslateTop = 20.f
+    static let webViewWithoutTranslateTop = 3.f
+    static let resendButtonRight = 4.f
+    static let resendButtonSide = 40.f
+  }
+  
   let webView = WebPageMessageView()
   
-  var topConstraint: Constraint? = nil
-  var topToTextConstraint: Constraint? = nil
-  
-  var rightConstraint: Constraint? = nil
-  var leftConstraint: Constraint? = nil
+  private var topConstraint: Constraint?
+  private var trailingConstraint: Constraint?
+  private var leadingConstraint: Constraint?
   
   override func initialize() {
     super.initialize()
@@ -26,38 +31,57 @@ class WebPageMessageCell: MessageCell {
   
   override func setLayouts() {
     super.setLayouts()
-    self.webView.snp.makeConstraints { [weak self] (make) in
-      self?.topConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3).constraint
-      self?.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
-      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.messageLeftMinMargin).constraint
+    
+    self.webView.snp.makeConstraints { make in
+      self.topConstraint = make.top.equalTo(self.textMessageView.snp.bottom)
+        .offset(Metrics.webViewWithoutTranslateTop).constraint
+      self.trailingConstraint = make.right.equalToSuperview()
+        .inset(Metric.cellRightPadding).constraint
+      self.leadingConstraint = make.left.equalToSuperview()
+        .inset(Metric.messageLeftMinMargin).constraint
     }
     
-    self.resendButtonView.snp.remakeConstraints { [weak self] (make) in
-      make.size.equalTo(CGSize(width: 40, height: 40))
-      make.bottom.equalTo((self?.webView.snp.bottom)!)
-      make.right.equalTo((self?.webView.snp.left)!).inset(4)
+    self.resendButtonView.snp.remakeConstraints { make in
+      make.width.equalTo(Metrics.resendButtonSide)
+      make.height.equalTo(Metrics.resendButtonSide)
+      make.bottom.equalTo(self.webView.snp.bottom)
+      make.right.equalTo(self.webView.snp.left).inset(Metrics.resendButtonRight)
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    presenter: UserChatPresenterProtocol? = nil) {
     super.configure(viewModel, presenter: presenter)
-    self.webView.configure(message: viewModel)
+    
+    guard let webpage = viewModel.webpage else { return }
+    self.webView.configure(with: webpage)
     
     if viewModel.createdByMe == true {
-      self.rightConstraint?.update(inset: Metric.cellRightPadding)
-      self.leftConstraint?.update(inset: Metric.messageLeftMinMargin)
+      self.trailingConstraint?.update(inset: Metric.cellRightPadding)
+      self.leadingConstraint?.update(inset: Metric.messageLeftMinMargin)
     } else {
-      self.rightConstraint?.update(inset: Metric.messageRightMinMargin)
-      self.leftConstraint?.update(inset: Metric.bubbleLeftMargin)
+      self.trailingConstraint?.update(inset: Metric.messageRightMinMargin)
+      self.leadingConstraint?.update(inset: Metric.bubbleLeftMargin)
     }
     
-    self.topConstraint?.update(offset: viewModel.showTranslation ? 20 : 3)
+    self.topConstraint?.update(offset: viewModel.showTranslation ?
+      Metrics.webViewWithTranslateTop : Metrics.webViewWithoutTranslateTop)
   }
   
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
-    height += 3
-    height += WebPageMessageView.viewHeight(fits: width, webpage: viewModel.webpage)
+    
+    height += viewModel.showTranslation ?
+      Metrics.webViewWithTranslateTop : Metrics.webViewWithoutTranslateTop
+    
+    let bubbleMaxWidth = viewModel.createdByMe ?
+      width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
+      width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
+    
+    if let webpage = viewModel.webpage {
+      height += WebPageMessageView.viewHeight(fits: bubbleMaxWidth, webpage: webpage)
+    }
     return height
   }
 }

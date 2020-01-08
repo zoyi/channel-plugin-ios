@@ -56,3 +56,22 @@ struct CustomMessageTransform: TransformType {
     return value?.string ?? ""
   }
 }
+
+class CustomURLTransform: TransformType {
+  public typealias Object = URL
+  public typealias JSON = String
+
+  public init() {}
+  
+  open func transformFromJSON(_ value: Any?) -> URL? {
+    guard let url = value as? String else {
+      return nil
+    }
+
+    return URL(string: url)
+  }
+
+  open func transformToJSON(_ value: URL?) -> String? {
+    return nil
+  }
+}
