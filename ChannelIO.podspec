@@ -60,5 +60,4 @@ Pod::Spec.new do |s|
   s.dependency 'SDWebImageWebPCoder'
   s.dependency 'RxSwiftExt', '~> 5.1'
   s.dependency 'TLPhotoPicker'
-  s.dependency 'AlignedCollectionViewFlowLayout'
 end
