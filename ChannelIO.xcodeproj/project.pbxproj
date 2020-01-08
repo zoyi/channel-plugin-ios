@@ -1377,15 +1377,6 @@
 			name = "Use cases";
 			sourceTree = "<group>";
 		};
-		39A328C223C4780D0029AFEE /* Youtube */ = {
-			isa = PBXGroup;
-			children = (
-				39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */,
-				39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */,
-			);
-			path = Youtube;
-      sourceTree = "<group>";
-    };
 		3931CAFD23C33432005E8444 /* ChatQueueService */ = {
 			isa = PBXGroup;
 			children = (
@@ -1396,6 +1387,15 @@
 				3931CB0223C33432005E8444 /* ChatQueuableItem.swift */,
 			);
 			path = ChatQueueService;
+			sourceTree = "<group>";
+		};
+		39A328C223C4780D0029AFEE /* Youtube */ = {
+			isa = PBXGroup;
+			children = (
+				39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */,
+				39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */,
+			);
+			path = Youtube;
 			sourceTree = "<group>";
 		};
 		39F4B8E023C42CBF0043B25A /* ANTLR */ = {
@@ -3074,7 +3074,7 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/iOS";
 				INFOPLIST_FILE = "$(SRCROOT)/ChannelIO/Info.plist";
 				INSTALL_PATH = /Library/Frameworks;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(SRCROOT)/Carthage/Build/iOS";
 				LIBRARY_SEARCH_PATHS = "";
 				MARKETING_VERSION = 6.1.11;
@@ -3118,7 +3118,7 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/iOS";
 				INFOPLIST_FILE = "$(SRCROOT)/ChannelIO/Info.plist";
 				INSTALL_PATH = /Library/Frameworks;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(SRCROOT)/Carthage/Build/iOS";
 				LIBRARY_SEARCH_PATHS = "";
 				MARKETING_VERSION = 6.1.11;
