@@ -293,6 +293,7 @@ public final class ChannelIO: NSObject {
       }
 
       launcherView.configure(viewModel)
+      
       launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
         ChannelIO.hideNotification()
         ChannelIO.open(animated: true)
@@ -300,6 +301,7 @@ public final class ChannelIO: NSObject {
       
       if ChannelIO.launcherView == nil {
         ChannelIO.launcherWindow?.addCustomView(with: launcherView)
+        launcherView.alpha = 0
       }
       
       launcherView.snp.remakeConstraints { make in
@@ -321,7 +323,7 @@ public final class ChannelIO: NSObject {
       }
       
       ChannelIO.launcherView = launcherView
-      ChannelIO.launcherView?.show(animated: false)
+      ChannelIO.launcherView?.show(animated: true)
     }
   }
   
