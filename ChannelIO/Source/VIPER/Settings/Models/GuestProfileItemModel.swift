@@ -18,7 +18,7 @@ struct GuestProfileItemModel: Equatable {
   static func generate(from profiles: [String: Any]?, schemas: [CHProfileSchema]) -> [GuestProfileItemModel] {
     return schemas.map({ (schema) in
       return GuestProfileItemModel(
-        profileName: schema.nameI18n?.getMessage() ?? "",
+        profileName: schema.nameI18n?.getMessage()?.string ?? "",
         profileType: schema.type,
         profileValue: profiles?[schema.key],
         rawData: schema

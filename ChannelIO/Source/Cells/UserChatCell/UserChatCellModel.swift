@@ -85,8 +85,7 @@ struct UserChatCellModel: UserChatCellModelType {
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
     
-    model.lastMessage = supportBotMessage?.message ?? guest.getWelcome()
-    model.attributeLastMessage = supportBotMessage?.messageV2
+    let message = supportBotMessage?.messageV2 ?? guest.getWelcome()
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model

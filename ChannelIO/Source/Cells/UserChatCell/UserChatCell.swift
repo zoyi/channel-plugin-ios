@@ -127,8 +127,18 @@ final class UserChatCell: BaseTableViewCell, Reusable {
     self.timestampLabel.text = viewModel.timestamp
     self.badge.isHidden = viewModel.isBadgeHidden
     self.badge.configure(viewModel.badgeCount)
-    if let attributeLastMessage = viewModel.attributeLastMessage {
-      self.messageLabel.attributedText = attributeLastMessage
+    if let lastMessage = viewModel.attributeLastMessage {
+      let attributedString = NSMutableAttributedString(attributedString: lastMessage)
+      let style = NSMutableParagraphStyle()
+      style.lineBreakMode = .byTruncatingTail
+      style.alignment = .left
+      style.minimumLineHeight = 18
+      attributedString.addAttribute(
+        .paragraphStyle,
+        value: style,
+        range: NSRange(location: 0, length: lastMessage.string.utf16.count)
+      )
+      self.messageLabel.attributedText = attributedString
     } else {
       self.messageLabel.text = viewModel.lastMessage
     }

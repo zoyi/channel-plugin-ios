@@ -116,7 +116,7 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func setNavigation() {
-    let title = self.schema?.nameI18n?.getMessage() ?? ""
+    let title = self.schema?.nameI18n?.getMessage()?.string ?? ""
     let titleView = SimpleNavigationTitleView()
     titleView.configure(
       with: title,

@@ -26,6 +26,22 @@ extension NSAttributedString {
     attributedText.append(text)
     return attributedText
   }
+  
+  func replace(_ target: String, with text: String) -> NSAttributedString {
+    let str = NSMutableAttributedString(attributedString: self)
+    if let range = str.string.nsRange(of: target) {
+      str.replaceCharacters(in: range, with: text)
+    }
+    
+    return str
+  }
+}
+
+
+extension RangeExpression where Bound == String.Index {
+  func nsRange<S: StringProtocol>(in string: S) -> NSRange {
+    .init(self, in: string)
+  }
 }
 
 extension StringProtocol where Index == String.Index {
@@ -33,6 +49,42 @@ extension StringProtocol where Index == String.Index {
     return NSRange(range, in: self)
   }
 }
+
+extension StringProtocol {
+  func nsRange<S: StringProtocol>(
+    of string: S,
+    options: String.CompareOptions = [],
+    range: Range<Index>? = nil,
+    locale: Locale? = nil) -> NSRange? {
+    self.range(
+      of: string,
+      options: options,
+      range: range ?? startIndex..<endIndex,
+      locale: locale ?? .current)?.nsRange(in: self)
+  }
+
+  func nsRanges<S: StringProtocol>(
+    of string: S,
+    options: String.CompareOptions = [],
+    range: Range<Index>? = nil,
+    locale: Locale? = nil) -> [NSRange] {
+    var start = range?.lowerBound ?? startIndex
+    let end = range?.upperBound ?? endIndex
+    var ranges: [NSRange] = []
+    while start < end,
+      let range = self.range(
+        of: string,
+        options: options,
+        range: start..<end,
+        locale: locale ?? .current) {
+      ranges.append(range.nsRange(in: self))
+      start = range.lowerBound < range.upperBound ? range.upperBound :
+      index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
+    }
+    return ranges
+  }
+}
+
 
 extension String {
   func addFont(_ font: UIFont, color: UIColor, on range: NSRange) -> NSMutableAttributedString {
@@ -213,32 +265,3 @@ func unwrap(any: Any) -> Any {
   let (_, some) = mi.children.first!
   return some
 }
-
-//protocol OptionalProtocol {
-//  func isSome() -> Bool
-//  func unwrap() -> Any
-//}
-//
-//extension Optional : OptionalProtocol {
-//  func isSome() -> Bool {
-//    switch self {
-//    case .none: return false
-//    case .some: return true
-//    }
-//  }
-//
-//  func unwrap() -> Any {
-//    switch self {
-//    case .none: preconditionFailure("trying to unwrap nil")
-//    case .some(let unwrapped): return unwrapped
-//    }
-//  }
-//}
-//
-//func unwrapUsingProtocol<T>(_ any: T) -> Any{
-//  guard let optional = any as? OptionalProtocol, optional.isSome() else {
-//    return any
-//  }
-//  return optional.unwrap()
-//}
-

@@ -77,12 +77,12 @@ extension CHGuest {
 }
 
 extension CHGuest {
-  func getWelcome() -> String? {
+  func getWelcome() -> NSAttributedString? {
     if self.named {
       return mainStore.state.plugin
         .welcomeNamedI18n?
         .getMessage()?
-        .replace("${name}", withString: self.name)
+        .replace("${name}", with: self.name)
     } else {
       return mainStore.state.plugin
         .welcomeI18n?

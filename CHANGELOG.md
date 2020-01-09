@@ -1,3 +1,7 @@
+# 6.1.20
+## Bug fixes
+* Fixed attributed welcome message
+
 # 6.1.19
 ## Bug fixes
 * Fixed missing files

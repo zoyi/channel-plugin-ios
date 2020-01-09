@@ -15,8 +15,6 @@ import MGSwipeTableCell
 class LoungeMainView: BaseView {
   private struct Constants {
     static let maxNumberOfCell = 3
-    static let maxNumberOfLines = 2
-    static let maxNumberOfLinesForWelcomeCell = 8
     static let defaultCellHeight = 80.f
     static let headerHeight = 30.f
     static let defaultHeaderHeight = 10.f
