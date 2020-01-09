@@ -1,0 +1,90 @@
+[
+  {
+    "key": "xls",
+    "extensions": ["xls", "xl", "xlsx", "xlsm", "xlt", "xltx", "cell"]
+  },
+  {
+    "key": "numbers",
+    "extensions": ["numbers"]
+  },
+  {
+    "key": "doc",
+    "extensions": ["doc", "docx", "docm", "dot", "dotx", "w6w", "wiz", "word"]
+  },
+  {
+    "key": "ppt",
+    "extensions": ["ppt", "pot", "ppa", "pps", "pptx", "pptm", "pwz", "show"]
+  },
+  {
+    "key": "key",
+    "extensions": ["key"]
+  },
+  {
+    "key": "pdf",
+    "extensions": ["pdf"]
+  },
+  {
+    "key": "pages",
+    "extensions": ["pages"]
+  },
+  {
+    "key": "hwp",
+    "extensions": ["hwp", "hwpx", "owpml", "hwt", "hml"]
+  },
+  {
+    "key": "psd",
+    "extensions": ["psd", "psb"]
+  },
+  {
+    "key": "ai",
+    "extensions": ["ai"]
+  },
+  {
+    "key": "sketch",
+    "extensions": ["sketch"]
+  },
+  {
+    "key": "font",
+    "extensions": ["ttf", "otf"]
+  },
+  {
+    "key": "vector",
+    "extensions": ["svg", "eps"]
+  },
+  {
+    "key": "data",
+    "extensions": ["data", "dat", "bin"]
+  },
+  {
+    "key": "system",
+    "extensions": ["sys", "dll", "nfo", "cab"]
+  },
+  {
+    "key": "archive",
+    "extensions": ["zip", "rar", "7z", "tar", "gz", "gzip", "jar", "alz", "car", "egg", "ipa", "apk"]
+  },
+  {
+    "key": "code",
+    "extensions": ["sh", "bat", "js", "jsx", "ts", "tsx", "py", "java", "scala", "htm", "html", "sass", "scss", "css", "cs", "c", "cpp", "h", "php", "asp", "aspx", "ruby", "dart", "kt", "rs", "asm", "go", "swift", "coffee", "r"]
+  },
+  {
+    "key": "text",
+    "extensions": ["txt", "log", "out", "rtf", "odt", "xml"]
+  },
+  {
+    "key": "image",
+    "extensions": ["png", "bmp", "jpg", "jpeg", "gif", "webp", "tiff", "ico"]
+  },
+  {
+    "key": "video",
+    "extensions": ["avi", "asf", "mov", "flv", "swf", "mpg", "mp4", "wmv", "mpeg", "mkv", "webm", "mts", "m2ts", "rm", "rmvb", "m4v"]
+  },
+  {
+    "key": "audio",
+    "extensions": ["wav", "aif", "aiff", "au", "flac", "3gp", "aac", "mp3", "wma", "ogg", "m4a", "m4p"]
+  },
+  {
+    "key": "exe",
+    "extensions": ["exe", "app", "msi"]
+  }
+]
