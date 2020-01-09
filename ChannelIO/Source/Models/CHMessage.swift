@@ -154,6 +154,31 @@ extension CHMessage: Mappable {
     self.progress = 1
   }
   
+  init(chatId: String,
+       attributedMessage: NSAttributedString?,
+       type: MessageType,
+       entity: CHEntity? = nil,
+       action: CHAction? = nil,
+       file: CHFile? = nil,
+       createdAt:Date? = Date(),
+       id: String? = nil) {
+    let now = Date()
+    let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    
+    self.id = id ?? requestId
+    self.messageV2 = attributedMessage
+    self.requestId = requestId
+    self.chatId = chatId
+    self.createdAt = createdAt ?? now
+    self.messageType = type
+    self.entity = entity
+    self.action = action
+    self.file = file
+    self.personId = entity?.id ?? ""
+    self.personType = entity?.kind ?? ""
+    self.progress = 1
+  }
+  
   init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)

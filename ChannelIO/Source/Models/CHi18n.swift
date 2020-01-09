@@ -10,12 +10,12 @@ import Foundation
 import ObjectMapper
 
 struct CHi18n {
-  var text: String = ""
-  var en: String?
-  var ja: String?
-  var ko: String?
+  var text: NSAttributedString?
+  var en: NSAttributedString?
+  var ja: NSAttributedString?
+  var ko: NSAttributedString?
 
-  func getMessage() -> String? {
+  func getMessage() -> NSAttributedString? {
     let key = CHUtils.getLocale()
     
     if key == .english {
@@ -33,10 +33,10 @@ extension CHi18n: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    text    <- map ["text"]
-    en      <- map["en"]
-    ja      <- map["ja"]
-    ko      <- map["ko"]
+    text    <- (map ["text"], CustomMessageTransform())
+    en      <- (map["en"], CustomMessageTransform())
+    ja      <- (map["ja"], CustomMessageTransform())
+    ko      <- (map["ko"], CustomMessageTransform())
   }
 }
 
