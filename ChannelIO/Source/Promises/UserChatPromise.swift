@@ -313,7 +313,7 @@ struct UserChatPromise {
       }
       
       if let message = message, message != "" {
-        params["body"]?["message"] = message
+        params["body"]?["plainText"] = message
       }
       
       if let submit = submit {

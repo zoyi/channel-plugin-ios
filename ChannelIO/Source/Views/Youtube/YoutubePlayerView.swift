@@ -281,6 +281,10 @@ extension YoutubePlayerView {
     let command = "player.seekTo(\(seconds), \(allowSeekAhead));"
     webView.evaluateJavaScript(command, completionHandler: nil)
   }
+  
+  public func mute() {
+    webView.evaluateJavaScript("player.mute();", completionHandler: nil)
+  }
 }
 
 // MARK: - Cueing methods

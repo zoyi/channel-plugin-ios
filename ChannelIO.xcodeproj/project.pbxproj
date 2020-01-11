@@ -103,6 +103,9 @@
 		3931CB5423C34693005E8444 /* AlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */; };
 		3961C1C8235601E300850EC7 /* userChats.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C7235601E300850EC7 /* userChats.json */; };
 		3961C1CA235601F500850EC7 /* messages.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C9235601F500850EC7 /* messages.json */; };
+		398205D423C5C99E008814B4 /* AttachmentFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */; };
+		398205D623C5D62E008814B4 /* InAppMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D523C5D62E008814B4 /* InAppMediaView.swift */; };
+		399EA63323C8631700F52B62 /* InAppVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399EA63223C8631700F52B62 /* InAppVideoPlayerView.swift */; };
 		39A328C523C4780D0029AFEE /* YoutubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */; };
 		39A328C623C4780D0029AFEE /* YoutubePlayerUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */; };
 		39A328C823C478180029AFEE /* VideoProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C723C478180029AFEE /* VideoProviderView.swift */; };
@@ -662,6 +665,9 @@
 		3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		3961C1C7235601E300850EC7 /* userChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = userChats.json; sourceTree = "<group>"; };
 		3961C1C9235601F500850EC7 /* messages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = messages.json; sourceTree = "<group>"; };
+		398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentFileInfoView.swift; sourceTree = "<group>"; };
+		398205D523C5D62E008814B4 /* InAppMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMediaView.swift; sourceTree = "<group>"; };
+		399EA63223C8631700F52B62 /* InAppVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppVideoPlayerView.swift; sourceTree = "<group>"; };
 		39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerView.swift; sourceTree = "<group>"; };
 		39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerUtils.swift; sourceTree = "<group>"; };
 		39A328C723C478180029AFEE /* VideoProviderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoProviderView.swift; sourceTree = "<group>"; };
@@ -2002,6 +2008,8 @@
 				659793311FA7167C00840F6A /* NavigationItem.swift */,
 				65C0FFD92003099F005FD3F2 /* WatermarkView.swift */,
 				223DDE44228C1F46005B9905 /* CHNotification.swift */,
+				398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */,
+				398205D523C5D62E008814B4 /* InAppMediaView.swift */,
 			);
 			name = Views;
 			path = Source/Views;
@@ -2027,6 +2035,7 @@
 				22E2138523392E7C002B3EF4 /* InAppNotification.swift */,
 				22E2138623392E7C002B3EF4 /* InAppNotificationViewModel.swift */,
 				22E2138723392E7C002B3EF4 /* PopupInAppNotificationView.swift */,
+				399EA63223C8631700F52B62 /* InAppVideoPlayerView.swift */,
 			);
 			path = ChatNotificationView;
 			sourceTree = "<group>";
@@ -2725,6 +2734,7 @@
 				3931CB0323C33432005E8444 /* CDNService.swift in Sources */,
 				39F4B9F423C42CC00043B25A /* ATNState.swift in Sources */,
 				22A917E0234BC42C00674083 /* CHMessageView.swift in Sources */,
+				399EA63323C8631700F52B62 /* InAppVideoPlayerView.swift in Sources */,
 				39F4B99423C42CC00043B25A /* Interval.swift in Sources */,
 				39F4B99D23C42CC00043B25A /* ParseTreeWalker.swift in Sources */,
 				22E03E8821B38D560009F48E /* MarkdownAutomaticLink.swift in Sources */,
@@ -2776,6 +2786,7 @@
 				39F4B9B823C42CC00043B25A /* DefaultErrorStrategy.swift in Sources */,
 				655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */,
 				659793A61FA716CB00840F6A /* BaseView.swift in Sources */,
+				398205D623C5D62E008814B4 /* InAppMediaView.swift in Sources */,
 				65FB143C2298044F00393AA2 /* UserChatBottomBlockView.swift in Sources */,
 				65121332224DF47F00737089 /* PageIndicator.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,
@@ -2869,6 +2880,7 @@
 				39F4B9A923C42CC00043B25A /* Chunk.swift in Sources */,
 				39F4BA0E23C42CC10043B25A /* PredicateTransition.swift in Sources */,
 				39F4B9D723C42CC00043B25A /* LexerPushModeAction.swift in Sources */,
+				398205D423C5C99E008814B4 /* AttachmentFileInfoView.swift in Sources */,
 				39F4B9FB23C42CC10043B25A /* AmbiguityInfo.swift in Sources */,
 				39F4BA1C23C42CC10043B25A /* ANTLRInputStream.swift in Sources */,
 				22E03E9521B38D560009F48E /* MarkdownItalic.swift in Sources */,
