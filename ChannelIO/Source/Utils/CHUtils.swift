@@ -71,6 +71,35 @@ class CHUtils {
     }
   }
   
+  class func fileTypesMap() -> [String: String] {
+    if let path = CHAssets.getPath(name: "extensions", type: "json") {
+      do {
+        let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+        let jsonArray = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+        if let jsonArray = jsonArray as? [Dictionary<String, Any>] {
+          return CHUtils.parsefileTypesIntoMap(array: jsonArray)
+        }
+      } catch {
+        return [:]
+      }
+    }
+    
+    return [:]
+  }
+  
+  class func parsefileTypesIntoMap(array: [Dictionary<String, Any>]) -> [String: String] {
+    var maps: [String: String] = [:]
+    for dict in array {
+      if let key = dict["key"] as? String, let values = dict["extensions"] as? [String] {
+        for value in values {
+          maps[value] = key
+        }
+      }
+    }
+    
+    return maps
+  }
+  
   class func emojiMap() -> [String: String] {
     if let path = CHAssets.getPath(name: "emojis", type: "json") {
       do {

@@ -151,11 +151,13 @@ struct CHFile: ThumbDisplayable {
   }
 
   var ext: String {
-    //parse contentType
-    if let contentType = self.contentType {
-      return contentType
+    if type == .video, let contentType = self.contentType {
+      return String(contentType.dropFirst("video/".count))
+    } else if type == .image, let contentType = self.contentType {
+      return String(contentType.dropFirst("image/".count))
+    } else {
+      return URL(string: self.name)?.pathExtension ?? ""
     }
-    return ""
   }
 
   var urlInDocumentsDirectory: URL? {
