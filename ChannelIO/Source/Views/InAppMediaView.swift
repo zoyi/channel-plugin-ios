@@ -17,6 +17,7 @@ class InAppMediaView: BaseView {
     static let maxRatio = 16.f / 9.f
     static let minRatio = 1.f
     static let cornerRadius = 8.f
+    static let multiIndicatorSide = 4.f
   }
   
   private let containerView = UIStackView().then {
@@ -29,6 +30,7 @@ class InAppMediaView: BaseView {
     $0.layer.borderWidth = 1
     $0.backgroundColor = .dark20
     $0.contentMode = .scaleAspectFill
+    $0.clipsToBounds = true
 
     $0.sd_imageIndicator = SDWebImageActivityIndicator.white
   }
@@ -98,7 +100,7 @@ class InAppMediaView: BaseView {
     }
     
     self.multiIndicatorView.snp.makeConstraints { make in
-      make.top.trailing.equalToSuperview()
+      make.top.trailing.equalToSuperview().inset(Metrics.multiIndicatorSide)
     }
   }
 
@@ -124,7 +126,7 @@ class InAppMediaView: BaseView {
       self.hideAll()
       return
     }
-    
+
     self.containerView.axis = model.mobileExposureType == .banner ?
       .horizontal : .vertical
     self.containerView.alignment = model.mobileExposureType == .banner ?
@@ -153,12 +155,12 @@ class InAppMediaView: BaseView {
         self.videoWidthConstraint?.update(offset: self.getRatio(
           width: video.width.f, height: video.height.f, type: .banner) * Metrics.bannerHeight
         ).activate()
-        self.videoHeightConstraint?.deactivate()
+        self.videoHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
         self.videoView.configure(with: url, controlEnable: false)
-      } else if type == .popup {
-        self.videoWidthConstraint?.deactivate()
+      } else if type == .fullScreen {
+        self.videoWidthConstraint?.update(offset: Metrics.popupWidth).activate()
         self.videoHeightConstraint?.update(offset: self.getRatio(
-          width: video.width.f, height: video.height.f, type: .popup) * Metrics.popupWidth
+          width: video.width.f, height: video.height.f, type: .fullScreen) * Metrics.popupWidth
         ).activate()
         self.videoView.configure(with: url, controlEnable: true)
       }
@@ -171,11 +173,11 @@ class InAppMediaView: BaseView {
         self.imageWidthConstraint?.update(offset: self.getRatio(
           width: image.width.f, height: image.height.f, type: .banner) * Metrics.bannerHeight
         ).activate()
-        self.imageHeightConstraint?.deactivate()
-      } else if type == .popup {
-        self.imageWidthConstraint?.deactivate()
+        self.imageHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
+      } else if type == .fullScreen {
+        self.imageWidthConstraint?.update(offset: Metrics.popupWidth).activate()
         self.imageHeightConstraint?.update(offset: self.getRatio(
-          width: image.width.f, height: image.height.f, type: .popup) * Metrics.popupWidth
+          width: image.width.f, height: image.height.f, type: .fullScreen) * Metrics.popupWidth
         ).activate()
       }
       self.imageView.sd_setImage(with: url)
@@ -197,12 +199,12 @@ class InAppMediaView: BaseView {
         self.youtubeWidthConstraint?.update(offset: self.getRatio(
           width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
         ).activate()
-        self.youtubeHeightConstraint?.deactivate()
+        self.youtubeHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
         self.youtubePlayerView.isUserInteractionEnabled = false
-      } else if type == .popup {
-        self.youtubeWidthConstraint?.deactivate()
+      } else if type == .fullScreen {
+        self.youtubeWidthConstraint?.update(offset: Metrics.popupWidth).activate()
         self.youtubeHeightConstraint?.update(offset: self.getRatio(
-          width: webPage.width.f, height: webPage.height.f, type: .popup) * Metrics.popupWidth
+          width: webPage.width.f, height: webPage.height.f, type: .fullScreen) * Metrics.popupWidth
         ).activate()
         self.youtubePlayerView.isUserInteractionEnabled = true
       }
@@ -217,11 +219,11 @@ class InAppMediaView: BaseView {
         self.imageWidthConstraint?.update(offset: self.getRatio(
           width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
         ).activate()
-        self.imageHeightConstraint?.deactivate()
-      } else if type == .popup {
-        self.imageWidthConstraint?.deactivate()
+        self.imageHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
+      } else if type == .fullScreen {
+        self.imageWidthConstraint?.update(offset: Metrics.popupWidth).activate()
         self.imageHeightConstraint?.update(offset: self.getRatio(
-          width: webPage.width.f, height: webPage.height.f, type: .popup) * Metrics.popupWidth
+          width: webPage.width.f, height: webPage.height.f, type: .fullScreen) * Metrics.popupWidth
         ).activate()
       }
       self.imageView.sd_setImage(with: url)

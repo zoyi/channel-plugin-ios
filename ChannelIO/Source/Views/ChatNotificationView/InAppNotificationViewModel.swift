@@ -38,13 +38,13 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
       self.avatar = push.bot
     }
     
-    self.files = push.message?.files ?? []
+    self.files = push.message?.sortedFiles ?? []
     self.webPage = push.message?.webPage
     self.timestamp = push.message?.readableCreatedAt
     
     self.mobileExposureType = push.mobileExposureType
     
-    let mediaFileCount = push.message?.files
+    let mediaFileCount = push.message?.sortedFiles
       .filter { $0.type == .video || $0.type == .image }
       .count ?? 0
     self.hasMedia = mediaFileCount > 0 ||
@@ -65,7 +65,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
     } else if let message = push.message?.messageV2 {
-      let fontSize = self.mobileExposureType == .popup ? 14.f : 13.f
+      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
       let newAttributedString = NSMutableAttributedString()
       newAttributedString.append(message)
       newAttributedString.enumerateAttribute(
@@ -100,13 +100,13 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
       self.avatar = bot
     }
     
-    self.files = message.files
+    self.files = message.sortedFiles
     self.webPage = message.webPage
     self.timestamp = message.readableCreatedAt
     
 //    self.mobileExposureType = message.mobileExposureType
     
-    let mediaFileCount = message.files
+    let mediaFileCount = message.sortedFiles
       .filter { $0.type == .video || $0.type == .image }
       .count
     self.hasMedia = mediaFileCount > 0 ||
@@ -127,7 +127,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
     } else if let message = message.messageV2 {
-      let fontSize = self.mobileExposureType == .popup ? 14.f : 13.f
+      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
       let newAttributedString = NSMutableAttributedString()
       newAttributedString.append(message)
       newAttributedString.enumerateAttribute(

@@ -31,7 +31,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     static let maxLineWithoutMedia = 8
   }
   
-  let notiType : InAppNotificationType = .popup
+  let notiType : InAppNotificationType = .fullScreen
   
   private let dimView = UIView().then {
     $0.backgroundColor = .black10
@@ -208,9 +208,14 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     self.messageView.attributedText = viewModel.message
     self.mediaView.configure(model: viewModel)
     
-    self.messageView.isHidden = viewModel.message == nil ? true : false
+    var hasMessage = false
+    if let message = viewModel.message {
+      hasMessage = message != NSAttributedString(string: "")
+    }
+    
+    self.messageView.isHidden = !hasMessage ? true : false
     if viewModel.hasMedia {
-      self.fileInfoView.isHidden = viewModel.message == nil ? false : true
+      self.fileInfoView.isHidden = !hasMessage ? false : true
     } else {
       self.fileInfoView.isHidden = viewModel.files.count > 0 ? false : true
     }

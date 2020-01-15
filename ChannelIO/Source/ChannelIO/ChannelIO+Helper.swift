@@ -194,7 +194,7 @@ extension ChannelIO {
     } else {
       notificationView = PopupInAppNotificationView()
     }
-    
+     
     let viewModel = InAppNotificationViewModel(push: push)
     notificationView?.configure(with: viewModel)
     notificationView?.insertView(on: view)

@@ -15,7 +15,8 @@ final class UserChatCell: BaseTableViewCell {
 
   struct Constants {
     static let titleLabelNumberOfLines = 1
-    static let messageLabelNumberOfLines = 2
+    static let messageLineWithFile = 1
+    static let messageLineWithoutFile = 2
     static let timestampLabelNumberOfLines = 1
   }
 
@@ -30,6 +31,7 @@ final class UserChatCell: BaseTableViewCell {
     static let avatarHeight = 36.f
     static let badgeHeight = 22.f
     static let badgeLeftPadding = 20.f
+    static let messageTrailing = 58.f
     static let cellHeight = 80.f
   }
 
@@ -69,6 +71,8 @@ final class UserChatCell: BaseTableViewCell {
   }
 
   let avatarView = AvatarView()
+  
+  let fileInfoView = AttachmentFileInfoView()
 
   let badge = Badge().then {
     $0.minWidth = 12.f
@@ -77,8 +81,11 @@ final class UserChatCell: BaseTableViewCell {
   let messageLabel = UILabel().then {
     $0.font = Font.messageLabel
     $0.textColor = Color.messageLabel
-    $0.numberOfLines = Constants.messageLabelNumberOfLines
+    $0.numberOfLines = Constants.messageLineWithoutFile
   }
+  
+  private var topToTitleContraint: Constraint?
+  private var topToMessageContraint: Constraint?
   
   // MARK: Initializing
 
@@ -89,32 +96,41 @@ final class UserChatCell: BaseTableViewCell {
     self.contentView.addSubview(self.avatarView)
     self.contentView.addSubview(self.badge)
     self.contentView.addSubview(self.messageLabel)
+    self.contentView.addSubview(self.fileInfoView)
 
-    self.avatarView.snp.makeConstraints { (make) in
+    self.avatarView.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
       make.left.equalToSuperview().inset(Metrics.cellLeftPadding)
       make.size.equalTo(CGSize(width: Metrics.avatarWidth, height: Metrics.avatarHeight))
     }
     
-    self.titleLabel.snp.makeConstraints { [weak self] (make) in
+    self.titleLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
-      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
+      make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
     }
     
-    self.timestampLabel.snp.makeConstraints { [weak self] (make) in
+    self.timestampLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
       make.right.equalToSuperview().inset(Metrics.cellRightPadding)
-      make.left.equalTo((self?.titleLabel.snp.right)!).offset(Metrics.cellRightPadding)
+      make.left.equalTo(self.titleLabel.snp.right).offset(Metrics.cellRightPadding)
     }
     
-    self.messageLabel.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.titleLabel.snp.bottom)!).offset(Metrics.titleBottomPadding)
-      make.left.equalTo((self?.avatarView.snp.right)!).offset(Metrics.avatarRightPadding)
-      make.right.equalToSuperview().inset(52)
+    self.messageLabel.snp.makeConstraints { make in
+      make.top.equalTo(self.titleLabel.snp.bottom).offset(Metrics.titleBottomPadding)
+      make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
+      make.right.equalToSuperview().inset(Metrics.messageTrailing)
     }
     
-    self.badge.snp.makeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(Metrics.timestampBottomPadding)
+    self.fileInfoView.snp.makeConstraints { make in
+      self.topToTitleContraint = make.top.equalTo(self.messageLabel.snp.bottom).constraint
+      self.topToMessageContraint =  make.top.equalTo(self.titleLabel.snp.bottom)
+        .offset(Metrics.titleBottomPadding).priority(850).constraint
+      make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
+      make.right.equalToSuperview().inset(Metrics.messageTrailing)
+    }
+    
+    self.badge.snp.makeConstraints { make in
+      make.top.equalTo(self.timestampLabel.snp.bottom).offset(Metrics.timestampBottomPadding)
       make.right.equalToSuperview().inset(Metrics.cellRightPadding)
       make.height.equalTo(Metrics.badgeHeight)
     }
@@ -127,10 +143,24 @@ final class UserChatCell: BaseTableViewCell {
     self.timestampLabel.text = viewModel.timestamp
     self.badge.isHidden = viewModel.isBadgeHidden
     self.badge.configure(viewModel.badgeCount)
-    if let attributeLastMessage = viewModel.attributeLastMessage {
-      self.messageLabel.attributedText = attributeLastMessage
+    self.messageLabel.text = viewModel.lastMessage
+    
+    let hasFiles = viewModel.files.count > 0
+    self.fileInfoView.isHidden = !hasFiles
+    self.messageLabel.numberOfLines = hasFiles ?
+      Constants.messageLineWithFile : Constants.messageLineWithoutFile
+    if hasFiles {
+      self.fileInfoView.configure(with: viewModel.files, isLarge: false)
+    }
+    
+    if hasFiles && viewModel.lastMessage != "" {
+      self.messageLabel.isHidden = true
+      self.topToTitleContraint?.activate()
+      self.topToMessageContraint?.deactivate()
     } else {
-      self.messageLabel.text = viewModel.lastMessage
+      self.messageLabel.isHidden = false
+      self.topToTitleContraint?.deactivate()
+      self.topToMessageContraint?.activate()
     }
     
     if let avatar = viewModel.avatar {

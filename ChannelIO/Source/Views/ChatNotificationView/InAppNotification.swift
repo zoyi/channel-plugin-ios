@@ -3,8 +3,8 @@ import RxSwift
 import SnapKit
 
 enum InAppNotificationType: String {
-  case banner = "bottom_banner"
-  case popup = "popup"
+  case fullScreen
+  case banner
 }
 
 protocol InAppNotification: class {

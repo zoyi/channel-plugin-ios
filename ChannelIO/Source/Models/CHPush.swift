@@ -22,11 +22,8 @@ struct CHPush: CHPushDisplayable {
   var userChat: CHUserChat?
   
   var showLog: Bool = true
-  var buttonTitle: String? = nil
   
   var mobileExposureType: InAppNotificationType = .banner
-  
-  var redirectUrl: String? = nil
 }
 
 extension CHPush : Mappable {

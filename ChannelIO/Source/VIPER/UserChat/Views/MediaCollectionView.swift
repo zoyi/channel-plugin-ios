@@ -56,15 +56,19 @@ class MediaCollectionView: BaseView {
   func configure(models: [CHFile]) {}
   
   func changeFlowLayout(horizontalAlignment: HorizontalAlignment) {
-    let flowLayout = AlignedCollectionViewFlowLayout(
-      horizontalAlignment: horizontalAlignment,
-      verticalAlignment: .center
-    ).then {
-      $0.scrollDirection = .vertical
-      $0.minimumInteritemSpacing = 8
-      $0.minimumLineSpacing = 8
+//    let flowLayout = AlignedCollectionViewFlowLayout(
+//      horizontalAlignment: horizontalAlignment,
+//      verticalAlignment: .center
+//    ).then {
+//      $0.scrollDirection = .vertical
+//      $0.minimumInteritemSpacing = 8
+//      $0.minimumLineSpacing = 8
+//    }
+    if let flow =  self.collectionView.collectionViewLayout as? AlignedCollectionViewFlowLayout {
+      flow.horizontalAlignment = horizontalAlignment
+      self.collectionView.collectionViewLayout = flow
     }
-    self.collectionView.collectionViewLayout = flowLayout
+    
   }
 
   static func viewHeight(fit width: CGFloat, models: [CHFile]) -> CGFloat {

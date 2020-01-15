@@ -77,6 +77,7 @@
 		3910AC24237AC172000549B5 /* ChatState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910AC23237AC172000549B5 /* ChatState.swift */; };
 		3910AC26237AC1A1000549B5 /* ChatReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910AC25237AC1A1000549B5 /* ChatReducer.swift */; };
 		3910AC29237AC218000549B5 /* ChatAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910AC28237AC218000549B5 /* ChatAction.swift */; };
+		39265D0F23D5A63A007E743F /* CHMarketing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39265D0E23D5A63A007E743F /* CHMarketing.swift */; };
 		3931CAE423C3335D005E8444 /* CHClip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CAE223C3335D005E8444 /* CHClip.swift */; };
 		3931CAE523C3335D005E8444 /* FileCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CAE323C3335D005E8444 /* FileCellModel.swift */; };
 		3931CAEA23C3338C005E8444 /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CAE623C3338C005E8444 /* FileView.swift */; };
@@ -105,6 +106,7 @@
 		3961C1CA235601F500850EC7 /* messages.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C9235601F500850EC7 /* messages.json */; };
 		398205D423C5C99E008814B4 /* AttachmentFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */; };
 		398205D623C5D62E008814B4 /* InAppMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D523C5D62E008814B4 /* InAppMediaView.swift */; };
+		398DDFC323CC5B2D00CD0417 /* extensions.json in Resources */ = {isa = PBXBuildFile; fileRef = 398DDFC223CC5B2D00CD0417 /* extensions.json */; };
 		399EA63323C8631700F52B62 /* InAppVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399EA63223C8631700F52B62 /* InAppVideoPlayerView.swift */; };
 		39A328C523C4780D0029AFEE /* YoutubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */; };
 		39A328C623C4780D0029AFEE /* YoutubePlayerUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */; };
@@ -639,6 +641,7 @@
 		3910AC23237AC172000549B5 /* ChatState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatState.swift; sourceTree = "<group>"; };
 		3910AC25237AC1A1000549B5 /* ChatReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatReducer.swift; sourceTree = "<group>"; };
 		3910AC28237AC218000549B5 /* ChatAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAction.swift; sourceTree = "<group>"; };
+		39265D0E23D5A63A007E743F /* CHMarketing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHMarketing.swift; sourceTree = "<group>"; };
 		3931CAE223C3335D005E8444 /* CHClip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHClip.swift; sourceTree = "<group>"; };
 		3931CAE323C3335D005E8444 /* FileCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCellModel.swift; sourceTree = "<group>"; };
 		3931CAE623C3338C005E8444 /* FileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
@@ -667,6 +670,7 @@
 		3961C1C9235601F500850EC7 /* messages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = messages.json; sourceTree = "<group>"; };
 		398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentFileInfoView.swift; sourceTree = "<group>"; };
 		398205D523C5D62E008814B4 /* InAppMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMediaView.swift; sourceTree = "<group>"; };
+		398DDFC223CC5B2D00CD0417 /* extensions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = extensions.json; path = Assets/extensions.json; sourceTree = "<group>"; };
 		399EA63223C8631700F52B62 /* InAppVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppVideoPlayerView.swift; sourceTree = "<group>"; };
 		39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerView.swift; sourceTree = "<group>"; };
 		39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerUtils.swift; sourceTree = "<group>"; };
@@ -1721,6 +1725,7 @@
 		652AE20E1E81482F00B7484C /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				398DDFC223CC5B2D00CD0417 /* extensions.json */,
 				22AE76B820E347C700C18355 /* mute.caf */,
 				655D89C82126754E00ACE89B /* emojis.json */,
 				65CB14012069190E00E456B5 /* ringtone.mp3 */,
@@ -1931,6 +1936,7 @@
 				657AF3F0217845D7001EAA7A /* CHTargetCondition.swift */,
 				65CB9931226ECE9A004F9DC7 /* CHProfileSchema.swift */,
 				9CB8549723826C9300C60474 /* CHOnline.swift */,
+				39265D0E23D5A63A007E743F /* CHMarketing.swift */,
 			);
 			name = Models;
 			path = Source/Models;
@@ -2282,6 +2288,7 @@
 				14D2AA711E24AE06006FEE22 /* Headers */,
 				14D2AA721E24AE06006FEE22 /* Resources */,
 				65F77B061E80E479001E8FBA /* ShellScript */,
+				394C5AF723C6F0AA00E17BE7 /* Download file types and image assets */,
 			);
 			buildRules = (
 			);
@@ -2360,6 +2367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3961C1C8235601E300850EC7 /* userChats.json in Resources */,
+				398DDFC323CC5B2D00CD0417 /* extensions.json in Resources */,
 				39F4BA2B23C42CD00043B25A /* TextBlockParser.tokens in Resources */,
 				22A306992352B30A008B7ADE /* channel.json in Resources */,
 				39F4BA3123C42CD00043B25A /* TextBlockParser.interp in Resources */,
@@ -2413,6 +2421,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n${SRCROOT}/ChannelIO/Scripts/emoji.sh\n";
+		};
+		394C5AF723C6F0AA00E17BE7 /* Download file types and image assets */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Download file types and image assets";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/python ${SRCROOT}/ChannelIO/Scripts/file_assets_image_down.py\n";
 		};
 		65F77B061E80E479001E8FBA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2768,6 +2794,7 @@
 				39F4B9ED23C42CC00043B25A /* SemanticContext.swift in Sources */,
 				22F0ED9220B53C55008924C1 /* Models.swift in Sources */,
 				39F4B9CB23C42CC00043B25A /* ANTLRFileStream.swift in Sources */,
+				39265D0F23D5A63A007E743F /* CHMarketing.swift in Sources */,
 				22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */,
 				39F4B9C623C42CC00043B25A /* TokenSource.swift in Sources */,
 				39F4B9CC23C42CC00043B25A /* UnbufferedTokenStream.swift in Sources */,
@@ -3073,6 +3100,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: apple@zoyi.co (R4VN26FWUN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 8278Q64QFC;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;
@@ -3117,6 +3145,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: apple@zoyi.co (R4VN26FWUN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 8278Q64QFC;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;

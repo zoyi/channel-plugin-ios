@@ -103,9 +103,10 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     
     self.messageView.delegate = self
     
-    self.containerView.rx.observeWeakly(CGRect.self, "bounds")
+    self.rx.observeWeakly(CGRect.self, "bounds")
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (bounds) in
-        self?.containerView.layer.applySketchShadow(
+        self?.layer.applySketchShadow(
           color: .black15, alpha: 1, x: 0, y: 3, blur: 12, spread: 1
         )
       }).disposed(by: self.disposeBag)
@@ -176,9 +177,14 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.mediaView.configure(model: viewModel)
     self.messageView.attributedText = viewModel.message
     
-    self.messageView.isHidden = viewModel.message == nil ? true : false
+    var hasMessage = false
+    if let message = viewModel.message {
+      hasMessage = message != NSAttributedString(string: "")
+    }
+    
+    self.messageView.isHidden = !hasMessage ? true : false
     if viewModel.hasMedia {
-      self.fileInfoView.isHidden = viewModel.message == nil ? false : true
+      self.fileInfoView.isHidden = !hasMessage ? false : true
       self.messageView.textContainer.maximumNumberOfLines = Constants.maxLineWithFileInfo
     } else {
       self.fileInfoView.isHidden = viewModel.files.count > 0 ? false : true

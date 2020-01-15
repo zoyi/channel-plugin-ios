@@ -30,7 +30,6 @@ class AttachmentFileInfoView: BaseView {
     $0.spacing = 2.f
   }
   
-  private let clipContainerView = UIView()
   private let clipImageView = UIImageView().then {
     $0.image = CHAssets.getImage(named: "clipSmall900")
   }

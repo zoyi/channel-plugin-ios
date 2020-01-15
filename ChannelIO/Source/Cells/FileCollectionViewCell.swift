@@ -22,6 +22,6 @@ class FileCollectionViewCell: BaseCollectionViewCell {
   }
 
   func configure(with model: CHFile) {
-    self.fileView.file = model
+    self.fileView.configure(with: model)
   }
 }

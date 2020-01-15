@@ -30,6 +30,13 @@ class InAppVideoPlayerView: BaseView {
     $0.image = CHAssets.getImage(named: "volumeOffFilled")
   }
   
+  private let progressBar = UIProgressView().then {
+    $0.clipsToBounds = true
+    $0.trackTintColor = .black40
+    $0.progressTintColor = .white
+    $0.transform = CGAffineTransform(scaleX: 1.f, y: 3.f)
+  }
+  
   private let volumeOffImage = CHAssets.getImage(named: "volumeOffFilled")
   private let volumeUpImage = CHAssets.getImage(named: "volumeUpFilled")
   
@@ -41,6 +48,7 @@ class InAppVideoPlayerView: BaseView {
     self.containerView.layer.addSublayer(self.playerLayer)
     self.controlView.addSubview(self.volumeImageView)
     self.addSubview(self.containerView)
+    self.addSubview(self.progressBar)
     self.addSubview(self.controlView)
 
     self.controlView
@@ -64,6 +72,10 @@ class InAppVideoPlayerView: BaseView {
       make.bottom.trailing.equalToSuperview().inset(Metrics.volumeImagePadding)
       make.width.equalTo(Metrics.volumeImageLength)
       make.height.equalTo(Metrics.volumeImageLength)
+    }
+    
+    self.progressBar.snp.makeConstraints { make in
+      make.leading.trailing.bottom.equalToSuperview()
     }
     
     self.controlView.snp.makeConstraints { make in
@@ -92,6 +104,16 @@ class InAppVideoPlayerView: BaseView {
     player.play()
     player.isMuted = true
     self.volumeImageView.image = self.volumeOffImage
+    
+    self.player?.addPeriodicTimeObserver(
+      forInterval: CMTime.init(value: 1, timescale: 50),
+      queue: .main,
+      using: { [weak self] time in
+      if let duration = self?.player?.currentItem?.duration {
+        let progress = (CMTimeGetSeconds(time) / CMTimeGetSeconds(duration))
+        self?.progressBar.setProgress(Float(progress), animated: true)
+      }
+    })
   }
 
   func pause() {

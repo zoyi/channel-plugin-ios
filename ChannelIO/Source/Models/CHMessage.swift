@@ -109,9 +109,7 @@ struct CHMessage: ModelType {
   }
   
   var logMessage: String? {
-    if !files.isEmpty {
-      return CHAssets.localized("ch.notification.upload_file.description")
-    } else if self.log != nil && self.log?.action == "closed" {
+    if self.log != nil && self.log?.action == "closed" {
       return CHAssets.localized("ch.review.require.preview")
     }
     return nil
