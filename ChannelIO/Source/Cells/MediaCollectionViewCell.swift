@@ -11,20 +11,12 @@ import UIKit
 
 class MediaCollectionViewCell: BaseCollectionViewCell {
   let imageView = SDAnimatedImageView().then {
-    $0.clipsToBounds = true
-    $0.layer.cornerRadius = 6.f
-    $0.layer.borderColor = UIColor.grey300.cgColor
-    $0.layer.borderWidth = 1
     $0.backgroundColor = .darkGray
     $0.contentMode = .scaleAspectFill
     $0.sd_imageIndicator = SDWebImageActivityIndicator.white
   }
 
   let videoView = VideoPlayerView().then {
-    $0.clipsToBounds = true
-    $0.layer.cornerRadius = 6.f
-    $0.layer.borderColor = UIColor.grey300.cgColor
-    $0.layer.borderWidth = 1
     $0.isHidden = true
   }
 
@@ -36,6 +28,11 @@ class MediaCollectionViewCell: BaseCollectionViewCell {
 
     self.contentView.addSubview(self.imageView)
     self.contentView.addSubview(self.videoView)
+    
+    self.clipsToBounds = true
+    self.layer.cornerRadius = 6.f
+    self.layer.borderColor = UIColor.grey300.cgColor
+    self.layer.borderWidth = 1
 
     self.videoView.delegate = self
   }

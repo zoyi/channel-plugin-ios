@@ -20,8 +20,10 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     static let newChatButtonBottom = 40.f
     static let typerCellHeight = 40.f
     static let fileStatusCellHeight = 60.f
-    static let MediaMessageCellLeading = 40.f
-    static let MediaMessageCellTrailing = 75.f
+    static let messageLeftMinMargin = 107.f
+    static let messageRightMinMargin = 74.f
+    static let bubbleLeftMargin = 40.f
+    static let cellRightPadding = 10.f
   }
   
   private struct Sections {
@@ -800,18 +802,20 @@ extension UserChatView: UICollectionViewDelegate,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
     let files = self.messages[collectionView.tag].sortedFiles
     let file = files[indexPath.row]
-    let contentWidth = self.tableView.frame.width
-      - Constants.MediaMessageCellLeading
-      - Constants.MediaMessageCellTrailing
+    let createdByMe = self.messages[collectionView.tag].entity is CHUser
+
+    let bubbleMaxWidth = createdByMe ?
+      self.tableView.frame.width - Constants.messageLeftMinMargin - Constants.cellRightPadding :
+      self.tableView.frame.width - Constants.messageRightMinMargin - Constants.bubbleLeftMargin
     if file.type == .video {
       return file.thumbSize
     } else if file.type == .image {
-      let side = (contentWidth - 8) / 2
+      let side = (bubbleMaxWidth - 8) / 2
       return files.filter { $0.type == .image }.count > 1 ?
-        CGSize(width: side, height: side ) : file.thumbSize
+        CGSize(width: side, height: side) : file.thumbSize
     } else {
       return CGSize(
-        width: contentWidth,
+        width: bubbleMaxWidth,
         height: 70
       )
     }
@@ -848,7 +852,6 @@ extension UserChatView: UICollectionViewDelegate,
           self?.presenter?.didClickOnFile(
             with: file,
             on: cell.imageView,
-            path: indexPath,
             from: self
           )
         }).disposed(by: self.disposeBag)
@@ -867,7 +870,6 @@ extension UserChatView: UICollectionViewDelegate,
           self?.presenter?.didClickOnFile(
             with: file,
             on: nil,
-            path: indexPath,
             from: self
           )
         }).disposed(by: self.disposeBag)
