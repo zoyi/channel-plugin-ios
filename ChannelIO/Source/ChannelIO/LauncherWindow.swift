@@ -8,7 +8,7 @@
 final class LauncherWindow: UIWindow {
   var launcherView: LauncherView?
   var inAppNotificationView: InAppNotification?
-
+ 
   init() {
     super.init(frame: UIScreen.main.bounds)
     self.initWindowSettings()
@@ -41,15 +41,25 @@ final class LauncherWindow: UIWindow {
     return result
   }
   
-  override func makeKey() {
-  }
+  override func makeKey() {}
   
   private func initWindowSettings() {
-    self.rootViewController = UIViewController()
+    let controller = LauncherWindowController()
+    if #available(iOS 13.0, *) {
+      controller.hostStatusBarStyle = UIApplication.shared.delegate?
+        .window??
+        .windowScene?
+        .statusBarManager?
+        .statusBarStyle ?? .lightContent
+    } else {
+      controller.hostStatusBarStyle = UIApplication.shared.statusBarStyle
+    }
+    self.rootViewController = controller
     self.window?.backgroundColor = nil
     self.window?.isHidden = false
     self.windowLevel = UIWindow.Level(rawValue: CGFloat.greatestFiniteMagnitude)
     self.makeKeyAndVisible()
+    
   }
   
   func addCustomView(with view: UIView) {
@@ -58,6 +68,28 @@ final class LauncherWindow: UIWindow {
       view.layer.zPosition = 1
     } else if let view = view as? BannerInAppNotificationView {
       view.layer.zPosition = 1
+    }
+  }
+  
+  func updateStatusBarAppearance() {
+    self.rootViewController?.setNeedsStatusBarAppearanceUpdate()
+  }
+}
+
+class LauncherWindowController: UIViewController {
+  var hostStatusBarStyle: UIStatusBarStyle?
+   
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    if #available(iOS 13.0, *) {
+      if ChannelIO.baseNavigation != nil {
+        return .lightContent
+      }
+      return self.hostStatusBarStyle ?? .lightContent
+    } else {
+      if ChannelIO.baseNavigation != nil {
+        return mainStore.state.plugin.textColor == "white" ? .lightContent : .default
+      }
+      return self.hostStatusBarStyle ?? .lightContent
     }
   }
 }

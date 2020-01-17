@@ -153,11 +153,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.removeObservers()
     mainStore.unsubscribe(self)
   }
-  
-  override var preferredStatusBarStyle: UIStatusBarStyle {
-    return self.navigationController?.preferredStatusBarStyle ?? .lightContent
-  }
-  
+
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     self.adjustTableViewInset()

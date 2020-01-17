@@ -45,11 +45,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   var scrollTopConstraint: Constraint?
   var mainHeightConstraint: Constraint?
   var mainHeight: CGFloat = 240.f
-  
-  override var preferredStatusBarStyle: UIStatusBarStyle {
-    return self.navigationController?.preferredStatusBarStyle ?? .lightContent
-  }
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
 

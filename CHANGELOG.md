@@ -1,3 +1,9 @@
+# 6.1.21
+## Bug fixes
+* Removed UIWindow properly
+* Fixed status bar style
+* Fixed Welcome message that was not set properly
+
 # 6.1.20
 ## Bug fixes
 * Fixed attributed welcome message

@@ -18,6 +18,7 @@ extension ChannelIO {
     ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.close(animated: false)
     ChannelIO.hideNotification()
+    ChannelIO.launcherWindow = nil
     mainStore.dispatch(ShutdownSuccess())
     WsService.shared.disconnect()
     disposeBag = DisposeBag()

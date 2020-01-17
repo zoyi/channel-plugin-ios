@@ -355,13 +355,15 @@ public final class ChannelIO: NSObject {
         return
       }
       
-      ChannelIO.launcherView?.hide(animated: false)
-      ChannelIO.delegate?.willShowMessenger?()
-
-      mainStore.dispatch(ChatListIsVisible())
       let loungeView = LoungeRouter.createModule()
       let controller = MainNavigationController(rootViewController: loungeView)
       ChannelIO.baseNavigation = controller
+      
+      ChannelIO.launcherView?.hide(animated: false)
+      ChannelIO.launcherWindow?.updateStatusBarAppearance()
+      ChannelIO.delegate?.willShowMessenger?()
+      mainStore.dispatch(ChatListIsVisible())
+      
       topController.present(controller, animated: animated, completion: nil)
     }
   }
@@ -381,6 +383,7 @@ public final class ChannelIO: NSObject {
       ChannelIO.delegate?.willHideMessenger?()
       ChannelIO.baseNavigation?.dismiss(animated: animated, completion: {
         ChannelIO.didDismiss()
+        ChannelIO.launcherWindow?.updateStatusBarAppearance()
         completion?()
       })
     }

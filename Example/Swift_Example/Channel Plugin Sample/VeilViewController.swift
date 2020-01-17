@@ -36,6 +36,10 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
       ChannelIO.shutdown()
     }
   }
+
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    return .default
+  }
   
   func willShowMessenger() {
     print("will show")
