@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'SDK', :file => 'LICENSE' }
   s.author           = { 'ZOYI' => 'eng@zoyi.co' }
   s.source           = { :git => 'https://github.com/zoyi/channel-plugin-ios.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '9.1'
+  s.ios.deployment_target = '10.0'
   #s.script_phase = {
   #  :name => 'ChannelIO Emoji Sync',
   #  :script => '${PODS_TARGET_SRCROOT}/Assets/setup.sh',

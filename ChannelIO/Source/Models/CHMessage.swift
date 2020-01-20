@@ -109,9 +109,7 @@ struct CHMessage: ModelType {
   }
   
   var logMessage: String? {
-    if !files.isEmpty {
-      return CHAssets.localized("ch.notification.upload_file.description")
-    } else if self.log != nil && self.log?.action == "closed" {
+    if self.log != nil && self.log?.action == "closed" {
       return CHAssets.localized("ch.review.require.preview")
     }
     return nil
@@ -319,6 +317,15 @@ extension CHMessage {
     
     return false
   }
+  
+  func getWriter() -> CHEntity? {
+    let person = personSelector(
+      state: mainStore.state,
+      personType: self.personType,
+      personId: self.personId
+    )
+    return person
+  }
 }
 
 //MARK: RestAPI
@@ -344,19 +351,6 @@ extension CHMessage {
     }
     message.mutable = mutable
     return message
-  }
-  
-  static func getMessages(
-    userChatId: String,
-    since: String,
-    limit: Int,
-    sortOrder:String) -> Observable<[String: Any]> {
-    
-    return UserChatPromise.getMessages(
-      userChatId: userChatId,
-      since: since,
-      limit: limit,
-      sortOrder: sortOrder)
   }
   
   func isMine() -> Bool {

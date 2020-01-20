@@ -59,7 +59,7 @@ class MediaCollectionView: BaseView {
   
   func changeFlowLayout(horizontalAlignment: HorizontalAlignment) {
     let flowLayout = self.collectionView.collectionViewLayout
-    
+
     if let collectionViewLayout = flowLayout as? AlignedCollectionViewFlowLayout {
       collectionViewLayout.horizontalAlignment = horizontalAlignment
       self.collectionView.collectionViewLayout = collectionViewLayout

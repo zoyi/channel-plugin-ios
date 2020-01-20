@@ -13,23 +13,10 @@ protocol InAppNotificationViewModelType {
   var name: String? { get }
   var timestamp: String? { get }
   var avatar: CHEntity? { get }
-  
-  var title: String? { get set }
-  var imageUrl: URL? { get set }
-  var imageHeight: CGFloat { get set }
-  var imageWidth: CGFloat { get set }
-  var imageRedirect: String? { get set }
-  var buttonTitle: String? { get set }
-  var buttonRedirect: String? { get set }
-  var themeColor: UIColor? { get set }
-  var pluginTextColor: UIColor? { get set }
+  var files: [CHFile] { get set }
+  var webPage: CHWebPage? { get set }
   var mobileExposureType: InAppNotificationType { get set }
-}
-
-enum CHAttachmentType: String {
-  case none
-  case button
-  case image
+  var hasMedia: Bool { get set }
 }
 
 struct InAppNotificationViewModel: InAppNotificationViewModelType {
@@ -37,17 +24,10 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var name: String?
   var timestamp: String?
   var avatar: CHEntity?
-  
-  var title: String? = nil
-  var imageUrl: URL? = nil
-  var imageHeight: CGFloat = 0.f
-  var imageWidth: CGFloat = 0.f
-  var imageRedirect: String? = nil
+  var files: [CHFile] = []
+  var webPage: CHWebPage?
   var mobileExposureType: InAppNotificationType = .banner
-  var buttonTitle: String? = nil
-  var buttonRedirect: String? = nil
-  var themeColor: UIColor? = nil
-  var pluginTextColor: UIColor? = nil
+  var hasMedia: Bool = false
   
   init(push: CHPush) {
     if let managerName = push.manager?.name {
@@ -58,31 +38,18 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
       self.avatar = push.bot
     }
     
-    if let title = push.message?.title, title != "" {
-      self.title = title
-    }
-    
-//    switch push.attachmentType {
-//    case .image:
-//      if let file = push.message?.file, file.image {
-//        self.imageUrl = URL(string: file.url)
-//        self.imageWidth = file.previewThumb?.width ?? 0.f
-//        self.imageHeight = file.previewThumb?.height ?? 0.f
-//      }
-//      self.imageRedirect = push.redirectUrl
-//    case .button:
-//      if let buttonTitle = push.buttonTitle {
-//        self.buttonTitle = buttonTitle
-//      }
-//      self.buttonRedirect = push.redirectUrl
-//    default:
-//      break
-//    }
+    self.files = push.message?.sortedFiles ?? []
+    self.webPage = push.message?.webPage
+    self.timestamp = push.message?.readableCreatedAt
     
     self.mobileExposureType = push.mobileExposureType
     
-    self.themeColor = UIColor(mainStore.state.plugin.color)
-    self.pluginTextColor = mainStore.state.plugin.textUIColor
+    let mediaFileCount = push.message?.sortedFiles
+      .filter { $0.type == .video || $0.type == .image }
+      .count ?? 0
+    self.hasMedia = mediaFileCount > 0 ||
+      push.message?.webPage?.thumbUrl != nil ||
+      push.message?.webPage?.youtubeId != nil
     
     let paragraphStyle = NSMutableParagraphStyle()
     paragraphStyle.alignment = .left
@@ -98,24 +65,18 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
     } else if let message = push.message?.messageV2 {
-      var title = ""
-      if self.mobileExposureType == .banner {
-        title = self.title == nil ? "" : self.title! + " "
-      } else if self.mobileExposureType == .popup {
-        title = self.title == nil ? "" : self.title! + "\n"
-      }
-      
-      let fontSize = self.mobileExposureType == .popup ? 14.f : 13.f
-      let newAttributedString = NSMutableAttributedString(string: title)
-      newAttributedString.addAttributes(
-        [.font: UIFont.boldSystemFont(ofSize: fontSize)],
-        range: NSRange(location: 0, length: title.count)
-      )
+      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
+      let newAttributedString = NSMutableAttributedString()
       newAttributedString.append(message)
-      newAttributedString.enumerateAttribute(.font, in: NSMakeRange(0, newAttributedString.length), options: []) {
+      newAttributedString.enumerateAttribute(
+        .font,
+        in: NSMakeRange(0, newAttributedString.length),
+        options: []
+      ) {
         value, range, stop in
         guard let currentFont = value as? UIFont else { return }
-        let newFont = currentFont.isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
+        let newFont = currentFont.isBold ?
+          UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
         newAttributedString.addAttributes([.font: newFont], range: range)
       }
 
@@ -126,7 +87,67 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         range: NSRange(location: 0, length: message.string.count))
       self.message = newAttributedString
     }
+  }
+  
+  init(message: CHMessage) {
+    let person = message.getWriter()
+    
+    if let manager = person as? CHManager {
+      self.name = manager.name
+      self.avatar = manager
+    } else if let bot = person as? CHBot {
+      self.name = bot.name
+      self.avatar = bot
+    }
+    
+    self.files = message.sortedFiles
+    self.webPage = message.webPage
+    self.timestamp = message.readableCreatedAt
+    
+//    self.mobileExposureType = message.mobileExposureType
+    
+    let mediaFileCount = message.sortedFiles
+      .filter { $0.type == .video || $0.type == .image }
+      .count
+    self.hasMedia = mediaFileCount > 0 ||
+      message.webPage?.thumbUrl != nil ||
+      message.webPage?.youtubeId != nil
 
-    self.timestamp = push.message?.readableCreatedAt
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.alignment = .left
+    paragraphStyle.minimumLineHeight = 18
+    
+    if let logMessage = message.logMessage {
+      let attributedText = NSMutableAttributedString(string: logMessage)
+      attributedText.addAttributes(
+        [.font: UIFont.systemFont(ofSize: 13),
+         .foregroundColor: UIColor.grey900,
+         .paragraphStyle: paragraphStyle
+        ],
+        range: NSRange(location: 0, length: logMessage.count))
+      self.message = attributedText
+    } else if let message = message.messageV2 {
+      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
+      let newAttributedString = NSMutableAttributedString()
+      newAttributedString.append(message)
+      newAttributedString.enumerateAttribute(
+        .font,
+        in: NSMakeRange(0, newAttributedString.length),
+        options: []
+      ) {
+        value, range, stop in
+        guard let currentFont = value as? UIFont else { return }
+        let newFont = currentFont.isBold ?
+          UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
+        newAttributedString.addAttributes([.font: newFont], range: range)
+      }
+
+      newAttributedString.addAttributes(
+        [.foregroundColor: UIColor.grey900,
+         .paragraphStyle: paragraphStyle
+        ],
+        range: NSRange(location: 0, length: message.string.count))
+      self.message = newAttributedString
+    }
   }
 }
