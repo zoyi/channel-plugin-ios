@@ -346,11 +346,10 @@ extension UserChatView: UICollectionViewDelegate,
     if file.type == .video || file.type == .image {
       let cell: MediaCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
       cell.signalForClick()
-        .subscribe(onNext: { [weak self] _ in
+        .subscribe(onNext: { [weak self] (_) in
           self?.presenter?.didClickOnFile(
             with: file,
             on: cell.imageView,
-            path: indexPath,
             from: self
           )
         }).disposed(by: self.disposeBag)
@@ -369,7 +368,6 @@ extension UserChatView: UICollectionViewDelegate,
           self?.presenter?.didClickOnFile(
             with: file,
             on: nil,
-            path: indexPath,
             from: self
           )
         }).disposed(by: self.disposeBag)

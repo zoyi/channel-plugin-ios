@@ -124,7 +124,7 @@ extension UserChatInteractor {
     
     return Observable.create { (subscribe) in
       self.isFetching = true
-      let signal = CHMessage
+      let signal = CHUserChat
         .getMessages(
           userChatId: self.userChatId,
           since: self.nextSeq,

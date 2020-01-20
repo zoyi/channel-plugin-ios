@@ -147,6 +147,19 @@ extension CHUserChat {
     return UserChatPromise.getChats(since: since, limit: 30, showCompleted: showCompleted)
   }
   
+  static func getMessages(
+    userChatId: String,
+    since: String,
+    limit: Int,
+    sortOrder:String) -> Observable<[String: Any]> {
+    
+    return UserChatPromise.getMessages(
+      userChatId: userChatId,
+      since: since,
+      limit: limit,
+      sortOrder: sortOrder)
+  }
+  
   static func create(pluginId: String) -> Observable<ChatResponse>{
     return UserChatPromise.createChat(pluginId: pluginId)
   }

@@ -8,8 +8,10 @@
 import UIKit
 
 class MediaCollectionView: BaseView {
-  private struct Constants {
-    static let MediaMessageCellSide = 115.f
+  private struct Metrics {
+    static let fileViewHeight = 70.f
+    static let collectionMargin = 8.f
+    
   }
   var collectionView: UICollectionView!
 
@@ -56,38 +58,39 @@ class MediaCollectionView: BaseView {
   func configure(models: [CHFile]) {}
   
   func changeFlowLayout(horizontalAlignment: HorizontalAlignment) {
-    let flowLayout = AlignedCollectionViewFlowLayout(
-      horizontalAlignment: horizontalAlignment,
-      verticalAlignment: .center
-    ).then {
-      $0.scrollDirection = .vertical
-      $0.minimumInteritemSpacing = 8
-      $0.minimumLineSpacing = 8
+    let flowLayout = self.collectionView.collectionViewLayout
+
+    if let collectionViewLayout = flowLayout as? AlignedCollectionViewFlowLayout {
+      collectionViewLayout.horizontalAlignment = horizontalAlignment
+      self.collectionView.collectionViewLayout = collectionViewLayout
     }
-    self.collectionView.collectionViewLayout = flowLayout
   }
 
   static func viewHeight(fit width: CGFloat, models: [CHFile]) -> CGFloat {
     var height = 0.f
-    // TODO: change to controller view width
-    let side = (width - Constants.MediaMessageCellSide - 8) / 2
+    let side = (width - Metrics.collectionMargin) / 2
     let imageCount = models.filter { $0.type == .image }.count
     if imageCount == 2 {
-      height += side + 8
+      height += side
     } else if imageCount > 2 {
-      height += side + side + 8
+      height += side * 2 + Metrics.collectionMargin
     }
-    models.forEach { (file) in
-      if file.type == .image {
-        if imageCount == 1 {
-          height += file.thumbSize.height + 8
-        }
+    
+    if imageCount > 1 && models.filter({ $0.type == .file }).count > 0 {
+      height += Metrics.collectionMargin
+    }
+    
+    for (index, file) in models.enumerated() {
+      let margin = index == models.count - 1 ? 0 : Metrics.collectionMargin
+      if file.type == .image && imageCount == 1 {
+          height += file.thumbSize.height + margin
       } else if file.type == .video {
-         height += file.thumbSize.height + 8
+         height += file.thumbSize.height + margin
       } else if file.type == .file {
-        height += 70 + 8
+        height += Metrics.fileViewHeight + margin
       }
     }
+    
     return height
   }
 }

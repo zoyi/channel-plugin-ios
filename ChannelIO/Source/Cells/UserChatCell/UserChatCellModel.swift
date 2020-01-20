@@ -12,24 +12,26 @@ protocol UserChatCellModelType {
   var chatId: String? { get set }
   var title: String { get set }
   var lastMessage: String? { get set }
-  var attributeLastMessage: NSAttributedString? { get set }
+
   var timestamp: String { get set }
   var avatar: CHEntity? { get set }
   var badgeCount: Int { get set }
   var isBadgeHidden: Bool { get set }
   var isClosed: Bool { get set }
+  var files: [CHFile] { get set }
 }
 
 struct UserChatCellModel: UserChatCellModelType {
   var chatId: String? = nil
   var title: String = ""
   var lastMessage: String? = nil
-  var attributeLastMessage: NSAttributedString? = nil
+
   var timestamp: String = ""
   var avatar: CHEntity? = nil
   var badgeCount: Int = 0
   var isBadgeHidden: Bool = false
   var isClosed: Bool = false
+  var files: [CHFile] = []
   
   init() {}
   
@@ -48,6 +50,10 @@ struct UserChatCellModel: UserChatCellModelType {
       self.lastMessage = logMessage
     } else {
       self.lastMessage = userChat.lastMessage?.plainText ?? ""
+    }
+    
+    if let files = userChat.lastMessage?.sortedFiles {
+      self.files = files
     }
     
     var avatar: CHEntity?
@@ -85,6 +91,7 @@ struct UserChatCellModel: UserChatCellModelType {
     //TODO: message fix
 //    model.lastMessage = supportBotMessage?.message ?? user.getWelcome()
 //    model.attributeLastMessage = supportBotMessage?.messageV2
+
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model

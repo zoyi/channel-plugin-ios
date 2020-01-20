@@ -188,12 +188,13 @@ extension ChannelIO {
     
     var notificationView: InAppNotification?
     
+    //TODO: change from message type
     if push.mobileExposureType == .banner {
       notificationView = BannerInAppNotificationView()
     } else {
       notificationView = PopupInAppNotificationView()
     }
-    
+     
     let viewModel = InAppNotificationViewModel(push: push)
     notificationView?.configure(with: viewModel)
     notificationView?.insertView(on: view)
@@ -211,18 +212,6 @@ extension ChannelIO {
       .subscribe { (event) in
         ChannelIO.hideNotification()
       }.disposed(by: disposeBag)
-    
-    notificationView?
-      .signalForRedirect()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (urlString) in
-        guard let url = URL(string: urlString ?? "") else { return }
-        let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
-        if shouldHandle == false || shouldHandle == nil {
-          url.openWithUniversal()
-        }
-        ChannelIO.hideNotification()
-      }).disposed(by: disposeBag)
     
     ChannelIO.inAppNotificationView = notificationView
     CHAssets.playPushSound()

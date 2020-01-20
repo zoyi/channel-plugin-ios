@@ -19,8 +19,8 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     static let mediaInSideMargin = 40.f
     static let mediaOutSideMargin = 75.f
     static let mediaTop = 6.f
-    static let mediaTopToName = 8.f
-    static let mediaTopToText = 8.f
+    static let mediaTopToName = 6.f
+    static let mediaTopToText = 6.f
     static let mediaTopToTextTranslate = 20.f
   }
 
@@ -71,7 +71,11 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     fits width: CGFloat,
     viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
-    height += MediaCollectionView.viewHeight(fit: width, models: viewModel.files) + 8
+    let bubbleMaxWidth = viewModel.createdByMe ?
+      width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
+      width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
+    
+    height += MediaCollectionView.viewHeight(fit: bubbleMaxWidth, models: viewModel.files) + 8
     return height
   }
 
@@ -111,7 +115,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     } else {
       self.leftTextViewConstraint?.activate()
       self.leftConstraint?.deactivate()
-      self.rightConstraint?.update(inset: 75)
+      self.rightConstraint?.update(inset: Metric.messageRightMinMargin)
       self.mediaCollectionView.changeFlowLayout(horizontalAlignment: .left)
     }
   }

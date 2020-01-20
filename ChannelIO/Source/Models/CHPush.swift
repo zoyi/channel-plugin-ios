@@ -22,12 +22,8 @@ struct CHPush: CHPushDisplayable {
   var userChat: CHUserChat?
   
   var showLog: Bool = true
-  var buttonTitle: String? = nil
   
   var mobileExposureType: InAppNotificationType = .banner
-  
-  var attachmentType: CHAttachmentType = .none
-  var redirectUrl: String? = nil
 }
 
 extension CHPush : Mappable {
@@ -49,8 +45,7 @@ extension CHPush: Equatable {
       lhs.message == rhs.message &&
       lhs.bot == rhs.bot &&
       lhs.manager == rhs.manager &&
-      lhs.mobileExposureType == rhs.mobileExposureType &&
-      lhs.attachmentType == rhs.attachmentType
+      lhs.mobileExposureType == rhs.mobileExposureType
   }
 }
 

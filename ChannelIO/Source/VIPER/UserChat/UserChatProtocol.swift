@@ -87,7 +87,6 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnFile(
     with file: CHFile?,
     on imageView: UIImageView?,
-    path indexPath: IndexPath,
     from view: UIViewController?)
   func didClickOnVideo(with url: URL?, from view: UIViewController?)
   func didClickOnWeb(with url: URL?, from view: UIViewController?)
