@@ -97,34 +97,35 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         ],
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
-    } else if let message = push.message?.messageV2 {
-      var title = ""
-      if self.mobileExposureType == .banner {
-        title = self.title == nil ? "" : self.title! + " "
-      } else if self.mobileExposureType == .popup {
-        title = self.title == nil ? "" : self.title! + "\n"
-      }
-      
-      let fontSize = self.mobileExposureType == .popup ? 14.f : 13.f
-      let newAttributedString = NSMutableAttributedString(string: title)
-      newAttributedString.addAttributes(
-        [.font: UIFont.boldSystemFont(ofSize: fontSize)],
-        range: NSRange(location: 0, length: title.count)
-      )
-      newAttributedString.append(message)
-      newAttributedString.enumerateAttribute(.font, in: NSMakeRange(0, newAttributedString.length), options: []) {
-        value, range, stop in
-        guard let currentFont = value as? UIFont else { return }
-        let newFont = currentFont.isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
-        newAttributedString.addAttributes([.font: newFont], range: range)
-      }
-
-      newAttributedString.addAttributes(
-        [.foregroundColor: UIColor.grey900,
-         .paragraphStyle: paragraphStyle
-        ],
-        range: NSRange(location: 0, length: message.string.count))
-      self.message = newAttributedString
+    } else if let message = push.message {
+      //TODO: message fix
+//      var title = ""
+//      if self.mobileExposureType == .banner {
+//        title = self.title == nil ? "" : self.title! + " "
+//      } else if self.mobileExposureType == .popup {
+//        title = self.title == nil ? "" : self.title! + "\n"
+//      }
+//
+//      let fontSize = self.mobileExposureType == .popup ? 14.f : 13.f
+//      let newAttributedString = NSMutableAttributedString(string: title)
+//      newAttributedString.addAttributes(
+//        [.font: UIFont.boldSystemFont(ofSize: fontSize)],
+//        range: NSRange(location: 0, length: title.count)
+//      )
+//      newAttributedString.append(message)
+//      newAttributedString.enumerateAttribute(.font, in: NSMakeRange(0, newAttributedString.length), options: []) {
+//        value, range, stop in
+//        guard let currentFont = value as? UIFont else { return }
+//        let newFont = currentFont.isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
+//        newAttributedString.addAttributes([.font: newFont], range: range)
+//      }
+//
+//      newAttributedString.addAttributes(
+//        [.foregroundColor: UIColor.grey900,
+//         .paragraphStyle: paragraphStyle
+//        ],
+//        range: NSRange(location: 0, length: message.string.count))
+//      self.message = newAttributedString
     }
 
     self.timestamp = push.message?.readableCreatedAt

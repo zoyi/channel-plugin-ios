@@ -41,7 +41,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     if let entry = action.supportBotEntryInfo, let step = entry.step {
       let message = CHMessage(
         chatId: "support_bot_message_dummy",
-        message: step.message?.message ?? "",
+        blocks: step.message?.blocks ?? [],
         type: .Action,
         entity: action.bot,
         action: CHAction.create(botEntry: entry),

@@ -213,17 +213,16 @@ extension UserChatInteractor {
     mainStore.dispatch(DeleteMessage(payload: message))
   }
   
-  func translate(for message: CHMessage) -> Observable<String?> {
+  func translate(for message: CHMessage) -> Observable<[CHMessageBlock]> {
     guard let language = CHUtils.getLocale()?.rawValue else {
-      return .just(nil)
+      return .just([])
     }
     
     return Observable.create { (subscriber) in
       let signal =  message
         .translate(to: language)
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (text) in
-          subscriber.onNext(text)
+        .subscribe(onNext: { blocks in
+          subscriber.onNext(blocks)
           subscriber.onCompleted()
         }, onError: { (error) in
           subscriber.onError(error)

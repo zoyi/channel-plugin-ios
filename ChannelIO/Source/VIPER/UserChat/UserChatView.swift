@@ -14,7 +14,7 @@ import SnapKit
 import Alamofire
 
 class UserChatView: CHMessageViewController, UserChatViewProtocol {
-  private struct Constants {
+  internal struct Constants {
     static let newMessageViewHeight = 48.f
     static let newMessageViewBottom = -6.f
     static let newChatButtonBottom = 40.f
@@ -24,14 +24,14 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     static let MediaMessageCellTrailing = 75.f
   }
   
-  private struct Sections {
+  internal struct Sections {
     static let loadingFile = 0
     static let errorFiles = 1
     static let typer = 2
     static let messages = 3
   }
   
-  private struct Metrics {
+  internal struct Metrics {
     static let newButtonHeight = 46
   }
   
@@ -39,7 +39,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   
   var presenter: UserChatPresenterProtocol?
   
-  private let tableView = UITableView().then {
+  internal let tableView = UITableView().then {
     $0.clipsToBounds = true
     $0.separatorStyle = .none
     $0.allowsSelection = false
@@ -76,22 +76,22 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     $0.isHidden = true
   }
   
-  private var typers = [CHEntity]()
+  internal var typers = [CHEntity]()
   
   private var newChatBottomConstraint: Constraint? = nil
   private var fixedInset: Bool = false
   private var shouldShowInputBar: Bool = false
   
-  private var channel: CHChannel = mainStore.state.channel
-  private var messages = [CHMessage]()
+  internal var channel: CHChannel = mainStore.state.channel
+  internal var messages = [CHMessage]()
   var videoRecords = [CHFile: Double]()
   
-  private var isLoadingFile = false
-  private var errorFiles: [ChatFileQueueItem] = []
-  private var loadingFile: ChatFileQueueItem?
-  private var initialFileCount: Int = 0
+  internal var isLoadingFile = false
+  internal var errorFiles: [ChatFileQueueItem] = []
+  internal var loadingFile: ChatFileQueueItem?
+  internal var initialFileCount: Int = 0
 
-  private let disposeBag = DisposeBag()
+  let disposeBag = DisposeBag()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -554,325 +554,6 @@ extension UserChatView {
     if yOffset < 100 &&
       !self.newMessageView.isHidden {
       self.newMessageView.hide(animated: false)
-    }
-  }
-}
-
-// MARK: - UITableView
-extension UserChatView : UITableViewDataSource, UITableViewDelegate {
-  func numberOfSections(in tableView: UITableView) -> Int {
-    return 4
-  }
-
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    switch section {
-    case Sections.loadingFile:
-      return self.isLoadingFile ? 1 : 0
-    case Sections.errorFiles:
-      return self.errorFiles.count
-    case Sections.typer:
-      return 1
-    case Sections.messages:
-      return self.messages.count
-    default:
-      return 0
-    }
-  }
-  
-  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    switch indexPath.section {
-    case Sections.loadingFile:
-      return Constants.fileStatusCellHeight
-    case Sections.errorFiles:
-      return Constants.fileStatusCellHeight
-    case Sections.typer:
-      return Constants.typerCellHeight
-    case Sections.messages:
-      let message = self.messages[indexPath.row]
-      let previousMessage: CHMessage? =
-        indexPath.row == self.messages.count - 1 ?
-          self.messages[indexPath.row] :
-          self.messages[indexPath.row + 1]
-      let viewModel = MessageCellModel(
-        message: message,
-        previous: previousMessage,
-        indexPath: indexPath
-      )
-      switch message.messageType {
-      case .DateDivider:
-        return DateCell.cellHeight()
-      case .NewAlertMessage:
-        return NewMessageDividerCell.cellHeight()
-      case .Log:
-        return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
-      case .Media:
-        return MediaMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-      case .WebPage:
-        return WebPageMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-      case .Profile:
-        return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-      case .Action:
-        return ActionMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-      case .Buttons:
-        return ButtonsMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-      default:
-        let calSize = MessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-        return calSize
-      }
-    default:
-      return 0
-    }
-  }
-
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    switch indexPath.section {
-    case Sections.loadingFile:
-      let cell = self.cellForLoading(tableView, cellForRowAt: indexPath)
-      cell.transform = tableView.transform
-      return cell
-    case Sections.errorFiles:
-      let cell = self.cellForErrorFiles(tableView, cellForRowAt: indexPath)
-      cell.transform = tableView.transform
-      return cell
-    case Sections.typer:
-      let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
-      cell.transform = tableView.transform
-      return cell
-    case Sections.messages:
-      let cell = self.cellForMessage(tableView, cellForRowAt: indexPath)
-      cell.transform = tableView.transform
-      return cell
-    default:
-      return UITableViewCell()
-    }
-  }
-
-  private func cellForTyping(
-    _ tableView: UITableView,
-    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: TypingIndicatorCell = tableView.dequeueReusableCell(for: indexPath)
-    cell.configure(typingUsers: self.typers)
-    cell.transform = tableView.transform
-    return cell
-  }
-  
-  private func cellForLoading(
-    _ tableView: UITableView,
-    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: FileStatusCell = tableView.dequeueReusableCell(for: indexPath)
-    if let loadingFile = self.loadingFile {
-      cell.configure(item: loadingFile, count: self.initialFileCount)
-    }
-    cell.signalForRemove()
-      .observeOn(MainScheduler.instance)
-      .subscribe { [weak self] _ in
-        guard let item = self?.loadingFile else { return }
-        self?.presenter?.didClickOnRemoveFile(with: item)
-      }.disposed(by: self.disposeBag)
-    cell.transform = tableView.transform
-    return cell
-  }
-  
-  private func cellForErrorFiles(
-    _ tableView: UITableView,
-    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: FileStatusCell = tableView.dequeueReusableCell(for: indexPath)
-    cell.configure(item: self.errorFiles[indexPath.row], count: 0)
-    cell.signalForRemove()
-      .observeOn(MainScheduler.instance)
-      .subscribe { [weak self] _ in
-        guard let item = self?.errorFiles[indexPath.row] else { return }
-        self?.presenter?.didClickOnRemoveFile(with: item)
-      }.disposed(by: self.disposeBag)
-    cell.signalForRetry()
-      .observeOn(MainScheduler.instance)
-      .subscribe { [weak self] _ in
-        guard let item = self?.errorFiles[indexPath.row] else { return }
-        self?.presenter?.didClickOnRetryFile(with: item)
-      }.disposed(by: self.disposeBag)
-    cell.transform = tableView.transform
-    
-    return cell
-  }
-
-  private func cellForMessage
-    (_ tableView: UITableView,
-     cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let message = self.messages[indexPath.row]
-    let previousMessage: CHMessage? =
-      indexPath.row == self.messages.count - 1 ?
-        self.messages[indexPath.row] :
-        self.messages[indexPath.row + 1]
-    let viewModel = MessageCellModel(
-      message: message,
-      previous: previousMessage,
-      indexPath: indexPath
-    )
-    
-    if viewModel.shouldDisplayForm {
-      switch viewModel.clipType {
-      case .Image:
-        let cell: ActionMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.presenter)
-        return cell
-      case .Webpage:
-        let cell: ActionWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.presenter)
-        cell.webView.signalForClick()
-          .observeOn(MainScheduler.instance)
-          .subscribe{ [weak self] _ in
-            self?.presenter?.didClickOnWeb(with: message.webPage?.url, from: self)
-          }.disposed(by: self.disposeBag)
-        return cell
-      case .File:
-        let cell: ActionFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.presenter)
-        return cell
-      default:
-        let cell: ActionMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, presenter: self.presenter)
-        return cell
-      }
-    }
-
-    switch message.messageType {
-    case .NewAlertMessage:
-      let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
-      return cell
-    case .DateDivider:
-      let cell: DateCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(date: message.message ?? "")
-      return cell
-    case .Log:
-      let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(message: message)
-      return cell
-    case .Profile :
-      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.presenter)
-      return cell
-    case .UserMessage:
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.presenter)
-      return cell
-    case .Buttons:
-      let cell: ButtonsMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.presenter)
-      return cell
-    case .WebPage:
-      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.presenter)
-      cell.webView.signalForClick()
-        .observeOn(MainScheduler.instance)
-        .subscribe{ [weak self] _ in
-          self?.presenter?.didClickOnWeb(with: message.webPage?.url, from: self)
-        }.disposed(by: self.disposeBag)
-      return cell
-    case .Media:
-      let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.presenter)
-      cell.setDataSource(self, at: indexPath.row)
-      return cell
-    default: //remote
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, presenter: self.presenter)
-      return cell
-    }
-  }
-}
-
-extension UserChatView: UICollectionViewDelegate,
-                       UICollectionViewDelegateFlowLayout,
-                       UICollectionViewDataSource {
-  func numberOfSections(in collectionView: UICollectionView) -> Int {
-    return 1
-  }
-
-  func collectionView(
-    _ collectionView: UICollectionView,
-    numberOfItemsInSection section: Int) -> Int {
-    return self.messages[collectionView.tag].files.count
-  }
-
-  func collectionView(
-    _ collectionView: UICollectionView,
-    layout collectionViewLayout: UICollectionViewLayout,
-    sizeForItemAt indexPath: IndexPath) -> CGSize {
-    let files = self.messages[collectionView.tag].sortedFiles
-    let file = files[indexPath.row]
-    let contentWidth = self.tableView.frame.width
-      - Constants.MediaMessageCellLeading
-      - Constants.MediaMessageCellTrailing
-    if file.type == .video {
-      return file.thumbSize
-    } else if file.type == .image {
-      let side = (contentWidth - 8) / 2
-      return files.filter { $0.type == .image }.count > 1 ?
-        CGSize(width: side, height: side ) : file.thumbSize
-    } else {
-      return CGSize(
-        width: contentWidth,
-        height: 70
-      )
-    }
-  }
-
-  func collectionView(
-    _ collectionView: UICollectionView,
-    didEndDisplaying cell: UICollectionViewCell,
-    forItemAt indexPath: IndexPath) {
-    if let cell = cell as? MediaCollectionViewCell {
-      cell.videoView.pause()
-      cell.videoView.didHide(from: self)
-    }
-  }
-
-  func collectionView(
-    _ collectionView: UICollectionView,
-    willDisplay cell: UICollectionViewCell,
-    forItemAt indexPath: IndexPath) {
-    if let cell = cell as? MediaCollectionViewCell {
-      cell.videoView.willDisplay(in: self)
-    }
-  }
-
-  func collectionView(
-    _ collectionView: UICollectionView,
-    cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let files = self.messages[collectionView.tag].sortedFiles
-    let file = files[indexPath.row]
-    if file.type == .video || file.type == .image {
-      let cell: MediaCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
-      cell.signalForClick()
-        .subscribe(onNext: { [weak self] _ in
-          self?.presenter?.didClickOnFile(
-            with: file,
-            on: cell.imageView,
-            path: indexPath,
-            from: self
-          )
-        }).disposed(by: self.disposeBag)
-      cell.videoView.signalForPlay()
-        .subscribe(onNext: { [weak self] play, seconds in
-          if !play {
-            self?.videoRecords[file] = seconds
-          }
-        }).disposed(by: self.disposeBag)
-      cell.configure(with: FileCellModel(file, seconds: self.videoRecords[file]))
-      return cell
-    } else {
-      let cell: FileCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
-      cell.signalForClick()
-        .subscribe(onNext: { [weak self] _ in
-          self?.presenter?.didClickOnFile(
-            with: file,
-            on: nil,
-            path: indexPath,
-            from: self
-          )
-        }).disposed(by: self.disposeBag)
-      cell.configure(with: file)
-      return cell
     }
   }
 }

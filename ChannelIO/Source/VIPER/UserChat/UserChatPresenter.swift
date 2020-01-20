@@ -471,7 +471,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   func didClickOnTranslate(for message: CHMessage?) {
     guard var message = message else { return }
     
-    if message.translateState == .original && message.translatedText != nil {
+    if message.translateState == .original && message.translatedBlocks.count != 0 {
       message.translateState = .translated
       mainStore.dispatch(UpdateMessage(payload: message))
       return
@@ -485,15 +485,17 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     mainStore.dispatch(UpdateMessage(payload: message))
     
     self.interactor?.translate(for: message)
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (text) in
-        guard let text = text else { return }
-        (message.translatedText, _) = CustomMessageTransform.markdown.parse(text)
+      .subscribe(onNext: { blocks in
+        let transform = CustomBlockTransform(
+          config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+        )
+        message.translatedBlocks = blocks.compactMap { transform.transformFromJSON($0) }
         message.translateState = .translated
+        mainStore.dispatchOnMain(UpdateMessage(payload: message))
         mainStore.dispatch(UpdateMessage(payload: message))
       }, onError: { (error) in
         message.translateState = .failed
-        mainStore.dispatch(UpdateMessage(payload: message))
+        mainStore.dispatchOnMain(UpdateMessage(payload: message))
       }).disposed(by: self.disposeBag)
   }
   
@@ -576,6 +578,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       .subscribe()
       .disposed(by: self.disposeBag)
   }
+  
   private func sendMessage(with message: CHMessage) {
     self.interactor?
       .send(message: message)

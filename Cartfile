@@ -17,3 +17,4 @@ github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit" ~> 2.5.0
 github "rs/SDWebImage" ~> 5.0.0
 github "tilltue/TLPhotoPicker" ~> 2.0.0
+github "SDWebImage/SDWebImageWebPCoder"

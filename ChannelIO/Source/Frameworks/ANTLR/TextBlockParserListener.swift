@@ -4,95 +4,67 @@
  * This interface defines a complete listener for a parse tree produced by
  * {@link TextBlockParser}.
  */
-internal protocol TextBlockParserListener: ParseTreeListener {
+public protocol TextBlockParserListener: ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link TextBlockParser#text}.
+	 * Enter a parse tree produced by {@link TextBlockParser#block}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func enterText(_ ctx: TextBlockParser.TextContext)
+	func enterBlock(_ ctx: TextBlockParser.BlockContext)
 	/**
-	 * Exit a parse tree produced by {@link TextBlockParser#text}.
+	 * Exit a parse tree produced by {@link TextBlockParser#block}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func exitText(_ ctx: TextBlockParser.TextContext)
+	func exitBlock(_ ctx: TextBlockParser.BlockContext)
 	/**
-	 * Enter a parse tree produced by {@link TextBlockParser#bold}.
+	 * Enter a parse tree produced by {@link TextBlockParser#tag}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func enterBold(_ ctx: TextBlockParser.BoldContext)
+	func enterTag(_ ctx: TextBlockParser.TagContext)
 	/**
-	 * Exit a parse tree produced by {@link TextBlockParser#bold}.
+	 * Exit a parse tree produced by {@link TextBlockParser#tag}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func exitBold(_ ctx: TextBlockParser.BoldContext)
+	func exitTag(_ ctx: TextBlockParser.TagContext)
 	/**
-	 * Enter a parse tree produced by {@link TextBlockParser#italic}.
+	 * Enter a parse tree produced by {@link TextBlockParser#attribute}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func enterItalic(_ ctx: TextBlockParser.ItalicContext)
+	func enterAttribute(_ ctx: TextBlockParser.AttributeContext)
 	/**
-	 * Exit a parse tree produced by {@link TextBlockParser#italic}.
+	 * Exit a parse tree produced by {@link TextBlockParser#attribute}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func exitItalic(_ ctx: TextBlockParser.ItalicContext)
+	func exitAttribute(_ ctx: TextBlockParser.AttributeContext)
 	/**
-	 * Enter a parse tree produced by {@link TextBlockParser#link}.
+	 * Enter a parse tree produced by {@link TextBlockParser#attrValue}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func enterLink(_ ctx: TextBlockParser.LinkContext)
+	func enterAttrValue(_ ctx: TextBlockParser.AttrValueContext)
 	/**
-	 * Exit a parse tree produced by {@link TextBlockParser#link}.
+	 * Exit a parse tree produced by {@link TextBlockParser#attrValue}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func exitLink(_ ctx: TextBlockParser.LinkContext)
+	func exitAttrValue(_ ctx: TextBlockParser.AttrValueContext)
 	/**
-	 * Enter a parse tree produced by {@link TextBlockParser#inner}.
+	 * Enter a parse tree produced by {@link TextBlockParser#content}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func enterInner(_ ctx: TextBlockParser.InnerContext)
+	func enterContent(_ ctx: TextBlockParser.ContentContext)
 	/**
-	 * Exit a parse tree produced by {@link TextBlockParser#inner}.
+	 * Exit a parse tree produced by {@link TextBlockParser#content}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func exitInner(_ ctx: TextBlockParser.InnerContext)
-	/**
-	 * Enter a parse tree produced by the {@code VariableWithFallback}
-	 * labeled alternative in {@link TextBlockParser#variable}.
-	 - Parameters:
-	   - ctx: the parse tree
-	 */
-	func enterVariableWithFallback(_ ctx: TextBlockParser.VariableWithFallbackContext)
-	/**
-	 * Exit a parse tree produced by the {@code VariableWithFallback}
-	 * labeled alternative in {@link TextBlockParser#variable}.
-	 - Parameters:
-	   - ctx: the parse tree
-	 */
-	func exitVariableWithFallback(_ ctx: TextBlockParser.VariableWithFallbackContext)
-	/**
-	 * Enter a parse tree produced by the {@code VariableWithoutFallback}
-	 * labeled alternative in {@link TextBlockParser#variable}.
-	 - Parameters:
-	   - ctx: the parse tree
-	 */
-	func enterVariableWithoutFallback(_ ctx: TextBlockParser.VariableWithoutFallbackContext)
-	/**
-	 * Exit a parse tree produced by the {@code VariableWithoutFallback}
-	 * labeled alternative in {@link TextBlockParser#variable}.
-	 - Parameters:
-	   - ctx: the parse tree
-	 */
-	func exitVariableWithoutFallback(_ ctx: TextBlockParser.VariableWithoutFallbackContext)
+	func exitContent(_ ctx: TextBlockParser.ContentContext)
 	/**
 	 * Enter a parse tree produced by {@link TextBlockParser#emoji}.
 	 - Parameters:
@@ -106,6 +78,30 @@ internal protocol TextBlockParserListener: ParseTreeListener {
 	 */
 	func exitEmoji(_ ctx: TextBlockParser.EmojiContext)
 	/**
+	 * Enter a parse tree produced by {@link TextBlockParser#variable}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func enterVariable(_ ctx: TextBlockParser.VariableContext)
+	/**
+	 * Exit a parse tree produced by {@link TextBlockParser#variable}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func exitVariable(_ ctx: TextBlockParser.VariableContext)
+	/**
+	 * Enter a parse tree produced by {@link TextBlockParser#variableFallback}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func enterVariableFallback(_ ctx: TextBlockParser.VariableFallbackContext)
+	/**
+	 * Exit a parse tree produced by {@link TextBlockParser#variableFallback}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func exitVariableFallback(_ ctx: TextBlockParser.VariableFallbackContext)
+	/**
 	 * Enter a parse tree produced by {@link TextBlockParser#plain}.
 	 - Parameters:
 	   - ctx: the parse tree
@@ -117,4 +113,16 @@ internal protocol TextBlockParserListener: ParseTreeListener {
 	   - ctx: the parse tree
 	 */
 	func exitPlain(_ ctx: TextBlockParser.PlainContext)
+	/**
+	 * Enter a parse tree produced by {@link TextBlockParser#escape}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func enterEscape(_ ctx: TextBlockParser.EscapeContext)
+	/**
+	 * Exit a parse tree produced by {@link TextBlockParser#escape}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func exitEscape(_ ctx: TextBlockParser.EscapeContext)
 }

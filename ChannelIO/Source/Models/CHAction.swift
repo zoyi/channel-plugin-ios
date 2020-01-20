@@ -60,6 +60,7 @@ extension CHActionButton: Mappable {
   mutating func mapping(map: Map) {
     key         <- map["key"]
     let rawText = map["text"].currentValue as? String ?? ""
+    //TODO: what should do?
     (text, onlyEmoji) = CustomMessageTransform.markdown.parse(rawText)
   }
 }

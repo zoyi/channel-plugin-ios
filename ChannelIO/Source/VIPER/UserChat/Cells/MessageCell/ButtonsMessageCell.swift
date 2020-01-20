@@ -33,18 +33,22 @@ class ButtonsMessageCell: MessageCell {
   override func setLayouts() {
     super.setLayouts()
     
-    self.buttonView.snp.makeConstraints { [weak self] (make) in
-      self?.topConstraint = make.top.equalToSuperview().inset(5).priority(850).constraint
-      self?.topToTimeConstraint = make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(3).priority(750).constraint
-      self?.topToTextConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3).constraint
-      self?.rightConstraint = make.right.equalToSuperview().inset(Metric.messageRightMinMargin).constraint
-      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.bubbleLeftMargin).constraint
+    self.buttonView.snp.makeConstraints { (make) in
+      self.topConstraint = make.top.equalToSuperview().inset(5).priority(850).constraint
+      self.topToTimeConstraint = make.top.equalTo(self.timestampLabel.snp.bottom).offset(3).priority(750).constraint
+      self.topToTextConstraint = make.top.equalTo(self.textBlocksView.snp.bottom).offset(3).constraint
+      self.rightConstraint = make.right.equalToSuperview().inset(Metric.messageRightMinMargin).constraint
+      self.leftConstraint = make.left.equalToSuperview().inset(Metric.bubbleLeftMargin).constraint
       make.bottom.equalToSuperview()
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.buttonView.configure(model: viewModel)
   }
   

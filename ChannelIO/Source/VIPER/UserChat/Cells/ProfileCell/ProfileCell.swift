@@ -65,9 +65,10 @@ class ProfileCell : WebPageMessageCell {
   
   override func setLayouts() {
     super.setLayouts()
+    self.webBottomConstraint?.deactivate()
     
     self.profileExtendableView.snp.makeConstraints { make in
-      self.topToMessageConstraint = make.top.equalTo(self.textMessageView.snp.bottom)
+      self.topToMessageConstraint = make.top.equalTo(self.textBlocksView.snp.bottom)
         .offset(Metric.viewTop).constraint
       self.topToWebConstraint = make.top.equalTo(self.webView.snp.bottom)
         .offset(Metric.viewTop).priority(750).constraint
@@ -83,8 +84,10 @@ class ProfileCell : WebPageMessageCell {
   
   override func configure(
     _ viewModel: MessageCellModelType,
-    presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.profileExtendableView.configure(
       model: viewModel,
       presenter: presenter,
