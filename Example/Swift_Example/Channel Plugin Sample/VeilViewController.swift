@@ -79,7 +79,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "f92afbe0-a853-42b6-ace0-2cc2eaa01cf7"
+      pluginKey = "30088443-70d3-48a1-9230-fb88d2e4f943"
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true
@@ -90,6 +90,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     let profile = Profile()
     profile.set(name: "TESTER")
+    
     ChannelIO.boot(with: settings, profile: profile) { (completion, guest) in
       
     }

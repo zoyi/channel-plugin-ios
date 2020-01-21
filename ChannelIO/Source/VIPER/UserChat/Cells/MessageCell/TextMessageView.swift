@@ -9,12 +9,6 @@
 import Foundation
 import SnapKit
 
-let placeHolder = UITextView()
-  .then {
-    $0.textContainer.lineFragmentPadding = 0
-    $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
-  }
-
 class TextMessageView : BaseView {
   struct Metrics {
     static let topBottomPadding = 10.f
@@ -81,40 +75,25 @@ class TextMessageView : BaseView {
     })
   }
 
-  func configure(_ viewModel: MessageCellModelType) {
+  func configure(_ viewModel: MessageCellModelType, blockModel: CHMessageBlock?) {
     self.viewModel = viewModel
     self.isHidden = viewModel.message.isEmpty()
-        
-    if !viewModel.message.onlyEmoji {
-      self.leadingConstraint?.update(inset: Metrics.leftRightPadding)
-      self.trailingConstraint?.update(inset: Metrics.leftRightPadding)
-      self.topConstraint?.update(inset: Metrics.topBottomPadding)
-      self.bottomConstraint?.update(inset: Metrics.topBottomPadding)
-    } else {
-      self.leadingConstraint?.update(inset: Metrics.minimalLeftRightPadding)
-      self.trailingConstraint?.update(inset: Metrics.minimalLeftRightPadding)
-      self.topConstraint?.update(inset: Metrics.minimalTopBottomPadding)
-      self.bottomConstraint?.update(inset: Metrics.minimalTopBottomPadding)
-    }
     
-    if viewModel.translateState == .translated {
-      if let translated = self.viewModel?.translatedText {
-        self.messageView.attributedText = translated
-      }
-    } else if let attributedText = viewModel.attributedText {
-      self.messageView.attributedText = attributedText
-    } else {
-      self.messageView.text = viewModel.message.message
-    }
-    
-    if viewModel.isDeleted {
-      self.backgroundColor = .grey200
-      self.messageView.textColor = .grey500
-    } else {
-      self.backgroundColor = viewModel.bubbleBackgroundColor
-      self.messageView.textColor = viewModel.textColor
+    guard
+      let blockModel = blockModel,
+      let displayText = blockModel.displayText else {
+      return
     }
 
+    self.backgroundColor = viewModel.bubbleBackgroundColor
+    let attrText = NSMutableAttributedString(attributedString: displayText)
+    attrText.addAttribute(
+      .foregroundColor,
+      value: viewModel.textColor,
+      range: NSRange(location: 0, length: attrText.string.utf16.count)
+    )
+    self.messageView.attributedText = attrText
+    
     self.messageView.linkTextAttributes = [
       .foregroundColor: viewModel.linkColor,
       .underlineStyle: 1
@@ -145,35 +124,34 @@ class TextMessageView : BaseView {
     }
   }
   
-  class func viewHeight(
-    fits width: CGFloat,
-    viewModel: MessageCellModelType,
+  static func viewHeight(
+    fit width: CGFloat,
+    model: MessageCellModelType,
+    blockModel: CHMessageBlock?,
     edgeInset: UIEdgeInsets? = nil) -> CGFloat {
-    var viewHeight : CGFloat = 0.0
-
-    let text = viewModel.translateState == .loading || viewModel.translateState == .original ?
-      viewModel.attributedText :
-      viewModel.translatedText
-    
-    let maxWidth = !viewModel.message.onlyEmoji ?
-      width - Metrics.leftRightPadding * 2 :
-      width - Metrics.minimalLeftRightPadding * 2
-    
-    let topBottomPadding = viewModel.message.onlyEmoji ?
-      Metrics.minimalTopBottomPadding * 2 :
-      Metrics.topBottomPadding * 2
-    
-    if let edgeInset = edgeInset {
-      placeHolder.textContainerInset = edgeInset
-    } else {
-      placeHolder.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+    guard
+      let blockModel = blockModel,
+      let text = blockModel.displayText,
+      text.string != "" else {
+      return 0
     }
     
+    var insets: UIEdgeInsets
+    if let edgeInset = edgeInset {
+      insets = edgeInset
+    } else {
+      insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+    }
+
+    let maxWidth = width - Metrics.leftRightPadding * 2
+    let topBottomPadding = Metrics.topBottomPadding * 2
+
+    var viewHeight: CGFloat = 0
+    placeHolder.textContainerInset = insets
     placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
-    placeHolder.textContainer.lineFragmentPadding = 0
     placeHolder.attributedText = text
     placeHolder.sizeToFit()
-    
+
     viewHeight += placeHolder.frame.size.height + topBottomPadding
     return viewHeight
   }

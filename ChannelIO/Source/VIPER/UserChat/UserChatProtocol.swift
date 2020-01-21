@@ -122,7 +122,7 @@ protocol UserChatInteractorProtocol: class {
     originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
   func fetchChat() -> Observable<CHUserChat?>
   func fetchMessages() -> Observable<ChatProcessState>
-  func translate(for message: CHMessage) -> Observable<String?>
+  func translate(for message: CHMessage) -> Observable<[CHMessageBlock]>
   func send(message: CHMessage?) -> Observable<CHMessage?>
   func sendTyping(isStop: Bool)
   func delete(message: CHMessage?)

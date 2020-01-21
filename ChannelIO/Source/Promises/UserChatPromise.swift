@@ -409,7 +409,10 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func translate(userChatId: String, messageId: String, language: String) -> Observable<String?> {
+  static func translate(
+    userChatId: String,
+    messageId: String,
+    language: String) -> Observable<[CHMessageBlock]> {
     return Observable.create { (subscriber) in
       let params = [
         "query": [
@@ -426,8 +429,10 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            let text = json["text"].string
-            subscriber.onNext(text)
+            let blocks = Mapper<CHMessageBlock>()
+              .mapArray(JSONObject: json["blocks"].object) ?? []
+
+            subscriber.onNext(blocks)
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))

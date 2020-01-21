@@ -20,8 +20,7 @@ protocol MessageCellModelType {
   var timestamp: String { get }
   var timestampIsHidden: Bool { get }
   var message: CHMessage { get }
-  var attributedText: NSAttributedString? { get }
-  var translatedText: NSAttributedString? { get }
+  var blocks: [CHMessageBlock] { get }
   var avatarEntity: CHEntity { get }
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
@@ -57,8 +56,7 @@ struct MessageCellModel: MessageCellModelType {
   let timestamp: String
   let timestampIsHidden: Bool
   let message: CHMessage
-  let attributedText: NSAttributedString?
-  let translatedText: NSAttributedString?
+  let blocks: [CHMessageBlock]
   let avatarEntity: CHEntity
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
@@ -91,7 +89,7 @@ struct MessageCellModel: MessageCellModelType {
   var isDeleted: Bool
   let canTranslate: Bool
   
-  init(message: CHMessage, previous: CHMessage?, indexPath: IndexPath? = nil) {
+  init(message: CHMessage, previous: CHMessage?, row: Int? = nil) {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
     let isContinuous = message.isContinue(other: previous) &&
@@ -106,22 +104,26 @@ struct MessageCellModel: MessageCellModelType {
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
     self.message = message
-    if let mv2 = message.messageV2, message.onlyEmoji {
-      let modifiedText = NSMutableAttributedString(attributedString: mv2)
-      modifiedText.addAttributes(
-        [.font: UIFont.systemFont(ofSize: 40)],
-        range: NSRange(location: 0, length: modifiedText.length)
-      )
-      self.attributedText = modifiedText
+    
+    if message.removed {
+      self.blocks = [CHMessageBlock(type: .text, displayText: MessageFactory.deleted())]
     } else {
-      self.attributedText = message.messageV2
+      self.blocks = message.getCurrentBlocks
     }
-    self.translatedText = message.translatedText
+    
+    if message.removed {
+      self.textColor = .grey500
+      self.bubbleBackgroundColor = .grey200
+    } else if createdByMe {
+      self.textColor = plugin.textUIColor
+      self.bubbleBackgroundColor = pluginColor
+    } else {
+      self.textColor = .grey900
+      self.bubbleBackgroundColor = .grey200
+    }
+
     self.avatarEntity = message.entity ?? channel
     self.avatarIsHidden = createdByMe || isContinuous
-    self.bubbleBackgroundColor = message.onlyEmoji ?
-      .clear : (createdByMe ? pluginColor : CHColors.lightGray)
-    self.textColor = createdByMe ? plugin.textUIColor : UIColor.grey900
     self.selectedTextColor = plugin.textUIColor
     self.linkColor = createdByMe ? plugin.textUIColor : UIColor.cobalt400
     self.usernameIsHidden = createdByMe || isContinuous
@@ -133,9 +135,6 @@ struct MessageCellModel: MessageCellModelType {
     self.createdByMe = createdByMe
     self.isContinuous = isContinuous
     self.pluginColor = pluginColor
-    self.canTranslate = message.language != "" &&
-      message.language != CHUtils.deviceLanguage() &&
-      message.log == nil
     self.messageType = message.messageType
     self.progress = message.progress
     self.isFailed = message.state == .Failed
@@ -152,18 +151,19 @@ struct MessageCellModel: MessageCellModelType {
     self.totalCount = self.profileItems.count //max 4
     
     //form : select
-    self.shouldDisplayForm = message.action != nil && indexPath?.row == 0 && message.action?.closed == false
+    self.shouldDisplayForm = message.action != nil && row == 0 && message.action?.closed == false
     
-    self.showTranslation =
-      message.language != "" &&
-      message.language != CHUtils.getLocale()?.rawValue &&
+    self.canTranslate = message.language != "" &&
+      message.language != CHUtils.deviceLanguage() &&
+      message.log == nil
+    self.showTranslation = self.canTranslate &&
       mainStore.state.userChatsState.showTranslation &&
       !createdByMe
     self.translateState = message.translateState
     
     //buttons
     self.buttons = message.buttons ?? []
-    self.isDeleted = message.isDeleted
+    self.isDeleted = message.removed
   }
 
   static func getClipType(message: CHMessage) -> ClipType {

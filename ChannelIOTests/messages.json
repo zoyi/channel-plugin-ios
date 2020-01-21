@@ -8,12 +8,11 @@
         "chatId":"1234",
         "personType":"manager",
         "personId":"217",
-        "message":"test",
+        "plainText":"test",
         "format":"v2",
         "language":"ko",
         "requestId":"a997c216-d054-426b-9efe-9ca4f7c98b80",
         "createdAt":1571133710466,
-        "messageV2":"test"
       }
     ]
 }

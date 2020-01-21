@@ -23,6 +23,7 @@ class WebPageMessageCell: MessageCell {
   private var topConstraint: Constraint?
   private var trailingConstraint: Constraint?
   private var leadingConstraint: Constraint?
+  var webBottomConstraint: Constraint?
   
   override func initialize() {
     super.initialize()
@@ -31,14 +32,16 @@ class WebPageMessageCell: MessageCell {
   
   override func setLayouts() {
     super.setLayouts()
+    self.messageBottomConstraint?.deactivate()
     
     self.webView.snp.makeConstraints { make in
-      self.topConstraint = make.top.equalTo(self.textMessageView.snp.bottom)
+      self.topConstraint = make.top.equalTo(self.textBlocksView.snp.bottom)
         .offset(Metrics.webViewWithoutTranslateTop).constraint
       self.trailingConstraint = make.right.equalToSuperview()
         .inset(Metric.cellRightPadding).constraint
       self.leadingConstraint = make.left.equalToSuperview()
         .inset(Metric.messageLeftMinMargin).constraint
+      self.webBottomConstraint = make.bottom.equalToSuperview().constraint
     }
     
     self.resendButtonView.snp.remakeConstraints { make in
@@ -51,10 +54,17 @@ class WebPageMessageCell: MessageCell {
   
   override func configure(
     _ viewModel: MessageCellModelType,
-    presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     
-    guard let webpage = viewModel.webpage else { return }
+    guard let webpage = viewModel.webpage else {
+      self.webView.isHidden = true
+      return
+    }
+    
+    self.webView.isHidden = false
     self.webView.configure(with: webpage)
     
     if viewModel.createdByMe == true {
@@ -66,7 +76,9 @@ class WebPageMessageCell: MessageCell {
     }
     
     self.topConstraint?.update(offset: viewModel.showTranslation ?
-      Metrics.webViewWithTranslateTop : Metrics.webViewWithoutTranslateTop)
+      Metrics.webViewWithTranslateTop :
+      Metrics.webViewWithoutTranslateTop
+    )
   }
   
   override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {

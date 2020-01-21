@@ -43,7 +43,7 @@ class ActionMessageCell: MessageCell {
     self.actionView.snp.makeConstraints { make in
       self.topConstraint = make.top.equalToSuperview()
         .inset(Metric.ActionViewTop).constraint
-      self.topToTextViewConstraint = make.top.equalTo(self.textMessageView.snp.bottom)
+      self.topToTextViewConstraint = make.top.equalTo(self.textBlocksView.snp.bottom)
         .offset(Metric.ActionViewTop).priority(750).constraint
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview().inset(Metric.ActionViewTrailing)
@@ -53,11 +53,13 @@ class ActionMessageCell: MessageCell {
   
   override func configure(
     _ viewModel: MessageCellModelType,
-    presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.messageId = viewModel.message.id
     
-    if let msg = viewModel.attributedText, msg.string == "" {
+    if viewModel.blocks.count == 0 {
       self.topConstraint?.activate()
       self.topToTextViewConstraint?.deactivate()
     } else {
@@ -131,8 +133,10 @@ class ActionWebMessageCell: WebPageMessageCell {
   
   override func configure(
     _ viewModel: MessageCellModelType,
-    presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
   }
@@ -184,8 +188,10 @@ class ActionMediaMessageCell: MediaMessageCell {
   
   override func configure(
     _ viewModel: MessageCellModelType,
-    presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
   }
@@ -238,8 +244,10 @@ class ActionFileMessageCell: FileMessageCell {
   
   override func configure(
     _ viewModel: MessageCellModelType,
-    presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.messageId = viewModel.message.id
     self.actionView.configure(viewModel)
   }

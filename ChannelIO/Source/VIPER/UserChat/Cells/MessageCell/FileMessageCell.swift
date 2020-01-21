@@ -33,13 +33,13 @@ class FileMessageCell: MessageCell {
   
   override func setLayouts() {
     super.setLayouts()
-    self.fileView.snp.makeConstraints { [weak self] (make) in
+    self.fileView.snp.makeConstraints { (make) in
       make.height.equalTo(Metrics.cellHeight)
-      self?.topConstraint = make.top.equalToSuperview().inset(5).priority(850).constraint
-      self?.topToTimeConstraint = make.top.equalTo((self?.timestampLabel.snp.bottom)!).offset(3).priority(750).constraint
-      self?.topToTextConstraint = make.top.equalTo((self?.textMessageView.snp.bottom)!).offset(3).constraint
-      self?.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
-      self?.leftConstraint = make.left.equalToSuperview().inset(Metric.messageLeftMinMargin).constraint
+      self.topConstraint = make.top.equalToSuperview().inset(5).priority(850).constraint
+      self.topToTimeConstraint = make.top.equalTo(self.timestampLabel.snp.bottom).offset(3).priority(750).constraint
+      self.topToTextConstraint = make.top.equalTo(self.textBlocksView.snp.bottom).offset(3).constraint
+      self.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
+      self.leftConstraint = make.left.equalToSuperview().inset(Metric.messageLeftMinMargin).constraint
     }
     
     self.resendButtonView.snp.remakeConstraints { [weak self] (make) in
@@ -49,17 +49,17 @@ class FileMessageCell: MessageCell {
     }
   }
   
-  override func configure(_ viewModel: MessageCellModelType, presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+  override func configure(
+    _ viewModel: MessageCellModelType,
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.fileView.configure(message: viewModel)
     
     if viewModel.isContinuous {
       self.topConstraint?.activate()
       self.topToTimeConstraint?.deactivate()
-      self.topToTextConstraint?.deactivate()
-    } else if self.textMessageView.messageView.text == "" {
-      self.topConstraint?.deactivate()
-      self.topToTimeConstraint?.activate()
       self.topToTextConstraint?.deactivate()
     } else {
       self.topConstraint?.deactivate()

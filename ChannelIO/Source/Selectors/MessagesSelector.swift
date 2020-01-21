@@ -37,14 +37,16 @@ func messageSelector(state: AppState, id: String?) -> CHMessage? {
         personType: $0.personType,
         personId: $0.personId,
         title: $0.title,
-        message: $0.message,
-        messageV2: $0.messageV2,
+        plainText: $0.plainText,
+        blocks: $0.blocks,
+        translatedBlocks: $0.translatedBlocks,
         requestId: $0.requestId,
         profileBot: $0.profileBot,
         action: $0.action,
         buttons: $0.buttons,
         submit: $0.submit,
         createdAt: $0.createdAt,
+        removed: $0.removed,
         language: $0.language,
         files: $0.files,
         webPage: $0.webPage,
@@ -54,10 +56,8 @@ func messageSelector(state: AppState, id: String?) -> CHMessage? {
         state: $0.state,
         messageType: $0.messageType,
         progress: $0.progress,
-        onlyEmoji: $0.onlyEmoji,
         sortedFiles: $0.sortedFiles,
-        translateState: $0.translateState,
-        translatedText: $0.translatedText
+        translateState: $0.translateState
       )
     })
 }
@@ -72,14 +72,16 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
       personType: $0.personType,
       personId: $0.personId,
       title: $0.title,
-      message: $0.message,
-      messageV2: $0.messageV2,
+      plainText: $0.plainText,
+      blocks: $0.blocks,
+      translatedBlocks: $0.translatedBlocks,
       requestId: $0.requestId,
       profileBot: $0.profileBot,
       action: $0.action,
       buttons: $0.buttons,
       submit: $0.submit,
       createdAt: $0.createdAt,
+      removed: $0.removed,
       language: $0.language,
       files: $0.files,
       webPage: $0.webPage,
@@ -89,10 +91,8 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
       state: $0.state,
       messageType: $0.messageType,
       progress: $0.progress,
-      onlyEmoji: $0.onlyEmoji,
       sortedFiles: $0.sortedFiles,
-      translateState: $0.translateState,
-      translatedText: $0.translatedText
+      translateState: $0.translateState
     )
   })
 }

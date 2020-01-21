@@ -51,15 +51,16 @@ struct CHMessage: ModelType {
   var personType: PersonType!
   var personId: String = ""
   var title: String? = nil
-  var message: String?
-  var messageV2: NSAttributedString?
+  var plainText: String?
+  var blocks: [CHMessageBlock] = []
+  var translatedBlocks: [CHMessageBlock] = []
   var requestId: String?
   var profileBot: [CHProfileItem]? = []
   var action: CHAction? = nil
   var buttons: [CHLink]? = []
   var submit: CHSubmit? = nil
   var createdAt: Date
-
+  var removed: Bool = false
   var language: String = ""
   
   var files: [CHFile] = []
@@ -69,20 +70,16 @@ struct CHMessage: ModelType {
   // Dependencies
   var entity: CHEntity?
   var mutable: Bool = true
+  
   // Used in only client
   var state: SendingState = .Sent
   var messageType: MessageType = .Default
   
   var progress: CGFloat = 1
-  //var isRemote = true
-  var onlyEmoji: Bool = false
-  
+
   // local
   var sortedFiles: [CHFile] = []
-  
   var translateState: CHMessageTranslateState = .original
-  var translatedText: NSAttributedString? = nil
-  
   var fileDictionary: [String:Any]?
   
   var readableDate: String {
@@ -115,26 +112,28 @@ struct CHMessage: ModelType {
     return nil
   }
 
-  var isDeleted: Bool {
-    return self.log?.action == "delete_message"
+  var getCurrentBlocks: [CHMessageBlock] {
+    if self.translateState == .translated {
+      return self.translatedBlocks
+    } else {
+      return self.blocks
+    }
   }
 }
 
 extension CHMessage: Mappable {
-  init(chatId: String,
-       message: String,
-       type: MessageType,
-       entity: CHEntity? = nil,
-       action: CHAction? = nil,
-       createdAt:Date? = Date(),
-       id: String? = nil) {
+  init(
+    chatId: String,
+    blocks: [CHMessageBlock],
+    type: MessageType,
+    entity: CHEntity? = nil,
+    action: CHAction? = nil,
+    createdAt:Date? = Date(),
+    id: String? = nil) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
-    let trimmedMessage = message.trimmingCharacters(in: .newlines)
-
+  
     self.id = id ?? requestId
-    self.message = trimmedMessage
-    (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
     self.requestId = requestId
     self.chatId = chatId
     self.createdAt = createdAt ?? now
@@ -144,9 +143,54 @@ extension CHMessage: Mappable {
     self.personId = entity?.id ?? ""
     self.personType = entity?.entityType
     self.progress = 1
+    self.blocks = blocks
   }
   
-  init(chatId: String, user: CHUser, message: String, messageType: MessageType = .UserMessage) {
+  init(
+    chatId: String,
+    message: String,
+    type: MessageType,
+    entity: CHEntity? = nil,
+    action: CHAction? = nil,
+    createdAt:Date? = Date(),
+    id: String? = nil) {
+    let now = Date()
+    let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    let trimmedMessage = message.trimmingCharacters(in: .newlines)
+
+    self.id = id ?? requestId
+    self.requestId = requestId
+    self.chatId = chatId
+    self.createdAt = createdAt ?? now
+    self.messageType = type
+    self.entity = entity
+    self.action = action
+    self.personId = entity?.id ?? ""
+    self.personType = entity?.entityType
+    self.progress = 1
+    self.plainText = trimmedMessage
+    
+    if trimmedMessage != "" {
+      let transform = CustomBlockTransform(
+        config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+      )
+      let block = CHMessageBlock(
+        type: .text,
+        blocks: [],
+        language: nil,
+        value: trimmedMessage
+      )
+      if let transformed = transform.transformFromJSON(block) {
+        self.blocks = [transformed]
+      }
+    }
+  }
+  
+  init(
+    chatId: String,
+    user: CHUser,
+    message: String,
+    messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
@@ -161,18 +205,34 @@ extension CHMessage: Mappable {
     self.state = .New
     self.messageType = messageType
     self.progress = 1
-    self.message = self.format(message: trimmedMessage)
-    (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
+    self.plainText = trimmedMessage
+    
+    if trimmedMessage != "" {
+      let transform = CustomBlockTransform(
+        config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+      )
+      let block = CHMessageBlock(
+        type: .text,
+        blocks: [],
+        language: nil,
+        value: trimmedMessage
+      )
+      if let transformed = transform.transformFromJSON(block) {
+        self.blocks = [transformed]
+      }
+    }
   }
   
-  init(chatId: String,
-       entity: CHEntity,
-       title: String? = nil,
-       message: NSAttributedString?,
-       buttons: [CHLink]? = nil) {
+  init(
+    chatId: String,
+    entity: CHEntity,
+    title: String? = nil,
+    message: NSAttributedString?,
+    buttons: [CHLink]? = nil) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
-
+    let trimmedMessage = message?.string.trimmingCharacters(in: .newlines) ?? ""
+    
     self.id = requestId
     self.chatType = .userChat
     self.chatId = chatId
@@ -184,8 +244,23 @@ extension CHMessage: Mappable {
     self.progress = 1
     self.buttons = buttons
     self.title = title
-    self.messageV2 = message
     self.messageType = self.contextType()
+    self.plainText = trimmedMessage
+    
+    if trimmedMessage != "" {
+      let transform = CustomBlockTransform(
+        config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+      )
+      let block = CHMessageBlock(
+        type: .text,
+        blocks: [],
+        language: nil,
+        value: trimmedMessage
+      )
+      if let transformed = transform.transformFromJSON(block) {
+        self.blocks = [transformed]
+      }
+    }
   }
   
   init(chatId: String, user: CHUser, message: String = "", files: [CHFile] = []) {
@@ -195,10 +270,10 @@ extension CHMessage: Mappable {
   }
   
   init(chatId: String, user: CHUser, message: String = "", fileDictionary: [String:Any]?) {
-      self.init(chatId: chatId, user: user, message: message, messageType: .Media)
-      self.fileDictionary = fileDictionary
-      self.progress = 0
-    }
+    self.init(chatId: chatId, user: user, message: message, messageType: .Media)
+    self.fileDictionary = fileDictionary
+    self.progress = 0
+  }
   
   init?(map: Map) {
     self.createdAt = Date()
@@ -212,7 +287,10 @@ extension CHMessage: Mappable {
     personType  <- map["personType"]
     personId    <- map["personId"]
     title       <- map["title"]
-    message     <- map["message"]
+    plainText   <- map["plainText"]
+    blocks <- (map["blocks"], CustomBlockTransform(
+      config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15)))
+    )
     requestId   <- map["requestId"]
     files       <- map["files"]
     webPage     <- map["webPage"]
@@ -224,20 +302,12 @@ extension CHMessage: Mappable {
     submit      <- map["submit"]
     language    <- map["language"]
     
-    let msgv2 = map["message"].currentValue as? String ?? ""
-    (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
-    
     if self.action != nil {
       messageType = .Action
     } else {
       messageType = self.contextType()
     }
-    
-    if self.isDeleted {
-      self.message = MessageFactory.deleted().string
-      self.messageV2 = MessageFactory.deleted()
-    }
-    
+
     var videos: [CHFile] = []
     var images: [CHFile] = []
     var others: [CHFile] = []
@@ -251,15 +321,6 @@ extension CHMessage: Mappable {
       }
     }
     sortedFiles = videos + images + others
-  }
-  
-  func format(message: String) -> String {
-    var filterText = message
-    filterText = filterText.replacingOccurrences(of: "<", with: "\\<")
-    filterText = filterText.replacingOccurrences(of: ">", with: "\\>")
-    filterText = filterText.replacingOccurrences(of: "]", with: "\\]")
-    filterText = filterText.replacingOccurrences(of: "[", with: "\\[")
-    return filterText
   }
   
   func contextType() -> MessageType {
@@ -281,13 +342,7 @@ extension CHMessage: Mappable {
 
 extension CHMessage {
   func isEmpty() -> Bool {
-    if let messageV2 = self.messageV2?.string, messageV2 != "" {
-      return false
-    } else if let message = self.message, message != "" {
-      return false
-    } else {
-      return true
-    }
+    return self.blocks.count == 0 
   }
   
   func isSameWriter(other message: CHMessage?) -> Bool {
@@ -352,7 +407,7 @@ extension CHMessage {
     message.mutable = mutable
     return message
   }
-  
+
   func isMine() -> Bool {
     let me = mainStore.state.user
     return self.entity?.id == me.id
@@ -371,7 +426,7 @@ extension CHMessage {
     return Observable.create { subscriber in
       let disposable = UserChatPromise.createMessage(
         userChatId: self.chatId,
-        message: self.message,
+        message: self.plainText,
         requestId: self.requestId ?? "",
         files: self.files,
         fileDictionary: self.fileDictionary,
@@ -390,11 +445,12 @@ extension CHMessage {
     }
   }
   
-  func translate(to language: String) -> Observable<String?> {
+  func translate(to language: String) -> Observable<[CHMessageBlock]> {
     return UserChatPromise.translate(
       userChatId: self.chatId,
       messageId: self.id,
-      language: language)
+      language: language
+    )
   }
 }
 
@@ -407,7 +463,8 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
     lhs.files == rhs.files &&
     lhs.state == rhs.state &&
     lhs.webPage == rhs.webPage &&
-    lhs.message == rhs.message &&
+    lhs.plainText == rhs.plainText &&
+    lhs.blocks == rhs.blocks &&
     lhs.translateState == rhs.translateState &&
     lhs.action?.closed == rhs.action?.closed
 }

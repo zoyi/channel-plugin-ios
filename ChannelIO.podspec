@@ -50,7 +50,6 @@ Pod::Spec.new do |s|
   s.dependency 'CHDwifft'
   s.dependency 'Alamofire', '~> 4.9'
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
-  s.dependency 'CHSlackTextViewController'
   s.dependency 'MGSwipeTableCell'
   s.dependency 'M13ProgressSuite'
   s.dependency 'SVProgressHUD'

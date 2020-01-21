@@ -49,15 +49,16 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
         .inset(Metric.mediaTop).priority(750).constraint
       self.mediaTopToNameTopConstraint = make.top.equalTo(self.usernameLabel.snp.bottom)
         .offset(Metric.mediaTopToName).priority(850).constraint
-      self.mediaTopToTextViewTopContraint = make.top.equalTo(self.textMessageView.snp.bottom)
+      self.mediaTopToTextViewTopContraint = make.top.equalTo(self.textBlocksView.snp.bottom)
         .offset(Metric.mediaTopToText).constraint
       
-      self.leftTextViewConstraint = make.leading.equalTo(self.textMessageView.snp.leading)
+      self.leftTextViewConstraint = make.leading.equalTo(self.textBlocksView.snp.leading)
         .priority(750).constraint
       self.leftConstraint = make.leading.equalToSuperview()
         .inset(Metric.mediaInSideMargin).priority(850).constraint
       self.rightConstraint = make.trailing.equalToSuperview()
         .inset(Metric.mediaOutSideMargin).constraint
+      
       make.bottom.equalToSuperview()
     }
   }
@@ -80,8 +81,10 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
 
   override func configure(
     _ viewModel: MessageCellModelType,
-    presenter: UserChatPresenterProtocol? = nil) {
-    super.configure(viewModel, presenter: presenter)
+    dataSource: (UITableViewDataSource & UITableViewDelegate),
+    presenter: UserChatPresenterProtocol? = nil,
+    row: Int = 0) {
+    super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.mediaCollectionView.configure(models: viewModel.files)
 
     if viewModel.canTranslate {
@@ -89,7 +92,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()
-    } else if self.textMessageView.messageView.text != "" {
+    } else if viewModel.blocks.count != 0 {
       self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTopToText)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()

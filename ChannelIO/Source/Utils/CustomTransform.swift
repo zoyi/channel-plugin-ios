@@ -75,3 +75,33 @@ class CustomURLTransform: TransformType {
     return nil
   }
 }
+
+class CustomBlockTransform: TransformType {
+  static var emojiMap = CHUtils.emojiMap()
+  var parser: CHMessageParser
+
+  public init(config: CHMessageParserConfig) {
+    self.parser = CHMessageParser(
+      config: config,
+      emojiMap: CustomBlockTransform.emojiMap
+    )
+  }
+
+  open func transformFromJSON(_ value: Any?) -> CHMessageBlock? {
+    if var block = Mapper<CHMessageBlock>().map(JSONObject: value) {
+      let text = self.parser.parse(block: block)
+      block.displayText = text
+      return block
+    }
+
+    return nil
+  }
+
+  //not support. cannot parse back to original form
+  open func transformToJSON(_ value: CHMessageBlock?) -> Any? {
+    if let model = value {
+      return nil
+    }
+    return nil
+  }
+}

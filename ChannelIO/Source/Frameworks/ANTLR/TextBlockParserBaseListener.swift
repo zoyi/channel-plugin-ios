@@ -1,151 +1,165 @@
 // Generated from TextBlockParser.g4 by ANTLR 4.7.1
 
+
 /**
  * This class provides an empty implementation of {@link TextBlockParserListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-internal class TextBlockParserBaseListener: TextBlockParserListener {
-     internal init() { }
+open class TextBlockParserBaseListener: TextBlockParserListener {
+     public init() { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterText(_ ctx: TextBlockParser.TextContext) { }
+	open func enterBlock(_ ctx: TextBlockParser.BlockContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitText(_ ctx: TextBlockParser.TextContext) { }
+	open func exitBlock(_ ctx: TextBlockParser.BlockContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterBold(_ ctx: TextBlockParser.BoldContext) { }
+	open func enterTag(_ ctx: TextBlockParser.TagContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitBold(_ ctx: TextBlockParser.BoldContext) { }
+	open func exitTag(_ ctx: TextBlockParser.TagContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterItalic(_ ctx: TextBlockParser.ItalicContext) { }
+	open func enterAttribute(_ ctx: TextBlockParser.AttributeContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitItalic(_ ctx: TextBlockParser.ItalicContext) { }
+	open func exitAttribute(_ ctx: TextBlockParser.AttributeContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterLink(_ ctx: TextBlockParser.LinkContext) { }
+	open func enterAttrValue(_ ctx: TextBlockParser.AttrValueContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitLink(_ ctx: TextBlockParser.LinkContext) { }
+	open func exitAttrValue(_ ctx: TextBlockParser.AttrValueContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterInner(_ ctx: TextBlockParser.InnerContext) { }
+	open func enterContent(_ ctx: TextBlockParser.ContentContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitInner(_ ctx: TextBlockParser.InnerContext) { }
+	open func exitContent(_ ctx: TextBlockParser.ContentContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterVariableWithFallback(_ ctx: TextBlockParser.VariableWithFallbackContext) { }
+	open func enterEmoji(_ ctx: TextBlockParser.EmojiContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitVariableWithFallback(_ ctx: TextBlockParser.VariableWithFallbackContext) { }
+	open func exitEmoji(_ ctx: TextBlockParser.EmojiContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterVariableWithoutFallback(_ ctx: TextBlockParser.VariableWithoutFallbackContext) { }
+	open func enterVariable(_ ctx: TextBlockParser.VariableContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitVariableWithoutFallback(_ ctx: TextBlockParser.VariableWithoutFallbackContext) { }
+	open func exitVariable(_ ctx: TextBlockParser.VariableContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterEmoji(_ ctx: TextBlockParser.EmojiContext) { }
+	open func enterVariableFallback(_ ctx: TextBlockParser.VariableFallbackContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitEmoji(_ ctx: TextBlockParser.EmojiContext) { }
+	open func exitVariableFallback(_ ctx: TextBlockParser.VariableFallbackContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterPlain(_ ctx: TextBlockParser.PlainContext) { }
+	open func enterPlain(_ ctx: TextBlockParser.PlainContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitPlain(_ ctx: TextBlockParser.PlainContext) { }
+	open func exitPlain(_ ctx: TextBlockParser.PlainContext) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func enterEveryRule(_ ctx: ParserRuleContext) { }
+	open func enterEscape(_ ctx: TextBlockParser.EscapeContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func exitEveryRule(_ ctx: ParserRuleContext) { }
+	open func exitEscape(_ ctx: TextBlockParser.EscapeContext) { }
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func visitTerminal(_ node: TerminalNode) { }
+	open func enterEveryRule(_ ctx: ParserRuleContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	internal func visitErrorNode(_ node: ErrorNode) { }
+	open func exitEveryRule(_ ctx: ParserRuleContext) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	open func visitTerminal(_ node: TerminalNode) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	open func visitErrorNode(_ node: ErrorNode) { }
 }

@@ -38,16 +38,18 @@ struct UserChatCellModel: UserChatCellModelType {
   init(userChat: CHUserChat) {
     self.chatId = userChat.id
     
-    if userChat.lastMessage?.isDeleted == true {
+    if userChat.lastMessage?.removed == true {
       self.lastMessage = MessageFactory.deleted().string
     } else if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
-    } else if let msg = userChat.lastMessage?.messageV2, msg.string != "" {
-      self.lastMessage = msg.string
+    } else if let msg = userChat.lastMessage {
+      //TODO: message fix
+//      self.lastMessage = msg.string
+//      self.attributeLastMessage = msg
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
-      self.lastMessage = userChat.lastMessage?.message ?? ""
+      self.lastMessage = userChat.lastMessage?.plainText ?? ""
     }
     
     if let files = userChat.lastMessage?.sortedFiles {
@@ -86,7 +88,10 @@ struct UserChatCellModel: UserChatCellModelType {
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
     
-    model.lastMessage = supportBotMessage?.message ?? user.getWelcome()
+    //TODO: message fix
+//    model.lastMessage = supportBotMessage?.message ?? user.getWelcome()
+//    model.attributeLastMessage = supportBotMessage?.messageV2
+
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model
