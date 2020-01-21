@@ -16,8 +16,7 @@ struct EventPromise {
   static func sendEvent(
     pluginId: String,
     name: String,
-    property: [String: Any?]? = nil,
-    sysProperty: [String: Any?]? = nil) -> Observable<CHEvent> {
+    property: [String: Any?]? = nil) -> Observable<CHEvent> {
     return Observable.create { subscriber in
       var params = [
         "url": [String:String]()
@@ -26,9 +25,6 @@ struct EventPromise {
       params["url"]?["name"] = name
       if let property = CHUtils.jsonStringify(data: property) {
         params["url"]?["property"] = property
-      }
-      if let sysProperty = CHUtils.jsonStringify(data: sysProperty) {
-        params["url"]?["sysProperty"] = sysProperty
       }
       if let jwt = PrefStore.getSessionJWT() {
         params["url"]?["sessionJWT"] = jwt

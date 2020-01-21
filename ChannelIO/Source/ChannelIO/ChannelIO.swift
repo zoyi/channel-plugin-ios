@@ -419,23 +419,32 @@ public final class ChannelIO: NSObject {
   @objc
   public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
     guard ChannelIO.isValidStatus else { return }
+    guard eventName.utf16.count <= 30, eventName != "" else { return }
     
     dispatch {
       dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
-      let version = CHUtils.getSdkVersion() ?? "unknown"
-      var sysProperty: [String: Any] = [
-        "pluginVersion": version,
-        "screenWidth": UIScreen.main.bounds.width,
-        "screenHeight": UIScreen.main.bounds.height
-      ]
-
-      if let pageName = eventProperty?["url"] {
-        sysProperty["url"] = pageName
-      } else if let controller = CHUtils.getTopController() {
-        sysProperty["url"] = "\(type(of: controller))"
+      
+      var property: [String: Any] = eventProperty ?? [:]
+      property["pluginVersion"] = CHUtils.getSdkVersion() ?? "unknown"
+      property["screenWidth"] = UIScreen.main.bounds.width
+      property["screenHeight"] = UIScreen.main.bounds.height
+      if property["url"] == nil, let controller = CHUtils.getTopController() {
+        property["url"] = "\(type(of: controller))"
       }
       
-      ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: sysProperty)
+      CHEvent.send(
+        pluginId: mainStore.state.plugin.id,
+        name: eventName,
+        property: property)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while sending the event \(eventName). Attempting to send again")
+          return true
+        })
+        .subscribe(onNext: { (event) in
+          dlog("\(eventName) event sent successfully")
+        }, onError: { (error) in
+          dlog("\(eventName) event failed")
+        }).disposed(by: disposeBag)
     }
   }
   

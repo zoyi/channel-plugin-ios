@@ -46,28 +46,6 @@ extension ChannelIO {
     CRToastManager.setDefaultOptions(toastOptions)
     SVProgressHUD.setDefaultStyle(.dark)
   }
-  
-  internal class func track(eventName: String, eventProperty: [String: Any]?, sysProperty: [String: Any]?) {
-    if eventName.utf16.count > 30 || eventName == "" {
-      return
-    }
-    
-    CHEvent.send(
-      pluginId: mainStore.state.plugin.id,
-      name: eventName,
-      property: eventProperty,
-      sysProperty: sysProperty)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        dlog("Error while sending the event \(eventName). Attempting to send again")
-        return true
-      })
-      .subscribe(onNext: { (event) in
-        dlog("\(eventName) event sent successfully")
-
-      }, onError: { (error) in
-        dlog("\(eventName) event failed")
-      }).disposed(by: disposeBag)
-  }
 
   internal class func checkInChannel(profile: Profile? = nil) -> Observable<BootResponse> {
     return Observable.create { subscriber in
