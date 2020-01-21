@@ -8,9 +8,27 @@
 final class LauncherWindow: UIWindow {
   var launcherView: LauncherView?
   var inAppNotificationView: InAppNotification?
- 
+
   init() {
-    super.init(frame: UIScreen.main.bounds)
+    let defaultSize = UIScreen.main.bounds.size
+    var y = UIApplication.shared.statusBarFrame.height
+    
+    var bounds = CGRect(
+      x: 0, y: y,
+      width: defaultSize.width,
+      height: defaultSize.height - y
+    )
+    
+    if let viewController = CHUtils.getTopController() {
+      y += viewController.navigationController?.navigationBar.bounds.height ?? 0
+      bounds = CGRect(
+        x: 0, y: y,
+        width: viewController.view.frame.width,
+        height: viewController.view.frame.height
+      )
+    }
+    
+    super.init(frame: bounds)
     self.initWindowSettings()
   }
 
@@ -44,22 +62,11 @@ final class LauncherWindow: UIWindow {
   override func makeKey() {}
   
   private func initWindowSettings() {
-    let controller = LauncherWindowController()
-    if #available(iOS 13.0, *) {
-      controller.hostStatusBarStyle = UIApplication.shared.delegate?
-        .window??
-        .windowScene?
-        .statusBarManager?
-        .statusBarStyle ?? .lightContent
-    } else {
-      controller.hostStatusBarStyle = UIApplication.shared.statusBarStyle
-    }
-    self.rootViewController = controller
+    self.rootViewController = UIViewController()
     self.window?.backgroundColor = nil
     self.window?.isHidden = false
     self.windowLevel = UIWindow.Level(rawValue: CGFloat.greatestFiniteMagnitude)
     self.makeKeyAndVisible()
-    
   }
   
   func addCustomView(with view: UIView) {
@@ -73,23 +80,5 @@ final class LauncherWindow: UIWindow {
   
   func updateStatusBarAppearance() {
     self.rootViewController?.setNeedsStatusBarAppearanceUpdate()
-  }
-}
-
-class LauncherWindowController: UIViewController {
-  var hostStatusBarStyle: UIStatusBarStyle?
-   
-  override var preferredStatusBarStyle: UIStatusBarStyle {
-    if #available(iOS 13.0, *) {
-      if ChannelIO.baseNavigation != nil {
-        return .lightContent
-      }
-      return self.hostStatusBarStyle ?? .lightContent
-    } else {
-      if ChannelIO.baseNavigation != nil {
-        return mainStore.state.plugin.textColor == "white" ? .lightContent : .default
-      }
-      return self.hostStatusBarStyle ?? .lightContent
-    }
   }
 }

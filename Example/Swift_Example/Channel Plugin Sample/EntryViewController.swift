@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import ChannelIO
 
 class EntryViewController : UIViewController {
   @IBOutlet var veilButton: UIButton!
@@ -15,7 +16,9 @@ class EntryViewController : UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    UIApplication.shared.statusBarStyle = .lightContent
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
   }
 }

@@ -1,3 +1,11 @@
+# 6.1.22
+## Updates
+* Please check your `LauncherConfig` if you happen to use it. We updated container view frame position for launcher, so after this updates the launcher's position might not be what you intended
+ 
+## Bug fixes
+* Insert UIWindow only if needed (only when launcher is needed to be displayed)
+* Set UIWindow size properly under status bar
+
 # 6.1.21
 ## Bug fixes
 * Removed UIWindow properly

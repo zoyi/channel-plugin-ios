@@ -38,7 +38,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
 
   override var preferredStatusBarStyle: UIStatusBarStyle {
-    return .default
+    return .lightContent
   }
   
   func willShowMessenger() {
@@ -92,8 +92,8 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
 //    )
     
     let profile = Profile()
-    profile.set(propertyKey: "Coin", value: 212)
-    profile.set(propertyKey: "age", value:1231231)
+//    profile.set(propertyKey: "Coin", value: 212)
+//    profile.set(propertyKey: "age", value:1231231)
     profile.set(name: "TESTER")
     ChannelIO.boot(with: settings, profile: profile) { (completion, guest) in
       
@@ -115,5 +115,14 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   
   @IBAction func onClickHideLauncher(_ sender: Any) {
     ChannelIO.hide(animated: true)
+  }
+}
+
+extension UINavigationController {
+  open override var childForStatusBarHidden: UIViewController? {
+    return self.topViewController
+  }
+  open override var childForStatusBarStyle: UIViewController? {
+    return self.topViewController
   }
 }
