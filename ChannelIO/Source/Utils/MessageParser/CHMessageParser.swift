@@ -20,7 +20,7 @@ class CHMessageParser {
 
   var emojiMap: [String: String] = [:]
   var profiles: [String: String] = [:]
-  var results: [CHMessageBlockViewModel] = []
+  var results: [CHMessageBlock] = []
 
   init(
     config: CHMessageParserConfig,
@@ -44,12 +44,9 @@ class CHMessageParser {
           result.append(NSAttributedString(string: "\n"))
         }
 
-        self.results.append(
-          CHMessageBlockViewModel(
-            type: block.type,
-            displayText: result
-          )
-        )
+        var updatedBlock = block
+        updatedBlock.displayText = result
+        self.results.append(updatedBlock)
       }
     }
   }

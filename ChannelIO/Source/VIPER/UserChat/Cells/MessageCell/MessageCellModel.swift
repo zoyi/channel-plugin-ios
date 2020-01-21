@@ -20,7 +20,7 @@ protocol MessageCellModelType {
   var timestamp: String { get }
   var timestampIsHidden: Bool { get }
   var message: CHMessage { get }
-  var blocks: [CHMessageBlockViewModel] { get }
+  var blocks: [CHMessageBlock] { get }
   var avatarEntity: CHEntity { get }
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
@@ -56,7 +56,7 @@ struct MessageCellModel: MessageCellModelType {
   let timestamp: String
   let timestampIsHidden: Bool
   let message: CHMessage
-  let blocks: [CHMessageBlockViewModel]
+  let blocks: [CHMessageBlock]
   let avatarEntity: CHEntity
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
@@ -106,7 +106,7 @@ struct MessageCellModel: MessageCellModelType {
     self.message = message
     
     if message.removed {
-      self.blocks = [CHMessageBlockViewModel(type: .text, displayText: MessageFactory.deleted())]
+      self.blocks = [CHMessageBlock(type: .text, displayText: MessageFactory.deleted())]
     } else {
       self.blocks = message.getCurrentBlocks
     }

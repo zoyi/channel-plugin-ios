@@ -40,7 +40,7 @@ class TextBlockTableViewCell: BaseTableViewCell {
     }
   }
 
-  func configure(with model: MessageCellModel, blockModel: CHMessageBlockViewModel) {
+  func configure(with model: MessageCellModel, blockModel: CHMessageBlock) {
     self.textView.configure(model, blockModel: blockModel)
     
     if model.createdByMe {
@@ -59,7 +59,7 @@ class TextBlockTableViewCell: BaseTableViewCell {
   static func cellHeight(
     fit width: CGFloat,
     model: MessageCellModelType,
-    blockModel: CHMessageBlockViewModel?,
+    blockModel: CHMessageBlock?,
     edgeInset: UIEdgeInsets? = nil) -> CGFloat {
     return TextMessageView.viewHeight(
       fit: width,

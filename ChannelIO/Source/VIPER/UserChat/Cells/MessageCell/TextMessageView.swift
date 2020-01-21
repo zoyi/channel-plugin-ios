@@ -75,7 +75,7 @@ class TextMessageView : BaseView {
     })
   }
 
-  func configure(_ viewModel: MessageCellModelType, blockModel: CHMessageBlockViewModel?) {
+  func configure(_ viewModel: MessageCellModelType, blockModel: CHMessageBlock?) {
     self.viewModel = viewModel
     self.isHidden = viewModel.message.isEmpty()
     
@@ -127,7 +127,7 @@ class TextMessageView : BaseView {
   static func viewHeight(
     fit width: CGFloat,
     model: MessageCellModelType,
-    blockModel: CHMessageBlockViewModel?,
+    blockModel: CHMessageBlock?,
     edgeInset: UIEdgeInsets? = nil) -> CGFloat {
     guard
       let blockModel = blockModel,

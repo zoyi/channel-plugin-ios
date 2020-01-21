@@ -87,20 +87,18 @@ class CustomBlockTransform: TransformType {
     )
   }
 
-  open func transformFromJSON(_ value: Any?) -> CHMessageBlockViewModel? {
-    if let block = Mapper<CHMessageBlock>().map(JSONObject: value) {
+  open func transformFromJSON(_ value: Any?) -> CHMessageBlock? {
+    if var block = Mapper<CHMessageBlock>().map(JSONObject: value) {
       let text = self.parser?.parse(block: block)
-      return CHMessageBlockViewModel(
-        type: block.type,
-        displayText: text
-      )
+      block.displayText = text
+      return text
     }
 
     return nil
   }
 
   //not support. cannot parse back to original form
-  open func transformToJSON(_ value: CHMessageBlockViewModel?) -> CHMessageBlock? {
+  open func transformToJSON(_ value: CHMessageBlock?) -> Any? {
     if let model = value {
       return nil
     }

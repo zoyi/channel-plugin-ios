@@ -20,6 +20,8 @@ struct CHMessageBlock {
   var blocks: [CHMessageBlock] = []
   var language: String?
   var value: String?
+  
+  var displayText: NSAttributedString?
 }
 
 extension CHMessageBlock: Mappable, Equatable {
@@ -37,21 +39,6 @@ extension CHMessageBlock: Mappable, Equatable {
       && lhs.value == rhs.value
       && lhs.language == rhs.language
       && lhs.blocks == rhs.blocks
-  }
-}
-
-struct CHMessageBlockViewModel: Equatable {
-  var type: MessageBlockType = .text
-  var displayText: NSAttributedString?
-
-  init(
-    type: MessageBlockType,
-    displayText: NSAttributedString?) {
-    self.type = type
-    self.displayText = displayText
-  }
-  
-  static func == (lhs: CHMessageBlockViewModel, rhs: CHMessageBlockViewModel) -> Bool {
-    return lhs.type == rhs.type && lhs.displayText == rhs.displayText
+      && lhs.displayText == rhs.displayText
   }
 }

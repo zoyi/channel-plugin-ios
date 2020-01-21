@@ -52,8 +52,8 @@ struct CHMessage: ModelType {
   var personId: String = ""
   var title: String? = nil
   var plainText: String?
-  var blocks: [CHMessageBlockViewModel] = []
-  var translatedBlocks: [CHMessageBlockViewModel] = []
+  var blocks: [CHMessageBlock] = []
+  var translatedBlocks: [CHMessageBlock] = []
   var requestId: String?
   var profileBot: [CHProfileItem]? = []
   var action: CHAction? = nil
@@ -112,7 +112,7 @@ struct CHMessage: ModelType {
     return nil
   }
 
-  var getCurrentBlocks: [CHMessageBlockViewModel] {
+  var getCurrentBlocks: [CHMessageBlock] {
     if self.translateState == .translated {
       return self.translatedBlocks
     } else {
@@ -124,7 +124,7 @@ struct CHMessage: ModelType {
 extension CHMessage: Mappable {
   init(
     chatId: String,
-    blocks: [CHMessageBlockViewModel],
+    blocks: [CHMessageBlock],
     type: MessageType,
     entity: CHEntity? = nil,
     action: CHAction? = nil,
