@@ -16,6 +16,13 @@ struct UIFactory {
 
     return style
   }
+  
+  static var pushParagraphStyle: NSParagraphStyle {
+    let style = NSMutableParagraphStyle()
+    style.alignment = .left
+    style.minimumLineHeight = 18
+    return style
+  }
 
   static var commonTextColor: UIColor {
     return UIColor.grey900

@@ -35,7 +35,8 @@ class CHMessageParser {
     self.bulletParser?.textParser = self
   }
 
-  func parse(blocks: [CHMessageBlock]) {
+  @discardableResult
+  func parse(blocks: [CHMessageBlock]) -> NSMutableAttributedString {
     for (index, block) in blocks.enumerated() {
       let result = self.parse(block: block)
 
@@ -48,6 +49,13 @@ class CHMessageParser {
         updatedBlock.displayText = result
         self.results.append(updatedBlock)
       }
+    }
+    
+    return self.results.reduce(NSMutableAttributedString()) { result, block in
+      if let text = block.displayText {
+        result.append(text)
+      }
+      return result
     }
   }
 

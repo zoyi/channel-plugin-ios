@@ -114,7 +114,7 @@ final class PhoneActionView: BaseView, Actionable {
       }).disposed(by: self.disposeBag)
 
     self.countryCodeView.signalForClick().subscribe(onNext: { [weak self] (value) in
-      let firstResponder = UIResponder.slk_currentFirst()
+      let firstResponder = UIResponder.currentFirst
       UIApplication.shared.sendAction(#selector(UIApplication.resignFirstResponder), to: nil, from: nil, for: nil)
       let code = self?.currentCountryCode ?? ""
         

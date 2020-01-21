@@ -78,7 +78,7 @@ class CustomURLTransform: TransformType {
 
 class CustomBlockTransform: TransformType {
   static var emojiMap = CHUtils.emojiMap()
-  var parser: CHMessageParser?
+  var parser: CHMessageParser
 
   public init(config: CHMessageParserConfig) {
     self.parser = CHMessageParser(
@@ -89,9 +89,9 @@ class CustomBlockTransform: TransformType {
 
   open func transformFromJSON(_ value: Any?) -> CHMessageBlock? {
     if var block = Mapper<CHMessageBlock>().map(JSONObject: value) {
-      let text = self.parser?.parse(block: block)
+      let text = self.parser.parse(block: block)
       block.displayText = text
-      return text
+      return block
     }
 
     return nil

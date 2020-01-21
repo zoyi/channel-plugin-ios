@@ -18,6 +18,7 @@
 		223726071FBEEF370097F22B /* CountryCodeReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223726061FBEEF370097F22B /* CountryCodeReducer.swift */; };
 		223726091FBEEFA20097F22B /* CountryCodeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223726081FBEEFA20097F22B /* CountryCodeActions.swift */; };
 		223DDE45228C1F46005B9905 /* CHNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223DDE44228C1F46005B9905 /* CHNotification.swift */; };
+		22423DD123D69B3000E909DD /* UIResponder+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22423DD023D69B3000E909DD /* UIResponder+Extensions.swift */; };
 		2243FD552084C15800CEEF45 /* CHProfileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2243FD542084C15800CEEF45 /* CHProfileItem.swift */; };
 		22476B972201FDF900DA4FBC /* RxSwiftExt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22476B962201FDF900DA4FBC /* RxSwiftExt.framework */; };
 		2252145A224CFB5B00F2C9CE /* PHAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22521459224CFB5B00F2C9CE /* PHAsset+Extensions.swift */; };
@@ -587,6 +588,7 @@
 		223726061FBEEF370097F22B /* CountryCodeReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeReducer.swift; sourceTree = "<group>"; };
 		223726081FBEEFA20097F22B /* CountryCodeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeActions.swift; sourceTree = "<group>"; };
 		223DDE44228C1F46005B9905 /* CHNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHNotification.swift; sourceTree = "<group>"; };
+		22423DD023D69B3000E909DD /* UIResponder+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIResponder+Extensions.swift"; sourceTree = "<group>"; };
 		2243FD542084C15800CEEF45 /* CHProfileItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHProfileItem.swift; sourceTree = "<group>"; };
 		22476B962201FDF900DA4FBC /* RxSwiftExt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwiftExt.framework; path = Carthage/Build/iOS/RxSwiftExt.framework; sourceTree = "<group>"; };
 		22521459224CFB5B00F2C9CE /* PHAsset+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+Extensions.swift"; sourceTree = "<group>"; };
@@ -1867,6 +1869,7 @@
 				22521459224CFB5B00F2C9CE /* PHAsset+Extensions.swift */,
 				6517FC38229CF55E00B64DB4 /* UIView+Extensions.swift */,
 				9C41611D22F1F21D0035232D /* UIColor+Additions.swift */,
+				22423DD023D69B3000E909DD /* UIResponder+Extensions.swift */,
 			);
 			name = Extensions;
 			path = Source/Extensions;
@@ -2398,7 +2401,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = ZOYI;
 				TargetAttributes = {
 					14D2AA731E24AE06006FEE22 = {
@@ -2416,10 +2419,9 @@
 			};
 			buildConfigurationList = 14D2AA6E1E24AE06006FEE22 /* Build configuration list for PBXProject "ChannelIO" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 				ja,
@@ -2582,6 +2584,7 @@
 				656FBFAF20CA53B60062C6A9 /* CHAction.swift in Sources */,
 				3931CB0623C33432005E8444 /* ChatQueue.swift in Sources */,
 				39F4B9F923C42CC10043B25A /* ParserATNSimulator.swift in Sources */,
+				22423DD123D69B3000E909DD /* UIResponder+Extensions.swift in Sources */,
 				39F4BA1D23C42CC10043B25A /* ParserRuleContext.swift in Sources */,
 				65CB991F226EC04A004F9DC7 /* LoungePresenter.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
@@ -3079,6 +3082,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -3086,6 +3090,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -3141,6 +3146,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -3148,6 +3154,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -3186,7 +3193,7 @@
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: apple@zoyi.co (R4VN26FWUN)";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				DEFINES_MODULE = YES;
@@ -3230,7 +3237,7 @@
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: apple@zoyi.co (R4VN26FWUN)";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				DEFINES_MODULE = YES;
