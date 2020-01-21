@@ -360,7 +360,6 @@
 		659793531FA716CB00840F6A /* UserChatActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793431FA7167C00840F6A /* UserChatActions.swift */; };
 		659793541FA716CB00840F6A /* WSocketActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659793441FA7167C00840F6A /* WSocketActions.swift */; };
 		659793551FA716CB00840F6A /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C21FA7167B00840F6A /* BaseNavigationController.swift */; };
-		659793561FA716CB00840F6A /* BaseSLKTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C31FA7167B00840F6A /* BaseSLKTextViewController.swift */; };
 		659793571FA716CB00840F6A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C41FA7167B00840F6A /* BaseViewController.swift */; };
 		659793581FA716CB00840F6A /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C51FA7167B00840F6A /* MainNavigationController.swift */; };
 		6597935B1FA716CB00840F6A /* UserChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C81FA7167B00840F6A /* UserChatsViewController.swift */; };
@@ -491,7 +490,6 @@
 		65CD481821F9BDBF001F0113 /* TableViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD481721F9BDBF001F0113 /* TableViewAnimator.swift */; };
 		65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962962166205E0032F5C5 /* Alamofire.framework */; };
 		65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A7216620600032F5C5 /* CHDwifft.framework */; };
-		65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629F2166205F0032F5C5 /* CHSlackTextViewController.framework */; };
 		65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A52166205F0032F5C5 /* CRToast.framework */; };
 		65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AE216620600032F5C5 /* M13ProgressSuite.framework */; };
 		65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962992166205E0032F5C5 /* MGSwipeTableCell.framework */; };
@@ -965,7 +963,6 @@
 		659792BF1FA7167B00840F6A /* UserChatPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatPromise.swift; sourceTree = "<group>"; };
 		659792C01FA7167B00840F6A /* UtilityPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityPromise.swift; sourceTree = "<group>"; };
 		659792C21FA7167B00840F6A /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
-		659792C31FA7167B00840F6A /* BaseSLKTextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSLKTextViewController.swift; sourceTree = "<group>"; };
 		659792C41FA7167B00840F6A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		659792C51FA7167B00840F6A /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		659792C81FA7167B00840F6A /* UserChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatsViewController.swift; sourceTree = "<group>"; };
@@ -1139,7 +1136,6 @@
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
 				65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */,
 				65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */,
-				65D3562E21BA4BD4001D6A30 /* CHSlackTextViewController.framework in Frameworks */,
 				65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */,
 				65D3563321BA4BD4001D6A30 /* M13ProgressSuite.framework in Frameworks */,
 				65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */,
@@ -1926,7 +1922,6 @@
 				65CB9916226EB9D2004F9DC7 /* Lounge */,
 				6590FA8F2068C82D0054B353 /* UserChats */,
 				659792C21FA7167B00840F6A /* BaseNavigationController.swift */,
-				659792C31FA7167B00840F6A /* BaseSLKTextViewController.swift */,
 				659792C41FA7167B00840F6A /* BaseViewController.swift */,
 				659792C51FA7167B00840F6A /* MainNavigationController.swift */,
 			);
@@ -2581,7 +2576,6 @@
 				39F4BA0B23C42CC10043B25A /* ATNDeserializationOptions.swift in Sources */,
 				39F4B9EB23C42CC00043B25A /* LL1Analyzer.swift in Sources */,
 				9C0951E123D5657400DE5799 /* UIFactory.swift in Sources */,
-				659793561FA716CB00840F6A /* BaseSLKTextViewController.swift in Sources */,
 				3931CAF523C333C3005E8444 /* MediaCollectionViewCell.swift in Sources */,
 				65AA7AE31FD64C9500D2A8B1 /* CHBot.swift in Sources */,
 				6512132D224DF47F00737089 /* ActivityIndicator.swift in Sources */,
@@ -3190,7 +3184,6 @@
 		14D2AA891E24AE07006FEE22 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: apple@zoyi.co (R4VN26FWUN)";
@@ -3235,7 +3228,6 @@
 		14D2AA8A1E24AE07006FEE22 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: apple@zoyi.co (R4VN26FWUN)";
