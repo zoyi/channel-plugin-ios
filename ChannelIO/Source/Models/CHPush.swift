@@ -9,21 +9,56 @@
 import Foundation
 import ObjectMapper
 
-protocol CHPushDisplayable { }
+protocol CHPushDisplayable {
+  var writer: CHEntity? { get }
+  var sortedFiles: [CHFile] { get }
+  var webPage: CHWebPage? { get }
+  var readableCreatedAt: String { get }
+  var mobileExposureType: InAppNotificationType? { get }
+  var logMessage: String? { get }
+  var blocks: [CHMessageBlock] { get }
+  var chatId: String { get }
+}
 
 struct CHPush: CHPushDisplayable {
   var type = ""
-  
   var message: CHMessage?
-  
   var user: CHUser?
   var bot: CHBot?
   var manager: CHManager?
   var userChat: CHUserChat?
   
-  var showLog: Bool = true
+  var writer: CHEntity? {
+    return self.manager ?? self.bot
+  }
   
-  var mobileExposureType: InAppNotificationType = .banner
+  var sortedFiles: [CHFile] {
+    return self.message?.sortedFiles ?? []
+  }
+  
+  var webPage: CHWebPage? {
+    return self.message?.webPage
+  }
+  
+  var readableCreatedAt: String {
+    return self.message?.readableCreatedAt ?? ""
+  }
+  
+  var mobileExposureType: InAppNotificationType? {
+    return self.message?.marketing?.exposureType ?? .banner
+  }
+  
+  var logMessage: String? {
+    return self.message?.logMessage
+  }
+  
+  var blocks: [CHMessageBlock] {
+    return self.message?.blocks ?? []
+  }
+  
+  var chatId: String {
+    return self.userChat?.id ?? ""
+  }
 }
 
 extension CHPush : Mappable {
@@ -44,8 +79,7 @@ extension CHPush: Equatable {
     return lhs.type == rhs.type &&
       lhs.message == rhs.message &&
       lhs.bot == rhs.bot &&
-      lhs.manager == rhs.manager &&
-      lhs.mobileExposureType == rhs.mobileExposureType
+      lhs.manager == rhs.manager
   }
 }
 

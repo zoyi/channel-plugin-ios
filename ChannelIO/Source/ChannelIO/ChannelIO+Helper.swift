@@ -177,7 +177,7 @@ extension ChannelIO {
     }
   }
   
-  internal class func showNotification(pushData: CHPush?) {
+  internal class func showNotification(pushData: CHPushDisplayable?) {
     guard let view = CHUtils.getTopController()?.view else { return }
     guard let push = pushData else { return }
     
@@ -187,15 +187,14 @@ extension ChannelIO {
     }
     
     var notificationView: InAppNotification?
-    
-    //TODO: change from message type
-    if push.mobileExposureType == .banner {
-      notificationView = BannerInAppNotificationView()
-    } else {
+    let viewModel = InAppNotificationViewModel(push: push)
+
+    if viewModel.mobileExposureType == .fullScreen {
       notificationView = PopupInAppNotificationView()
+    } else {
+      notificationView = BannerInAppNotificationView()
     }
      
-    let viewModel = InAppNotificationViewModel(push: push)
     notificationView?.configure(with: viewModel)
     notificationView?.insertView(on: view)
     
@@ -204,7 +203,7 @@ extension ChannelIO {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (event) in
         ChannelIO.hideNotification()
-        ChannelIO.showUserChat(userChatId: push.userChat?.id)
+        ChannelIO.showUserChat(userChatId: push.chatId)
       }).disposed(by: disposeBag)
     
     notificationView?.signalForClose()

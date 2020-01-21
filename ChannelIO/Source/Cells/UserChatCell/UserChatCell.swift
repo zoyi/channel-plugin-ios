@@ -24,15 +24,16 @@ final class UserChatCell: BaseTableViewCell {
     static let cellTopPadding = 13.f
     static let cellLeftPadding = 14.f
     static let cellRightPadding = 15.f
-    static let titleBottomPadding = 7.f
+    static let titleBottomPadding = 4.f
     static let timestampBottomPadding = 13.f
     static let avatarRightPadding = 14.f
-    static let avatarWidth = 36.f
-    static let avatarHeight = 36.f
+    static let avatarSide = 36.f
     static let badgeHeight = 22.f
     static let badgeLeftPadding = 20.f
     static let messageTrailing = 58.f
     static let cellHeight = 80.f
+    static let fileHeight = 18.f
+    static let welcomeBottom = 10.f
   }
 
   struct Font {
@@ -72,6 +73,10 @@ final class UserChatCell: BaseTableViewCell {
 
   let avatarView = AvatarView()
   
+  let contentStackView = UIStackView().then {
+    $0.axis = .vertical
+  }
+  
   let fileInfoView = AttachmentFileInfoView()
 
   let badge = Badge().then {
@@ -84,9 +89,6 @@ final class UserChatCell: BaseTableViewCell {
     $0.numberOfLines = Constants.messageLineWithoutFile
   }
   
-  private var topToTitleContraint: Constraint?
-  private var topToMessageContraint: Constraint?
-  
   // MARK: Initializing
 
   override func initialize() {
@@ -95,18 +97,20 @@ final class UserChatCell: BaseTableViewCell {
     self.contentView.addSubview(self.timestampLabel)
     self.contentView.addSubview(self.avatarView)
     self.contentView.addSubview(self.badge)
-    self.contentView.addSubview(self.messageLabel)
-    self.contentView.addSubview(self.fileInfoView)
-
+    self.contentStackView.addArrangedSubview(self.messageLabel)
+    self.contentStackView.addArrangedSubview(self.fileInfoView)
+    self.contentView.addSubview(self.contentStackView)
+    
     self.avatarView.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
       make.left.equalToSuperview().inset(Metrics.cellLeftPadding)
-      make.size.equalTo(CGSize(width: Metrics.avatarWidth, height: Metrics.avatarHeight))
+      make.width.height.equalTo(Metrics.avatarSide)
     }
     
     self.titleLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
       make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
+      make.right.equalToSuperview().inset(Metrics.messageTrailing)
     }
     
     self.timestampLabel.snp.makeConstraints { make in
@@ -115,28 +119,20 @@ final class UserChatCell: BaseTableViewCell {
       make.left.equalTo(self.titleLabel.snp.right).offset(Metrics.cellRightPadding)
     }
     
-    self.messageLabel.snp.makeConstraints { make in
+    self.contentStackView.snp.makeConstraints { make in
       make.top.equalTo(self.titleLabel.snp.bottom).offset(Metrics.titleBottomPadding)
       make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
       make.right.equalToSuperview().inset(Metrics.messageTrailing)
-    }
-    
-    self.fileInfoView.snp.makeConstraints { make in
-      self.topToTitleContraint = make.top.equalTo(self.messageLabel.snp.bottom).constraint
-      self.topToMessageContraint =  make.top.equalTo(self.titleLabel.snp.bottom)
-        .offset(Metrics.titleBottomPadding).priority(850).constraint
-      make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
-      make.right.equalToSuperview().inset(Metrics.messageTrailing)
+      make.bottom.lessThanOrEqualToSuperview()
     }
     
     self.badge.snp.makeConstraints { make in
-      make.top.equalTo(self.timestampLabel.snp.bottom).offset(Metrics.timestampBottomPadding)
+      make.top.equalTo(self.timestampLabel.snp.bottom)
+        .offset(Metrics.timestampBottomPadding)
       make.right.equalToSuperview().inset(Metrics.cellRightPadding)
       make.height.equalTo(Metrics.badgeHeight)
     }
   }
-
-  // MARK: Configuring
 
   func configure(_ viewModel: UserChatCellModelType) {
     self.titleLabel.text = viewModel.title
@@ -144,54 +140,57 @@ final class UserChatCell: BaseTableViewCell {
     self.badge.isHidden = viewModel.isBadgeHidden
     self.badge.configure(viewModel.badgeCount)
     self.messageLabel.text = viewModel.lastMessage
-    
+    self.messageLabel.isHidden = !(viewModel.lastMessage != nil)
+    self.messageLabel.textColor = viewModel.isClosed ?
+      CHColors.blueyGrey : Color.messageLabel
     let hasFiles = viewModel.files.count > 0
     self.fileInfoView.isHidden = !hasFiles
+    self.fileInfoView.configure(with: viewModel.files, isLarge: false)
+    
     self.messageLabel.numberOfLines = hasFiles ?
-      Constants.messageLineWithFile : Constants.messageLineWithoutFile
-    if hasFiles {
-      self.fileInfoView.configure(with: viewModel.files, isLarge: false)
-    }
-    
-    if hasFiles && viewModel.lastMessage != "" {
-      self.messageLabel.isHidden = true
-      self.topToTitleContraint?.activate()
-      self.topToMessageContraint?.deactivate()
-    } else {
-      self.messageLabel.isHidden = false
-      self.topToTitleContraint?.deactivate()
-      self.topToMessageContraint?.activate()
-    }
-    
-    if let avatar = viewModel.avatar {
-      self.avatarView.configure(avatar)
-    } else {
-      let channel = mainStore.state.channel
-      self.avatarView.configure(channel)
-    }
-    
-    self.messageLabel.textColor = viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
+      Constants.messageLineWithFile :
+      Constants.messageLineWithoutFile
+
+    self.avatarView.configure(viewModel.avatar ?? mainStore.state.channel)
   }
 
-  // MARK: Cell Height
-
-  static func calculateHeight(fits width: CGFloat, viewModel: UserChatCellModelType?, maxNumberOfLines: Int) -> CGFloat {
+  static func calculateHeight(
+    fits width: CGFloat,
+    viewModel: UserChatCellModelType?,
+    maxNumberOfLines: Int) -> CGFloat {
     guard let viewModel = viewModel else { return 0 }
     
     var height: CGFloat = 0.0
-    height += 13.f //top
-    height += 18.f
-    height += viewModel.lastMessage?
-      .height(
-        fits: width - 62.f - 52.f,
-        font: UIFont.systemFont(ofSize: 14),
-        maximumNumberOfLines: maxNumberOfLines
-      ) ?? 0
-    height += 9
+    height += Metrics.cellTopPadding
+    height += viewModel.title.height(
+      fits: width
+        - Metrics.cellLeftPadding
+        - Metrics.avatarSide
+        - Metrics.avatarRightPadding
+        - Metrics.messageTrailing,
+      font: Font.titleLabel,
+      maximumNumberOfLines: Constants.titleLabelNumberOfLines
+    )
+    height += Metrics.titleBottomPadding
+    let hasFiles = viewModel.files.count > 0
+    height += viewModel.lastMessage?.height(
+      fits: width
+        - Metrics.cellLeftPadding
+        - Metrics.avatarSide
+        - Metrics.avatarRightPadding
+        - Metrics.messageTrailing,
+      font: Font.messageLabel,
+      maximumNumberOfLines: maxNumberOfLines
+    ) ?? 0
+    height += hasFiles ? Metrics.fileHeight : 0
+    height += Metrics.welcomeBottom
+    
     return height
   }
   
-  class func height(fits width: CGFloat, viewModel: UserChatCellModelType) -> CGFloat {
+  class func height(
+    fits width: CGFloat,
+    viewModel: UserChatCellModelType) -> CGFloat {
     return Metrics.cellHeight
   }
 }

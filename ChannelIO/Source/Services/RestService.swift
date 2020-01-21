@@ -18,6 +18,7 @@ enum EPType: String {
 enum RestRouter: URLRequestConvertible {
   case Boot(String, ParametersType)
   case CreateUserChat(String)
+  case ClosePopup
   case CloseUserChat(String, ParametersType)
   case CreateMessage(String, ParametersType)
   case CheckVersion
@@ -90,7 +91,8 @@ enum RestRouter: URLRequestConvertible {
          .SetMessagesRead,
          .SendPushAck:
       return .put
-    case .UnregisterToken,
+    case .ClosePopup,
+         .UnregisterToken,
          .RemoveUserChat:
       return .delete
     }
@@ -111,6 +113,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/user-chats/\(userChatId)/messages"
     case .CheckVersion:
       return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
+    case .ClosePopup:
+      return "/front/users/me/pop-up"
     case .CloseUserChat(let userChatId, _):
       return "/front/user-chats/\(userChatId)/close"
     case .GetMessages(let userChatId, _):
@@ -267,6 +271,7 @@ enum RestRouter: URLRequestConvertible {
          .GetCountryCodes,
          .CreateUserChat,
          .CreateSupportBotChat,
+         .ClosePopup,
          .SendPushAck,
          .SetMessagesRead,
          .GetProfileBotSchemas,

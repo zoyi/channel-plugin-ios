@@ -33,7 +33,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   let notiType: InAppNotificationType = .banner
   
   private let containerView = UIView().then {
-    $0.layer.cornerRadius = 8.f
+    $0.layer.cornerRadius = 10.f
     $0.backgroundColor = .white
     $0.clipsToBounds = true
   }
@@ -60,13 +60,13 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   private let messageView = UITextView().then {
     $0.isScrollEnabled = false
     $0.isEditable = false
+    $0.isUserInteractionEnabled = false
     
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = UIColor.grey900
     $0.textContainer.maximumNumberOfLines = 1
     $0.textContainer.lineBreakMode = .byTruncatingTail
     
-    $0.dataDetectorTypes = [.link, .phoneNumber]
     $0.textContainer.lineFragmentPadding = 0
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     
@@ -84,6 +84,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     $0.image = CHAssets.getImage(named: "cancel")
   }
   private var chatSignal = PublishSubject<Any?>()
+  private var closeSignal = PublishSubject<Any?>()
   private let disposeBag = DisposeBag()
   
   override func initialize() {
@@ -120,6 +121,15 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       self?.chatSignal.onNext(nil)
       self?.chatSignal.onCompleted()
     }).disposed(by: self.disposeBag)
+    
+    self.closeContainerView
+      .signalForClick()
+      .subscribe(onNext: { [weak self] (_) in
+        guard let self = self else { return }
+        CHUser.closePopup().subscribe().disposed(by: self.disposeBag)
+        self.closeSignal.onNext(nil)
+        self.closeSignal.onCompleted()
+      }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -185,7 +195,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.messageView.isHidden = !hasMessage ? true : false
     if viewModel.hasMedia {
       self.fileInfoView.isHidden = !hasMessage ? false : true
-      self.messageView.textContainer.maximumNumberOfLines = Constants.maxLineWithFileInfo
+      self.messageView.textContainer.maximumNumberOfLines = !hasMessage ? Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
     } else {
       self.fileInfoView.isHidden = viewModel.files.count > 0 ? false : true
       self.messageView.textContainer.maximumNumberOfLines = viewModel.files.count > 0 ?
@@ -229,7 +239,8 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   }
   
   func signalForClose() -> Observable<Any?> {
-    return self.closeContainerView.signalForClick()
+    self.closeSignal = PublishSubject<Any?>()
+    return self.closeSignal.asObservable()
   }
   
   func removeView(animated: Bool) {

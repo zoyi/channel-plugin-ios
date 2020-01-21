@@ -11,23 +11,12 @@ import SDWebImage
 import UIKit
 
 class InAppVideoPlayerView: BaseView {
-  private struct Metrics {
-    static let volumeImageLength = 24.f
-    static let volumeImagePadding = 10.f
-    static let volumeControlViewLength = 44.f
-  }
-  
   private let containerView = UIView()
 
   private var player: AVPlayer?
   private let playerLayer = AVPlayerLayer().then {
     $0.videoGravity = .resizeAspectFill
     $0.needsDisplayOnBoundsChange = true
-  }
-  
-  private var controlView = UIView()
-  private var volumeImageView = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "volumeOffFilled")
   }
   
   private let progressBar = UIProgressView().then {
@@ -37,28 +26,14 @@ class InAppVideoPlayerView: BaseView {
     $0.transform = CGAffineTransform(scaleX: 1.f, y: 3.f)
   }
   
-  private let volumeOffImage = CHAssets.getImage(named: "volumeOffFilled")
-  private let volumeUpImage = CHAssets.getImage(named: "volumeUpFilled")
-  
   var disposeBag = DisposeBag()
 
   override func initialize() {
     super.initialize()
     
     self.containerView.layer.addSublayer(self.playerLayer)
-    self.controlView.addSubview(self.volumeImageView)
     self.addSubview(self.containerView)
     self.addSubview(self.progressBar)
-    self.addSubview(self.controlView)
-
-    self.controlView
-      .signalForClick()
-      .subscribe(onNext: { [weak self] _ in
-        guard let isMuted = self?.player?.isMuted else { return }
-        self?.player?.isMuted = !isMuted
-        self?.volumeImageView.image = isMuted ?
-          self?.volumeUpImage : self?.volumeOffImage
-      }).disposed(by: self.disposeBag)
   }
 
   override func setLayouts() {
@@ -68,20 +43,8 @@ class InAppVideoPlayerView: BaseView {
       make.edges.equalToSuperview()
     }
     
-    self.volumeImageView.snp.makeConstraints { make in
-      make.bottom.trailing.equalToSuperview().inset(Metrics.volumeImagePadding)
-      make.width.equalTo(Metrics.volumeImageLength)
-      make.height.equalTo(Metrics.volumeImageLength)
-    }
-    
     self.progressBar.snp.makeConstraints { make in
       make.leading.trailing.bottom.equalToSuperview()
-    }
-    
-    self.controlView.snp.makeConstraints { make in
-      make.bottom.trailing.equalToSuperview()
-      make.width.equalTo(Metrics.volumeControlViewLength)
-      make.height.equalTo(Metrics.volumeControlViewLength)
     }
   }
   
@@ -91,10 +54,8 @@ class InAppVideoPlayerView: BaseView {
     self.playerLayer.frame = self.containerView.bounds
   }
   
-  func configure(with url: URL?, controlEnable: Bool) {
+  func configure(with url: URL?) {
     guard let url = url else { return }
-    
-    self.controlView.isHidden = !controlEnable
     
     let item = AVPlayerItem(url: url)
     let player = self.getPlayer(with: item)
@@ -103,7 +64,6 @@ class InAppVideoPlayerView: BaseView {
     }
     player.play()
     player.isMuted = true
-    self.volumeImageView.image = self.volumeOffImage
     
     self.player?.addPeriodicTimeObserver(
       forInterval: CMTime.init(value: 1, timescale: 50),
@@ -114,6 +74,16 @@ class InAppVideoPlayerView: BaseView {
         self?.progressBar.setProgress(Float(progress), animated: true)
       }
     })
+  }
+  
+  func toggleMute() {
+    guard let isMuted = self.player?.isMuted else { return }
+    self.player?.isMuted = !isMuted
+  }
+  
+  func isMuted() -> Bool? {
+    guard let isMuted = self.player?.isMuted else { return nil }
+    return isMuted
   }
 
   func pause() {

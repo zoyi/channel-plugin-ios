@@ -74,5 +74,28 @@ struct UserPromise {
       }
     }
   }
+  
+  static func closePopup() -> Observable<Any?> {
+    return Observable.create { subscriber in
+      let req = Alamofire
+        .request(RestRouter.ClosePopup)
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { response in
+          switch response.result {
+          case .success(_):
+            subscriber.onNext(nil)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
+          }
+        })
+      
+      return Disposables.create {
+        req.cancel()
+      }
+    }
+  }
 }
 

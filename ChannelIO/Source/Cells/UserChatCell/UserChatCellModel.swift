@@ -22,12 +22,12 @@ protocol UserChatCellModelType {
 }
 
 struct UserChatCellModel: UserChatCellModelType {
-  var chatId: String? = nil
+  var chatId: String?
   var title: String = ""
-  var lastMessage: String? = nil
+  var lastMessage: String?
 
   var timestamp: String = ""
-  var avatar: CHEntity? = nil
+  var avatar: CHEntity?
   var badgeCount: Int = 0
   var isBadgeHidden: Bool = false
   var isClosed: Bool = false
@@ -43,9 +43,7 @@ struct UserChatCellModel: UserChatCellModelType {
     } else if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
     } else if let msg = userChat.lastMessage {
-      //TODO: message fix
-//      self.lastMessage = msg.string
-//      self.attributeLastMessage = msg
+      self.lastMessage = msg.normalText
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
@@ -87,11 +85,7 @@ struct UserChatCellModel: UserChatCellModelType {
     let bot = botSelector(state: mainStore.state, botName: plugin.botName)
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
-    
-    //TODO: message fix
-//    model.lastMessage = supportBotMessage?.message ?? user.getWelcome()
-//    model.attributeLastMessage = supportBotMessage?.messageV2
-
+    model.lastMessage = supportBotMessage?.normalText ?? user.getWelcome()
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model

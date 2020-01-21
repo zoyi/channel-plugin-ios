@@ -180,7 +180,7 @@ class MessageCell: BaseTableViewCell {
       width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
       width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
 
-    viewHeight += TextBlocksView.viewHeight(fit: bubbleMaxWidth, model: viewModel) + 6
+    viewHeight += TextBlocksView.viewHeight(fit: bubbleMaxWidth, model: viewModel)
     if viewModel.showTranslation {
       viewHeight += 20
     }

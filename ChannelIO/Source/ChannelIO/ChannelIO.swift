@@ -165,7 +165,7 @@ public final class ChannelIO: NSObject {
         .subscribe(onNext: { (_) in
           PrefStore.setChannelPluginSettings(pluginSetting: settings)
           AppManager.registerPushToken()
-
+          AppManager.displayMarketingIfNeeeded()
           if ChannelIO.launcherVisible {
             ChannelIO.show(animated: true)
           }

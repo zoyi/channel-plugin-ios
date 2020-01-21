@@ -51,8 +51,8 @@ class TextBlockTableViewCell: BaseTableViewCell {
     } else {
       self.leadingFixedConstraint?.activate()
       self.leadingFlexConstraint?.deactivate()
-      self.trailingFixedConstraint?.activate()
-      self.trailingFlexConstraint?.deactivate()
+      self.trailingFixedConstraint?.deactivate()
+      self.trailingFlexConstraint?.activate()
     }
   }
 
