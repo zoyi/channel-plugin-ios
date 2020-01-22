@@ -121,11 +121,19 @@ extension CHUser {
 }
 
 extension CHUser {
-  func getWelcome() -> String? {
+  func getWelcome(with config: CHMessageParserConfig? = nil) -> NSAttributedString? {
     if self.named {
-      return mainStore.state.plugin.welcomeNamedI18n?.getMessage()?.replace("${name}", withString: self.name)
+      return mainStore.state.plugin.welcomeNamedI18n?.getAttributedMessage(with: config)
     } else {
-      return mainStore.state.plugin.welcomeI18n?.getMessage()
+      return mainStore.state.plugin.welcomeI18n?.getAttributedMessage(with: config)
+    }
+  }
+  
+  func getWelcomeBlock() -> CHMessageBlock? {
+    if self.named {
+      return mainStore.state.plugin.welcomeNamedI18n?.getMessageBlock()
+    } else {
+      return mainStore.state.plugin.welcomeI18n?.getMessageBlock()
     }
   }
   
