@@ -261,13 +261,14 @@ public final class ChannelIO: NSObject {
   public class func show(animated: Bool) {
     dispatch {
       ChannelIO.launcherVisible = true
+            
       guard
         ChannelIO.isValidStatus,
         ChannelIO.canShowLauncher,
         ChannelIO.baseNavigation == nil else {
         return
       }
-      
+            
       let launcherView = ChannelIO.launcherView ?? LauncherView()
       
       let viewModel = LauncherViewModel(
@@ -293,7 +294,6 @@ public final class ChannelIO: NSObject {
       }
 
       launcherView.configure(viewModel)
-      
       launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
         ChannelIO.hideNotification()
         ChannelIO.open(animated: true)
@@ -360,10 +360,8 @@ public final class ChannelIO: NSObject {
       ChannelIO.baseNavigation = controller
       
       ChannelIO.launcherView?.hide(animated: false)
-      ChannelIO.launcherWindow?.updateStatusBarAppearance()
       ChannelIO.delegate?.willShowMessenger?()
       mainStore.dispatch(ChatListIsVisible())
-      
       topController.present(controller, animated: animated, completion: nil)
     }
   }
@@ -383,7 +381,6 @@ public final class ChannelIO: NSObject {
       ChannelIO.delegate?.willHideMessenger?()
       ChannelIO.baseNavigation?.dismiss(animated: animated, completion: {
         ChannelIO.didDismiss()
-        ChannelIO.launcherWindow?.updateStatusBarAppearance()
         completion?()
       })
     }

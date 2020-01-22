@@ -50,7 +50,6 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     super.viewDidLoad()
 
     self.view.backgroundColor = CHColors.paleGreyFour
-    
     self.initViews()
     self.initScrollView()
     self.presenter?.viewDidLoad()
@@ -74,6 +73,11 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     self.presenter?.cleanup()
+  }
+  
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    //NOTE: for less than iOS 13, above is default to .lightContent due to modal style
+    return mainStore.state.plugin.textColor == "white" ? .lightContent : .default
   }
   
   override func setupConstraints() {
