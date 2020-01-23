@@ -43,11 +43,16 @@ class SimpleNavigationTitleView: BaseView {
   func configure(with i18nTitle: CHi18n?, textColor: UIColor) {
     guard let title = i18nTitle else { return }
 
-    self.titleLabel.attributedText = title.getAttributedMessage(
-      with: CHMessageParserConfig(
-        font: UIFont.systemFont(ofSize: 17),
-        textColor: textColor
-      ))
+    dispatchAsyncOnBack {
+      let title = title.getAttributedMessage(
+        with: CHMessageParserConfig(
+          font: UIFont.systemFont(ofSize: 17),
+          textColor: textColor
+        ))
+      dispatch {
+        self.titleLabel.attributedText = title
+      }
+    }
   }
   
   override var intrinsicContentSize: CGSize {

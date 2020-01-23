@@ -17,32 +17,29 @@ struct CHi18n {
 
   func getAttributedMessage(with config: CHMessageParserConfig? = nil) -> NSAttributedString? {
     let key = CHUtils.getLocale()
-    var i18nText: String? = nil
+    var i18nText: String = self.text
     if key == .english {
-      i18nText = en ?? text
+      i18nText = self.en ?? self.text
     } else if key == .japanese {
-      i18nText = ja ?? text
+      i18nText = self.ja ?? self.text
     } else if key == .korean {
-      i18nText = ko ?? text
+      i18nText = self.ko ?? self.text
     }
     
     let config = config ?? CHMessageParserConfig(font: UIFont.systemFont(ofSize: 14))
     let transformer = CustomBlockTransform(config: config)
-    if let i18nText = i18nText {
-      return transformer.parser.parseText(i18nText)
-    }
-    return nil
+    return transformer.parser.parseText(i18nText)
   }
   
   func getMessageBlock() -> CHMessageBlock? {
     let key = CHUtils.getLocale()
-    var i18nText: String? = nil
+    var i18nText: String? = self.text
     if key == .english {
-      i18nText = en ?? text
+      i18nText = self.en ?? self.text
     } else if key == .japanese {
-      i18nText = ja ?? text
+      i18nText = self.ja ?? self.text
     } else if key == .korean {
-      i18nText = ko ?? text
+      i18nText = self.ko ?? self.text
     }
     return CHMessageBlock(type: .text, value: i18nText)
   }

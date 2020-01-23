@@ -9,6 +9,11 @@
 import Foundation
 import SnapKit
 
+let placeHolder = UITextView().then {
+  $0.textContainer.lineFragmentPadding = 0
+  $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+}
+
 class TextMessageView : BaseView {
   struct Metrics {
     static let topBottomPadding = 10.f
@@ -75,16 +80,12 @@ class TextMessageView : BaseView {
     })
   }
 
-  func configure(_ viewModel: MessageCellModelType, blockModel: CHMessageBlock?) {
+  func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
     self.isHidden = viewModel.message.isEmpty()
     
-    guard
-      let blockModel = blockModel,
-      let displayText = blockModel.displayText else {
-      return
-    }
-
+    guard let displayText = viewModel.text else { return }
+    
     self.backgroundColor = viewModel.bubbleBackgroundColor
     let attrText = NSMutableAttributedString(attributedString: displayText)
     attrText.addAttribute(
@@ -92,7 +93,7 @@ class TextMessageView : BaseView {
       value: viewModel.textColor,
       range: NSRange(location: 0, length: attrText.string.utf16.count)
     )
-    self.messageView.attributedText = attrText
+    self.messageView.attributedText = viewModel.text
     
     self.messageView.linkTextAttributes = [
       .foregroundColor: viewModel.linkColor,
@@ -127,12 +128,8 @@ class TextMessageView : BaseView {
   static func viewHeight(
     fit width: CGFloat,
     model: MessageCellModelType,
-    blockModel: CHMessageBlock?,
     edgeInset: UIEdgeInsets? = nil) -> CGFloat {
-    guard
-      let blockModel = blockModel,
-      let text = blockModel.displayText,
-      text.string != "" else {
+    guard let text = model.text, text.string != "" else {
       return 0
     }
     
@@ -158,9 +155,10 @@ class TextMessageView : BaseView {
 }
 
 extension TextMessageView : UITextViewDelegate {
-  func textView(_ textView: UITextView,
-                shouldInteractWith URL: URL,
-                in characterRange: NSRange) -> Bool {
+  func textView(
+    _ textView: UITextView,
+    shouldInteractWith URL: URL,
+    in characterRange: NSRange) -> Bool {
     let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
     let scheme = URL.scheme ?? ""
     switch scheme {
@@ -174,9 +172,10 @@ extension TextMessageView : UITextViewDelegate {
   }
   
   @available(iOS 10.0, *)
-  func textView(_ textView: UITextView,
-                shouldInteractWith URL: URL,
-                in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+  func textView(
+    _ textView: UITextView,
+    shouldInteractWith URL: URL,
+    in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
     if interaction == .invokeDefaultAction {
       let scheme = URL.scheme ?? ""
       switch scheme {

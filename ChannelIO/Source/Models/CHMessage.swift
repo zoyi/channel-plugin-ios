@@ -119,6 +119,19 @@ struct CHMessage: ModelType {
       return self.blocks
     }
   }
+  
+  var fullText: NSAttributedString? {
+    let result = NSMutableAttributedString(string: "")
+    for (index, block) in self.getCurrentBlocks.enumerated() {
+      if let text = block.displayText {
+        result.append(text)
+        if index != self.getCurrentBlocks.count - 1 {
+          result.append(NSMutableAttributedString(string: "\n"))
+        }
+      }
+    }
+    return result
+  }
 }
 
 extension CHMessage: Mappable {

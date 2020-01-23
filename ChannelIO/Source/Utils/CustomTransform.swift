@@ -99,9 +99,6 @@ class CustomBlockTransform: TransformType {
 
   //not support. cannot parse back to original form
   open func transformToJSON(_ value: CHMessageBlock?) -> Any? {
-    if let model = value {
-      return nil
-    }
     return nil
   }
 }

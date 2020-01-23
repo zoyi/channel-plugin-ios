@@ -68,7 +68,7 @@ class ProfileCell : WebPageMessageCell {
     self.webBottomConstraint?.deactivate()
     
     self.profileExtendableView.snp.makeConstraints { make in
-      self.topToMessageConstraint = make.top.equalTo(self.textBlocksView.snp.bottom)
+      self.topToMessageConstraint = make.top.equalTo(self.textView.snp.bottom)
         .offset(Metric.viewTop).constraint
       self.topToWebConstraint = make.top.equalTo(self.webView.snp.bottom)
         .offset(Metric.viewTop).priority(750).constraint

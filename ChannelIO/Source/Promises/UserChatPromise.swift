@@ -210,7 +210,7 @@ struct UserChatPromise {
         .validate(statusCode: 200..<300)
         .responseJSON { response in
           switch response.result {
-          case .success(let data):
+          case .success(_):
             subscriber.onNext(nil)
             subscriber.onCompleted()
           case .failure(let error):
