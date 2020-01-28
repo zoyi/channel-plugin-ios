@@ -60,18 +60,14 @@ struct PluginPromise {
       let req = Alamofire
         .request(RestRouter.UnregisterToken(key))
         .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
-          switch response.result {
-          case .success:
+        .response { response in
+          if let error = response.error {
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
+          } else {
             subscriber.onNext(nil)
             subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(ChannelError.serverError(msg:
-              error.localizedDescription
-            ))
           }
-        })
-      
+        }
       return Disposables.create {
         req.cancel()
       }

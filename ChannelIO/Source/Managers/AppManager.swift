@@ -35,14 +35,8 @@ struct AppManager {
     return PluginPromise.sendPushAck(chatId: userChatId)
   }
   
-  static func unregisterToken() {
-    PluginPromise.unregisterPushToken()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { _ in
-        dlog("shutdown success")
-      }, onError: { (error) in
-        dlog("shutdown fail")
-      }).disposed(by: disposeBag)
+  static func unregisterToken() -> Observable<Any?> {
+    return PluginPromise.unregisterPushToken()
   }
   
   static func checkVersion() -> Observable<Any?> {
