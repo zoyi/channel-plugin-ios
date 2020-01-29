@@ -229,10 +229,15 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func shutdown() {
-    dispatch {
-      ChannelIO.reset()
-    }
     AppManager.unregisterToken()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { _ in
+        dlog("shutdown success")
+        ChannelIO.reset()
+      }, onError: { _ in
+        dlog("shutdown fail")
+        ChannelIO.reset()
+      }).disposed(by: self.disposeBag)
   }
     
   /**
