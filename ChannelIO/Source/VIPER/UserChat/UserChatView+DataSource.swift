@@ -57,17 +57,19 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
       case .Log:
         return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
       case .Media:
-        return MediaMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+        return viewModel.shouldDisplayForm ?
+          ActionMediaMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) :
+          MediaMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
       case .WebPage:
-        return WebPageMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+        return viewModel.shouldDisplayForm ?
+          ActionWebMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) :
+          WebPageMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
       case .Profile:
         return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-      case .Action:
-        return ActionMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-      case .Buttons:
-        return ButtonsMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
       default:
-        return MessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+        return viewModel.shouldDisplayForm ?
+          ActionMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) :
+          MessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
       }
     default:
       return 0
@@ -157,32 +159,6 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
       row: indexPath.row
     )
     
-    if viewModel.shouldDisplayForm {
-      switch viewModel.clipType {
-      case .Image:
-        let cell: ActionMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
-        return cell
-      case .Webpage:
-        let cell: ActionWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
-        cell.webView.signalForClick()
-          .observeOn(MainScheduler.instance)
-          .subscribe{ [weak self] _ in
-            self?.presenter?.didClickOnWeb(with: message.webPage?.url, from: self)
-          }.disposed(by: self.disposeBag)
-        return cell
-      case .File:
-        let cell: ActionFileMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
-        return cell
-      default:
-        let cell: ActionMessageCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
-        return cell
-      }
-    }
-
     switch message.messageType {
     case .NewAlertMessage:
       let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
@@ -203,11 +179,17 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
       return cell
-    case .Buttons:
-      let cell: ButtonsMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
-      return cell
     case .WebPage:
+      if viewModel.shouldDisplayForm {
+        let cell: ActionWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
+        cell.webView.signalForClick()
+          .observeOn(MainScheduler.instance)
+          .subscribe{ [weak self] _ in
+            self?.presenter?.didClickOnWeb(with: message.webPage?.url, from: self)
+          }.disposed(by: self.disposeBag)
+        return cell
+      }
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
       cell.webView.signalForClick()
@@ -217,11 +199,22 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
         }.disposed(by: self.disposeBag)
       return cell
     case .Media:
+      if viewModel.shouldDisplayForm {
+        let cell: ActionMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
+        cell.setDataSource(self, at: indexPath.row)
+        return cell
+      }
       let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
       cell.setDataSource(self, at: indexPath.row)
       return cell
-    default: //remote
+    default:
+      if viewModel.shouldDisplayForm {
+        let cell: ActionMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
+        return cell
+      }
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
       return cell
@@ -308,9 +301,7 @@ extension UserChatView: UICollectionViewDelegate,
       cell.signalForClick()
         .subscribe(onNext: { [weak self] (_) in
           self?.presenter?.didClickOnFile(
-            with: file,
-            on: cell.imageView,
-            from: self
+            with: file, on: cell.imageView, from: self
           )
         }).disposed(by: self.disposeBag)
       cell.videoView.signalForPlay()
@@ -326,9 +317,7 @@ extension UserChatView: UICollectionViewDelegate,
       cell.signalForClick()
         .subscribe(onNext: { [weak self] _ in
           self?.presenter?.didClickOnFile(
-            with: file,
-            on: nil,
-            from: self
+            with: file, on: nil, from: self
           )
         }).disposed(by: self.disposeBag)
       cell.configure(with: file)

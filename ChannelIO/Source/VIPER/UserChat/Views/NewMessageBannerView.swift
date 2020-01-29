@@ -53,9 +53,9 @@ final class NewMessageBannerView : BaseView {
       make.size.equalTo(CGSize(width: 24, height: 24))
     }
     
-    self.newMessageLabel.snp.remakeConstraints { [weak self] (make) in
+    self.newMessageLabel.snp.remakeConstraints { (make) in
       make.centerY.equalToSuperview()
-      make.leading.equalTo((self?.avatarView.snp.trailing)!).offset(12)
+      make.leading.equalTo(self.avatarView.snp.trailing).offset(12)
       make.trailing.equalToSuperview().inset(20)
     }
   }

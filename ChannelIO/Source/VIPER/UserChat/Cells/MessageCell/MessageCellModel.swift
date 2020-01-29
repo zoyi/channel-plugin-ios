@@ -8,14 +8,8 @@
 
 import UIKit
 
-enum ClipType {
-  case None
-  case File
-  case Image
-  case Webpage
-}
-
 protocol MessageCellModelType {
+  var id: String { get }
   var name: String { get }
   var timestamp: String { get }
   var timestampIsHidden: Bool { get }
@@ -28,11 +22,9 @@ protocol MessageCellModelType {
   var selectedTextColor: UIColor { get }
   var linkColor: UIColor { get }
   var usernameIsHidden: Bool { get }
-  var imageIsHidden: Bool { get }
-  var fileIsHidden: Bool { get }
-  var webpageIsHidden: Bool { get }
   var webpage: CHWebPage? { get }
   var files: [CHFile] { get }
+  var action: CHAction? { get }
   var createdByMe: Bool { get }
   var isContinuous: Bool { get }
   var messageType: MessageType { get }
@@ -45,13 +37,12 @@ protocol MessageCellModelType {
   var shouldDisplayForm: Bool { get set }
   var translateState: CHMessageTranslateState { get set }
   var showTranslation: Bool { get }
-  var clipType: ClipType { get }
-  var buttons: [CHLink] { get }
   var isDeleted: Bool { get }
   var canTranslate: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
+  let id: String
   let name: String
   let timestamp: String
   let timestampIsHidden: Bool
@@ -64,11 +55,9 @@ struct MessageCellModel: MessageCellModelType {
   let selectedTextColor: UIColor
   let linkColor: UIColor
   let usernameIsHidden: Bool
-  let imageIsHidden: Bool
-  let fileIsHidden: Bool
-  let webpageIsHidden: Bool
   let webpage: CHWebPage?
   let files: [CHFile]
+  let action: CHAction?
   let createdByMe: Bool
   let isContinuous: Bool
   let messageType: MessageType
@@ -84,8 +73,6 @@ struct MessageCellModel: MessageCellModelType {
   
   var showTranslation: Bool = false
   var translateState: CHMessageTranslateState = .original
-  var clipType: ClipType = .None
-  var buttons: [CHLink]
   var isDeleted: Bool
   let canTranslate: Bool
   
@@ -96,14 +83,15 @@ struct MessageCellModel: MessageCellModelType {
       previous?.action == nil && previous?.profileBot?.count == 0
     
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
-    let cType = MessageCellModel.getClipType(message: message)
     let createdByMe = message.entity is CHUser
 
-    self.clipType = cType
+    self.id = message.id
+    //TODO: remove DTO dependency from view model later
+    self.message = message
+    self.action = message.action
     self.name = message.entity?.name ?? ""
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
-    self.message = message
   
     if message.removed {
       self.text = MessageFactory.deleted()
@@ -127,9 +115,6 @@ struct MessageCellModel: MessageCellModelType {
     self.selectedTextColor = plugin.textUIColor
     self.linkColor = createdByMe ? plugin.textUIColor : UIColor.cobalt400
     self.usernameIsHidden = createdByMe || isContinuous
-    self.imageIsHidden = (cType != ClipType.Image)
-    self.fileIsHidden = (cType != ClipType.File)
-    self.webpageIsHidden = (cType != ClipType.Webpage)
     self.webpage = message.webPage
     self.files = message.files
     self.createdByMe = createdByMe
@@ -160,21 +145,7 @@ struct MessageCellModel: MessageCellModelType {
       mainStore.state.userChatsState.showTranslation &&
       !createdByMe
     self.translateState = message.translateState
-    
-    //buttons
-    self.buttons = message.buttons ?? []
-    self.isDeleted = message.removed
-  }
 
-  static func getClipType(message: CHMessage) -> ClipType {
-    if message.files.filter({ $0.type == .image}).count > 0 {
-      return .Image
-    } else if !message.files.isEmpty {
-      return .File
-    } else if message.webPage != nil {
-      return .Webpage
-    } else {
-      return .None
-    }
+    self.isDeleted = message.removed
   }
 }

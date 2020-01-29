@@ -29,8 +29,6 @@ enum MessageType {
   case Media
   case File
   case Profile
-  case Action
-  case Buttons
 }
 
 enum CHMessageTranslateState {
@@ -57,7 +55,6 @@ struct CHMessage: ModelType {
   var requestId: String?
   var profileBot: [CHProfileItem]? = []
   var action: CHAction? = nil
-  var buttons: [CHLink]? = []
   var submit: CHSubmit? = nil
   var createdAt: Date
   var removed: Bool = false
@@ -257,8 +254,7 @@ extension CHMessage: Mappable {
     chatId: String,
     entity: CHEntity,
     title: String? = nil,
-    message: NSAttributedString?,
-    buttons: [CHLink]? = nil) {
+    message: NSAttributedString?) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message?.string.trimmingCharacters(in: .newlines) ?? ""
@@ -272,7 +268,6 @@ extension CHMessage: Mappable {
     self.createdAt = now
     self.state = .New
     self.progress = 1
-    self.buttons = buttons
     self.title = title
     self.messageType = self.contextType()
     self.plainText = trimmedMessage
@@ -324,7 +319,6 @@ extension CHMessage: Mappable {
     requestId   <- map["requestId"]
     files       <- map["files"]
     webPage     <- map["webPage"]
-    buttons     <- map["buttons"]
     log         <- map["log"]
     marketing   <- map["marketing"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
@@ -333,12 +327,8 @@ extension CHMessage: Mappable {
     submit      <- map["submit"]
     language    <- map["language"]
     
-    if self.action != nil {
-      messageType = .Action
-    } else {
-      messageType = self.contextType()
-    }
-
+    messageType = self.contextType()
+    
     var videos: [CHFile] = []
     var images: [CHFile] = []
     var others: [CHFile] = []
@@ -357,8 +347,6 @@ extension CHMessage: Mappable {
   func contextType() -> MessageType {
     if self.log != nil && self.log?.action != "delete_message" {
       return .Log
-    } else if let buttons = self.buttons, buttons.count != 0 {
-      return .Buttons
     } else if !self.files.isEmpty {
       return .Media
     } else if let profiles = self.profileBot, profiles.count != 0 {

@@ -82,10 +82,12 @@ class TextMessageView : BaseView {
 
   func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
-    self.isHidden = viewModel.message.isEmpty()
     
-    guard let displayText = viewModel.text else { return }
-    
+    guard let displayText = viewModel.text else {
+      self.isHidden = true
+      return
+    }
+    self.isHidden = false
     self.backgroundColor = viewModel.bubbleBackgroundColor
     let attrText = NSMutableAttributedString(attributedString: displayText)
     attrText.addAttribute(

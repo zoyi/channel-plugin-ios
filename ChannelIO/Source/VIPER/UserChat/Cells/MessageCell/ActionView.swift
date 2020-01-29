@@ -138,7 +138,7 @@ class ActionView: BaseView {
     self.buttons.removeAll()
     
     guard viewModel.shouldDisplayForm else { return }
-    guard let buttons = viewModel.message.action?.buttons, buttons.count > 0 else { return }
+    guard let buttons = viewModel.action?.buttons, buttons.count > 0 else { return }
     
     for button in buttons {
       let button = ActionButton(button: button)

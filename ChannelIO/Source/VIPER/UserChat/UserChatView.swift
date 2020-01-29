@@ -58,8 +58,6 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     $0.register(cellType: ActionMessageCell.self)
     $0.register(cellType: ActionWebMessageCell.self)
     $0.register(cellType: ActionMediaMessageCell.self)
-    $0.register(cellType: ActionFileMessageCell.self)
-    $0.register(cellType: ButtonsMessageCell.self)
     $0.register(cellType: FileStatusCell.self)
   }
   private var placeHolder: UIView? = nil
