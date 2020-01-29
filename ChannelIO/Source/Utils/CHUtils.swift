@@ -195,7 +195,6 @@ class CHUtils {
   
   class func secondsToRedableString(seconds: Int) -> String {
     let components = CHUtils.secondsToComponents(seconds: seconds)
-    var durationText = ""
     if components.0 > 0 {
       return String(format: CHAssets.localized("%d day"), components.0)
     }

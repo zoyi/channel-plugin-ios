@@ -182,7 +182,7 @@ struct PluginPromise {
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
           switch response.result {
-          case .success(let data):
+          case .success(_):
             subscriber.onNext(true)
             subscriber.onCompleted()
           case .failure(let error):

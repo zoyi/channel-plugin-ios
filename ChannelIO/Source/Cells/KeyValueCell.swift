@@ -57,7 +57,8 @@ class KeyValueCell: BaseTableViewCell {
   }
   
   func configure(profile: UserProfileItemModel) {
-    self.titleLabel.text = profile.profileName
+    let config = CHMessageParserConfig(font: UIFont.systemFont(ofSize: 13))
+    self.titleLabel.attributedText = profile.getProfileName(with: config)
     
     if let value = profile.profileValue {
       if profile.rawData.key == "mobileNumber" {

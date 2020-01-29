@@ -35,7 +35,7 @@ class WebPageMessageCell: MessageCell {
     self.messageBottomConstraint?.deactivate()
     
     self.webView.snp.makeConstraints { make in
-      self.topConstraint = make.top.equalTo(self.textBlocksView.snp.bottom)
+      self.topConstraint = make.top.equalTo(self.textView.snp.bottom)
         .offset(Metrics.webViewWithoutTranslateTop).constraint
       self.trailingConstraint = make.right.equalToSuperview()
         .inset(Metric.cellRightPadding).constraint
