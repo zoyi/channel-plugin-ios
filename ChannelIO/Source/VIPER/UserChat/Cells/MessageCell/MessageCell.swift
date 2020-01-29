@@ -58,7 +58,7 @@ class MessageCell: BaseTableViewCell {
     $0.textColor = Color.timestamp
   }
   
-  let textBlocksView = TextBlocksView()
+  let textView = TextMessageView()
   let translateView = TranslateView()
   let resendButtonView = UIButton().then {
     $0.isHidden = true
@@ -77,7 +77,7 @@ class MessageCell: BaseTableViewCell {
     self.contentView.addSubview(self.avatarView)
     self.contentView.addSubview(self.usernameLabel)
     self.contentView.addSubview(self.timestampLabel)
-    self.contentView.addSubview(self.textBlocksView)
+    self.contentView.addSubview(self.textView)
     self.contentView.addSubview(self.translateView)
     self.contentView.addSubview(self.resendButtonView)
     
@@ -116,8 +116,7 @@ class MessageCell: BaseTableViewCell {
     self.avatarView.configure(viewModel.avatarEntity)
     self.avatarView.isHidden = viewModel.avatarIsHidden
     
-    self.textBlocksView.setDataSource(dataSource, at: row)
-//    self.textMessageView.configure(viewModel)
+    self.textView.configure(viewModel)
     self.resendButtonView.isHidden = !viewModel.isFailed
     
     self.translateView.configure(with: viewModel)
@@ -146,7 +145,7 @@ class MessageCell: BaseTableViewCell {
       make.centerY.equalTo(self.usernameLabel)
     }
     
-    self.textBlocksView.snp.makeConstraints { make in
+    self.textView.snp.makeConstraints { make in
       make.leading.equalToSuperview().inset(Metric.bubbleLeftMargin)
       make.trailing.lessThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.trailing.equalToSuperview().inset(Metric.messageLeftMinMargin).priority(750)
@@ -154,16 +153,16 @@ class MessageCell: BaseTableViewCell {
     }
     
     self.translateView.snp.makeConstraints { make in
-      make.top.equalTo(self.textBlocksView.snp.bottom).offset(Metric.translateViewTop)
-      make.leading.equalTo(self.textBlocksView.snp.leading).offset(Metric.translateViewLeading)
+      make.top.equalTo(self.textView.snp.bottom).offset(Metric.translateViewTop)
+      make.leading.equalTo(self.textView.snp.leading).offset(Metric.translateViewLeading)
       self.translateHeightConstraint = make.height.equalTo(0).constraint
       self.messageBottomConstraint = make.bottom.equalToSuperview().constraint
     }
     
     self.resendButtonView.snp.remakeConstraints { (make) in
       make.size.equalTo(CGSize(width: Metric.resendButtonSide, height: Metric.resendButtonSide))
-      make.bottom.equalTo(self.textBlocksView.snp.bottom)
-      make.right.equalTo(self.textBlocksView.snp.left).inset(4)
+      make.bottom.equalTo(self.textView.snp.bottom)
+      make.right.equalTo(self.textView.snp.left).inset(4)
     }
   }
   
@@ -180,7 +179,7 @@ class MessageCell: BaseTableViewCell {
       width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
       width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
 
-    viewHeight += TextBlocksView.viewHeight(fit: bubbleMaxWidth, model: viewModel)
+    viewHeight += TextMessageView.viewHeight(fit: bubbleMaxWidth, model: viewModel) + 6
     if viewModel.showTranslation {
       viewHeight += 20
     }
@@ -208,7 +207,7 @@ extension MessageCell {
   }
   
   func layoutCoutinuousByMe() {
-    self.textBlocksView.snp.remakeConstraints { make in
+    self.textView.snp.remakeConstraints { make in
       make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
       make.top.equalToSuperview().inset(Metric.cellTopPaddingOfContinous)
@@ -226,7 +225,7 @@ extension MessageCell {
       make.top.equalTo(self.avatarView.snp.top)
     }
     
-    self.textBlocksView.snp.remakeConstraints { make in
+    self.textView.snp.remakeConstraints { make in
       make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
       make.top.equalTo(self.timestampLabel.snp.bottom).offset(4)
@@ -251,7 +250,7 @@ extension MessageCell {
       make.centerY.equalTo(self.usernameLabel)
     }
     
-    self.textBlocksView.snp.remakeConstraints { make in
+    self.textView.snp.remakeConstraints { make in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
       make.right.lessThanOrEqualToSuperview().inset(Metric.messageRightMinMargin)
       make.top.equalToSuperview().inset(Metric.cellTopPaddingOfContinous)
@@ -276,7 +275,7 @@ extension MessageCell {
       make.centerY.equalTo(self.usernameLabel)
     }
     
-    self.textBlocksView.snp.remakeConstraints { make in
+    self.textView.snp.remakeConstraints { make in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
       make.right.lessThanOrEqualToSuperview().inset(Metric.messageRightMinMargin)
       make.top.equalTo(self.usernameLabel.snp.bottom).offset(4)

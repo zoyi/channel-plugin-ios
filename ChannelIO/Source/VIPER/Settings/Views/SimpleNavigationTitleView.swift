@@ -10,7 +10,6 @@ import UIKit
 import SnapKit
 
 class SimpleNavigationTitleView: BaseView {
-  
   struct Metric {
     static let titleHeight = 22.f
     static let imageSize = 22.f
@@ -37,8 +36,23 @@ class SimpleNavigationTitleView: BaseView {
   }
   
   func configure(with title: String, textColor: UIColor) {
-    self.titleLabel.textColor = textColor
     self.titleLabel.text = title
+    self.titleLabel.textColor = textColor
+  }
+  
+  func configure(with i18nTitle: CHi18n?, textColor: UIColor) {
+    guard let title = i18nTitle else { return }
+
+    dispatchAsyncOnBack {
+      let title = title.getAttributedMessage(
+        with: CHMessageParserConfig(
+          font: UIFont.systemFont(ofSize: 17),
+          textColor: textColor
+        ))
+      dispatch {
+        self.titleLabel.attributedText = title
+      }
+    }
   }
   
   override var intrinsicContentSize: CGSize {

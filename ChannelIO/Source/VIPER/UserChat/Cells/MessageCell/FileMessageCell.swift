@@ -37,7 +37,7 @@ class FileMessageCell: MessageCell {
       make.height.equalTo(Metrics.cellHeight)
       self.topConstraint = make.top.equalToSuperview().inset(5).priority(850).constraint
       self.topToTimeConstraint = make.top.equalTo(self.timestampLabel.snp.bottom).offset(3).priority(750).constraint
-      self.topToTextConstraint = make.top.equalTo(self.textBlocksView.snp.bottom).offset(3).constraint
+      self.topToTextConstraint = make.top.equalTo(self.textView.snp.bottom).offset(3).constraint
       self.rightConstraint = make.right.equalToSuperview().inset(Metric.cellRightPadding).constraint
       self.leftConstraint = make.left.equalToSuperview().inset(Metric.messageLeftMinMargin).constraint
     }

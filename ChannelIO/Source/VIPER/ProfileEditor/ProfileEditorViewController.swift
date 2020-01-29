@@ -116,10 +116,9 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func setNavigation() {
-    let title = self.schema?.nameI18n?.getMessage() ?? ""
     let titleView = SimpleNavigationTitleView()
     titleView.configure(
-      with: title,
+      with: self.schema?.nameI18n,
       textColor: mainStore.state.plugin.textUIColor
     )
     self.navigationItem.titleView = titleView

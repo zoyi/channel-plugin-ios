@@ -12,7 +12,6 @@ protocol UserChatCellModelType {
   var chatId: String? { get set }
   var title: String { get set }
   var lastMessage: String? { get set }
-
   var timestamp: String { get set }
   var avatar: CHEntity? { get set }
   var badgeCount: Int { get set }
@@ -42,8 +41,8 @@ struct UserChatCellModel: UserChatCellModelType {
       self.lastMessage = MessageFactory.deleted().string
     } else if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
-    } else if let msg = userChat.lastMessage {
-      self.lastMessage = msg.normalText
+    } else if let msg = userChat.lastMessage?.attributedText?.string {
+      self.lastMessage = msg
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
     } else {
@@ -85,7 +84,7 @@ struct UserChatCellModel: UserChatCellModelType {
     let bot = botSelector(state: mainStore.state, botName: plugin.botName)
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
-    model.lastMessage = supportBotMessage?.normalText ?? user.getWelcome()
+    model.lastMessage = supportBotMessage?.attributedText?.string ?? user.getWelcome()?.string
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model

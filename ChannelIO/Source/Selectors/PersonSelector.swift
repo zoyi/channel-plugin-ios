@@ -70,3 +70,7 @@ func botSelector(state: AppState, botId: String?) -> CHBot? {
     )
   })
 }
+
+func botSelector(state: AppState) -> CHBot? {
+  return state.botsState.getDefaultBot()
+}

@@ -43,7 +43,7 @@ class ActionMessageCell: MessageCell {
     self.actionView.snp.makeConstraints { make in
       self.topConstraint = make.top.equalToSuperview()
         .inset(Metric.ActionViewTop).constraint
-      self.topToTextViewConstraint = make.top.equalTo(self.textBlocksView.snp.bottom)
+      self.topToTextViewConstraint = make.top.equalTo(self.textView.snp.bottom)
         .offset(Metric.ActionViewTop).priority(750).constraint
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview().inset(Metric.ActionViewTrailing)
@@ -59,7 +59,7 @@ class ActionMessageCell: MessageCell {
     super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.messageId = viewModel.message.id
     
-    if viewModel.blocks.count == 0 {
+    if viewModel.text != nil {
       self.topConstraint?.activate()
       self.topToTextViewConstraint?.deactivate()
     } else {

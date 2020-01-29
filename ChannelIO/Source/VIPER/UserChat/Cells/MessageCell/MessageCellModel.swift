@@ -20,7 +20,7 @@ protocol MessageCellModelType {
   var timestamp: String { get }
   var timestampIsHidden: Bool { get }
   var message: CHMessage { get }
-  var blocks: [CHMessageBlock] { get }
+  var text: NSAttributedString? { get }
   var avatarEntity: CHEntity { get }
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
@@ -56,7 +56,7 @@ struct MessageCellModel: MessageCellModelType {
   let timestamp: String
   let timestampIsHidden: Bool
   let message: CHMessage
-  let blocks: [CHMessageBlock]
+  let text: NSAttributedString?
   let avatarEntity: CHEntity
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
@@ -104,11 +104,11 @@ struct MessageCellModel: MessageCellModelType {
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
     self.message = message
-    
+  
     if message.removed {
-      self.blocks = [CHMessageBlock(type: .text, displayText: MessageFactory.deleted())]
+      self.text = MessageFactory.deleted()
     } else {
-      self.blocks = message.getCurrentBlocks
+      self.text = message.attributedText
     }
     
     if message.removed {

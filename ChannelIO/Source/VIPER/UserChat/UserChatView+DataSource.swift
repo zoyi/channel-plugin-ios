@@ -12,131 +12,91 @@ import UIKit
 // MARK: - UITableView
 extension UserChatView : UITableViewDataSource, UITableViewDelegate {
   func numberOfSections(in tableView: UITableView) -> Int {
-    if tableView == self.tableView {
-      return 4
-    } else if tableView is ResizableTableView {
-      return 1
-    } else {
-      return 0
-    }
+    return 4
   }
 
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if tableView == self.tableView {
-      switch section {
-      case Sections.loadingFile:
-        return self.isLoadingFile ? 1 : 0
-      case Sections.errorFiles:
-        return self.errorFiles.count
-      case Sections.typer:
-        return 1
-      case Sections.messages:
-        return self.messages.count
-      default:
-        return 0
-      }
-    } else if tableView is ResizableTableView {
-      let model = self.getMessageModel(at: tableView.tag)
-      return model.blocks.count
+    switch section {
+    case Sections.loadingFile:
+      return self.isLoadingFile ? 1 : 0
+    case Sections.errorFiles:
+      return self.errorFiles.count
+    case Sections.typer:
+      return 1
+    case Sections.messages:
+      return self.messages.count
+    default:
+      return 0
     }
-    return 0
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    if tableView == self.tableView {
-      switch indexPath.section {
-      case Sections.loadingFile:
-        return Constants.fileStatusCellHeight
-      case Sections.errorFiles:
-        return Constants.fileStatusCellHeight
-      case Sections.typer:
-        return Constants.typerCellHeight
-      case Sections.messages:
-        let message = self.messages[indexPath.row]
-        let previousMessage: CHMessage? =
-          indexPath.row == self.messages.count - 1 ?
-            self.messages[indexPath.row] :
-            self.messages[indexPath.row + 1]
-        let viewModel = MessageCellModel(
-          message: message,
-          previous: previousMessage,
-          row: indexPath.row
-        )
-        switch message.messageType {
-        case .DateDivider:
-          return DateCell.cellHeight()
-        case .NewAlertMessage:
-          return NewMessageDividerCell.cellHeight()
-        case .Log:
-          return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
-        case .Media:
-          return MediaMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-        case .WebPage:
-          return WebPageMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-        case .Profile:
-          return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-        case .Action:
-          return ActionMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-        case .Buttons:
-          return ButtonsMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-        default:
-          return MessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
-        }
-      default:
-        return 0
-      }
-    } else if tableView is ResizableTableView {
-      let model = self.getMessageModel(at: tableView.tag)
-      return TextBlockTableViewCell.cellHeight(
-        fit: tableView.frame.width,
-        model: model,
-        blockModel: model.blocks[indexPath.row]
+    switch indexPath.section {
+    case Sections.loadingFile:
+      return Constants.fileStatusCellHeight
+    case Sections.errorFiles:
+      return Constants.fileStatusCellHeight
+    case Sections.typer:
+      return Constants.typerCellHeight
+    case Sections.messages:
+      let message = self.messages[indexPath.row]
+      let previousMessage: CHMessage? =
+        indexPath.row == self.messages.count - 1 ?
+          self.messages[indexPath.row] :
+          self.messages[indexPath.row + 1]
+      let viewModel = MessageCellModel(
+        message: message,
+        previous: previousMessage,
+        row: indexPath.row
       )
-    } else {
+      switch message.messageType {
+      case .DateDivider:
+        return DateCell.cellHeight()
+      case .NewAlertMessage:
+        return NewMessageDividerCell.cellHeight()
+      case .Log:
+        return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
+      case .Media:
+        return MediaMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+      case .WebPage:
+        return WebPageMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+      case .Profile:
+        return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+      case .Action:
+        return ActionMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+      case .Buttons:
+        return ButtonsMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+      default:
+        return MessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+      }
+    default:
       return 0
     }
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if tableView == self.tableView {
-      switch indexPath.section {
-      case Sections.loadingFile:
-        let cell = self.cellForLoading(tableView, at: indexPath)
-        cell.transform = tableView.transform
-        return cell
-      case Sections.errorFiles:
-        let cell = self.cellForErrorFiles(tableView, at: indexPath)
-        cell.transform = tableView.transform
-        return cell
-      case Sections.typer:
-        let cell = self.cellForTyping(tableView, at: indexPath)
-        cell.transform = tableView.transform
-        return cell
-      case Sections.messages:
-        let cell = self.cellForMessage(tableView, at: indexPath)
-        cell.transform = tableView.transform
-        return cell
-      default:
-        return UITableViewCell()
-      }
-    } else if tableView is ResizableTableView {
-      let cell = self.cellForTextBlock(tableView, at: indexPath)
+    switch indexPath.section {
+    case Sections.loadingFile:
+      let cell = self.cellForLoading(tableView, at: indexPath)
       cell.transform = tableView.transform
       return cell
-    } else {
+    case Sections.errorFiles:
+      let cell = self.cellForErrorFiles(tableView, at: indexPath)
+      cell.transform = tableView.transform
+      return cell
+    case Sections.typer:
+      let cell = self.cellForTyping(tableView, at: indexPath)
+      cell.transform = tableView.transform
+      return cell
+    case Sections.messages:
+      let cell = self.cellForMessage(tableView, at: indexPath)
+      cell.transform = tableView.transform
+      return cell
+    default:
       return UITableViewCell()
     }
   }
 
-  private func cellForTextBlock(
-    _ tableView: UITableView,
-    at indexPath: IndexPath) -> UITableViewCell {
-    let model = self.getMessageModel(at: tableView.tag)
-    let cell: TextBlockTableViewCell = tableView.dequeueReusableCell(for: indexPath)
-    cell.configure(with: model, blockModel: model.blocks[indexPath.row])
-    return cell
-  }
-  
   private func cellForTyping(
     _ tableView: UITableView,
     at indexPath: IndexPath) -> UITableViewCell {

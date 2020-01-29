@@ -121,15 +121,15 @@ struct CHMessage: ModelType {
     }
   }
   
-  var normalText: String? {
-    guard !self.blocks.isEmpty else { return nil }
+  var attributedText: NSAttributedString? {
+    guard self.getCurrentBlocks.count != 0 else { return nil }
     
-    var result = ""
+    let result = NSMutableAttributedString(string: "")
     for (index, block) in self.getCurrentBlocks.enumerated() {
-      if let text = block.displayText?.string {
-        result += text
+      if let text = block.displayText {
+        result.append(text)
         if index != self.getCurrentBlocks.count - 1 {
-          result += "\n"
+          result.append(NSMutableAttributedString(string: "\n"))
         }
       }
     }

@@ -49,10 +49,10 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
         .inset(Metric.mediaTop).priority(750).constraint
       self.mediaTopToNameTopConstraint = make.top.equalTo(self.usernameLabel.snp.bottom)
         .offset(Metric.mediaTopToName).priority(850).constraint
-      self.mediaTopToTextViewTopContraint = make.top.equalTo(self.textBlocksView.snp.bottom)
+      self.mediaTopToTextViewTopContraint = make.top.equalTo(self.textView.snp.bottom)
         .offset(Metric.mediaTopToText).constraint
       
-      self.leftTextViewConstraint = make.leading.equalTo(self.textBlocksView.snp.leading)
+      self.leftTextViewConstraint = make.leading.equalTo(self.textView.snp.leading)
         .priority(750).constraint
       self.leftConstraint = make.leading.equalToSuperview()
         .inset(Metric.mediaInSideMargin).priority(850).constraint
@@ -92,7 +92,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()
-    } else if viewModel.blocks.count != 0 {
+    } else if viewModel.text != nil {
       self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTopToText)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()

@@ -8,10 +8,7 @@
 
 import SnapKit
 
-let placeHolder = UITextView().then {
-  $0.textContainer.lineFragmentPadding = 0
-  $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
-}
+
 
 class TextBlockTableViewCell: BaseTableViewCell {
   var textView = TextMessageView()
@@ -40,22 +37,6 @@ class TextBlockTableViewCell: BaseTableViewCell {
     }
   }
 
-  func configure(with model: MessageCellModel, blockModel: CHMessageBlock) {
-    self.textView.configure(model, blockModel: blockModel)
-    
-    if model.createdByMe {
-      self.leadingFixedConstraint?.deactivate()
-      self.leadingFlexConstraint?.activate()
-      self.trailingFixedConstraint?.activate()
-      self.trailingFlexConstraint?.deactivate()
-    } else {
-      self.leadingFixedConstraint?.activate()
-      self.leadingFlexConstraint?.deactivate()
-      self.trailingFixedConstraint?.deactivate()
-      self.trailingFlexConstraint?.activate()
-    }
-  }
-
   static func cellHeight(
     fit width: CGFloat,
     model: MessageCellModelType,
@@ -64,7 +45,6 @@ class TextBlockTableViewCell: BaseTableViewCell {
     return TextMessageView.viewHeight(
       fit: width,
       model: model,
-      blockModel: blockModel,
       edgeInset: edgeInset
     )
   }
