@@ -14,7 +14,8 @@ struct CHUser: CHEntity {
   var id = ""
   var memberId = ""
   var veilId = ""
-  var unifiedId = ""
+  var unifiedId: String?
+  var popUpChatId: String?
   var name = ""
   var profile: [String : Any]?
   var alert: Int? = 0
@@ -50,6 +51,7 @@ extension CHUser: Mappable {
     veilId          <- map["veilId"]
     unifiedId       <- map["unifiedId"]
     name            <- map["name"]
+    popUpChatId     <- map["popUpChatId"]
     profile         <- map["profile"]
     alert           <- map["alert"]
     unread          <- map["unread"]
@@ -71,6 +73,7 @@ func ==(lhs: CHUser, rhs: CHUser) -> Bool {
     lhs.memberId == rhs.memberId &&
     lhs.veilId == rhs.veilId &&
     lhs.unifiedId == rhs.unifiedId &&
+    lhs.popUpChatId == rhs.popUpChatId &&
     lhs.name == rhs.name &&
     lhs.mobileNumber == rhs.mobileNumber &&
     lhs.avatarUrl == rhs.avatarUrl &&
@@ -139,6 +142,14 @@ extension CHUser {
   
   func updateProfile(key: String, value: Any?) -> Observable<(CHUser?, Any?)> {
     return UserPromise.updateProfile(with: [key: value])
+  }
+  
+  static func closePopup() -> Observable<Any?> {
+    return UserPromise.closePopup()
+  }
+  
+  static func get() -> CHUser {
+    return userSelector(state: mainStore.state)
   }
 }
 

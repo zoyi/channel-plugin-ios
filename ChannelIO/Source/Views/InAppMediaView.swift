@@ -16,8 +16,12 @@ class InAppMediaView: BaseView {
     static let popupWidth = 312.f
     static let maxRatio = 16.f / 9.f
     static let minRatio = 1.f
-    static let cornerRadius = 8.f
-    static let multiIndicatorSide = 4.f
+    static let cornerRadius = 10.f
+    static let multiIndicatorBannerSide = 4.f
+    static let multiIndicatorPopupSide = 4.f
+    static let volumeImageLength = 24.f
+    static let volumeImagePadding = 10.f
+    static let volumeControlViewLength = 44.f
   }
   
   private let containerView = UIStackView().then {
@@ -55,6 +59,13 @@ class InAppMediaView: BaseView {
     "autoplay": 1
   ]
   
+  private var controlView = UIView()
+  private var volumeImageView = UIImageView().then {
+    $0.image = CHAssets.getImage(named: "volumeOffFilled")
+  }
+  private let volumeOffImage = CHAssets.getImage(named: "volumeOffFilled")
+  private let volumeUpImage = CHAssets.getImage(named: "volumeUpFilled")
+  
   private var imageWidthConstraint: Constraint?
   private var videoWidthConstraint: Constraint?
   private var youtubeWidthConstraint: Constraint?
@@ -62,6 +73,8 @@ class InAppMediaView: BaseView {
   private var imageHeightConstraint: Constraint?
   private var videoHeightConstraint: Constraint?
   private var youtubeHeightConstraint: Constraint?
+  
+  private var multiIndicatorConstraint: Constraint?
   
   private var disposeBag = DisposeBag()
 
@@ -71,10 +84,28 @@ class InAppMediaView: BaseView {
     self.containerView.addArrangedSubview(self.imageView)
     self.containerView.addArrangedSubview(self.videoView)
     self.containerView.addArrangedSubview(self.youtubePlayerView)
+    self.controlView.addSubview(self.volumeImageView)
     self.addSubview(self.containerView)
     self.addSubview(self.multiIndicatorView)
+    self.addSubview(self.controlView)
     
     self.youtubePlayerView.delegate = self
+    
+    self.controlView
+      .signalForClick()
+      .subscribe(onNext: { [weak self] _ in
+        if self?.videoView.isHidden == false {
+          self?.volumeImageView.image = self?.videoView.isMuted() == true ?
+            self?.volumeUpImage : self?.volumeOffImage
+          self?.videoView.toggleMute()
+        } else if self?.youtubePlayerView.isHidden == false {
+          self?.youtubePlayerView.isMuted() { isMuted in
+            self?.volumeImageView.image = isMuted == true ?
+              self?.volumeUpImage : self?.volumeOffImage
+          }
+          self?.youtubePlayerView.toggleMute()
+        }
+      }).disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -100,7 +131,20 @@ class InAppMediaView: BaseView {
     }
     
     self.multiIndicatorView.snp.makeConstraints { make in
-      make.top.trailing.equalToSuperview().inset(Metrics.multiIndicatorSide)
+      self.multiIndicatorConstraint = make.top.trailing.equalToSuperview()
+        .inset(Metrics.multiIndicatorPopupSide).constraint
+    }
+    
+    self.volumeImageView.snp.makeConstraints { make in
+      make.bottom.leading.equalToSuperview().inset(Metrics.volumeImagePadding)
+      make.width.equalTo(Metrics.volumeImageLength)
+      make.height.equalTo(Metrics.volumeImageLength)
+    }
+    
+    self.controlView.snp.makeConstraints { make in
+      make.bottom.leading.equalToSuperview()
+      make.width.equalTo(Metrics.volumeControlViewLength)
+      make.height.equalTo(Metrics.volumeControlViewLength)
     }
   }
 
@@ -126,13 +170,17 @@ class InAppMediaView: BaseView {
       self.hideAll()
       return
     }
-
-    self.containerView.axis = model.mobileExposureType == .banner ?
+    
+    let isBanner = model.mobileExposureType == .banner
+    self.containerView.axis = isBanner ?
       .horizontal : .vertical
-    self.containerView.alignment = model.mobileExposureType == .banner ?
+    self.containerView.alignment = isBanner ?
       .center : .fill
-    self.layer.cornerRadius = model.mobileExposureType == .banner ?
+    self.layer.cornerRadius = isBanner ?
       0.f : Metrics.cornerRadius
+    let multiIndicatorMargin = isBanner ?
+      Metrics.multiIndicatorBannerSide : Metrics.multiIndicatorPopupSide
+    self.multiIndicatorConstraint?.update(inset: multiIndicatorMargin)
     
     if !model.files.isEmpty {
       self.displayFiles(with: model.files, type: model.mobileExposureType)
@@ -151,24 +199,26 @@ class InAppMediaView: BaseView {
       self.multiIndicatorView.isHidden = mediaCount <= 1
       self.videoView.isHidden = false
       self.youtubePlayerView.isHidden = true
+      self.controlView.isHidden = type == .banner
       if type == .banner {
         self.videoWidthConstraint?.update(offset: self.getRatio(
           width: video.width.f, height: video.height.f, type: .banner) * Metrics.bannerHeight
         ).activate()
         self.videoHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
-        self.videoView.configure(with: url, controlEnable: false)
+        self.videoView.configure(with: url)
       } else if type == .fullScreen {
         self.videoWidthConstraint?.update(offset: Metrics.popupWidth).activate()
         self.videoHeightConstraint?.update(offset: self.getRatio(
           width: video.width.f, height: video.height.f, type: .fullScreen) * Metrics.popupWidth
         ).activate()
-        self.videoView.configure(with: url, controlEnable: true)
+        self.videoView.configure(with: url)
       }
     } else if  let image = images.first , let url = image.url {
       self.imageView.isHidden = false
       self.multiIndicatorView.isHidden = mediaCount <= 1
       self.videoView.isHidden = true
       self.youtubePlayerView.isHidden = true
+      self.controlView.isHidden = true
       if type == .banner {
         self.imageWidthConstraint?.update(offset: self.getRatio(
           width: image.width.f, height: image.height.f, type: .banner) * Metrics.bannerHeight
@@ -194,7 +244,7 @@ class InAppMediaView: BaseView {
       self.multiIndicatorView.isHidden = true
       self.videoView.isHidden = true
       self.youtubePlayerView.isHidden = false
-      
+      self.controlView.isHidden = type == .banner
       if type == .banner {
         self.youtubeWidthConstraint?.update(offset: self.getRatio(
           width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
@@ -214,7 +264,7 @@ class InAppMediaView: BaseView {
       self.multiIndicatorView.isHidden = true
       self.videoView.isHidden = true
       self.youtubePlayerView.isHidden = true
-      
+      self.controlView.isHidden = true
       if type == .banner {
         self.imageWidthConstraint?.update(offset: self.getRatio(
           width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
@@ -235,6 +285,7 @@ class InAppMediaView: BaseView {
   private func hideAll() {
     self.imageView.isHidden = true
     self.multiIndicatorView.isHidden = true
+    self.controlView.isHidden = true
     self.videoView.isHidden = true
     self.youtubePlayerView.isHidden = true
   }

@@ -285,6 +285,16 @@ extension YoutubePlayerView {
   public func mute() {
     webView.evaluateJavaScript("player.mute();", completionHandler: nil)
   }
+  
+  public func toggleMute() {
+    webView.evaluateJavaScript("if (player.isMuted()) {player.unMute()} else {player.mute()};", completionHandler: nil)
+  }
+  
+  public func isMuted(_ handler: @escaping (Bool?) -> Void) {
+    webView.evaluateJavaScript("player.isMuted();") { result, _ in
+      handler(result as? Bool)
+    }
+  }
 }
 
 // MARK: - Cueing methods

@@ -66,6 +66,7 @@ struct CHMessage: ModelType {
   var files: [CHFile] = []
   var webPage: CHWebPage?
   var log: CHLog?
+  var marketing: CHMarketing?
   
   // Dependencies
   var entity: CHEntity?
@@ -133,6 +134,20 @@ struct CHMessage: ModelType {
       }
     }
     return result
+  }
+}
+
+extension CHMessage: CHPushDisplayable {
+  var writer: CHEntity? {
+    return personSelector(
+      state: mainStore.state,
+      personType: self.personType,
+      personId: self.personId
+    )
+  }
+  
+  var mobileExposureType: InAppNotificationType? {
+    return self.marketing?.exposureType
   }
 }
 
@@ -311,6 +326,7 @@ extension CHMessage: Mappable {
     webPage     <- map["webPage"]
     buttons     <- map["buttons"]
     log         <- map["log"]
+    marketing   <- map["marketing"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
     profileBot  <- map["profileBot"]
     action      <- map["action"]
@@ -386,15 +402,6 @@ extension CHMessage {
     }
     
     return false
-  }
-  
-  func getWriter() -> CHEntity? {
-    let person = personSelector(
-      state: mainStore.state,
-      personType: self.personType,
-      personId: self.personId
-    )
-    return person
   }
 }
 

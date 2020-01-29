@@ -52,4 +52,19 @@ struct AppManager {
   static func touch() -> Observable<BootResponse> {
     return UserPromise.touch(pluginId: mainStore.state.plugin.id)
   }
+  
+  static func displayMarketingIfNeeeded() {
+    guard let chatId = CHUser.get().popUpChatId else { return }
+    
+    CHUserChat
+      .get(userChatId: chatId)
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { (chatResponse) in
+        mainStore.dispatch(GetUserChat(payload: chatResponse))
+        let userChat = userChatSelector(
+          state: mainStore.state,
+          userChatId: chatResponse.userChat?.id)
+        ChannelIO.showNotification(pushData: userChat?.lastMessage)
+      }).disposed(by: self.disposeBag)
+  }
 }

@@ -19,7 +19,7 @@ final class WebPageMessageView: BaseView {
     static let sectionBarTrailing = 10.f
     static let descTop = 5.f
     static let providerTop = 8.f
-    static let providerHeight = 22.f
+    static let providerHeight = 16.f
     static let imageHeight = 157.f
     static let titleMaxLines = 1
     static let descMaxLines = 2
@@ -51,6 +51,12 @@ final class WebPageMessageView: BaseView {
     $0.backgroundColor = UIColor.grey300
     $0.layer.cornerRadius = 1.f
   }
+  
+  private let infoStackView = UIStackView().then {
+    $0.axis = .vertical
+    $0.alignment = .leading
+    $0.spacing = 2.f
+  }
 
   private let titleLabel = UILabel().then {
     $0.numberOfLines = Metrics.titleMaxLines
@@ -67,13 +73,11 @@ final class WebPageMessageView: BaseView {
   private let providerView = VideoProviderView()
 
   private var imageHeightConstraint: Constraint?
-  private var sectionBarBottomToProvider: Constraint?
-  private var sectionBarBottomToDesc: Constraint?
-  private var sectionBarBottomToTitle: Constraint?
 
   class func viewHeight(fits width: CGFloat, webpage: CHWebPage) -> CGFloat {
     var height: CGFloat = 0
-    height += webpage.thumbUrl != nil ? Metrics.imageHeight + Metrics.imageViewBottom : 0
+    height += webpage.thumbUrl != nil ?
+      Metrics.imageHeight + Metrics.imageViewBottom : 0
     
     height += Metrics.componentInSectionTop
     if let title = webpage.title {
@@ -83,15 +87,20 @@ final class WebPageMessageView: BaseView {
       )
     }
     if let description = webpage.desc {
-      height += Metrics.descTop + description.height(
+      height += webpage.title != nil ? Metrics.descTop : 0
+      let text = description.addLineHeight(height: 17, font: Fonts.desc, color: .grey500)
+      height += text.height(
         fits: width - Metrics.sectionBarTrailing - Metrics.sectionBarWidth,
-        font: Fonts.desc, maximumNumberOfLines: Metrics.descMaxLines
+        maximumNumberOfLines: Metrics.descMaxLines
       )
     }
+    
     if webpage.publisher != nil {
-      height += Metrics.providerTop + Metrics.providerHeight
+      height += (webpage.title != nil || webpage.desc != nil) ?
+        Metrics.providerTop : 0
+      height += Metrics.providerHeight
     }
-    height += Metrics.componentInSectionBottom + Metrics.webPageMessageViewBottom
+    height += Metrics.componentInSectionBottom
 
     return height
   }
@@ -102,9 +111,14 @@ final class WebPageMessageView: BaseView {
     self.addSubview(self.imageView)
     self.addSubview(self.videoView)
     self.addSubview(self.sectionBar)
-    self.addSubview(self.titleLabel)
-    self.addSubview(self.descriptionLabel)
-    self.addSubview(self.providerView)
+    self.infoStackView.addArrangedSubview(self.titleLabel)
+    self.infoStackView.addArrangedSubview(self.descriptionLabel)
+    self.infoStackView.addArrangedSubview(self.providerView)
+    self.addSubview(self.infoStackView)
+    
+    if #available(iOS 11.0, *) {
+      self.infoStackView.setCustomSpacing(8, after: self.descriptionLabel)
+    }
   }
 
   override func setLayouts() {
@@ -129,33 +143,20 @@ final class WebPageMessageView: BaseView {
     self.sectionBar.snp.makeConstraints { make in
       make.width.equalTo(Metrics.sectionBarWidth)
       make.leading.equalToSuperview()
-      self.sectionBarBottomToProvider = make.bottom.equalTo(self.providerView.snp.bottom)
-        .offset(Metrics.componentInSectionBottom).constraint
-      self.sectionBarBottomToDesc = make.bottom.equalTo(self.descriptionLabel.snp.bottom)
-        .offset(Metrics.componentInSectionBottom).priority(850).constraint
-      self.sectionBarBottomToTitle = make.bottom.equalTo(self.titleLabel.snp.bottom)
-        .offset(Metrics.componentInSectionBottom).priority(700).constraint
       make.top.equalTo(self.imageView.snp.bottom).offset(Metrics.imageViewBottom)
+      make.bottom.equalTo(self.infoStackView.snp.bottom)
+        .inset(Metrics.componentInSectionBottom)
     }
-
-    self.titleLabel.snp.makeConstraints { make in
+    
+    self.infoStackView.snp.makeConstraints { make in
       make.top.equalTo(self.sectionBar.snp.top).offset(Metrics.componentInSectionTop)
-      make.leading.equalTo(self.sectionBar.snp.trailing).offset(Metrics.sectionBarTrailing)
-      make.trailing.equalToSuperview()
-    }
-
-    self.descriptionLabel.snp.makeConstraints { make in
-      make.top.equalTo(self.titleLabel.snp.bottom).offset(Metrics.descTop)
-      make.leading.equalTo(self.sectionBar.snp.trailing).offset(Metrics.sectionBarTrailing)
+      make.leading.equalTo(self.sectionBar.snp.trailing)
+        .offset(Metrics.sectionBarTrailing)
       make.trailing.equalToSuperview()
     }
 
     self.providerView.snp.makeConstraints { make in
       make.height.equalTo(Metrics.providerHeight)
-      make.top.equalTo(self.descriptionLabel.snp.bottom).offset(Metrics.providerTop)
-      make.leading.equalTo(self.sectionBar.snp.trailing).offset(Metrics.sectionBarTrailing)
-      make.trailing.lessThanOrEqualToSuperview()
-      make.bottom.equalToSuperview()
     }
   }
 
@@ -175,20 +176,6 @@ final class WebPageMessageView: BaseView {
     
     self.providerView.isHidden = webPage.publisher == nil
     self.providerView.configure(publisher: webPage.publisher, title: webPage.author)
-    
-    if webPage.publisher != nil {
-      self.sectionBarBottomToProvider?.activate()
-      self.sectionBarBottomToDesc?.deactivate()
-      self.sectionBarBottomToTitle?.deactivate()
-    } else if webPage.desc != nil {
-      self.sectionBarBottomToProvider?.deactivate()
-      self.sectionBarBottomToDesc?.activate()
-      self.sectionBarBottomToTitle?.deactivate()
-    } else {
-      self.sectionBarBottomToProvider?.deactivate()
-      self.sectionBarBottomToDesc?.deactivate()
-      self.sectionBarBottomToTitle?.activate()
-    }
     
     self.imageHeightConstraint?.update(offset: webPage.thumbUrl == nil ? 0 : Metrics.imageHeight)
   }

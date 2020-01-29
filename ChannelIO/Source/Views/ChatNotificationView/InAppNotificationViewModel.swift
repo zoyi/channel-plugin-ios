@@ -26,88 +26,42 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var avatar: CHEntity?
   var files: [CHFile] = []
   var webPage: CHWebPage?
-  var mobileExposureType: InAppNotificationType = .banner
+  var mobileExposureType: InAppNotificationType
   var hasMedia: Bool = false
   
-  init(push: CHPush) {
-    if let managerName = push.manager?.name {
-      self.name = managerName
-      self.avatar = push.manager
-    } else if let botName = push.bot?.name {
-      self.name = botName
-      self.avatar = push.bot
-    }
+  init(push: CHPushDisplayable) {
+    self.name = push.writer?.name ?? ""
+    self.avatar = push.writer
+    self.files = push.sortedFiles
+    self.webPage = push.webPage
+    self.timestamp = push.readableCreatedAt
     
-    self.files = push.message?.sortedFiles ?? []
-    self.webPage = push.message?.webPage
-    self.timestamp = push.message?.readableCreatedAt
+    self.mobileExposureType = push.mobileExposureType ?? .banner
     
-    self.mobileExposureType = push.mobileExposureType
-    
-    let mediaFileCount = push.message?.sortedFiles
+    let mediaFileCount = push.sortedFiles
       .filter { $0.type == .video || $0.type == .image }
-      .count ?? 0
+      .count
     self.hasMedia = mediaFileCount > 0 ||
-      push.message?.webPage?.thumbUrl != nil ||
-      push.message?.webPage?.youtubeId != nil
-    
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.alignment = .left
-    paragraphStyle.minimumLineHeight = 18
-    
-    if let logMessage = push.message?.logMessage, push.showLog {
+      push.webPage?.thumbUrl != nil ||
+      push.webPage?.youtubeId != nil
+
+    if let logMessage = push.logMessage {
       let attributedText = NSMutableAttributedString(string: logMessage)
       attributedText.addAttributes(
         [.font: UIFont.systemFont(ofSize: 13),
          .foregroundColor: UIColor.grey900,
-         .paragraphStyle: paragraphStyle
+         .paragraphStyle: UIFactory.pushParagraphStyle
         ],
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
-    } else if let message = push.message, message.blocks.count != 0 {
+    } else if push.blocks.count != 0 {
       let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
       let config = CHMessageParserConfig(
         font: UIFont.systemFont(ofSize: fontSize),
         style: UIFactory.pushParagraphStyle
       )
       let transformer = CustomBlockTransform(config: config)
-      let result = transformer.parser.parse(blocks: message.blocks)
-      self.message = result
-    }
-  }
-  
-  init(message: CHMessage) {
-    let person = message.getWriter()
-    
-    if let manager = person as? CHManager {
-      self.name = manager.name
-      self.avatar = manager
-    } else if let bot = person as? CHBot {
-      self.name = bot.name
-      self.avatar = bot
-    }
-    
-    self.files = message.sortedFiles
-    self.webPage = message.webPage
-    self.timestamp = message.readableCreatedAt
-    
-//    self.mobileExposureType = message.mobileExposureType
-    
-    let mediaFileCount = message.sortedFiles
-      .filter { $0.type == .video || $0.type == .image }
-      .count
-    self.hasMedia = mediaFileCount > 0 ||
-      message.webPage?.thumbUrl != nil ||
-      message.webPage?.youtubeId != nil
-
-    if message.blocks.count != 0 {
-      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
-      let config = CHMessageParserConfig(
-        font: UIFont.systemFont(ofSize: fontSize),
-        style: UIFactory.pushParagraphStyle
-      )
-      let transformer = CustomBlockTransform(config: config)
-      let result = transformer.parser.parse(blocks: message.blocks)
+      let result = transformer.parser.parse(blocks: push.blocks)
       self.message = result
     }
   }
