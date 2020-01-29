@@ -21,7 +21,6 @@ protocol MessageCellModelType {
   var timestampIsHidden: Bool { get }
   var message: CHMessage { get }
   var text: NSAttributedString? { get }
-  var blocks: [CHMessageBlock] { get }
   var avatarEntity: CHEntity { get }
   var avatarIsHidden: Bool { get }
   var bubbleBackgroundColor: UIColor { get }
@@ -58,7 +57,6 @@ struct MessageCellModel: MessageCellModelType {
   let timestampIsHidden: Bool
   let message: CHMessage
   let text: NSAttributedString?
-  let blocks: [CHMessageBlock]
   let avatarEntity: CHEntity
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
@@ -109,10 +107,8 @@ struct MessageCellModel: MessageCellModelType {
   
     if message.removed {
       self.text = MessageFactory.deleted()
-      self.blocks = [CHMessageBlock(type: .text, displayText: MessageFactory.deleted())]
     } else {
-      self.text = message.fullText
-      self.blocks = message.getCurrentBlocks
+      self.text = message.attributedText
     }
     
     if message.removed {

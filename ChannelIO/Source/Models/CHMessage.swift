@@ -120,7 +120,9 @@ struct CHMessage: ModelType {
     }
   }
   
-  var fullText: NSAttributedString? {
+  var attributedText: NSAttributedString? {
+    guard self.getCurrentBlocks.count != 0 else { return nil }
+    
     let result = NSMutableAttributedString(string: "")
     for (index, block) in self.getCurrentBlocks.enumerated() {
       if let text = block.displayText {

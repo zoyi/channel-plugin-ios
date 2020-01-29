@@ -59,7 +59,7 @@ class ActionMessageCell: MessageCell {
     super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.messageId = viewModel.message.id
     
-    if viewModel.blocks.count == 0 {
+    if viewModel.text != nil {
       self.topConstraint?.activate()
       self.topToTextViewConstraint?.deactivate()
     } else {
