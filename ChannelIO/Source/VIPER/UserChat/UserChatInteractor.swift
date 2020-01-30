@@ -330,10 +330,9 @@ extension UserChatInteractor {
         subscriber.onNext(userChat)
         return Disposables.create()
       }
-      let pluginId = mainStore.state.plugin.id
-      
+
       let signal = CHUserChat
-        .create(pluginId: pluginId)
+        .create()
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           dlog("Error while creating a chat. Attempting to create again")
           return true

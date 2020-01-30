@@ -61,11 +61,17 @@ struct UserChatPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func createChat(pluginId: String) -> Observable<ChatResponse> {
+  static func createChat(pluginId: String, url: String) -> Observable<ChatResponse> {
     return Observable.create { subscriber in
-
+      let params = [
+        "url": ["url" : url]
+      ]
+      
       Alamofire
-        .request(RestRouter.CreateUserChat(pluginId))
+        .request(RestRouter.CreateUserChat(
+          pluginId,
+          params as RestRouter.ParametersType)
+        )
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {

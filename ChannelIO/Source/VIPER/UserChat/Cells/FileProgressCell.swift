@@ -8,7 +8,7 @@
 import SnapKit
 import RxCocoa
 import RxSwift
-import M13ProgressSuite
+
 
 class FileStatusCell: BaseTableViewCell {
   private struct Constants {
@@ -67,6 +67,7 @@ class FileStatusCell: BaseTableViewCell {
   
   private let errorButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "refreshCircleFilled"), for: .normal)
+    $0.isHidden = true
   }
   
   private let removebutton = UIButton().then {
@@ -136,6 +137,12 @@ class FileStatusCell: BaseTableViewCell {
       self.progressView.isHidden = false
       self.progressView.setProgress(Float(item.progress), animated: false)
       self.displayName(with: item.name)
+      
+      if item.progress == 1 {
+        self.progressView.startShimmeringAnimation(animationSpeed: 8.0)
+      } else {
+        self.progressView.stopShimmeringAnimation()
+      }
     }
   }
   
