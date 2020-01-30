@@ -9,6 +9,10 @@
 import Foundation
 import RxSwift
 
+enum ShimmerDirection: Int {
+  case leftToRight
+}
+
 internal extension UIView {
   static func activate(constraints: [NSLayoutConstraint]) {
     constraints.forEach { ($0.firstItem as? UIView)?.translatesAutoresizingMaskIntoConstraints = false }
@@ -49,6 +53,49 @@ internal extension UIView {
     }
 
     return nil
+  }
+
+  func startShimmeringAnimation(
+    animationSpeed: Float = 1.0,
+    direction: ShimmerDirection = .leftToRight,
+    repeatCount: Float = MAXFLOAT) {
+    let lightColor = UIColor.white.cgColor
+    let alphaColor = UIColor.white.withAlphaComponent(0.6).cgColor
+    
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.colors = [alphaColor, lightColor, alphaColor]
+    gradientLayer.frame = CGRect(
+      x: -self.bounds.size.width,
+      y: -self.bounds.size.height,
+      width: 3 * self.bounds.size.width,
+      height: 3 * self.bounds.size.height
+    )
+    
+    switch direction {
+    case .leftToRight:
+      gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+      gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+    }
+    
+    gradientLayer.locations =  [0.35, 0.50, 0.65]
+    self.layer.mask = gradientLayer
+    
+    CATransaction.begin()
+    let animation = CABasicAnimation(keyPath: "locations")
+    animation.fromValue = [0.0, 0.1, 0.2]
+    animation.toValue = [0.8, 0.9, 1.0]
+    animation.duration = CFTimeInterval(animationSpeed)
+    animation.repeatCount = repeatCount
+    CATransaction.setCompletionBlock { [weak self] in
+      guard let self = self else { return }
+      self.layer.mask = nil
+    }
+    gradientLayer.add(animation, forKey: "shimmerAnimation")
+    CATransaction.commit()
+  }
+  
+  func stopShimmeringAnimation() {
+    self.layer.mask = nil
   }
 }
 

@@ -71,6 +71,7 @@ public final class ChannelIO: NSObject {
   internal static var lastPush: CHPush?
   
   internal static var launcherView: LauncherView? = nil
+  internal static var hostTopControllerName: String?
   internal static var launcherVisible: Bool = false
   internal static var willBecomeActive: Bool = true
   
@@ -271,6 +272,7 @@ public final class ChannelIO: NSObject {
         launcherView.superview != view ||
         launcherView.alpha == 0 {
         if let topController = CHUtils.getTopController() {
+          ChannelIO.hostTopControllerName = "\(type(of: topController))"
           ChannelIO.sendDefaultEvent(.pageView, property: [
             TargetKey.url.rawValue: "\(type(of: topController))"
           ])
@@ -341,7 +343,9 @@ public final class ChannelIO: NSObject {
       
       ChannelIO.launcherView?.isHidden = true
       ChannelIO.delegate?.willShowMessenger?()
-
+      
+      ChannelIO.hostTopControllerName = "\(type(of: topController))"
+      
       mainStore.dispatch(ChatListIsVisible())
       let loungeView = LoungeRouter.createModule()
       let controller = MainNavigationController(rootViewController: loungeView)
@@ -379,6 +383,9 @@ public final class ChannelIO: NSObject {
   @objc
   public class func openChat(with chatId: String? = nil, animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
+    guard let topController = CHUtils.getTopController() else { return }
+    
+    ChannelIO.hostTopControllerName = "\(type(of: topController))"
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
   

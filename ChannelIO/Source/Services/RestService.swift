@@ -17,12 +17,12 @@ enum EPType: String {
 
 enum RestRouter: URLRequestConvertible {
   case Boot(String, ParametersType)
-  case CreateUserChat(String)
+  case CreateUserChat(String, ParametersType)
   case ClosePopup
   case CloseUserChat(String, ParametersType)
   case CreateMessage(String, ParametersType)
   case CheckVersion
-  case CreateSupportBotChat(String)
+  case CreateSupportBotChat(String, ParametersType)
   case GetPlugin(String)
   case GetGeoIP
   case GetChannel
@@ -105,9 +105,9 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .Boot(let pluginKey, _):
       return "/front/plugins/\(pluginKey)/boot"
-    case .CreateUserChat(let pluginId):
+    case .CreateUserChat(let pluginId, _):
       return "/front/plugins/\(pluginId)/user-chats"
-    case .CreateSupportBotChat(let supportBotId):
+    case .CreateSupportBotChat(let supportBotId, _):
       return "/front/support-bots/\(supportBotId)/user-chats"
     case .CreateMessage(let userChatId, _):
       return "/front/user-chats/\(userChatId)/messages"
@@ -256,6 +256,8 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .GetMessages(_, let params),
          .CreateMessage(_, let params),
+         .CreateUserChat(_, let params),
+         .CreateSupportBotChat(_, let params),
          .UploadFile(_, let params),
          .GetUserChats(let params),
          .GetLounge(_, let params),
@@ -269,8 +271,6 @@ enum RestRouter: URLRequestConvertible {
     case .GetUserChat,
          .GetPlugin,
          .GetCountryCodes,
-         .CreateUserChat,
-         .CreateSupportBotChat,
          .ClosePopup,
          .SendPushAck,
          .SetMessagesRead,

@@ -44,7 +44,10 @@ extension CHSupportBot {
   }
   
   static func create(with botId: String) -> Observable<ChatResponse> {
-    return SupportBotPromise.createSupportBotUserChat(supportBotId: botId)
+    return SupportBotPromise.createSupportBotUserChat(
+      supportBotId: botId,
+      url: ChannelIO.hostTopControllerName ?? ""
+    )
   }
 }
 

@@ -36,11 +36,10 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   }
   
   func getLounge() -> Observable<LoungeResponse> {
-    var url = ""
-    if let controller = CHUtils.getTopController() {
-      url = "\(type(of: controller))"
-    }
-    return LoungePromise.getLounge(pluginId: mainStore.state.plugin.id, url: url)
+    return LoungePromise.getLounge(
+      pluginId: mainStore.state.plugin.id,
+      url: ChannelIO.hostTopControllerName ?? ""
+    )
   }
 
   func getChannel() -> Observable<CHChannel> {

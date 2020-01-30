@@ -13,10 +13,19 @@ import RxSwift
 import ObjectMapper
 
 struct SupportBotPromise {  
-  static func createSupportBotUserChat(supportBotId: String) -> Observable<ChatResponse> {
+  static func createSupportBotUserChat(
+    supportBotId: String,
+    url: String) -> Observable<ChatResponse> {
+    let params = [
+      "url": ["url" : url]
+    ]
+    
     return Observable.create { (subscriber) in
       let req = Alamofire
-        .request(RestRouter.CreateSupportBotChat(supportBotId))
+        .request(RestRouter.CreateSupportBotChat(
+          supportBotId,
+          params as RestRouter.ParametersType)
+        )
         .validate(statusCode: 200..<300)
         .asyncResponse(completionHandler: { (response) in
           switch response.result {

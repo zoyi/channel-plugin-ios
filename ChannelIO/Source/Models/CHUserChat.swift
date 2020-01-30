@@ -160,8 +160,11 @@ extension CHUserChat {
       sortOrder: sortOrder)
   }
   
-  static func create(pluginId: String) -> Observable<ChatResponse>{
-    return UserChatPromise.createChat(pluginId: pluginId)
+  static func create() -> Observable<ChatResponse>{
+    return UserChatPromise.createChat(
+      pluginId: mainStore.state.plugin.id,
+      url: ChannelIO.hostTopControllerName ?? ""
+    )
   }
 
   func remove() -> Observable<Any?> {
