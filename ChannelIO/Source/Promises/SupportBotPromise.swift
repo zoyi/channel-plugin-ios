@@ -27,7 +27,7 @@ struct SupportBotPromise {
           params as RestRouter.ParametersType)
         )
         .validate(statusCode: 200..<300)
-        .asyncResponse(completionHandler: { (response) in
+        .responseJSON { (response) in
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
@@ -43,7 +43,7 @@ struct SupportBotPromise {
               msg: error.localizedDescription
             ))
           }
-        })
+        }
       return Disposables.create {
         req.cancel()
       }

@@ -40,6 +40,8 @@ class ActionMessageCell: MessageCell {
   
   override func setLayouts() {
     super.setLayouts()
+    self.messageBottomConstraint?.deactivate()
+    
     self.actionView.snp.makeConstraints { make in
       self.topConstraint = make.top.equalToSuperview()
         .inset(Metric.ActionViewTop).constraint
@@ -60,11 +62,11 @@ class ActionMessageCell: MessageCell {
     self.messageId = viewModel.id
     
     if viewModel.text != nil {
-      self.topConstraint?.activate()
-      self.topToTextViewConstraint?.deactivate()
-    } else {
       self.topConstraint?.deactivate()
       self.topToTextViewConstraint?.activate()
+    } else {
+      self.topConstraint?.activate()
+      self.topToTextViewConstraint?.deactivate()
     }
     
     self.actionView.configure(viewModel)
@@ -110,6 +112,7 @@ class ActionWebMessageCell: WebPageMessageCell {
   
   override func setLayouts() {
     super.setLayouts()
+    self.messageBottomConstraint?.deactivate()
     
     self.actionView.snp.makeConstraints { make in
       make.top.equalTo(self.webView.snp.bottom).offset(Metric.ActionWebTop)
@@ -168,6 +171,7 @@ class ActionMediaMessageCell: MediaMessageCell {
   
   override func setLayouts() {
     super.setLayouts()
+    self.messageBottomConstraint?.deactivate()
     
     self.actionView.snp.makeConstraints { make in
       make.top.equalTo(self.mediaCollectionView.snp.bottom).offset(Metric.ActionMediaTop)

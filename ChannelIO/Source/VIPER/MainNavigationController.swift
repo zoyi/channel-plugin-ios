@@ -145,11 +145,11 @@ extension MainNavigationController : UINavigationControllerDelegate {
     willShow viewController: UIViewController,
     animated: Bool) {
     if let coordinator = navigationController.topViewController?.transitionCoordinator {
-      coordinator.notifyWhenInteractionEnds({ (context) in
+      coordinator.notifyWhenInteractionChanges { (context) in
         if !context.isCancelled {
           self.chDelegate?.willPopViewController(willShow: viewController)
         }
-      })
+      }
     }
   }
 }
@@ -157,10 +157,7 @@ extension MainNavigationController : UINavigationControllerDelegate {
 @available(iOS 13, *)
 extension MainNavigationController : UIAdaptivePresentationControllerDelegate {
   func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-    ChannelIO.didDismiss()
-  }
-  
-  func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
     ChannelIO.delegate?.willHideMessenger?()
+    ChannelIO.didDismiss()
   }
 }
