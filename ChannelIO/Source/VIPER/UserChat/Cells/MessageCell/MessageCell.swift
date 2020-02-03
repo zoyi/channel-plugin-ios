@@ -39,6 +39,7 @@ class MessageCell: BaseTableViewCell {
     static let cellTopPaddingDefault = 16.f
     static let translateViewTop = 4.f
     static let translateViewLeading = 12.f
+    static let translateHeight = 12.f
     static let resendButtonSide = 40.f
   }
   
@@ -120,7 +121,7 @@ class MessageCell: BaseTableViewCell {
     self.resendButtonView.isHidden = !viewModel.isFailed
     
     self.translateView.configure(with: viewModel)
-    self.translateHeightConstraint?.update(offset: viewModel.canTranslate ? 20 : 0)
+    self.translateHeightConstraint?.update(offset: viewModel.canTranslate ? Metric.translateHeight : 0)
     
     self.layoutViews()
   }
@@ -181,7 +182,7 @@ class MessageCell: BaseTableViewCell {
 
     viewHeight += TextMessageView.viewHeight(fit: bubbleMaxWidth, model: viewModel) + 6
     if viewModel.showTranslation {
-      viewHeight += 20
+      viewHeight += Metric.translateHeight
     }
     
     return viewHeight

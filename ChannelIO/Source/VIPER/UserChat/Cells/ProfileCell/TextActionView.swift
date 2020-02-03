@@ -28,7 +28,7 @@ class TextActionView: BaseView, Actionable {
   }
   
   let textField = UITextField().then {
-    $0.font = UIFont.systemFont(ofSize: 18)
+    $0.font = UIFont.systemFont(ofSize: 16)
     $0.textColor = CHColors.dark
     $0.placeholder = CHAssets.localized("ch.profile_form.placeholder")
   }
