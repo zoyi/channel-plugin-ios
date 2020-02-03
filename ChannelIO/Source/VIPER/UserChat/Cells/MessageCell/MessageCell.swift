@@ -120,7 +120,7 @@ class MessageCell: BaseTableViewCell {
     self.resendButtonView.isHidden = !viewModel.isFailed
     
     self.translateView.configure(with: viewModel)
-    self.translateHeightConstraint?.update(offset: viewModel.canTranslate ? 20 : 0)
+    self.translateHeightConstraint?.update(offset: viewModel.showTranslation ? 20 : 0)
     
     self.layoutViews()
   }
