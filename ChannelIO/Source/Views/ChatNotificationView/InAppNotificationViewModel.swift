@@ -30,8 +30,11 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var hasMedia: Bool = false
   
   init(push: CHPushDisplayable) {
-    self.name = push.writer?.name ?? ""
-    self.avatar = push.writer
+    let writer = push.writer
+      ?? defaultBotSelector(state: mainStore.state)
+      ?? mainStore.state.channel
+    self.name = writer.name
+    self.avatar = writer
     self.files = push.sortedFiles
     self.webPage = push.webPage
     self.timestamp = push.readableCreatedAt

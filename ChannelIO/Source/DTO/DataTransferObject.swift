@@ -15,6 +15,7 @@ struct ChatResponse {
   var session: CHSession? = nil
   var managers: [CHManager]? = nil
   var message: CHMessage? = nil
+  var bot: CHBot?
 }
 
 extension ChatResponse : Mappable {
@@ -25,6 +26,7 @@ extension ChatResponse : Mappable {
     session           <- map["session"]
     managers          <- map["managers"]
     message           <- map["message"]
+    bot               <- map["bot"]
   }
 }
 

@@ -22,6 +22,9 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
     let bots = (action.payload["bots"] as? [CHBot]) ?? []
     return state?.upsert(bots: bots) ?? BotsState()
     
+  case let action as GetUserChat:
+    return state?.upsert(bot: action.payload.bot) ?? BotsState()
+    
   case let action as GetPush:
     return state?.upsert(bot: action.payload.bot) ?? BotsState()
     
