@@ -18,6 +18,7 @@ protocol CHPushDisplayable {
   var logMessage: String? { get }
   var blocks: [CHMessageBlock] { get }
   var chatId: String { get }
+  var removed: Bool { get }
 }
 
 struct CHPush: CHPushDisplayable {
@@ -58,6 +59,10 @@ struct CHPush: CHPushDisplayable {
   
   var chatId: String {
     return self.userChat?.id ?? ""
+  }
+  
+  var removed: Bool {
+    return self.message?.removed ?? false
   }
 }
 
