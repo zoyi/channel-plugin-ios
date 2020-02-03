@@ -170,3 +170,5 @@ Press the button below to refresh.";
 "ch.minute" = "minute(s)";
 "ch.hour" = "hour(s)";
 "ch.day" = "day(s)";
+"file_upload.fail" = "Failed";
+"file_upload.wait_count" = "%s pending";
