@@ -316,6 +316,7 @@ extension CHMessage: Mappable {
     blocks <- (map["blocks"], CustomBlockTransform(
       config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15)))
     )
+    removed     <- map["removed"]
     requestId   <- map["requestId"]
     files       <- map["files"]
     webPage     <- map["webPage"]
