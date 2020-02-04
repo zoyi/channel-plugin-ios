@@ -157,7 +157,7 @@ extension ChannelIO {
   
   internal class func showNotification(pushData: CHPushDisplayable?) {
     guard let view = CHUtils.getTopController()?.view else { return }
-    guard let push = pushData else { return }
+    guard let push = pushData, !push.removed else { return }
     
     if ChannelIO.inAppNotificationView != nil {
       ChannelIO.inAppNotificationView?.removeView(animated: true)

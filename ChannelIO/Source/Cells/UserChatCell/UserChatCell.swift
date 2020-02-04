@@ -26,6 +26,7 @@ final class UserChatCell: BaseTableViewCell {
     static let cellRightPadding = 15.f
     static let titleBottomPadding = 4.f
     static let timestampBottomPadding = 13.f
+    static let timestampLeftPadding = 10.f
     static let avatarRightPadding = 14.f
     static let avatarSide = 36.f
     static let badgeHeight = 22.f
@@ -110,13 +111,13 @@ final class UserChatCell: BaseTableViewCell {
     self.titleLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
       make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
-      make.right.equalToSuperview().inset(Metrics.messageTrailing)
+      
     }
     
     self.timestampLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
       make.right.equalToSuperview().inset(Metrics.cellRightPadding)
-      make.left.equalTo(self.titleLabel.snp.right).offset(Metrics.cellRightPadding)
+      make.left.equalTo(self.titleLabel.snp.right).offset(Metrics.timestampLeftPadding)
     }
     
     self.contentStackView.snp.makeConstraints { make in

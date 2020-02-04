@@ -86,7 +86,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.mediaCollectionView.configure(models: viewModel.files)
 
-    if viewModel.canTranslate {
+    if viewModel.showTranslation {
       self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTopToTextTranslate)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()

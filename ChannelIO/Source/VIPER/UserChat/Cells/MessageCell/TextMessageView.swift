@@ -95,7 +95,7 @@ class TextMessageView : BaseView {
       value: viewModel.textColor,
       range: NSRange(location: 0, length: attrText.string.utf16.count)
     )
-    self.messageView.attributedText = viewModel.text
+    self.messageView.attributedText = attrText
     
     self.messageView.linkTextAttributes = [
       .foregroundColor: viewModel.linkColor,
