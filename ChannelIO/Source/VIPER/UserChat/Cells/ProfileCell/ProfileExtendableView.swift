@@ -14,7 +14,9 @@ class ProfileExtendableView: BaseView {
     static let footerTrailing = 12.f
     static let footerBottom = 12.f
     static let topMargin = 10.f
-    static let itemHeight = 80.f
+    static let bottomMargin = 10.f
+    static let itemHeight = 73.f
+    static let itemTop = 4.f
   }
   
   var items: [ProfileContentProtocol] = []
@@ -108,15 +110,15 @@ class ProfileExtendableView: BaseView {
         
         completionView.snp.makeConstraints({ (make) in
           if let lview = lastView {
-            make.top.equalTo(lview.snp.bottom)
+            make.top.equalTo(lview.snp.bottom).offset(Metric.itemTop)
           } else {
             make.top.equalToSuperview().inset(Metric.topMargin)
           }
           make.height.equalTo(Metric.itemHeight)
           make.leading.equalToSuperview()
           make.trailing.equalToSuperview()
-          if index == 3 {
-            make.bottom.equalToSuperview()
+          if index != 0, index == model.profileItems.count - 1 {
+            make.bottom.equalToSuperview().inset(Metric.bottomMargin)
           }
         })
         lastView = completionView
@@ -143,15 +145,15 @@ class ProfileExtendableView: BaseView {
         
         itemView?.view.snp.makeConstraints({ (make) in
           if let lview = lastView {
-            make.top.equalTo(lview.snp.bottom)
+            make.top.equalTo(lview.snp.bottom).offset(Metric.itemTop)
           } else {
             make.top.equalToSuperview().inset(Metric.topMargin)
           }
           make.height.equalTo(Metric.itemHeight)
           make.leading.equalToSuperview()
           make.trailing.equalToSuperview()
-          if index == 3 {
-            make.bottom.equalToSuperview()
+          if index != 0, index == model.profileItems.count - 1 {
+            make.bottom.equalToSuperview().inset(Metric.bottomMargin)
           }
         })
         break
@@ -163,11 +165,13 @@ class ProfileExtendableView: BaseView {
   
   class func viewHeight(fit width: CGFloat, model: MessageCellModelType) -> CGFloat {
     var height = 0.f
-    height += Metric.topMargin //top margin
-    height += CGFloat(model.currentIndex + 1) * Metric.itemHeight
+    height += Metric.topMargin
+    height += CGFloat(model.currentIndex + 1) * (Metric.itemHeight)
+    height += CGFloat(model.currentIndex) * (Metric.itemTop)
     if model.currentIndex == 0 {
       let paragraph = NSMutableParagraphStyle()
       paragraph.alignment = .center
+      paragraph.minimumLineHeight = 16.f
       paragraph.lineBreakMode = .byCharWrapping
 
       let attributes: [NSAttributedString.Key: Any] = [
@@ -187,12 +191,13 @@ class ProfileExtendableView: BaseView {
       let text = CHAssets.localized(
         "ch.agreement",
         attributes: attributes,
-        tagAttributes: tagAttributes)
+        tagAttributes: tagAttributes) 
       
       height += text.height(fits: width - Metric.footerLeading - Metric.footerTrailing)
       height += Metric.footerBottom
+    } else {
+      height += Metric.bottomMargin
     }
-    height += 3 //off value
     return height
   }
 }

@@ -45,7 +45,7 @@ struct UserPromise {
   static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHUser?, Any?)> {
     return Observable.create { (subscriber) -> Disposable in
       let params = [
-        "body": profiles
+        "body": ["profile": profiles]
       ]
       
       let req = Alamofire.request(RestRouter.UpdateUser(params as RestRouter.ParametersType))

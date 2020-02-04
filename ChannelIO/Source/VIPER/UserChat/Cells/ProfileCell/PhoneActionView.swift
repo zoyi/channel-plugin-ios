@@ -43,7 +43,7 @@ final class PhoneActionView: BaseView, Actionable {
   
   let countryCodeView = UIView()
   let countryLabel = UILabel().then {
-    $0.font = UIFont.systemFont(ofSize: 18)
+    $0.font = UIFont.systemFont(ofSize: 16)
     $0.textColor = CHColors.dark
     $0.textAlignment = .center
     $0.text = ""

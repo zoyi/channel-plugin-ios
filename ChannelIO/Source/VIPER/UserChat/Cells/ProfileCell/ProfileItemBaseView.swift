@@ -20,8 +20,8 @@ class ProfileItemBaseView: BaseView {
     static let fieldTop = 24.f
     static let fieldLeading = 12.f
     static let fieldTrailing = 12.f
-    static let fieldHeight = 44.f
-    static let viewHeight = 80.f
+    static let fieldHeight = 43.f
+    static let viewHeight = 73.f
   }
   
   let titleLabel = UILabel().then {

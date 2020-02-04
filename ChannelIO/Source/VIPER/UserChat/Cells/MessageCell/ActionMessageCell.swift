@@ -45,7 +45,7 @@ class ActionMessageCell: MessageCell {
     self.actionView.snp.makeConstraints { make in
       self.topConstraint = make.top.equalToSuperview()
         .inset(Metric.ActionViewTop).constraint
-      self.topToTextViewConstraint = make.top.equalTo(self.textView.snp.bottom)
+      self.topToTextViewConstraint = make.top.equalTo(self.translateView.snp.bottom)
         .offset(Metric.ActionViewTop).priority(750).constraint
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview().inset(Metric.ActionViewTrailing)

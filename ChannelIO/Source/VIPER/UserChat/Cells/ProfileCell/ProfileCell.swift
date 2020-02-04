@@ -68,13 +68,13 @@ class ProfileCell : WebPageMessageCell {
     self.webBottomConstraint?.deactivate()
     
     self.profileExtendableView.snp.makeConstraints { make in
-      self.topToMessageConstraint = make.top.equalTo(self.textView.snp.bottom)
+      self.topToMessageConstraint = make.top.equalTo(self.translateView.snp.bottom)
         .offset(Metric.viewTop).constraint
       self.topToWebConstraint = make.top.equalTo(self.webView.snp.bottom)
         .offset(Metric.viewTop).priority(750).constraint
       make.left.equalToSuperview().inset(Metric.viewLeading)
       make.right.equalToSuperview().inset(Metric.viewTrailing)
-      make.bottom.equalToSuperview().inset(Metric.viewBottom)
+      make.bottom.equalToSuperview()
     }
   }
   
@@ -105,7 +105,7 @@ class ProfileCell : WebPageMessageCell {
   override class func cellHeight(
     fits width: CGFloat,
     viewModel: MessageCellModelType) -> CGFloat {
-    var height = super.cellHeight(fits: width, viewModel: viewModel) + 20
+    var height = super.cellHeight(fits: width, viewModel: viewModel)
     height += ProfileExtendableView.viewHeight(
       fit: width - Metric.viewLeading - Metric.viewTrailing,
       model: viewModel)
