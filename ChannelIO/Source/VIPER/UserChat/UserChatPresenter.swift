@@ -366,10 +366,10 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (message) in
           self?.shouldRedrawProfileBot = true
-          self?.view?.reloadTableView()
           let updatedValue = message.profileBot?.filter { $0.key == key }.first?.value
           ChannelIO.delegate?.onChangeProfile?(key: key, value: updatedValue)
           mainStore.dispatch(UpdateMessage(payload: message))
+          self?.view?.reloadTableView()
           subscriber.onNext(true)
           subscriber.onCompleted()
         }, onError: { (error) in
