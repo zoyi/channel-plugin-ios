@@ -177,11 +177,7 @@ public final class ChannelIO: NSObject {
         .subscribe(onNext: { (_) in
           PrefStore.setChannelPluginSettings(pluginSetting: settings)
           AppManager.registerPushToken()
-          
-          if ChannelIO.launcherWindow == nil {
-            ChannelIO.launcherWindow = LauncherWindow()
-          }
-          
+                    
           mainStore.dispatch(ReadyToShow())
           
           if ChannelIO.launcherVisible {
@@ -269,6 +265,10 @@ public final class ChannelIO: NSObject {
         return
       }
             
+      if ChannelIO.launcherWindow == nil {
+        ChannelIO.launcherWindow = LauncherWindow()
+      }
+      
       let launcherView = ChannelIO.launcherView ?? LauncherView()
       
       let viewModel = LauncherViewModel(
@@ -335,8 +335,10 @@ public final class ChannelIO: NSObject {
   @objc
   public class func hide(animated: Bool) {
     dispatch {
-      ChannelIO.launcherView?.hide(animated: animated)
-      ChannelIO.launcherVisible = false
+      ChannelIO.launcherView?.hide(animated: animated, completion: {
+        ChannelIO.launcherWindow = nil
+        ChannelIO.launcherVisible = false
+      })
     }
   }
   

@@ -111,7 +111,7 @@ final class UserChatViewController: BaseSLKTextViewController {
     self.tableView.isHidden = true
     self.edgesForExtendedLayout = UIRectEdge.bottom
     self.view.backgroundColor = UIColor.white
-  
+    
     self.initManagers()
     self.initNavigationViews(with: self.userChat)
     self.initSLKTextView()
@@ -263,6 +263,7 @@ final class UserChatViewController: BaseSLKTextViewController {
   fileprivate func initSLKTextView() {
     self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
     self.textView.keyboardType = .default
+    self.tableView.alwaysBounceVertical = false
     self.setTextInputbarHidden(true, animated: false)
   }
   
