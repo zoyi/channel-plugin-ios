@@ -112,6 +112,8 @@
 		39A328C523C4780D0029AFEE /* YoutubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */; };
 		39A328C623C4780D0029AFEE /* YoutubePlayerUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */; };
 		39A328C823C478180029AFEE /* VideoProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A328C723C478180029AFEE /* VideoProviderView.swift */; };
+		39A7E9E323EAA0D400BB021A /* CHAppMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A7E9E223EAA0D400BB021A /* CHAppMessenger.swift */; };
+		39B8332923EAD00F002B20FB /* AppMessengerPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B8332823EAD00F002B20FB /* AppMessengerPromise.swift */; };
 		39F4B98623C42CC00043B25A /* TokenStreamRewriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */; };
 		39F4B98723C42CC00043B25A /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */; };
 		39F4B98823C42CC00043B25A /* TokenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E823C42CBF0043B25A /* TokenExtension.swift */; };
@@ -696,6 +698,8 @@
 		39A328C323C4780D0029AFEE /* YoutubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerView.swift; sourceTree = "<group>"; };
 		39A328C423C4780D0029AFEE /* YoutubePlayerUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubePlayerUtils.swift; sourceTree = "<group>"; };
 		39A328C723C478180029AFEE /* VideoProviderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoProviderView.swift; sourceTree = "<group>"; };
+		39A7E9E223EAA0D400BB021A /* CHAppMessenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAppMessenger.swift; sourceTree = "<group>"; };
+		39B8332823EAD00F002B20FB /* AppMessengerPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMessengerPromise.swift; sourceTree = "<group>"; };
 		39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenStreamRewriter.swift; sourceTree = "<group>"; };
 		39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		39F4B8E823C42CBF0043B25A /* TokenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenExtension.swift; sourceTree = "<group>"; };
@@ -1897,6 +1901,7 @@
 				659792C01FA7167B00840F6A /* UtilityPromise.swift */,
 				657AF3F62178750F001EAA7A /* SupportBotPromise.swift */,
 				658010E0219948E500A51CEC /* NudgePromise.swift */,
+				39B8332823EAD00F002B20FB /* AppMessengerPromise.swift */,
 			);
 			name = Promises;
 			path = Source/Promises;
@@ -1976,6 +1981,7 @@
 				9CB8549723826C9300C60474 /* CHOnline.swift */,
 				9C0951D823D54A5D00DE5799 /* CHMessageBlock.swift */,
 				39265D0E23D5A63A007E743F /* CHMarketing.swift */,
+				39A7E9E223EAA0D400BB021A /* CHAppMessenger.swift */,
 			);
 			name = Models;
 			path = Source/Models;
@@ -2656,6 +2662,7 @@
 				39F4BA1623C42CC10043B25A /* BlockEndState.swift in Sources */,
 				657AF3F72178750F001EAA7A /* SupportBotPromise.swift in Sources */,
 				659793701FA716CB00840F6A /* Profile.swift in Sources */,
+				39B8332923EAD00F002B20FB /* AppMessengerPromise.swift in Sources */,
 				3910AC24237AC172000549B5 /* ChatState.swift in Sources */,
 				39F4B9C823C42CC00043B25A /* TokenFactory.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
@@ -2899,6 +2906,7 @@
 				39A328C623C4780D0029AFEE /* YoutubePlayerUtils.swift in Sources */,
 				39F4B9A023C42CC00043B25A /* SyntaxTree.swift in Sources */,
 				3931CB1023C334F1005E8444 /* AssetManager.swift in Sources */,
+				39A7E9E323EAA0D400BB021A /* CHAppMessenger.swift in Sources */,
 				39F4B9A423C42CC00043B25A /* TokenTagToken.swift in Sources */,
 				22AE76B220E341CB00C18355 /* Mute.swift in Sources */,
 				65CB9921226EC055004F9DC7 /* LoungeInteractor.swift in Sources */,

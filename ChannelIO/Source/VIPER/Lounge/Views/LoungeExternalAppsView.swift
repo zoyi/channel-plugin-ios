@@ -119,6 +119,6 @@ class LoungeExternalAppView: BaseView {
   }
   
   func configure(with model: LoungeExternalSourceModel) {
-    self.button.setImage(model.type.image?.withRenderingMode(.alwaysOriginal), for: .normal)
+    self.button.setImage(model.image?.withRenderingMode(.alwaysOriginal), for: .normal)
   }
 }

@@ -23,6 +23,7 @@ enum RestRouter: URLRequestConvertible {
   case CreateMessage(String, ParametersType)
   case CheckVersion
   case CreateSupportBotChat(String, ParametersType)
+  case GetAppMessengerUri(String)
   case GetPlugin(String)
   case GetGeoIP
   case GetChannel
@@ -76,7 +77,8 @@ enum RestRouter: URLRequestConvertible {
          .CreateSupportBotChat, .ReplySupportBot,
          .GetLounge:
       return .post
-    case .GetMessages, .GetUserChat,
+    case .GetAppMessengerUri,
+         .GetMessages, .GetUserChat,
          .GetUserChats, .CheckVersion, .GetGeoIP,
          .GetCountryCodes,
          .GetPlugin,
@@ -117,6 +119,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/users/me/pop-up"
     case .CloseUserChat(let userChatId, _):
       return "/front/user-chats/\(userChatId)/close"
+    case .GetAppMessengerUri(let name):
+      return "/front/app/\(name)/connect"
     case .GetMessages(let userChatId, _):
       return "/front/user-chats/\(userChatId)/messages"
     case .GetCountryCodes:
@@ -268,7 +272,8 @@ enum RestRouter: URLRequestConvertible {
          .ReplySupportBot(_, _, let params),
          .UpdateUser(let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
-    case .GetUserChat,
+    case .GetAppMessengerUri,
+         .GetUserChat,
          .GetPlugin,
          .GetCountryCodes,
          .ClosePopup,

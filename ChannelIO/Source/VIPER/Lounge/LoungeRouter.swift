@@ -44,7 +44,9 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     view?.present(alertController, animated: true, completion: nil)
   }
   
-  func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
+  func presentExternalSource(
+    with source: LoungeExternalSourceModel,
+    from view: UIViewController?) {
     switch source.type {
     case .email:
       guard MFMailComposeViewController.canSendMail() else { return }
@@ -54,15 +56,41 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       view?.present(mailComposerVC, animated: true, completion: nil)
     case .phone:
       if let url = URL(string:source.value) {
-        UIApplication.shared.openURL(url)
+        UIApplication.shared.open(url)
       }
     case .link:
       UIPasteboard.general.string = source.value
-      CHNotification.shared.display(message: CHAssets.localized("ch.integrations.copy_link.success"))
+      CHNotification.shared.display(
+        message: CHAssets.localized("ch.integrations.copy_link.success")
+      )
+      CHNotification.shared.display(
+        message: CHAssets.localized("ch.common_error"),
+        config: .warningConfig
+      )
     default:
-      if let url = URL(string:source.value) {
-        UIApplication.shared.openURL(url)
-      }
+      SVProgressHUD.show()
+      CHAppMessenger
+        .getUri(with: source.value)
+        .retry(.delayed(maxCount: 3, time: 3.0))
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (result) in
+          guard let uri = result.uri, let url = URL(string: uri) else {
+            CHNotification.shared.display(
+              message: CHAssets.localized("ch.common_error"),
+              config: .warningConfig
+            )
+            SVProgressHUD.dismiss()
+            return
+          }
+          SVProgressHUD.dismiss()
+          UIApplication.shared.open(url)
+        }, onError: { (_) in
+          SVProgressHUD.dismiss()
+          CHNotification.shared.display(
+            message: CHAssets.localized("ch.common_error"),
+            config: .warningConfig
+          )
+        }).disposed(by: self.disposeBag)
     }
   }
   

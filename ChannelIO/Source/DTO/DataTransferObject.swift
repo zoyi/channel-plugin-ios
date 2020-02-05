@@ -37,6 +37,7 @@ struct LoungeResponse {
   var operators: [CHManager]?
   var userChatsResponse: UserChatsResponse?
   var supportBotEntryInfo: CHSupportBotEntryInfo?
+  var appMessengers: [CHAppMessenger] = []
 }
 
 extension LoungeResponse : Mappable {
@@ -49,6 +50,18 @@ extension LoungeResponse : Mappable {
     operators               <- map["operators"]
     userChatsResponse       <- map["userChats"]
     supportBotEntryInfo     <- map["supportBot"]
+    appMessengers           <- map["appMessengers"]
+  }
+}
+
+struct UriResponse {
+  var uri: String?
+}
+
+extension UriResponse: Mappable {
+  init?(map: Map) {}
+  mutating func mapping(map: Map) {
+    uri         <- map["uri"]
   }
 }
 
