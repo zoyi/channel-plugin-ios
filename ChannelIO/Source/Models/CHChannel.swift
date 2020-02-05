@@ -25,8 +25,7 @@ struct CHChannel: CHEntity {
   var defaultPluginId = ""
   var textColor = "white"
   var working = true
-  var workingTime: [String:TimeRange]?
-  var lunchTime: TimeRange?
+  var workingTimeRanges: [TimeRange]?
   var phoneNumber: String?
   var requestUserInfo = true
   var messengerPlan: ChannelPlanType = .none
@@ -66,27 +65,19 @@ extension CHChannel {
   }
   
   var shouldShowWorkingTimes: Bool {
-    if let workingTime = self.workingTime, workingTime.count != 0 {
+    if let workingTimeRanges = self.workingTimeRanges, workingTimeRanges.count != 0 {
       return self.workingType == .custom && !self.working
     }
     return false
   }
   
-  var sortedWorkingTime: [SortableWorkingTime]? {
-    guard var workingTime = self.workingTime else { return nil }
-    
-    if let launchTime = self.lunchTime {
-      workingTime["lunch_time"] = launchTime
-    }
-    
-    return workingTime.map({ (key, value) -> SortableWorkingTime in
-      let fromValue = value.from
-      let toValue = value.to
-      
-      if fromValue == 0 && toValue == 0 {
-        return SortableWorkingTime(value: "", key: key, order: 0)
-      }
-      
+  func rangeToWorkingTimes(_ range: TimeRange) -> [SortableWorkingTime] {
+    var workingTimes: [SortableWorkingTime] = []
+
+    for each in range.dayOfWeeks {
+      let fromValue = range.from
+      let toValue = range.to
+
       let from = min(1439, fromValue)
       let to = min(1439, toValue)
       let fromTxt = from >= 720 ? "PM" : "AM"
@@ -95,15 +86,15 @@ extension CHChannel {
       let fromHour = from / 60 > 12 ? from / 60 - 12 : from / 60
       let toMin = to % 60
       let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
-      
+
       let timeStr = String(
         format: "%@ - %d:%02d%@ ~ %d:%02d%@",
-        CHAssets.localized("ch.out_of_work.\(key)"),
+        CHAssets.localized("ch.out_of_work.\(each)"),
         fromHour, fromMin, fromTxt, toHour, toMin, toTxt
       )
-      
+
       var order = 0
-      switch key.lowercased() {
+      switch each.lowercased() {
       case "sun": order = 1
       case "mon": order = 2
       case "tue": order = 3
@@ -113,46 +104,45 @@ extension CHChannel {
       case "sat": order = 7
       default: order = 8
       }
-      
-      return SortableWorkingTime(value: timeStr, key: key.lowercased(), order: order)
-    })
-    .sorted(by: { (wt, otherWt) -> Bool in
-      return wt.order < otherWt.order
-    })
-    .filter({ $0.value != "" })
+
+      workingTimes.append(
+        SortableWorkingTime(
+          value: timeStr,
+          key: each.lowercased(),
+          order: order
+        ))
+    }
+    return workingTimes
+  }
+  
+  var sortedWorkingTime: [SortableWorkingTime]? {
+    guard let workingTimeRanges = self.workingTimeRanges else { return nil }
+    
+    return workingTimeRanges.reduce([]) { (result, range) -> [SortableWorkingTime] in
+      let workingTimes = self.rangeToWorkingTimes(range)
+      return result + workingTimes
+    }
+    .sorted { $0.order < $1.order }
+    .filter { $0.value != "" }
   }
   
   var workingTimeString: String {
     return self.sortedWorkingTime?
-      .compactMap({ (wt) -> String? in
-        return wt.value
-      })
+      .compactMap { $0.value }
       .joined(separator: "\n") ?? "unknown"
   }
   
-  //return closest weekday and time left in minutes
   func closestWorkingTime(from date: Date) -> (nextTime: Date, timeLeft: Int)? {
     guard self.workingType == .custom else { return nil }
-    guard let workingTime = self.workingTime else { return nil }
+    guard let workingTimeRanges = self.workingTimeRanges else { return nil }
     
     var workingTimes = DateUtils.emptyArrayWithWeekday()
-    var breakTimes = DateUtils.emptyArrayWithWeekday()
     
-    for (dayString, range) in workingTime {
-      if let day = Weekday(rawValue: dayString) {
-        workingTimes[day]?.append(range)
-      }
-    }
-    
-    if let lunchTime = self.lunchTime {
-      for day in breakTimes.keys {
-        breakTimes[day]?.append(lunchTime)
-      }
-    }
-
-    for (day, ranges) in workingTimes {
-      if let otherRanges = breakTimes[day] {
-        workingTimes[day] = DateUtils.substract(ranges: ranges, otherRanges: otherRanges)
+    for range in workingTimeRanges {
+      for dayString in range.dayOfWeeks {
+        if let day = Weekday(rawValue: dayString) {
+          workingTimes[day]?.append(range)
+        }
       }
     }
 
@@ -229,9 +219,8 @@ extension CHChannel: Mappable {
     textColor               <- map["textColor"]
     phoneNumber             <- map["phoneNumber"]
     working                 <- map["working"]
-    workingTime             <- map["workingTime"]
-    lunchTime               <- map["lunchTime"]
-    requestUserInfo        <- map["requestUserInfo"]
+    workingTimeRanges       <- map["workingTimeRanges"]
+    requestUserInfo         <- map["requestUserInfo"]
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
@@ -247,6 +236,7 @@ extension CHChannel: Mappable {
 }
 
 struct TimeRange {
+  var dayOfWeeks: [String] = []
   var from = 0
   var to = 0
 }
@@ -265,6 +255,7 @@ extension TimeRange : Mappable, Equatable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
+    dayOfWeeks <- map["dayOfWeeks"]
     from <- map["from"]
     to <- map["to"]
   }
