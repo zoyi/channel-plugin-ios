@@ -10,9 +10,10 @@ import SDWebImage
 import UIKit
 
 class MediaCollectionViewCell: BaseCollectionViewCell {
+  let containerView = UIView()
   let imageView = SDAnimatedImageView().then {
-    $0.backgroundColor = .darkGray
-    $0.contentMode = .scaleAspectFill
+    $0.backgroundColor = .white
+    $0.contentMode = .scaleAspectFit
     $0.sd_imageIndicator = SDWebImageActivityIndicator.white
   }
 
@@ -25,9 +26,9 @@ class MediaCollectionViewCell: BaseCollectionViewCell {
 
   override func initialize() {
     super.initialize()
-
-    self.contentView.addSubview(self.imageView)
-    self.contentView.addSubview(self.videoView)
+    self.contentView.addSubview(self.containerView)
+    self.containerView.addSubview(self.imageView)
+    self.containerView.addSubview(self.videoView)
     
     self.clipsToBounds = true
     self.layer.cornerRadius = 6.f
@@ -39,6 +40,9 @@ class MediaCollectionViewCell: BaseCollectionViewCell {
 
   override func setLayouts() {
     super.setLayouts()
+    self.containerView.snp.makeConstraints { make in
+      make.edges.equalToSuperview()
+    }
 
     self.imageView.snp.makeConstraints { make in
       make.edges.equalToSuperview()

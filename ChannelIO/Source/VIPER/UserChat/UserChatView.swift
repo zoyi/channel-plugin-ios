@@ -22,6 +22,8 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     static let fileStatusCellHeight = 60.f
     static let MediaMessageCellLeading = 40.f
     static let MediaMessageCellTrailing = 75.f
+    static let mediaMinWidth = 56.f
+    static let mediaMinHeight = 56.f
   }
   
   internal struct Sections {
