@@ -122,7 +122,9 @@ struct CHFile: ThumbDisplayable {
   var url: URL? {
     guard !self.bucket.isEmpty && !self.key.isEmpty else { return nil }
     let bucket = self.bucket.replace("bin", withString: "cf")
-    let urlString = "https://" + bucket + "/" + self.key
+    let urlString = "https://"
+      + bucket + "/"
+      + (self.key.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
     return URL(string: urlString)
   }
   
@@ -137,7 +139,10 @@ struct CHFile: ThumbDisplayable {
     let height = Int(self.thumbSize.height)
     let bucket = self.bucket.replace("bin", withString: "cf")
     let thumbable = self.thumb ? "/thumb/" + "\(width)x\(height)/" : "/"
-    let urlString = "https://" + bucket + thumbable + key
+    let urlString = "https://"
+      + bucket
+      + thumbable
+      + (key.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
     return URL(string: urlString)
   }
   
