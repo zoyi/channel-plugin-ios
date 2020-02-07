@@ -258,12 +258,17 @@ extension UserChatView: UICollectionViewDelegate,
     let contentWidth = self.tableView.frame.width
       - Constants.MediaMessageCellLeading
       - Constants.MediaMessageCellTrailing
+    let minApplyWidth = max(Constants.mediaMinWidth, file.thumbSize.width)
+    let minApplyHeight = max(Constants.mediaMinHeight, file.thumbSize.height)
     if file.type == .video {
-      return file.thumbSize
+      return CGSize(width: minApplyWidth, height: minApplyHeight)
     } else if file.type == .image {
+      let isMultipleImages = files.filter { $0.type == .image }.count > 1
       let side = (contentWidth - 8) / 2
-      return files.filter { $0.type == .image }.count > 1 ?
-        CGSize(width: side, height: side ) : file.thumbSize
+      return CGSize(
+        width: isMultipleImages ? side : minApplyWidth,
+        height: isMultipleImages ? side : minApplyHeight
+      )
     } else {
       return CGSize(
         width: contentWidth,
@@ -298,6 +303,7 @@ extension UserChatView: UICollectionViewDelegate,
     let file = files[indexPath.row]
     if file.type == .video || file.type == .image {
       let cell: MediaCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
+      cell.imageView.contentMode = files.filter { $0.type == .image }.count > 1 ? .scaleAspectFill : .scaleAspectFit
       cell.signalForClick()
         .subscribe(onNext: { [weak self] (_) in
           self?.presenter?.didClickOnFile(

@@ -40,8 +40,13 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
       _ = state?.upsertSupportBots(bots: [bot]) ?? BotsState()
     }
     if let bots = action.userChatsResponse?.bots {
-      return state?.upsert(bots: bots) ?? BotsState()
+      _ = state?.upsert(bots: bots) ?? BotsState()
     }
+    
+    if let bot = action.bot {
+      return state?.upsert(bot: bot) ?? BotsState()
+    }
+    
     return state ?? BotsState()
     
   case let action as CreateLocalUserChat:

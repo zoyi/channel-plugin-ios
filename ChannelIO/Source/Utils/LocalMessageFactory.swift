@@ -71,15 +71,20 @@ struct LocalMessageFactory {
   }
   
   private static func getWelcomeMessage() -> CHMessage? {
-    guard let block = mainStore.state.user.getWelcomeBlock() else {
+    let user = mainStore.state.user
+    guard var block = user.getWelcomeBlock() else {
       return nil
     }
-
+    
+    block.displayText = user.getWelcome(
+      with: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+    )
+    
     return CHMessage(
       chatId: "welcome_dummy",
       blocks: [block],
       type: .WelcomeMessage,
-      entity: botSelector(state: mainStore.state),
+      entity: botSelector(state: mainStore.state) ?? mainStore.state.channel,
       id: "welcome_dummy"
     )
   }
