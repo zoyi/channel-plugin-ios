@@ -294,6 +294,7 @@ extension ChannelIO {
   @objc internal class func enterBackground() {
     WsService.shared.disconnect()
     ChannelIO.willBecomeActive = false
+    ChannelAvailabilityChecker.shared.stop()
     NotificationCenter.default.post(name: Notification.Name.Channel.enterBackground, object: nil)
   }
   
@@ -314,5 +315,8 @@ extension ChannelIO {
   
   @objc internal class func appBecomeActive(_ application: UIApplication) {
     ChannelIO.willBecomeActive = true
+    if ChannelIO.baseNavigation != nil {
+      ChannelAvailabilityChecker.shared.run()
+    }
   }
 }
