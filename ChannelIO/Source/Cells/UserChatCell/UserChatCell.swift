@@ -35,6 +35,7 @@ final class UserChatCell: BaseTableViewCell {
     static let cellHeight = 80.f
     static let fileHeight = 18.f
     static let welcomeBottom = 10.f
+    static let messageLineHeight = 18.f
   }
 
   struct Font {
@@ -140,10 +141,12 @@ final class UserChatCell: BaseTableViewCell {
     self.timestampLabel.text = viewModel.timestamp
     self.badge.isHidden = viewModel.isBadgeHidden
     self.badge.configure(viewModel.badgeCount)
-    self.messageLabel.text = viewModel.lastMessage
+    self.messageLabel.attributedText = viewModel.lastMessage?.addLineHeight(
+      height: Metrics.messageLineHeight,
+      font: Font.messageLabel,
+      color: viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
+    )
     self.messageLabel.isHidden = !(viewModel.lastMessage != nil)
-    self.messageLabel.textColor = viewModel.isClosed ?
-      CHColors.blueyGrey : Color.messageLabel
     let hasFiles = viewModel.files.count > 0
     self.fileInfoView.isHidden = !hasFiles
     self.fileInfoView.configure(with: viewModel.files, isLarge: false)
@@ -174,13 +177,17 @@ final class UserChatCell: BaseTableViewCell {
     )
     height += Metrics.titleBottomPadding
     let hasFiles = viewModel.files.count > 0
-    height += viewModel.lastMessage?.height(
+    let text = viewModel.lastMessage?.addLineHeight(
+      height: Metrics.messageLineHeight,
+      font: Font.messageLabel,
+      color: viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
+    )
+    height += text?.height(
       fits: width
         - Metrics.cellLeftPadding
         - Metrics.avatarSide
         - Metrics.avatarRightPadding
         - Metrics.messageTrailing,
-      font: Font.messageLabel,
       maximumNumberOfLines: maxNumberOfLines
     ) ?? 0
     height += hasFiles ? Metrics.fileHeight : 0

@@ -21,7 +21,7 @@ extension URL {
           controller.modalPresentationStyle = .currentContext
           CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
         } else {
-          UIApplication.shared.openURL(self)
+          UIApplication.shared.open(self)
         }
       }
     } else {

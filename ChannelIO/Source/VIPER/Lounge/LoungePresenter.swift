@@ -335,7 +335,8 @@ extension LoungePresenter {
         let sources = LoungeExternalSourceModel.generate(
           with: mainStore.state.channel,
           plugin: mainStore.state.plugin,
-          appMessengers: info.appMessengers)
+          appMessengers: info.appMessengers
+        )
         self?.view?.displayExternalSources(with: sources)
         
         self?.loungeCompletion.accept(true)

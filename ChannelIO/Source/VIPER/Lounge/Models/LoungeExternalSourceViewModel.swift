@@ -18,7 +18,10 @@ struct LoungeExternalSourceModel {
   var image: UIImage?
   var value: String
   
-  static func generate(with channel: CHChannel, plugin: CHPlugin, appMessengers: [CHAppMessenger]) -> [LoungeExternalSourceModel] {
+  static func generate(
+    with channel: CHChannel,
+    plugin: CHPlugin,
+    appMessengers: [CHAppMessenger]) -> [LoungeExternalSourceModel] {
     var sources: [LoungeExternalSourceModel] = []
     
     for appMessenger in appMessengers {
