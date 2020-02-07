@@ -52,7 +52,7 @@
 "ch.out_of_work.sun" = "日";
 "ch.out_of_work.lunch_time" = "休憩時間";
 "ch.out_of_work.user_answer" = "営業時間を詳しく教えてください。";
-"ch.out_of_work.title" = "はい、運営時間は以下のようになります。";
+"ch.out_of_work.title" = "はい、営業時間は以下のようになります。";
 "ch.unread_divider" = "新しいメッセージ";
 "ch.settings.title" = "メニューと設定";
 "ch.scripts.welcome_veil.default" = "ご覧いただきまして、ありがとうございます。\
@@ -84,7 +84,7 @@
 "ch.settings.edit.name_placeholder" = "お名前を入力してください。";
 "ch.settings.edit.phone_number_label" = "携帯電話番号を入力する";
 "ch.settings.edit.phone_number_placeholder" = "携帯電話番号を入力してください。";
-"ch.settings.edit.phone_number_description" = "チャットから離れている間に返事が来た場合、SMSで通知を受け取れます。";
+"ch.settings.edit.phone_number_description" = "サイトを閉じたあとに返信があった場合、SMSで通知を受け取れます";
 "ch.settings.changing_message" = "プロフィールの設定中";
 "ch.chat.delete" = "削除";
 "ch.settings.close" = "閉じる";
@@ -124,11 +124,11 @@
 ご理解くださいませ";
 "ch.chat.expect_response_delay.delayed" = "応答までの時間 混雑";
 "ch.chat.expect_response_delay.out_of_working.description" = "ご不明点を送っていただくと、できる限り早く回答をいたします";
-"ch.chat.expect_response_delay.out_of_working" = "運営時間外";
+"ch.chat.expect_response_delay.out_of_working" = "営業時間外";
 "ch.chat.expect_response_delay.instant.short_description" = "通常数分内にご返信致します";
 "ch.chat.expect_response_delay.normal.short_description" = "通常数十分以内にご返信致します";
 "ch.chat.expect_response_delay.delayed.short_description" = "返信が遅くなる場合があります";
-"ch.chat.expect_response_delay.out_of_working.short_description" = "現在は運営時間外です";
+"ch.chat.expect_response_delay.out_of_working.short_description" = "現在は営業時間外です";
 "ch.chat.expect_response_delay.out_of_working.detail" = "営業時間を確認する";
 "ch.term_of_service" = "チャンネル利用規約";
 "ch.settings.show_closed_chats" = "完了した顧客問合せを表示";
@@ -144,7 +144,7 @@
 "en" = "English";
 "ja" = "日本語";
 "ch.message_input.placeholder.disabled_new_chat" = "只今、営業時間外です。お手数おかけしますが、営業時間に再度お問い合わせ頂けますと幸いです";
-"ch.chat.expect_response_delay.out_of_working.disabled" = "運営時間外には新たな問い合わせを受けられません";
+"ch.chat.expect_response_delay.out_of_working.disabled" = "営業時間外には新たな問い合わせを受けられません";
 "ch.profile_form.placeholder" = "ご入力ください";
 "ch.profile_form.error" = "正しい形式でご入力ください";
 "show_translate" = "翻訳を見る";
@@ -175,3 +175,5 @@
 "ch.minute" = "分";
 "ch.hour" = "時間";
 "ch.day" = "日";
+"file_upload.fail" = "送信に失敗しました";
+"file_upload.wait_count" = "%s件待機中";
