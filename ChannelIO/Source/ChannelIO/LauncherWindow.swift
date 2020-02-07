@@ -9,6 +9,8 @@ final class LauncherWindow: UIWindow {
   var launcherView: LauncherView?
   var inAppNotificationView: InAppNotification?
 
+  private weak var hostKeyWindow: UIWindow?
+  
   init() {
     let defaultSize = UIScreen.main.bounds.size
     var y = UIApplication.shared.statusBarFrame.height
@@ -29,6 +31,7 @@ final class LauncherWindow: UIWindow {
     }
     
     super.init(frame: bounds)
+    self.hostKeyWindow = CHUtils.getKeyWindow()
     self.initWindowSettings()
   }
 
@@ -67,6 +70,8 @@ final class LauncherWindow: UIWindow {
     self.window?.isHidden = false
     self.windowLevel = UIWindow.Level(rawValue: CGFloat.greatestFiniteMagnitude)
     self.makeKeyAndVisible()
+    //NOTE: we don't want this window to be key window
+    self.hostKeyWindow?.makeKey()
   }
   
   func addCustomView(with view: UIView) {

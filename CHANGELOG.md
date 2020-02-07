@@ -1,3 +1,7 @@
+# 6.1.23
+## Bug fixes
+* Restore host window to be key window after insert uiwindow
+
 # 6.1.22
 ## Updates
 * Please check your `LauncherConfig` if you happen to use it. We updated container view frame position for launcher, so after this updates the launcher's position might not be what you intended
