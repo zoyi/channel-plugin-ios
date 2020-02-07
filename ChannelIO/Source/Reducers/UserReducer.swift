@@ -10,7 +10,7 @@ import ReSwift
 
 func userReducer(action: Action, user: CHUser?) -> CHUser {
   switch action {
-  case let action as CheckInSuccess:
+  case let action as BootSuccess:
     if let jwt = action.payload.sessionJWT {
       PrefStore.setSessionJWT(jwt)
     }
@@ -70,7 +70,7 @@ func userReducer(action: Action, user: CHUser?) -> CHUser {
     }
     return user ?? CHUser()
   
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return CHUser()
     
   default:

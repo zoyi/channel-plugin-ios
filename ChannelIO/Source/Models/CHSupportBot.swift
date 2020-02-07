@@ -72,7 +72,10 @@ struct CHSupportBotEntryInfo {
   
   init() { }
   
-  init(supportBot: CHSupportBot?, step: CHSupportBotStep?, buttons: [CHActionButton] = []) {
+  init(
+    supportBot: CHSupportBot?,
+    step: CHSupportBotStep?,
+    buttons: [CHActionButton] = []) {
     self.supportBot = supportBot
     self.step = step
     self.buttons = buttons

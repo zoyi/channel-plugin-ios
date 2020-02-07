@@ -11,12 +11,15 @@ import UIKit
 extension UIView {
   func roundCorners(corners: UIRectCorner, radius: CGFloat) {
     self.layer.setNeedsLayout()
-    self.layer.layoutIfNeeded()
     
     let rectShape = CAShapeLayer()
     rectShape.bounds = self.frame
     rectShape.position = self.center
-    rectShape.path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius)).cgPath
+    rectShape.path = UIBezierPath(
+      roundedRect: self.bounds,
+      byRoundingCorners: corners,
+      cornerRadii: CGSize(width: radius, height: radius)
+    ).cgPath
     self.layer.mask = rectShape
   }
 }

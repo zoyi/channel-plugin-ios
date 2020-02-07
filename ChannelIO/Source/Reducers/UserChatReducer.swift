@@ -68,7 +68,7 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   case let action as CreateLocalUserChat:
     return state?.upsert(userChat: action.chat) ?? UserChatsState()
   
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return state?.clear() ?? UserChatsState()
   
   default:

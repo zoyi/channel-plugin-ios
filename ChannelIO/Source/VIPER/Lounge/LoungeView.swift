@@ -45,16 +45,11 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   var scrollTopConstraint: Constraint?
   var mainHeightConstraint: Constraint?
   var mainHeight: CGFloat = 240.f
-  
-  override var preferredStatusBarStyle: UIStatusBarStyle {
-    return self.navigationController?.preferredStatusBarStyle ?? .lightContent
-  }
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
     self.view.backgroundColor = CHColors.paleGreyFour
-    
     self.initViews()
     self.initScrollView()
     self.presenter?.viewDidLoad()
@@ -78,6 +73,11 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     self.presenter?.cleanup()
+  }
+  
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    //NOTE: for less than iOS 13, above is default to .lightContent due to modal style
+    return mainStore.state.plugin.textColor == "white" ? .lightContent : .default
   }
   
   override func setupConstraints() {
@@ -120,7 +120,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       make.top.equalToSuperview()
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
-      make.width.equalTo(UIScreen.main.bounds.width - Metrics.contentSide * 2)
+      make.width.equalToSuperview()
       self.mainHeightConstraint = make.height.equalTo(self.mainHeight).constraint
     }
     

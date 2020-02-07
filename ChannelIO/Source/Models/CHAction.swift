@@ -59,9 +59,15 @@ extension CHActionButton: Mappable {
   
   mutating func mapping(map: Map) {
     key         <- map["key"]
+    
     let rawText = map["text"].currentValue as? String ?? ""
-    //TODO: what should do?
-    (text, onlyEmoji) = CustomMessageTransform.markdown.parse(rawText)
+    let transformer = CustomBlockTransform(
+      config: CHMessageParserConfig(
+        font: UIFont.systemFont(ofSize: 14)
+      ))
+    
+    text = transformer.parser.parseText(rawText)
+    onlyEmoji = transformer.parser.listener?.isOnlyEmoji ?? false
   }
 }
 

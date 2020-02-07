@@ -51,7 +51,7 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
   case let action as DeleteUserChats:
     return state?.remove(userChatIds: action.payload.map { $0.id }) ?? SessionsState()
     
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return state?.clear() ?? SessionsState()
   
   default:

@@ -58,14 +58,16 @@ internal extension UIView {
     }
   }
   
-  func hide(animated: Bool) {
+  func hide(animated: Bool, completion: (() -> ())? = nil) {
     if !animated {
       self.alpha = 0
       return
     }
-    
-    UIView.animate(withDuration: 0.5) {
+
+    UIView.animate(withDuration: 0.5, animations: {
       self.alpha = 0
+    }) { (completed) in
+      completion?()
     }
   }
   

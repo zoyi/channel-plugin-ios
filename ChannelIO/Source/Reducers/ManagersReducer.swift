@@ -35,7 +35,7 @@ func managersReducer(action: Action, state: ManagersState?) -> ManagersState {
     return state?.upsert(managers: action.operators) ?? ManagersState()
    
     
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return state?.clear() ?? ManagersState()
     
   default:

@@ -1,3 +1,64 @@
+# 6.1.23
+## Bug fixes
+* Restore host window to be key window after insert uiwindow
+
+# 6.1.22
+## Updates
+* Please check your `LauncherConfig` if you happen to use it. We updated container view frame position for launcher, so after this updates the launcher's position might not be what you intended
+ 
+## Bug fixes
+* Insert UIWindow only if needed (only when launcher is needed to be displayed)
+* Set UIWindow size properly under status bar
+
+# 6.1.21
+## Bug fixes
+* Removed UIWindow properly
+* Fixed status bar style
+* Fixed Welcome message that was not set properly
+
+# 6.1.20
+## Bug fixes
+* Fixed attributed welcome message
+
+# 6.1.19
+## Bug fixes
+* Fixed missing files
+
+# 6.1.18
+## Updates
+* Changed plugin button and InappNotification present on UIWindow
+## Bug fixes
+* Fixed Badge minus display
+* Fixed wrong user chat cell height calculate
+* Solved conflict with SkeletonView
+
+# 6.1.17
+## Bug fixes
+* Fixed some broken emoji display
+* Fixed text height calculation for welcome
+* Changed user chat cell height calculation to automatic
+
+# 6.1.15
+## Updates
+* Changed minimum os version to 10
+* Updated depandencies versions for swift 5 (Reusable, SnapKit, SwiftyJSON, ObjectMapper, NVActivityIndicatorView, PhoneNumberKit)
+
+## Bug fixes
+* Fixed becoming online bug when app is not running
+
+# 6.1.14
+## Bug fixes
+* Fixed new banner logic
+* Added missing video type
+
+# 6.1.13
+## Bug fixes
+* Fixed iOS 13 layout (Dicarded some UIScreen.main usage due to changing default present style)
+
+# 6.1.12
+## Updates
+* Removed M13ProgressView
+
 # 6.1.11
 ## Updates
 * Added deleted message cell
@@ -5,6 +66,7 @@
 
 ## Bug fixes
 * Fixed presentation style for image viewer
+* Fixed dark mode issue
 
 # 6.1.10
 ## Updates

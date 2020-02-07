@@ -39,6 +39,6 @@ public enum ChannelPluginCompletionStatus : Int {
   case unknown
 }
 
-struct CheckinState: StateType {
+struct BootState: StateType {
   var status: ChannelPluginCompletionStatus = .notInitialized
 }

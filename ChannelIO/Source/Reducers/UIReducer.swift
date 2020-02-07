@@ -32,21 +32,21 @@ func uiReducer(action: Action, state: UIState?) -> UIState {
   }
 }
 
-func checkinReducer(action: Action, state: CheckinState?) -> CheckinState {
+func bootReducer(action: Action, state: BootState?) -> BootState {
   var state = state
   switch action {
-  case let action as UpdateCheckinState:
+  case let action as UpdateBootState:
     state?.status = action.payload
-    return state ?? CheckinState()
+    return state ?? BootState()
   
-  case _ as CheckInSuccess:
+  case _ as ReadyToShow:
     state?.status = .success
-    return state ?? CheckinState()
+    return state ?? BootState()
     
-  case _ as CheckOutSuccess:
-    return CheckinState()
+  case _ as ShutdownSuccess:
+    return BootState()
   
   default:
-    return state ?? CheckinState()
+    return state ?? BootState()
   }
 }

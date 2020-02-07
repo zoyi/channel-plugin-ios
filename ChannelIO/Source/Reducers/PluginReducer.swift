@@ -13,22 +13,16 @@ func pluginReducer(action: Action, plugin: CHPlugin?) -> CHPlugin {
   case let action as GetPlugin:
     return action.plugin
     
-  case let action as CheckInSuccess:
-    if let plugin = action.payload.plugin {
-      return plugin
-    }
-    return plugin ?? CHPlugin()
-    
   case let action as GetTouchSuccess:
-    if let plugin = action.payload.plugin {
-      return plugin
-    }
-    return plugin ?? CHPlugin()
+    return action.payload.plugin ?? CHPlugin()
+
+  case let action as BootSuccess:
+    return action.payload.plugin ?? CHPlugin()
     
   case let action as UpdateLoungeInfo:
     return action.plugin
     
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return CHPlugin()
     
   default:

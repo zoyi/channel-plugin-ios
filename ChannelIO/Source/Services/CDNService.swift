@@ -55,7 +55,7 @@ enum CDNService: URLConvertible {
     }
 
     if let locale = CHUtils.getLocale() {
-      headers["X-language"] = locale.rawValue
+      headers["Accept-language"] = locale.rawValue
     }
 
     headers["Accept"] = "application/json"

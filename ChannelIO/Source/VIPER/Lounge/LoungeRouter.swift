@@ -54,14 +54,14 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       view?.present(mailComposerVC, animated: true, completion: nil)
     case .phone:
       if let url = URL(string:source.value) {
-        UIApplication.shared.openURL(url)
+        url.openWithUniversal()
       }
     case .link:
       UIPasteboard.general.string = source.value
       CHNotification.shared.display(message: CHAssets.localized("ch.integrations.copy_link.success"))
     default:
       if let url = URL(string:source.value) {
-        UIApplication.shared.openURL(url)
+        url.openWithUniversal()
       }
     }
   }

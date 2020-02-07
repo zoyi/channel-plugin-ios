@@ -17,7 +17,7 @@ func pushReducer(action:Action, push: CHPush?) -> CHPush? {
   case _ as RemovePush:
     return nil
     
-  case _ as CheckOutSuccess:
+  case _ as ShutdownSuccess:
     return nil
     
   default:
