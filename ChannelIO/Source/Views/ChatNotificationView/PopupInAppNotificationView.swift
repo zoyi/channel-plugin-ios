@@ -129,6 +129,8 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     
     self.mediaContainerView.addSubview(self.mediaView)
     
+    self.layer.zPosition = 1
+    
     self.messageView.delegate = self
     
     self.containerView.rx.observeWeakly(CGRect.self, "bounds")
@@ -242,7 +244,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     if self.superview != view {
       self.insert(on: view, animated: true)
     }
-    
+
     self.snp.makeConstraints({ (make) in
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()

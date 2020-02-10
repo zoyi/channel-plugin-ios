@@ -158,7 +158,7 @@ extension ChannelIO {
   }
   
   internal class func showNotification(pushData: CHPushDisplayable?) {
-    guard let view = CHUtils.getTopController()?.view else { return }
+    guard let view = ChannelIO.launcherWindow?.rootViewController?.view else { return }
     guard let push = pushData, !push.removed else { return }
     
     if ChannelIO.inAppNotificationView != nil {
@@ -174,7 +174,7 @@ extension ChannelIO {
     } else {
       notificationView = BannerInAppNotificationView()
     }
-     
+    
     notificationView?.configure(with: viewModel)
     notificationView?.insertView(on: view)
     

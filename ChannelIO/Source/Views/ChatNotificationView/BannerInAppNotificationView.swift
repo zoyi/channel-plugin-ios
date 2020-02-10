@@ -64,7 +64,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = UIColor.grey900
-    $0.textContainer.maximumNumberOfLines = 1
+    $0.textContainer.maximumNumberOfLines = 0
     $0.textContainer.lineBreakMode = .byTruncatingTail
     
     $0.textContainer.lineFragmentPadding = 0
@@ -101,6 +101,8 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.rightStackView.addArrangedSubview(self.fileInfoView)
     self.closeContainerView.addSubview(self.closeImageView)
     self.containerView.addSubview(self.closeContainerView)
+    
+    self.layer.zPosition = 1
     
     self.messageView.delegate = self
     
@@ -195,7 +197,8 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.messageView.isHidden = !hasMessage ? true : false
     if viewModel.hasMedia {
       self.fileInfoView.isHidden = !hasMessage ? false : true
-      self.messageView.textContainer.maximumNumberOfLines = !hasMessage ? Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
+      self.messageView.textContainer.maximumNumberOfLines = !hasMessage ?
+        Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
     } else {
       self.fileInfoView.isHidden = viewModel.files.count > 0 ? false : true
       self.messageView.textContainer.maximumNumberOfLines = viewModel.files.count > 0 ?
