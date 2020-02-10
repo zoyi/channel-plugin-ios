@@ -14,7 +14,7 @@ extension URL {
   func openWithUniversal() {
     guard UIApplication.shared.canOpenURL(self) else { return }
     if #available(iOS 10.0, *) {
-      UIApplication.shared.open(self, options: [.universalLinksOnly:true]) { (completed) in
+      UIApplication.shared.open(self, options: [.universalLinksOnly : true]) { (completed) in
         let scheme = self.scheme ?? ""
         if !completed && (scheme == "http" || scheme == "https") {
           let controller = SFSafariViewController(url: self)
@@ -38,6 +38,8 @@ extension URL {
       let controller = SFSafariViewController(url: self)
       controller.modalPresentationStyle = .currentContext
       CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
+    } else if #available(iOS 10.0, *) {
+      UIApplication.shared.open(self, options: [.universalLinksOnly : true], completionHandler: nil)
     } else {
       UIApplication.shared.openURL(self)
     }

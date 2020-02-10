@@ -11,7 +11,7 @@ class MediaCollectionView: BaseView {
   private struct Metrics {
     static let fileViewHeight = 70.f
     static let collectionMargin = 8.f
-    
+    static let mediaMinHeight = 56.f
   }
   var collectionView: UICollectionView!
 
@@ -83,9 +83,9 @@ class MediaCollectionView: BaseView {
     for (index, file) in models.enumerated() {
       let margin = index == models.count - 1 ? 0 : Metrics.collectionMargin
       if file.type == .image && imageCount == 1 {
-          height += file.thumbSize.height + margin
+        height += max(file.thumbSize.height, Metrics.mediaMinHeight) + margin
       } else if file.type == .video {
-         height += file.thumbSize.height + margin
+        height += max(file.thumbSize.height, Metrics.mediaMinHeight) + margin
       } else if file.type == .file {
         height += Metrics.fileViewHeight + margin
       }

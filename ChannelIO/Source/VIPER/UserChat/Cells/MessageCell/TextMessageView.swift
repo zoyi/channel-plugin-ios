@@ -20,6 +20,7 @@ class TextMessageView : BaseView {
     static let leftRightPadding = 12.f
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
+    static let textViewMinimalWidth = 20.f
   }
 
   struct Constants {
@@ -72,12 +73,13 @@ class TextMessageView : BaseView {
   override func setLayouts() {
     super.setLayouts()
 
-    self.messageView.snp.makeConstraints({ [weak self] (make) in
-      self?.leadingConstraint = make.leading.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self?.topConstraint = make.top.equalToSuperview().inset(Metrics.topBottomPadding).constraint
-      self?.trailingConstraint = make.trailing.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self?.bottomConstraint = make.bottom.equalToSuperview().inset(Metrics.topBottomPadding).constraint
-    })
+    self.messageView.snp.makeConstraints { make in
+      self.leadingConstraint = make.leading.equalToSuperview().inset(Metrics.leftRightPadding).constraint
+      self.topConstraint = make.top.equalToSuperview().inset(Metrics.topBottomPadding).constraint
+      self.trailingConstraint = make.trailing.equalToSuperview().inset(Metrics.leftRightPadding).constraint
+      self.bottomConstraint = make.bottom.equalToSuperview().inset(Metrics.topBottomPadding).constraint
+      make.width.greaterThanOrEqualTo(Metrics.textViewMinimalWidth)
+    }
   }
 
   func configure(_ viewModel: MessageCellModelType) {

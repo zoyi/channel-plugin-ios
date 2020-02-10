@@ -17,7 +17,8 @@ extension ChannelIO {
     ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.close(animated: false)
     ChannelIO.hideNotification()
-    mainStore.dispatch(CheckOutSuccess())
+    ChannelIO.launcherWindow = nil
+    mainStore.dispatch(ShutdownSuccess())
     WsService.shared.disconnect()
     disposeBag = DisposeBag()
   }
@@ -47,7 +48,7 @@ extension ChannelIO {
     SVProgressHUD.setDefaultStyle(.dark)
   }
 
-  internal class func checkInChannel(profile: Profile? = nil) -> Observable<BootResponse> {
+  internal class func bootChannel(profile: Profile? = nil) -> Observable<BootResponse> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
         subscriber.onError(ChannelError.unknownError)
@@ -88,15 +89,16 @@ extension ChannelIO {
             return
           }
           
-          mainStore.dispatch(CheckInSuccess(payload: result))
-          
+          mainStore.dispatch(BootSuccess(payload: result))
+
           WsService.shared.connect()
-          WsService.shared.ready().take(1)
+          WsService.shared
+            .ready()
+            .take(1)
             .subscribe(onNext: { _ in
               subscriber.onNext(result)
               subscriber.onCompleted()
             }).disposed(by: disposeBag)
-          
         }, onError: { error in
           subscriber.onError(error)
         }, onCompleted: {
@@ -113,7 +115,7 @@ extension ChannelIO {
         return
       }
       
-      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.launcherView?.hide(animated: false)
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
@@ -184,7 +186,8 @@ extension ChannelIO {
         ChannelIO.showUserChat(userChatId: push.chatId)
       }).disposed(by: disposeBag)
     
-    notificationView?.signalForClose()
+    notificationView?
+      .signalForClose()
       .observeOn(MainScheduler.instance)
       .subscribe { (event) in
         ChannelIO.hideNotification()
@@ -257,6 +260,7 @@ extension ChannelIO {
   @objc internal class func enterBackground() {
     WsService.shared.disconnect()
     ChannelIO.willBecomeActive = false
+    ChannelAvailabilityChecker.shared.stop()
     NotificationCenter.default.post(name: Notification.Name.Channel.enterBackground, object: nil)
   }
   
@@ -277,5 +281,8 @@ extension ChannelIO {
   
   @objc internal class func appBecomeActive(_ application: UIApplication) {
     ChannelIO.willBecomeActive = true
+    if ChannelIO.baseNavigation != nil {
+      ChannelAvailabilityChecker.shared.run()
+    }
   }
 }

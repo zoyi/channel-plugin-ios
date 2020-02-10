@@ -84,7 +84,8 @@ class LoungeMainView: BaseView {
       self.welcomeCellHeight = UserChatCell.calculateHeight(
         fits: self.frame.width,
         viewModel: model,
-        maxNumberOfLines: Constants.maxNumberOfLinesForWelcomeCell)
+        maxNumberOfLines: Constants.maxNumberOfLinesForWelcomeCell
+      )
       
       var height = self.welcomeCellHeight +
         Constants.defaultHeaderHeight +

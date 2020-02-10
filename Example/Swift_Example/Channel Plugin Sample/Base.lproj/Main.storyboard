@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="5fr-Ql-cbA">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="5fr-Ql-cbA">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -19,7 +16,7 @@
                         <viewControllerLayoutGuide type="bottom" id="HkG-55-4oJ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="uPc-S3-aln">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="574"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Ko-Xpf">
@@ -83,14 +80,21 @@
                         <viewControllerLayoutGuide type="bottom" id="bPl-Id-Z9f"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="QC1-wd-s7g">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="525"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="0zs-By-lVv">
-                                <rect key="frame" x="30" y="264" width="315" height="260"/>
+                                <rect key="frame" x="30" y="195" width="315" height="300"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pfy-tC-SRR">
+                                        <rect key="frame" x="0.0" y="0.0" width="315" height="30"/>
+                                        <state key="normal" title="push view"/>
+                                        <connections>
+                                            <segue destination="I4u-Ga-P1M" kind="show" id="vho-qP-u7S"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kd3-Zr-MwK">
-                                        <rect key="frame" x="0.0" y="0.0" width="315" height="44"/>
+                                        <rect key="frame" x="0.0" y="40" width="315" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="JoJ-hs-DcL"/>
                                         </constraints>
@@ -105,7 +109,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jaR-sM-i33">
-                                        <rect key="frame" x="0.0" y="54" width="315" height="44"/>
+                                        <rect key="frame" x="0.0" y="94" width="315" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="x73-wH-DCw"/>
                                         </constraints>
@@ -120,7 +124,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0jm-gn-D3y">
-                                        <rect key="frame" x="0.0" y="108" width="315" height="44"/>
+                                        <rect key="frame" x="0.0" y="148" width="315" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="LjK-14-ajb"/>
                                         </constraints>
@@ -135,7 +139,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oDE-nQ-QUf">
-                                        <rect key="frame" x="0.0" y="162" width="315" height="44"/>
+                                        <rect key="frame" x="0.0" y="202" width="315" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="jSx-nJ-CsV"/>
                                         </constraints>
@@ -150,7 +154,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Ph-vy-bU0">
-                                        <rect key="frame" x="0.0" y="216" width="315" height="44"/>
+                                        <rect key="frame" x="0.0" y="256" width="315" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="df8-tu-S05"/>
                                         </constraints>
@@ -167,8 +171,7 @@
                                 </subviews>
                             </stackView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xK3-GR-Kwf">
-                                <rect key="frame" x="56" y="20" width="263" height="30"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="56" y="20" width="263" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -219,6 +222,8 @@
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="avatarView" destination="h7E-Rb-m91" id="mb8-T5-09S"/>
                         <outlet property="customPushView" destination="M3n-iX-6I4" id="HA6-M7-WFL"/>
@@ -228,7 +233,26 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CwN-sq-DP0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3768.8000000000002" y="102.99850074962519"/>
+            <point key="canvasLocation" x="2945" y="111"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="EN0-FC-M6u">
+            <objects>
+                <viewController id="I4u-Ga-P1M" customClass="ViewController" customModule="Channel_Plugin_Sample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="X8M-so-qhu"/>
+                        <viewControllerLayoutGuide type="bottom" id="cbW-FH-NCp"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hqf-z5-Bob">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="OSm-cM-BQu"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ete-je-KIF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3794" y="103"/>
         </scene>
         <!--User View Controller-->
         <scene sceneID="bv8-b4-bcO">
@@ -239,29 +263,26 @@
                         <viewControllerLayoutGuide type="bottom" id="Vl3-rV-N5f"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fQg-vk-UJk">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="574"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6xi-In-srn">
-                                <rect key="frame" x="56" y="20" width="263" height="30"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="56" y="20" width="263" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VMz-Xe-qYt">
-                                <rect key="frame" x="56" y="60" width="263" height="30"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="56" y="64" width="263" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mip-vd-meE">
-                                <rect key="frame" x="56" y="100" width="263" height="30"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="56" y="108" width="263" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="tAO-DZ-Uge">
-                                <rect key="frame" x="56" y="264" width="263" height="260"/>
+                                <rect key="frame" x="56" y="284" width="263" height="260"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UjK-1h-NqF">
                                         <rect key="frame" x="0.0" y="0.0" width="263" height="44"/>
@@ -344,8 +365,7 @@
                                 </subviews>
                             </stackView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0Sf-D2-Avf">
-                                <rect key="frame" x="56" y="140" width="263" height="30"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="56" y="152" width="263" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -390,12 +410,12 @@
                     <tabBarItem key="tabBarItem" title="Item" id="dfO-vm-B20"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="zh4-je-CuQ">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="barTintColor" red="0.24099590370000001" green="0.58981236650000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="barTintColor" red="0.8047945205479452" green="0.8047945205479452" blue="0.8162457191780822" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
-                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>

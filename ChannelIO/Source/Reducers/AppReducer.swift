@@ -10,7 +10,7 @@ import ReSwift
 
 func appReducer(action: Action, state: AppState?) -> AppState {
   return AppState(
-    checkinState: checkinReducer(action: action, state: state?.checkinState),
+    bootState: bootReducer(action: action, state: state?.bootState),
     plugin: pluginReducer(action: action, plugin: state?.plugin),
     channel: channelReducer(action: action, channel: state?.channel),
     user: userReducer(action: action, user: state?.user),

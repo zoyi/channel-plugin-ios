@@ -8,15 +8,15 @@
 
 import ReSwift
 
-struct CheckInSuccess: Action {
-  public let payload: BootResponse
-}
-
 struct GetTouchSuccess: Action {
   public let payload: BootResponse
 }
 
-struct CheckOutSuccess: Action {}
+struct BootSuccess: Action {
+  public let payload: BootResponse
+}
+
+struct ShutdownSuccess: Action {}
 
 struct UpdateLoungeInfo: Action {
   public let channel: CHChannel

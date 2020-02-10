@@ -6,7 +6,6 @@
 //
 
 import Alamofire
-import M13ProgressSuite
 import NVActivityIndicatorView
 import SVProgressHUD
 import UIKit

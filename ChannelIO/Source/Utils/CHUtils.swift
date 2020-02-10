@@ -11,7 +11,23 @@ import SwiftyJSON
 import ObjectMapper
 
 class CHUtils {
-  class func getTopController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+  class func getKeyWindow() -> UIWindow? {
+    let window: UIWindow?
+    if #available(iOS 13.0, *) {
+      window = UIApplication.shared.connectedScenes
+        .map { $0 as? UIWindowScene }
+        .compactMap { $0 }
+        .first?.windows
+        .filter { $0.isKeyWindow }
+        .first
+    } else {
+      window = UIApplication.shared.keyWindow
+    }
+    return window
+  }
+  
+  class func getTopController(
+    base: UIViewController? = CHUtils.getKeyWindow()?.rootViewController) -> UIViewController? {
     var currentVc = base
     var previousVc = currentVc
     
@@ -37,7 +53,8 @@ class CHUtils {
     return currentVc
   }
   
-  class func getTopNavigation(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UINavigationController? {
+  class func getTopNavigation(
+    base: UIViewController? = CHUtils.getKeyWindow()?.rootViewController) -> UINavigationController? {
     if let presented = base?.presentedViewController {
       return getTopNavigation(base: presented)
     }
@@ -56,6 +73,11 @@ class CHUtils {
     }
     
     return base?.navigationController
+  }
+  
+  class func getCurrentSize() -> CGSize {
+    let controller = CHUtils.getTopController()
+    return controller?.view.bounds.size ?? UIScreen.main.bounds.size
   }
   
   class func nameToExt(name: String) -> String {

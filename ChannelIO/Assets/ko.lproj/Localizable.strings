@@ -170,3 +170,5 @@
 "ch.minute" = "분";
 "ch.hour" = "시간";
 "ch.day" = "일";
+"file_upload.fail" = "전송 실패";
+"file_upload.wait_count" = "%s건 대기";

@@ -41,22 +41,6 @@ struct StringTransform: TransformType {
   }
 }
 
-struct CustomMessageTransform: TransformType {
-  static var markdown = MarkdownParser(font: UIFont.systemFont(ofSize: 15))
-  
-  func transformFromJSON(_ value: Any?) -> NSAttributedString? {
-    if let message = value as? String {
-      let parsed = CustomMessageTransform.markdown.parse(message)
-      return parsed.0
-    }
-    return nil
-  }
-  
-  func transformToJSON(_ value: NSAttributedString?) -> String? {
-    return value?.string ?? ""
-  }
-}
-
 class CustomURLTransform: TransformType {
   public typealias Object = URL
   public typealias JSON = String

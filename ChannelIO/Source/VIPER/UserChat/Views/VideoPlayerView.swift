@@ -25,8 +25,8 @@ class VideoPlayerView: BaseView {
     $0.layer.cornerRadius = 6.f
     $0.layer.borderColor = UIColor.grey300.cgColor
     $0.layer.borderWidth = 1
-    $0.backgroundColor = .dark20
-    $0.contentMode = .scaleAspectFill
+    $0.backgroundColor = .white
+    $0.contentMode = .scaleAspectFit
 
     $0.sd_imageIndicator = SDWebImageActivityIndicator.white
   }
@@ -40,6 +40,7 @@ class VideoPlayerView: BaseView {
   private var player: AVPlayer?
   private var playerController = AVPlayerViewController().then {
     $0.showsPlaybackControls = true
+    $0.view.backgroundColor = .white
   }
   
   private var youtubePlayer = YoutubePlayerView()

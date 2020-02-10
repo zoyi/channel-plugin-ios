@@ -136,4 +136,3 @@ struct CHErrorResponse: Mappable {
     field <- map["field"]
   }
 }
-

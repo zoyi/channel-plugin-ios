@@ -10,9 +10,6 @@ import UIKit
 import SnapKit
 
 final class UserChatCell: BaseTableViewCell {
-
-  // MARK: Constantss
-
   struct Constants {
     static let titleLabelNumberOfLines = 1
     static let messageLineWithFile = 1
@@ -50,9 +47,7 @@ final class UserChatCell: BaseTableViewCell {
     static let messageLabel = CHColors.charcoalGrey
     static let timestampLabel = CHColors.blueyGrey
   }
-
-  // MARK: Properties
-
+  
   let bgView = UIView().then {
     $0.backgroundColor = Color.selectionColor
   }

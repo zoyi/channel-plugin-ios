@@ -33,6 +33,9 @@ extension CHAppMessenger: Mappable {
 
 extension CHAppMessenger {
   var iconUrl: URL? {
+    let key = iconKey.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+    guard let keyUrl = key else { return nil }
+    
     var url = AssetEndPointType.production.rawValue
     switch CHUtils.getCurrentStage() {
     case .development:
@@ -42,7 +45,7 @@ extension CHAppMessenger {
     case .production:
       url = AssetEndPointType.production.rawValue
     }
-    return URL(string: url + "/" + iconKey)
+    return URL(string: url + "/" + keyUrl)
   }
   
   static func getUri(with name: String) -> Observable<UriResponse> {

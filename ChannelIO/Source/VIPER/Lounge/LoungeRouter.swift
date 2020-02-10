@@ -56,16 +56,12 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       view?.present(mailComposerVC, animated: true, completion: nil)
     case .phone:
       if let url = URL(string:source.value) {
-        UIApplication.shared.open(url)
+        url.openWithUniversal()
       }
     case .link:
       UIPasteboard.general.string = source.value
       CHNotification.shared.display(
         message: CHAssets.localized("ch.integrations.copy_link.success")
-      )
-      CHNotification.shared.display(
-        message: CHAssets.localized("ch.common_error"),
-        config: .warningConfig
       )
     default:
       SVProgressHUD.show()
@@ -74,16 +70,17 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
         .retry(.delayed(maxCount: 3, time: 3.0))
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (result) in
+          defer {
+            SVProgressHUD.dismiss()
+          }
           guard let uri = result.uri, let url = URL(string: uri) else {
             CHNotification.shared.display(
               message: CHAssets.localized("ch.common_error"),
               config: .warningConfig
             )
-            SVProgressHUD.dismiss()
             return
           }
-          SVProgressHUD.dismiss()
-          UIApplication.shared.open(url)
+          url.openWithUniversal()
         }, onError: { (_) in
           SVProgressHUD.dismiss()
           CHNotification.shared.display(

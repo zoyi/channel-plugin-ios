@@ -49,7 +49,7 @@ extension CHi18n: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    text    <- map ["text"]
+    text    <- map["text"]
     en      <- map["en"]
     ja      <- map["ja"]
     ko      <- map["ko"]
