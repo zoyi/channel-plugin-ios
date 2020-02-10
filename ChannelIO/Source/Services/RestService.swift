@@ -193,20 +193,6 @@ enum RestRouter: URLRequestConvertible {
     
     headers["Accept"] = "application/json"
     headers["User-Agent"] = CHUtils.generateUserAgent()
-    
-    let now = Date()
-    let cookies = HTTPCookieStorage.shared.cookies?
-      .filter({ (cookie) -> Bool in
-        guard cookie.domain.hasSuffix("channel.io") else { return false }
-        if let expDate = cookie.expiresDate, expDate > now {
-          return true
-        }  else {
-          HTTPCookieStorage.shared.deleteCookie(cookie)
-          return false
-        }
-    }) ?? []
-    
-    req.allHTTPHeaderFields = headers.merging(HTTPCookie.requestHeaderFields(with: cookies)) { $1 }
     return req
   }
   
