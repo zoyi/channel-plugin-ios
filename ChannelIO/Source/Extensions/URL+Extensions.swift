@@ -20,6 +20,8 @@ extension URL {
           let controller = SFSafariViewController(url: self)
           controller.modalPresentationStyle = .currentContext
           CHUtils.getTopController()?.present(controller, animated: true, completion: nil)
+        } else {
+          UIApplication.shared.open(self)
         }
       }
     } else {

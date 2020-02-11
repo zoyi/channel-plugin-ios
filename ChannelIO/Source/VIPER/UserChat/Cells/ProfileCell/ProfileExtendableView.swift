@@ -25,6 +25,7 @@ class ProfileExtendableView: BaseView {
 
     let paragraph = NSMutableParagraphStyle()
     paragraph.alignment = .center
+    paragraph.minimumLineHeight = 16.f
     paragraph.lineBreakMode = CHAssets.localized("ch.agreement").guessLanguage() == "日本語" ?
       .byCharWrapping : .byWordWrapping
 
@@ -72,10 +73,10 @@ class ProfileExtendableView: BaseView {
   override func setLayouts() {
     super.setLayouts()
     
-    self.footerLabel.snp.makeConstraints { (make) in
+    self.footerLabel.snp.makeConstraints { make in
       make.bottom.equalToSuperview().inset(Metric.footerBottom)
-      make.left.equalToSuperview().inset(Metric.footerLeading)
-      make.right.equalToSuperview().inset(Metric.footerTrailing)
+      make.leading.equalToSuperview().inset(Metric.footerLeading)
+      make.trailing.equalToSuperview().inset(Metric.footerTrailing)
     }
   }
   

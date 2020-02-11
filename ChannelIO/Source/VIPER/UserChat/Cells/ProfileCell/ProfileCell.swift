@@ -106,6 +106,7 @@ class ProfileCell : WebPageMessageCell {
     fits width: CGFloat,
     viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
+    height += Metric.viewTop
     height += ProfileExtendableView.viewHeight(
       fit: width - Metric.viewLeading - Metric.viewTrailing,
       model: viewModel)

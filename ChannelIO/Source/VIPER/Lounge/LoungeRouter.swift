@@ -44,7 +44,9 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     view?.present(alertController, animated: true, completion: nil)
   }
   
-  func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
+  func presentExternalSource(
+    with source: LoungeExternalSourceModel,
+    from view: UIViewController?) {
     switch source.type {
     case .email:
       guard MFMailComposeViewController.canSendMail() else { return }
@@ -58,11 +60,34 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       }
     case .link:
       UIPasteboard.general.string = source.value
-      CHNotification.shared.display(message: CHAssets.localized("ch.integrations.copy_link.success"))
+      CHNotification.shared.display(
+        message: CHAssets.localized("ch.integrations.copy_link.success")
+      )
     default:
-      if let url = URL(string:source.value) {
-        url.openWithUniversal()
-      }
+      SVProgressHUD.show()
+      CHAppMessenger
+        .getUri(with: source.value)
+        .retry(.delayed(maxCount: 3, time: 3.0))
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (result) in
+          defer {
+            SVProgressHUD.dismiss()
+          }
+          guard let uri = result.uri, let url = URL(string: uri) else {
+            CHNotification.shared.display(
+              message: CHAssets.localized("ch.common_error"),
+              config: .warningConfig
+            )
+            return
+          }
+          url.openWithUniversal()
+        }, onError: { (_) in
+          SVProgressHUD.dismiss()
+          CHNotification.shared.display(
+            message: CHAssets.localized("ch.common_error"),
+            config: .warningConfig
+          )
+        }).disposed(by: self.disposeBag)
     }
   }
   

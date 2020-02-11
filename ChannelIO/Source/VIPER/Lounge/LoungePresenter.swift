@@ -18,7 +18,6 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var needToFetch = false
   var chatId: String?
-  var externalSources: [LoungeExternalSourceModel] = []
   
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
@@ -332,6 +331,13 @@ extension LoungePresenter {
         
         self?.view?.displayHeader(with: headerModel)
         self?.updateMainContent()
+        
+        let sources = LoungeExternalSourceModel.generate(
+          with: mainStore.state.channel,
+          plugin: mainStore.state.plugin,
+          appMessengers: info.appMessengers
+        )
+        self?.view?.displayExternalSources(with: sources)
         
         self?.loungeCompletion.accept(true)
       }, onError: { [weak self] (_) in

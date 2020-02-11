@@ -13,7 +13,6 @@ import RxCocoa
 class LoungeExternalAppsView: BaseView {
   private struct Metrics {
     static let iconSize = 44
-    static let sideMargin = 8
     static let spacing = UIScreen.main.bounds.width == 320 ? 16.f : 20.f
   }
   
@@ -80,7 +79,7 @@ class LoungeExternalAppsView: BaseView {
     for model in models {
       let modelView = LoungeExternalAppView()
       modelView.layer.cornerRadius = 22
-      modelView.snp.makeConstraints { (make) in
+      modelView.snp.makeConstraints { make in
         make.height.equalTo(Metrics.iconSize)
         make.width.equalTo(Metrics.iconSize)
       }
@@ -119,6 +118,6 @@ class LoungeExternalAppView: BaseView {
   }
   
   func configure(with model: LoungeExternalSourceModel) {
-    self.button.setImage(model.type.image?.withRenderingMode(.alwaysOriginal), for: .normal)
+    self.button.setImage(model.image?.withRenderingMode(.alwaysOriginal), for: .normal)
   }
 }
