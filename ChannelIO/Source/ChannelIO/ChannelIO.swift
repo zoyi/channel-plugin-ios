@@ -53,6 +53,7 @@ public final class ChannelIO: NSObject {
       ChannelIO.launcherWindow?.inAppNotificationView = newValue
     }
   }
+  
   internal static var baseNavigation: BaseNavigationController? {
     willSet {
       if ChannelIO.baseNavigation == nil && newValue != nil {
@@ -185,6 +186,10 @@ public final class ChannelIO: NSObject {
           AppManager.registerPushToken()
           AppManager.displayMarketingIfNeeeded()
           
+          if ChannelIO.launcherWindow == nil {
+            ChannelIO.launcherWindow = LauncherWindow()
+          }
+          
           mainStore.dispatch(ReadyToShow())
           if ChannelIO.launcherVisible {
             ChannelIO.show(animated: true)
@@ -277,10 +282,6 @@ public final class ChannelIO: NSObject {
         ChannelIO.baseNavigation == nil else {
         return
       }
-            
-      if ChannelIO.launcherWindow == nil {
-        ChannelIO.launcherWindow = LauncherWindow()
-      }
       
       let launcherView = ChannelIO.launcherView ?? LauncherView()
       
@@ -315,7 +316,7 @@ public final class ChannelIO: NSObject {
         }).disposed(by: disposeBag)
       
       if ChannelIO.launcherView == nil {
-        ChannelIO.launcherWindow?.addCustomView(with: launcherView)
+        ChannelIO.launcherWindow?.insertView(with: launcherView, animated: true)
         launcherView.alpha = 0
       }
       
@@ -351,7 +352,6 @@ public final class ChannelIO: NSObject {
   public class func hide(animated: Bool) {
     dispatch {
       ChannelIO.launcherView?.hide(animated: animated, completion: {
-        ChannelIO.launcherWindow = nil
         ChannelIO.launcherVisible = false
       })
     }

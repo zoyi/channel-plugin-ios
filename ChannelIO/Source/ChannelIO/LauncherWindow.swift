@@ -74,13 +74,10 @@ final class LauncherWindow: UIWindow {
     self.hostKeyWindow?.makeKey()
   }
   
-  func addCustomView(with view: UIView) {
-    self.rootViewController?.view.addSubview(view)
-    if let view = view as? PopupInAppNotificationView {
-      view.layer.zPosition = 1
-    } else if let view = view as? BannerInAppNotificationView {
-      view.layer.zPosition = 1
-    }
+  func insertView(with view: UIView, animated: Bool) {
+    guard let rootView = self.rootViewController?.view else { return }
+    
+    view.insert(on: rootView, animated: animated)
   }
   
   func updateStatusBarAppearance() {
