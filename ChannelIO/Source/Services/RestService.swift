@@ -197,6 +197,7 @@ enum RestRouter: URLRequestConvertible {
     
     headers["Accept"] = "application/json"
     headers["User-Agent"] = CHUtils.generateUserAgent()
+    req.allHTTPHeaderFields = headers
     return req
   }
   

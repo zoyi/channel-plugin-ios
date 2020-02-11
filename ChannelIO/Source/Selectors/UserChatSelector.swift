@@ -14,7 +14,7 @@ func userChatsSelector(state: AppState, showCompleted:Bool = false, limit: Int? 
     if let m1Last = c1.lastMessage, let m2Last = c2.lastMessage {
       return m1Last.createdAt > m2Last.createdAt
     }
-    return c1.updatedAt ?? c1.createdAt! > c2.updatedAt ?? c2.createdAt!
+    return c1.updatedAt! > c2.updatedAt!
   }.filter { $0.state != .trash && $0.frontMessageId != nil && !$0.hasRemoved }
   
   if let limit = limit, userChats.count > limit {

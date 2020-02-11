@@ -132,6 +132,8 @@ extension CHUserChat: Mappable {
     assigneeId        <- map["assigneeId"]
     resolutionTime    <- map["resolutionTime"]
     state             <- map["state"]
+    
+    self.updatedAt = self.updatedAt ?? self.createdAt
   }
 }
 
