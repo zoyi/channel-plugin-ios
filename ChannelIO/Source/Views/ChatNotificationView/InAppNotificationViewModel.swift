@@ -17,6 +17,7 @@ protocol InAppNotificationViewModelType {
   var webPage: CHWebPage? { get set }
   var mobileExposureType: InAppNotificationType { get set }
   var hasMedia: Bool { get set }
+  var hasText: Bool { get set }
 }
 
 struct InAppNotificationViewModel: InAppNotificationViewModelType {
@@ -28,6 +29,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var webPage: CHWebPage?
   var mobileExposureType: InAppNotificationType
   var hasMedia: Bool = false
+  var hasText: Bool = false
   
   init(push: CHPushDisplayable) {
     let writer = push.writer
@@ -38,7 +40,6 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
     self.files = push.sortedFiles
     self.webPage = push.webPage
     self.timestamp = push.readableCreatedAt
-    
     self.mobileExposureType = push.mobileExposureType ?? .banner
     
     let mediaFileCount = push.sortedFiles
@@ -67,5 +68,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
       let result = transformer.parser.parse(blocks: push.blocks)
       self.message = result
     }
+    
+    self.hasText = self.message != nil && self.message?.string != ""
   }
 }

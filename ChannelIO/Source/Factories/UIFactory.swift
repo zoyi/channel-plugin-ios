@@ -21,7 +21,6 @@ struct UIFactory {
     let style = NSMutableParagraphStyle()
     style.alignment = .left
     style.minimumLineHeight = 18
-    style.lineBreakMode = .byTruncatingTail
     return style
   }
 

@@ -95,8 +95,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.containerView.addSubview(self.rightStackView)
     self.leftStackView.addArrangedSubview(self.avatarView)
     self.leftStackView.addArrangedSubview(self.mediaView)
-    self.nameContainerView.addSubview(self.nameLabel)
-    self.rightStackView.addArrangedSubview(self.nameContainerView)
+    self.rightStackView.addArrangedSubview(self.nameLabel)
     self.rightStackView.addArrangedSubview(self.messageView)
     self.rightStackView.addArrangedSubview(self.fileInfoView)
     self.closeContainerView.addSubview(self.closeImageView)
@@ -149,8 +148,6 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     }
     
     self.nameLabel.snp.makeConstraints { make in
-      make.leading.trailing.top.equalToSuperview()
-      make.bottom.equalToSuperview().inset(Metrics.nameLabelBottom)
       make.height.equalTo(Metrics.nameLabelHeight)
     }
     
@@ -183,29 +180,20 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   }
   
   func configure(with viewModel: InAppNotificationViewModel) {
-    self.avatarView.configure(viewModel.avatar)
+    let fileInfoVisibility = viewModel.hasMedia ?
+      !viewModel.hasText : viewModel.files.count > 0
+    
     self.nameLabel.text = viewModel.name
-    self.fileInfoView.configure(with: viewModel.files, isLarge: false)
-    self.mediaView.configure(model: viewModel)
-    self.messageView.attributedText = viewModel.message
-    
-    var hasMessage = false
-    if let message = viewModel.message {
-      hasMessage = message != NSAttributedString(string: "")
-    }
-    
-    self.messageView.isHidden = !hasMessage ? true : false
-    if viewModel.hasMedia {
-      self.fileInfoView.isHidden = !hasMessage ? false : true
-      self.messageView.textContainer.maximumNumberOfLines = !hasMessage ?
-        Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
-    } else {
-      self.fileInfoView.isHidden = viewModel.files.count > 0 ? false : true
-      self.messageView.textContainer.maximumNumberOfLines = viewModel.files.count > 0 ?
-        Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
-    }
     self.avatarView.isHidden = viewModel.hasMedia
+    self.avatarView.configure(viewModel.avatar)
     self.mediaView.isHidden = !viewModel.hasMedia
+    self.mediaView.configure(model: viewModel)
+    self.messageView.isHidden = !viewModel.hasText
+    self.messageView.attributedText = viewModel.message
+    self.messageView.textContainer.maximumNumberOfLines = fileInfoVisibility ?
+      Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
+    self.fileInfoView.isHidden = fileInfoVisibility
+    self.fileInfoView.configure(with: viewModel.files, isLarge: false)
   }
   
   func insertView(on view: UIView?) {

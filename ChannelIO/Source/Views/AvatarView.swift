@@ -85,9 +85,9 @@ class AvatarView: NeverClearView {
     }
     
     self.onlineView.layer.cornerRadius = 4
-    self.onlineView.snp.makeConstraints { [weak self] (make) in
-      make.bottom.equalTo((self?.avatarImageView.snp.bottom)!)
-      make.right.equalTo((self?.avatarImageView.snp.right)!).offset(2)
+    self.onlineView.snp.makeConstraints { (make) in
+      make.bottom.equalTo(self.avatarImageView.snp.bottom)
+      make.right.equalTo(self.avatarImageView.snp.right).offset(2)
       make.height.equalTo(8)
       make.width.equalTo(8)
     }
