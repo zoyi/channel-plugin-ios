@@ -158,7 +158,6 @@ extension ChannelIO {
   }
   
   internal class func showNotification(pushData: CHPushDisplayable?) {
-    guard let view = ChannelIO.launcherWindow?.rootViewController?.view else { return }
     guard let push = pushData, !push.removed else { return }
     
     if ChannelIO.inAppNotificationView != nil {
@@ -167,14 +166,17 @@ extension ChannelIO {
     }
     
     var notificationView: InAppNotification?
+    var view: UIView?
     let viewModel = InAppNotificationViewModel(push: push)
-
+    
     if viewModel.mobileExposureType == .fullScreen {
       notificationView = PopupInAppNotificationView()
+      view = CHUtils.getTopController()?.view
     } else {
       notificationView = BannerInAppNotificationView()
+      view = ChannelIO.launcherWindow?.rootViewController?.view
     }
-    
+
     notificationView?.configure(with: viewModel)
     notificationView?.insertView(on: view)
     

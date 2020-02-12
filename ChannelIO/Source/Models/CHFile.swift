@@ -128,8 +128,6 @@ struct CHFile: ThumbDisplayable {
     return URL(string: urlString)
   }
   
-
-
   var thumbUrl: URL? {
     guard !self.bucket.isEmpty else { return nil }
     guard self.type == .video || self.type == .image else { return nil }

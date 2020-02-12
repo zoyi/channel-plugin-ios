@@ -237,7 +237,9 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     self.mediaContainerView.isHidden = !viewModel.hasMedia
   }
   
-  func insertView(on view: UIView) {
+  func insertView(on view: UIView?) {
+    guard let view = view else { return }
+    
     if let superview = self.superview, superview != view {
       self.removeFromSuperview()
     }

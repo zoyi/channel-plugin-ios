@@ -42,12 +42,6 @@ final class LauncherWindow: UIWindow {
   internal override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
     var result: Bool = false
     
-    if let popupView = self.inAppNotificationView as? PopupInAppNotificationView,
-      popupView.alpha != 0 {
-      let popupPoint = convert(point, to: popupView)
-      result = result || popupView.point(inside: popupPoint, with: event)
-    }
-    
     if let bannerView = self.inAppNotificationView as? BannerInAppNotificationView,
       bannerView.alpha != 0 {
       let bannerPoint = convert(point, to: bannerView)

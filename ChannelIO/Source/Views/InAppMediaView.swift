@@ -49,7 +49,9 @@ class InAppMediaView: BaseView {
     $0.backgroundColor = .dark20
   }
   
-  private let youtubePlayerView = YoutubePlayerView()
+  private let youtubePlayerView = YoutubePlayerView().then {
+    $0.isUserInteractionEnabled = false
+  }
   private let youtubeParams = [
     "controls": 0,
     "modestbranding": 0,
@@ -148,6 +150,148 @@ class InAppMediaView: BaseView {
     }
   }
 
+  func configure(model: InAppNotificationViewModel) {
+    guard
+      (!model.files.isEmpty || model.webPage != nil) else {
+      self.setVisibilityForViews(type: model.mobileExposureType)
+      return
+    }
+    
+    let isBanner = model.mobileExposureType == .banner
+    self.containerView.axis = isBanner ? .horizontal : .vertical
+    self.containerView.alignment = isBanner ? .center : .fill
+    self.layer.cornerRadius = isBanner ? 0.f : Metrics.cornerRadius
+    let multiIndicatorMargin = isBanner ?
+      Metrics.multiIndicatorBannerSide :
+      Metrics.multiIndicatorPopupSide
+    
+    self.multiIndicatorConstraint?.update(inset: multiIndicatorMargin)
+    
+    if !model.files.isEmpty {
+      self.displayFiles(with: model.files, type: model.mobileExposureType)
+    } else if let webPage = model.webPage {
+      self.displayWebPage(with: webPage, type: model.mobileExposureType)
+    }
+  }
+  
+  private func displayFiles(with files: [CHFile], type: InAppNotificationType) {
+    let videos = files.filter { $0.type == .video }
+    let images = files.filter { $0.type == .image }
+
+    if let video = videos.first, let url = video.url {
+      self.videoView.configure(with: url)
+      self.updateFileLayout(type: type, file: video)
+    } else if  let image = images.first, let url = image.url {
+      self.imageView.sd_setImage(with: url)
+      self.updateFileLayout(type: type, file: image)
+    }
+    
+    self.multiIndicatorView.isHidden = videos.count + images.count <= 1
+    self.setVisibilityForViews(file: videos.first ?? images.first, type: type)
+  }
+  
+  private func displayWebPage(with webPage: CHWebPage, type: InAppNotificationType) {
+    if webPage.isPlayable, let youtubeId = webPage.youtubeId {
+      self.youtubePlayerView.loadWithVideoId(youtubeId, with: self.youtubeParams)
+    } else if let url = webPage.thumbUrl {
+      self.imageView.sd_setImage(with: url)
+    }
+    
+    self.updateWebLayout(webPage: webPage, type: type)
+    self.setVisibilityForViews(webPage: webPage, type: type)
+  }
+  
+  private func updateFileLayout(type: InAppNotificationType, file: CHFile) {
+    if file.type == .video, file.url != nil {
+      if type == .banner {
+        self.videoWidthConstraint?.update(offset: self.getRatio(
+          width: file.width.f, height: file.height.f, type: .banner) * Metrics.bannerHeight
+        ).activate()
+        self.videoHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
+      } else if type == .fullScreen {
+        self.videoWidthConstraint?.update(offset: Metrics.popupWidth).activate()
+        self.videoHeightConstraint?.update(offset: self.getRatio(
+          width: file.width.f, height: file.height.f, type: .fullScreen) * Metrics.popupWidth
+        ).activate()
+      }
+    } else if file.type == .image, file.thumbUrl != nil {
+      if type == .banner {
+        self.imageWidthConstraint?.update(offset: self.getRatio(
+          width: file.width.f, height: file.height.f, type: .banner) * Metrics.bannerHeight
+        ).activate()
+        self.imageHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
+      } else if type == .fullScreen {
+        self.imageWidthConstraint?.update(offset: Metrics.popupWidth).activate()
+        self.imageHeightConstraint?.update(offset: self.getRatio(
+          width: file.width.f, height: file.height.f, type: .fullScreen) * Metrics.popupWidth
+        ).activate()
+      }
+    }
+  }
+  
+  private func updateWebLayout(webPage: CHWebPage, type: InAppNotificationType) {
+    if webPage.youtubeId != nil {
+      if type == .banner {
+        self.youtubeWidthConstraint?.update(offset: self.getRatio(
+          width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
+        ).activate()
+        self.youtubeHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
+      } else if type == .fullScreen {
+        self.youtubeWidthConstraint?.update(offset: Metrics.popupWidth).activate()
+        self.youtubeHeightConstraint?.update(offset: self.getRatio(
+          width: webPage.width.f, height: webPage.height.f, type: .fullScreen) * Metrics.popupWidth
+        ).activate()
+      }
+    } else if webPage.thumbUrl != nil {
+      if type == .banner {
+        self.imageWidthConstraint?.update(offset: self.getRatio(
+          width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
+        ).activate()
+        self.imageHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
+      } else if type == .fullScreen {
+        self.imageWidthConstraint?.update(offset: Metrics.popupWidth).activate()
+        self.imageHeightConstraint?.update(offset: self.getRatio(
+          width: webPage.width.f, height: webPage.height.f, type: .fullScreen) * Metrics.popupWidth
+        ).activate()
+      }
+    }
+  }
+  
+  private func setVisibilityForViews(
+    file: CHFile? = nil,
+    webPage: CHWebPage? = nil,
+    type: InAppNotificationType) {
+    if file?.type == .video {
+      self.imageView.isHidden = true
+      self.videoView.isHidden = false
+      self.youtubePlayerView.isHidden = true
+      self.controlView.isHidden = type == .banner
+    } else if file?.type == .image {
+      self.imageView.isHidden = false
+      self.videoView.isHidden = true
+      self.youtubePlayerView.isHidden = true
+      self.controlView.isHidden = true
+    } else if webPage?.youtubeId != nil {
+      self.imageView.isHidden = true
+      self.multiIndicatorView.isHidden = true
+      self.videoView.isHidden = true
+      self.youtubePlayerView.isHidden = false
+      self.controlView.isHidden = type == .banner
+    } else if webPage?.thumbUrl != nil {
+      self.imageView.isHidden = false
+      self.multiIndicatorView.isHidden = true
+      self.videoView.isHidden = true
+      self.youtubePlayerView.isHidden = true
+      self.controlView.isHidden = true
+    } else {
+      self.imageView.isHidden = true
+      self.multiIndicatorView.isHidden = true
+      self.controlView.isHidden = true
+      self.videoView.isHidden = true
+      self.youtubePlayerView.isHidden = true
+    }
+  }
+
   private func getRatio(
     width: CGFloat,
     height: CGFloat,
@@ -162,132 +306,6 @@ class InAppMediaView: BaseView {
     } else {
       return ratio
     }
-  }
-
-  func configure(model: InAppNotificationViewModel) {
-    guard
-      (!model.files.isEmpty || model.webPage != nil) else {
-      self.hideAll()
-      return
-    }
-    
-    let isBanner = model.mobileExposureType == .banner
-    self.containerView.axis = isBanner ?
-      .horizontal : .vertical
-    self.containerView.alignment = isBanner ?
-      .center : .fill
-    self.layer.cornerRadius = isBanner ?
-      0.f : Metrics.cornerRadius
-    let multiIndicatorMargin = isBanner ?
-      Metrics.multiIndicatorBannerSide : Metrics.multiIndicatorPopupSide
-    self.multiIndicatorConstraint?.update(inset: multiIndicatorMargin)
-    
-    if !model.files.isEmpty {
-      self.displayFiles(with: model.files, type: model.mobileExposureType)
-    } else if let webPage = model.webPage {
-      self.displayWebPage(with: webPage, type: model.mobileExposureType)
-    }
-  }
-  
-  private func displayFiles(with files: [CHFile], type: InAppNotificationType) {
-    let videos = files.filter { $0.type == .video }
-    let images = files.filter { $0.type == .image }
-    let mediaCount = videos.count + images.count
-    
-    if let video = videos.first, let url = video.url {
-      self.imageView.isHidden = true
-      self.multiIndicatorView.isHidden = mediaCount <= 1
-      self.videoView.isHidden = false
-      self.youtubePlayerView.isHidden = true
-      self.controlView.isHidden = type == .banner
-      if type == .banner {
-        self.videoWidthConstraint?.update(offset: self.getRatio(
-          width: video.width.f, height: video.height.f, type: .banner) * Metrics.bannerHeight
-        ).activate()
-        self.videoHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
-        self.videoView.configure(with: url)
-      } else if type == .fullScreen {
-        self.videoWidthConstraint?.update(offset: Metrics.popupWidth).activate()
-        self.videoHeightConstraint?.update(offset: self.getRatio(
-          width: video.width.f, height: video.height.f, type: .fullScreen) * Metrics.popupWidth
-        ).activate()
-        self.videoView.configure(with: url)
-      }
-    } else if  let image = images.first , let url = image.url {
-      self.imageView.isHidden = false
-      self.multiIndicatorView.isHidden = mediaCount <= 1
-      self.videoView.isHidden = true
-      self.youtubePlayerView.isHidden = true
-      self.controlView.isHidden = true
-      if type == .banner {
-        self.imageWidthConstraint?.update(offset: self.getRatio(
-          width: image.width.f, height: image.height.f, type: .banner) * Metrics.bannerHeight
-        ).activate()
-        self.imageHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
-      } else if type == .fullScreen {
-        self.imageWidthConstraint?.update(offset: Metrics.popupWidth).activate()
-        self.imageHeightConstraint?.update(offset: self.getRatio(
-          width: image.width.f, height: image.height.f, type: .fullScreen) * Metrics.popupWidth
-        ).activate()
-      }
-      self.imageView.sd_setImage(with: url)
-    } else {
-      self.hideAll()
-    }
-  }
-  
-  private func displayWebPage(
-    with webPage: CHWebPage,
-    type: InAppNotificationType) {
-    if webPage.isPlayable, let youtubeId = webPage.youtubeId {
-      self.imageView.isHidden = true
-      self.multiIndicatorView.isHidden = true
-      self.videoView.isHidden = true
-      self.youtubePlayerView.isHidden = false
-      self.controlView.isHidden = type == .banner
-      if type == .banner {
-        self.youtubeWidthConstraint?.update(offset: self.getRatio(
-          width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
-        ).activate()
-        self.youtubeHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
-        self.youtubePlayerView.isUserInteractionEnabled = false
-      } else if type == .fullScreen {
-        self.youtubeWidthConstraint?.update(offset: Metrics.popupWidth).activate()
-        self.youtubeHeightConstraint?.update(offset: self.getRatio(
-          width: webPage.width.f, height: webPage.height.f, type: .fullScreen) * Metrics.popupWidth
-        ).activate()
-        self.youtubePlayerView.isUserInteractionEnabled = true
-      }
-      self.youtubePlayerView.loadWithVideoId(youtubeId, with: self.youtubeParams)
-    } else if let url = webPage.thumbUrl {
-      self.imageView.isHidden = false
-      self.multiIndicatorView.isHidden = true
-      self.videoView.isHidden = true
-      self.youtubePlayerView.isHidden = true
-      self.controlView.isHidden = true
-      if type == .banner {
-        self.imageWidthConstraint?.update(offset: self.getRatio(
-          width: webPage.width.f, height: webPage.height.f, type: .banner) * Metrics.bannerHeight
-        ).activate()
-        self.imageHeightConstraint?.update(offset: Metrics.bannerHeight).activate()
-      } else if type == .fullScreen {
-        self.imageWidthConstraint?.update(offset: Metrics.popupWidth).activate()
-        self.imageHeightConstraint?.update(offset: self.getRatio(
-          width: webPage.width.f, height: webPage.height.f, type: .fullScreen) * Metrics.popupWidth
-        ).activate()
-      }
-      self.imageView.sd_setImage(with: url)
-    } else {
-      self.hideAll()
-    }
-  }
-  
-  private func hideAll() {
-    self.imageView.isHidden = true
-    self.multiIndicatorView.isHidden = true
-    self.controlView.isHidden = true
-    self.videoView.isHidden = true
-    self.youtubePlayerView.isHidden = true
   }
 }
 

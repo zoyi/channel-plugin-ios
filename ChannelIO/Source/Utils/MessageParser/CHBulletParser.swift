@@ -52,8 +52,7 @@ class CHBulletParser {
   func parse() -> NSMutableAttributedString? {
     guard let block = self.block else { return nil }
     if let result = self.parse(level: 0, block: block) {
-      result.deleteCharacters(in: NSRange(location: result.length - 1, length: 1))
-      return result
+      return NSMutableAttributedString(attributedString: result.dropTailingNewline)
     }
     return nil
   }

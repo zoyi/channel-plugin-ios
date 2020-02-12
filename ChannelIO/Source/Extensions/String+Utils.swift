@@ -35,6 +35,14 @@ extension NSAttributedString {
     
     return str
   }
+  
+  var dropTailingNewline: NSAttributedString {
+    if self.string.hasSuffix("\n") {
+      return self.attributedSubstring(from: NSMakeRange(0, self.length - 1))
+    } else {
+      return self
+    }
+  }
 }
 
 
