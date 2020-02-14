@@ -57,7 +57,6 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.observeTypingEvents()
     
     self.prepareChat()
-
     self.view?.setPreloadtext(with: self.preloadText)
     
     self.interactor?
@@ -80,8 +79,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     
     self.view?.display(errorFiles: items.filter { $0.status == .error })
     if let item = items.filter({ $0.status == .progress }).first {
-      let count = items.filter { $0.status == .initial}.count
-      self.view?.display(loadingFile: item, count: count)
+      let count = items.filter { $0.status == .initial }.count
+      self.view?.display(loadingFile: item, waitingCount: count)
     } else {
       self.view?.hideLodingFile()
     }
@@ -402,14 +401,6 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       .observeOn(MainScheduler.instance)
       .subscribe()
       .disposed(by: self.disposeBag)
-  }
-  
-  func didClickOnRedirectUrl(with url: String) {
-    guard let url = URL(string: url) else { return }
-    let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
-    if shouldHandle == false || shouldHandle == nil {
-      url.openWithUniversal()
-    }
   }
   
   func didClickOnVideo(with url: URL?, from view: UIViewController?) {

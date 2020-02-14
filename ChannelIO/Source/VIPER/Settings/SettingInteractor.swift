@@ -34,7 +34,7 @@ class SettingInteractor: SettingInteractorProtocol {
   }
   
   func getChannel() -> Observable<CHChannel> {
-    return ChannelPromise.getChannel()
+    return CHChannel.get()
   }
   
   func getProfileSchemas() -> Observable<[CHProfileSchema]> {

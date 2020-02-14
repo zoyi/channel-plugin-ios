@@ -56,10 +56,10 @@ class UserChatBottomBlockView: BaseView {
     )
   }
   
-  func viewHeight() -> CGFloat {
+  func viewHeight(width: CGFloat) -> CGFloat {
     var height = 0.f
     height += self.messageLabel.attributedText?.height(
-      fits: UIScreen.main.bounds.width - Metric.sideMargin * 2
+      fits: width - Metric.sideMargin * 2
     ) ?? 0
     return Metric.topMargin * 2 + height
   }

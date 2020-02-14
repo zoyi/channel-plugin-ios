@@ -43,7 +43,7 @@ protocol UserChatViewProtocol: class {
   func display(messages: [CHMessage], userChat: CHUserChat?, channel: CHChannel)
   func display(typers: [CHEntity])
   func display(error: String?, visible: Bool)
-  func display(loadingFile: ChatFileQueueItem, count: Int)
+  func display(loadingFile: ChatFileQueueItem, waitingCount: Int)
   func display(errorFiles: [ChatFileQueueItem])
   func hideLodingFile()
   func dismissKeyboard(_ animated: Bool)
@@ -83,7 +83,6 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnClipButton(from view: UIViewController?)
   func didClickOnSendButton(text: String)
   func didClickOnActionButton(originId: String?, key: String?, value: String?)
-  func didClickOnRedirectUrl(with url: String)
   func didClickOnFile(
     with file: CHFile?,
     on imageView: UIImageView?,

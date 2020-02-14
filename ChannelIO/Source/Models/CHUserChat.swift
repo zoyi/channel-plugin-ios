@@ -144,9 +144,10 @@ extension CHUserChat {
   }
   
   static func getChats(
-    since: Int64?=nil,
+    since: String? = nil,
+    limit: Int,
     showCompleted: Bool = false) -> Observable<[String: Any?]> {
-    return UserChatPromise.getChats(since: since, limit: 30, showCompleted: showCompleted)
+    return UserChatPromise.getChats(since: since, limit: limit, showCompleted: showCompleted)
   }
   
   static func getMessages(
@@ -170,9 +171,6 @@ extension CHUserChat {
   }
 
   func remove() -> Observable<Any?> {
-    if self.isLocal {
-      return .just(nil)
-    }
     return UserChatPromise.remove(userChatId: self.id)
   }
   
@@ -215,17 +213,10 @@ extension CHUserChat {
   
   func read() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = self.isLocal ?
-        Observable.just(nil) :
-        UserChatPromise.setMessageRead(userChatId: self.id)
+      let signal = UserChatPromise.setMessageRead(userChatId: self.id)
           
       let dispose = signal.subscribe(onNext: { (_) in
-        if self.isLocal {
-          let user = userSelector(state: mainStore.state)
-          mainStore.dispatch(UpdateUserWithLocalRead(user:user, session:self.session))
-        } else {
-          mainStore.dispatch(ReadSession(payload: self.session))
-        }
+        mainStore.dispatch(ReadSession(payload: self.session))
         subscriber.onNext(true)
         subscriber.onCompleted()
       }, onError: { (error) in
@@ -241,10 +232,6 @@ extension CHUserChat {
 }
 
 extension CHUserChat {
-  var isLocal: Bool {
-    return self.id.hasPrefix(CHConstants.local)
-  }
-  
   var isActive: Bool {
     return self.state != .closed && self.state != .solved && self.state != .trash
   }

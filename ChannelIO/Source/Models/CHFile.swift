@@ -159,7 +159,10 @@ struct CHFile: ThumbDisplayable {
     } else if type == .image, let contentType = self.contentType {
       return String(contentType.dropFirst("image/".count))
     } else {
-      return URL(string: self.name)?.pathExtension ?? ""
+      guard let key = self.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {
+        return ""
+      }
+      return URL(string: key)?.pathExtension ?? ""
     }
   }
 

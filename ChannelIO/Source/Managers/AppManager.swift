@@ -58,7 +58,7 @@ struct AppManager {
         let userChat = userChatSelector(
           state: mainStore.state,
           userChatId: chatResponse.userChat?.id)
-        ChannelIO.showNotification(pushData: userChat?.lastMessage)
+        mainStore.dispatch(GetPush(payload: userChat?.lastMessage))
       }).disposed(by: self.disposeBag)
   }
 }

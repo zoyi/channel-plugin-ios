@@ -18,7 +18,7 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch section {
     case Sections.loadingFile:
-      return self.isLoadingFile ? 1 : 0
+      return self.isLoadingFile || self.waitingFileCount > 0 ? 1 : 0
     case Sections.errorFiles:
       return self.errorFiles.count
     case Sections.typer:
@@ -112,7 +112,7 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
     at indexPath: IndexPath) -> UITableViewCell {
     let cell: FileStatusCell = tableView.dequeueReusableCell(for: indexPath)
     if let loadingFile = self.loadingFile {
-      cell.configure(item: loadingFile, count: self.initialFileCount)
+      cell.configure(item: loadingFile, count: self.waitingFileCount)
     }
     cell.signalForRemove()
       .observeOn(MainScheduler.instance)
@@ -303,15 +303,24 @@ extension UserChatView: UICollectionViewDelegate,
     let file = files[indexPath.row]
     if file.type == .video || file.type == .image {
       let cell: MediaCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
-      cell.imageView.contentMode = files.filter { $0.type == .image }.count > 1 ? .scaleAspectFill : .scaleAspectFit
+      cell.imageView.contentMode = files.filter { $0.type == .image }.count > 1 ?
+        .scaleAspectFill : .scaleAspectFit
       cell.signalForClick()
         .subscribe(onNext: { [weak self] (_) in
           self?.presenter?.didClickOnFile(
             with: file, on: cell.imageView, from: self
           )
         }).disposed(by: self.disposeBag)
-      cell.videoView.signalForPlay()
+      
+      cell.videoView
+        .signalForPlay()
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] play, seconds in
+          if play, self?.currentPlayingVideo != cell.videoView {
+            self?.currentPlayingVideo?.pause()
+            self?.currentPlayingVideo = cell.videoView
+          }
+          
           if !play {
             self?.videoRecords[file] = seconds
           }

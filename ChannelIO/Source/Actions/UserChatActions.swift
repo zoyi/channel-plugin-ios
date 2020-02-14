@@ -43,13 +43,6 @@ struct CreateUserChat: Action {
   public let payload: CHUserChat
 }
 
-struct CreateLocalUserChat: Action {
-  public let chat: CHUserChat?
-  public let message: CHMessage?
-  public let writer: CHEntity?
-  public let session: CHSession?
-}
-
 struct UpdateUserChat: Action {
   public let payload: CHUserChat
 }

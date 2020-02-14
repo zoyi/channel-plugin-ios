@@ -26,12 +26,12 @@ func managersReducer(action: Action, state: ManagersState?) -> ManagersState {
     return state?.upsertFollowing(managers: action.payload) ?? ManagersState()
     
   case let action as GetPush:
-    return state?.upsert(manager: action.payload.manager) ?? ManagersState()
+    if let push = action.payload as? CHPush {
+      return state?.upsert(manager: push.manager) ?? ManagersState()
+    }
+    return state ?? ManagersState()
     
   case let action as UpdateLoungeInfo:
-    if let managers = action.userChatsResponse?.managers {
-       _ = state?.upsert(managers: managers) ?? ManagersState()
-    }
     return state?.upsert(managers: action.operators) ?? ManagersState()
    
     

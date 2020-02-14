@@ -49,6 +49,9 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     viewer.inputs = photoUrls.map { (url) -> SDWebImageSource in
       return SDWebImageSource(url: url)
     }
+    viewer.downloadClicked = { index in
+      self.processSaveFile(url: photoUrls[index], from: viewer)
+    }
 
     if let url = url, let index = photoUrls.firstIndex(of: url) {
       viewer.initialPage = index
@@ -64,6 +67,21 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     
     viewer.modalPresentationStyle = .currentContext
     view?.present(viewer, animated: true, completion: nil)
+  }
+  
+  private func processSaveFile(url: URL, from view: UIViewController?) {
+    if #available(iOS 11.0, *), let data = try? Data(contentsOf: url) {
+      let controller = UIActivityViewController(
+        activityItems: [data],
+        applicationActivities: nil
+      )
+      view?.present(controller, animated: true, completion: nil)
+    } else {
+      CHNotification.shared.display(
+        message: CHAssets.localized("ch.error.description"),
+        config: CHNotificationConfiguration.warningNormalConfig
+      )
+    }
   }
   
   func presentVideoPlayer(with url: URL?, from view: UIViewController?) {

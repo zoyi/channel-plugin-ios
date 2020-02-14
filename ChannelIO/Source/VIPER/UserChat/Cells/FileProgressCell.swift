@@ -137,7 +137,6 @@ class FileStatusCell: BaseTableViewCell {
       self.progressView.isHidden = false
       self.progressView.setProgress(Float(item.progress), animated: false)
       self.displayName(with: item.name)
-      
       if item.progress == 1 {
         self.progressView.startShimmeringAnimation(animationSpeed: 4.0)
       } else {

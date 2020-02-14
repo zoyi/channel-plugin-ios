@@ -12,7 +12,7 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   var state = state
   switch action {
   case let action as GetUserChats:
-    state?.nextSeq = action.payload["next"] as! Int64
+    state?.nextSeq = action.payload["next"] as? String
     return state?.upsert(userChats: (action.payload["userChats"] as? [CHUserChat]) ?? []) ?? UserChatsState()
   
   case let action as GetUserChat:
@@ -30,12 +30,6 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   
   case let action as DeleteUserChats:
     return state?.remove(userChatIds: action.payload.map { $0.id }) ?? UserChatsState()
-    
-  case let action as UpdateLoungeInfo:
-    guard let userChats = action.userChatsResponse?.userChats else {
-      return state ?? UserChatsState()
-    }
-    return state?.upsert(userChats: userChats) ?? UserChatsState()
   
   case _ as DeleteUserChatsAll:
     return state?.clear() ?? UserChatsState()
@@ -49,7 +43,10 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
     return state?.remove(userChatId: action.payload) ?? UserChatsState()
   
   case let action as GetPush:
-    return state?.upsert(userChat: action.payload.userChat) ?? UserChatsState()
+    if let push = action.payload as? CHPush {
+      return state?.upsert(userChat: push.userChat) ?? UserChatsState()
+    }
+    return state ?? UserChatsState()
   
   case let action as UpdateVisibilityOfCompletedChats:
     if let show = action.show {
@@ -64,9 +61,6 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
       PrefStore.setVisibilityOfTranslation(on: show)
     }
     return state ?? UserChatsState()
-  
-  case let action as CreateLocalUserChat:
-    return state?.upsert(userChat: action.chat) ?? UserChatsState()
   
   case _ as ShutdownSuccess:
     return state?.clear() ?? UserChatsState()

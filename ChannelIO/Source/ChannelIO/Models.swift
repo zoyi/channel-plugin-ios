@@ -15,11 +15,11 @@ public class PushEvent: NSObject {
   @objc public let senderName: String
   @objc public let senderAvatarUrl: String
   
-  init(with pushData: CHPush?) {
-    self.chatId = pushData?.userChat?.id ?? ""
-    self.message = pushData?.message?.blocks.reduce("") { $0 + ($1.displayText?.string ?? "") } ?? ""
-    self.senderName = pushData?.manager?.name ?? ""
-    self.senderAvatarUrl = pushData?.manager?.avatarUrl ?? ""
+  init(with pushData: CHPushDisplayable?) {
+    self.chatId = pushData?.chatId ?? ""
+    self.message = pushData?.blocks.reduce("") { $0 + ($1.displayText?.string ?? "") } ?? ""
+    self.senderName = pushData?.writer?.name ?? ""
+    self.senderAvatarUrl = pushData?.writer?.avatarUrl ?? ""
   }
   
   @objc

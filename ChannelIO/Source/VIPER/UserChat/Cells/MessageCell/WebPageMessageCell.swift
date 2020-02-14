@@ -14,7 +14,7 @@ class WebPageMessageCell: MessageCell {
   private struct Metrics {
     static let webViewWithTranslateTop = 20.f
     static let webViewWithoutTranslateTop = 3.f
-    static let resendButtonRight = 4.f
+    static let resendButtonRight = -4.f
     static let resendButtonSide = 40.f
   }
   
@@ -44,7 +44,7 @@ class WebPageMessageCell: MessageCell {
       self.webBottomConstraint = make.bottom.equalToSuperview().constraint
     }
     
-    self.resendButtonView.snp.remakeConstraints { make in
+    self.resendButton.snp.remakeConstraints { make in
       make.width.equalTo(Metrics.resendButtonSide)
       make.height.equalTo(Metrics.resendButtonSide)
       make.bottom.equalTo(self.webView.snp.bottom)

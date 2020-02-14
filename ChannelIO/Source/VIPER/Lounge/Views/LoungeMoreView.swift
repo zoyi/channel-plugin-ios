@@ -33,10 +33,12 @@ class LoungeMoreView: BaseView {
     }
   }
   
-  func configure(moreCount: Int) {
+  func configure(moreCount: Int, hasNext: Bool) {
     self.isHidden = moreCount == 0
-    let count = moreCount > 99 ? "+99" : "\(moreCount)"
-    self.moreLabel.text = String(format: CHAssets.localized("ch.lounge.show_previous_chats"), count)
+    let count = moreCount > 99 ? "99" : "\(moreCount)"
+    self.moreLabel.text = (hasNext || moreCount > 99) ?
+      String(format: CHAssets.localized("ch.lounge.show_previous_chats_more"), count) :
+      String(format: CHAssets.localized("ch.lounge.show_previous_chats"), count)
   }
   
   override func layoutSubviews() {

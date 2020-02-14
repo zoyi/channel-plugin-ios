@@ -76,6 +76,8 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     $0.isHidden = true
   }
   
+  var currentPlayingVideo: VideoPlayerView?
+  
   internal var typers = [CHEntity]()
   
   private var newChatBottomConstraint: Constraint? = nil
@@ -89,7 +91,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal var isLoadingFile = false
   internal var errorFiles: [ChatFileQueueItem] = []
   internal var loadingFile: ChatFileQueueItem?
-  internal var initialFileCount: Int = 0
+  internal var waitingFileCount: Int = 0
 
   let disposeBag = DisposeBag()
 
@@ -104,6 +106,9 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     self.initViews()
     self.initTableView()
     self.initMessageView()
+    self.initNavigationViews(with: userChatSelector(
+      state: mainStore.state, userChatId: self.presenter?.userChatId)
+    )
     self.setup(scrollView: self.tableView)
     self.initActionButtons()
     self.showLoader()
@@ -152,13 +157,6 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       user: mainStore.state.user
     )
     self.initNavigationTitle(with: userChat)
-    
-    //NOTE: iOS 10 >= doesn't properly call navigationBar frame change rx method
-    //hance it doesn't apply proper navigation tint when it comes from lounge (where navigation is hidden)
-    //Remove this when iOS 10 is not supported
-    if let nav = self.navigationController as? MainNavigationController {
-      nav.newState(state: mainStore.state.plugin)
-    }
   }
   
   private func initNavigationTitle(with userChat: CHUserChat? = nil) {
@@ -279,7 +277,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       }).disposed(by: self.disposeBag)
     
     self.view.addSubview(self.chatBlockView)
-    self.chatBlockView.snp.makeConstraints { [weak self] (make) in
+    self.chatBlockView.snp.makeConstraints { [weak self] make in
       guard let self = self else { return }
       if #available(iOS 11.0, *) {
         make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
@@ -390,7 +388,8 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       }
       self.newChatButton.isHidden = false
     } else if !self.channel.allowNewChat && self.messageView.text == "" {
-      if !self.adjustTableViewInset(bottomInset: self.chatBlockView.viewHeight()) {
+      let bottomInset = self.chatBlockView.viewHeight(width: self.tableView.frame.width)
+      if !self.adjustTableViewInset(bottomInset: bottomInset) {
         self.fixedInset = true
         self.scrollToBottom(false)
       }
@@ -448,6 +447,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   }
   
   private func scrollToBottom(_ animated: Bool) {
+    guard self.tableView.numberOfRows(inSection: Sections.messages) > 0 else { return }
     self.tableView.scrollToRow(
       at: IndexPath(row: 0, section: Sections.messages),
       at: .bottom,
@@ -503,10 +503,10 @@ extension UserChatView {
     self.tableView.reloadData()
   }
   
-  func display(loadingFile: ChatFileQueueItem, count: Int) {
+  func display(loadingFile: ChatFileQueueItem, waitingCount: Int) {
     self.isLoadingFile = true
     self.loadingFile = loadingFile
-    self.initialFileCount = count
+    self.waitingFileCount = waitingCount
     self.tableView.reloadData()
   }
   

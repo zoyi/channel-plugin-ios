@@ -14,8 +14,8 @@ import ObjectMapper
 
 struct UserChatPromise {
   static func getChats(
-    since:Int64?=nil,
-    limit:Int,
+    since: String? = nil,
+    limit: Int,
     showCompleted: Bool = false) -> Observable<[String: Any?]> {
     return Observable.create { subscriber in
       var params = ["query": [
@@ -23,7 +23,7 @@ struct UserChatPromise {
           "includeClosed": showCompleted
         ]
       ]
-      if since != nil {
+      if let since = since {
         params["query"]?["since"] = since
       }
 
