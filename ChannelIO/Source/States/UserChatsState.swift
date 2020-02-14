@@ -10,7 +10,7 @@ import ReSwift
 
 struct UserChatsState: StateType {
   var userChats: [String:CHUserChat] = [:]
-  var nextSeq: Int64 = 0
+  var nextSeq: String? = nil
   var currentUserChatId = ""
   var lastMessages: [String:String] = [:]
   var showCompletedChats = PrefStore.getVisibilityOfClosedUserChat()
@@ -42,7 +42,7 @@ struct UserChatsState: StateType {
   
   mutating func clear() -> UserChatsState {
     self.userChats.removeAll()
-    self.nextSeq = 0
+    self.nextSeq = nil
     self.currentUserChatId = ""
     self.lastMessages.removeAll()
     return self

@@ -24,7 +24,7 @@ class UserChatsViewController: BaseViewController {
   var tableViewBottomConstraint: Constraint?
   
   var scrollOffset: CGFloat = 0.0
-  var nextSeq: Int64? = 0
+  var nextSeq: String?
   var diffCalculator: SingleSectionTableViewDiffCalculator<CHUserChat>?
 
   var userChats = [CHUserChat]() {
@@ -318,7 +318,7 @@ extension UserChatsViewController: UIScrollViewDelegate {
     let triggerPoint = scrollView.contentSize.height -
       UIScreen.main.bounds.height * 2
     
-    if yOffset >= triggerPoint && self.nextSeq != 0{
+    if yOffset >= triggerPoint && self.nextSeq != nil {
       self.fetchUserChats()
     }
   }
@@ -396,12 +396,18 @@ extension UserChatsViewController: UITableViewDelegate {
 }
 
 extension UserChatsViewController {
-  func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false, isReload: Bool = false) {
+  func fetchUserChats(
+    isInit: Bool = false,
+    showIndicator: Bool = false,
+    isReload: Bool = false) {
     if showIndicator {
       SVProgressHUD.show()
     }
     
-    UserChatPromise.getChats(since: isInit ? nil : self.nextSeq, limit: 30, showCompleted: self.showCompleted)
+    UserChatPromise.getChats(
+      since: isInit || isReload ? nil : self.nextSeq,
+      limit: 30,
+      howCompleted: self.showCompleted)
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching chat data. Attempting to fetch again")
         return true
@@ -429,7 +435,6 @@ extension UserChatsViewController {
   
   func deleteUserChat(userChat: CHUserChat) -> Observable<CHUserChat> {
     return Observable.create { subscribe in
-      
       let observe = userChat.remove()
         .subscribe(onNext: { (_) in
           subscribe.onNext(userChat)

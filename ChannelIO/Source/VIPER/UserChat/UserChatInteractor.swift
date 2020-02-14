@@ -32,7 +32,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   }
   
   private var isFetching = false
-  private var nextSeq = ""
+  private var nextSeq: String?
   
   private let disposeBag = DisposeBag()
   private var queueKey: ChatQueueKey {
@@ -90,7 +90,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
 
 extension UserChatInteractor {
   func canLoadMore() -> Bool {
-    return self.nextSeq != ""
+    return self.nextSeq != nil
   }
   
   func upload(files: [CHFile]) -> Observable<ChatQueueKey> {
@@ -132,9 +132,7 @@ extension UserChatInteractor {
           sortOrder: "DESC")
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (data) in
-          if let nextSeq = data["next"] {
-            self?.nextSeq = nextSeq as! String
-          }
+          self?.nextSeq = data["next"] as? String
           subscribe.onNext(.messageLoaded)
           mainStore.dispatch(GetMessages(payload: data))
         }, onError: { [weak self] error in
@@ -153,7 +151,7 @@ extension UserChatInteractor {
   
   func fetchChat() -> Observable<CHUserChat?> {
     return Observable.create { [weak self] (subscriber) in
-      self?.nextSeq = ""
+      self?.nextSeq = nil
       let signal = CHUserChat
         .get(userChatId: self?.userChatId ?? "")
         .observeOn(MainScheduler.instance)

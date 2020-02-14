@@ -14,7 +14,7 @@ import ObjectMapper
 
 struct UserChatPromise {
   static func getChats(
-    since:Int64?=nil,
+    since:String? = nil,
     limit:Int,
     showCompleted: Bool = false) -> Observable<[String: Any?]> {
     return Observable.create { subscriber in
@@ -23,7 +23,7 @@ struct UserChatPromise {
           "includeClosed": showCompleted
         ]
       ]
-      if since != nil {
+      if let since = since {
         params["query"]?["since"] = since
       }
 
@@ -35,7 +35,7 @@ struct UserChatPromise {
           case .success(let data):
             let json = JSON(data)
             //next, managers, sessions, userChats, messages
-            let next = json["next"].int64Value
+            let next = json["next"].string
             let managers = Mapper<CHManager>().mapArray(JSONObject: json["managers"].object)
             let sessions = Mapper<CHSession>().mapArray(JSONObject: json["sessions"].object)
             let userChats = Mapper<CHUserChat>().mapArray(JSONObject: json["userChats"].object)

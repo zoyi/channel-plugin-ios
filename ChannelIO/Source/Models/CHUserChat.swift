@@ -144,7 +144,7 @@ extension CHUserChat {
   }
   
   static func getChats(
-    since: Int64?=nil,
+    since: String? = nil,
     showCompleted: Bool = false) -> Observable<[String: Any?]> {
     return UserChatPromise.getChats(since: since, limit: 30, showCompleted: showCompleted)
   }
