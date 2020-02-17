@@ -173,6 +173,9 @@ extension TextMessageView : UITextViewDelegate {
     default:
       return shouldhandle == false || shouldhandle == nil
     }
+    if let mkInfo = self.viewModel?.message.mkInfo {
+      mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
   }
   
   @available(iOS 10.0, *)

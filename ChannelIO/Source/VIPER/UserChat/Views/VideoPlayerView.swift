@@ -56,8 +56,10 @@ class VideoPlayerView: BaseView {
   private var url: URL?
   private var currSeconds: Double? = 0.0
 
+  var mkInfo: MarketingInfo?
   var disposeBag = DisposeBag()
   var disposable: Disposable?
+  
   weak var delegate: VideoPlayerDelegate?
 
   override func initialize() {
@@ -71,6 +73,9 @@ class VideoPlayerView: BaseView {
     self.playButton
       .signalForClick()
       .subscribe(onNext: { [weak self] _ in
+        if let mkInfo = self?.mkInfo {
+          mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
+        }
         self?.play(with: self?.url, at: self?.currSeconds)
         self?.setVisibilityOfViews(isPlaying: true)
       }).disposed(by: self.disposeBag)
@@ -134,9 +139,11 @@ class VideoPlayerView: BaseView {
     }
   }
 
-  func configure(with model: VideoPlayable & ThumbDisplayable) {
+  func configure(with model: VideoPlayable & ThumbDisplayable, mkInfo: MarketingInfo? = nil) {
     guard let url = model.url else { return }
     self.url = url
+    self.mkInfo = mkInfo
+    
     self.currSeconds = model.currSeconds
 
     if let id = model.youtubeId {

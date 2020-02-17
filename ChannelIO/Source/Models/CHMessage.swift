@@ -146,6 +146,11 @@ extension CHMessage: CHPushDisplayable {
   var mobileExposureType: InAppNotificationType? {
     return self.marketing?.exposureType
   }
+  
+  var mkInfo: MarketingInfo? {
+    guard let marketing = self.marketing else { return nil }
+    return (marketing.type, marketing.id)
+  }
 }
 
 extension CHMessage: Mappable {

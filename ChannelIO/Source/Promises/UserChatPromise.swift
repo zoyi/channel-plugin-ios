@@ -233,17 +233,20 @@ struct UserChatPromise {
   
   static func getMessages(
     userChatId: String,
-    since: String,
+    since: String?,
     limit: Int,
     sortOrder: String) -> Observable<[String: Any]> {
     return Observable.create { subscriber in
-      let params = [
+      var params = [
         "query": [
-          "since": since,
           "limit": limit,
           "sortOrder": sortOrder
         ]
       ]
+      
+      if let since = since {
+        params["query"]?["since"] = since
+      }
       
       let req = Alamofire
         .request(RestRouter.GetMessages(userChatId, params as RestRouter.ParametersType))
