@@ -13,6 +13,7 @@ protocol FileCellModelType {
   var currSeconds: Double? { get set }
   var height: Int { get set }
   var width: Int { get set }
+  var mkInfo: MarketingInfo? { get set }
 }
 
 struct FileCellModel: FileCellModelType, VideoPlayable, ThumbDisplayable {
@@ -25,8 +26,9 @@ struct FileCellModel: FileCellModelType, VideoPlayable, ThumbDisplayable {
   var width: Int
   var isPlayable: Bool
   var youtubeId: String?
-
-  init(_ file: CHFile, seconds: Double? = nil) {
+  var mkInfo: MarketingInfo?
+  
+  init(_ file: CHFile, seconds: Double? = nil, mkInfo: MarketingInfo? = nil) {
     self.type = file.type
     self.url = file.url
     self.thumbUrl = file.thumbUrl
@@ -36,5 +38,6 @@ struct FileCellModel: FileCellModelType, VideoPlayable, ThumbDisplayable {
     self.width = file.width
     self.isPlayable = file.isPlayable
     self.youtubeId = file.youtubeId
+    self.mkInfo = mkInfo
   }
 }

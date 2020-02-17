@@ -8,8 +8,15 @@
 
 import ObjectMapper
 
+typealias MarketingInfo = (type: CHMarketingType?, id: String?)
+
+enum CHMarketingType: String {
+  case campaign
+  case oneTimeMsg = "oneTimeMsg"
+}
+
 struct CHMarketing {
-  var type: String = ""
+  var type: CHMarketingType?
   var id: String = ""
   var enableSupportBot: String = ""
   var advertising: Bool = false

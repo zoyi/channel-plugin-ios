@@ -115,7 +115,8 @@ class UserChatsViewController: BaseViewController {
         self.nextSeq = nil
         self.fetchUserChats(isInit: true, showIndicator: true)
         WsService.shared.connect()
-        AppManager.touch()
+        AppManager.shared
+          .touch()
           .subscribe(onNext: { (result) in
             mainStore.dispatch(GetTouchSuccess(payload: result))
           }).disposed(by: self.disposeBag)
@@ -407,7 +408,7 @@ extension UserChatsViewController {
     UserChatPromise.getChats(
       since: isInit || isReload ? nil : self.nextSeq,
       limit: 30,
-      howCompleted: self.showCompleted)
+      showCompleted: self.showCompleted)
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching chat data. Attempting to fetch again")
         return true

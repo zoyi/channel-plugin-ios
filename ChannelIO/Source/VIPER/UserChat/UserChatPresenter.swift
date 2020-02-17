@@ -412,15 +412,15 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     }
   }
   
-  func didClickOnVideo(with url: URL?, from view: UIViewController?) {
-    guard let url = url else { return }
-    self.router?.presentVideoPlayer(with: url, from: view)
-  }
-  
   func didClickOnFile(
-    with file: CHFile?,
+    with message: CHMessage?,
+    file: CHFile?,
     on imageView: UIImageView?,
     from view: UIViewController?) {
+    if let mkInfo = message?.mkInfo {
+      mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
+    
     if file?.type == .image, let imageView = imageView {
       self.view?.dismissKeyboard(false)
       self.router?.presentImageViewer(
@@ -459,11 +459,14 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     }
   }
 
-  func didClickOnWeb(with url: URL?, from view: UIViewController?) {
+  func didClickOnWeb(with message: CHMessage?, url: URL?, from view: UIViewController?) {
     guard let url = url else { return }
     let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
     if shouldHandle == false || shouldHandle == nil {
       url.openWithUniversal()
+    }
+    if let mkInfo = message?.mkInfo {
+      mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
     }
   }
   

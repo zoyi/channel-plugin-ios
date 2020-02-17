@@ -151,7 +151,7 @@ extension CHUserChat {
   
   static func getMessages(
     userChatId: String,
-    since: String,
+    since: String?,
     limit: Int,
     sortOrder:String) -> Observable<[String: Any]> {
     

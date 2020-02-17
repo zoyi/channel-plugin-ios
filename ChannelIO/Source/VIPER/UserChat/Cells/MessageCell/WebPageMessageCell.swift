@@ -65,7 +65,7 @@ class WebPageMessageCell: MessageCell {
     }
     
     self.webView.isHidden = false
-    self.webView.configure(with: webpage)
+    self.webView.configure(message: viewModel.message)
     
     if viewModel.createdByMe == true {
       self.trailingConstraint?.update(inset: Metric.cellRightPadding)

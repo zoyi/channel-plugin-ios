@@ -85,11 +85,11 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnActionButton(originId: String?, key: String?, value: String?)
   func didClickOnRedirectUrl(with url: String)
   func didClickOnFile(
-    with file: CHFile?,
+    with message: CHMessage?,
+    file: CHFile?,
     on imageView: UIImageView?,
     from view: UIViewController?)
-  func didClickOnVideo(with url: URL?, from view: UIViewController?)
-  func didClickOnWeb(with url: URL?, from view: UIViewController?)
+  func didClickOnWeb(with message: CHMessage?, url: URL?, from view: UIViewController?)
   func didClickOnTranslate(for message: CHMessage?)
   func didClickOnRetry(for message: CHMessage?, from view: UIView?)
   func didClickOnNewChat(with text: String, from view: UINavigationController?)

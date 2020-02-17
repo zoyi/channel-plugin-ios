@@ -9,14 +9,44 @@
 import Foundation
 import RxSwift
 
-struct AppManager {
-  static let disposeBag = DisposeBag()
+class AppManager {
+  static let shared = AppManager()
+  let disposeBag = DisposeBag()
   
-  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
+  private var viewSignal = PublishSubject<(CHMarketingType?, String?)>()
+  private var clickSignal = PublishSubject<(CHMarketingType?, String?)>()
+  
+  private init() {
+    self.viewSignal
+      .debounce(.microseconds(500), scheduler: MainScheduler.instance)
+      .subscribe(onNext: { (type, id) in
+        guard let type = type, let id = id else { return }
+        switch type {
+        case .campaign:
+          MarketingPromise.viewCampaign(id: id).subscribe()
+        case .oneTimeMsg:
+          MarketingPromise.viewOneTimeMsg(id: id).subscribe()
+        }
+      }).disposed(by: self.disposeBag)
+    
+    self.clickSignal
+      .debounce(.microseconds(500), scheduler: MainScheduler.instance)
+      .subscribe(onNext: { (type, id) in
+        guard let type = type, let id = id else { return }
+        switch type {
+        case .campaign:
+          MarketingPromise.clickCampaign(id: id).subscribe()
+        case .oneTimeMsg:
+          MarketingPromise.clickOneTimeMsg(id: id).subscribe()
+        }
+      }).disposed(by: self.disposeBag)
+  }
+  
+  func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
     return PluginPromise.boot(pluginKey: pluginKey, params: params)
   }
   
-  static func registerPushToken() {
+  func registerPushToken() {
     guard let pushToken = ChannelIO.pushToken else { return }
 
     PluginPromise
@@ -31,23 +61,23 @@ struct AppManager {
       }).disposed(by: disposeBag)
   }
   
-  static func sendAck(userChatId: String) -> Observable<Bool?> {
+  func sendAck(userChatId: String) -> Observable<Bool?> {
     return PluginPromise.sendPushAck(chatId: userChatId)
   }
   
-  static func unregisterToken() -> Observable<Any?> {
+  func unregisterToken() -> Observable<Any?> {
     return PluginPromise.unregisterPushToken()
   }
   
-  static func checkVersion() -> Observable<Any?> {
+  func checkVersion() -> Observable<Any?> {
     return PluginPromise.checkVersion()
   }
   
-  static func touch() -> Observable<BootResponse> {
+  func touch() -> Observable<BootResponse> {
     return UserPromise.touch(pluginId: mainStore.state.plugin.id)
   }
   
-  static func displayMarketingIfNeeeded() {
+  func displayMarketingIfNeeeded() {
     guard let chatId = CHUser.get().popUpChatId else { return }
     
     CHUserChat
@@ -60,5 +90,13 @@ struct AppManager {
           userChatId: chatResponse.userChat?.id)
         ChannelIO.showNotification(pushData: userChat?.lastMessage)
       }).disposed(by: self.disposeBag)
+  }
+  
+  func sendViewMarketing(type: CHMarketingType?, id: String?) {
+    self.viewSignal.onNext((type, id))
+  }
+  
+  func sendClickMarketing(type: CHMarketingType?, id: String?) {
+    self.clickSignal.onNext((type, id))
   }
 }

@@ -18,6 +18,7 @@ protocol InAppNotificationViewModelType {
   var mobileExposureType: InAppNotificationType { get set }
   var hasMedia: Bool { get set }
   var hasText: Bool { get set }
+  var mkInfo: MarketingInfo? { get set }
 }
 
 struct InAppNotificationViewModel: InAppNotificationViewModelType {
@@ -30,6 +31,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var mobileExposureType: InAppNotificationType
   var hasMedia: Bool = false
   var hasText: Bool = false
+  var mkInfo: MarketingInfo?
   
   init(push: CHPushDisplayable) {
     let writer = push.writer
@@ -70,5 +72,6 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
     }
     
     self.hasText = self.message != nil && self.message?.string != ""
+    self.mkInfo = push.mkInfo
   }
 }

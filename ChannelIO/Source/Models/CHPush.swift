@@ -19,6 +19,7 @@ protocol CHPushDisplayable {
   var blocks: [CHMessageBlock] { get }
   var chatId: String { get }
   var removed: Bool { get }
+  var mkInfo: MarketingInfo? { get }
 }
 
 struct CHPush: CHPushDisplayable {
@@ -63,6 +64,11 @@ struct CHPush: CHPushDisplayable {
   
   var removed: Bool {
     return self.message?.removed ?? false
+  }
+  
+  var mkInfo: MarketingInfo? {
+    guard let marketing = self.message?.marketing else { return nil }
+    return (marketing.type, marketing.id)
   }
 }
 

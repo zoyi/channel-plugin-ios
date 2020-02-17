@@ -15,7 +15,9 @@ import SDWebImageWebPCoder
 internal let mainStore = Store<AppState>(
   reducer: appReducer,
   state: nil,
-  middleware: [loggingMiddleware]
+  middleware: [
+    createMiddleware(marketingStatHook())
+  ]
 )
 
 internal func dlog(_ str: String) {
@@ -175,7 +177,7 @@ public final class ChannelIO: NSObject {
         return
       }
       
-      AppManager
+      AppManager.shared
         .checkVersion()
         .flatMap { (event) in
           return ChannelIO.bootChannel(profile: profile)
@@ -183,8 +185,8 @@ public final class ChannelIO: NSObject {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (_) in
           PrefStore.setChannelPluginSettings(pluginSetting: settings)
-          AppManager.registerPushToken()
-          AppManager.displayMarketingIfNeeeded()
+          AppManager.shared.registerPushToken()
+          AppManager.shared.displayMarketingIfNeeeded()
           
           if ChannelIO.launcherWindow == nil {
             ChannelIO.launcherWindow = LauncherWindow()
@@ -235,7 +237,7 @@ public final class ChannelIO: NSObject {
     ChannelIO.pushToken = token
     
     if ChannelIO.isValidStatus {
-      AppManager.registerPushToken()
+      AppManager.shared.registerPushToken()
     }
   }
   
@@ -244,7 +246,7 @@ public final class ChannelIO: NSObject {
     ChannelIO.pushToken = tokenString
     
     if ChannelIO.isValidStatus {
-      AppManager.registerPushToken()
+      AppManager.shared.registerPushToken()
     }
   }
 
@@ -254,7 +256,8 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func shutdown() {
-    AppManager.unregisterToken()
+    AppManager.shared
+      .unregisterToken()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { _ in
         dlog("shutdown success")
@@ -530,7 +533,7 @@ public final class ChannelIO: NSObject {
     
     //NOTE: if push was received on background, just send ack to the server
     if !ChannelIO.willBecomeActive {
-      AppManager.sendAck(userChatId: userChatId).subscribe(onNext: { (completed) in
+      AppManager.shared.sendAck(userChatId: userChatId).subscribe(onNext: { (completed) in
         completion?()
       }, onError: { (error) in
         completion?()

@@ -160,12 +160,12 @@ final class WebPageMessageView: BaseView {
     }
   }
 
-  func configure(with webPage: CHWebPage) {
+  func configure(with webPage: CHWebPage, mkInfo: MarketingInfo? = nil) {
     self.titleLabel.text = webPage.title
     self.descriptionLabel.text = webPage.desc
     
     if webPage.isPlayable {
-      self.videoView.configure(with: webPage)
+      self.videoView.configure(with: webPage, mkInfo: mkInfo)
       self.videoView.isHidden = false
       self.imageView.isHidden = true
     } else if let url = webPage.thumbUrl {
@@ -178,5 +178,10 @@ final class WebPageMessageView: BaseView {
     self.providerView.configure(publisher: webPage.publisher, title: webPage.author)
     
     self.imageHeightConstraint?.update(offset: webPage.thumbUrl == nil ? 0 : Metrics.imageHeight)
+  }
+  
+  func configure(message: CHMessage) {
+    guard let webPage = message.webPage else { return }
+    self.configure(with: webPage, mkInfo: message.mkInfo)
   }
 }
