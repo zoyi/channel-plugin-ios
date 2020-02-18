@@ -103,9 +103,14 @@ extension String {
     return attributedText
   }
   
-  func addLineHeight(height: CGFloat, font: UIFont, color: UIColor, alignment: NSTextAlignment = .left) -> NSMutableAttributedString {
+  func addLineHeight(
+    height: CGFloat,
+    font: UIFont,
+    color: UIColor,
+    alignment: NSTextAlignment = .left,
+    lineBreakMode: NSLineBreakMode = .byWordWrapping) -> NSMutableAttributedString {
     let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineBreakMode = .byWordWrapping
+    paragraphStyle.lineBreakMode = lineBreakMode
     paragraphStyle.minimumLineHeight = height
     paragraphStyle.alignment = alignment
     

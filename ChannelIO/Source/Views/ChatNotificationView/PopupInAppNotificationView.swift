@@ -215,6 +215,9 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   }
   
   func configure(with viewModel: InAppNotificationViewModel) {
+    let fileInfoVisibility = viewModel.hasMedia ?
+      !viewModel.hasText : viewModel.files.count > 0
+    
     self.avatarView.configure(viewModel.avatar)
     self.nameLabel.text = viewModel.name
     self.timestampLabel.text = viewModel.timestamp
@@ -223,18 +226,8 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
       Constants.maxLineWithMedia : Constants.maxLineWithoutMedia
     self.messageView.attributedText = viewModel.message
     self.mediaView.configure(model: viewModel)
-    
-    var hasMessage = false
-    if let message = viewModel.message {
-      hasMessage = message != NSAttributedString(string: "")
-    }
-    
-    self.messageView.isHidden = !hasMessage ? true : false
-    if viewModel.hasMedia {
-      self.fileInfoView.isHidden = !hasMessage ? false : true
-    } else {
-      self.fileInfoView.isHidden = viewModel.files.count > 0 ? false : true
-    }
+    self.messageView.isHidden = !viewModel.hasText
+    self.fileInfoView.isHidden = !fileInfoVisibility
     self.mediaContainerView.isHidden = !viewModel.hasMedia
     self.mkInfo = viewModel.mkInfo
   }

@@ -33,6 +33,7 @@ final class UserChatCell: BaseTableViewCell {
     static let fileHeight = 18.f
     static let welcomeBottom = 10.f
     static let messageLineHeight = 18.f
+    static let titleHeight = 16.f
   }
 
   struct Font {
@@ -85,8 +86,6 @@ final class UserChatCell: BaseTableViewCell {
     $0.textColor = Color.messageLabel
     $0.numberOfLines = Constants.messageLineWithoutFile
   }
-  
-  // MARK: Initializing
 
   override func initialize() {
     self.selectedBackgroundView = self.bgView
@@ -107,7 +106,7 @@ final class UserChatCell: BaseTableViewCell {
     self.titleLabel.snp.makeConstraints { make in
       make.top.equalToSuperview().inset(Metrics.cellTopPadding)
       make.left.equalTo(self.avatarView.snp.right).offset(Metrics.avatarRightPadding)
-      
+      make.height.equalTo(Metrics.titleHeight)
     }
     
     self.timestampLabel.snp.makeConstraints { make in
@@ -139,12 +138,17 @@ final class UserChatCell: BaseTableViewCell {
     self.messageLabel.attributedText = viewModel.lastMessage?.addLineHeight(
       height: Metrics.messageLineHeight,
       font: Font.messageLabel,
-      color: viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
+      color: viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel,
+      lineBreakMode: .byTruncatingTail
     )
     self.messageLabel.isHidden = !(viewModel.lastMessage != nil)
     let hasFiles = viewModel.files.count > 0
     self.fileInfoView.isHidden = !hasFiles
-    self.fileInfoView.configure(with: viewModel.files, isLarge: false)
+    self.fileInfoView.configure(
+      with: viewModel.files,
+      isLarge: false,
+      hideFileSize: true
+    )
     
     self.messageLabel.numberOfLines = hasFiles ?
       Constants.messageLineWithFile :
@@ -161,15 +165,7 @@ final class UserChatCell: BaseTableViewCell {
     
     var height: CGFloat = 0.0
     height += Metrics.cellTopPadding
-    height += viewModel.title.height(
-      fits: width
-        - Metrics.cellLeftPadding
-        - Metrics.avatarSide
-        - Metrics.avatarRightPadding
-        - Metrics.messageTrailing,
-      font: Font.titleLabel,
-      maximumNumberOfLines: Constants.titleLabelNumberOfLines
-    )
+    height += Metrics.titleHeight
     height += Metrics.titleBottomPadding
     let hasFiles = viewModel.files.count > 0
     let text = viewModel.lastMessage?.addLineHeight(
@@ -188,7 +184,7 @@ final class UserChatCell: BaseTableViewCell {
     height += hasFiles ? Metrics.fileHeight : 0
     height += Metrics.welcomeBottom
     
-    return height
+    return ceil(height)
   }
   
   class func height(

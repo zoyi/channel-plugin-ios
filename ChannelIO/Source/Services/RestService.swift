@@ -44,7 +44,7 @@ enum RestRouter: URLRequestConvertible {
   case SendEvent(String, ParametersType)
   case SetMessagesRead(String)
   case SendPushAck(String)
-  case TouchUser(String)
+  case TouchUser(String, ParametersType)
   case Translate(String, String, ParametersType)
   case UpdateUser(ParametersType)
   case UpdateProfileItem(String, String, ParametersType)
@@ -85,9 +85,7 @@ enum RestRouter: URLRequestConvertible {
          .UpdateProfileItem,
          .UploadFile:
       return .post
-    case .CampaignClick,
-         .CampaignView,
-         .CheckVersion,
+    case .CheckVersion,
          .GetAppMessengerUri,
          .GetCountryCodes,
          .GetGeoIP,
@@ -180,7 +178,7 @@ enum RestRouter: URLRequestConvertible {
       return "/front/plugins/\(pluginId)/events"
     case .Translate(let userChatId, let messageId, _):
       return "/front/user-chats/\(userChatId)/messages/\(messageId)/translate"
-    case .TouchUser(let pluginId):
+    case .TouchUser(let pluginId, _):
       return "/front/plugins/\(pluginId)/touch"
     case .UpdateProfileItem(let userChatId, let messageId, _):
       return "/front/user-chats/\(userChatId)/messages/\(messageId)/profile-bot"
@@ -193,16 +191,15 @@ enum RestRouter: URLRequestConvertible {
     }
   }
   
-  func addAuthForSimple(request: URLRequest, isBoot: Bool = false) -> URLRequest {
+  func addAuthForSimple(request: URLRequest) -> URLRequest {
     var req = request
     var headers = req.allHTTPHeaderFields ?? [String: String]()
     
-    headers["Accept"] = "application/json"
-    
-    if let locale = CHUtils.getLocale(), isBoot {
+    if let locale = CHUtils.getLocale() {
       headers["Accept-Language"] = locale.rawValue
     }
     
+    headers["Accept"] = "application/json"
     headers["User-Agent"] = CHUtils.generateUserAgent()
     req.allHTTPHeaderFields = headers
     return req
@@ -274,6 +271,7 @@ enum RestRouter: URLRequestConvertible {
          .CreateMessage(_, let params),
          .CreateUserChat(_, let params),
          .CreateSupportBotChat(_, let params),
+         .CloseUserChat(_, let params),
          .UploadFile(_, let params),
          .GetUserChats(let params),
          .GetLounge(_, let params),
@@ -294,12 +292,10 @@ enum RestRouter: URLRequestConvertible {
          .GetProfileBotSchemas,
          .UnregisterToken:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
-    case .TouchUser:
-      urlRequest = try encode(addAuthForSimple(request: urlRequest), with: nil)
-    case .SendEvent(_, let params):
+    case .Boot(_, let params),
+         .TouchUser(_, let params),
+         .SendEvent(_, let params):
       urlRequest = try encode(addAuthForSimple(request: urlRequest), with: params)
-    case .Boot(_, let params):
-      urlRequest = try encode(addAuthForSimple(request: urlRequest, isBoot: true), with: params)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     }

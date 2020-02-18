@@ -162,13 +162,16 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       
       SVProgressHUD.show()
       
-      let signal = interactor
-        .getLounge()
+      let signal = Observable
+        .zip(
+          interactor.getLounge(),
+          interactor.getChats()
+        )
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           return true
         })
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { info in
+        .subscribe(onNext: { (info, chatData) in
           guard
             let channel = info.channel,
             let plugin = info.plugin,
@@ -185,11 +188,10 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
               plugin: plugin,
               bot: bot,
               operators: operators,
-              userChatsResponse: info.userChatsResponse,
               supportBotEntryInfo: info.supportBotEntryInfo
             )
           )
-          
+          mainStore.dispatch(GetUserChats(payload: chatData))
           subscriber(.success(nil))
           SVProgressHUD.dismiss()
         }, onError: { (error) in
@@ -318,7 +320,6 @@ extension LoungePresenter {
             plugin: plugin,
             bot: bot,
             operators: operators,
-            userChatsResponse: info.userChatsResponse,
             supportBotEntryInfo: info.supportBotEntryInfo
           )
         )

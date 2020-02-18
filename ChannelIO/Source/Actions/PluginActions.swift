@@ -23,7 +23,6 @@ struct UpdateLoungeInfo: Action {
   public let plugin: CHPlugin
   public let bot: CHBot?
   public let operators: [CHManager]
-  public let userChatsResponse: UserChatsResponse?
   public let supportBotEntryInfo: CHSupportBotEntryInfo?
 }
 

@@ -9,7 +9,7 @@
 import ReSwift
 
 struct GetPush : Action {
-  public let payload : CHPush
+  public let payload : CHPushDisplayable?
 }
 
 struct RemovePush : Action {}

@@ -54,10 +54,7 @@ class UserChatsViewController: BaseViewController {
   
   var showCompleted = false
   var didLoad = false
-  var showNewChat = false
-  var shouldHideTable = false
   var isShowingChat = false
-  var goToUserChatId: String? = nil
   
   struct Metric {
     static let statusBarHeight = 64.f
@@ -146,7 +143,7 @@ class UserChatsViewController: BaseViewController {
   
   func initActions() {
     self.newChatButton.signalForClick().subscribe { [weak self] _ in
-      self?.showUserChat(hideTable: false)
+      self?.showUserChat()
     }.disposed(by: self.disposeBag)
   }
   
@@ -253,15 +250,13 @@ class UserChatsViewController: BaseViewController {
     }
   }
   
-  func showUserChat(userChatId: String? = nil, text:String = "", hideTable: Bool = true, animated: Bool = true) {
+  func showUserChat(userChatId: String? = nil, text:String = "") {
     guard !self.isShowingChat else { return }
-    self.tableView.isHidden = hideTable
+    self.tableView.isHidden = false
     
     let controller = UserChatRouter.createModule(userChatId: userChatId, text: text)
-    self.navigationController?.pushViewController(controller, animated: animated)
-    self.showNewChat = false
+    self.navigationController?.pushViewController(controller, animated: true)
     self.isShowingChat = false
-    self.shouldHideTable = false
   }
   
   func showProfileView() {
@@ -279,9 +274,7 @@ extension UserChatsViewController: StoreSubscriber {
       showCompleted: self.showCompleted)
 
     self.nextSeq = state.userChatsState.nextSeq
-    self.tableView.isHidden = (self.userChats.count == 0 || !self.didLoad) || self.shouldHideTable
-    self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad || self.showNewChat
-    self.newChatButton.isHidden = self.tableView.isHidden && self.showNewChat
+    self.emptyView.isHidden = self.userChats.count != 0 || !self.didLoad
     self.newChatButton.isEnabled = state.channel.allowNewChat
     
     // fetch data
@@ -316,10 +309,9 @@ extension UserChatsViewController: UIScrollViewDelegate {
   
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
     let yOffset = scrollView.contentOffset.y
-    let triggerPoint = scrollView.contentSize.height -
-      UIScreen.main.bounds.height * 2
+    let triggerPoint = scrollView.contentSize.height - self.tableView.bounds.height
     
-    if yOffset >= triggerPoint && self.nextSeq != nil {
+    if yOffset >= triggerPoint && triggerPoint > 0  && self.nextSeq != nil {
       self.fetchUserChats()
     }
   }
@@ -336,7 +328,6 @@ extension UserChatsViewController: UIScrollViewDelegate {
 // MARK: - UITableViewDataSource
 
 extension UserChatsViewController: UITableViewDataSource {
-
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return self.userChats.count
   }
@@ -368,7 +359,6 @@ extension UserChatsViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension UserChatsViewController: UITableViewDelegate {
-
   func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
     return 100
   }
@@ -392,7 +382,7 @@ extension UserChatsViewController: UITableViewDelegate {
     tableView.deselectRow(at: indexPath, animated: true)
 
     let userChat = self.userChats[indexPath.row]
-    self.showUserChat(userChatId: userChat.id, hideTable: false, animated: true)
+    self.showUserChat(userChatId: userChat.id)
   }
 }
 
@@ -405,10 +395,12 @@ extension UserChatsViewController {
       SVProgressHUD.show()
     }
     
-    UserChatPromise.getChats(
-      since: isInit || isReload ? nil : self.nextSeq,
-      limit: 30,
-      showCompleted: self.showCompleted)
+    CHUserChat
+      .getChats(
+        since: isInit || isReload ? nil : self.nextSeq,
+        limit: 50,
+        showCompleted: self.showCompleted
+      )
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching chat data. Attempting to fetch again")
         return true
@@ -418,7 +410,6 @@ extension UserChatsViewController {
         self?.didLoad = true
         
         mainStore.dispatch(GetUserChats(payload: data))
-        self?.showChatIfNeeded(isReload: isReload)
       }, onError: { [weak self] error in
         dlog("Get UserChats error: \(error)")
         //self?.errorToastView.display(animated:true)
@@ -429,8 +420,6 @@ extension UserChatsViewController {
       }, onCompleted: {
         SVProgressHUD.dismiss()
         dlog("Get UserChats complete")
-      }, onDisposed: {
-        SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)
   }
   
@@ -446,25 +435,6 @@ extension UserChatsViewController {
       
       return Disposables.create() {
         observe.dispose()
-      }
-    }
-  }
-  
-  func showChatIfNeeded(_ userChats: [CHUserChat]? = nil, isReload: Bool = false) {
-    let allChats = userChatsSelector(state: mainStore.state, showCompleted: self.showCompleted)
-    
-    if self.showNewChat  {
-      self.showUserChat(animated: false)
-    } else if let userChatId = self.goToUserChatId {
-      self.showUserChat(userChatId: userChatId, animated: false)
-      self.goToUserChatId = nil
-    } else if !isReload {
-      if allChats.count == 0 {
-        self.shouldHideTable = true
-        self.showUserChat(animated: false)
-      } else if let chat = allChats.first, allChats.count == 1 {
-        self.shouldHideTable = true
-        self.showUserChat(userChatId: chat.id, animated: false)
       }
     }
   }

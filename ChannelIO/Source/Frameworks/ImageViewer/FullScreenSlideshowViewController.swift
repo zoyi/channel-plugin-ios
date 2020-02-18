@@ -43,12 +43,19 @@ internal class FullScreenSlideshowViewController: UIViewController {
 
     /// Close button 
     internal var closeButton = UIButton()
-
+  
     /// Close button frame
     internal var closeButtonFrame: CGRect?
+  
+    internal var downloadButton = UIButton()
+  
+    internal var downloadButtonFrame: CGRect?
 
     /// Closure called on page selection
     internal var pageSelected: ((_ page: Int) -> Void)?
+  
+    /// Closure called on download click
+    internal var downloadClicked: ((_ url: Int) -> Void)?
 
     /// Index of initial image
     internal var initialPage: Int = 0
@@ -84,6 +91,11 @@ internal class FullScreenSlideshowViewController: UIViewController {
       closeButton.setImage(CHAssets.getImage(named: "exit"), for: UIControlState())
       closeButton.addTarget(self, action: #selector(FullScreenSlideshowViewController.close), for: UIControlEvents.touchUpInside)
       view.addSubview(closeButton)
+      
+      downloadButton.setImage(CHAssets.getImage(named: "upload")?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+      downloadButton.tintColor = .white
+      downloadButton.addTarget(self, action: #selector(FullScreenSlideshowViewController.download), for: UIControlEvents.touchUpInside)
+      view.addSubview(downloadButton)
     }
 
     override open var prefersStatusBarHidden: Bool {
@@ -115,6 +127,7 @@ internal class FullScreenSlideshowViewController: UIViewController {
             }
             
             closeButton.frame = closeButtonFrame ?? CGRect(x: max(10, safeAreaInsets.left), y: max(10, safeAreaInsets.top), width: 40, height: 40)
+            downloadButton.frame = downloadButtonFrame ?? CGRect(x: view.frame.width - max(50, 40 + safeAreaInsets.right), y: max(10, safeAreaInsets.top), width: 40, height: 40)
         }
 
         slideshow.frame = view.frame
@@ -128,4 +141,10 @@ internal class FullScreenSlideshowViewController: UIViewController {
 
         dismiss(animated: true, completion: nil)
     }
+  
+  @objc func download() {
+    if let downloadClicked = downloadClicked {
+      downloadClicked(slideshow.currentPage)
+    }
+  }
 }

@@ -140,14 +140,15 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     ChannelIO.settings?.language = CHUtils.stringToLocale(locale.rawValue)
     
     SVProgressHUD.show()
-    AppManager.shared.touch()
-      .debounce(.milliseconds(1500), scheduler: MainScheduler.instance)
+    CHUser.updateLanguage(with: locale.rawValue)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (result) in
+      .subscribe(onNext: { [weak self] (user, error) in
         defer { SVProgressHUD.dismiss() }
-        mainStore.dispatch(GetTouchSuccess(payload: result))
-        tableView.deselectRow(at: indexPath, animated: true)
-        self?.navigationController?.popViewController(animated: true)
+        mainStore.dispatch(UpdateUser(payload: user))
+        if error == nil {
+          tableView.deselectRow(at: indexPath, animated: true)
+          _ = self?.navigationController?.popViewController(animated: true)
+        }
       }, onError: { (error) in
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)

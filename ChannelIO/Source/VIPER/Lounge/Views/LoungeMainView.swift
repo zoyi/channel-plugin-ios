@@ -181,8 +181,12 @@ class LoungeMainView: BaseView {
     self.errorView?.removeFromSuperview()
     self.errorView = nil
 
-    self.moreView.configure(moreCount: self.otherChatCount)
-    self.tableViewBottomConstraint?.update(inset: self.otherChatCount != 0 ? Metrics.tableViewBottom : 0)
+    self.moreView.configure(
+      moreCount: self.otherChatCount,
+      hasNext: mainStore.state.userChatsState.nextSeq != nil
+    )
+    self.tableViewBottomConstraint?
+      .update(inset: self.otherChatCount != 0 ? Metrics.tableViewBottom : 0)
     
     self.tableView.isHidden = false
     self.tableView.hideIndicatorTo(.content)

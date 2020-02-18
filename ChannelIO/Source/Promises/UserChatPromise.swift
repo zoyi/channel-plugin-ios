@@ -14,9 +14,9 @@ import ObjectMapper
 
 struct UserChatPromise {
   static func getChats(
-    since:String? = nil,
-    limit:Int,
-    showCompleted: Bool = false) -> Observable<[String: Any?]> {
+    since: String? = nil,
+    limit: Int,
+    showCompleted: Bool = false) -> Observable<UserChatsResponse> {
     return Observable.create { subscriber in
       var params = ["query": [
           "limit": limit,
@@ -34,22 +34,13 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            //next, managers, sessions, userChats, messages
-            let next = json["next"].string
-            let managers = Mapper<CHManager>().mapArray(JSONObject: json["managers"].object)
-            let sessions = Mapper<CHSession>().mapArray(JSONObject: json["sessions"].object)
-            let userChats = Mapper<CHUserChat>().mapArray(JSONObject: json["userChats"].object)
-            let messages = Mapper<CHMessage>().mapArray(JSONObject: json["messages"].object)
-            let bots = Mapper<CHBot>().mapArray(JSONObject: json["bots"].object)
+            guard let userChatsResponse = Mapper<UserChatsResponse>()
+              .map(JSONObject: json.object) else {
+              subscriber.onError(ChannelError.parseError)
+              return
+            }
             
-            subscriber.onNext([
-              "next":next,
-              "managers": managers,
-              "sessions": sessions,
-              "userChats": userChats,
-              "messages": messages,
-              "bots": bots
-            ])
+            subscriber.onNext(userChatsResponse)
             subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(ChannelError.serverError(

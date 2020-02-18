@@ -67,7 +67,8 @@ class CustomBlockTransform: TransformType {
   public init(config: CHMessageParserConfig) {
     self.parser = CHMessageParser(
       config: config,
-      emojiMap: CustomBlockTransform.emojiMap
+      emojiMap: CustomBlockTransform.emojiMap,
+      profiles: userSelector(state: mainStore.state).profile ?? [:]
     )
   }
 

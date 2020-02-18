@@ -20,7 +20,6 @@ struct CHPlugin: ModelType {
   var profileBotSchemaIds: [String] = []
   
   var mobilePosition = "right"
-  var welcomeNamedI18n: CHi18n?
   var welcomeI18n: CHi18n?
   var showPoweredBy: Bool?
   
@@ -62,7 +61,6 @@ extension CHPlugin: Mappable {
     borderColor           <- map["borderColor"]
     textColor             <- map["textColor"]
     botName               <- map["botName"]
-    welcomeNamedI18n      <- map["welcomeNamedI18n"]
     welcomeI18n           <- map["welcomeI18n"]
     showPoweredBy         <- map["showPoweredBy"]
     profileBotSchemaIds   <- map["profileBotSchemaIds"]

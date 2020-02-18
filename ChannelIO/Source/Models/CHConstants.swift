@@ -9,6 +9,5 @@
 struct CHConstants {
   static let channelio = "Channel.io"
   static let dummy = "dummy"
-  static let local = "local"
   static let apiRetryCount = 4
 }

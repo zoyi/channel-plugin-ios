@@ -16,7 +16,7 @@ struct FetchedUserChatPrep: Action {
 }
 
 struct GetUserChats: Action {
-  public let payload: [String: Any?]
+  public let payload: UserChatsResponse
 }
 
 struct FailedGetUserChats: Action {
@@ -41,13 +41,6 @@ struct GetUserChat: Action {
 
 struct CreateUserChat: Action {
   public let payload: CHUserChat
-}
-
-struct CreateLocalUserChat: Action {
-  public let chat: CHUserChat?
-  public let message: CHMessage?
-  public let writer: CHEntity?
-  public let session: CHSession?
 }
 
 struct UpdateUserChat: Action {

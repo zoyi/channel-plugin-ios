@@ -8,7 +8,7 @@
 
 import ReSwift
 
-func pushReducer(action:Action, push: CHPush?) -> CHPush? {
+func pushReducer(action:Action, push: CHPushDisplayable?) -> CHPushDisplayable? {
   switch action {
   case let action as GetPush:
     //return push only if messenger is not visible

@@ -82,12 +82,6 @@ class BootParamBuilder: ParamBuilder {
       data[ParamKey.veilId] = veilId
     }
     
-//    if let sessionJWT = self.sessionJWT {
-//      data[ParamKey.session] = sessionJWT
-//    } else if let sessionJWT = PrefStore.getSessionJWT() {
-//      data[ParamKey.session] = sessionJWT
-//    }
-    
     return ["url": data]
   }
 }

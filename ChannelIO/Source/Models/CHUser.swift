@@ -90,8 +90,6 @@ func ==(lhs: CHUser, rhs: CHUser) -> Bool {
 extension CHUser {
   var dict: [String: Any] {
     var data = [String: Any]()
-    
-    data["named"] = self.named ? "true" : "false"
     data["country"] = self.country
     data["city"] = self.city
     data["locale"] = self.locale
@@ -116,32 +114,23 @@ extension CHUser {
     }
     return data
   }
-  
-  var named: Bool {
-    return self.profile?["name"] != nil
-  }
-    
 }
 
 extension CHUser {
   func getWelcome(with config: CHMessageParserConfig? = nil) -> NSAttributedString? {
-    if self.named {
-      return mainStore.state.plugin.welcomeNamedI18n?.getAttributedMessage(with: config)
-    } else {
-      return mainStore.state.plugin.welcomeI18n?.getAttributedMessage(with: config)
-    }
+    return mainStore.state.plugin.welcomeI18n?.getAttributedMessage(with: config)
   }
   
   func getWelcomeBlock() -> CHMessageBlock? {
-    if self.named {
-      return mainStore.state.plugin.welcomeNamedI18n?.getMessageBlock()
-    } else {
-      return mainStore.state.plugin.welcomeI18n?.getMessageBlock()
-    }
+    return mainStore.state.plugin.welcomeI18n?.getMessageBlock()
   }
   
   func updateProfile(key: String, value: Any?) -> Observable<(CHUser?, Any?)> {
-    return UserPromise.updateProfile(with: [key: value])
+    return UserPromise.updateUser(profile: [key: value])
+  }
+  
+  static func updateLanguage(with language: String) -> Observable<(CHUser?, Any?)> {
+    return UserPromise.updateUser(language: language)
   }
   
   static func closePopup() -> Observable<Any?> {

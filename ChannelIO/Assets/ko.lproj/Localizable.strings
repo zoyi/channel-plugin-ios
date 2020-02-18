@@ -172,3 +172,5 @@
 "ch.day" = "일";
 "file_upload.fail" = "전송 실패";
 "file_upload.wait_count" = "%s건 대기";
+"ch.common_error" = "처리하는데 실패했습니다. 다시 시도해주세요.";
+"ch.lounge.show_previous_chats_more" = "%s건 이상의 이전 상담보기";

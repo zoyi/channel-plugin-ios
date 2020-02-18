@@ -22,6 +22,25 @@ protocol CHPushDisplayable {
   var mkInfo: MarketingInfo? { get }
 }
 
+extension CHPushDisplayable {
+  func isEqual(to other: CHPushDisplayable?) -> Bool {
+    let isSameWriter = self.writer != nil ?
+      writer!.isEqual(to: other?.writer) : other?.writer == nil
+    return isSameWriter &&
+      self.sortedFiles == other?.sortedFiles &&
+      self.webPage == other?.webPage &&
+      self.readableCreatedAt == other?.readableCreatedAt &&
+      self.mobileExposureType == other?.mobileExposureType &&
+      self.logMessage == other?.logMessage &&
+      self.sortedFiles == other?.sortedFiles &&
+      self.blocks == other?.blocks &&
+      self.chatId == other?.chatId &&
+      self.removed == other?.removed &&
+      self.mkInfo?.type == other?.mkInfo?.type &&
+      self.mkInfo?.id == other?.mkInfo?.id
+  }
+}
+
 struct CHPush: CHPushDisplayable {
   var type = ""
   var message: CHMessage?
