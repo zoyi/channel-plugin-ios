@@ -249,6 +249,11 @@ extension LoungeView {
   }
   
   func displayError() {
+    CHNotification.shared.display(
+      message: CHAssets.localized("ch.toast.unstable_internet"),
+      config: CHNotificationConfiguration.warningNormalConfig
+    )
+    
     self.contentView.isHidden = false
     self.headerView.displayError()
     self.mainView.displayError()

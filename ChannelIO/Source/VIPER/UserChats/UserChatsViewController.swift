@@ -388,13 +388,16 @@ extension UserChatsViewController: UITableViewDelegate {
 }
 
 extension UserChatsViewController {
-  func fetchUserChats(isInit: Bool = false, showIndicator: Bool = false, isReload: Bool = false) {
+  func fetchUserChats(
+    isInit: Bool = false,
+    showIndicator: Bool = false,
+    isReload: Bool = false) {
     if showIndicator {
       SVProgressHUD.show()
     }
     
     CHUserChat
-      .getChats(since: isInit ? nil : self.nextSeq, limit: 50, showCompleted: self.showCompleted)
+      .getChats(since: isInit || isReload ? nil : self.nextSeq, limit: 50, showCompleted: self.showCompleted)
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching chat data. Attempting to fetch again")
         return true
@@ -421,7 +424,6 @@ extension UserChatsViewController {
   
   func deleteUserChat(userChat: CHUserChat) -> Observable<CHUserChat> {
     return Observable.create { subscribe in
-      
       let observe = userChat.remove()
         .subscribe(onNext: { (_) in
           subscribe.onNext(userChat)

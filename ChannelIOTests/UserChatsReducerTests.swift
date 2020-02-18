@@ -42,7 +42,7 @@ class UserChatsReducerTests: QuickSpec {
             userChats?.append(userChat)
           }
           
-          let payload:[String:Any] = ["userChats": userChats!, "next":1234 as Int64]
+          let payload:[String:Any] = ["userChats": userChats!, "next":"1234"]
           state = userChatsReducer(action: GetUserChats(payload: payload), state: state)
           expect(state.userChats.count).to(equal(10))
         }

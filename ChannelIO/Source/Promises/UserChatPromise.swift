@@ -35,7 +35,7 @@ struct UserChatPromise {
           case .success(let data):
             let json = JSON(data)
             //next, managers, sessions, userChats, messages
-            let next = json["next"].int64Value
+            let next = json["next"].string
             let managers = Mapper<CHManager>().mapArray(JSONObject: json["managers"].object)
             let sessions = Mapper<CHSession>().mapArray(JSONObject: json["sessions"].object)
             let userChats = Mapper<CHUserChat>().mapArray(JSONObject: json["userChats"].object)
