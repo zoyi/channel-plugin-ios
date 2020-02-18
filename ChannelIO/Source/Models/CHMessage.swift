@@ -146,6 +146,10 @@ extension CHMessage: CHPushDisplayable {
   var mobileExposureType: InAppNotificationType? {
     return self.marketing?.exposureType
   }
+  
+  var isMarketing: Bool {
+    return self.marketing != nil
+  }
 }
 
 extension CHMessage: Mappable {
@@ -238,14 +242,15 @@ extension CHMessage: Mappable {
       let transform = CustomBlockTransform(
         config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
       )
-      let block = CHMessageBlock(
-        type: .text,
-        blocks: [],
-        language: nil,
-        value: trimmedMessage
-      )
-      if let transformed = transform.transformFromJSON(block) {
-        self.blocks = [transformed]
+      
+      if let displayText = transform.parser.parseText(trimmedMessage) {
+        self.blocks = [
+          CHMessageBlock(
+            type: .text,
+            value: trimmedMessage,
+            displayText: displayText
+          )
+        ]
       }
     }
   }
@@ -276,14 +281,14 @@ extension CHMessage: Mappable {
       let transform = CustomBlockTransform(
         config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
       )
-      let block = CHMessageBlock(
-        type: .text,
-        blocks: [],
-        language: nil,
-        value: trimmedMessage
-      )
-      if let transformed = transform.transformFromJSON(block) {
-        self.blocks = [transformed]
+      if let displayText = transform.parser.parseText(trimmedMessage) {
+        self.blocks = [
+          CHMessageBlock(
+            type: .text,
+            value: trimmedMessage,
+            displayText: displayText
+          )
+        ]
       }
     }
   }

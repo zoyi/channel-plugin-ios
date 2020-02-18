@@ -33,11 +33,6 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     return state?.upsert(messages: messages) ?? MessagesState()
     
   case let action as UpdateLoungeInfo:
-    let lastMessages = action.userChatsResponse?.messages ?? []
-    lastMessages.forEach {
-      _ = state?.insert(message: $0) ?? MessagesState()
-    }
-    
     if let entry = action.supportBotEntryInfo,
       let step = entry.step,
       let message = step.message {
@@ -82,17 +77,14 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     return state?.upsert(messages: [msg.first!]) ?? MessagesState()
     
   case let action as GetPush:
-    return state?.insert(message: action.payload.message) ?? MessagesState()
+    if let push = action.payload as? CHPush {
+      return state?.insert(message: push.message) ?? MessagesState()
+    }
+    return state ?? MessagesState()
     
   case _ as InsertSupportBotEntry:
     let message = state?.supportBotEntry
     return state?.insert(message: message) ?? MessagesState()
-    
-  case let action as CreateLocalUserChat:
-    if let message = action.message {
-      return state?.upsert(messages: [message]) ?? MessagesState()
-    }
-    return state ?? MessagesState()
     
   case _ as ShutdownSuccess:
     return state?.clear() ?? MessagesState()

@@ -19,6 +19,25 @@ protocol CHPushDisplayable {
   var blocks: [CHMessageBlock] { get }
   var chatId: String { get }
   var removed: Bool { get }
+  var isMarketing: Bool { get }
+}
+
+extension CHPushDisplayable {
+  func isEqual(to other: CHPushDisplayable?) -> Bool {
+    let isSameWriter = self.writer != nil ?
+      writer!.isEqual(to: other?.writer) : other?.writer == nil
+    return isSameWriter &&
+      self.sortedFiles == other?.sortedFiles &&
+      self.webPage == other?.webPage &&
+      self.readableCreatedAt == other?.readableCreatedAt &&
+      self.mobileExposureType == other?.mobileExposureType &&
+      self.logMessage == other?.logMessage &&
+      self.sortedFiles == other?.sortedFiles &&
+      self.blocks == other?.blocks &&
+      self.chatId == other?.chatId &&
+      self.removed == other?.removed &&
+      self.isMarketing == other?.isMarketing
+  }
 }
 
 struct CHPush: CHPushDisplayable {
@@ -47,6 +66,10 @@ struct CHPush: CHPushDisplayable {
   
   var mobileExposureType: InAppNotificationType? {
     return self.message?.marketing?.exposureType ?? .banner
+  }
+  
+  var isMarketing: Bool {
+    return self.message?.marketing != nil
   }
   
   var logMessage: String? {

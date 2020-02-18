@@ -40,7 +40,8 @@ class MessageCell: BaseTableViewCell {
     static let translateViewTop = 4.f
     static let translateViewLeading = 12.f
     static let translateHeight = 12.f
-    static let resendButtonSide = 40.f
+    static let resendButtonSide = 24.f
+    static let resendButtonRight = -4.f
   }
   
   let avatarView = AvatarView().then {
@@ -61,7 +62,7 @@ class MessageCell: BaseTableViewCell {
   
   let textView = TextMessageView()
   let translateView = TranslateView()
-  let resendButtonView = UIButton().then {
+  let resendButton = UIButton().then {
     $0.isHidden = true
     $0.setImage(CHAssets.getImage(named: "resend"), for: .normal)
   }
@@ -80,16 +81,16 @@ class MessageCell: BaseTableViewCell {
     self.contentView.addSubview(self.timestampLabel)
     self.contentView.addSubview(self.textView)
     self.contentView.addSubview(self.translateView)
-    self.contentView.addSubview(self.resendButtonView)
+    self.contentView.addSubview(self.resendButton)
     
-    self.resendButtonView.signalForClick()
+    self.resendButton.signalForClick()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.presenter?.didClickOnRetry(
           for: self?.viewModel?.message,
-          from: self?.resendButtonView
+          from: self?.resendButton
         )
-        self?.resendButtonView.isHidden = true
+        self?.resendButton.isHidden = true
       }).disposed(by :self.disposeBag)
     
     self.translateView.signalForClick()
@@ -118,7 +119,7 @@ class MessageCell: BaseTableViewCell {
     self.avatarView.isHidden = viewModel.avatarIsHidden
     
     self.textView.configure(viewModel)
-    self.resendButtonView.isHidden = !viewModel.isFailed
+    self.resendButton.isHidden = !viewModel.isFailed
     
     self.translateView.configure(with: viewModel)
     self.translateHeightConstraint?.update(offset: viewModel.showTranslation ? Metric.translateHeight : 0)
@@ -159,10 +160,10 @@ class MessageCell: BaseTableViewCell {
       self.messageBottomConstraint = make.bottom.equalToSuperview().constraint
     }
     
-    self.resendButtonView.snp.remakeConstraints { (make) in
+    self.resendButton.snp.remakeConstraints { (make) in
       make.size.equalTo(CGSize(width: Metric.resendButtonSide, height: Metric.resendButtonSide))
       make.bottom.equalTo(self.textView.snp.bottom)
-      make.right.equalTo(self.textView.snp.left).inset(4)
+      make.right.equalTo(self.textView.snp.left).inset(Metric.resendButtonRight)
     }
   }
   

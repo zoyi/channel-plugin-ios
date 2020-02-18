@@ -30,7 +30,6 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
-  @objc optional func onClickRedirect(url: URL) -> Bool /* notify when a user click on a link */
   @objc optional func onChangeProfile(key: String, value: Any?) -> Void /* notify when the user profile has been changed */
 }
 
@@ -76,7 +75,7 @@ public final class ChannelIO: NSObject {
 
   internal static var settings: ChannelPluginSettings?
   internal static var profile: Profile?
-  internal static var lastPush: CHPush?
+  internal static var lastPush: CHPushDisplayable?
   
   internal static var hostTopControllerName: String?
   internal static var launcherView: LauncherView? {
@@ -109,16 +108,16 @@ public final class ChannelIO: NSObject {
       }
     }
     
-    func handlePush (push: CHPush?) {
+    func handlePush (push: CHPushDisplayable?) {
       guard let push = push else { return }
       
       if ChannelIO.baseNavigation == nil &&
         ChannelIO.settings?.hideDefaultInAppPush == false &&
-        ChannelIO.lastPush != push {
+        !push.isEqual(to: ChannelIO.lastPush) {
         ChannelIO.showNotification(pushData: push)
       }
       
-      if ChannelIO.lastPush != push {
+      if !push.isEqual(to: ChannelIO.lastPush) {
         ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
         ChannelIO.lastPush = push
       }
@@ -440,7 +439,7 @@ public final class ChannelIO: NSObject {
    *                       to remove existing value
    */
   public class func updateUser(with profile: [String: Any?], completion: ((Bool, User?) -> Void)? = nil) {
-    UserPromise.updateProfile(with: profile)
+    UserPromise.updateUser(profile: profile)
       .subscribe(onNext: { (user, error) in
         if let user = user {
           completion?(true, User(with: user))

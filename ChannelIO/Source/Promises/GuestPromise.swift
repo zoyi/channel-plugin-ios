@@ -16,8 +16,17 @@ import CRToast
 struct UserPromise {
   static func touch(pluginId: String) -> Observable<BootResponse> {
     return Observable.create { subscriber in
+      
+      var params = [
+        "url": [String:String]()
+      ]
+      
+      if let jwt = PrefStore.getSessionJWT() {
+        params["url"]?["sessionJWT"] = jwt
+      }
+      
       let req = Alamofire
-        .request(RestRouter.TouchUser(pluginId))
+        .request(RestRouter.TouchUser(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -42,11 +51,22 @@ struct UserPromise {
     }
   }
   
-  static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHUser?, Any?)> {
+  static func updateUser(
+    profile:[String: Any?]? = nil,
+    language: String? = nil) -> Observable<(CHUser?, Any?)> {
     return Observable.create { (subscriber) -> Disposable in
-      let params = [
-        "body": ["profile": profiles]
-      ]
+      var params : [String : Any] = [:]
+      if let profile = profile?.mapValues ({ (value) -> AnyObject? in return value as AnyObject? }) {
+        params = [
+          "body": ["profile": profile]
+        ]
+      }
+      
+      if let language = language {
+        params = [
+          "body": ["language": language]
+        ]
+      }
       
       let req = Alamofire.request(RestRouter.UpdateUser(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)

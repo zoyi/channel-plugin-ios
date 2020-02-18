@@ -192,7 +192,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.messageView.attributedText = viewModel.message
     self.messageView.textContainer.maximumNumberOfLines = fileInfoVisibility ?
       Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
-    self.fileInfoView.isHidden = fileInfoVisibility
+    self.fileInfoView.isHidden = !fileInfoVisibility
     self.fileInfoView.configure(with: viewModel.files, isLarge: false)
   }
   

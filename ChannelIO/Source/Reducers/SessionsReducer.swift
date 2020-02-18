@@ -26,15 +26,6 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
   
   case let action as DeleteSession:
     return state?.remove(session: action.payload) ?? SessionsState()
-    
-  case let action as UpdateLoungeInfo:
-    guard let sessions = action.userChatsResponse?.sessions else {
-      return state ?? SessionsState()
-    }
-    return state?.upsert(sessions: sessions) ?? SessionsState()
-  
-  case let action as CreateLocalUserChat:
-    return state?.upsert(session: action.session) ?? SessionsState()
   
   case let action as ReadSession:
     var session = action.payload

@@ -172,3 +172,5 @@ Press the button below to refresh.";
 "ch.day" = "day(s)";
 "file_upload.fail" = "Failed";
 "file_upload.wait_count" = "%s pending";
+"ch.common_error" = "Failed to process. Please try again.";
+"ch.lounge.show_previous_chats_more" = "See more than previous %s chats";

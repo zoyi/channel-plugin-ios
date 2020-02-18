@@ -14,6 +14,14 @@ protocol CHEntity : ModelType {
 }
 
 extension CHEntity {
+  func isEqual(to other: CHEntity?) -> Bool {
+    return self.id == other?.id &&
+      self.name == other?.name &&
+      self.avatarUrl == other?.avatarUrl
+  }
+}
+
+extension CHEntity {
   var kind: String! {
     get {
       let str = String(describing: type(of: self))

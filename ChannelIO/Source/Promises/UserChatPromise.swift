@@ -14,8 +14,8 @@ import ObjectMapper
 
 struct UserChatPromise {
   static func getChats(
-    since:String? = nil,
-    limit:Int,
+    since: String? = nil,
+    limit: Int,
     showCompleted: Bool = false) -> Observable<[String: Any?]> {
     return Observable.create { subscriber in
       var params = ["query": [

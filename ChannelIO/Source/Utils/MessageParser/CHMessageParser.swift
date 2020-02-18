@@ -19,13 +19,13 @@ class CHMessageParser {
   var listener: CHTextParserListener?
 
   var emojiMap: [String: String] = [:]
-  var profiles: [String: String] = [:]
+  var profiles: [String: Any] = [:]
   var results: [CHMessageBlock] = []
 
   init(
     config: CHMessageParserConfig,
     emojiMap: [String: String],
-    profiles: [String: String] = [:]) {
+    profiles: [String: Any] = [:]) {
     self.config = config
     self.emojiMap = emojiMap
     self.profiles = profiles

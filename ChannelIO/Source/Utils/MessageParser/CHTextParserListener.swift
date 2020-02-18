@@ -31,7 +31,7 @@ class CHTextParserListener: TextBlockParserListener {
   var isOnlyEmoji = true
   
   var stack: [CHPBlock] = []
-  var profiles: [String: String] = [:]
+  var profiles: [String: Any] = [:]
 
   var escapingStrings = [
     "&lt;": "<",
@@ -254,7 +254,7 @@ class CHTextParserListener: TextBlockParserListener {
 
     if let name = self.getNodeText(from: ctx.VAR_NAME()),
       let data = self.profiles[name] {
-      block.merge(with: self.addAttributesForNormalText(data))
+      block.merge(with: self.addAttributesForNormalText("\(data)"))
     } else if let fallbackCtx = ctx.variableFallback(),
       let text = self.getText(from: fallbackCtx) {
       block.merge(with: self.addAttributesForNormalText(text))

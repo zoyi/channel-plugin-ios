@@ -59,7 +59,7 @@ class SettingView: BaseViewController {
   override func setupConstraints() {
     super.setupConstraints()
     self.headerView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+      guard let self = self else { return }
       make.height.equalTo(86)
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
@@ -71,7 +71,7 @@ class SettingView: BaseViewController {
     }
     
     self.tableView.snp.makeConstraints { [weak self] (make) in
-      guard let `self` = self else { return }
+      guard let self = self else { return }
       make.top.equalTo(self.headerView.snp.bottom)
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
