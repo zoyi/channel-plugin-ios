@@ -140,7 +140,6 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     ChannelIO.settings?.language = CHUtils.stringToLocale(locale.rawValue)
     
     SVProgressHUD.show()
-    
     CHUser.updateLanguage(with: locale.rawValue)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user, error) in

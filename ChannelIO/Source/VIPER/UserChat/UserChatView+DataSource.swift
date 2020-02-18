@@ -76,6 +76,14 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
     }
   }
 
+  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    guard indexPath.section == Sections.messages else { return }
+    let message = self.messages[indexPath.row]
+    if let mkInfo = message.mkInfo {
+      mainStore.dispatch(ViewMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
+  }
+  
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch indexPath.section {
     case Sections.loadingFile:
@@ -186,7 +194,7 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
         cell.webView.signalForClick()
           .observeOn(MainScheduler.instance)
           .subscribe{ [weak self] _ in
-            self?.presenter?.didClickOnWeb(with: message.webPage?.url, from: self)
+            self?.presenter?.didClickOnWeb(with: message, url: message.webPage?.url, from: self)
           }.disposed(by: self.disposeBag)
         return cell
       }
@@ -195,7 +203,7 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
       cell.webView.signalForClick()
         .observeOn(MainScheduler.instance)
         .subscribe{ [weak self] _ in
-          self?.presenter?.didClickOnWeb(with: message.webPage?.url, from: self)
+          self?.presenter?.didClickOnWeb(with: message, url: message.webPage?.url, from: self)
         }.disposed(by: self.disposeBag)
       return cell
     case .Media:
@@ -295,11 +303,12 @@ extension UserChatView: UICollectionViewDelegate,
       cell.videoView.willDisplay(in: self)
     }
   }
-
+  
   func collectionView(
     _ collectionView: UICollectionView,
     cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let files = self.messages[collectionView.tag].sortedFiles
+    let message = self.messages[collectionView.tag]
+    let files = message.sortedFiles
     let file = files[indexPath.row]
     if file.type == .video || file.type == .image {
       let cell: MediaCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
@@ -307,9 +316,7 @@ extension UserChatView: UICollectionViewDelegate,
         .scaleAspectFill : .scaleAspectFit
       cell.signalForClick()
         .subscribe(onNext: { [weak self] (_) in
-          self?.presenter?.didClickOnFile(
-            with: file, on: cell.imageView, from: self
-          )
+          self?.presenter?.didClickOnFile(with: message, file: file, on: cell.imageView, from: self)
         }).disposed(by: self.disposeBag)
       
       cell.videoView
@@ -325,15 +332,13 @@ extension UserChatView: UICollectionViewDelegate,
             self?.videoRecords[file] = seconds
           }
         }).disposed(by: self.disposeBag)
-      cell.configure(with: FileCellModel(file, seconds: self.videoRecords[file]))
+      cell.configure(with: FileCellModel(file, seconds: self.videoRecords[file], mkInfo: message.mkInfo))
       return cell
     } else {
       let cell: FileCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
       cell.signalForClick()
         .subscribe(onNext: { [weak self] _ in
-          self?.presenter?.didClickOnFile(
-            with: file, on: nil, from: self
-          )
+          self?.presenter?.didClickOnFile(with: message, file: file, on: nil, from: self)
         }).disposed(by: self.disposeBag)
       cell.configure(with: file)
       return cell

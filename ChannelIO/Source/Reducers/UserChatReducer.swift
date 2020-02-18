@@ -12,8 +12,8 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   var state = state
   switch action {
   case let action as GetUserChats:
-    state?.nextSeq = action.payload["next"] as? String
-    return state?.upsert(userChats: (action.payload["userChats"] as? [CHUserChat]) ?? []) ?? UserChatsState()
+    state?.nextSeq = action.payload.next
+    return state?.upsert(userChats: action.payload.userChats ?? []) ?? UserChatsState()
   
   case let action as GetUserChat:
     let userChat = action.payload.userChat

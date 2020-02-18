@@ -43,7 +43,8 @@ class ManagersReducerTests: QuickSpec {
             managers?.append(manager)
           }
           
-          let payload = ["managers":managers!]
+          var payload = UserChatsResponse()
+          payload.managers = managers
           state = managersReducer(action: GetUserChats(payload:payload), state: state)
           expect(state.managerDictionary.count).to(equal(10))
         }
@@ -64,7 +65,8 @@ class ManagersReducerTests: QuickSpec {
             managers?.append(manager)
           }
           
-          let payload = ["managers":managers!]
+          var payload = UserChatsResponse()
+          payload.managers = managers
           state = managersReducer(action: GetUserChats(payload:payload), state: state)
           
           let manager = CHManager(

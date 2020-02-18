@@ -71,7 +71,7 @@ extension ChannelIO {
         .with(profile: profile)
         .build()
       
-      AppManager
+      AppManager.shared
         .boot(pluginKey: settings.pluginKey, params: params)
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           dlog("Error while booting channelSDK. Attempting to boot again")
@@ -195,6 +195,10 @@ extension ChannelIO {
         ChannelIO.hideNotification()
       }.disposed(by: disposeBag)
     
+    if let mkInfo = push.mkInfo, viewModel.mobileExposureType == .fullScreen {
+      mainStore.dispatch(ViewMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
+    
     ChannelIO.inAppNotificationView = notificationView
     CHAssets.playPushSound()
   }
@@ -271,7 +275,7 @@ extension ChannelIO {
     _ = WsService.shared.ready()
       .take(1)
       .flatMap({ (_) -> Observable<BootResponse> in
-        return AppManager.touch()
+        return AppManager.shared.touch()
       })
       .subscribe(onNext: { (result) in
         mainStore.dispatch(GetTouchSuccess(payload: result))

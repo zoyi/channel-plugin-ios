@@ -163,6 +163,10 @@ extension TextMessageView : UITextViewDelegate {
     _ textView: UITextView,
     shouldInteractWith URL: URL,
     in characterRange: NSRange) -> Bool {
+    if let mkInfo = self.viewModel?.message.mkInfo {
+      mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
+    
     let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
     let scheme = URL.scheme ?? ""
     switch scheme {

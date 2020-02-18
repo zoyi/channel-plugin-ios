@@ -19,7 +19,7 @@ protocol CHPushDisplayable {
   var blocks: [CHMessageBlock] { get }
   var chatId: String { get }
   var removed: Bool { get }
-  var isMarketing: Bool { get }
+  var mkInfo: MarketingInfo? { get }
 }
 
 extension CHPushDisplayable {
@@ -36,7 +36,8 @@ extension CHPushDisplayable {
       self.blocks == other?.blocks &&
       self.chatId == other?.chatId &&
       self.removed == other?.removed &&
-      self.isMarketing == other?.isMarketing
+      self.mkInfo?.type == other?.mkInfo?.type &&
+      self.mkInfo?.id == other?.mkInfo?.id
   }
 }
 
@@ -68,10 +69,6 @@ struct CHPush: CHPushDisplayable {
     return self.message?.marketing?.exposureType ?? .banner
   }
   
-  var isMarketing: Bool {
-    return self.message?.marketing != nil
-  }
-  
   var logMessage: String? {
     return self.message?.logMessage
   }
@@ -86,6 +83,11 @@ struct CHPush: CHPushDisplayable {
   
   var removed: Bool {
     return self.message?.removed ?? false
+  }
+  
+  var mkInfo: MarketingInfo? {
+    guard let marketing = self.message?.marketing else { return nil }
+    return (marketing.type, marketing.id)
   }
 }
 

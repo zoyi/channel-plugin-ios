@@ -12,8 +12,7 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
   var state = state
   switch action {
   case let action as GetUserChats:
-    let sessions = (action.payload["sessions"] as? [CHSession]) ?? []
-    return state?.upsert(sessions: sessions) ?? SessionsState()
+    return state?.upsert(sessions: action.payload.sessions ?? []) ?? SessionsState()
     
   case let action as GetUserChat:
     return state?.upsert(session: action.payload.session) ?? SessionsState()

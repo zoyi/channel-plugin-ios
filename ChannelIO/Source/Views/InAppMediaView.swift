@@ -67,15 +67,14 @@ class InAppMediaView: BaseView {
   }
   private let volumeOffImage = CHAssets.getImage(named: "volumeOffFilled")
   private let volumeUpImage = CHAssets.getImage(named: "volumeUpFilled")
+  private var mkInfo: MarketingInfo?
   
   private var imageWidthConstraint: Constraint?
   private var videoWidthConstraint: Constraint?
   private var youtubeWidthConstraint: Constraint?
-  
   private var imageHeightConstraint: Constraint?
   private var videoHeightConstraint: Constraint?
   private var youtubeHeightConstraint: Constraint?
-  
   private var multiIndicatorConstraint: Constraint?
   
   private var disposeBag = DisposeBag()
@@ -96,6 +95,9 @@ class InAppMediaView: BaseView {
     self.controlView
       .signalForClick()
       .subscribe(onNext: { [weak self] _ in
+        if let mkInfo = self?.mkInfo {
+          mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
+        }
         if self?.videoView.isHidden == false {
           self?.volumeImageView.image = self?.videoView.isMuted() == true ?
             self?.volumeUpImage : self?.volumeOffImage
@@ -156,6 +158,7 @@ class InAppMediaView: BaseView {
       self.setVisibilityForViews(type: model.mobileExposureType)
       return
     }
+    self.mkInfo = model.mkInfo
     
     let isBanner = model.mobileExposureType == .banner
     self.containerView.axis = isBanner ? .horizontal : .vertical

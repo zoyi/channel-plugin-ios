@@ -147,8 +147,9 @@ extension CHMessage: CHPushDisplayable {
     return self.marketing?.exposureType
   }
   
-  var isMarketing: Bool {
-    return self.marketing != nil
+  var mkInfo: MarketingInfo? {
+    guard let marketing = self.marketing else { return nil }
+    return (marketing.type, marketing.id)
   }
 }
 

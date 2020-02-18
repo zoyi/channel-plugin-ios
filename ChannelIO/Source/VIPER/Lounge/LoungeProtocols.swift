@@ -67,7 +67,7 @@ protocol LoungeInteractorProtocol: class {
   func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat>
   func getLounge() -> Observable<LoungeResponse>
   func getChannel() -> Observable<CHChannel>
-  func getChats() -> Observable<[CHUserChat]>
+  func getChats() -> Observable<UserChatsResponse>
 }
 
 protocol LoungeRouterProtocol: class {

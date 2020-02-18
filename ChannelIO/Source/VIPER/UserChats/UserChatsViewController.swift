@@ -112,7 +112,8 @@ class UserChatsViewController: BaseViewController {
         self.nextSeq = nil
         self.fetchUserChats(isInit: true, showIndicator: true)
         WsService.shared.connect()
-        AppManager.touch()
+        AppManager.shared
+          .touch()
           .subscribe(onNext: { (result) in
             mainStore.dispatch(GetTouchSuccess(payload: result))
           }).disposed(by: self.disposeBag)
@@ -327,7 +328,6 @@ extension UserChatsViewController: UIScrollViewDelegate {
 // MARK: - UITableViewDataSource
 
 extension UserChatsViewController: UITableViewDataSource {
-
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return self.userChats.count
   }
@@ -359,7 +359,6 @@ extension UserChatsViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension UserChatsViewController: UITableViewDelegate {
-
   func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
     return 100
   }
@@ -397,7 +396,11 @@ extension UserChatsViewController {
     }
     
     CHUserChat
-      .getChats(since: isInit || isReload ? nil : self.nextSeq, limit: 50, showCompleted: self.showCompleted)
+      .getChats(
+        since: isInit || isReload ? nil : self.nextSeq,
+        limit: 50,
+        showCompleted: self.showCompleted
+      )
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching chat data. Attempting to fetch again")
         return true
@@ -417,8 +420,6 @@ extension UserChatsViewController {
       }, onCompleted: {
         SVProgressHUD.dismiss()
         dlog("Get UserChats complete")
-      }, onDisposed: {
-        SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)
   }
   

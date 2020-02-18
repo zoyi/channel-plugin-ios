@@ -36,7 +36,9 @@ class SessionsReducerTests: QuickSpec {
         sessions.append(session)
       }
       
-      let payload = ["sessions" : sessions]
+      var payload = UserChatsResponse()
+      payload.sessions = sessions
+      
       state = sessionsReducer(action: GetUserChats(payload: payload), state: state)
       expect(state.sessions.count).to(equal(10))
     }

@@ -59,13 +59,13 @@ class WebPageMessageCell: MessageCell {
     row: Int = 0) {
     super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     
-    guard let webpage = viewModel.webpage else {
+    guard viewModel.webpage != nil else {
       self.webView.isHidden = true
       return
     }
     
     self.webView.isHidden = false
-    self.webView.configure(with: webpage)
+    self.webView.configure(message: viewModel.message)
     
     if viewModel.createdByMe == true {
       self.trailingConstraint?.update(inset: Metric.cellRightPadding)

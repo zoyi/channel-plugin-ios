@@ -23,6 +23,8 @@ enum RestRouter: URLRequestConvertible {
   case CreateMessage(String, ParametersType)
   case CheckVersion
   case CreateSupportBotChat(String, ParametersType)
+  case CampaignClick(String)
+  case CampaignView(String)
   case GetAppMessengerUri(String)
   case GetPlugin(String)
   case GetGeoIP
@@ -33,6 +35,8 @@ enum RestRouter: URLRequestConvertible {
   case GetUserChat(String)
   case GetMessages(String, ParametersType)
   case GetProfileBotSchemas(String)
+  case OneTimeMsgClick(String)
+  case OneTimeMsgView(String)
   case ReplySupportBot(String, String, ParametersType)
   case RegisterToken(ParametersType)
   case RemoveUserChat(String)
@@ -46,7 +50,7 @@ enum RestRouter: URLRequestConvertible {
   case UpdateProfileItem(String, String, ParametersType)
   case UnregisterToken(String)
   case UploadFile(String, ParametersType)
-
+  
   var baseURL: String {
     get {
       var url = EPType.PRODUCTION.rawValue
@@ -69,26 +73,37 @@ enum RestRouter: URLRequestConvertible {
   
   var method: HTTPMethod {
     switch self {
-    case .CreateMessage,
-         .CreateUserChat, .UploadFile, .RegisterToken,
-         .SendEvent, .Boot,
-         .UpdateProfileItem,
+    case .Boot,
+         .CreateMessage,
+         .CreateUserChat,
+         .CreateSupportBotChat,
+         .GetLounge,
+         .ReplySupportBot,
+         .RegisterToken,
+         .SendEvent,
          .TouchUser,
-         .CreateSupportBotChat, .ReplySupportBot,
-         .GetLounge:
+         .UpdateProfileItem,
+         .UploadFile:
       return .post
-    case .GetAppMessengerUri,
-         .GetMessages, .GetUserChat,
-         .GetUserChats, .CheckVersion, .GetGeoIP,
+    case .CheckVersion,
+         .GetAppMessengerUri,
          .GetCountryCodes,
+         .GetGeoIP,
+         .GetMessages,
+         .GetUserChat,
+         .GetUserChats,
          .GetPlugin,
-         .Translate,
          .GetProfileBotSchemas,
-         .GetChannel:
+         .GetChannel,
+         .Translate:
       return .get
     case .UpdateUser:
       return .patch
-    case .CloseUserChat,
+    case .CampaignClick,
+         .CampaignView,
+         .CloseUserChat,
+         .OneTimeMsgClick,
+         .OneTimeMsgView,
          .ReviewUserChat,
          .SetMessagesRead,
          .SendPushAck:
@@ -107,6 +122,10 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .Boot(let pluginKey, _):
       return "/front/plugins/\(pluginKey)/boot"
+    case .CampaignClick(let campaignId):
+      return "/front/campaigns/\(campaignId)/click"
+    case .CampaignView(let campaignId):
+      return "/front/campaigns/\(campaignId)/view"
     case .CreateUserChat(let pluginId, _):
       return "/front/plugins/\(pluginId)/user-chats"
     case .CreateSupportBotChat(let supportBotId, _):
@@ -139,6 +158,10 @@ enum RestRouter: URLRequestConvertible {
       return "/front/user-chats/\(userChatId)"
     case .GetProfileBotSchemas(let pluginId):
       return "/front/plugins/\(pluginId)/profile-bot-schemas"
+    case .OneTimeMsgClick(let oneTimeMsgId):
+      return "/front/one-time-msgs/\(oneTimeMsgId)/click"
+    case .OneTimeMsgView(let oneTimeMsgId):
+      return "/front/one-time-msgs/\(oneTimeMsgId)/view"
     case .RemoveUserChat(let userChatId):
       return "/front/user-chats/\(userChatId)"
     case .ReviewUserChat(let userChatId, _):
@@ -172,11 +195,11 @@ enum RestRouter: URLRequestConvertible {
     var req = request
     var headers = req.allHTTPHeaderFields ?? [String: String]()
     
-    headers["Accept"] = "application/json"
-    
     if let locale = CHUtils.getLocale() {
       headers["Accept-Language"] = locale.rawValue
     }
+    
+    headers["Accept"] = "application/json"
     headers["User-Agent"] = CHUtils.generateUserAgent()
     req.allHTTPHeaderFields = headers
     return req

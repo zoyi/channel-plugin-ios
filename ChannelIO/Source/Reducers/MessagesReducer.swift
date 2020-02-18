@@ -12,8 +12,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
   var state = state
   switch action {
   case let action as GetUserChats:
-    let messages = (action.payload["messages"] as? [CHMessage]) ?? []
-    return state?.upsert(messages: messages) ?? MessagesState()
+    return state?.upsert(messages: action.payload.messages ?? []) ?? MessagesState()
     
   case let action as GetUserChat:
     let message = action.payload.message

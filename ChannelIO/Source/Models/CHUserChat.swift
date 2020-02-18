@@ -146,13 +146,17 @@ extension CHUserChat {
   static func getChats(
     since: String? = nil,
     limit: Int,
-    showCompleted: Bool = false) -> Observable<[String: Any?]> {
-    return UserChatPromise.getChats(since: since, limit: limit, showCompleted: showCompleted)
+    showCompleted: Bool = false) -> Observable<UserChatsResponse> {
+    return UserChatPromise.getChats(
+      since: since,
+      limit: limit,
+      showCompleted: showCompleted
+    )
   }
   
   static func getMessages(
     userChatId: String,
-    since: String,
+    since: String?,
     limit: Int,
     sortOrder:String) -> Observable<[String: Any]> {
     

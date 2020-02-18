@@ -41,31 +41,17 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
       url: ChannelIO.hostTopControllerName ?? ""
     )
   }
+  
+  func getChats() -> Observable<UserChatsResponse> {
+    return CHUserChat.getChats(
+      since: nil,
+      limit: 50,
+      showCompleted: mainStore.state.userChatsState.showCompletedChats
+    )
+  }
 
   func getChannel() -> Observable<CHChannel> {
     return CHChannel.get()
-  }
-  
-  func getChats() -> Observable<[CHUserChat]> {
-    let showCompletion = mainStore.state.userChatsState.showCompletedChats
-    return Observable.create { (subscriber) -> Disposable in
-      let signal = CHUserChat
-        .getChats(since: nil, limit: 50, showCompleted: showCompletion)
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (data) in
-          self?.needUpdate = true
-          mainStore.dispatch(GetUserChats(payload: data))
-          let chats = userChatsSelector(state: mainStore.state, showCompleted: showCompletion)
-          self?.chats = chats
-          subscriber.onNext(chats)
-          subscriber.onCompleted()
-        }, onError: { error in
-          subscriber.onError(error)
-        })
-      return Disposables.create {
-        signal.dispose()
-      }
-    }
   }
   
   func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat> {

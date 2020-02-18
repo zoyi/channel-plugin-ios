@@ -35,7 +35,7 @@ struct LauncherViewModel: LauncherViewModelType {
       gradientColor.cgColor
     ]
     
-    if ChannelIO.inAppNotificationView != nil, push?.isMarketing == true {
+    if ChannelIO.inAppNotificationView != nil, push?.mkInfo != nil {
       self.launchIcon = plugin.textColor == "white" ?
         CHAssets.pushIcon() : CHAssets.pushBlackIcon()
     } else if self.badge >= 10 {

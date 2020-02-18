@@ -102,6 +102,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   
   private var chatSignal = PublishSubject<Any?>()
   private var closeSignal = PublishSubject<Any?>()
+  private var mkInfo: MarketingInfo?
   private let disposeBag = DisposeBag()
   
   override func initialize() {
@@ -228,6 +229,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     self.messageView.isHidden = !viewModel.hasText
     self.fileInfoView.isHidden = !fileInfoVisibility
     self.mediaContainerView.isHidden = !viewModel.hasMedia
+    self.mkInfo = viewModel.mkInfo
   }
   
   func insertView(on view: UIView?) {
@@ -279,6 +281,9 @@ extension PopupInAppNotificationView : UITextViewDelegate {
       let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
       if handled == false || handled == nil {
         URL.openWithUniversal()
+      }
+      if let mkInfo = self.mkInfo {
+        mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
       }
       return false
     }
