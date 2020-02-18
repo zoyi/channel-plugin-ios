@@ -1,3 +1,14 @@
+# 7.0.0
+## Updates
+* Added Marketing feature
+* Redesigned in app push notification views
+* Refactored chat view
+* Changed markdown to ANTLR to parse messages
+* Changed file views (image, video)
+
+## Bug fixes
+* Fixed minor bugs
+
 # 6.1.23
 ## Bug fixes
 * Restore host window to be key window after insert uiwindow
