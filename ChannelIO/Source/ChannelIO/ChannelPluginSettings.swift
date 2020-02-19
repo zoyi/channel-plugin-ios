@@ -10,6 +10,7 @@ import Foundation
 
 struct ChannelPluginSettingKey {
   static let pluginKey = "ch_pluginKey"
+  static let legacy_userId = "ch_userId" //legacy
   static let memberId = "ch_memberId"
   static let debugMode = "ch_debugMode"
   static let launcherConfig = "ch_launcherConfig"
@@ -19,7 +20,8 @@ struct ChannelPluginSettingKey {
   static let language = "ch_locale"
 }
 
-public enum ChannelStage {
+@objc
+public enum ChannelStage: Int {
   case development
   case staging
   case production
@@ -67,7 +69,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     }
   }
   
-  public var stage: ChannelStage = .production
+  @objc public var stage: ChannelStage = .production
   
   var appLocale: CHLocaleString? = nil
   
@@ -110,17 +112,13 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   
   required convenience public init(coder aDecoder: NSCoder) {
     //remove legacy key later
-    let pluginKey = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.pluginKey) as? String ??
-      aDecoder.decodeObject(forKey: "pluginKey") as? String ?? ""
-    let memberId = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.memberId) as? String ??
-      aDecoder.decodeObject(forKey: "memberId") as? String
-    let debugMode = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.debugMode) || aDecoder.decodeBool(forKey: "debugMode")
-    let launcherConfig = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.launcherConfig) as? LauncherConfig ??
-      aDecoder.decodeObject(forKey: "launcherConfig") as? LauncherConfig
-    let hideDefaultInAppPush = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultInAppPush) ||
-      aDecoder.decodeBool(forKey: "hideDefaultInAppPush")
-    let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.enabledTrackDefaultEvent) ||
-      aDecoder.decodeBool(forKey: "enabledTrackDefaultEvent")
+    let pluginKey = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.pluginKey) as? String ?? ""
+    let memberId = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.legacy_userId) as? String ??
+      aDecoder.decodeObject(forKey: ChannelPluginSettingKey.memberId) as? String
+    let debugMode = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.debugMode)
+    let launcherConfig = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.launcherConfig) as? LauncherConfig
+    let hideDefaultInAppPush = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultInAppPush)
+    let enabledTrackDefaultEvent = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.enabledTrackDefaultEvent)
     let language = CHLocale(rawValue: aDecoder.decodeInteger(forKey: ChannelPluginSettingKey.language)) ?? .device
     
     self.init(
