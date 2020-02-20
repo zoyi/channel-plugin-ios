@@ -83,6 +83,7 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnClipButton(from view: UIViewController?)
   func didClickOnSendButton(text: String)
   func didClickOnActionButton(originId: String?, key: String?, value: String?)
+  func didClickOnMarketingToSupportBotButton()
   func didClickOnFile(
     with message: CHMessage?,
     file: CHFile?,
@@ -119,6 +120,7 @@ protocol UserChatInteractorProtocol: class {
   func createChatIfNeeded() -> Observable<CHUserChat?>
   func createSupportBotChatIfNeeded(
     originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
+  func startMarketingToSupportBot() -> Observable<CHMessage>
   func fetchChat() -> Observable<CHUserChat?>
   func fetchMessages() -> Observable<ChatProcessState>
   func translate(for message: CHMessage) -> Observable<[CHMessageBlock]>

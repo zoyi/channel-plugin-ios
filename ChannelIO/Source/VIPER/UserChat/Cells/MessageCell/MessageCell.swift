@@ -42,6 +42,7 @@ class MessageCell: BaseTableViewCell {
     static let translateHeight = 12.f
     static let resendButtonSide = 24.f
     static let resendButtonRight = -4.f
+    static let textViewInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
   }
   
   let avatarView = AvatarView().then {
@@ -71,6 +72,7 @@ class MessageCell: BaseTableViewCell {
   var titleHeightConstraint: Constraint?
   var messageBottomConstraint: Constraint?
   var translateHeightConstraint: Constraint?
+  var translateTopConstraint: Constraint?
   // MARK: Initializing
 
   override func initialize() {
@@ -119,10 +121,15 @@ class MessageCell: BaseTableViewCell {
     self.avatarView.isHidden = viewModel.avatarIsHidden
     
     self.textView.configure(viewModel)
+    self.textView.messageView.textContainerInset = viewModel.isDeleted ?
+      .zero : Metric.textViewInset
     self.resendButton.isHidden = !viewModel.isFailed
     
     self.translateView.configure(with: viewModel)
-    self.translateHeightConstraint?.update(offset: viewModel.showTranslation ? Metric.translateHeight : 0)
+    self.translateHeightConstraint?
+      .update(offset: viewModel.showTranslation ? Metric.translateHeight : 0)
+    self.translateTopConstraint?
+      .update(offset: viewModel.showTranslation ? Metric.translateViewTop : 0)
     self.layoutViews()
   }
   
@@ -154,8 +161,10 @@ class MessageCell: BaseTableViewCell {
     }
     
     self.translateView.snp.makeConstraints { make in
-      make.top.equalTo(self.textView.snp.bottom).offset(Metric.translateViewTop)
-      make.leading.equalTo(self.textView.snp.leading).offset(Metric.translateViewLeading)
+      self.translateTopConstraint = make.top.equalTo(self.textView.snp.bottom)
+        .offset(Metric.translateViewTop).constraint
+      make.leading.equalTo(self.textView.snp.leading)
+        .offset(Metric.translateViewLeading)
       self.translateHeightConstraint = make.height.equalTo(0).constraint
       self.messageBottomConstraint = make.bottom.equalToSuperview().constraint
     }
@@ -173,16 +182,16 @@ class MessageCell: BaseTableViewCell {
     if viewModel.isContinuous == true {
       viewHeight += Metric.cellTopPaddingOfContinous
     } else {
-      viewHeight += Metric.cellTopPaddingDefault + Metric.usernameHeight + 4
+      viewHeight += Metric.cellTopPaddingDefault + Metric.usernameHeight + Metric.messageTop
     }
 
     let bubbleMaxWidth = viewModel.createdByMe ?
       width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
       width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
 
-    viewHeight += TextMessageView.viewHeight(fit: bubbleMaxWidth, model: viewModel) + 6
+    viewHeight += TextMessageView.viewHeight(fit: bubbleMaxWidth, model: viewModel) + 4
     if viewModel.showTranslation {
-      viewHeight += Metric.translateHeight
+      viewHeight += Metric.translateViewTop + Metric.translateHeight
     }
     
     return viewHeight

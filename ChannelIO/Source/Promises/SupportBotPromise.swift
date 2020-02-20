@@ -99,4 +99,39 @@ struct SupportBotPromise {
       }
     }
   }
+  
+  static func startMarketingToSupportBot(
+    userChatId: String?,
+    supportBotId: String?) -> Observable<CHMessage> {
+    guard
+      let userChatId = userChatId,
+      let supportBotId = supportBotId else {
+        return .empty()
+      }
+    
+    return Observable.create { (subscriber) in
+      let req = Alamofire
+        .request(RestRouter.StartMarketingToSupportBot(userChatId, supportBotId))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { (response) in
+          switch response.result {
+          case .success(let data):
+            let json = SwiftyJSON.JSON(data)
+            guard let message = Mapper<CHMessage>()
+              .map(JSONObject: json["message"].object) else {
+                subscriber.onError(ChannelError.parseError)
+                break
+            }
+            subscriber.onNext(message)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
+          }
+        })
+      
+      return Disposables.create {
+        req.cancel()
+      }
+    }
+  }
 }

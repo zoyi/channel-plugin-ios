@@ -75,7 +75,9 @@ final class UserChatCell: BaseTableViewCell {
     $0.axis = .vertical
   }
   
-  let fileInfoView = AttachmentFileInfoView()
+  let fileInfoView = AttachmentFileInfoView().then {
+    $0.isHidden = true
+  }
 
   let badge = Badge().then {
     $0.minWidth = 12.f

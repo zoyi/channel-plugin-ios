@@ -24,6 +24,9 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     static let MediaMessageCellTrailing = 75.f
     static let mediaMinWidth = 56.f
     static let mediaMinHeight = 56.f
+    static let chatStartViewBottom = 9.f
+    static let chatStartViewSide = 6.f
+    static let chatBotStartViewHeight = 45.f
   }
   
   internal struct Sections {
@@ -77,6 +80,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   }
   
   var currentPlayingVideo: VideoPlayerView?
+  private var chatBotStartView = ChatBotStartView()
   
   internal var typers = [CHEntity]()
   
@@ -146,7 +150,8 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     self.presenter?.sendTyping(isStop: text == "")
     
     if text == "" && !self.channel.working && !self.channel.allowNewChat {
-      self.messageView.hide(animated: false)
+      self.setMessageView(hidden: true, animated: false)
+      self.dismissKeyboard(true)
       self.adjustTableViewInset(bottomInset: 60.f)
     }
   }
@@ -182,7 +187,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   
   private func initMessageView() {
     self.messageView.delegate = self
-    self.messageView.hide(animated: false)
+    self.setMessageView(hidden: true, animated: false)
     self.messageView.setPlaceholder(
       mode: .normal,
       text: CHAssets.localized("ch.message_input.placeholder"))
@@ -194,22 +199,22 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       named: "send")?.withRenderingMode(.alwaysTemplate)
     let clipImage = CHAssets.getImage(named: "clip")
     self.messageView.setButton(inset: 10, position: .left)
-    self.messageView.setButton(inset: 13, position: .right)
+    self.messageView.setButton(inset: 10, position: .right)
     self.messageView.setButton(
       icon: clipImage,
       for: .normal,
       position: .left,
-      size: CGSize(width: 30, height: 40))
+      size: CGSize(width: 30, height: self.messageView.height))
     self.messageView.setButton(
       icon: sendImage,
       for: .normal,
       position: .right,
-      size: CGSize(width: 30, height: 40))
+      size: CGSize(width: 30, height: self.messageView.height))
     self.messageView.setButton(
       icon: sendImage,
       for: .disabled,
       position: .right,
-      size: CGSize(width: 30, height: 40))
+      size: CGSize(width: 30, height: self.messageView.height))
     self.messageView.addButton(
       target: self,
       action: #selector(self.didPressAssetButton),
@@ -219,7 +224,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       action: #selector(self.didPressSendButton),
       position: .right)
     self.messageView.rightButtonIsEnable = false
-    self.messageView.textViewInset = UIEdgeInsets(top: 12, left: 5, bottom: 12, right: 8)
+    self.messageView.textViewInset = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 20)
     self.messageView.font = UIFont.systemFont(ofSize: 14)
     self.messageView.maxHeight = 184
     self.messageView.textContainerView
@@ -287,6 +292,25 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
     }
+    
+    self.view.addSubview(self.chatBotStartView)
+    self.chatBotStartView.snp.makeConstraints { [weak self] (make) in
+      guard let self = self else { return }
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+          .inset(Constants.chatStartViewBottom)
+      } else {
+        make.bottom.equalToSuperview().inset(Constants.chatStartViewBottom)
+      }
+      make.leading.equalToSuperview().inset(Constants.chatStartViewSide)
+      make.trailing.equalToSuperview().inset(Constants.chatStartViewSide)
+      make.height.equalTo(Constants.chatBotStartViewHeight)
+    }
+    self.chatBotStartView.signalForClick()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (_) in
+        self?.presenter?.didClickOnMarketingToSupportBotButton()
+      }).disposed(by: self.disposeBag)
   }
 
   private func setNavItems(currentUserChat: CHUserChat?, user: CHUser) {
@@ -358,7 +382,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     self.placeHolder?.removeFromSuperview()
     self.placeHolder = nil
     if self.shouldShowInputBar {
-      self.messageView.show(animated: false)
+      self.setMessageView(hidden: false, animated: false)
     }
   }
   
@@ -373,20 +397,29 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   }
   
   private func updateInputField(userChat: CHUserChat?) {
+    let needToSupportBot = userChat?.lastMessage?.marketing?.enableSupportBot == true
+    let isSupportBotEntry = mainStore.state.messagesState.supportBotEntry != nil
+    
     self.shouldShowInputBar = false
     self.chatBlockView.isHidden = true
+    self.chatBotStartView.isHidden = true
     
     self.paintSafeAreaBottomInset(with: nil)
     
     if userChat?.isRemoved == true {
       _ = self.navigationController?.popViewController(animated: true)
     } else if userChat?.isClosed == true {
-      self.messageView.hide(animated: false)
+      self.setMessageView(hidden: true, animated: false)
+      self.dismissKeyboard(true)
       if !self.adjustTableViewInset(bottomInset: 60.f) {
         self.fixedInset = true
         self.scrollToBottom(false)
       }
       self.newChatButton.isHidden = false
+    } else if needToSupportBot && isSupportBotEntry {
+      self.setMessageView(hidden: true, animated: false)
+      self.dismissKeyboard(true)
+      self.chatBotStartView.isHidden = false
     } else if !self.channel.allowNewChat && self.messageView.text == "" {
       let bottomInset = self.chatBlockView.viewHeight(width: self.tableView.frame.width)
       if !self.adjustTableViewInset(bottomInset: bottomInset) {
@@ -395,16 +428,18 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       }
       self.chatBlockView.isHidden = false
       self.paintSafeAreaBottomInset(with: .grey200)
-      self.messageView.hide(animated: false)
+      self.setMessageView(hidden: true, animated: false)
+      self.dismissKeyboard(true)
     } else if userChat?.isSupporting == true ||
       userChat?.isSolved == true ||
-      (mainStore.state.messagesState.supportBotEntry != nil && userChat == nil) {
-      self.messageView.hide(animated: false)
+      (isSupportBotEntry && userChat == nil) {
+      self.setMessageView(hidden: true, animated: false)
+      self.dismissKeyboard(true)
     } else if self.presenter?.isProfileFocus != true {
       self.fixedInset = false
       self.adjustTableViewInset(bottomInset: 0.f)
       self.placeHolder != nil ?
-        self.shouldShowInputBar = true : self.messageView.show(animated: false)
+        self.shouldShowInputBar = true : self.setMessageView(hidden: false, animated: false)
     }
   }
   

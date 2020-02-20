@@ -13,8 +13,17 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 
-enum SendingState {
-  case New, Sent, Failed
+enum MessageDeliveryState: String {
+  // this three state mean thirdparty messenger state
+  case sending
+  case sent
+  case failed
+  
+  // send fail state
+  case networkError
+  
+  // message delete state
+  case removed
 }
 
 enum MessageType {
@@ -57,7 +66,6 @@ struct CHMessage: ModelType {
   var action: CHAction? = nil
   var submit: CHSubmit? = nil
   var createdAt: Date
-  var removed: Bool = false
   var language: String = ""
   
   var files: [CHFile] = []
@@ -70,7 +78,7 @@ struct CHMessage: ModelType {
   var mutable: Bool = true
   
   // Used in only client
-  var state: SendingState = .Sent
+  var state: MessageDeliveryState?
   var messageType: MessageType = .Default
   
   var progress: CGFloat = 1
@@ -135,6 +143,10 @@ struct CHMessage: ModelType {
 }
 
 extension CHMessage: CHPushDisplayable {
+  var removed: Bool {
+    return self.state == .removed
+  }
+  
   var writer: CHEntity? {
     return personSelector(
       state: mainStore.state,
@@ -234,7 +246,6 @@ extension CHMessage: Mappable {
     self.personId = user.id
     self.requestId = requestId
     self.createdAt = now
-    self.state = .New
     self.messageType = messageType
     self.progress = 1
     self.plainText = trimmedMessage
@@ -272,7 +283,6 @@ extension CHMessage: Mappable {
     self.personId = entity.id
     self.requestId = requestId
     self.createdAt = now
-    self.state = .New
     self.progress = 1
     self.title = title
     self.messageType = self.contextType()
@@ -322,7 +332,7 @@ extension CHMessage: Mappable {
     blocks <- (map["blocks"], CustomBlockTransform(
       config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15)))
     )
-    removed     <- map["removed"]
+    state       <- map["state"]
     requestId   <- map["requestId"]
     files       <- map["files"]
     webPage     <- map["webPage"]

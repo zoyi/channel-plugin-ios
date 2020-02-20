@@ -188,10 +188,10 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
               plugin: plugin,
               bot: bot,
               operators: operators,
-              supportBotEntryInfo: info.supportBotEntryInfo
+              supportBotEntryInfo: info.supportBotEntryInfo,
+              userChats: chatData
             )
           )
-          mainStore.dispatch(GetUserChats(payload: chatData))
           subscriber(.success(nil))
           SVProgressHUD.dismiss()
         }, onError: { (error) in
@@ -297,14 +297,19 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
 
 extension LoungePresenter {
   private func fetchLoungeData() {
-    self.interactor?
-      .getLounge()
+    guard let interactor = self.interactor else { return }
+    
+    Observable
+      .zip(
+        interactor.getLounge(),
+        interactor.getChats()
+      )
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (info) in
+      .subscribe(onNext: { [weak self] (info, chatData) in
         guard
           let channel = info.channel,
           let plugin = info.plugin,
@@ -314,13 +319,15 @@ extension LoungePresenter {
             self?.loungeCompletion.accept(false)
             return
         }
+        
         mainStore.dispatch(
           UpdateLoungeInfo(
             channel: channel,
             plugin: plugin,
             bot: bot,
             operators: operators,
-            supportBotEntryInfo: info.supportBotEntryInfo
+            supportBotEntryInfo: info.supportBotEntryInfo,
+            userChats: chatData
           )
         )
 

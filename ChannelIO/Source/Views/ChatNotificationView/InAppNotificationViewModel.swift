@@ -68,6 +68,13 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
       )
       let transformer = CustomBlockTransform(config: config)
       let result = transformer.parser.parse(blocks: push.blocks)
+      if result.string.containsOnlyEmoji {
+        result.addAttribute(
+          .font,
+          value: UIFont.systemFont(ofSize: fontSize),
+          range: NSRange(location: 0, length: result.string.utf16.count)
+        )
+      }
       self.message = result
     }
     

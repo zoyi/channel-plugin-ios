@@ -31,13 +31,10 @@ func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
     session?.alert = 0
     session?.unread = 0
     return state?.upsert(session: session) ?? SessionsState()
-  
-  case let action as UpdateUserWithLocalRead:
-    var session = action.session
-    session?.alert = 0
-    session?.unread = 0
-    return state?.upsert(session: session) ?? SessionsState()
     
+  case let action as UpdateLoungeInfo:
+    return state?.upsert(sessions: action.userChats.sessions ?? []) ?? SessionsState()
+
   case let action as DeleteUserChats:
     return state?.remove(userChatIds: action.payload.map { $0.id }) ?? SessionsState()
     

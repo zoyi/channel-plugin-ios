@@ -22,7 +22,7 @@ class TranslateView: BaseView {
     $0.font = UIFont.systemFont(ofSize: 10)
     $0.textColor = CHColors.blueyGrey
     $0.textAlignment = .center
-    $0.text = CHAssets.localized("show_translate")
+    $0.text = CHAssets.localized("ch.show_translate")
   }
   
   var labelLeadingConstraint: Constraint?
@@ -64,12 +64,12 @@ class TranslateView: BaseView {
     } else if viewModel.translateState == .translated {
       self.arrowImageView.isHidden = false
       self.labelLeadingConstraint?.update(inset: 8)
-      self.translateLabel.text = CHAssets.localized("undo_translate")
+      self.translateLabel.text = CHAssets.localized("ch.undo_translate")
       self.translateLoader.stopAnimating()
     } else {
       self.arrowImageView.isHidden = true
       self.labelLeadingConstraint?.update(inset: 0)
-      self.translateLabel.text = CHAssets.localized("show_translate")
+      self.translateLabel.text = CHAssets.localized("ch.show_translate")
       self.translateLoader.stopAnimating()
     }
   }

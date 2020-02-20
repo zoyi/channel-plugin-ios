@@ -155,7 +155,6 @@ class PrefStore {
   }
   
   static func clearAllLocalData() {
-    PrefStore.clearCurrentUserId()
     PrefStore.clearCurrentMemberId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()

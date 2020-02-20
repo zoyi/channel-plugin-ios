@@ -49,6 +49,13 @@ extension CHSupportBot {
       url: ChannelIO.hostTopControllerName ?? ""
     )
   }
+  
+  static func startFromMarketing(userChatId: String?) -> Observable<CHMessage> {
+    return SupportBotPromise.startMarketingToSupportBot(
+      userChatId: userChatId,
+      supportBotId: mainStore.state.botsState.findSupportBot()?.id
+    )
+  }
 }
 
 struct CHSupportBotStep {

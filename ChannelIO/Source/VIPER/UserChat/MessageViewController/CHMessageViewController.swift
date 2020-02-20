@@ -198,7 +198,7 @@ class CHMessageViewController: UIViewController {
 
     let safeAreaAdditionalHeight = self.safeAreaAdditionalHeight
     let messageViewHeight = messageView.height
-    let hiddenHeight = isMessageViewHidden ? messageViewHeight : 0
+    let hiddenHeight = isMessageViewHidden ? messageViewHeight + safeAreaAdditionalHeight : 0
 
     let margin = self.isAccessoryViewVisible ?
       keyboardHeight + safeAreaAdditionalHeight :

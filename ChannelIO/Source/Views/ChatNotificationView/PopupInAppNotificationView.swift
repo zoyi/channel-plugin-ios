@@ -34,7 +34,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   let notiType : InAppNotificationType = .fullScreen
   
   private let dimView = UIView().then {
-    $0.backgroundColor = .black10
+    $0.backgroundColor = .black40
   }
   
   private let containerView = UIView().then {
@@ -59,6 +59,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     
     $0.font = UIFont.systemFont(ofSize: 14)
     $0.textColor = UIColor.grey900
+    $0.backgroundColor = .white
     $0.textContainer.maximumNumberOfLines = 8
     $0.textContainer.lineBreakMode = .byTruncatingTail
     $0.textContainer.lineFragmentPadding = 0
@@ -242,18 +243,9 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
       self.insert(on: view, animated: true)
     }
 
-    self.snp.makeConstraints({ (make) in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-      
-      if #available(iOS 11.0, *) {
-        make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-      } else {
-        make.top.equalToSuperview()
-        make.bottom.equalToSuperview()
-      }
-    })
+    self.snp.makeConstraints { (make) in
+      make.edges.equalToSuperview()
+    }
   }
 
   func signalForChat() -> Observable<Any?> {

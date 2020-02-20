@@ -122,7 +122,7 @@ struct MessageCellModel: MessageCellModelType {
     self.pluginColor = pluginColor
     self.messageType = message.messageType
     self.progress = message.progress
-    self.isFailed = message.state == .Failed
+    self.isFailed = message.state == .networkError
     
     //profileBot
     self.profileItems = message.profileBot ?? []

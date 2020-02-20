@@ -51,6 +51,7 @@ class ProfileCell : WebPageMessageCell {
     static let viewLeading = 26.f
     static let viewTrailing = 26.f
     static let viewBottom = 5.f
+    static let shadowHeight = 3.f
   }
   
   let profileExtendableView = ProfileExtendableView()
@@ -74,7 +75,7 @@ class ProfileCell : WebPageMessageCell {
         .offset(Metric.viewTop).priority(750).constraint
       make.left.equalToSuperview().inset(Metric.viewLeading)
       make.right.equalToSuperview().inset(Metric.viewTrailing)
-      make.bottom.equalToSuperview()
+      make.bottom.equalToSuperview().inset(Metric.shadowHeight)
     }
   }
   
@@ -110,6 +111,6 @@ class ProfileCell : WebPageMessageCell {
     height += ProfileExtendableView.viewHeight(
       fit: width - Metric.viewLeading - Metric.viewTrailing,
       model: viewModel)
-    return height
+    return height + Metric.shadowHeight
   }
 }
