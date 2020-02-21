@@ -84,6 +84,7 @@
 		3931CB5423C34693005E8444 /* AlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */; };
 		3961C1C8235601E300850EC7 /* userChats.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C7235601E300850EC7 /* userChats.json */; };
 		3961C1CA235601F500850EC7 /* messages.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C9235601F500850EC7 /* messages.json */; };
+		39711A8923FABF36004F56D0 /* ChatBotStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39711A8823FABF36004F56D0 /* ChatBotStartView.swift */; };
 		398205D423C5C99E008814B4 /* AttachmentFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */; };
 		398205D623C5D62E008814B4 /* InAppMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D523C5D62E008814B4 /* InAppMediaView.swift */; };
 		398DDFC323CC5B2D00CD0417 /* extensions.json in Resources */ = {isa = PBXBuildFile; fileRef = 398DDFC223CC5B2D00CD0417 /* extensions.json */; };
@@ -653,6 +654,7 @@
 		3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		3961C1C7235601E300850EC7 /* userChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = userChats.json; sourceTree = "<group>"; };
 		3961C1C9235601F500850EC7 /* messages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = messages.json; sourceTree = "<group>"; };
+		39711A8823FABF36004F56D0 /* ChatBotStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStartView.swift; sourceTree = "<group>"; };
 		398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentFileInfoView.swift; sourceTree = "<group>"; };
 		398205D523C5D62E008814B4 /* InAppMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMediaView.swift; sourceTree = "<group>"; };
 		398DDFC223CC5B2D00CD0417 /* extensions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = extensions.json; path = Assets/extensions.json; sourceTree = "<group>"; };
@@ -1662,6 +1664,7 @@
 				22A7BB7720CED8440098DB8B /* LiveTypingAvatarsView.swift */,
 				6597931B1FA7167C00840F6A /* NewMessageBannerView.swift */,
 				65FB143B2298044F00393AA2 /* UserChatBottomBlockView.swift */,
+				39711A8823FABF36004F56D0 /* ChatBotStartView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2681,6 +2684,7 @@
 				39F4B9F823C42CC10043B25A /* ATNConfig.swift in Sources */,
 				65CB1423206A02F200E456B5 /* LogCell.swift in Sources */,
 				6597938A1FA716CB00840F6A /* UserChatPromise.swift in Sources */,
+				39711A8923FABF36004F56D0 /* ChatBotStartView.swift in Sources */,
 				6597938B1FA716CB00840F6A /* UtilityPromise.swift in Sources */,
 				22E2138A23392E7C002B3EF4 /* InAppNotificationViewModel.swift in Sources */,
 				39F4B9C423C42CC00043B25A /* ProxyErrorListener.swift in Sources */,

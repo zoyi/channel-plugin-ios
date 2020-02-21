@@ -80,12 +80,6 @@ func ChatReducer(action: Action, state: ChatState?) -> ChatState {
     session?.unread = 0
     return state?.upsert(session: session) ?? ChatState()
     
-  case let action as UpdateUserWithLocalRead:
-    var session = action.session
-    session?.alert = 0
-    session?.unread = 0
-    return state?.upsert(session: session) ?? ChatState()
-    
   case _ as InsertWelcome:
     let msg = LocalMessageFactory.generate(
       type: .WelcomeMessage,

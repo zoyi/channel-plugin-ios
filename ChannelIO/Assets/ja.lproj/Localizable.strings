@@ -147,8 +147,8 @@
 "ch.chat.expect_response_delay.out_of_working.disabled" = "営業時間外には新たな問い合わせを受けられません";
 "ch.profile_form.placeholder" = "ご入力ください";
 "ch.profile_form.error" = "正しい形式でご入力ください";
-"show_translate" = "翻訳を見る";
-"undo_translate" = "元のテキスト";
+"ch.show_translate" = "翻訳を見る";
+"ch.undo_translate" = "元のテキスト";
 "ch.settings.translate_message" = "メッセージの翻訳機能";
 "ch.chat.reopen" = "新しいチャット";
 "ch.common.open" = "オープン";
@@ -170,12 +170,13 @@
 "ch.loader.updating" = "更新中 ...";
 "ch.lounge.proceeding_chat" = "会話中のチャット";
 "ch.lounge.show_previous_chats" = "過去の%s件のチャットをみる";
-"message_stream.message.deleted_message" = "削除されたメッセージです";
+"ch.message_stream.message.deleted_message" = "削除されたメッセージです";
 "ch.navigation.next_operation" = "営業時間 %s前";
 "ch.minute" = "分";
 "ch.hour" = "時間";
 "ch.day" = "日";
-"file_upload.fail" = "送信に失敗しました";
-"file_upload.wait_count" = "%s件待機中";
+"ch.file_upload.fail" = "送信に失敗しました";
+"ch.file_upload.wait_count" = "%s件待機中";
 "ch.common_error" = "処理に失敗しました。再試行してください";
 "ch.lounge.show_previous_chats_more" = "%s件以上の問合せ履歴を見る";
+"ch.chat.marketing_to_support_bot" = "サポートbotから始める";

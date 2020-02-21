@@ -196,8 +196,8 @@ class VideoPlayerView: BaseView {
   func didHide(from controller: UIViewController) {
     self.pause()
     self.setVisibilityOfViews(isPlaying: false)
-    self.playerController.player = nil
     self.player = nil
+    self.playerController.player = nil
     self.playerController.willMove(toParent: nil)
     self.playerController.removeFromParent()
     self.disposable?.dispose()

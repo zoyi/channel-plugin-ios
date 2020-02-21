@@ -9,6 +9,7 @@
 import Foundation
 import SwiftyJSON
 import ObjectMapper
+import AVKit
 
 class CHUtils {
   class func getKeyWindow() -> UIWindow? {
@@ -302,6 +303,20 @@ class CHUtils {
       let jsonData = try JSONSerialization.data(withJSONObject: data, options: .fragmentsAllowed)
       let jsonString = String(data: jsonData, encoding: .utf8)
       return jsonString
+    } catch {
+      return nil
+    }
+  }
+  
+  class func getThumbnail(of asset: AVAsset?) -> UIImage? {
+    guard let asset = asset else { return nil }
+    let assetImgGenerate = AVAssetImageGenerator(asset: asset)
+    assetImgGenerate.appliesPreferredTrackTransform = true
+    let time = CMTimeMake(value: Int64(1), timescale: 100)
+    do {
+      let img = try assetImgGenerate.copyCGImage(at: time, actualTime: nil)
+      let thumbnail = UIImage(cgImage: img)
+      return thumbnail
     } catch {
       return nil
     }

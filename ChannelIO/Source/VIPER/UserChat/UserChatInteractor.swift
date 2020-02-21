@@ -175,7 +175,7 @@ extension UserChatInteractor {
   
   func send(message: CHMessage?) -> Observable<CHMessage?> {
     guard var message = message else {
-      return .empty()
+      return .error(ChannelError.parameterError)
     }
     
     return Observable.create { [weak self] (subscriber) in
@@ -188,14 +188,13 @@ extension UserChatInteractor {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (updated) in
           dlog("Message has been sent successfully")
-          message.state = .Sent
           self?.sendTyping(isStop: true)
           subscriber.onNext(updated)
           subscriber.onCompleted()
         }, onError: { (error) in
           dlog("Message has been failed to send")
           self?.sendTyping(isStop: true)
-          message.state = .Failed
+          message.state = .networkError
           mainStore.dispatch(CreateMessage(payload: message))
           subscriber.onError(error)
         })
@@ -314,6 +313,26 @@ extension UserChatInteractor {
       
       return Disposables.create {
         disposable?.dispose()
+      }
+    }
+  }
+  
+  func startMarketingToSupportBot() -> Observable<CHMessage> {
+    return Observable.create { [weak self] (subscriber) -> Disposable in
+      let signal = CHSupportBot
+        .startFromMarketing(userChatId: self?.userChat?.id)
+        .retry(.delayed(maxCount: 3, time: 3.0))
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (message) in
+          mainStore.dispatch(CreateMessage(payload: message))
+          subscriber.onNext(message)
+          subscriber.onCompleted()
+        }, onError: { (error) in
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal.dispose()
       }
     }
   }

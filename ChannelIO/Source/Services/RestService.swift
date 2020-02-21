@@ -44,6 +44,7 @@ enum RestRouter: URLRequestConvertible {
   case SendEvent(String, ParametersType)
   case SetMessagesRead(String)
   case SendPushAck(String)
+  case StartMarketingToSupportBot(String, String)
   case TouchUser(String, ParametersType)
   case Translate(String, String, ParametersType)
   case UpdateUser(ParametersType)
@@ -81,6 +82,7 @@ enum RestRouter: URLRequestConvertible {
          .ReplySupportBot,
          .RegisterToken,
          .SendEvent,
+         .StartMarketingToSupportBot,
          .TouchUser,
          .UpdateProfileItem,
          .UploadFile:
@@ -176,6 +178,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/user-chats/\(userChatId)/messages/receive"
     case .SendEvent(let pluginId, _):
       return "/front/plugins/\(pluginId)/events"
+    case .StartMarketingToSupportBot(let userChatId, let supportBotId):
+      return "/front/user-chats/\(userChatId)/support-bots/\(supportBotId)"
     case .Translate(let userChatId, let messageId, _):
       return "/front/user-chats/\(userChatId)/messages/\(messageId)/translate"
     case .TouchUser(let pluginId, _):
@@ -289,6 +293,7 @@ enum RestRouter: URLRequestConvertible {
          .ClosePopup,
          .SendPushAck,
          .SetMessagesRead,
+         .StartMarketingToSupportBot,
          .GetProfileBotSchemas,
          .UnregisterToken:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)

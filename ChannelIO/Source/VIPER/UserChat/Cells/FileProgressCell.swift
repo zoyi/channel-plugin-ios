@@ -131,7 +131,7 @@ class FileStatusCell: BaseTableViewCell {
     if item.status == .error {
       self.errorButton.isHidden = false
       self.progressView.isHidden = true
-      self.displayName(with: CHAssets.localized("file_upload.fail"))
+      self.displayName(with: CHAssets.localized("ch.file_upload.fail"))
     } else if item.status == .progress {
       self.errorButton.isHidden = true
       self.progressView.isHidden = false
@@ -149,14 +149,19 @@ class FileStatusCell: BaseTableViewCell {
     if item.fileType == .image, let data = item.data {
       self.thumbImageView.image = UIImage(data: data)
     } else {
-      self.thumbImageView.image = CHAssets.getImage(named: "pdf")
+      item.file?.image
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { [weak self] image in
+          self?.thumbImageView.image = image == nil ?
+            CHAssets.getImage(named: item.dbFileType) : image
+        }).disposed(by: self.disposeBag)
     }
   }
   
   private func displayCount(with count: Int) {
     self.countLabel.isHidden = count == 0
     self.countLabel.text = String(
-      format: CHAssets.localized("file_upload.wait_count"), "\(count)"
+      format: CHAssets.localized("ch.file_upload.wait_count"), "\(count)"
     )
   }
   

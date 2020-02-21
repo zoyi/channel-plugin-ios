@@ -64,6 +64,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = UIColor.grey900
+    $0.backgroundColor = .white
     $0.textContainer.maximumNumberOfLines = 0
     $0.textContainer.lineBreakMode = .byTruncatingTail
     
@@ -76,7 +77,9 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     ]
   }
   
-  private let fileInfoView = AttachmentFileInfoView()
+  private let fileInfoView = AttachmentFileInfoView().then {
+    $0.isHidden = true
+  }
   
   private let closeContainerView = UIView()
     
@@ -152,8 +155,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     }
     
     self.rightStackView.snp.makeConstraints { make in
-      make.top.equalToSuperview().inset(Metrics.rightStackSide)
-      make.bottom.lessThanOrEqualToSuperview().inset(Metrics.rightStackSide)
+      make.centerY.equalToSuperview()
       make.leading.equalTo(self.leftStackView.snp.trailing)
         .offset(Metrics.rightStackSide)
       make.trailing.equalTo(self.closeContainerView.snp.leading)

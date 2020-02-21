@@ -70,11 +70,6 @@ struct UpdateUser: Action {
   public let payload: CHUser?
 }
 
-struct UpdateUserWithLocalRead: Action {
-  public let user: CHUser?
-  public let session: CHSession?
-}
-
 struct UpdateVisibilityOfCompletedChats: Action {
   public let show: Bool? 
 }

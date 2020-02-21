@@ -42,15 +42,6 @@ func userReducer(action: Action, user: CHUser?) -> CHUser {
       return user
     }
     return user ?? CHUser()
-    
-  case let action as UpdateUserWithLocalRead:
-    let count = action.session?.alert ?? 0
-    if var user = user, let alert = user.alert {
-      let adjustCount = alert - count
-      user.alert = adjustCount > 0 ? adjustCount : 0
-      return user
-    }
-    return user ?? CHUser()
   
   case _ as ShutdownSuccess:
     return CHUser()

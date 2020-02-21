@@ -24,6 +24,7 @@ class InAppVideoPlayerView: BaseView {
     $0.trackTintColor = .black40
     $0.progressTintColor = .white
     $0.transform = CGAffineTransform(scaleX: 1.f, y: 3.f)
+    $0.progress = 0
   }
   
   var disposeBag = DisposeBag()
@@ -71,7 +72,7 @@ class InAppVideoPlayerView: BaseView {
       using: { [weak self] time in
       if let duration = self?.player?.currentItem?.duration {
         let progress = (CMTimeGetSeconds(time) / CMTimeGetSeconds(duration))
-        self?.progressBar.setProgress(Float(progress), animated: true)
+        self?.progressBar.setProgress(progress.isNaN ? 0 : Float(progress), animated: !progress.isNaN)
       }
     })
   }

@@ -4,7 +4,7 @@ import os
 import urllib
 import shutil
 
-ASSET_URL = "http://bin.exp.channel.io/asset/file-icon/"
+ASSET_URL = "http://cf.channel.io/asset/file-icon/"
 FILE_NAME = "extensions.json"
 
 PROJECT_DIR = os.getcwd()
@@ -25,9 +25,9 @@ with open(TYPES_JSON) as text:
         if os.path.exists(key_path) and os.path.isdir(key_path):
             shutil.rmtree(key_path, ignore_errors=True)
         os.mkdir(key_path)
-        urllib.urlretrieve(ASSET_URL + '{}.png'.format(key), os.path.join(key_path, "{}.png".format(key)))
-        urllib.urlretrieve(ASSET_URL + '{}@2x.png'.format(key), os.path.join(key_path, "{}@2x.png".format(key)))
-        urllib.urlretrieve(ASSET_URL + '{}@3x.png'.format(key), os.path.join(key_path, "{}@3x.png".format(key)))
+        urllib.urlretrieve(ASSET_URL + 'images/{}.png'.format(key), os.path.join(key_path, "{}.png".format(key)))
+        urllib.urlretrieve(ASSET_URL + 'images/{}@2x.png'.format(key), os.path.join(key_path, "{}@2x.png".format(key)))
+        urllib.urlretrieve(ASSET_URL + 'images/{}@3x.png'.format(key), os.path.join(key_path, "{}@3x.png".format(key)))
         contents_file_path = os.path.join(key_path, "Contents.json")
         fid = open(contents_file_path, "w")
 

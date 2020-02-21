@@ -30,8 +30,6 @@ class InAppMediaView: BaseView {
   }
   
   private let imageView = SDAnimatedImageView().then {
-    $0.layer.borderColor = UIColor.grey300.cgColor
-    $0.layer.borderWidth = 1
     $0.backgroundColor = .dark20
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true

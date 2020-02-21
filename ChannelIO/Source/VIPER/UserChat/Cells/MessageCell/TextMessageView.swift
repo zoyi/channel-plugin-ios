@@ -15,27 +15,28 @@ let placeHolder = UITextView().then {
 }
 
 class TextMessageView : BaseView {
-  struct Metrics {
+  private struct Metrics {
     static let topBottomPadding = 10.f
     static let leftRightPadding = 12.f
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
     static let textViewMinimalWidth = 20.f
+    static let textViewInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
   }
 
-  struct Constants {
+  private struct Constants {
     static let cornerRadius = 12.f
     static let singleCornerRadius = 2.f
     static let actionViewBottomRadius = 12.f
     static let borderWidth: CGFloat = 1
   }
 
-  struct Font {
+  private struct Font {
     static let actionLabel = UIFont.boldSystemFont(ofSize: 13)
     static let messageView = UIFont.systemFont(ofSize: 15)
   }
 
-  struct Color {
+ private struct Color {
     static let actionLabel = CHColors.blueyGrey
     static let message = UIColor.grey900
   }
@@ -52,7 +53,7 @@ class TextMessageView : BaseView {
     
     $0.dataDetectorTypes = [.link, .phoneNumber]
     $0.textContainer.lineFragmentPadding = 0
-    $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+    $0.textContainerInset = Metrics.textViewInset
   }
 
   var viewModel: MessageCellModelType?
@@ -84,13 +85,13 @@ class TextMessageView : BaseView {
 
   func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
-    
     guard let displayText = viewModel.text else {
       self.isHidden = true
       return
     }
     self.isHidden = false
-    self.backgroundColor = viewModel.bubbleBackgroundColor
+    self.backgroundColor = displayText.string.containsOnlyEmoji ?
+      UIColor.clear : viewModel.bubbleBackgroundColor
     let attrText = NSMutableAttributedString(attributedString: displayText)
     attrText.addAttribute(
       .foregroundColor,
@@ -141,7 +142,7 @@ class TextMessageView : BaseView {
     if let edgeInset = edgeInset {
       insets = edgeInset
     } else {
-      insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+      insets = Metrics.textViewInset
     }
 
     let maxWidth = width - Metrics.leftRightPadding * 2

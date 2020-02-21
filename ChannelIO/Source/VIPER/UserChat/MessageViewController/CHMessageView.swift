@@ -499,7 +499,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
 
     // adjust by bottom offset so content is flush w/ text view
     let rightButtonFrame = CGRect(
-      x: textViewFrame.maxX,
+      x: textViewFrame.maxX - rightButtonInset,
       y: buttonYStarter -
         rightButtonSize.height/2 +
         rightButton.bottomHeightOffset -
@@ -603,7 +603,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
   }
 
   internal var textViewHeight: CGFloat {
-    let maxValue = max(textView.contentSize.height, 44)
+    let maxValue = max(textView.contentSize.height, 54)
     return ceil(min(calculatedMaxHeight, maxValue))//min height))
   }
 

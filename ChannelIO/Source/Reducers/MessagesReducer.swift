@@ -48,6 +48,10 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
         state?.supportBotEntry = nil
       }
     
+    if let messages = action.userChats.messages {
+      _ = state?.upsert(messages: messages)
+    }
+    
     return state ?? MessagesState()
     
   case let action as RemoveMessages:

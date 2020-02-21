@@ -180,6 +180,27 @@ struct CHFile: ThumbDisplayable {
   var hasData: Bool {
     return self.rawData != nil || self.asset != nil || self.imageData != nil
   }
+  
+  var image: Observable<UIImage?> {
+    guard self.type == .video || self.type == .image else { return .just(nil) }
+    guard let asset = self.asset else { return .just(nil) }
+
+    return Observable.create { subscriber in
+      if self.type == .video {
+        asset.fetchAVAsset { asset, _ in
+          let image = CHUtils.getThumbnail(of: asset)
+          subscriber.onNext(image)
+          subscriber.onCompleted()
+        }
+      } else {
+        asset.fetchOriginalImage { image, _ in
+          subscriber.onNext(image)
+          subscriber.onCompleted()
+        }
+      }
+      return Disposables.create()
+    }
+  }
 }
 
 extension CHFile: Mappable, Hashable {

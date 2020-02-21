@@ -351,6 +351,15 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.view?.updateInputBar(state: focus ? .disabled : .normal)
   }
   
+  func didClickOnMarketingToSupportBotButton() {
+    self.interactor?
+      .startMarketingToSupportBot()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onError: { [weak self] (error) in
+        self?.view?.display(error: error.localizedDescription, visible: true)
+      }).disposed(by: self.disposeBag)
+  }
+  
   func didClickOnProfileUpdate(
     with message: CHMessage?,
     key: String?,
@@ -487,10 +496,9 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         let transform = CustomBlockTransform(
           config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
         )
-        message.translatedBlocks = blocks.compactMap { transform.transformFromJSON($0) }
+        message.translatedBlocks = blocks.compactMap { transform.transformFromJSON($0.toJSON()) }
         message.translateState = .translated
         mainStore.dispatchOnMain(UpdateMessage(payload: message))
-        mainStore.dispatch(UpdateMessage(payload: message))
       }, onError: { (error) in
         message.translateState = .failed
         mainStore.dispatchOnMain(UpdateMessage(payload: message))

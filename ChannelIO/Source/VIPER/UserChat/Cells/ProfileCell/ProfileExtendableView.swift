@@ -17,6 +17,7 @@ class ProfileExtendableView: BaseView {
     static let bottomMargin = 10.f
     static let itemHeight = 73.f
     static let itemTop = 4.f
+    static let shadowHeight = 2.f
   }
   
   var items: [ProfileContentProtocol] = []
@@ -65,7 +66,7 @@ class ProfileExtendableView: BaseView {
     
     self.layer.shadowColor = CHColors.dark.cgColor
     self.layer.shadowOpacity = 0.2
-    self.layer.shadowOffset = CGSize(width: 0, height: 2)
+    self.layer.shadowOffset = CGSize(width: 0, height: Metric.shadowHeight)
     self.layer.shadowRadius = 2
     self.backgroundColor = CHColors.white
   }

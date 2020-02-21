@@ -68,7 +68,7 @@ struct MessagesState: StateType {
     
     self.messageDictionary.forEach { (k, v) in
       if (v.chatId == userChatId &&
-        lastIds[v.id] == nil) && v.state != .Failed {
+        lastIds[v.id] == nil) && v.state != .networkError {
         self.messageDictionary.removeValue(forKey: k)
       }
     }

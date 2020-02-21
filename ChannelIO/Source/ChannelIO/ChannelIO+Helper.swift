@@ -170,8 +170,9 @@ extension ChannelIO {
     let viewModel = InAppNotificationViewModel(push: push)
     
     if viewModel.mobileExposureType == .fullScreen {
+      ChannelIO.launcherView?.hide(animated: true)
       notificationView = PopupInAppNotificationView()
-      view = CHUtils.getTopController()?.view
+      view = CHUtils.getKeyWindow()?.rootViewController?.view
     } else {
       notificationView = BannerInAppNotificationView()
       view = ChannelIO.launcherWindow?.rootViewController?.view
@@ -213,6 +214,9 @@ extension ChannelIO {
     guard ChannelIO.inAppNotificationView != nil else { return }
     
     dispatch {
+      if ChannelIO.launcherVisible == true {
+        ChannelIO.launcherView?.show(animated: true)
+      }
       mainStore.dispatch(RemovePush())
       ChannelIO.inAppNotificationView?.removeView(animated: true)
       ChannelIO.inAppNotificationView = nil

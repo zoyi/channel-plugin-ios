@@ -18,7 +18,7 @@ enum CHMarketingType: String {
 struct CHMarketing {
   var type: CHMarketingType?
   var id: String = ""
-  var enableSupportBot: String = ""
+  var enableSupportBot: Bool = false
   var advertising: Bool = false
   var exposureType: InAppNotificationType = .banner
 }
