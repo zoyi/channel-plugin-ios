@@ -28,8 +28,7 @@ class CHTextParserListener: TextBlockParserListener {
   var isItalic = false
   var isLink = false
   var isVariable = false
-  var isOnlyEmoji = true
-  
+
   var stack: [CHPBlock] = []
   var profiles: [String: Any] = [:]
 
@@ -52,15 +51,15 @@ class CHTextParserListener: TextBlockParserListener {
 
   func enterBlock(_ ctx: TextBlockParser.BlockContext) {}
   func exitBlock(_ ctx: TextBlockParser.BlockContext) {
-    self.isOnlyEmoji = true
+    var isOnlyEmojis = true
     for result in self.results {
       if !result.string.containsOnlyEmoji {
-        self.isOnlyEmoji = false
+        isOnlyEmojis = false
         break
       }
     }
 
-    if self.isOnlyEmoji {
+    if isOnlyEmojis {
       let combined = self.results.reduce(NSMutableAttributedString()) {
         $0.append($1)
         return $0
@@ -90,7 +89,8 @@ class CHTextParserListener: TextBlockParserListener {
 
   func exitTag(_ ctx: TextBlockParser.TagContext) {
     guard let tag = self.popAndMerge(until: CHPTag.self) else {
-      fatalError("last element of stack has to be content")
+      return
+      //fatalError("last element of stack has to be content")
     }
 
     var result: NSMutableAttributedString?
@@ -135,10 +135,8 @@ class CHTextParserListener: TextBlockParserListener {
       }
     }
 
-    if self.stack.last is CHPTag,
-      var prevTag = self.stack.last as? CHPTag {
+    if var prevTag = self.stack.popLastIf(CHPTag.self) {
       prevTag.merge(with: result ?? tag.merge())
-      self.stack.removeLast()
       self.stack.append(prevTag)
     } else if let result = result {
       self.results.append(result)
@@ -162,11 +160,13 @@ class CHTextParserListener: TextBlockParserListener {
 
   func exitAttribute(_ ctx: TextBlockParser.AttributeContext) {
     guard let attr = self.popAndMerge(until: CHPAttribute.self) else {
-      fatalError("last element of the stack has to be attribute type")
+      return
+      //fatalError("last element of the stack has to be attribute type")
     }
 
     guard var tag = self.popAndMerge(until: CHPTag.self) else {
-      fatalError("last element of the stack has to be tag type")
+      return
+      //fatalError("last element of the stack has to be tag type")
     }
 
     if let attrValue = attr.value {
@@ -191,8 +191,9 @@ class CHTextParserListener: TextBlockParserListener {
       return
     }
 
-    guard var attr = self.stack.popLast() as? CHPAttribute else {
-      fatalError("last element of the stack has to be attribute type")
+    guard var attr = self.stack.popLastIf(CHPAttribute.self) else {
+      return
+      //fatalError("last element of the stack has to be attribute type")
     }
 
     attr.value = value
@@ -206,11 +207,11 @@ class CHTextParserListener: TextBlockParserListener {
 
   func exitContent(_ ctx: TextBlockParser.ContentContext) {
     guard let content = self.popAndMerge(until: CHPContent.self) else {
-      fatalError("last element of stack has to be content")
+      return
+      //fatalError("last element of stack has to be content")
     }
 
-    if self.stack.last is CHPTag,
-      var tag = self.stack.popLast() as? CHPTag,
+    if var tag = self.stack.popLastIf(CHPTag.self),
       let result = content.merge() {
       tag.merge(with: result)
       self.stack.append(tag)
@@ -221,15 +222,12 @@ class CHTextParserListener: TextBlockParserListener {
 
   func enterEmoji(_ ctx: TextBlockParser.EmojiContext) {}
   func exitEmoji(_ ctx: TextBlockParser.EmojiContext) {
-    guard var content = self.stack.popLast() as? CHPContent else {
-      fatalError("last element of stack has to be content type")
-    }
-
-    guard
-      let emojiCode = self.getNodeText(from: ctx.EMOJI()),
-      let emoji = self.emojiMap[emojiCode.replace(":", withString: "")] else {
+    guard var content = self.stack.popLastIf(CHPContent.self) else {
       return
     }
+
+    let emojiCode = self.getNodeText(from: ctx.EMOJI()) ?? ""
+    let emoji = self.emojiMap[emojiCode.replace(":", withString: "")] ?? emojiCode
 
     let attributedString = NSMutableAttributedString(
       string: emoji,
@@ -249,7 +247,7 @@ class CHTextParserListener: TextBlockParserListener {
 
   func exitVariable(_ ctx: TextBlockParser.VariableContext) {
     guard var block = self.stack.popLast() else {
-      fatalError("last element of stack has to be exist")
+      return
     }
 
     if let name = self.getNodeText(from: ctx.VAR_NAME()),
@@ -287,12 +285,11 @@ class CHTextParserListener: TextBlockParserListener {
 
   func visitTerminal(_ node: TerminalNode) {
     guard
-      var block = self.stack.last as? CHPAttributeValue,
+      var block = self.stack.popLastIf(CHPAttributeValue.self),
       let text = self.getNodeText(from: node),
       self.isVariable == false else { return }
 
     block.merge(with: self.addAttributesForNormalText(text))
-    self.stack.removeLast()
     self.stack.append(block)
   }
 
