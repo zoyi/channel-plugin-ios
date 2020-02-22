@@ -62,10 +62,7 @@ class AppManager {
     guard let pushToken = ChannelIO.pushToken else { return }
 
     PluginPromise
-      .registerPushToken(
-        channelId: mainStore.state.channel.id,
-        user: mainStore.state.user,
-        token: pushToken)
+      .registerPushToken(token: pushToken)
       .subscribe(onNext: { (result) in
         dlog("register token success")
       }, onError:{ error in

@@ -13,16 +13,14 @@ import ObjectMapper
 import SwiftyJSON
 
 struct PluginPromise {
-  static func registerPushToken(channelId: String, user: CHUser, token: String) -> Observable<Any?> {
+  static func registerPushToken(token: String) -> Observable<Any?> {
     return Observable.create { subscriber in
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let params = [
         "body": [
-          "channelId": channelId,
           "key": "ios-" + key,
-          "ios": true,
           "token": token,
-          "personKey": user.entityType.rawValue + user.id
+          "appVersion": CHUtils.getSdkVersion()
         ]
       ]
       
