@@ -58,7 +58,7 @@ extension CHActionButton: Mappable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
-    key         <- map["key"]
+    key <- map["key"]
     
     let rawText = map["text"].currentValue as? String ?? ""
     let transformer = CustomBlockTransform(
