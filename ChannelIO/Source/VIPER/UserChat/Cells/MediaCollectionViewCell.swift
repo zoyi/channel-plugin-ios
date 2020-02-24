@@ -75,7 +75,7 @@ class MediaCollectionViewCell: BaseCollectionViewCell {
         }
       }
     case .video:
-      self.videoView.configure(with: model)
+      self.videoView.configure(with: model, mkInfo: model.mkInfo)
     default:
       break
     }
@@ -85,7 +85,7 @@ class MediaCollectionViewCell: BaseCollectionViewCell {
 extension MediaCollectionViewCell: VideoPlayerDelegate {
   func didFinish() {
     if let model = self.model {
-      self.videoView.configure(with: model)
+      self.videoView.configure(with: model, mkInfo: model.mkInfo)
     }
   }
 }

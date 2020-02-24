@@ -70,6 +70,7 @@ class VideoPlayerView: BaseView {
     self.containerView.addSubview(self.youtubePlayer)
     self.containerView.addSubview(self.playerController.view)
     self.addSubview(self.containerView)
+    self.youtubePlayer.delegate = self
     self.playButton
       .signalForClick()
       .subscribe(onNext: { [weak self] _ in
@@ -251,6 +252,16 @@ class VideoPlayerView: BaseView {
       self.playSignal.onNext((false, currSeconds))
     } else if keyPath == "rate" && (change?[NSKeyValueChangeKey.newKey] as? Float) == 1 {
       self.playSignal.onNext((true, currSeconds))
+    }
+  }
+}
+
+extension VideoPlayerView: YoutubePlayerViewDelegate {
+  func playerView(
+    _ playerView: YoutubePlayerView,
+    didChangedToState state: YoutubePlayerState) {
+    if let mkInfo = self.mkInfo, state == .playing || state == .paused {
+      mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
     }
   }
 }

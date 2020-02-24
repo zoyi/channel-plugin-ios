@@ -490,6 +490,7 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
     lhs.files == rhs.files &&
     lhs.state == rhs.state &&
     lhs.webPage == rhs.webPage &&
+    lhs.marketing == rhs.marketing &&
     lhs.plainText == rhs.plainText &&
     lhs.blocks == rhs.blocks &&
     lhs.translateState == rhs.translateState &&

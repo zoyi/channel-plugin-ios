@@ -185,6 +185,10 @@ extension TextMessageView : UITextViewDelegate {
     _ textView: UITextView,
     shouldInteractWith URL: URL,
     in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+    if let mkInfo = self.viewModel?.message.mkInfo {
+      mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
+    
     if interaction == .invokeDefaultAction {
       let scheme = URL.scheme ?? ""
       switch scheme {

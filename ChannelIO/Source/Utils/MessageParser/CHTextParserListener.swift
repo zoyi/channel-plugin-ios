@@ -28,7 +28,8 @@ class CHTextParserListener: TextBlockParserListener {
   var isItalic = false
   var isLink = false
   var isVariable = false
-
+  var isOnlyEmoji = true
+  
   var stack: [CHPBlock] = []
   var profiles: [String: Any] = [:]
 
@@ -51,15 +52,15 @@ class CHTextParserListener: TextBlockParserListener {
 
   func enterBlock(_ ctx: TextBlockParser.BlockContext) {}
   func exitBlock(_ ctx: TextBlockParser.BlockContext) {
-    var isOnlyEmojis = true
+    self.isOnlyEmoji = true
     for result in self.results {
       if !result.string.containsOnlyEmoji {
-        isOnlyEmojis = false
+        self.isOnlyEmoji = false
         break
       }
     }
 
-    if isOnlyEmojis {
+    if self.isOnlyEmoji {
       let combined = self.results.reduce(NSMutableAttributedString()) {
         $0.append($1)
         return $0
