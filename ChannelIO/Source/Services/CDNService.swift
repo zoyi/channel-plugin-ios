@@ -7,12 +7,6 @@
 
 import Alamofire
 
-enum CDNEndPointType: String {
-  case production = "https://media.channel.io"
-  case exp = "http://media.exp.channel.io"
-  case stage = "http://media.staging.channel.io"
-}
-
 enum CDNService: URLConvertible {
   case UploadFile(String, String)
 
@@ -21,16 +15,7 @@ enum CDNService: URLConvertible {
   static let queue = DispatchQueue(label: "com.zoyi.channel.cdn", qos: .background, attributes: .concurrent)
 
   var baseURL: String {
-    var url = CDNEndPointType.production.rawValue
-    switch CHUtils.getCurrentStage() {
-    case .development:
-      url = CDNEndPointType.exp.rawValue
-    case .staging:
-      url = CDNEndPointType.stage.rawValue
-    case .production:
-      url = CDNEndPointType.production.rawValue
-    }
-    return url
+    return CHUtils.getCurrentStage().cdnEndPoint
   }
 
   var method: HTTPMethod {

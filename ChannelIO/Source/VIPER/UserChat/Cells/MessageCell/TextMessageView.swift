@@ -21,7 +21,7 @@ class TextMessageView : BaseView {
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
     static let textViewMinimalWidth = 20.f
-    static let textViewInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
+    static let textViewInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
   }
 
   private struct Constants {

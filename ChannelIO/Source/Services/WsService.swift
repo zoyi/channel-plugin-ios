@@ -13,12 +13,6 @@ import ReSwift
 import SocketIO
 import ObjectMapper
 
-enum WSType: String {
-  case PRODUCTION = "https://ws.channel.io"
-  case ALPHA = "http://ws.exp.channel.io"
-  case BETA = "http://ws.staging.channel.io"
-}
-
 struct SocketCommand {
   static let join = "join"
   static let leave = "leave"
@@ -116,7 +110,7 @@ class WsService {
   fileprivate var socket: SocketIOClient?
   fileprivate var manager: SocketManager?
   
-  var baseUrl = WSType.PRODUCTION.rawValue
+  var baseUrl = ""
   
   //move these properties into state
   fileprivate var currentChatId: String?
@@ -129,15 +123,6 @@ class WsService {
   private var startTypingThrottleFnc: ((CHUserChat?) -> Void)?
   
   init() {
-    switch CHUtils.getCurrentStage() {
-    case .production:
-      self.baseUrl = WSType.PRODUCTION.rawValue
-    case .development:
-      self.baseUrl = WSType.ALPHA.rawValue
-    case .staging:
-      self.baseUrl = WSType.BETA.rawValue
-    }
-    
     self.stopTypingThrottleFnc = throttle(
       delay: 1.0,
       queue: queue,
@@ -180,11 +165,11 @@ class WsService {
   
   func connect() {
     dlog("Try to connect Socket")
-    
+
     self.disconnect()
     
     self.manager = SocketManager(
-      socketURL: URL(string: "\(self.baseUrl)")!,
+      socketURL: URL(string: CHUtils.getCurrentStage().socketEndPoint)!,
       config: [
         .log(false),
         .forceWebsockets(true),
@@ -384,7 +369,6 @@ fileprivate extension WsService {
       case WsServiceType.UpdateSession:
         guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateSession(payload: session))
-        print("\(session)")
         self?.eventSubject.onNext((type, session))
         break
       case WsServiceType.UpdateUserChat:
@@ -409,7 +393,6 @@ fileprivate extension WsService {
       case WsServiceType.UpdateUser:
         guard let user = Mapper<CHUser>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateUser(payload: user))
-        print("\(user)")
         self?.eventSubject.onNext((type, user))
       case WsServiceType.UpdateManager:
         guard let manager = Mapper<CHManager>().map(JSONObject: json["entity"].object) else { return }

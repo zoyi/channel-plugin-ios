@@ -9,12 +9,6 @@
 import Foundation
 import Alamofire
 
-enum EPType: String {
-  case PRODUCTION = "https://api.channel.io"
-  case ALPHA = "http://api.exp.channel.io"
-  case BETA = "http://api.staging.channel.io"
-}
-
 enum RestRouter: URLRequestConvertible {
   case Boot(String, ParametersType)
   case CreateUserChat(String, ParametersType)
@@ -54,16 +48,7 @@ enum RestRouter: URLRequestConvertible {
   
   var baseURL: String {
     get {
-      var url = EPType.PRODUCTION.rawValue
-      switch CHUtils.getCurrentStage() {
-      case .development:
-        url = EPType.ALPHA.rawValue
-      case .staging:
-        url = EPType.BETA.rawValue
-      case .production:
-        url = EPType.PRODUCTION.rawValue
-      }
-      return url
+      return CHUtils.getCurrentStage().restEndPoint
     }
   }
 

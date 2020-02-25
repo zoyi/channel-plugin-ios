@@ -25,6 +25,30 @@ public enum ChannelStage: Int {
   case development
   case staging
   case production
+  
+  internal var socketEndPoint: String {
+    switch self {
+    case .development: return "https://ws.exp.channel.io"
+    case .staging: return "https://ws.staging.channel.io"
+    case .production: return "https://ws.channel.io"
+    }
+  }
+  
+  internal var restEndPoint: String {
+    switch self {
+    case .development: return "https://api.exp.channel.io"
+    case .staging: return "https://api.staging.channel.io"
+    case .production: return "https://api.channel.io"
+    }
+  }
+  
+  internal var cdnEndPoint: String {
+    switch self {
+    case .development: return "https://media.exp.channel.io"
+    case .staging: return "https://media.staging.channel.io"
+    case .production: return "https://media.channel.io"
+    }
+  }
 }
 
 @objc
