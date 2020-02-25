@@ -20,7 +20,7 @@ struct PluginPromise {
         "body": [
           "key": "ios-" + key,
           "token": token,
-          "appVersion": CHUtils.getSdkVersion()
+          "sdkVersion": CHUtils.getSdkVersion()
         ]
       ]
       
