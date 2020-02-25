@@ -33,7 +33,7 @@ extension CHProfileItem: Mappable {
       fieldType = .mobileNumber
     } else if key == "email" {
       fieldType = .email
-    } else if type == "Number" {
+    } else if type == "number" {
       fieldType = .number
     } else {
       fieldType = .text

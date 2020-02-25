@@ -38,6 +38,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
       let msg = CHMessage(
         chatId: "support_bot_message_dummy",
         blocks: message.blocks,
+        files: message.files,
         type: message.contextType(),
         entity: action.bot,
         action: CHAction.create(botEntry: entry),

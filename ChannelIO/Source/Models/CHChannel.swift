@@ -39,6 +39,7 @@ struct CHChannel: CHEntity {
   var workingType: ChannelWorkingType = .always
   var trial = true
   var trialEndDate: Date? = nil
+  var state: ChannelState?
 }
 
 extension CHChannel {
@@ -219,6 +220,7 @@ extension CHChannel: Mappable {
     textColor               <- map["textColor"]
     phoneNumber             <- map["phoneNumber"]
     working                 <- map["working"]
+    state                   <- map["state"]
     workingTimeRanges       <- map["workingTimeRanges"]
     requestUserInfo         <- map["requestUserInfo"]
     homepageUrl             <- map["homepageUrl"]
@@ -287,4 +289,12 @@ enum ChannelAwayOptionType: String {
   case active
   case disabled
   case hidden
+}
+
+enum ChannelState: String {
+  case waiting
+  case active
+  case unpaid
+  case banned
+  case removed
 }

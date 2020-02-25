@@ -84,7 +84,6 @@ struct CHMessage: ModelType {
   var progress: CGFloat = 1
 
   // local
-  var sortedFiles: [CHFile] = []
   var translateState: CHMessageTranslateState = .original
   var fileDictionary: [String:Any]?
   
@@ -169,6 +168,7 @@ extension CHMessage: Mappable {
   init(
     chatId: String,
     blocks: [CHMessageBlock],
+    files: [CHFile] = [],
     type: MessageType,
     entity: CHEntity? = nil,
     action: CHAction? = nil,
@@ -188,6 +188,7 @@ extension CHMessage: Mappable {
     self.personType = entity?.entityType
     self.progress = 1
     self.blocks = blocks
+    self.files = files
   }
   
   init(
@@ -345,20 +346,6 @@ extension CHMessage: Mappable {
     language    <- map["language"]
     
     messageType = self.contextType()
-    
-    var videos: [CHFile] = []
-    var images: [CHFile] = []
-    var others: [CHFile] = []
-    for file in self.files {
-      if file.type == .video {
-        videos.append(file)
-      } else if file.type == .image {
-        images.append(file)
-      } else {
-        others.append(file)
-      }
-    }
-    sortedFiles = videos + images + others
   }
   
   func contextType() -> MessageType {
@@ -377,6 +364,22 @@ extension CHMessage: Mappable {
 }
 
 extension CHMessage {
+  var sortedFiles: [CHFile] {
+    var videos: [CHFile] = []
+    var images: [CHFile] = []
+    var others: [CHFile] = []
+    for file in self.files {
+      if file.type == .video {
+        videos.append(file)
+      } else if file.type == .image {
+        images.append(file)
+      } else {
+        others.append(file)
+      }
+    }
+    return videos + images + others
+  }
+  
   func isEmpty() -> Bool {
     return self.blocks.count == 0 
   }
