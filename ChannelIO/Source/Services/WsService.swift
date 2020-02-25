@@ -200,7 +200,7 @@ class WsService {
         .reconnectAttempts(5),
         .reconnectWait(10)
       ])
-
+    
     self.socket = self.manager?.socket(forNamespace: "/app")
     self.socket?.removeAllHandlers()
     self.addSocketHandlers()
@@ -212,6 +212,8 @@ class WsService {
       self.socket?.removeAllHandlers()
       self.socket?.disconnect()
       self.socket = nil
+      self.manager?.disconnect()
+      self.manager = nil
       self.invalidateTimer()
       dlog("socket disconnect manually")
     }
