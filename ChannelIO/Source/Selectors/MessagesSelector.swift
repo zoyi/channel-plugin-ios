@@ -55,7 +55,6 @@ func messageSelector(state: AppState, id: String?) -> CHMessage? {
         state: $0.state,
         messageType: $0.messageType,
         progress: $0.progress,
-        sortedFiles: $0.sortedFiles,
         translateState: $0.translateState
       )
     })
@@ -89,7 +88,6 @@ func messageSelector(state: AppState, type: MessageType) -> CHMessage? {
       state: $0.state,
       messageType: $0.messageType,
       progress: $0.progress,
-      sortedFiles: $0.sortedFiles,
       translateState: $0.translateState
     )
   })

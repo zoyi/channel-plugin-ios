@@ -283,10 +283,10 @@ class CHUtils {
     ua += deviceType == "iPhone" ? " iPhone" : ""
     ua += " OS \(UIDevice.current.systemVersion.replace(".", withString: "_"))"
     ua += " like Mac OS X)"
-    ua += " Mobile"
+    ua += deviceType == "iPhone" ? " Mobile" : ""
     ua += " ChannelSDK/\(version)"
 
-    //Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) Mobile ChannelPlugin/1.0.0
+    //com.zoyi.channel.plugin.sample/1.3 Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) Mobile ChannelSDK/7.0.0
     return ua
   }
   

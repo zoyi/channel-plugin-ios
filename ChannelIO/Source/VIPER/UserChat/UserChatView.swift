@@ -393,6 +393,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   }
   
   @objc private func didPressAssetButton() {
+    self.dismissKeyboard(true)
     self.presenter?.didClickOnClipButton(from: self)
   }
   
@@ -482,12 +483,17 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   }
   
   private func scrollToBottom(_ animated: Bool) {
-    guard self.tableView.numberOfRows(inSection: Sections.messages) > 0 else { return }
-    self.tableView.scrollToRow(
-      at: IndexPath(row: 0, section: Sections.messages),
-      at: .bottom,
-      animated: animated
-    )
+    guard self.tableView.numberOfRows(inSection: Sections.messages) > 0 else {
+      return
+    }
+    
+    dispatch {
+      self.tableView.scrollToRow(
+        at: IndexPath(row: 0, section: Sections.messages),
+        at: .bottom,
+        animated: animated
+      )
+    }
   }
 }
 

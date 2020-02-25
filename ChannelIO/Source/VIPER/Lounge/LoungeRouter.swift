@@ -13,21 +13,37 @@ import SVProgressHUD
 import MessageUI
 
 class LoungeRouter: NSObject, LoungeRouterProtocol {
+  private var isPushing = false
   var disposeBag = DisposeBag()
   
   func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
+    guard !isPushing else { return }
+    self.isPushing = true
     let controller = UserChatRouter.createModule(userChatId: chatId)
-    view?.navigationController?.pushViewController(controller, animated: animated)
+    view?.navigationController?
+      .pushViewController(viewController: controller, animated: animated) { [weak self] in
+      self?.isPushing = false
+    }
   }
   
   func pushChatList(from view: UIViewController?) {
+    guard !isPushing else { return }
+    self.isPushing = true
     let viewController = UserChatsViewController()
-    view?.navigationController?.pushViewController(viewController, animated: true)
+    view?.navigationController?
+      .pushViewController(viewController: viewController, animated: true) { [weak self] in
+      self?.isPushing = false
+    }
   }
   
   func pushSettings(from view: UIViewController?) {
+    guard !isPushing else { return }
+    self.isPushing = true
     let settingView = SettingRouter.createModule()
-    view?.navigationController?.pushViewController(settingView, animated: true)
+    view?.navigationController?
+      .pushViewController(viewController: settingView, animated: true) { [weak self] in
+      self?.isPushing = false
+    }
   }
 
   func presentBusinessHours(from view: UIViewController?) {
