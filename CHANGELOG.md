@@ -9,6 +9,10 @@
 ## Bug fixes
 * Fixed minor bugs
 
+# 6.1.24
+## Bug fixes
+* Cleaned up socketio connection properly
+
 # 6.1.23
 ## Bug fixes
 * Restore host window to be key window after insert uiwindow
