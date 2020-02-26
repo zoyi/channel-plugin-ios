@@ -50,8 +50,6 @@ extension CHAction: Mappable {
 struct CHActionButton {
   var key: String = ""
   var text: NSAttributedString? = nil
-  
-  var onlyEmoji: Bool = false
 }
 
 extension CHActionButton: Mappable {
@@ -67,7 +65,6 @@ extension CHActionButton: Mappable {
       ))
     
     text = transformer.parser.parseText(rawText)
-    onlyEmoji = transformer.parser.listener?.isOnlyEmoji ?? false
   }
 }
 

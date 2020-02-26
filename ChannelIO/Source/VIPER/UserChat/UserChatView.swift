@@ -437,8 +437,6 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       self.setMessageView(hidden: true, animated: false)
       self.dismissKeyboard(true)
     } else if self.presenter?.isProfileFocus != true {
-      self.fixedInset = false
-      self.adjustTableViewInset(bottomInset: 0.f)
       self.placeHolder != nil ?
         self.shouldShowInputBar = true : self.setMessageView(hidden: false, animated: false)
     }

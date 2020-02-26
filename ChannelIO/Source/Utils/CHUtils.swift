@@ -272,22 +272,27 @@ class CHUtils {
   }
   
   class func generateUserAgent() -> String {
-    let version = CHUtils.getSdkVersion() ?? "unknown"
-    let appBundleId = Bundle.main.bundleIdentifier ?? "unknown"
-    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
     let deviceType = UIDevice.current.model.hasPrefix("iPad") ? "iPad" : "iPhone"
-    var ua = "\(appBundleId)/\(appVersion)"
-    ua += " Mozilla/5.0"
+    var ua = "Mozilla/5.0"
     ua += " (\(deviceType);"
     ua += " CPU"
     ua += deviceType == "iPhone" ? " iPhone" : ""
     ua += " OS \(UIDevice.current.systemVersion.replace(".", withString: "_"))"
     ua += " like Mac OS X)"
-    ua += deviceType == "iPhone" ? " Mobile" : ""
-    ua += " ChannelSDK/\(version)"
-
-    //com.zoyi.channel.plugin.sample/1.3 Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) Mobile ChannelSDK/7.0.0
+    ua += " AppleWebKit/600.1.4 (KHTML, like Gecko)"
+    ua += " Mobile"
+    //Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile
     return ua
+  }
+  
+  class func getHostAppInfo() -> String? {
+    guard
+      let appBundleId = Bundle.main.bundleIdentifier,
+      let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+      return nil
+    }
+    
+    return "\(appBundleId)/\(appVersion)"
   }
   
   static func getSdkVersion() -> String? {

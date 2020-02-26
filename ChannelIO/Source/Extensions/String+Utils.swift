@@ -43,6 +43,20 @@ extension NSAttributedString {
       return self
     }
   }
+  
+  func split(seperateBy: String) -> [NSAttributedString] {
+    let input = self.string
+    let separatedInput = input.components(separatedBy: seperateBy)
+    var output = [NSAttributedString]()
+    var start = 0
+    for sub in separatedInput {
+      let range = NSRange(location: start, length: sub.utf16.count)
+      let attribStr = self.attributedSubstring(from: range)
+      output.append(attribStr)
+      start += range.length + seperateBy.count
+    }
+    return output
+  }
 }
 
 

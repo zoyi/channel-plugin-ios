@@ -189,7 +189,17 @@ enum RestRouter: URLRequestConvertible {
     }
     
     headers["Accept"] = "application/json"
+    
     headers["User-Agent"] = CHUtils.generateUserAgent()
+    
+    if let version = CHUtils.getSdkVersion() {
+      headers["x-channel-desk"] = "ios/" + version
+    }
+    
+    if let hostApp = CHUtils.getHostAppInfo() {
+      headers["x-host-app"] = hostApp
+    }
+    
     req.allHTTPHeaderFields = headers
     return req
   }
@@ -207,7 +217,17 @@ enum RestRouter: URLRequestConvertible {
     }
     
     headers["Accept"] = "application/json"
+    
     headers["User-Agent"] = CHUtils.generateUserAgent()
+    
+    if let version = CHUtils.getSdkVersion() {
+      headers["x-channel-desk"] = "ios/" + version
+    }
+    
+    if let hostApp = CHUtils.getHostAppInfo() {
+      headers["x-host-app"] = hostApp
+    }
+    
     req.allHTTPHeaderFields = headers
     return req
   }

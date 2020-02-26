@@ -52,28 +52,35 @@ class CHTextParserListener: TextBlockParserListener {
 
   func enterBlock(_ ctx: TextBlockParser.BlockContext) {}
   func exitBlock(_ ctx: TextBlockParser.BlockContext) {
-    self.isOnlyEmoji = true
-    for result in self.results {
-      if !result.string.containsOnlyEmoji {
-        self.isOnlyEmoji = false
-        break
+    var result: [NSAttributedString] = []
+    let attributedText = self.results.reduce(NSMutableAttributedString()) {
+      $0.append($1)
+      return $0
+    }
+
+    let texts = attributedText
+      .split(seperateBy: "\n")
+      .map { NSMutableAttributedString(attributedString: $0) }
+
+    for (index, text) in texts.enumerated() {
+      let onlyEmoji = text.string.containsOnlyEmoji
+      self.isOnlyEmoji = self.isOnlyEmoji && onlyEmoji
+      let font = onlyEmoji ? self.config.emojiOnlyFont : self.config.font
+      if onlyEmoji {
+        text.addAttribute(
+          .font,
+          value: font,
+          range: NSRange(location: 0, length: text.string.utf16.count)
+        )
+      }
+
+      result.append(text)
+      if index != texts.count - 1 {
+        result.append(NSAttributedString(string: "\n", attributes: [ .font : font ]))
       }
     }
 
-    if self.isOnlyEmoji {
-      let combined = self.results.reduce(NSMutableAttributedString()) {
-        $0.append($1)
-        return $0
-      }
-
-      combined.addAttribute(
-        .font,
-        value: self.config.emojiOnlyFont,
-        range: NSRange(location: 0, length: combined.string.utf16.count)
-      )
-
-      self.results = [combined]
-    }
+    self.results = result
   }
 
   func enterTag(_ ctx: TextBlockParser.TagContext) {

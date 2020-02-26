@@ -45,7 +45,7 @@ class TextMessageView : BaseView {
 
   let messageView = UITextView().then {
     $0.font = Font.messageView
-    $0.textAlignment = NSTextAlignment.left
+    $0.textAlignment = .left
     $0.backgroundColor = UIColor.clear
     $0.isScrollEnabled = false
     $0.isEditable = false
@@ -90,7 +90,7 @@ class TextMessageView : BaseView {
       return
     }
     self.isHidden = false
-    self.backgroundColor = displayText.string.containsOnlyEmoji ?
+    self.backgroundColor = viewModel.isOnlyEmoji ?
       UIColor.clear : viewModel.bubbleBackgroundColor
     let attrText = NSMutableAttributedString(attributedString: displayText)
     attrText.addAttribute(
@@ -98,6 +98,14 @@ class TextMessageView : BaseView {
       value: viewModel.textColor,
       range: NSRange(location: 0, length: attrText.string.utf16.count)
     )
+    if viewModel.isOnlyEmoji {
+      attrText.addAttribute(
+        .paragraphStyle,
+        value: UIFactory.onlyEmojiParagraphStyle,
+        range: NSRange(location: 0, length: attrText.string.utf16.count)
+      )
+    }
+    
     self.messageView.attributedText = attrText
     
     self.messageView.linkTextAttributes = [
@@ -147,11 +155,20 @@ class TextMessageView : BaseView {
 
     let maxWidth = width - Metrics.leftRightPadding * 2
     let topBottomPadding = Metrics.topBottomPadding * 2
-
+    
+    let attrText = NSMutableAttributedString(attributedString: text)
+    if model.isOnlyEmoji {
+      attrText.addAttribute(
+        .paragraphStyle,
+        value: UIFactory.onlyEmojiParagraphStyle,
+        range: NSRange(location: 0, length: attrText.string.utf16.count)
+      )
+    }
+    
     var viewHeight: CGFloat = 0
     placeHolder.textContainerInset = insets
     placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
-    placeHolder.attributedText = text
+    placeHolder.attributedText = attrText
     placeHolder.sizeToFit()
 
     viewHeight += placeHolder.frame.size.height + topBottomPadding

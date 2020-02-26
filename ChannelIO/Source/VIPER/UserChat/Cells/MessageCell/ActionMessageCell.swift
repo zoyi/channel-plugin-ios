@@ -77,7 +77,6 @@ class ActionMessageCell: MessageCell {
     viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
     height += ActionView.viewHeight(
-      fits: width,
       buttons: viewModel.action?.buttons ?? []
     ) + Metric.ActionViewTop
     
@@ -139,7 +138,6 @@ class ActionWebMessageCell: WebPageMessageCell {
     return height
       + Metric.ActionWebTop
       + ActionView.viewHeight(
-          fits: width,
           buttons: viewModel.action?.buttons ?? []
         )
   }
@@ -172,6 +170,7 @@ class ActionMediaMessageCell: MediaMessageCell {
   override func setLayouts() {
     super.setLayouts()
     self.messageBottomConstraint?.deactivate()
+    self.mediaViewBottomConstraint?.deactivate()
     
     self.actionView.snp.makeConstraints { make in
       make.top.equalTo(self.mediaCollectionView.snp.bottom).offset(Metric.ActionMediaTop)
@@ -189,6 +188,13 @@ class ActionMediaMessageCell: MediaMessageCell {
     super.configure(viewModel, dataSource: dataSource, presenter: presenter, row: row)
     self.messageId = viewModel.id
     self.actionView.configure(viewModel)
+    self.actionView.snp.remakeConstraints { make in
+      make.top.equalTo(self.mediaCollectionView.snp.bottom).offset(Metric.ActionMediaTop)
+           make.leading.equalToSuperview()
+           make.trailing.equalToSuperview().inset(Metric.ActionMediaTrailing)
+      make.height.equalTo(ActionView.viewHeight(buttons: viewModel.action?.buttons ?? []))
+      make.bottom.equalToSuperview()
+    }
   }
   
   override class func cellHeight(
@@ -198,7 +204,6 @@ class ActionMediaMessageCell: MediaMessageCell {
     return height
       + Metric.ActionMediaTop
       + ActionView.viewHeight(
-          fits: width,
           buttons: viewModel.action?.buttons ?? []
         )
   }

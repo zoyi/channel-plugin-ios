@@ -261,7 +261,8 @@ extension CHMessage: Mappable {
           CHMessageBlock(
             type: .text,
             value: trimmedMessage,
-            displayText: displayText
+            displayText: displayText,
+            isOnlyEmoji: transform.parser.listener?.isOnlyEmoji ?? false
           )
         ]
       }
@@ -298,7 +299,8 @@ extension CHMessage: Mappable {
           CHMessageBlock(
             type: .text,
             value: trimmedMessage,
-            displayText: displayText
+            displayText: displayText,
+            isOnlyEmoji: transform.parser.listener?.isOnlyEmoji ?? false
           )
         ]
       }
@@ -378,6 +380,12 @@ extension CHMessage {
       }
     }
     return videos + images + others
+  }
+  
+  var isOnlyEmoji: Bool {
+    return self.blocks
+      .map { $0.isOnlyEmoji }
+      .reduce(true) { $0 && $1 }
   }
   
   func isEmpty() -> Bool {
