@@ -352,10 +352,14 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   }
   
   func didClickOnMarketingToSupportBotButton() {
+    SVProgressHUD.show()
     self.interactor?
       .startMarketingToSupportBot()
       .observeOn(MainScheduler.instance)
-      .subscribe(onError: { [weak self] (error) in
+      .subscribe(onNext: { _ in
+        SVProgressHUD.dismiss()
+      }, onError: { [weak self] (error) in
+        SVProgressHUD.dismiss()
         self?.view?.display(error: error.localizedDescription, visible: true)
       }).disposed(by: self.disposeBag)
   }

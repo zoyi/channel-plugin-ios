@@ -271,7 +271,6 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
       let model = self.activeChats[indexPath.row]
       cell.configure(model)
-      cell.messageLabel.numberOfLines = Constants.maxNumberOfLines
       
       let button = MGSwipeButton(
         title: CHAssets.localized("ch.chat.delete"),

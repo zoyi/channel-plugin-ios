@@ -76,6 +76,7 @@ class CustomBlockTransform: TransformType {
     if var block = Mapper<CHMessageBlock>().map(JSONObject: value) {
       let text = self.parser.parse(block: block)
       block.displayText = text
+      block.isOnlyEmoji = self.parser.listener?.isOnlyEmoji ?? false
       return block
     }
 

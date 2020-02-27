@@ -22,6 +22,7 @@ struct CHMessageBlock {
   var value: String?
   
   var displayText: NSAttributedString?
+  var isOnlyEmoji: Bool = false
 }
 
 extension CHMessageBlock: Mappable, Equatable {

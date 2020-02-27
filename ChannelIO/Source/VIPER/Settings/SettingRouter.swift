@@ -13,15 +13,17 @@ class SettingRouter: SettingRouterProtocol {
   
   func pushLanguageSelector(from view: UIViewController?) {
     guard !isPushing else { return }
+    self.isPushing = true
     let viewController = LanguageOptionViewController()
     view?.navigationController?
       .pushViewController(viewController: viewController, animated: true) { [weak self] in
-      self?.isPushing = true
+      self?.isPushing = false
     }
   }
   
   func pushProfileSchemaEditor(with item: UserProfileItemModel, from view: UIViewController?) {
     guard !isPushing else { return }
+    self.isPushing = true
     var type: EditFieldType
     if item.rawData.key == "mobileNumber" {
       type = .phone
@@ -37,7 +39,7 @@ class SettingRouter: SettingRouterProtocol {
     )
     view?.navigationController?
       .pushViewController(viewController: viewController, animated: true)  { [weak self] in
-      self?.isPushing = true
+      self?.isPushing = false
     }
   }
   

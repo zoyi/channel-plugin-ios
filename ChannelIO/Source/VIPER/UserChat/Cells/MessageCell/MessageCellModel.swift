@@ -39,6 +39,7 @@ protocol MessageCellModelType {
   var showTranslation: Bool { get }
   var isDeleted: Bool { get }
   var canTranslate: Bool { get }
+  var isOnlyEmoji: Bool { get }
 }
 
 struct MessageCellModel: MessageCellModelType {
@@ -75,6 +76,7 @@ struct MessageCellModel: MessageCellModelType {
   var translateState: CHMessageTranslateState = .original
   var isDeleted: Bool
   let canTranslate: Bool
+  let isOnlyEmoji: Bool
   
   init(message: CHMessage, previous: CHMessage?, row: Int? = nil) {
     let channel = mainStore.state.channel
@@ -147,5 +149,6 @@ struct MessageCellModel: MessageCellModelType {
     self.translateState = message.translateState
 
     self.isDeleted = message.removed
+    self.isOnlyEmoji = message.isOnlyEmoji
   }
 }

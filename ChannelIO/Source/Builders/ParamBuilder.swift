@@ -56,10 +56,18 @@ class BootParamBuilder: ParamBuilder {
     guard let profile = self.profile else { return nil }
     
     var params = [String: AnyObject?]()
-    params["name"] = profile.name as AnyObject?
-    params["email"] = profile.email as AnyObject?
-    params["mobileNumber"] = profile.mobileNumber as AnyObject?
-    params["avatarUrl"] = profile.avatarUrl as AnyObject?
+    if let name = profile.name as AnyObject? {
+      params["name"] = name
+    }
+    if let email = profile.email as AnyObject? {
+      params["email"] = email
+    }
+    if let mobileNumber = profile.mobileNumber as AnyObject? {
+      params["mobileNumber"] = mobileNumber
+    }
+    if let avatarUrl = profile.avatarUrl as AnyObject? {
+      params["avatarUrl"] = avatarUrl
+    }
     
     let merged = params.merging(profile.property, uniquingKeysWith: { (first, _) in first })
     return merged

@@ -19,8 +19,6 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     static let mediaInSideMargin = 40.f
     static let mediaOutSideMargin = 75.f
     static let mediaTop = 6.f
-    static let mediaTopToName = 6.f
-    static let mediaTopToText = 6.f
     static let mediaTopToTextTranslate = 20.f
   }
 
@@ -34,6 +32,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
   var leftTextViewConstraint: Constraint?
   var leftConstraint: Constraint?
   var rightConstraint: Constraint?
+  var mediaViewBottomConstraint: Constraint?
 
   override func initialize() {
     super.initialize()
@@ -48,9 +47,9 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
       self.mediaTopConstraint = make.top.equalToSuperview()
         .inset(Metric.mediaTop).priority(750).constraint
       self.mediaTopToNameTopConstraint = make.top.equalTo(self.usernameLabel.snp.bottom)
-        .offset(Metric.mediaTopToName).priority(850).constraint
+        .offset(Metric.mediaTop).priority(850).constraint
       self.mediaTopToTextViewTopContraint = make.top.equalTo(self.translateView.snp.bottom)
-        .offset(Metric.mediaTopToText).constraint
+        .offset(Metric.mediaTop).constraint
       self.leftTextViewConstraint = make.leading.equalTo(self.textView.snp.leading)
         .priority(750).constraint
       self.leftConstraint = make.leading.equalToSuperview()
@@ -58,7 +57,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
       self.rightConstraint = make.trailing.equalToSuperview()
         .inset(Metric.mediaOutSideMargin).constraint
       
-      make.bottom.equalToSuperview()
+      self.mediaViewBottomConstraint = make.bottom.equalToSuperview().constraint
     }
   }
 
@@ -73,8 +72,8 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     let bubbleMaxWidth = viewModel.createdByMe ?
       width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
       width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
-    
-    height += MediaCollectionView.viewHeight(fit: bubbleMaxWidth, models: viewModel.files) + 8
+    height += Metric.mediaTop
+    height += MediaCollectionView.viewHeight(fit: bubbleMaxWidth, models: viewModel.files)
     return height
   }
 
@@ -92,7 +91,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()
     } else if viewModel.text != nil {
-      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTopToText)
+      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTop)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()

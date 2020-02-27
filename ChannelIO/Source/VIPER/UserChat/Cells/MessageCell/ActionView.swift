@@ -37,13 +37,12 @@ class ActionButton: UIButton {
   var key: String = ""
   var text: NSAttributedString? = nil
   var selectedColor: UIColor? = nil
-  var onlyEmoji: Bool = false
   
   var selectedTextColor: UIColor? = nil {
     didSet {
       guard let color = self.selectedTextColor else { return }
       let text = self.text?.addFont(
-        self.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
+        UIFont.systemFont(ofSize: 15),
         color: color,
         on: NSRange(location:0, length: self.text?.length ?? 0))
       
@@ -82,10 +81,9 @@ class ActionButton: UIButton {
     super.init(frame: CGRect.zero)
     self.text = button.text
     self.key = button.key
-    self.onlyEmoji = button.onlyEmoji
     
     self.text = self.text?.addFont(
-      button.onlyEmoji ? UIFont.systemFont(ofSize: 15) : UIFont.systemFont(ofSize: 15),
+      UIFont.systemFont(ofSize: 15),
       color: CHColors.dark80,
       on: NSRange(location:0, length: button.text?.length ?? 0))
     
@@ -226,7 +224,7 @@ class ActionView: BaseView {
     return self.actionSubject.asObservable()
   }
   
-  class func viewHeight(fits width: CGFloat, buttons: [CHActionButton]) -> CGFloat {
+  class func viewHeight(buttons: [CHActionButton]) -> CGFloat {
     var cx = 0.f, cy = 0.f
 
     let layout = ActionViewMarginLayout()
