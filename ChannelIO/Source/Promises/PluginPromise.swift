@@ -19,8 +19,7 @@ struct PluginPromise {
       let params = [
         "body": [
           "key": "ios-" + key,
-          "token": token,
-          "sdkVersion": CHUtils.getSdkVersion()
+          "token": token
         ]
       ]
       

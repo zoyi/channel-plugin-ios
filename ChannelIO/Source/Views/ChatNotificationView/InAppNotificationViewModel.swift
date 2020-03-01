@@ -76,6 +76,17 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         )
       }
       self.message = result
+    } else if let webPage = push.webPage {
+      let text = webPage.title ?? webPage.url?.absoluteString ?? ""
+      let attributedText = NSMutableAttributedString(string: text)
+      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
+      attributedText.addAttributes(
+        [.font: UIFont.systemFont(ofSize: fontSize),
+         .paragraphStyle: UIFactory.pushParagraphStyle
+        ],
+        range: NSRange(location: 0, length: text.count)
+      )
+      self.message = attributedText
     }
     
     self.hasText = self.message != nil && self.message?.string != ""

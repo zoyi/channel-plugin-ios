@@ -108,7 +108,7 @@ enum RestRouter: URLRequestConvertible {
     
     switch self {
     case .Boot(let pluginKey, _):
-      return "/front/plugins/\(pluginKey)/boot"
+      return "/front/elastic/plugins/\(pluginKey)/boot"
     case .CampaignClick(let campaignId):
       return "/front/campaigns/\(campaignId)/click"
     case .CampaignView(let campaignId):
@@ -136,11 +136,11 @@ enum RestRouter: URLRequestConvertible {
     case .GetLounge(let pluginId, _):
       return "/front/plugins/\(pluginId)/lounge"
     case .GetPlugin(let pluginKey):
-      return "/front/plugins/\(pluginKey)"
+      return "/front/elastic/plugins/\(pluginKey)"
     case .GetUserChats:
       return "/front/user-chats"
     case .GetGeoIP:
-      return "/geoip"
+      return "/request/geo-ip"
     case .GetUserChat(let userChatId):
       return "/front/user-chats/\(userChatId)"
     case .GetProfileBotSchemas(let pluginId):
@@ -154,7 +154,7 @@ enum RestRouter: URLRequestConvertible {
     case .ReviewUserChat(let userChatId, _):
       return "/front/user-chats/\(userChatId)/review"
     case .RegisterToken:
-      return "/front/push-tokens"
+      return "/front/elastic/push-tokens"
     case .ReplySupportBot(let userChatId, let buttonKey, _):
       return "/front/user-chats/\(userChatId)/support-bot/buttons/\(buttonKey)"
     case .SetMessagesRead(let userChatId):
@@ -162,13 +162,13 @@ enum RestRouter: URLRequestConvertible {
     case .SendPushAck(let userChatId):
       return "/front/user-chats/\(userChatId)/messages/receive"
     case .SendEvent(let pluginId, _):
-      return "/front/plugins/\(pluginId)/events"
+      return "/front/elastic/plugins/\(pluginId)/events"
     case .StartMarketingToSupportBot(let userChatId, let supportBotId):
       return "/front/user-chats/\(userChatId)/support-bots/\(supportBotId)"
     case .Translate(let userChatId, let messageId, _):
       return "/front/user-chats/\(userChatId)/messages/\(messageId)/translate"
     case .TouchUser(let pluginId, _):
-      return "/front/plugins/\(pluginId)/touch"
+      return "/front/elastic/plugins/\(pluginId)/touch"
     case .UpdateProfileItem(let userChatId, let messageId, _):
       return "/front/user-chats/\(userChatId)/messages/\(messageId)/profile-bot"
     case .UploadFile(let userChatId, _):
@@ -176,7 +176,7 @@ enum RestRouter: URLRequestConvertible {
     case .UpdateUser(_):
       return "/front/users/me"
     case .UnregisterToken(let key):
-      return "/front/push-tokens/\(key)"
+      return "/front/elastic/push-tokens/\(key)"
     }
   }
   
@@ -193,7 +193,7 @@ enum RestRouter: URLRequestConvertible {
     headers["User-Agent"] = CHUtils.generateUserAgent()
     
     if let version = CHUtils.getSdkVersion() {
-      headers["x-channel-desk"] = "ios/" + version
+      headers["x-channel-sdk"] = "ios/" + version
     }
     
     if let hostApp = CHUtils.getHostAppInfo() {
@@ -221,7 +221,7 @@ enum RestRouter: URLRequestConvertible {
     headers["User-Agent"] = CHUtils.generateUserAgent()
     
     if let version = CHUtils.getSdkVersion() {
-      headers["x-channel-desk"] = "ios/" + version
+      headers["x-channel-sdk"] = "ios/" + version
     }
     
     if let hostApp = CHUtils.getHostAppInfo() {

@@ -10,7 +10,7 @@ import UIKit
 class MediaCollectionView: BaseView {
   private struct Metrics {
     static let fileViewHeight = 70.f
-    static let collectionMargin = 8.f
+    static let collectionMargin = 6.f
     static let mediaMinHeight = 56.f
   }
   var collectionView: UICollectionView!
@@ -34,8 +34,8 @@ class MediaCollectionView: BaseView {
       verticalAlignment: .center
     ).then {
       $0.scrollDirection = .vertical
-      $0.minimumInteritemSpacing = 8
-      $0.minimumLineSpacing = 8
+      $0.minimumInteritemSpacing = 6
+      $0.minimumLineSpacing = 6
     }
     self.collectionView = UICollectionView(
       frame: CGRect.zero, collectionViewLayout: flowLayout

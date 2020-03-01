@@ -242,7 +242,8 @@ class CHTextParserListener: TextBlockParserListener {
       attributes: [
         .foregroundColor: self.config.textColor,
         .font: self.config.font,
-        .paragraphStyle: self.config.style
+        .paragraphStyle: self.config.style,
+        .baselineOffset: (self.config.style.minimumLineHeight - self.config.font.lineHeight)/4
       ])
 
     content.merge(with: attributedString)
@@ -380,7 +381,8 @@ class CHTextParserListener: TextBlockParserListener {
       attributes: [
         .font: font,
         .foregroundColor: self.config.textColor,
-        .paragraphStyle: self.config.style
+        .paragraphStyle: self.config.style,
+        .baselineOffset: (self.config.style.minimumLineHeight - font.lineHeight)/4
       ])
   }
 }

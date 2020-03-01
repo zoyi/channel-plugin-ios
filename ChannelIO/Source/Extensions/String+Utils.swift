@@ -131,7 +131,8 @@ extension String {
     let attributes: [NSAttributedString.Key: Any] = [
       .foregroundColor: color,
       .font: font,
-      .paragraphStyle: paragraphStyle
+      .paragraphStyle: paragraphStyle,
+      .baselineOffset: (paragraphStyle.minimumLineHeight - font.lineHeight)/4
     ]
     
     return NSMutableAttributedString(string: self, attributes: attributes)

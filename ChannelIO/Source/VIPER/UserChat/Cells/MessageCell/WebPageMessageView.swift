@@ -16,6 +16,7 @@ final class WebPageMessageView: BaseView {
     static let componentInSectionTop = 2.f
     static let componentInSectionBottom = 2.f
     static let imageViewBottom = 10.f
+    static let imageViewBottomWithoutThumb = 3.f
     static let sectionBarTrailing = 10.f
     static let descTop = 5.f
     static let providerTop = 8.f
@@ -24,6 +25,7 @@ final class WebPageMessageView: BaseView {
     static let titleMaxLines = 1
     static let descMaxLines = 2
     static let webPageMessageViewBottom = 10.f
+    static let stackViewSpacing = 2.f
   }
   
   private struct Fonts {
@@ -55,7 +57,7 @@ final class WebPageMessageView: BaseView {
   private let infoStackView = UIStackView().then {
     $0.axis = .vertical
     $0.alignment = .leading
-    $0.spacing = 2.f
+    $0.spacing = Metrics.stackViewSpacing
   }
 
   private let titleLabel = UILabel().then {
@@ -73,24 +75,32 @@ final class WebPageMessageView: BaseView {
   private let providerView = VideoProviderView()
 
   private var imageHeightConstraint: Constraint?
+  private var sectionTopConstraints: Constraint?
 
   class func viewHeight(fits width: CGFloat, webpage: CHWebPage) -> CGFloat {
     var height: CGFloat = 0
     height += webpage.thumbUrl != nil ?
-      Metrics.imageHeight + Metrics.imageViewBottom : 0
+      Metrics.imageHeight + Metrics.imageViewBottom : Metrics.imageViewBottomWithoutThumb
     
     height += Metrics.componentInSectionTop
-    if let title = webpage.title {
-      height += title.height(
-        fits: width - Metrics.sectionBarTrailing - Metrics.sectionBarWidth,
-        font: Fonts.title, maximumNumberOfLines: Metrics.titleMaxLines
-      )
+  
+    if webpage.title != nil {
+      height += 17
     }
+    
     if let description = webpage.desc {
-      height += webpage.title != nil ? Metrics.descTop : 0
-      let text = description.addLineHeight(height: 17, font: Fonts.desc, color: .grey500)
+      let contentWidth = width
+        - Metrics.sectionBarWidth
+        - Metrics.sectionBarTrailing
+        - Metrics.sectionBarWidth
+      height += webpage.title != nil ? Metrics.stackViewSpacing : 0
+      let text = description.addLineHeight(
+        height: 17,
+        font: Fonts.desc,
+        color: .grey500
+      )
       height += text.height(
-        fits: width - Metrics.sectionBarTrailing - Metrics.sectionBarWidth,
+        fits: contentWidth,
         maximumNumberOfLines: Metrics.descMaxLines
       )
     }
@@ -117,7 +127,10 @@ final class WebPageMessageView: BaseView {
     self.addSubview(self.infoStackView)
     
     if #available(iOS 11.0, *) {
-      self.infoStackView.setCustomSpacing(8, after: self.descriptionLabel)
+      self.infoStackView.setCustomSpacing(
+        Metrics.providerTop,
+        after: self.descriptionLabel
+      )
     }
   }
 
@@ -143,9 +156,10 @@ final class WebPageMessageView: BaseView {
     self.sectionBar.snp.makeConstraints { make in
       make.width.equalTo(Metrics.sectionBarWidth)
       make.leading.equalToSuperview()
-      make.top.equalTo(self.imageView.snp.bottom).offset(Metrics.imageViewBottom)
+      self.sectionTopConstraints =  make.top.equalTo(self.imageView.snp.bottom)
+        .offset(Metrics.imageViewBottom).constraint
       make.bottom.equalTo(self.infoStackView.snp.bottom)
-        .inset(Metrics.componentInSectionBottom)
+        .offset(Metrics.componentInSectionBottom)
     }
     
     self.infoStackView.snp.makeConstraints { make in
@@ -153,6 +167,10 @@ final class WebPageMessageView: BaseView {
       make.leading.equalTo(self.sectionBar.snp.trailing)
         .offset(Metrics.sectionBarTrailing)
       make.trailing.equalToSuperview()
+    }
+    
+    self.titleLabel.snp.makeConstraints { (make) in
+      make.height.equalTo(17.f)
     }
 
     self.providerView.snp.makeConstraints { make in
@@ -162,7 +180,12 @@ final class WebPageMessageView: BaseView {
 
   func configure(with webPage: CHWebPage, mkInfo: MarketingInfo? = nil) {
     self.titleLabel.text = webPage.title
-    self.descriptionLabel.text = webPage.desc
+    self.descriptionLabel.attributedText = webPage.desc?.addLineHeight(
+      height: 17,
+      font: Fonts.desc,
+      color: .grey500,
+      lineBreakMode: .byTruncatingTail
+    )
     
     if webPage.isPlayable {
       self.videoView.configure(with: webPage, mkInfo: mkInfo)
@@ -177,7 +200,12 @@ final class WebPageMessageView: BaseView {
     self.providerView.isHidden = webPage.publisher == nil
     self.providerView.configure(publisher: webPage.publisher, title: webPage.author)
     
-    self.imageHeightConstraint?.update(offset: webPage.thumbUrl == nil ? 0 : Metrics.imageHeight)
+    self.imageHeightConstraint?.update(
+      offset: webPage.thumbUrl == nil ? 0 : Metrics.imageHeight
+    )
+    self.sectionTopConstraints?.update(offset: webPage.thumbUrl != nil ?
+      Metrics.imageViewBottom : Metrics.imageViewBottomWithoutThumb
+    )
   }
   
   func configure(message: CHMessage) {

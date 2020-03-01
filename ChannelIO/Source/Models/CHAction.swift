@@ -9,10 +9,6 @@
 import Foundation
 import ObjectMapper
 
-enum ActionOptionKey: String {
-  case disableToManager
-}
-
 enum ActionType: String {
   case select
   case button
@@ -25,7 +21,6 @@ struct CHAction {
   var type: ActionType = .select
   var buttons: [CHActionButton] = []
   var closed: Bool = false
-  var option: [ActionOptionKey: Bool] = [:]
   
   static func create(botEntry: CHSupportBotEntryInfo) -> CHAction {
     var action = CHAction()
@@ -42,8 +37,15 @@ extension CHAction: Mappable {
   mutating func mapping(map: Map) {
     type        <- map["type"]
     buttons     <- map["buttons"]
-    option      <- map["option"]
     closed      <- map["closed"]
+  }
+}
+
+extension CHAction {
+  var displayText: String {
+    return self.buttons
+      .compactMap{ $0.text?.string }
+      .reduce("") { $0 == "" ? "[\($1)]" : $0 + ", [\($1)]" }
   }
 }
 

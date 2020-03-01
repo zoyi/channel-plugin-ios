@@ -74,6 +74,8 @@ class FileStatusCell: BaseTableViewCell {
     $0.setImage(CHAssets.getImage(named: "cancelSmall.png"), for: .normal)
   }
   
+  private var isProgressShimmering = false
+  
   private var removeSignal = PublishRelay<Any?>()
   private var retrySignal = PublishRelay<Any?>()
 
@@ -137,9 +139,11 @@ class FileStatusCell: BaseTableViewCell {
       self.progressView.isHidden = false
       self.progressView.setProgress(Float(item.progress), animated: false)
       self.displayName(with: item.name)
-      if item.progress == 1 {
+      if item.progress == 1, !self.isProgressShimmering {
+        self.isProgressShimmering = true
         self.progressView.startShimmeringAnimation(animationSpeed: 4.0)
       } else {
+        self.isProgressShimmering = false
         self.progressView.stopShimmeringAnimation()
       }
     }

@@ -50,8 +50,6 @@ protocol UserChatViewProtocol: class {
   
   func updateNavigation(userChat: CHUserChat?)
   func updateInputBar(state: MessageViewState)
-  
-  func reloadTableView()
   func setPreloadtext(with text: String)
 }
 

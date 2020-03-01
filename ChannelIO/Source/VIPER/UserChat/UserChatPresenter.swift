@@ -88,13 +88,13 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   private func showLocalMessageIfNeed() {
     if supportBotEntrySelector(state: mainStore.state) != nil && self.userChatId == nil {
+      self.requestRead()
+      self.view?.display(userChat: self.userChat, channel: mainStore.state.channel)
       mainStore.dispatch(InsertSupportBotEntry())
-      self.requestRead()
-      self.view?.display(userChat: self.userChat, channel: mainStore.state.channel)
     } else if self.userChatId == nil {
-      mainStore.dispatch(InsertWelcome())
       self.requestRead()
       self.view?.display(userChat: self.userChat, channel: mainStore.state.channel)
+      mainStore.dispatch(InsertWelcome())
     }
   }
   
@@ -381,7 +381,6 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           let updatedValue = message.profileBot?.filter { $0.key == key }.first?.value
           ChannelIO.delegate?.onChangeProfile?(key: key, value: updatedValue)
           mainStore.dispatch(UpdateMessage(payload: message))
-          self?.view?.reloadTableView()
           subscriber.onNext(true)
           subscriber.onCompleted()
         }, onError: { (error) in
@@ -718,7 +717,6 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           text: value,
           originId: originId,
           key: key)
-        mainStore.dispatch(CreateMessage(payload: msg))
         return CHSupportBot.reply(with: msg, actionId: message?.id)
       }
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in

@@ -75,10 +75,14 @@ class TextMessageView : BaseView {
     super.setLayouts()
 
     self.messageView.snp.makeConstraints { make in
-      self.leadingConstraint = make.leading.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self.topConstraint = make.top.equalToSuperview().inset(Metrics.topBottomPadding).constraint
-      self.trailingConstraint = make.trailing.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self.bottomConstraint = make.bottom.equalToSuperview().inset(Metrics.topBottomPadding).constraint
+      self.leadingConstraint = make.leading.equalToSuperview()
+        .inset(Metrics.leftRightPadding).constraint
+      self.topConstraint = make.top.equalToSuperview()
+        .inset(Metrics.topBottomPadding).constraint
+      self.trailingConstraint = make.trailing.equalToSuperview()
+        .inset(Metrics.leftRightPadding).constraint
+      self.bottomConstraint = make.bottom.equalToSuperview()
+        .inset(Metrics.topBottomPadding).constraint
       make.width.greaterThanOrEqualTo(Metrics.textViewMinimalWidth)
     }
   }
@@ -102,6 +106,12 @@ class TextMessageView : BaseView {
       attrText.addAttribute(
         .paragraphStyle,
         value: UIFactory.onlyEmojiParagraphStyle,
+        range: NSRange(location: 0, length: attrText.string.utf16.count)
+      )
+      
+      attrText.addAttribute(
+        .baselineOffset,
+        value: (UIFactory.onlyEmojiParagraphStyle.minimumLineHeight -  Font.messageView.lineHeight)/4,
         range: NSRange(location: 0, length: attrText.string.utf16.count)
       )
     }
@@ -132,9 +142,15 @@ class TextMessageView : BaseView {
     if self.viewModel?.isContinuous == true {
       self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
     } else if self.viewModel?.createdByMe == true {
-      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
+      self.roundCorners(
+        corners: [.topLeft, .bottomRight, .bottomLeft],
+        radius: Constants.cornerRadius
+      )
     } else {
-      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
+      self.roundCorners(
+        corners: [.topRight, .bottomRight, .bottomLeft],
+        radius: Constants.cornerRadius
+      )
     }
   }
   

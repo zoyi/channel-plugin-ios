@@ -37,7 +37,7 @@ class UserViewController : UIViewController {
       .set(mobileNumber: self.phoneField.text ?? "")
     
     if pluginKey == "" {
-      pluginKey = "e09962dd-4722-41c6-98d5-bd39c3a6d9eb"
+      pluginKey = "97ff2ea9-1c66-40d3-813c-25c562d5404f"
     }
     
     let settings = ChannelPluginSettings(pluginKey: pluginKey)

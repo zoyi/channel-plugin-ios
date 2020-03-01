@@ -136,7 +136,7 @@ extension UIViewController {
     insetView.tag = UIViewController.insetBackgroundViewTag
     insetView.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(insetView)
-    view.sendSubviewToBack(insetView)
+    view.bringSubviewToFront(insetView)
     
     insetView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     insetView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true

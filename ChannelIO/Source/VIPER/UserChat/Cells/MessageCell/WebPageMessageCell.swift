@@ -12,15 +12,17 @@ import SnapKit
 
 class WebPageMessageCell: MessageCell {
   private struct Metrics {
-    static let webViewWithTranslateTop = 20.f
-    static let webViewWithoutTranslateTop = 3.f
+    static let webViewTranslateTop = 3.f
     static let resendButtonRight = -4.f
     static let resendButtonSide = 40.f
+    static let webViewBottom = 8.f
   }
   
   let webView = WebPageMessageView()
   
-  private var topConstraint: Constraint?
+  private var webViewTopConstraint: Constraint?
+  private var webViewTopToNameTopConstraint: Constraint?
+  private var webViewTopToTranslateConstraint: Constraint?
   private var trailingConstraint: Constraint?
   private var leadingConstraint: Constraint?
   var webBottomConstraint: Constraint?
@@ -35,13 +37,18 @@ class WebPageMessageCell: MessageCell {
     self.messageBottomConstraint?.deactivate()
     
     self.webView.snp.makeConstraints { make in
-      self.topConstraint = make.top.equalTo(self.translateView.snp.bottom)
-        .offset(Metrics.webViewWithoutTranslateTop).constraint
+      self.webViewTopConstraint = make.top.equalToSuperview()
+        .inset(Metrics.webViewTranslateTop).priority(750).constraint
+      self.webViewTopToNameTopConstraint = make.top.equalTo(self.usernameLabel.snp.bottom)
+        .offset(Metrics.webViewTranslateTop).priority(850).constraint
+      self.webViewTopToTranslateConstraint = make.top.equalTo(self.translateView.snp.bottom)
+        .offset(Metrics.webViewTranslateTop).constraint
       self.trailingConstraint = make.right.equalToSuperview()
         .inset(Metric.cellRightPadding).constraint
       self.leadingConstraint = make.left.equalToSuperview()
         .inset(Metric.messageLeftMinMargin).constraint
-      self.webBottomConstraint = make.bottom.equalToSuperview().constraint
+      self.webBottomConstraint = make.bottom.equalToSuperview()
+        .inset(Metrics.webViewBottom).constraint
     }
     
     self.resendButton.snp.remakeConstraints { make in
@@ -67,6 +74,24 @@ class WebPageMessageCell: MessageCell {
     self.webView.isHidden = false
     self.webView.configure(message: viewModel.message)
     
+    if viewModel.showTranslation {
+      self.webViewTopToTranslateConstraint?.activate()
+      self.webViewTopConstraint?.deactivate()
+      self.webViewTopToNameTopConstraint?.deactivate()
+    } else if viewModel.text != nil {
+      self.webViewTopToTranslateConstraint?.activate()
+      self.webViewTopConstraint?.deactivate()
+      self.webViewTopToNameTopConstraint?.deactivate()
+    } else if viewModel.isContinuous {
+      self.webViewTopToTranslateConstraint?.deactivate()
+      self.webViewTopConstraint?.activate()
+      self.webViewTopToNameTopConstraint?.deactivate()
+    } else {
+      self.webViewTopToTranslateConstraint?.deactivate()
+      self.webViewTopConstraint?.deactivate()
+      self.webViewTopToNameTopConstraint?.activate()
+    }
+    
     if viewModel.createdByMe == true {
       self.trailingConstraint?.update(inset: Metric.cellRightPadding)
       self.leadingConstraint?.update(inset: Metric.messageLeftMinMargin)
@@ -74,18 +99,14 @@ class WebPageMessageCell: MessageCell {
       self.trailingConstraint?.update(inset: Metric.messageRightMinMargin)
       self.leadingConstraint?.update(inset: Metric.bubbleLeftMargin)
     }
-    
-    self.topConstraint?.update(offset: viewModel.showTranslation ?
-      Metrics.webViewWithTranslateTop :
-      Metrics.webViewWithoutTranslateTop
-    )
   }
   
-  override class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
+  override class func cellHeight(
+    fits width: CGFloat,
+    viewModel: MessageCellModelType) -> CGFloat {
     var height = super.cellHeight(fits: width, viewModel: viewModel)
     
-    height += viewModel.showTranslation ?
-      Metrics.webViewWithTranslateTop : Metrics.webViewWithoutTranslateTop
+    height += Metrics.webViewTranslateTop
     
     let bubbleMaxWidth = viewModel.createdByMe ?
       width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
@@ -94,6 +115,6 @@ class WebPageMessageCell: MessageCell {
     if let webpage = viewModel.webpage {
       height += WebPageMessageView.viewHeight(fits: bubbleMaxWidth, webpage: webpage)
     }
-    return height
+    return height + Metrics.webViewBottom
   }
 }

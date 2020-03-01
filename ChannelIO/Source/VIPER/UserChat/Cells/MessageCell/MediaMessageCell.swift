@@ -19,7 +19,6 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     static let mediaInSideMargin = 40.f
     static let mediaOutSideMargin = 75.f
     static let mediaTop = 6.f
-    static let mediaTopToTextTranslate = 20.f
   }
 
   var mediaCollectionView = MediaCollectionView()
@@ -86,7 +85,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     self.mediaCollectionView.configure(models: viewModel.files)
 
     if viewModel.showTranslation {
-      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTopToTextTranslate)
+      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTop)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()
