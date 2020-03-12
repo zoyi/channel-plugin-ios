@@ -131,6 +131,10 @@ final class UserChatCell: BaseTableViewCell {
       make.height.equalTo(Metrics.badgeHeight)
     }
   }
+  
+  override func prepareForReuse() {
+    super.prepareForReuse()
+  }
 
   func configure(_ viewModel: UserChatCellModelType) {
     self.titleLabel.text = viewModel.title

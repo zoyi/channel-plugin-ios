@@ -29,11 +29,12 @@ class ProfileExtendableView: BaseView {
     paragraph.minimumLineHeight = 16.f
     paragraph.lineBreakMode = CHAssets.localized("ch.agreement").guessLanguage() == "日本語" ?
       .byCharWrapping : .byWordWrapping
-
+    let font = UIFont.systemFont(ofSize: 11)
     let attributes: [NSAttributedString.Key: Any] = [
-      .font: UIFont.systemFont(ofSize: 11),
+      .font: font,
       .foregroundColor: CHColors.blueyGrey,
-      .paragraphStyle: paragraph
+      .paragraphStyle: paragraph,
+      .baselineOffset: (paragraph.minimumLineHeight - font.lineHeight)/4
     ]
     
     let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
@@ -142,7 +143,9 @@ class ProfileExtendableView: BaseView {
         }
         
         if self.shouldBecomeFirstResponder {
-          itemView?.responder.becomeFirstResponder()
+          dispatch(delay: 0.3) {
+            itemView?.responder.becomeFirstResponder()
+          }
         }
         
         itemView?.view.snp.makeConstraints({ (make) in
@@ -175,18 +178,20 @@ class ProfileExtendableView: BaseView {
       paragraph.alignment = .center
       paragraph.minimumLineHeight = 16.f
       paragraph.lineBreakMode = .byCharWrapping
-
+      let font = UIFont.systemFont(ofSize: 11)
       let attributes: [NSAttributedString.Key: Any] = [
-        .font: UIFont.systemFont(ofSize: 11),
+        .font: font,
         .foregroundColor: CHColors.blueyGrey,
-        .paragraphStyle: paragraph
+        .paragraphStyle: paragraph,
+        .baselineOffset: (paragraph.minimumLineHeight - font.lineHeight)/4
       ]
       
       let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
         StringTagType.bold:[
-          .font: UIFont.boldSystemFont(ofSize: 11),
+          .font: font,
           .foregroundColor: CHColors.blueyGrey,
-          .paragraphStyle: paragraph
+          .paragraphStyle: paragraph,
+          .baselineOffset: (paragraph.minimumLineHeight - font.lineHeight)/4
         ]
       ]
       

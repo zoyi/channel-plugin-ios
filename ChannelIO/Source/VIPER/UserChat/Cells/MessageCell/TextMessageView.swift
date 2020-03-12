@@ -9,11 +9,6 @@
 import Foundation
 import SnapKit
 
-let placeHolder = UITextView().then {
-  $0.textContainer.lineFragmentPadding = 0
-  $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
-}
-
 class TextMessageView : BaseView {
   private struct Metrics {
     static let topBottomPadding = 10.f
@@ -75,10 +70,14 @@ class TextMessageView : BaseView {
     super.setLayouts()
 
     self.messageView.snp.makeConstraints { make in
-      self.leadingConstraint = make.leading.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self.topConstraint = make.top.equalToSuperview().inset(Metrics.topBottomPadding).constraint
-      self.trailingConstraint = make.trailing.equalToSuperview().inset(Metrics.leftRightPadding).constraint
-      self.bottomConstraint = make.bottom.equalToSuperview().inset(Metrics.topBottomPadding).constraint
+      self.leadingConstraint = make.leading.equalToSuperview()
+        .inset(Metrics.leftRightPadding).constraint
+      self.topConstraint = make.top.equalToSuperview()
+        .inset(Metrics.topBottomPadding).constraint
+      self.trailingConstraint = make.trailing.equalToSuperview()
+        .inset(Metrics.leftRightPadding).constraint
+      self.bottomConstraint = make.bottom.equalToSuperview()
+        .inset(Metrics.topBottomPadding).constraint
       make.width.greaterThanOrEqualTo(Metrics.textViewMinimalWidth)
     }
   }
@@ -98,16 +97,7 @@ class TextMessageView : BaseView {
       value: viewModel.textColor,
       range: NSRange(location: 0, length: attrText.string.utf16.count)
     )
-    if viewModel.isOnlyEmoji {
-      attrText.addAttribute(
-        .paragraphStyle,
-        value: UIFactory.onlyEmojiParagraphStyle,
-        range: NSRange(location: 0, length: attrText.string.utf16.count)
-      )
-    }
-    
     self.messageView.attributedText = attrText
-    
     self.messageView.linkTextAttributes = [
       .foregroundColor: viewModel.linkColor,
       .underlineStyle: 1
@@ -132,9 +122,15 @@ class TextMessageView : BaseView {
     if self.viewModel?.isContinuous == true {
       self.roundCorners(corners: [.allCorners], radius: Constants.cornerRadius)
     } else if self.viewModel?.createdByMe == true {
-      self.roundCorners(corners: [.topLeft, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
+      self.roundCorners(
+        corners: [.topLeft, .bottomRight, .bottomLeft],
+        radius: Constants.cornerRadius
+      )
     } else {
-      self.roundCorners(corners: [.topRight, .bottomRight, .bottomLeft], radius: Constants.cornerRadius)
+      self.roundCorners(
+        corners: [.topRight, .bottomRight, .bottomLeft],
+        radius: Constants.cornerRadius
+      )
     }
   }
   
@@ -145,34 +141,10 @@ class TextMessageView : BaseView {
     guard let text = model.text, text.string != "" else {
       return 0
     }
-    
-    var insets: UIEdgeInsets
-    if let edgeInset = edgeInset {
-      insets = edgeInset
-    } else {
-      insets = Metrics.textViewInset
-    }
 
     let maxWidth = width - Metrics.leftRightPadding * 2
     let topBottomPadding = Metrics.topBottomPadding * 2
-    
-    let attrText = NSMutableAttributedString(attributedString: text)
-    if model.isOnlyEmoji {
-      attrText.addAttribute(
-        .paragraphStyle,
-        value: UIFactory.onlyEmojiParagraphStyle,
-        range: NSRange(location: 0, length: attrText.string.utf16.count)
-      )
-    }
-    
-    var viewHeight: CGFloat = 0
-    placeHolder.textContainerInset = insets
-    placeHolder.frame = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
-    placeHolder.attributedText = attrText
-    placeHolder.sizeToFit()
-
-    viewHeight += placeHolder.frame.size.height + topBottomPadding
-    return viewHeight
+    return text.height(fits: maxWidth) + topBottomPadding
   }
 }
 

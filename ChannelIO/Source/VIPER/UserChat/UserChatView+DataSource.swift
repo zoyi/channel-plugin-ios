@@ -65,7 +65,13 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
           ActionWebMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) :
           WebPageMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
       case .Profile:
-        return ProfileCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+        if viewModel.files.count != 0 {
+          return ProfileMediaMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+        } else if viewModel.webpage != nil {
+          return ProfileWebMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+        } else {
+          return ProfileMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel)
+        }
       default:
         return viewModel.shouldDisplayForm ?
           ActionMessageCell.cellHeight(fits: tableView.frame.width, viewModel: viewModel) :
@@ -80,7 +86,8 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
     guard indexPath.section == Sections.messages else { return }
     let message = self.messages[indexPath.row]
     if let mkInfo = message.mkInfo {
-      mainStore.dispatch(ViewMarketing(type: mkInfo.type, id: mkInfo.id))
+      // in this case, do not call by reduce, too many state come
+      AppManager.shared.sendViewMarketing(type: mkInfo.type, id: mkInfo.id)
     }
   }
   
@@ -180,9 +187,19 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
       cell.configure(message: message)
       return cell
     case .Profile :
-      let cell: ProfileCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
-      return cell
+      if viewModel.files.count != 0 {
+        let cell: ProfileMediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
+        return cell
+      } else if viewModel.webpage != nil {
+        let cell: ProfileWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
+        return cell
+      } else {
+        let cell: ProfileMessageCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
+        return cell
+      }
     case .UserMessage:
       let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
@@ -272,7 +289,7 @@ extension UserChatView: UICollectionViewDelegate,
       return CGSize(width: minApplyWidth, height: minApplyHeight)
     } else if file.type == .image {
       let isMultipleImages = files.filter { $0.type == .image }.count > 1
-      let side = (contentWidth - 8) / 2
+      let side = (contentWidth - 6) / 2
       return CGSize(
         width: isMultipleImages ? side : minApplyWidth,
         height: isMultipleImages ? side : minApplyHeight

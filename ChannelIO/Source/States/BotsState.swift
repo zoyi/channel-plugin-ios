@@ -56,7 +56,7 @@ struct BotsState: StateType {
       if let index = self.supportBots.firstIndex(where: { $0.id == bot.id }) {
         self.supportBots[index] = bot
       } else {
-        self.supportBots.append(bot)
+        self.supportBots.insert(bot, at: 0)
       }
     }
     return self
@@ -64,6 +64,7 @@ struct BotsState: StateType {
   
   mutating func clear() -> BotsState {
     self.botDictionary.removeAll()
+    self.supportBots.removeAll()
     return self
   }
 }

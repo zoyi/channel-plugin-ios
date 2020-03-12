@@ -72,6 +72,18 @@ class CHTextParserListener: TextBlockParserListener {
           value: font,
           range: NSRange(location: 0, length: text.string.utf16.count)
         )
+        
+        text.addAttribute(
+          .paragraphStyle,
+          value: UIFactory.onlyEmojiParagraphStyle,
+          range: NSRange(location: 0, length: text.string.utf16.count)
+        )
+        
+        text.addAttribute(
+          .baselineOffset,
+          value: (UIFactory.onlyEmojiParagraphStyle.minimumLineHeight - font.lineHeight)/4,
+          range: NSRange(location: 0, length: text.string.utf16.count)
+        )
       }
 
       result.append(text)
@@ -242,7 +254,8 @@ class CHTextParserListener: TextBlockParserListener {
       attributes: [
         .foregroundColor: self.config.textColor,
         .font: self.config.font,
-        .paragraphStyle: self.config.style
+        .paragraphStyle: self.config.style,
+        .baselineOffset: (self.config.style.minimumLineHeight - self.config.font.lineHeight)/4
       ])
 
     content.merge(with: attributedString)
@@ -380,7 +393,8 @@ class CHTextParserListener: TextBlockParserListener {
       attributes: [
         .font: font,
         .foregroundColor: self.config.textColor,
-        .paragraphStyle: self.config.style
+        .paragraphStyle: self.config.style,
+        .baselineOffset: (self.config.style.minimumLineHeight - font.lineHeight)/4
       ])
   }
 }

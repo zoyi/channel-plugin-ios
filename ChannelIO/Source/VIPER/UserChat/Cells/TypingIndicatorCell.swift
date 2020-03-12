@@ -17,7 +17,7 @@ final class TypingIndicatorCell: BaseTableViewCell {
     $0.font = UIFont.systemFont(ofSize: 12)
     $0.textColor = CHColors.blueyGrey
   }
-  let typingImageView = UIImageView().then {
+  let typingImageView = SDAnimatedImageView().then {
     $0.contentMode = .scaleAspectFit
   }
   

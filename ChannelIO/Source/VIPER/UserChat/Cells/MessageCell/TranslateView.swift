@@ -24,6 +24,7 @@ class TranslateView: BaseView {
     $0.textAlignment = .center
     $0.text = CHAssets.localized("ch.show_translate")
   }
+  static let bottomInset = 5.f
   
   var labelLeadingConstraint: Constraint?
   
@@ -44,15 +45,17 @@ class TranslateView: BaseView {
     }
     
     self.arrowImageView.snp.makeConstraints { (make) in
-      make.centerY.equalToSuperview()
+      make.centerY.equalTo(self.translateLabel.snp.centerY)
+      make.height.equalTo(10.f)
+      make.width.equalTo(5.f)
       make.leading.equalToSuperview().inset(0)
     }
     
-    self.translateLabel.snp.makeConstraints { [weak self] (make) in
+    self.translateLabel.snp.makeConstraints { (make) in
       make.top.equalToSuperview()
-      make.bottom.equalToSuperview()
+      make.bottom.equalToSuperview().inset(TranslateView.bottomInset)
       make.trailing.equalToSuperview()
-      self?.labelLeadingConstraint = make.leading.equalToSuperview().inset(0).constraint
+      self.labelLeadingConstraint = make.leading.equalToSuperview().inset(0).constraint
     }
   }
   

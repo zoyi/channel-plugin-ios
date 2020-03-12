@@ -135,6 +135,7 @@ struct DateUtils {
     let weekday = Calendar.current.component(.weekday, from: date)
     let currentWeekdayIndex = weekday
     let currentMinutes = date.minutes
+    var result: (weekday: Weekday, time: Int)?
     
     for i in currentWeekdayIndex..<14 {
       let wd = Weekday.toWeekday(from: i)
@@ -142,14 +143,32 @@ struct DateUtils {
         for eachRange in ranges {
           if wd == Weekday.toWeekday(from: currentWeekdayIndex) {
             if currentMinutes < eachRange.from {
-              return (wd, eachRange.from)
+              if result == nil {
+                result = (wd, eachRange.from)
+              } else if let origin = result?.time, origin > eachRange.from {
+                result = (wd, eachRange.from)
+              }
+              continue
             }
             if eachRange.from <= currentMinutes && currentMinutes < eachRange.to {
-              return (wd, currentMinutes)
+              if result == nil {
+                result = (wd, currentMinutes)
+              } else if let origin = result?.time, origin > currentMinutes {
+                result = (wd, currentMinutes)
+              }
+              continue
             }
           } else {
-            return (wd, eachRange.from)
+            if result == nil {
+              result = (wd, eachRange.from)
+            } else if let origin = result?.time, origin > eachRange.from {
+              result = (wd, eachRange.from)
+            }
+            continue
           }
+        }
+        if result != nil {
+          return result
         }
       }
     }

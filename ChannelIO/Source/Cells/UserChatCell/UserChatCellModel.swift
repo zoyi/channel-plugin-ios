@@ -41,12 +41,16 @@ struct UserChatCellModel: UserChatCellModelType {
       self.lastMessage = MessageFactory.deleted().string
     } else if userChat.state == .closed && userChat.review != "" {
       self.lastMessage = CHAssets.localized("ch.review.complete.preview")
-    } else if let msg = userChat.lastMessage?.attributedText?.string {
-      self.lastMessage = msg
     } else if let logMessage = userChat.lastMessage?.logMessage {
       self.lastMessage = logMessage
-    } else {
-      self.lastMessage = userChat.lastMessage?.plainText ?? ""
+    } else if let msg = userChat.lastMessage?.attributedText?.string {
+      self.lastMessage = msg
+    } else if let plainText = userChat.lastMessage?.plainText {
+      self.lastMessage = plainText
+    } else if let url = userChat.lastMessage?.webPage?.url?.absoluteString {
+      self.lastMessage = url
+    } else if let displayText = userChat.lastMessage?.action?.displayText{
+      self.lastMessage = displayText
     }
     
     if let files = userChat.lastMessage?.sortedFiles {
@@ -84,7 +88,8 @@ struct UserChatCellModel: UserChatCellModelType {
     let bot = botSelector(state: mainStore.state, botName: plugin.botName)
     model.avatar = bot ?? mainStore.state.channel
     model.title = bot?.name ?? mainStore.state.channel.name
-    model.lastMessage = supportBotMessage?.attributedText?.string ?? user.getWelcome()?.string
+    model.lastMessage = supportBotMessage?.attributedText?.string
+      ?? user.getWelcome()?.string
     model.isBadgeHidden = true
     model.badgeCount = 0
     return model

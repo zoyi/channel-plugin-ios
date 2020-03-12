@@ -48,12 +48,14 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
 
   func presentBusinessHours(from view: UIViewController?) {
     let channel = mainStore.state.channel
-    let alertController = UIAlertController(
+    
+    let alertController = AlertViewController(
       title: CHAssets.localized("ch.business_hours"),
       message: channel.workingTimeString,
-      preferredStyle: .alert)
+      type: .normal
+    )
     
-    alertController.addAction(UIAlertAction(title: CHAssets.localized("ch.button_confirm"), style: .default) {  _ in
+    alertController.addAction(AlertAction(title: CHAssets.localized("ch.button_confirm"), type: .normal) {  _ in
       alertController.dismiss(animated: true, completion: nil)
     })
     alertController.modalTransitionStyle = .crossDissolve

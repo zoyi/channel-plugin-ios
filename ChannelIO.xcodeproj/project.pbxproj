@@ -84,6 +84,10 @@
 		3931CB5423C34693005E8444 /* AlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */; };
 		3961C1C8235601E300850EC7 /* userChats.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C7235601E300850EC7 /* userChats.json */; };
 		3961C1CA235601F500850EC7 /* messages.json in Resources */ = {isa = PBXBuildFile; fileRef = 3961C1C9235601F500850EC7 /* messages.json */; };
+		3964D9792410F8EB005B1282 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3964D9782410F8EB005B1282 /* AlertViewController.swift */; };
+		3964D97B2410F910005B1282 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3964D97A2410F910005B1282 /* AlertView.swift */; };
+		3964D97D2410F939005B1282 /* AlertItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3964D97C2410F939005B1282 /* AlertItemView.swift */; };
+		3964D97F2410F951005B1282 /* AlertCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3964D97E2410F951005B1282 /* AlertCompletionView.swift */; };
 		39711A8923FABF36004F56D0 /* ChatBotStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39711A8823FABF36004F56D0 /* ChatBotStartView.swift */; };
 		398205D423C5C99E008814B4 /* AttachmentFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */; };
 		398205D623C5D62E008814B4 /* InAppMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D523C5D62E008814B4 /* InAppMediaView.swift */; };
@@ -654,6 +658,10 @@
 		3931CB5323C34693005E8444 /* AlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		3961C1C7235601E300850EC7 /* userChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = userChats.json; sourceTree = "<group>"; };
 		3961C1C9235601F500850EC7 /* messages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = messages.json; sourceTree = "<group>"; };
+		3964D9782410F8EB005B1282 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
+		3964D97A2410F910005B1282 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
+		3964D97C2410F939005B1282 /* AlertItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertItemView.swift; sourceTree = "<group>"; };
+		3964D97E2410F951005B1282 /* AlertCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertCompletionView.swift; sourceTree = "<group>"; };
 		39711A8823FABF36004F56D0 /* ChatBotStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStartView.swift; sourceTree = "<group>"; };
 		398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentFileInfoView.swift; sourceTree = "<group>"; };
 		398205D523C5D62E008814B4 /* InAppMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMediaView.swift; sourceTree = "<group>"; };
@@ -1343,6 +1351,17 @@
 			path = ChatQueueService;
 			sourceTree = "<group>";
 		};
+		3964D9772410EEE3005B1282 /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				3964D9782410F8EB005B1282 /* AlertViewController.swift */,
+				3964D97A2410F910005B1282 /* AlertView.swift */,
+				3964D97C2410F939005B1282 /* AlertItemView.swift */,
+				3964D97E2410F951005B1282 /* AlertCompletionView.swift */,
+			);
+			path = Alert;
+			sourceTree = "<group>";
+		};
 		39A328C223C4780D0029AFEE /* Youtube */ = {
 			isa = PBXGroup;
 			children = (
@@ -1956,6 +1975,7 @@
 		659793031FA7167C00840F6A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3964D9772410EEE3005B1282 /* Alert */,
 				39A328C723C478180029AFEE /* VideoProviderView.swift */,
 				39A328C223C4780D0029AFEE /* Youtube */,
 				3931CAF823C333FC005E8444 /* GradientView.swift */,
@@ -2398,7 +2418,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n${SRCROOT}/ChannelIO/Scripts/emoji.sh\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n${SRCROOT}/ChannelIO/Scripts/emoji.sh\n";
 		};
 		394C5AF723C6F0AA00E17BE7 /* Download file types and image assets */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2494,6 +2514,7 @@
 				39F4B9E423C42CC00043B25A /* PredictionMode.swift in Sources */,
 				653516E021DCBE43006AB6C3 /* AppManager.swift in Sources */,
 				657AF3F921787E88001EAA7A /* Alamofire+Extensions.swift in Sources */,
+				3964D9792410F8EB005B1282 /* AlertViewController.swift in Sources */,
 				6549CFB2207B6C6A000091D2 /* CheckableLabelCell.swift in Sources */,
 				3931CAEA23C3338C005E8444 /* FileView.swift in Sources */,
 				22F094F62176E8A00035C777 /* Then.swift in Sources */,
@@ -2718,6 +2739,7 @@
 				659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */,
 				6512132E224DF47F00737089 /* UIImageView+Tools.swift in Sources */,
 				3931CB0D23C33469005E8444 /* Character+Extensions.swift in Sources */,
+				3964D97B2410F910005B1282 /* AlertView.swift in Sources */,
 				659793951FA716CB00840F6A /* UIReducer.swift in Sources */,
 				657AF3F3217845D7001EAA7A /* CHTargetCondition.swift in Sources */,
 				22342CC91FBEF50800425666 /* CountryCodeState.swift in Sources */,
@@ -2787,6 +2809,7 @@
 				398205D623C5D62E008814B4 /* InAppMediaView.swift in Sources */,
 				65FB143C2298044F00393AA2 /* UserChatBottomBlockView.swift in Sources */,
 				9C0951E523D5736200DE5799 /* ResizableCollectionView.swift in Sources */,
+				3964D97D2410F939005B1282 /* AlertItemView.swift in Sources */,
 				65121332224DF47F00737089 /* PageIndicator.swift in Sources */,
 				9C4D68F523ED598C0072280E /* UIFont+Traits.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,
@@ -2829,6 +2852,7 @@
 				39F4B9B023C42CC00043B25A /* ANTLRErrorListener.swift in Sources */,
 				39F4B98D23C42CC00043B25A /* MultiMap.swift in Sources */,
 				6590FA952068C8640054B353 /* UserChatProtocol.swift in Sources */,
+				3964D97F2410F951005B1282 /* AlertCompletionView.swift in Sources */,
 				39F4BA0623C42CC10043B25A /* ErrorInfo.swift in Sources */,
 				6512BA0A2271758000757CB2 /* DefaultNavigationTitleView.swift in Sources */,
 				659793BF1FA716CB00840F6A /* CountryCodePickerView.swift in Sources */,

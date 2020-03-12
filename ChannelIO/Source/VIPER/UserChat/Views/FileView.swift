@@ -70,7 +70,7 @@ final class FileView: BaseView {
         .offset(Metrics.iconImageTraling)
       make.top.equalToSuperview().inset(Metrics.fileNameTop)
       make.trailing.equalTo(self.arrowImageView.snp.leading)
-        .offset(Metrics.arrowImageLeading)
+        .offset(-Metrics.arrowImageLeading)
     }
 
     self.subLabel.snp.makeConstraints { make in
@@ -78,7 +78,7 @@ final class FileView: BaseView {
         .offset(Metrics.iconImageTraling)
       make.bottom.equalToSuperview().inset(Metrics.subLabelBottom)
       make.trailing.equalTo(self.arrowImageView.snp.leading)
-        .offset(Metrics.arrowImageLeading)
+        .offset(-Metrics.arrowImageLeading)
     }
 
     self.arrowImageView.snp.makeConstraints { make in

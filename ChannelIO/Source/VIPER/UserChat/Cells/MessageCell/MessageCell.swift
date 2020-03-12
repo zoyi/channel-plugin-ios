@@ -33,13 +33,14 @@ class MessageCell: BaseTableViewCell {
     static let avatarRightPadding = 6.f
     static let bubbleLeftMargin = 40.f
     static let usernameHeight = 16.f
+    static let timestampHeight = 16.f
     static let usernameLeading = 8.f
     static let timestampLeading = 6.f
     static let cellTopPaddingOfContinous = 3.f
     static let cellTopPaddingDefault = 16.f
     static let translateViewTop = 4.f
     static let translateViewLeading = 12.f
-    static let translateHeight = 12.f
+    static let translateHeight = 12.f + TranslateView.bottomInset
     static let resendButtonSide = 24.f
     static let resendButtonRight = -4.f
     static let textViewInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
@@ -150,6 +151,7 @@ class MessageCell: BaseTableViewCell {
     
     self.timestampLabel.snp.makeConstraints { make in
       make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }
     
@@ -179,17 +181,19 @@ class MessageCell: BaseTableViewCell {
   class func cellHeight(fits width: CGFloat, viewModel: MessageCellModelType) -> CGFloat {
     var viewHeight : CGFloat = 0.0
     
-    if viewModel.isContinuous == true {
+    if viewModel.isContinuous {
       viewHeight += Metric.cellTopPaddingOfContinous
     } else {
-      viewHeight += Metric.cellTopPaddingDefault + Metric.usernameHeight + Metric.messageTop
+      viewHeight += Metric.cellTopPaddingDefault + Metric.messageTop
+      viewHeight += viewModel.createdByMe ?
+        Metric.timestampHeight :  Metric.usernameHeight
     }
 
     let bubbleMaxWidth = viewModel.createdByMe ?
       width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
       width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
 
-    viewHeight += TextMessageView.viewHeight(fit: bubbleMaxWidth, model: viewModel) + 4
+    viewHeight += TextMessageView.viewHeight(fit: bubbleMaxWidth, model: viewModel)
     if viewModel.showTranslation {
       viewHeight += Metric.translateViewTop + Metric.translateHeight
     }
@@ -227,6 +231,7 @@ extension MessageCell {
   func layoutDefaultByMe() {
     self.timestampLabel.snp.remakeConstraints { make in
       make.trailing.equalToSuperview().inset(Metric.cellRightPadding)
+      make.height.equalTo(Metric.timestampHeight)
       make.top.equalToSuperview().inset(Metric.cellTopPaddingDefault)
     }
     
@@ -238,7 +243,7 @@ extension MessageCell {
     self.textView.snp.remakeConstraints { make in
       make.left.greaterThanOrEqualToSuperview().inset(Metric.messageLeftMinMargin)
       make.right.equalToSuperview().inset(Metric.cellRightPadding)
-      make.top.equalTo(self.timestampLabel.snp.bottom).offset(4)
+      make.top.equalTo(self.timestampLabel.snp.bottom).offset(Metric.messageTop)
     }
   }
   
@@ -250,13 +255,14 @@ extension MessageCell {
     }
     
     self.usernameLabel.snp.remakeConstraints { make in
-      make.left.equalTo(self.avatarView.snp.right).offset(8)
+      make.left.equalTo(self.avatarView.snp.right).offset(Metric.usernameLeading)
       make.top.equalTo(self.avatarView.snp.top)
       make.height.equalTo(Metric.usernameHeight)
     }
     
     self.timestampLabel.snp.remakeConstraints { make in
-      make.left.equalTo(self.usernameLabel.snp.right).offset(6)
+      make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }
     
@@ -275,20 +281,22 @@ extension MessageCell {
     }
     
     self.usernameLabel.snp.remakeConstraints { make in
-      make.left.equalTo(self.avatarView.snp.right).offset(8)
+      make.left.equalTo(self.avatarView.snp.right).offset(Metric.usernameLeading)
       make.top.equalTo(self.avatarView.snp.top)
       make.height.equalTo(Metric.usernameHeight)
     }
     
     self.timestampLabel.snp.remakeConstraints { make in
-      make.left.equalTo(self.usernameLabel.snp.right).offset(6)
+      make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }
     
     self.textView.snp.remakeConstraints { make in
       make.left.equalToSuperview().inset(Metric.bubbleLeftMargin)
       make.right.lessThanOrEqualToSuperview().inset(Metric.messageRightMinMargin)
-      make.top.equalTo(self.usernameLabel.snp.bottom).offset(4)
+      make.top.equalTo(self.usernameLabel.snp.bottom)
+        .offset(Metric.messageTop)
     }
   }
 }

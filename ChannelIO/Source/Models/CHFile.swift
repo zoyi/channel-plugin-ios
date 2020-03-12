@@ -16,12 +16,10 @@ import RxSwift
 enum FileType: String {
   case video
   case image
-  case audio
   case file
   
   init(assetType: PHAssetMediaType) {
     switch assetType {
-    case .audio: self = .audio
     case .image: self = .image
     case .video: self = .video
     default: self = .file

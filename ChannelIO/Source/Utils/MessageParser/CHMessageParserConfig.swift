@@ -20,7 +20,7 @@ struct CHMessageParserConfig {
 
   init(
     font: UIFont,
-    emojiOnlyFont: UIFont = UIFont.systemFont(ofSize: 36),
+    emojiOnlyFont: UIFont = UIFont.systemFont(ofSize: 54),
     style: NSParagraphStyle = UIFactory.commonParagraphStyle,
     textColor: UIColor = .grey900,
     linkColor: UIColor = .cobalt400,

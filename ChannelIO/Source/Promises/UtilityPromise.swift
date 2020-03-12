@@ -23,7 +23,7 @@ struct UtilityPromise {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
             guard let geoData: GeoIPInfo = Mapper<GeoIPInfo>()
-              .map(JSONObject: json["geoIP"].object) else {
+              .map(JSONObject: json["geoIp"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
             }

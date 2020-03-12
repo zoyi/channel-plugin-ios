@@ -76,7 +76,16 @@ final class CHPhoneField: BaseView {
       self.number = "\(phoneNumber.nationalNumber)"
       self.dial = "\(phoneNumber.countryCode)"
     } catch {
-      self.number = text
+      let partialFormatter = PartialFormatter()
+      if let dial = partialFormatter
+        .formatPartial(text)
+        .split(separator: " ").get(index: 0)?
+        .split(separator: "+").get(index: 0) {
+        self.dial = String(dial)
+        self.number = partialFormatter.nationalNumber(from: text)
+      } else {
+        self.number = text
+      }
     }
     
     self.countryLabel.text = "+" + self.dial
@@ -86,7 +95,7 @@ final class CHPhoneField: BaseView {
       .flatMap { [weak self] (countries) -> Observable<GeoIPInfo> in
         self?.countries = countries
         if let code = self?.getCountryCode(dial: self?.dial) {
-          self?.phoneField.defaultRegion = code
+          self?.phoneField.partialFormatter.defaultRegion = code
           self?.phoneField.text = self?.number
         }
         return UtilityPromise.getGeoIP()
@@ -97,12 +106,12 @@ final class CHPhoneField: BaseView {
           self?.dial = dial
           self?.code = geoInfo.country
           self?.countryLabel.text = "+" + dial
-          self?.phoneField.defaultRegion = geoInfo.country
+          self?.phoneField.partialFormatter.defaultRegion = geoInfo.country
         }
-        }, onError: { [weak self] error in
-          self?.countryLabel.text = "+" + Constants.defaultDailCode
-          self?.phoneField.defaultRegion = "KR"
-          self?.phoneField.text = self?.number
+      }, onError: { [weak self] _ in
+        self?.countryLabel.text = "+" + Constants.defaultDailCode
+        self?.phoneField.partialFormatter.defaultRegion = "KR"
+        self?.phoneField.text = self?.number
       }).disposed(by: self.disposeBeg)
   }
   
@@ -240,7 +249,7 @@ extension CHPhoneField {
           .subscribe(onNext: { (code, dial) in
             self?.code = code
             self?.dial = dial
-            self?.phoneField.defaultRegion = code
+            self?.phoneField.partialFormatter.defaultRegion = code
             self?.countryLabel.text =  "+" + dial
           }).disposed(by: (self?.disposeBeg)!)
       }).disposed(by: self.disposeBeg)

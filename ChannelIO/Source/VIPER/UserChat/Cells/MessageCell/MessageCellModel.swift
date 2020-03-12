@@ -81,8 +81,15 @@ struct MessageCellModel: MessageCellModelType {
   init(message: CHMessage, previous: CHMessage?, row: Int? = nil) {
     let channel = mainStore.state.channel
     let plugin = mainStore.state.plugin
-    let isContinuous = message.isContinue(other: previous) &&
+    let isTimeContinuous = message.isContinue(other: previous) &&
       previous?.action == nil && previous?.profileBot?.count == 0
+    let isActionContinuous = message.isSameWriter(other: previous) &&
+      message.plainText == nil &&
+      message.files.count == 0 &&
+      message.webPage == nil &&
+      message.action != nil
+    
+    let isContinuous =  isTimeContinuous || isActionContinuous
     
     let pluginColor = UIColor(plugin.color) ?? UIColor.white
     let createdByMe = message.entity is CHUser

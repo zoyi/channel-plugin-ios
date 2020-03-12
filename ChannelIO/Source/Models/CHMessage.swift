@@ -383,6 +383,7 @@ extension CHMessage {
   }
   
   var isOnlyEmoji: Bool {
+    guard self.blocks.count != 0 else { return false }
     return self.blocks
       .map { $0.isOnlyEmoji }
       .reduce(true) { $0 && $1 }
@@ -505,5 +506,6 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
     lhs.plainText == rhs.plainText &&
     lhs.blocks == rhs.blocks &&
     lhs.translateState == rhs.translateState &&
-    lhs.action?.closed == rhs.action?.closed
+    lhs.action?.closed == rhs.action?.closed &&
+    lhs.profileBot == rhs.profileBot
 }

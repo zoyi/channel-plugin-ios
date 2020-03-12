@@ -27,7 +27,7 @@ struct UIFactory {
   static var onlyEmojiParagraphStyle: NSParagraphStyle {
     let style = NSMutableParagraphStyle()
     style.alignment = .left
-    style.minimumLineHeight = 36
+    style.minimumLineHeight = 54
 
     return style
   }

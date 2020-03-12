@@ -29,6 +29,7 @@ struct AppState: StateType {
   case english
   case korean
   case japanese
+  // TODO remove device and make CHLocale Optional
   case device
 }
 
