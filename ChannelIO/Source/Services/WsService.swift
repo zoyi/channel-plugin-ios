@@ -13,21 +13,13 @@ import ReSwift
 import SocketIO
 import ObjectMapper
 
-enum WSType: String {
-  case PRODUCTION = "https://ws.channel.io"
-  case ALPHA = "http://ws.exp.channel.io"
-  case BETA = "http://ws.staging.channel.io"
-}
-
-enum CHSocketRequest : String {
-  case authentication = "authentication"
-  case join = "join"
-  case leave = "leave"
-  case heartbeat = "heartbeat"
-  
-  var value: String {
-    return self.rawValue
-  }
+struct SocketCommand {
+  static let join = "join"
+  static let leave = "leave"
+  static let heartbeat = "heartbeat"
+  static let terminate = "terminate"
+  static let typing = "typing"
+  static let authentication = "authentication"
 }
 
 enum CHSocketResponse : String {
@@ -63,8 +55,7 @@ struct WsServiceType: OptionSet {
   static let Manager = WsServiceType(rawValue: 1 << 6)
   static let Channel = WsServiceType(rawValue: 1 << 7)
   static let UserChat = WsServiceType(rawValue: 1 << 8)
-  static let Veil = WsServiceType(rawValue: 1 << 9)
-  static let User = WsServiceType(rawValue: 1 << 10)
+  static let User = WsServiceType(rawValue: 1 << 9)
   
   static let CreateMessage = WsServiceType.Create.union(WsServiceType.Message)
   static let UpdateMessage = WsServiceType.Update.union(WsServiceType.Message)
@@ -82,7 +73,6 @@ struct WsServiceType: OptionSet {
   static let DeleteUserChat = WsServiceType.Delete.union(WsServiceType.UserChat)
   
   static let UpdateUser = WsServiceType.Update.union(WsServiceType.User)
-  static let UpdateVeil = WsServiceType.Update.union(WsServiceType.Veil)
   
   let rawValue: Int
   init(rawValue: Int) { self.rawValue = rawValue }
@@ -90,17 +80,16 @@ struct WsServiceType: OptionSet {
   init?(string: String) {
     switch string {
     // event
-    case "Create": self = WsServiceType.Create
-    case "Update": self = WsServiceType.Update
-    case "Delete": self = WsServiceType.Delete
+    case "create": self = WsServiceType.Create
+    case "update": self = WsServiceType.Update
+    case "delete": self = WsServiceType.Delete
     // type
-    case "Message": self = WsServiceType.Message
-    case "Session": self = WsServiceType.Session
-    case "Manager": self = WsServiceType.Manager
-    case "Channel": self = WsServiceType.Channel
-    case "UserChat": self = WsServiceType.UserChat
-    case "Veil": self = WsServiceType.Veil
-    case "User" : self = WsServiceType.User
+    case "message": self = WsServiceType.Message
+    case "chatSession": self = WsServiceType.Session
+    case "manager": self = WsServiceType.Manager
+    case "channel": self = WsServiceType.Channel
+    case "userChat": self = WsServiceType.UserChat
+    case "user" : self = WsServiceType.User
       
     default: return nil
     }
@@ -121,7 +110,7 @@ class WsService {
   fileprivate var socket: SocketIOClient?
   fileprivate var manager: SocketManager?
   
-  var baseUrl = WSType.PRODUCTION.rawValue
+  var baseUrl = ""
   
   //move these properties into state
   fileprivate var currentChatId: String?
@@ -134,18 +123,6 @@ class WsService {
   private var startTypingThrottleFnc: ((CHUserChat?) -> Void)?
   
   init() {
-    if let staging = CHUtils.getCurrentStage() {
-      if staging == "PROD" {
-        self.baseUrl = WSType.PRODUCTION.rawValue
-      } else if staging == "ALPHA" {
-        self.baseUrl = WSType.ALPHA.rawValue
-      } else if staging == "BETA" {
-        self.baseUrl = WSType.BETA.rawValue
-      } else {
-        // error
-      }
-    }
-    
     self.stopTypingThrottleFnc = throttle(
       delay: 1.0,
       queue: queue,
@@ -176,7 +153,7 @@ class WsService {
     return self.messageOnCreateSubject
   }
   
-  func joined() -> PublishSubject<String> {
+  func observeJoin() -> PublishSubject<String> {
     return self.joinSubject
   }
   
@@ -188,11 +165,11 @@ class WsService {
   
   func connect() {
     dlog("Try to connect Socket")
-    
+
     self.disconnect()
     
     self.manager = SocketManager(
-      socketURL: URL(string: "\(self.baseUrl)")!,
+      socketURL: URL(string: CHUtils.getCurrentStage().socketEndPoint)!,
       config: [
         .log(false),
         .forceWebsockets(true),
@@ -200,8 +177,9 @@ class WsService {
         .reconnectAttempts(5),
         .reconnectWait(10)
       ])
-    
-    self.socket = self.manager?.socket(forNamespace: "/app")
+
+    self.socket = self.manager?.socket(forNamespace: "/front")
+
     self.socket?.removeAllHandlers()
     self.addSocketHandlers()
     self.socket?.connect()
@@ -228,7 +206,7 @@ class WsService {
     
     self.currentChatId = chatId
     if let socket = self.socket, socket.status == .connected {
-      socket.emit(CHSocketRequest.join.value, "/user_chats/\(chatId)")
+      socket.emit(SocketCommand.join, "/user-chats/\(chatId)")
     }
   }
   
@@ -237,7 +215,7 @@ class WsService {
     
     self.currentChatId = ""
     if let socket = self.socket, socket.status == .connected {
-      socket.emit(CHSocketRequest.leave.value, "/user_chats/\(chatId)")
+      socket.emit(SocketCommand.leave, "/user-chats/\(chatId)")
     }
   }
   
@@ -258,7 +236,7 @@ class WsService {
     socket.emit("typing", CHTypingEntity(
       action: "start",
       chatId: chat.id,
-      chatType: "UserChat")
+      chatType: .userChat)
     )
   }
   
@@ -269,7 +247,7 @@ class WsService {
     let entity = CHTypingEntity(
       action: "stop",
       chatId: chat.id,
-      chatType: "UserChat")
+      chatType: .userChat)
     
     socket.emit("typing", entity)
     self.typingSubject.onNext(entity)
@@ -277,10 +255,16 @@ class WsService {
   
   @objc func heartbeat() {
     dlog("heartbeat")
-    if self.socket != nil {
-      self.socket?.emit(CHSocketRequest.heartbeat.value)
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(SocketCommand.heartbeat)
     } else {
       self.invalidateTimer()
+    }
+  }
+  
+  func terminate() {
+    if let socket = self.socket, socket.status == .connected {
+      socket.emit(SocketCommand.terminate)
     }
   }
   
@@ -354,7 +338,6 @@ fileprivate extension WsService {
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.CreateMessage:
         guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
-        guard message.isWelcome == false else { return }
         
         if let bot = Mapper<CHBot>()
           .map(JSONObject: json["refers"]["bot"].object) {
@@ -386,15 +369,13 @@ fileprivate extension WsService {
       case WsServiceType.UpdateSession:
         guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateSession(payload: session))
-        print("\(session)")
         self?.eventSubject.onNext((type, session))
         break
       case WsServiceType.UpdateUserChat:
         guard let userChat = Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
         if let lastMessage = Mapper<CHMessage>()
-          .map(JSONObject: json["refers"]["message"].object),
-          !lastMessage.isWelcome {
+          .map(JSONObject: json["refers"]["message"].object) {
           mainStore.dispatchOnMain(UpdateMessage(payload: lastMessage))
         }
         if let manager = Mapper<CHManager>()
@@ -411,13 +392,8 @@ fileprivate extension WsService {
         self?.eventSubject.onNext((type, message))
       case WsServiceType.UpdateUser:
         guard let user = Mapper<CHUser>().map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatchOnMain(UpdateGuest(payload: user))
-        print("\(user)")
+        mainStore.dispatchOnMain(UpdateUser(payload: user))
         self?.eventSubject.onNext((type, user))
-      case WsServiceType.UpdateVeil:
-        guard let veil = Mapper<CHVeil>().map(JSONObject: json["entity"].object) else { return }
-        mainStore.dispatchOnMain(UpdateGuest(payload: veil))
-        self?.eventSubject.onNext((type, veil))
       case WsServiceType.UpdateManager:
         guard let manager = Mapper<CHManager>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateManager(payload: manager))
@@ -548,7 +524,7 @@ fileprivate extension WsService {
   
   func emitAuth() {
     dlog("socket submitting auth")
-    guard let jwt = PrefStore.getCurrentGuestKey() else { return }
-    self.socket?.emit("authentication", ["jwt":jwt])
+    guard let jwt = PrefStore.getSessionJWT() else { return }
+    self.socket?.emit("authentication", jwt)
   }
 }

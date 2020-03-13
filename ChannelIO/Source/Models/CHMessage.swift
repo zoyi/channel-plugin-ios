@@ -13,8 +13,17 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 
-enum SendingState {
-  case New, Sent, Failed
+enum MessageDeliveryState: String {
+  // this three state mean thirdparty messenger state
+  case sending
+  case sent
+  case failed
+  
+  // send fail state
+  case networkError
+  
+  // message delete state
+  case removed
 }
 
 enum MessageType {
@@ -29,8 +38,6 @@ enum MessageType {
   case Media
   case File
   case Profile
-  case Action
-  case Buttons
 }
 
 enum CHMessageTranslateState {
@@ -46,43 +53,43 @@ struct CHMessage: ModelType {
   var id: String = ""
   // Message
   var channelId: String = ""
-  var chatType: String = ""
+  var chatType: ChatType!
   var chatId: String = ""
-  var personType: String = ""
+  var personType: PersonType!
   var personId: String = ""
   var title: String? = nil
-  var message: String?
-  var messageV2: NSAttributedString?
+  var plainText: String?
+  var blocks: [CHMessageBlock] = []
+  var translatedBlocks: [CHMessageBlock] = []
   var requestId: String?
-  var botOption: [String: Bool]? = nil
   var profileBot: [CHProfileItem]? = []
   var action: CHAction? = nil
-  var buttons: [CHLink]? = []
   var submit: CHSubmit? = nil
   var createdAt: Date
-
   var language: String = ""
   
-  var file: CHFile?
+  var files: [CHFile] = []
   var webPage: CHWebPage?
   var log: CHLog?
+  var marketing: CHMarketing?
   
   // Dependencies
   var entity: CHEntity?
   var mutable: Bool = true
+  
   // Used in only client
-  var state: SendingState = .Sent
+  var state: MessageDeliveryState?
   var messageType: MessageType = .Default
   
   var progress: CGFloat = 1
-  //var isRemote = true
-  var onlyEmoji: Bool = false
-  
+
+  // local
   var translateState: CHMessageTranslateState = .original
-  var translatedText: NSAttributedString? = nil
+  var fileDictionary: [String:Any]?
   
   var readableDate: String {
-    let updateComponents = Calendar.current.dateComponents([.year, .month, .day], from: self.createdAt)
+    let updateComponents = Calendar.current.dateComponents(
+      [.year, .month, .day], from: self.createdAt)
     guard let year = updateComponents.year else { return "" }
     guard let month = updateComponents.month else { return "" }
     guard let day = updateComponents.day else { return "" }
@@ -91,7 +98,8 @@ struct CHMessage: ModelType {
   }
   
   var readableCreatedAt: String {
-    let updateComponents = NSCalendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: self.createdAt)
+    let updateComponents = NSCalendar.current.dateComponents(
+      [.year, .month, .day, .hour, .minute], from: self.createdAt)
     let suffix = (updateComponents.hour ?? 0) >= 12 ? "PM" : "AM"
     
     var hours = 0
@@ -103,135 +111,211 @@ struct CHMessage: ModelType {
   }
   
   var logMessage: String? {
-    if self.file?.isPreviewable == true {
-      return CHAssets.localized("ch.notification.upload_image.description")
-    } else if self.file != nil {
-      return CHAssets.localized("ch.notification.upload_file.description")
-    } else if self.log != nil && self.log?.action == "closed" {
+    if self.log != nil && self.log?.action == "closed" {
       return CHAssets.localized("ch.review.require.preview")
     }
     return nil
   }
-  
-  var isWelcome: Bool {
-    if let option = self.botOption, option["welcome"] == true {
-      return true
+
+  var getCurrentBlocks: [CHMessageBlock] {
+    if self.translateState == .translated {
+      return self.translatedBlocks
     } else {
-      return false
+      return self.blocks
     }
   }
+  
+  var attributedText: NSAttributedString? {
+    guard self.getCurrentBlocks.count != 0 else { return nil }
+    
+    let result = NSMutableAttributedString(string: "")
+    for (index, block) in self.getCurrentBlocks.enumerated() {
+      if let text = block.displayText {
+        result.append(text)
+        if index != self.getCurrentBlocks.count - 1 {
+          result.append(NSMutableAttributedString(string: "\n"))
+        }
+      }
+    }
+    return result
+  }
+}
 
-  var isDeleted: Bool {
-    return self.log?.action == "delete_message"
+extension CHMessage: CHPushDisplayable {
+  var removed: Bool {
+    return self.state == .removed
+  }
+  
+  var writer: CHEntity? {
+    return personSelector(
+      state: mainStore.state,
+      personType: self.personType,
+      personId: self.personId
+    )
+  }
+  
+  var mobileExposureType: InAppNotificationType? {
+    return self.marketing?.exposureType
+  }
+  
+  var mkInfo: MarketingInfo? {
+    guard let marketing = self.marketing else { return nil }
+    return (marketing.type, marketing.id)
   }
 }
 
 extension CHMessage: Mappable {
-  init(chatId: String,
-       message: String,
-       type: MessageType,
-       entity: CHEntity? = nil,
-       action: CHAction? = nil,
-       file: CHFile? = nil,
-       createdAt:Date? = Date(),
-       id: String? = nil) {
+  init(
+    chatId: String,
+    blocks: [CHMessageBlock],
+    files: [CHFile] = [],
+    type: MessageType,
+    entity: CHEntity? = nil,
+    action: CHAction? = nil,
+    createdAt:Date? = Date(),
+    id: String? = nil) {
+    let now = Date()
+    let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+  
+    self.id = id ?? requestId
+    self.requestId = requestId
+    self.chatId = chatId
+    self.createdAt = createdAt ?? now
+    self.messageType = type
+    self.entity = entity
+    self.action = action
+    self.personId = entity?.id ?? ""
+    self.personType = entity?.entityType
+    self.progress = 1
+    self.blocks = blocks
+    self.files = files
+  }
+  
+  init(
+    chatId: String,
+    message: String,
+    type: MessageType,
+    entity: CHEntity? = nil,
+    action: CHAction? = nil,
+    createdAt:Date? = Date(),
+    id: String? = nil) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
-    
+
     self.id = id ?? requestId
-    self.message = trimmedMessage
-    (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
     self.requestId = requestId
     self.chatId = chatId
     self.createdAt = createdAt ?? now
     self.messageType = type
     self.entity = entity
     self.action = action
-    self.file = file
     self.personId = entity?.id ?? ""
-    self.personType = entity?.kind ?? ""
+    self.personType = entity?.entityType
     self.progress = 1
-  }
-  
-  init(chatId: String,
-       attributedMessage: NSAttributedString?,
-       type: MessageType,
-       entity: CHEntity? = nil,
-       action: CHAction? = nil,
-       file: CHFile? = nil,
-       createdAt:Date? = Date(),
-       id: String? = nil) {
-    let now = Date()
-    let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    self.plainText = trimmedMessage
     
-    self.id = id ?? requestId
-    self.messageV2 = attributedMessage
-    self.requestId = requestId
-    self.chatId = chatId
-    self.createdAt = createdAt ?? now
-    self.messageType = type
-    self.entity = entity
-    self.action = action
-    self.file = file
-    self.personId = entity?.id ?? ""
-    self.personType = entity?.kind ?? ""
-    self.progress = 1
+    if trimmedMessage != "" {
+      let transform = CustomBlockTransform(
+        config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+      )
+      let block = CHMessageBlock(
+        type: .text,
+        blocks: [],
+        language: nil,
+        value: trimmedMessage
+      )
+      if let transformed = transform.transformFromJSON(block) {
+        self.blocks = [transformed]
+      }
+    }
   }
   
-  init(chatId: String, guest: CHGuest, message: String, messageType: MessageType = .UserMessage) {
+  init(
+    chatId: String,
+    user: CHUser,
+    message: String,
+    messageType: MessageType = .UserMessage) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
     let trimmedMessage = message.trimmingCharacters(in: .newlines)
     
     self.id = requestId
-    self.chatType = "UserChat"
+    self.chatType = .userChat
     self.chatId = chatId
-    self.personType = guest.type
-    self.personId = guest.id
+    self.personType = .user
+    self.personId = user.id
     self.requestId = requestId
     self.createdAt = now
-    self.state = .New
     self.messageType = messageType
     self.progress = 1
-    self.message = self.format(message: trimmedMessage)
-    (self.messageV2, self.onlyEmoji) = CustomMessageTransform.markdown.parse(trimmedMessage)
+    self.plainText = trimmedMessage
+    
+    if trimmedMessage != "" {
+      let transform = CustomBlockTransform(
+        config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+      )
+      
+      if let displayText = transform.parser.parseText(trimmedMessage) {
+        self.blocks = [
+          CHMessageBlock(
+            type: .text,
+            value: trimmedMessage,
+            displayText: displayText,
+            isOnlyEmoji: transform.parser.listener?.isOnlyEmoji ?? false
+          )
+        ]
+      }
+    }
   }
   
-  init(chatId: String,
-       entity: CHEntity,
-       title: String? = nil,
-       message: NSAttributedString?,
-       file: CHFile? = nil,
-       buttons: [CHLink]? = nil) {
+  init(
+    chatId: String,
+    entity: CHEntity,
+    title: String? = nil,
+    message: NSAttributedString?) {
     let now = Date()
     let requestId = "\(UInt64(now.timeIntervalSince1970 * 1000))" + String.randomString(length: 4)
+    let trimmedMessage = message?.string.trimmingCharacters(in: .newlines) ?? ""
     
     self.id = requestId
-    self.chatType = "UserChat"
+    self.chatType = .userChat
     self.chatId = chatId
-    self.personType = entity.kind
+    self.personType = entity.entityType
     self.personId = entity.id
     self.requestId = requestId
     self.createdAt = now
-    self.state = .New
     self.progress = 1
-    self.buttons = buttons
     self.title = title
-    self.file = file
-    self.messageV2 = message
-    self.messageType = CHMessage.contextType(self)
+    self.messageType = self.contextType()
+    self.plainText = trimmedMessage
+    
+    if trimmedMessage != "" {
+      let transform = CustomBlockTransform(
+        config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+      )
+      if let displayText = transform.parser.parseText(trimmedMessage) {
+        self.blocks = [
+          CHMessageBlock(
+            type: .text,
+            value: trimmedMessage,
+            displayText: displayText,
+            isOnlyEmoji: transform.parser.listener?.isOnlyEmoji ?? false
+          )
+        ]
+      }
+    }
   }
   
-  init(chatId: String, guest: CHGuest, message: String = "", asset: PHAsset? = nil, image: UIImage? = nil) {
-    self.init(chatId: chatId, guest: guest, message: message, messageType: .Media)
-    if let image = image {
-      self.file = CHFile(imageData: image)
-    } else if let asset = asset {
-      self.file = CHFile(asset: asset)
-    }
-    
-    self.messageType = self.file?.mimeType == .image || self.file?.mimeType == .gif ? .Media : .File
+  init(chatId: String, user: CHUser, message: String = "", files: [CHFile] = []) {
+    self.init(chatId: chatId, user: user, message: message, messageType: .Media)
+    self.files = files
+    self.progress = 0
+  }
+  
+  init(chatId: String, user: CHUser, message: String = "", fileDictionary: [String:Any]?) {
+    self.init(chatId: chatId, user: user, message: message, messageType: .Media)
+    self.fileDictionary = fileDictionary
     self.progress = 0
   }
   
@@ -247,55 +331,33 @@ extension CHMessage: Mappable {
     personType  <- map["personType"]
     personId    <- map["personId"]
     title       <- map["title"]
-    message     <- map["message"]
+    plainText   <- map["plainText"]
+    blocks <- (map["blocks"], CustomBlockTransform(
+      config: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15)))
+    )
+    state       <- map["state"]
     requestId   <- map["requestId"]
-    file        <- map["file"]
+    files       <- map["files"]
     webPage     <- map["webPage"]
-    buttons     <- map["buttons"]
     log         <- map["log"]
+    marketing   <- map["marketing"]
     createdAt   <- (map["createdAt"], CustomDateTransform())
-    botOption   <- map["botOption"]
     profileBot  <- map["profileBot"]
     action      <- map["action"]
     submit      <- map["submit"]
     language    <- map["language"]
     
-    let msgv2 = map["messageV2"].currentValue as? String ?? ""
-    (messageV2, onlyEmoji) = CustomMessageTransform.markdown.parse(msgv2)
-    
-    if self.action != nil {
-      messageType = .Action
-    } else {
-      messageType = CHMessage.contextType(self)
-    }
-    
-    if self.isDeleted {
-      self.message = MessageFactory.deleted().string
-      self.messageV2 = MessageFactory.deleted()
-    }
+    messageType = self.contextType()
   }
   
-  func format(message: String) -> String {
-    var filterText = message
-    filterText = filterText.replacingOccurrences(of: "<", with: "\\<")
-    filterText = filterText.replacingOccurrences(of: ">", with: "\\>")
-    filterText = filterText.replacingOccurrences(of: "]", with: "\\]")
-    filterText = filterText.replacingOccurrences(of: "[", with: "\\[")
-    return filterText
-  }
-  
-  static func contextType(_ message: CHMessage) -> MessageType {
-     if message.log != nil && message.log?.action != "delete_message" {
+  func contextType() -> MessageType {
+    if self.log != nil && self.log?.action != "delete_message" {
       return .Log
-    } else if let buttons = message.buttons, buttons.count != 0 {
-      return .Buttons
-    } else if message.file?.image == true {
+    } else if !self.files.isEmpty {
       return .Media
-    } else if message.file != nil {
-      return .File
-    } else if let profiles = message.profileBot, profiles.count != 0 {
+    } else if let profiles = self.profileBot, profiles.count != 0 {
       return .Profile
-    } else if message.webPage != nil {
+    } else if self.webPage != nil {
       return .WebPage
     } else {
       return .Default
@@ -304,14 +366,31 @@ extension CHMessage: Mappable {
 }
 
 extension CHMessage {
-  func isEmpty() -> Bool {
-    if let messageV2 = self.messageV2?.string, messageV2 != "" {
-      return false
-    } else if let message = self.message, message != "" {
-      return false
-    } else {
-      return true
+  var sortedFiles: [CHFile] {
+    var videos: [CHFile] = []
+    var images: [CHFile] = []
+    var others: [CHFile] = []
+    for file in self.files {
+      if file.type == .video {
+        videos.append(file)
+      } else if file.type == .image {
+        images.append(file)
+      } else {
+        others.append(file)
+      }
     }
+    return videos + images + others
+  }
+  
+  var isOnlyEmoji: Bool {
+    guard self.blocks.count != 0 else { return false }
+    return self.blocks
+      .map { $0.isOnlyEmoji }
+      .reduce(true) { $0 && $1 }
+  }
+  
+  func isEmpty() -> Bool {
+    return self.blocks.count == 0 
   }
   
   func isSameWriter(other message: CHMessage?) -> Bool {
@@ -355,213 +434,44 @@ extension CHMessage {
     originId: String? = nil,
     key: String? = nil,
     mutable: Bool = true) -> CHMessage {
-    let me = mainStore.state.guest
-    var message = CHMessage(chatId: chatId, guest: me, message: text ?? "")
+    let me = mainStore.state.user
+    var message = CHMessage(
+      chatId: chatId,
+      user: me,
+      message: text ?? "",
+      messageType: .UserMessage)
     if let originId = originId, let key = key {
       message.submit = CHSubmit(id: originId, key: key)
     }
     message.mutable = mutable
     return message
   }
-  
-  static func getMessages(
-    userChatId: String,
-    since: String,
-    limit: Int,
-    sortOrder:String) -> Observable<[String: Any]> {
-    
-    return UserChatPromise.getMessages(
-      userChatId: userChatId,
-      since: since,
-      limit: limit,
-      sortOrder: sortOrder)
-  }
-  
+
   func isMine() -> Bool {
-    let me = mainStore.state.guest
+    let me = mainStore.state.user
     return self.entity?.id == me.id
   }
   
   func updateProfile(with key: String, value: Any) -> Observable<CHMessage> {
-    return UserChatPromise.updateMessageProfile(messageId: self.id, key: key, value: value)
+    return UserChatPromise.updateMessageProfile(
+      userChatId: self.chatId,
+      messageId: self.id,
+      key: key,
+      value: value
+    )
   }
   
   func send() -> Observable<CHMessage> {
-    if self.file != nil {
-      if let mimeType = self.file?.mimeType {
-        switch mimeType {
-        case .image:
-          return self.sendImage()
-        case .gif:
-          return self.sendGif()
-        case .video:
-          return self.sendVideo()
-        default:
-          return self.sendImage()
-        }
-      }
-      return self.sendText()
-    } else {
-      return self.sendText()
-    }
-  }
-  
-  func sendFile() -> Observable<CHMessage> {
-    return Observable.create{ subscriber in
-      guard let file = self.file, file.rawData != nil || file.asset != nil else {
-        subscriber.onError(CHErrorPool.sendFileError)
-        return Disposables.create()
-      }
-      
-      var signal: Disposable?
-      if let asset = file.asset, let mimeType = file.mimeType {
-        asset.fetchVideo(completion: { (asset, mix, info) in
-          if let asset = asset as? AVURLAsset {
-            let data = try! Data(contentsOf: asset.url)
-            signal = self.send(data: data, fileName: "Channel_File", mimeType: mimeType)
-              .subscribe(onNext: { (message) in
-                subscriber.onNext(message)
-              }, onError: { (error) in
-                subscriber.onError(error)
-              })
-          }
-        })
-      }
-
-      return Disposables.create {
-        signal?.dispose()
-      }
-    }
-  }
-  
-  func sendText() -> Observable<CHMessage> {
     return Observable.create { subscriber in
       let disposable = UserChatPromise.createMessage(
         userChatId: self.chatId,
-        message: self.message ?? "",
-        requestId: self.requestId!,
+        message: self.plainText,
+        requestId: self.requestId ?? "",
+        files: self.files,
+        fileDictionary: self.fileDictionary,
         submit: self.submit,
-        mutable: self.mutable).subscribe(onNext: { (message) in
-          subscriber.onNext(message)
-        }, onError: { (error) in
-          subscriber.onError(error)
-        })
-      
-      return Disposables.create(with: {
-        disposable.dispose()
-      })
-    }
-  }
-  
-  private func sendGif() -> Observable<CHMessage> {
-    return Observable.create({ (subscriber) in
-      guard let file = self.file, let asset = file.asset else {
-        subscriber.onError(CHErrorPool.sendFileError)
-        return Disposables.create()
-      }
-      
-      var signal: Disposable?
-      asset.fetchImageData(completion: { (data, uti, orientation, info) in
-        signal = self.send(
-          data: data,
-          fileName: "Channel_Gif_Photo_\(Date().fullDateString()).gif",
-          mimeType: file.mimeType).subscribe(onNext: { (message) in
-            subscriber.onNext(message)
-          }, onError: { (error) in
-            subscriber.onError(error)
-          })
-      })
-
-      return Disposables.create {
-        signal?.dispose()
-      }
-    })
-  }
-  
-  private func sendImage() -> Observable<CHMessage> {
-    return Observable.create({ (subscriber) in
-      guard let file = self.file, file.image else {
-        subscriber.onError(CHErrorPool.sendFileError)
-        return Disposables.create()
-      }
-      
-      var signal: Disposable?
-      let fileName = "Channel_Photo_\(Date().fullDateString()).png"
-      if let asset = file.asset {
-        asset.fetchImageData(completion: { (data, uti, orientation, info) in
-          guard let data = data, let image = UIImage(data: data) else {
-            subscriber.onError(CHErrorPool.sendFileError)
-            return
-          }
-          signal = self.send(
-            data: image.jpegData(compressionQuality: 1.0),
-            fileName: fileName,
-            mimeType: file.mimeType).subscribe(onNext: { (message) in
-              subscriber.onNext(message)
-              subscriber.onCompleted()
-            }, onError: { (error) in
-              subscriber.onError(error)
-            })
-        })
-      } else if let image = file.imageData {
-        signal = self.send(
-          data: image.jpegData(compressionQuality:1.0),
-          fileName: fileName,
-          mimeType: file.mimeType).subscribe(onNext: { (message) in
-            subscriber.onNext(message)
-            subscriber.onCompleted()
-          }, onError: { (error) in
-            subscriber.onError(error)
-          })
-      }
-
-      return Disposables.create {
-        signal?.dispose()
-      }
-    })
-  }
-  
-  private func sendVideo() -> Observable<CHMessage> {
-    return Observable.create({ (subscriber) in
-      guard let file = self.file, let asset = file.asset else {
-        subscriber.onError(CHErrorPool.sendFileError)
-        return Disposables.create()
-      }
-      
-      var signal: Disposable?
-      asset.fetchVideo(completion: { (asset, mix, info) in
-        if let asset = asset as? AVURLAsset {
-          let data = try! Data(contentsOf: asset.url)
-          signal = self.send(
-            data: data,
-            fileName: "Channel_Video_\(Date().fullDateString()).mp4",
-            mimeType: file.mimeType).subscribe(onNext: { (message) in
-              subscriber.onNext(message)
-            }, onError: { (error) in
-              subscriber.onError(error)
-            })
-          }
-        })
-
-      return Disposables.create {
-        signal?.dispose()
-      }
-    })
-  }
-  
-  private func send(data: Data?, fileName: String? = "", mimeType: Mimetype?) -> Observable<CHMessage> {
-    return Observable.create({ (subscriber) in
-      guard let data = data, let mimeType = mimeType else {
-        subscriber.onError(CHErrorPool.sendFileError)
-        return Disposables.create()
-      }
-      
-      let disposable = UserChatPromise.uploadFile(
-        name: fileName,
-        file: data,
-        requestId: self.requestId!,
-        userChatId: self.chatId,
-        mimeType: mimeType)
+        mutable: self.mutable)
+        .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
@@ -571,13 +481,15 @@ extension CHMessage {
       return Disposables.create {
         disposable.dispose()
       }
-    })
+    }
   }
   
-  func translate(to language: String) -> Observable<String?> {
+  func translate(to language: String) -> Observable<[CHMessageBlock]> {
     return UserChatPromise.translate(
+      userChatId: self.chatId,
       messageId: self.id,
-      language: language)
+      language: language
+    )
   }
 }
 
@@ -587,10 +499,13 @@ func ==(lhs: CHMessage, rhs: CHMessage) -> Bool {
   return lhs.id == rhs.id &&
     lhs.messageType == rhs.messageType &&
     lhs.progress == rhs.progress &&
-    lhs.file?.downloaded == rhs.file?.downloaded &&
+    lhs.files == rhs.files &&
     lhs.state == rhs.state &&
     lhs.webPage == rhs.webPage &&
-    lhs.message == rhs.message &&
+    lhs.marketing == rhs.marketing &&
+    lhs.plainText == rhs.plainText &&
+    lhs.blocks == rhs.blocks &&
     lhs.translateState == rhs.translateState &&
-    lhs.action?.closed == rhs.action?.closed
+    lhs.action?.closed == rhs.action?.closed &&
+    lhs.profileBot == rhs.profileBot
 }

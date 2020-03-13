@@ -24,7 +24,7 @@ class SessionsStateTests: QuickSpec {
       for i in 0..<10 {
         let session = CHSession(
           id: "12\(i)", chatType: "UserChat", chatId: "\(i)",
-          personType: "", personId: "", unread: i,
+          personType: .manager, personId: "", unread: i,
           alert: 0, readAt: nil, postedAt: nil)
 
         sessions?.append(session)
@@ -82,7 +82,7 @@ class SessionsStateTests: QuickSpec {
           let i = 12345
           let session = CHSession(
             id: "12\(i)", chatType: "UserChat", chatId: "\(i)",
-            personType: "", personId: "", unread: i,
+            personType: .manager, personId: "", unread: i,
             alert: 0, readAt: nil, postedAt: nil)
           
           state = state.upsert(sessions: [session])
@@ -103,7 +103,7 @@ class SessionsStateTests: QuickSpec {
           let i = 0
           let session = CHSession(
             id: "12\(i)", chatType: "UserChat", chatId: "333",
-            personType: "Veil", personId: "123", unread: i,
+            personType: .user, personId: "123", unread: i,
             alert: 0, readAt: nil, postedAt: nil)
           
           state = state.upsert(sessions: [session])

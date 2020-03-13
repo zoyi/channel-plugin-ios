@@ -41,18 +41,50 @@ struct StringTransform: TransformType {
   }
 }
 
-struct CustomMessageTransform: TransformType {
-  static var markdown = MarkdownParser(font: UIFont.systemFont(ofSize: 15))
+class CustomURLTransform: TransformType {
+  public typealias Object = URL
+  public typealias JSON = String
+
+  public init() {}
   
-  func transformFromJSON(_ value: Any?) -> NSAttributedString? {
-    if let message = value as? String {
-      let parsed = CustomMessageTransform.markdown.parse(message)
-      return parsed.0
+  open func transformFromJSON(_ value: Any?) -> URL? {
+    guard let url = value as? String else {
+      return nil
     }
+
+    return URL(string: url)
+  }
+
+  open func transformToJSON(_ value: URL?) -> String? {
     return nil
   }
-  
-  func transformToJSON(_ value: NSAttributedString?) -> String? {
-    return value?.string ?? ""
+}
+
+class CustomBlockTransform: TransformType {
+  static var emojiMap = CHUtils.emojiMap()
+  var parser: CHMessageParser
+
+  public init(config: CHMessageParserConfig) {
+    self.parser = CHMessageParser(
+      config: config,
+      emojiMap: CustomBlockTransform.emojiMap,
+      profiles: userSelector(state: mainStore.state).profile ?? [:]
+    )
+  }
+
+  open func transformFromJSON(_ value: Any?) -> CHMessageBlock? {
+    if var block = Mapper<CHMessageBlock>().map(JSONObject: value) {
+      let text = self.parser.parse(block: block)
+      block.displayText = text
+      block.isOnlyEmoji = self.parser.listener?.isOnlyEmoji ?? false
+      return block
+    }
+
+    return nil
+  }
+
+  //not support. cannot parse back to original form
+  open func transformToJSON(_ value: CHMessageBlock?) -> Any? {
+    return nil
   }
 }

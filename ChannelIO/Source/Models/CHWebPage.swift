@@ -9,29 +9,93 @@
 import Foundation
 import ObjectMapper
 
-struct CHWebPage {
-  var url = ""
+struct CHWebPage: ThumbDisplayable, VideoPlayable {
+  var id = ""
+  var url: URL?
   var title: String?
-  var description: String?
-  var imageUrl: String?
-  var previewThumb: CHImageMeta?
+  var desc: String?
+  var videoUrl: String?
+  var publisher: VideoPublisher?
+  var author: String?
+  var width: Int = 0
+  var height: Int = 0
+  var bucket: String = ""
+  var previewKey: String = ""
+
+  //videoPlayable
+  var currSeconds: Double?
+  var duration: Double = 0.0
+
+  var isPlayable: Bool {
+    return self.publisher != nil && self.url != nil
+  }
+
+  var youtubeId: String? {
+    if self.publisher != .youtube {
+      return nil
+    }
+    return self.url?.queryItemForKey("v")?.value
+  }
+
+  var thumbUrl: URL? {
+    guard !self.bucket.isEmpty && !self.previewKey.isEmpty else { return nil }
+    let width = Int(self.thumbSize.width)
+    let height = Int(self.thumbSize.height)
+    let bucket = self.bucket.replace("bin", withString: "cf")
+    let urlString = "https://" + bucket + "/thumb/" + "\(width)x\(height)/" + self.previewKey
+    return URL(string: urlString)
+  }
 }
 
 extension CHWebPage: Mappable {
-  init?(map: Map) {
+  init?(map: Map) {}
 
-  }
   mutating func mapping(map: Map) {
-    url          <- map["url"]
-    title        <- map["title"]
-    description  <- map["description"]
-    imageUrl     <- map["imageUrl"]
-    previewThumb <- map["previewThumb"]
+    id <- map["id"]
+    url <- (map["url"], CustomURLTransform())
+    title <- map["title"]
+    desc <- map["description"]
+    videoUrl <- map["videoUrl"]
+    publisher <- map["publisher"]
+    author <- map["author"]
+    width <- map["width"]
+    height <- map["height"]
+    bucket <- map["bucket"]
+    previewKey <- map["previewKey"]
   }
 }
 
-extension CHWebPage: Equatable {}
+extension CHWebPage: Equatable {
+  static func == (lhs: CHWebPage, rhs: CHWebPage) -> Bool {
+    return lhs.id == rhs.id &&
+      lhs.url == rhs.url &&
+      lhs.title == rhs.title &&
+      lhs.desc == rhs.desc &&
+      lhs.videoUrl == rhs.videoUrl &&
+      lhs.publisher == rhs.publisher &&
+      lhs.author == rhs.author &&
+      lhs.width == rhs.width &&
+      lhs.height == rhs.height &&
+      lhs.bucket == rhs.bucket &&
+      lhs.previewKey == rhs.previewKey
+  }
+}
 
-func ==(lhs: CHWebPage, rhs: CHWebPage) -> Bool {
-  return lhs.url == rhs.url && lhs.title == rhs.title
+enum VideoPublisher: String {
+  case youtube = "YouTube"
+  case vimeo
+
+  var name: String {
+    switch self {
+    case .youtube: return "YouTube"
+    case .vimeo: return "Vimeo"
+    }
+  }
+
+  var image: UIImage? {
+    switch self {
+    case .youtube: return CHAssets.getImage(named: "logoYoutube")
+    default: return nil
+    }
+  }
 }

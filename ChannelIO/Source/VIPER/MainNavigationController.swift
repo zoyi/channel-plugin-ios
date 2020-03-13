@@ -53,6 +53,21 @@ class MainNavigationController: BaseNavigationController {
     if #available(iOS 13, *) {
       self.presentationController?.delegate = self
     }
+    
+    self.navigationBar.rx.observeWeakly(CGRect.self, "frame")
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (frame) in
+        guard let self = self else { return }
+        let plugin = mainStore.state.plugin
+        let bgColor = UIColor(plugin.color) ?? UIColor.white
+        let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
+
+        self.navigationBar.setGradientBackground(
+          colors: [bgColor, bgColor, bgColor, gradientColor],
+          startPoint: .topLeft,
+          endPoint: .topRight
+        )
+      }).disposed(by: self.disposeBag)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -145,11 +160,11 @@ extension MainNavigationController : UINavigationControllerDelegate {
     willShow viewController: UIViewController,
     animated: Bool) {
     if let coordinator = navigationController.topViewController?.transitionCoordinator {
-      coordinator.notifyWhenInteractionEnds({ (context) in
+      coordinator.notifyWhenInteractionChanges { (context) in
         if !context.isCancelled {
           self.chDelegate?.willPopViewController(willShow: viewController)
         }
-      })
+      }
     }
   }
 }
@@ -157,10 +172,7 @@ extension MainNavigationController : UINavigationControllerDelegate {
 @available(iOS 13, *)
 extension MainNavigationController : UIAdaptivePresentationControllerDelegate {
   func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-    ChannelIO.didDismiss()
-  }
-  
-  func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
     ChannelIO.delegate?.willHideMessenger?()
+    ChannelIO.didDismiss()
   }
 }

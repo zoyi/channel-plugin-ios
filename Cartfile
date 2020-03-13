@@ -9,10 +9,10 @@ github "ninjaprox/NVActivityIndicatorView" ~> 4.7.0
 github "zoyi/Dwifft"
 github "Alamofire/Alamofire" ~> 4.9
 github "socketio/socket.io-client-swift" ~> 15.0.0
-github "zoyi/SlackTextViewController"
 github "MortimerGoro/MGSwipeTableCell" ~> 1.6.8
 github "SVProgressHUD/SVProgressHUD" ~> 2.2.5
 github "cruffenach/CRToast"
 github "marmelroy/PhoneNumberKit" ~> 3.0.0
 github "rs/SDWebImage" ~> 5.0.0
 github "tilltue/TLPhotoPicker" ~> 2.0.0
+github "SDWebImage/SDWebImageWebPCoder"

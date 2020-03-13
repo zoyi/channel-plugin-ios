@@ -12,7 +12,7 @@ import ObjectMapper
 struct CHProfileItem {
   var id            : String = ""
   var key           : String = ""
-  var type          : String = ""
+  var type          : ProfileSchemaType = .string
   var name          : String = ""
   var value         : Any? = nil
   
@@ -33,7 +33,7 @@ extension CHProfileItem: Mappable {
       fieldType = .mobileNumber
     } else if key == "email" {
       fieldType = .email
-    } else if type == "Number" {
+    } else if type == .number {
       fieldType = .number
     } else {
       fieldType = .text

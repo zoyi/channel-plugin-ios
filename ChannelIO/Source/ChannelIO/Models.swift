@@ -15,11 +15,11 @@ public class PushEvent: NSObject {
   @objc public let senderName: String
   @objc public let senderAvatarUrl: String
   
-  init(with pushData: CHPush?) {
-    self.chatId = pushData?.userChat?.id ?? ""
-    self.message = pushData?.message?.message ?? ""
-    self.senderName = pushData?.manager?.name ?? ""
-    self.senderAvatarUrl = pushData?.manager?.avatarUrl ?? ""
+  init(with pushData: CHPushDisplayable?) {
+    self.chatId = pushData?.chatId ?? ""
+    self.message = pushData?.blocks.reduce("") { $0 + ($1.displayText?.string ?? "") } ?? ""
+    self.senderName = pushData?.writer?.name ?? ""
+    self.senderAvatarUrl = pushData?.writer?.avatarUrl ?? ""
   }
   
   @objc
@@ -34,19 +34,19 @@ public class PushEvent: NSObject {
 }
 
 @objc
-public class Guest: NSObject {
+public class User: NSObject {
   @objc public let id: String
   @objc public let name: String
   @objc public let avatarUrl: String?
   @objc public let profile: [String : Any]?
   @objc public let alert: Int
   
-  init(with guest: CHGuest) {
-    self.id = guest.id
-    self.name = guest.name
-    self.avatarUrl = guest.avatarUrl
-    self.profile = guest.profile
-    self.alert = guest.alert ?? 0
+  init(with user: CHUser) {
+    self.id = user.id
+    self.name = user.name
+    self.avatarUrl = user.avatarUrl
+    self.profile = user.profile
+    self.alert = user.alert ?? 0
   }
   
   @objc

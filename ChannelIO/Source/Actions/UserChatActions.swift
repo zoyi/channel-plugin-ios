@@ -16,7 +16,7 @@ struct FetchedUserChatPrep: Action {
 }
 
 struct GetUserChats: Action {
-  public let payload: [String: Any?]
+  public let payload: UserChatsResponse
 }
 
 struct FailedGetUserChats: Action {
@@ -35,24 +35,12 @@ struct RemoveMessages: Action {
   public let payload: String?
 }
 
-struct GetNudgeChat: Action {
-  public let nudgeId: String
-  public let payload: ChatResponse
-}
-
 struct GetUserChat: Action {
   public let payload: ChatResponse
 }
 
 struct CreateUserChat: Action {
   public let payload: CHUserChat
-}
-
-struct CreateLocalUserChat: Action {
-  public let chat: CHUserChat?
-  public let message: CHMessage?
-  public let writer: CHEntity?
-  public let session: CHSession?
 }
 
 struct UpdateUserChat: Action {
@@ -78,13 +66,8 @@ struct LeavedUserChat: Action {
 }
 
 //Update user
-struct UpdateGuest: Action {
-  public let payload: CHGuest?
-}
-
-struct UpdateGuestWithLocalRead: Action {
-  public let guest: CHGuest?
-  public let session: CHSession?
+struct UpdateUser: Action {
+  public let payload: CHUser?
 }
 
 struct UpdateVisibilityOfCompletedChats: Action {

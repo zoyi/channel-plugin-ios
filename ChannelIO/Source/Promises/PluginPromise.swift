@@ -13,33 +13,34 @@ import ObjectMapper
 import SwiftyJSON
 
 struct PluginPromise {
-  static func registerPushToken(channelId: String, token: String) -> Observable<Any?> {
+  static func registerPushToken(token: String) -> Observable<Any?> {
     return Observable.create { subscriber in
-      let key = UIDevice.current.identifierForVendor?.uuidString
+      let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let params = [
         "body": [
-          "channelId": channelId,
-          "key": key,
-          "token": token,
-          "platform": "ios"
+          "key": "ios-" + key,
+          "token": token
         ]
       ]
       
-      let req = Alamofire.request(RestRouter.RegisterToken(
-          params as RestRouter.ParametersType))
+      let req = Alamofire
+        .request(RestRouter.RegisterToken(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            if json["deviceToken"] == JSON.null {
-              subscriber.onError(CHErrorPool.registerParseError)
+            if json["pushToken"] == JSON.null {
+              subscriber.onError(ChannelError.parseError)
+              return
             }
 
             subscriber.onNext(nil)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
@@ -49,22 +50,21 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func unregisterPushToken(guestToken: String) -> Observable<Any?> {
+  static func unregisterPushToken() -> Observable<Any?> {
     return Observable.create { subscriber in
-      let params = ["headers":["X-Guest-Jwt": guestToken]]
-      
+
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
-      let req = Alamofire.request(RestRouter.UnregisterToken(key, params as RestRouter.ParametersType))
+      let req = Alamofire
+        .request(RestRouter.UnregisterToken(key))
         .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
-          if response.response?.statusCode == 200 {
+        .response { response in
+          if let error = response.error {
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
+          } else {
             subscriber.onNext(nil)
             subscriber.onCompleted()
-          } else {
-            subscriber.onError(CHErrorPool.unregisterError)
           }
-        })
-      
+        }
       return Disposables.create {
         req.cancel()
       }
@@ -73,29 +73,31 @@ struct PluginPromise {
   
   static func checkVersion() -> Observable<Any?> {
     return Observable.create { subscriber in
-      let req = Alamofire.request(RestRouter.CheckVersion)
+      let req = Alamofire
+        .request(RestRouter.CheckVersion)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            
-            let nsObject: Any = Bundle.main.infoDictionary!["CFBundleShortVersionString"] ?? ""
-            //Then just cast the object as a String, but be careful, you may want to double check for nil
-            let version = nsObject as! String
             let minVersion = json["minCompatibleVersion"].string ?? ""
             
-            //if minVersion is higher than version
+            guard let version = CHUtils.getSdkVersion() else {
+              subscriber.onError(ChannelError.versionError)
+              return
+            }
+            
             if version.versionToInt().lexicographicallyPrecedes(minVersion.versionToInt()) {
-              subscriber.onError(CHErrorPool.versionError)
+              subscriber.onError(ChannelError.versionError)
               return
             }
             
             subscriber.onNext(nil)
             subscriber.onCompleted()
-            break
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
@@ -104,32 +106,11 @@ struct PluginPromise {
       }
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
-  
-  static func getOperators() -> Observable<[CHManager]> {
-    return Observable.create { (subscriber) in
-      let req = Alamofire.request(RestRouter.GetOperators)
-        .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
-          switch response.result{
-          case .success(let data):
-            let json = JSON(data)
-            let managers = Mapper<CHManager>()
-              .mapArray(JSONObject: json["managers"].object)
-            subscriber.onNext(managers ?? [])
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(error)
-          }
-        })
-      return Disposables.create {
-        req.cancel()
-      }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
-  }
 
-  static func getPlugin(pluginId: String) -> Observable<(CHPlugin, CHBot?)> {
+  static func getPlugin(pluginKey: String) -> Observable<(CHPlugin, CHBot?)> {
     return Observable.create { (subscriber) in
-      let req = Alamofire.request(RestRouter.GetPlugin(pluginId))
+      let req = Alamofire
+        .request(RestRouter.GetPlugin(pluginKey))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result{
@@ -137,15 +118,17 @@ struct PluginPromise {
             let json = JSON(data)
             guard let plugin = Mapper<CHPlugin>()
               .map(JSONObject: json["plugin"].object) else {
-              subscriber.onError(CHErrorPool.pluginParseError)
-              return
-            }
+                subscriber.onError(ChannelError.parseError)
+                return
+              }
             let bot = Mapper<CHBot>()
               .map(JSONObject: json["bot"].object)
             subscriber.onNext((plugin, bot))
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       return Disposables.create {
@@ -154,94 +137,82 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResult> {
-    return Observable.create({ (subscriber) in      
-      let req = Alamofire.request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
+  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
+    return Observable.create { (subscriber) in
+      let req = Alamofire
+        .request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
-        .responseJSON(completionHandler: { response in
+        .responseJSON { response in
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
+            let result = Mapper<BootResponse>().map(JSONObject: json.object)
             
-            guard var result = Mapper<BootResult>().map(JSONObject: json.object) else {
-              subscriber.onError(CHErrorPool.pluginParseError)
-              return
-            }
-
-            if result.user == nil && result.veil == nil {
-              subscriber.onError(CHErrorPool.pluginParseError)
-              break
-            }
-            
-            if result.channel == nil || result.plugin == nil {
-              subscriber.onError(CHErrorPool.pluginParseError)
-              break
-            }
-            //swift bug, header should be case insensitive
-            //TODO: move to request extension
-            if let headers = response.response?.allHeaderFields {
-              let tupleArray = headers.map { (key: AnyHashable, value: Any) in
-                return ((key as? String)?.lowercased() ?? "", value)
-              }
-              let caseInsensitiveHeaders = Dictionary(uniqueKeysWithValues: tupleArray)
-              result.guestKey = caseInsensitiveHeaders["x-guest-jwt"]
-            }
-
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
-        })
+        }
       
       return Disposables.create {
         req.cancel()
       }
-    }).subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func sendPushAck(chatId: String?) -> Observable<Bool?> {
-    return Observable.create({ (subscriber) -> Disposable in
+    return Observable.create { (subscriber) -> Disposable in
       guard let chatId = chatId else {
         subscriber.onNext(nil)
         return Disposables.create()
       }
       
-      let req = Alamofire.request(RestRouter.SendPushAck(chatId))
+      let req = Alamofire
+        .request(RestRouter.SendPushAck(chatId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
-          if response.response?.statusCode == 200 {
+          switch response.result {
+          case .success(_):
             subscriber.onNext(true)
             subscriber.onCompleted()
-          } else {
-            subscriber.onError(CHErrorPool.unregisterError)
+          case .failure(let error):
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
   
   static func getProfileSchemas(pluginId: String) -> Observable<[CHProfileSchema]> {
-    return Observable.create({ (subscriber) -> Disposable in
-      let req = Alamofire.request(RestRouter.GetProfileBotSchemas(pluginId))
+    return Observable.create { (subscriber) -> Disposable in
+      let req = Alamofire
+        .request(RestRouter.GetProfileBotSchemas(pluginId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            let profiles = Mapper<CHProfileSchema>().mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
+            let profiles = Mapper<CHProfileSchema>()
+              .mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
             subscriber.onNext(profiles)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
 }

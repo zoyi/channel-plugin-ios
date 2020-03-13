@@ -19,11 +19,16 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
     return state?.upsert(bots: bots) ?? BotsState()
 
   case let action as GetUserChats:
-    let bots = (action.payload["bots"] as? [CHBot]) ?? []
-    return state?.upsert(bots: bots) ?? BotsState()
+    return state?.upsert(bots: action.payload.bots ?? []) ?? BotsState()
+    
+  case let action as GetUserChat:
+    return state?.upsert(bot: action.payload.bot) ?? BotsState()
     
   case let action as GetPush:
-    return state?.upsert(bot: action.payload.bot) ?? BotsState()
+    if let push = action.payload as? CHPush {
+      return state?.upsert(bot: push.bot) ?? BotsState()
+    }
+    return state ?? BotsState()
     
   case let action as GetPlugin:
     if var bot = action.bot {
@@ -32,20 +37,20 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
     }
     return state ?? BotsState()
     
-  case let action as GetSupportBotEntry:
-    if let bot = action.entry?.supportBot {
-      return state?.upsertSupportBots(bots: [bot]) ?? BotsState()
-    }
-    return state ?? BotsState()
-    
-  case let action as CreateLocalUserChat:
-    if let bot = action.writer as? CHBot {
-      return state?.upsert(bots: [bot]) ?? BotsState()
-    }
-    return state ?? BotsState()
-    
   case let action as UpdateLoungeInfo:
-    return state?.upsert(bot: action.bot) ?? BotsState()
+    if let bot = action.supportBotEntryInfo?.supportBot {
+      _ = state?.upsertSupportBots(bots: [bot])
+    }
+    
+    if let bots = action.userChats.bots {
+      _ = state?.upsert(bots: bots)
+    }
+    
+    if let bot = action.bot {
+      _ = state?.upsert(bot: bot)
+    }
+    
+    return state ?? BotsState()
     
   case _ as ShutdownSuccess:
     return state?.clear() ?? BotsState()

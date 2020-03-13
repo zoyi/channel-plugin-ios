@@ -68,7 +68,7 @@ struct MessagesState: StateType {
     
     self.messageDictionary.forEach { (k, v) in
       if (v.chatId == userChatId &&
-        lastIds[v.id] == nil) && v.state != .Failed {
+        lastIds[v.id] == nil) && v.state != .networkError {
         self.messageDictionary.removeValue(forKey: k)
       }
     }
@@ -106,11 +106,11 @@ struct MessagesState: StateType {
     //In order to display smooth message transition when actionable was clicked
     //actionable message click -> message created -> message update --- default
     //actioanble message click -> message created (update actionable while created) -- optimize
-    for (key, message) in self.actionQueue {
-      var updated = message
-      updated.messageType = CHMessage.contextType(message)
-      self.messageDictionary[key] = updated
-    }
+//    for (key, message) in self.actionQueue {
+//      var updated = message
+//      updated.messageType = message.contextType()
+//      self.messageDictionary[key] = updated
+//    }
     
     self.messageDictionary[message.id] = message
     if message.action != nil {

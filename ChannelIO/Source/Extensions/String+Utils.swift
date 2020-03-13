@@ -35,6 +35,28 @@ extension NSAttributedString {
     
     return str
   }
+  
+  var dropTailingNewline: NSAttributedString {
+    if self.string.hasSuffix("\n") {
+      return self.attributedSubstring(from: NSMakeRange(0, self.length - 1))
+    } else {
+      return self
+    }
+  }
+  
+  func split(seperateBy: String) -> [NSAttributedString] {
+    let input = self.string
+    let separatedInput = input.components(separatedBy: seperateBy)
+    var output = [NSAttributedString]()
+    var start = 0
+    for sub in separatedInput {
+      let range = NSRange(location: start, length: sub.utf16.count)
+      let attribStr = self.attributedSubstring(from: range)
+      output.append(attribStr)
+      start += range.length + seperateBy.count
+    }
+    return output
+  }
 }
 
 
@@ -95,16 +117,22 @@ extension String {
     return attributedText
   }
   
-  func addLineHeight(height: CGFloat, font: UIFont, color: UIColor, alignment: NSTextAlignment = .left) -> NSMutableAttributedString {
+  func addLineHeight(
+    height: CGFloat,
+    font: UIFont,
+    color: UIColor,
+    alignment: NSTextAlignment = .left,
+    lineBreakMode: NSLineBreakMode = .byWordWrapping) -> NSMutableAttributedString {
     let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineBreakMode = .byWordWrapping
+    paragraphStyle.lineBreakMode = lineBreakMode
     paragraphStyle.minimumLineHeight = height
     paragraphStyle.alignment = alignment
     
     let attributes: [NSAttributedString.Key: Any] = [
       .foregroundColor: color,
       .font: font,
-      .paragraphStyle: paragraphStyle
+      .paragraphStyle: paragraphStyle,
+      .baselineOffset: (paragraphStyle.minimumLineHeight - font.lineHeight)/4
     ]
     
     return NSMutableAttributedString(string: self, attributes: attributes)

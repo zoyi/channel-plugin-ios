@@ -13,48 +13,58 @@ import SVProgressHUD
 import MessageUI
 
 class LoungeRouter: NSObject, LoungeRouterProtocol {
+  private var isPushing = false
   var disposeBag = DisposeBag()
   
   func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    let chatView = UserChatViewController()
-    if let userChatId = chatId {
-      chatView.userChatId = userChatId
+    guard !isPushing else { return }
+    self.isPushing = true
+    let controller = UserChatRouter.createModule(userChatId: chatId)
+    view?.navigationController?
+      .pushViewController(viewController: controller, animated: animated) { [weak self] in
+      self?.isPushing = false
     }
-    
-    chatView.signalForNewChat().subscribe(onNext: { [weak self] (_) in
-      view?.navigationController?.popViewController(animated: true, completion: {
-        self?.pushChat(with: nil, animated: true, from: view)
-      })
-    }).disposed(by: self.disposeBag)
-
-    view?.navigationController?.pushViewController(chatView, animated: animated)
   }
   
   func pushChatList(from view: UIViewController?) {
+    guard !isPushing else { return }
+    self.isPushing = true
     let viewController = UserChatsViewController()
-    view?.navigationController?.pushViewController(viewController, animated: true)
+    view?.navigationController?
+      .pushViewController(viewController: viewController, animated: true) { [weak self] in
+      self?.isPushing = false
+    }
   }
   
   func pushSettings(from view: UIViewController?) {
+    guard !isPushing else { return }
+    self.isPushing = true
     let settingView = SettingRouter.createModule()
-    view?.navigationController?.pushViewController(settingView, animated: true)
+    view?.navigationController?
+      .pushViewController(viewController: settingView, animated: true) { [weak self] in
+      self?.isPushing = false
+    }
   }
 
   func presentBusinessHours(from view: UIViewController?) {
     let channel = mainStore.state.channel
-    let alertController = UIAlertController(
+    
+    let alertController = AlertViewController(
       title: CHAssets.localized("ch.business_hours"),
       message: channel.workingTimeString,
-      preferredStyle: .alert)
+      type: .normal
+    )
     
-    alertController.addAction(UIAlertAction(title: CHAssets.localized("ch.button_confirm"), style: .default) {  _ in
+    alertController.addAction(AlertAction(title: CHAssets.localized("ch.button_confirm"), type: .normal) {  _ in
       alertController.dismiss(animated: true, completion: nil)
     })
     alertController.modalTransitionStyle = .crossDissolve
     view?.present(alertController, animated: true, completion: nil)
   }
   
-  func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?) {
+  func presentExternalSource(
+    with source: LoungeExternalSourceModel,
+    from view: UIViewController?) {
     switch source.type {
     case .email:
       guard MFMailComposeViewController.canSendMail() else { return }
@@ -64,15 +74,38 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       view?.present(mailComposerVC, animated: true, completion: nil)
     case .phone:
       if let url = URL(string:source.value) {
-        UIApplication.shared.openURL(url)
+        url.openWithUniversal()
       }
     case .link:
       UIPasteboard.general.string = source.value
-      CHNotification.shared.display(message: CHAssets.localized("ch.integrations.copy_link.success"))
+      CHNotification.shared.display(
+        message: CHAssets.localized("ch.integrations.copy_link.success")
+      )
     default:
-      if let url = URL(string:source.value) {
-        UIApplication.shared.openURL(url)
-      }
+      SVProgressHUD.show()
+      CHAppMessenger
+        .getUri(with: source.value)
+        .retry(.delayed(maxCount: 3, time: 3.0))
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { (result) in
+          defer {
+            SVProgressHUD.dismiss()
+          }
+          guard let uri = result.uri, let url = URL(string: uri) else {
+            CHNotification.shared.display(
+              message: CHAssets.localized("ch.common_error"),
+              config: .warningConfig
+            )
+            return
+          }
+          url.openWithUniversal()
+        }, onError: { (_) in
+          SVProgressHUD.dismiss()
+          CHNotification.shared.display(
+            message: CHAssets.localized("ch.common_error"),
+            config: .warningConfig
+          )
+        }).disposed(by: self.disposeBag)
     }
   }
   

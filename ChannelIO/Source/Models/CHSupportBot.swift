@@ -33,54 +33,34 @@ extension CHSupportBot: Mappable {
 }
 
 extension CHSupportBot {
-  static func get(with pluginId: String, fetch: Bool) -> Observable<CHSupportBotEntryInfo> {
-    return Observable.create({ (subscriber) -> Disposable in
-      var disposable: Disposable?
-      if fetch {
-        disposable = SupportBotPromise.getSupportBot(pluginId: pluginId)
-          .subscribe(onNext: { (bot) in
-            dlog("fetched support bot")
-            subscriber.onNext(bot)
-            subscriber.onCompleted()
-          }, onError: { (error) in
-            subscriber.onError(error)
-          })
-      } else {
-        subscriber.onNext(CHSupportBotEntryInfo())
-        subscriber.onCompleted()
-      }
-      
-      return Disposables.create {
-        disposable?.dispose()
-      }
-    })
-  }
-  
-  static func reply(with userChatId: String?, actionId: String?, buttonId: String?, requestId: String? = nil) -> Observable<CHMessage> {
-    return SupportBotPromise.replySupportBot(userChatId: userChatId, actionId: actionId, buttonId: buttonId, requestId: requestId)
-  }
-  
   static func reply(with message: CHMessage, actionId: String? = nil) -> Observable<CHMessage> {
     let actionId = actionId ?? message.id
     
     return SupportBotPromise.replySupportBot(
       userChatId: message.chatId,
       actionId: actionId,
-      buttonId: message.submit?.key,
+      buttonKey: message.submit?.key,
       requestId: message.requestId)
   }
   
   static func create(with botId: String) -> Observable<ChatResponse> {
-    return SupportBotPromise.createSupportBotUserChat(supportBotId: botId)
+    return SupportBotPromise.createSupportBotUserChat(
+      supportBotId: botId,
+      url: ChannelIO.hostTopControllerName ?? ""
+    )
+  }
+  
+  static func startFromMarketing(userChatId: String?) -> Observable<CHMessage> {
+    return SupportBotPromise.startMarketingToSupportBot(
+      userChatId: userChatId,
+      supportBotId: mainStore.state.botsState.findSupportBot()?.id
+    )
   }
 }
 
-struct CHSupportBotStep: CHImageable {
+struct CHSupportBotStep {
   var id: String = ""
-  var message: String = ""
-  var imageMeta: CHImageMeta? = nil
-  var imageUrl: String? = nil
-  var imageRedirectUrl: String? = nil
+  var message: CHMessage?
 }
 
 extension CHSupportBotStep: Mappable {
@@ -89,8 +69,6 @@ extension CHSupportBotStep: Mappable {
   mutating func mapping(map: Map) {
     id            <- map["id"]
     message       <- map["message"]
-    imageMeta     <- map["imageMeta"]
-    imageUrl      <- map["imageUrl"]
   }
 }
 
@@ -101,9 +79,22 @@ struct CHSupportBotEntryInfo {
   
   init() { }
   
-  init(supportBot: CHSupportBot?, step: CHSupportBotStep?, buttons: [CHActionButton] = []) {
+  init(
+    supportBot: CHSupportBot?,
+    step: CHSupportBotStep?,
+    buttons: [CHActionButton] = []) {
     self.supportBot = supportBot
     self.step = step
     self.buttons = buttons
+  }
+}
+
+extension CHSupportBotEntryInfo: Mappable {
+  init?(map: Map) { }
+  
+  mutating func mapping(map: Map) {
+    supportBot      <- map["supportBot"]
+    step            <- map["step"]
+    buttons         <- map["buttons"]
   }
 }

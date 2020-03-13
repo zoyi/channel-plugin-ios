@@ -12,9 +12,9 @@ struct AppState: StateType {
   var bootState: BootState
   var plugin: CHPlugin
   var channel: CHChannel
-  var guest: CHGuest
+  var user: CHUser
   var userChatsState: UserChatsState
-  var push: CHPush?
+  var push: CHPushDisplayable?
   var managersState: ManagersState
   var botsState: BotsState
   var sessionsState: SessionsState
@@ -22,12 +22,14 @@ struct AppState: StateType {
   var uiState: UIState
   var socketState: WSocketState
   var countryCodeState: CountryCodeState
+  var chatState: ChatState
 }
 
 @objc public enum CHLocale: Int {
   case english
   case korean
   case japanese
+  // TODO remove device and make CHLocale Optional
   case device
 }
 

@@ -9,56 +9,96 @@
 import Foundation
 import ObjectMapper
 
-protocol CHPushDisplayable { }
+protocol CHPushDisplayable {
+  var writer: CHEntity? { get }
+  var sortedFiles: [CHFile] { get }
+  var webPage: CHWebPage? { get }
+  var readableCreatedAt: String { get }
+  var mobileExposureType: InAppNotificationType? { get }
+  var logMessage: String? { get }
+  var blocks: [CHMessageBlock] { get }
+  var chatId: String { get }
+  var removed: Bool { get }
+  var mkInfo: MarketingInfo? { get }
+}
+
+extension CHPushDisplayable {
+  func isEqual(to other: CHPushDisplayable?) -> Bool {
+    let isSameWriter = self.writer != nil ?
+      writer!.isEqual(to: other?.writer) : other?.writer == nil
+    return isSameWriter &&
+      self.sortedFiles == other?.sortedFiles &&
+      self.webPage == other?.webPage &&
+      self.readableCreatedAt == other?.readableCreatedAt &&
+      self.mobileExposureType == other?.mobileExposureType &&
+      self.logMessage == other?.logMessage &&
+      self.sortedFiles == other?.sortedFiles &&
+      self.blocks == other?.blocks &&
+      self.chatId == other?.chatId &&
+      self.removed == other?.removed &&
+      self.mkInfo?.type == other?.mkInfo?.type &&
+      self.mkInfo?.id == other?.mkInfo?.id
+  }
+}
 
 struct CHPush: CHPushDisplayable {
   var type = ""
-  
   var message: CHMessage?
-  
   var user: CHUser?
-  var veil: CHVeil?
   var bot: CHBot?
   var manager: CHManager?
   var userChat: CHUserChat?
   
-  var showLog: Bool = true
-  var buttonTitle: String? = nil
+  var writer: CHEntity? {
+    return self.manager ?? self.bot
+  }
   
-  var mobileExposureType: InAppNotificationType = .banner
+  var sortedFiles: [CHFile] {
+    return self.message?.sortedFiles ?? []
+  }
   
-  var attachmentType: CHAttachmentType = .none
-  var redirectUrl: String? = nil
+  var webPage: CHWebPage? {
+    return self.message?.webPage
+  }
   
-  var isNudgePush: Bool = false
+  var readableCreatedAt: String {
+    return self.message?.readableCreatedAt ?? ""
+  }
+  
+  var mobileExposureType: InAppNotificationType? {
+    return self.message?.marketing?.exposureType ?? .banner
+  }
+  
+  var logMessage: String? {
+    return self.message?.logMessage
+  }
+  
+  var blocks: [CHMessageBlock] {
+    return self.message?.blocks ?? []
+  }
+  
+  var chatId: String {
+    return self.userChat?.id ?? ""
+  }
+  
+  var removed: Bool {
+    return self.message?.removed ?? false
+  }
+  
+  var mkInfo: MarketingInfo? {
+    guard let marketing = self.message?.marketing else { return nil }
+    return (marketing.type, marketing.id)
+  }
 }
 
 extension CHPush : Mappable {
   init?(map: Map) { }
-  
-  init(chat: CHUserChat, message: CHMessage, response: NudgeReachResponse) {
-    self.bot = response.bot
-    self.message = message
-    self.userChat = chat
-    self.mobileExposureType = response.variant?.mobileExposureType ?? .banner
-    self.attachmentType = response.variant?.attachment ?? .none
-    self.buttonTitle = response.variant?.buttonTitle
-    self.showLog = false
-    self.isNudgePush = true
-    
-    if self.attachmentType == .image, let url = response.variant?.imageRedirectUrl {
-      self.redirectUrl = url
-    } else if self.attachmentType == .button, let url = response.variant?.buttonRedirectUrl {
-      self.redirectUrl = url
-    }
-  }
   
   mutating func mapping(map: Map) {
     message   <- map["entity"]
     manager   <- map["refers.manager"]
     bot       <- map["refers.bot"]
     user      <- map["refers.user"]
-    veil      <- map["refers.veil"]
     userChat  <- map["refers.userChat"]
     type      <- map["type"]
   }
@@ -69,10 +109,7 @@ extension CHPush: Equatable {
     return lhs.type == rhs.type &&
       lhs.message == rhs.message &&
       lhs.bot == rhs.bot &&
-      lhs.manager == rhs.manager &&
-      lhs.mobileExposureType == rhs.mobileExposureType &&
-      lhs.attachmentType == rhs.attachmentType &&
-      lhs.isNudgePush == rhs.isNudgePush
+      lhs.manager == rhs.manager
   }
 }
 

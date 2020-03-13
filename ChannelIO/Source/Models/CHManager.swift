@@ -17,13 +17,17 @@ struct CHManager: CHEntity {
   var name = ""
   // Avatar
   var avatarUrl: String?
-  var initial = ""
-  var color = ""
+
   // Manager
   var username = ""
+  var mobileNumber: String?
   var desc = ""
-  var online = false
+  var online: CHOnline?
   
+  //local
+  var color = ""
+  var initial = ""
+
   var key: String {
     get {
       return "Manager:\(self.id)"
@@ -36,13 +40,15 @@ extension CHManager: Mappable {
 
   }
   mutating func mapping(map: Map) {
-    id          <- map["id"]
-    name        <- map["name"]
-    avatarUrl   <- map["avatarUrl"]
-    initial     <- map["initial"]
-    color       <- map["color"]
-    username    <- map["username"]
-    online      <- map["online"]
+    id              <- map["id"]
+    name            <- map["name"]
+    username        <- map["username"]
+    mobileNumber    <- map["mobileNumber"]
+    avatarUrl       <- map["avatarUrl"]
+    initial         <- map["initial"]
+    color           <- map["color"]
+
+    
   }
 }
 
@@ -54,6 +60,7 @@ extension CHManager: Equatable {
       lhs.initial == rhs.initial &&
       lhs.color == rhs.color &&
       lhs.username == rhs.username &&
-      lhs.online == rhs.online
+      lhs.online == rhs.online &&
+      lhs.mobileNumber == rhs.mobileNumber
   }
 }

@@ -115,9 +115,7 @@ class ChatNavigationTitleView : BaseView {
 }
 
 class ChatNavigationFollowingTitleView : BaseView {
-  let hostView = AvatarView().then {
-    $0.showOnline = true
-  }
+  let hostView = AvatarView()
   let hostNameLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 17)
   }
@@ -134,7 +132,7 @@ class ChatNavigationFollowingTitleView : BaseView {
     super.setLayouts()
     
     self.hostView.snp.makeConstraints { (make) in
-      make.leading.equalToSuperview()
+      make.leading.equalToSuperview().inset(-5)
       make.centerY.equalToSuperview()
       make.height.equalTo(24)
       make.width.equalTo(24)

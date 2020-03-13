@@ -8,7 +8,7 @@
 
 import Foundation
 import ObjectMapper
-
+import RxSwift
 
 struct CHChannel: CHEntity {
   // ModelType
@@ -25,12 +25,10 @@ struct CHChannel: CHEntity {
   var defaultPluginId = ""
   var textColor = "white"
   var working = true
-  var workingTime: [String:TimeRange]?
-  var lunchTime: TimeRange?
+  var workingTimeRanges: [TimeRange]?
   var phoneNumber: String?
-  var requestGuestInfo = true
-  var messengerPlan: ChannelPlanType = .pro
-  var pushBotPlan: ChannelPlanType = .pro
+  var requestUserInfo = true
+  var messengerPlan: ChannelPlanType = .none
   var supportBotPlan: ChannelPlanType = .none
   var blocked = false
   var homepageUrl = ""
@@ -41,6 +39,7 @@ struct CHChannel: CHEntity {
   var workingType: ChannelWorkingType = .always
   var trial = true
   var trialEndDate: Date? = nil
+  var state: ChannelState?
 }
 
 extension CHChannel {
@@ -51,11 +50,7 @@ extension CHChannel {
   var canUseSDK: Bool {
     return !self.blocked && (self.messengerPlan == .pro || self.trial)
   }
-  
-  var canUsePushBot: Bool {
-    return !self.blocked && (self.pushBotPlan != .none || self.trial)
-  }
-  
+
   var canUseSupportBot: Bool {
     return !self.blocked && (self.supportBotPlan != .none || self.trial)
   }
@@ -71,93 +66,71 @@ extension CHChannel {
   }
   
   var shouldShowWorkingTimes: Bool {
-    if let workingTime = self.workingTime, workingTime.count != 0 {
+    if let workingTimeRanges = self.workingTimeRanges, workingTimeRanges.count != 0 {
       return self.workingType == .custom && !self.working
     }
     return false
   }
   
-  var sortedWorkingTime: [SortableWorkingTime]? {
-    guard var workingTime = self.workingTime else { return nil }
-    
-    if let launchTime = self.lunchTime {
-      workingTime["lunch_time"] = launchTime
-    }
-    
-    return workingTime.map({ (key, value) -> SortableWorkingTime in
-      let fromValue = value.from
-      let toValue = value.to
-      
-      if fromValue == 0 && toValue == 0 {
-        return SortableWorkingTime(value: "", key: key, order: 0)
+  private func rangeToWorkingTimeString(_ range: TimeRange) -> String {
+    let days: String = range
+      .dayOfWeeks
+      .sorted(by: {
+        guard
+          let first = daysSortOrder(rawValue: $0)?.order,
+          let second = daysSortOrder(rawValue: $1)?.order else {
+          return daysSortOrder(rawValue: $0)?.order != nil
+        }
+        return first < second
+      })
+      .reduce("") {
+        $0 == "" ?
+          CHAssets.localized("ch.out_of_work.\($1)") :
+          $0 + ", \(CHAssets.localized("ch.out_of_work.\($1)"))"
       }
-      
-      let from = min(1439, fromValue)
-      let to = min(1439, toValue)
-      let fromTxt = from >= 720 ? "PM" : "AM"
-      let toTxt = to >= 720 ? "PM" : "AM"
-      let fromMin = from % 60
-      let fromHour = from / 60 > 12 ? from / 60 - 12 : from / 60
-      let toMin = to % 60
-      let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
-      
-      let timeStr = String(
-        format: "%@ - %d:%02d%@ ~ %d:%02d%@",
-        CHAssets.localized("ch.out_of_work.\(key)"),
-        fromHour, fromMin, fromTxt, toHour, toMin, toTxt
-      )
-      
-      var order = 0
-      switch key.lowercased() {
-      case "sun": order = 1
-      case "mon": order = 2
-      case "tue": order = 3
-      case "wed": order = 4
-      case "thu": order = 5
-      case "fri": order = 6
-      case "sat": order = 7
-      default: order = 8
-      }
-      
-      return SortableWorkingTime(value: timeStr, key: key.lowercased(), order: order)
-    })
-    .sorted(by: { (wt, otherWt) -> Bool in
-      return wt.order < otherWt.order
-    })
-    .filter({ $0.value != "" })
+    
+    let fromValue = range.from
+    let toValue = range.to
+
+    let from = min(1439, fromValue)
+    let to = min(1439, toValue)
+    let fromTxt = from >= 720 ? "PM" : "AM"
+    let toTxt = to >= 720 ? "PM" : "AM"
+    let fromMin = from % 60
+    let fromHour = from / 60 > 12 ? from / 60 - 12 : from / 60
+    let toMin = to % 60
+    let toHour = to / 60 > 12 ? to / 60 - 12 : to / 60
+
+    let timeStr = String(
+      format: "%@\n%d:%02d%@ ~ %d:%02d%@",
+      days, fromHour, fromMin, fromTxt, toHour, toMin, toTxt
+    )
+    
+    return timeStr
   }
   
   var workingTimeString: String {
-    return self.sortedWorkingTime?
-      .compactMap({ (wt) -> String? in
-        return wt.value
-      })
-      .joined(separator: "\n") ?? "unknown"
+    guard let workingTimeRanges = self.workingTimeRanges else { return "unknown" }
+    
+    return workingTimeRanges
+      .reduce("") {
+        $0 == "" ?
+          self.rangeToWorkingTimeString($1) :
+          $0 + "\n" + self.rangeToWorkingTimeString($1)
+      } + "\n" + self.timeZone
   }
   
-  //return closest weekday and time left in minutes
   func closestWorkingTime(from date: Date) -> (nextTime: Date, timeLeft: Int)? {
     guard self.workingType == .custom else { return nil }
-    guard let workingTime = self.workingTime else { return nil }
+    guard let workingTimeRanges = self.workingTimeRanges else { return nil }
     
     var workingTimes = DateUtils.emptyArrayWithWeekday()
-    var breakTimes = DateUtils.emptyArrayWithWeekday()
     
-    for (dayString, range) in workingTime {
-      if let day = Weekday(rawValue: dayString) {
-        workingTimes[day]?.append(range)
-      }
-    }
-    
-    if let lunchTime = self.lunchTime {
-      for day in breakTimes.keys {
-        breakTimes[day]?.append(lunchTime)
-      }
-    }
-
-    for (day, ranges) in workingTimes {
-      if let otherRanges = breakTimes[day] {
-        workingTimes[day] = DateUtils.substract(ranges: ranges, otherRanges: otherRanges)
+    for range in workingTimeRanges {
+      for dayString in range.dayOfWeeks {
+        if let day = Weekday(rawValue: dayString) {
+          workingTimes[day]?.append(range)
+        }
       }
     }
 
@@ -189,6 +162,12 @@ extension CHChannel {
     }
     
     return nil
+  }
+}
+
+extension CHChannel {
+  static func get() -> Observable<CHChannel> {
+    return ChannelPromise.getChannel()
   }
 }
 
@@ -228,15 +207,14 @@ extension CHChannel: Mappable {
     textColor               <- map["textColor"]
     phoneNumber             <- map["phoneNumber"]
     working                 <- map["working"]
-    workingTime             <- map["workingTime"]
-    lunchTime               <- map["lunchTime"]
-    requestGuestInfo        <- map["requestGuestInfo"]
+    state                   <- map["state"]
+    workingTimeRanges       <- map["workingTimeRanges"]
+    requestUserInfo         <- map["requestUserInfo"]
     homepageUrl             <- map["homepageUrl"]
     expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
     utcOffset               <- map["utcOffset"]
     messengerPlan           <- map["messengerPlan"]
-    pushBotPlan             <- map["pushBotPlan"]
     supportBotPlan          <- map["supportBotPlan"]
     blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom
@@ -247,6 +225,7 @@ extension CHChannel: Mappable {
 }
 
 struct TimeRange {
+  var dayOfWeeks: [String] = []
   var from = 0
   var to = 0
 }
@@ -265,6 +244,7 @@ extension TimeRange : Mappable, Equatable {
   init?(map: Map) { }
   
   mutating func mapping(map: Map) {
+    dayOfWeeks <- map["dayOfWeeks"]
     from <- map["from"]
     to <- map["to"]
   }
@@ -272,12 +252,6 @@ extension TimeRange : Mappable, Equatable {
   static func == (lhs:TimeRange, rhs:TimeRange) -> Bool {
     return lhs.from == rhs.from && lhs.to == lhs.to
   }
-}
-
-struct SortableWorkingTime {
-  let value: String
-  let key: String
-  let order: Int
 }
 
 enum ChannelPlanType: String {
@@ -296,4 +270,41 @@ enum ChannelAwayOptionType: String {
   case active
   case disabled
   case hidden
+}
+
+enum ChannelState: String {
+  case waiting
+  case active
+  case unpaid
+  case banned
+  case removed
+}
+
+enum daysSortOrder: String {
+  case mon
+  case tue
+  case wed
+  case thu
+  case fri
+  case sat
+  case sun
+  
+  var order: Int {
+    switch self {
+    case .mon:
+      return 1
+    case .tue:
+      return 2
+    case .wed:
+      return 3
+    case .thu:
+      return 4
+    case .fri:
+      return 5
+    case .sat:
+      return 6
+    case .sun:
+      return 7
+    }
+  }
 }

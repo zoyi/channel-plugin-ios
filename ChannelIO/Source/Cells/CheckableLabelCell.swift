@@ -8,9 +8,8 @@
 
 import Foundation
 import SnapKit
-import Reusable
 
-final class CheckableLabelCell : BaseTableViewCell, Reusable {
+final class CheckableLabelCell : BaseTableViewCell {
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 16)

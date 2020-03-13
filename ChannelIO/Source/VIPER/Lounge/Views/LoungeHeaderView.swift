@@ -119,6 +119,7 @@ class LoungeHeaderView: BaseView {
   override func initialize() {
     super.initialize()
     
+    self.clipsToBounds = false
     self.layer.addSublayer(self.bgView)
     self.layer.addSublayer(self.bottomBgView)
     
@@ -249,16 +250,7 @@ class LoungeHeaderView: BaseView {
   }
   
   override func displayError() {
-    //don't need to replace all since channel info is already there after boot
-//    let plugin = mainStore.state.plugin
-//    let channel = mainStore.state.channel
-//
-//    self.bgView.colors = plugin.gradientColors
-//    self.settingButton.tintColor = plugin.textUIColor
-//    self.dismissButton.tintColor = plugin.textUIColor
-//    self.channelNameLabel.text = channel.name
-//    self.channelNameLabel.textColor = plugin.textUIColor
-//    self.setVisibilityForComponents(hidden: true)
+    //display error
     self.followersView.configureDefault()
   }
   

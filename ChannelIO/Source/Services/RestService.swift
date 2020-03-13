@@ -9,35 +9,28 @@
 import Foundation
 import Alamofire
 
-enum EPType: String {
-  case PRODUCTION = "https://api.channel.io"
-  case ALPHA = "http://api.exp.channel.io"
-  case BETA = "http://api.staging.channel.io"
-}
-
 enum RestRouter: URLRequestConvertible {
   case Boot(String, ParametersType)
-  case CreateUserChat(String)
+  case CreateUserChat(String, ParametersType)
+  case ClosePopup
   case CloseUserChat(String, ParametersType)
   case CreateMessage(String, ParametersType)
   case CheckVersion
-  case CreateSupportBotChat(String)
-  case CheckNudgeReach(String)
-  case CreateNudgeChat(String)
-  case GetNudges(String)
+  case CreateSupportBotChat(String, ParametersType)
+  case CampaignClick(String)
+  case CampaignView(String)
+  case GetAppMessengerUri(String)
   case GetPlugin(String)
   case GetGeoIP
   case GetChannel
   case GetCountryCodes
-  case GetOperators
-  case GetExternalMessengers
-  case GetSupportBot(String)
-  case GetSupportBotEntry(String)
+  case GetLounge(String, ParametersType)
   case GetUserChats(ParametersType)
   case GetUserChat(String)
   case GetMessages(String, ParametersType)
   case GetProfileBotSchemas(String)
-  case KeepNudge(String)
+  case OneTimeMsgClick(String)
+  case OneTimeMsgView(String)
   case ReplySupportBot(String, String, ParametersType)
   case RegisterToken(ParametersType)
   case RemoveUserChat(String)
@@ -45,171 +38,197 @@ enum RestRouter: URLRequestConvertible {
   case SendEvent(String, ParametersType)
   case SetMessagesRead(String)
   case SendPushAck(String)
-  case TouchGuest
-  case Translate(String, ParametersType)
-  case UpdateGuest(ParametersType)
-  case UpdateProfileItem(String, ParametersType)
-  case UnregisterToken(String, ParametersType)
+  case StartMarketingToSupportBot(String, String)
+  case TouchUser(String, ParametersType)
+  case Translate(String, String, ParametersType)
+  case UpdateUser(ParametersType)
+  case UpdateProfileItem(String, String, ParametersType)
+  case UnregisterToken(String)
   case UploadFile(String, ParametersType)
-
+  
   var baseURL: String {
     get {
-      var url = EPType.PRODUCTION.rawValue
-      if let stage = CHUtils.getCurrentStage() {
-        if stage == "PROD" {
-          url = EPType.PRODUCTION.rawValue
-        } else if stage == "ALPHA" {
-          url = EPType.ALPHA.rawValue
-        } else if stage == "BETA" {
-          url = EPType.BETA.rawValue
-        }
-      }
-      return url
+      return CHUtils.getCurrentStage().restEndPoint
     }
   }
 
   typealias ParametersType = Parameters
   static let queue = DispatchQueue(label: "com.zoyi.channel.restapi", qos: .background, attributes: .concurrent)
   static let packageName = "com.zoyi.channel.plugin.ios"
+  static var channelId = ""
   
   var method: HTTPMethod {
     switch self {
-    case .CreateMessage,
-         .CreateUserChat, .UploadFile, .RegisterToken,
-         .SendEvent, .Boot,
-         .UpdateProfileItem, .TouchGuest,
-         .CreateSupportBotChat, .ReplySupportBot,
-         .CheckNudgeReach,
-         .CreateNudgeChat,
-         .KeepNudge:
+    case .Boot,
+         .CreateMessage,
+         .CreateUserChat,
+         .CreateSupportBotChat,
+         .GetLounge,
+         .ReplySupportBot,
+         .RegisterToken,
+         .SendEvent,
+         .StartMarketingToSupportBot,
+         .TouchUser,
+         .UpdateProfileItem,
+         .UploadFile:
       return .post
-    case .GetMessages, .GetUserChat,
-         .GetUserChats, .CheckVersion, .GetGeoIP,
+    case .CheckVersion,
+         .GetAppMessengerUri,
          .GetCountryCodes,
-         .GetOperators,
-         .GetPlugin, .Translate,
-         .GetSupportBot, .GetSupportBotEntry,
-         .GetNudges,
-         .GetExternalMessengers,
+         .GetGeoIP,
+         .GetMessages,
+         .GetUserChat,
+         .GetUserChats,
+         .GetPlugin,
          .GetProfileBotSchemas,
-         .GetChannel:
+         .GetChannel,
+         .Translate:
       return .get
-    case .SetMessagesRead,
-         .RemoveUserChat,
+    case .UpdateUser:
+      return .patch
+    case .CampaignClick,
+         .CampaignView,
          .CloseUserChat,
+         .OneTimeMsgClick,
+         .OneTimeMsgView,
          .ReviewUserChat,
-         .SendPushAck,
-         .UpdateGuest:
+         .SetMessagesRead,
+         .SendPushAck:
       return .put
-    case .UnregisterToken:
+    case .ClosePopup,
+         .UnregisterToken,
+         .RemoveUserChat:
       return .delete
     }
   }
   
   // MARK: Paths
   var path: String {
+    let channelId = RestRouter.channelId
+    
     switch self {
     case .Boot(let pluginKey, _):
-      return "/app/plugins/\(pluginKey)/boot/v2"
-    case .CheckNudgeReach(let nudgeId):
-      return "/app/nudges/\(nudgeId)/reach"
-    case .CreateNudgeChat(let nudgeId):
-      return "/app/nudges/\(nudgeId)/user_chats"
-    case .CreateUserChat(let pluginId):
-      return "/app/plugins/\(pluginId)/user_chats"
-    case .CreateSupportBotChat(let supportBotId):
-      return "/app/support_bots/\(supportBotId)/user_chats"
+      return "/front/elastic/plugins/\(pluginKey)/boot"
+    case .CampaignClick(let campaignId):
+      return "/front/campaigns/\(campaignId)/click"
+    case .CampaignView(let campaignId):
+      return "/front/campaigns/\(campaignId)/view"
+    case .CreateUserChat(let pluginId, _):
+      return "/front/plugins/\(pluginId)/user-chats"
+    case .CreateSupportBotChat(let supportBotId, _):
+      return "/front/support-bots/\(supportBotId)/user-chats"
     case .CreateMessage(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages"
+      return "/front/user-chats/\(userChatId)/messages"
     case .CheckVersion:
       return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
+    case .ClosePopup:
+      return "/front/users/me/pop-up"
     case .CloseUserChat(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/close"
+      return "/front/user-chats/\(userChatId)/close"
+    case .GetAppMessengerUri(let name):
+      return "/front/app/\(name)/connect"
     case .GetMessages(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages"
+      return "/front/user-chats/\(userChatId)/messages"
     case .GetCountryCodes:
       return "/available/countries"
     case .GetChannel:
-      return "/app/channels"
-    case .GetExternalMessengers:
-      return "/app/channels/messengers"
-    case .GetOperators:
-      return "/app/channels/operators"
-    case .GetPlugin(let pluginId):
-      return "/app/plugins/\(pluginId)"
+      return "/front/channels/\(channelId)"
+    case .GetLounge(let pluginId, _):
+      return "/front/plugins/\(pluginId)/lounge"
+    case .GetPlugin(let pluginKey):
+      return "/front/elastic/plugins/\(pluginKey)"
     case .GetUserChats:
-      return "/app/user_chats"
+      return "/front/user-chats"
     case .GetGeoIP:
-      return "/geoip"
+      return "/request/geo-ip"
     case .GetUserChat(let userChatId):
-      return "/app/user_chats/\(userChatId)"
-    case .GetSupportBot(let pluginId):
-      return "/app/plugins/\(pluginId)/support_bot"
-    case .GetSupportBotEntry(let supportBotId):
-      return "/app/support_bots/\(supportBotId)/entry"
-    case .GetNudges(let pluginId):
-      return "/app/plugins/\(pluginId)/nudges"
+      return "/front/user-chats/\(userChatId)"
     case .GetProfileBotSchemas(let pluginId):
-      return "/app/plugins/\(pluginId)/profile_bot_schemas"
-    case .KeepNudge(let userChatId):
-      return "/app/user_chats/\(userChatId)/nudge/keep"
+      return "/front/plugins/\(pluginId)/profile-bot-schemas"
+    case .OneTimeMsgClick(let oneTimeMsgId):
+      return "/front/one-time-msgs/\(oneTimeMsgId)/click"
+    case .OneTimeMsgView(let oneTimeMsgId):
+      return "/front/one-time-msgs/\(oneTimeMsgId)/view"
     case .RemoveUserChat(let userChatId):
-      return "/app/user_chats/\(userChatId)/remove"
+      return "/front/user-chats/\(userChatId)"
     case .ReviewUserChat(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/review"
+      return "/front/user-chats/\(userChatId)/review"
     case .RegisterToken:
-      return "/app/device_tokens"
-    case .ReplySupportBot(let userChatId, let buttonId, _):
-      return "/app/user_chats/\(userChatId)/support_bot/buttons/\(buttonId)"
+      return "/front/elastic/push-tokens"
+    case .ReplySupportBot(let userChatId, let buttonKey, _):
+      return "/front/user-chats/\(userChatId)/support-bot/buttons/\(buttonKey)"
     case .SetMessagesRead(let userChatId):
-      return "/app/user_chats/\(userChatId)/messages/read"
+      return "/front/user-chats/\(userChatId)/messages/read"
     case .SendPushAck(let userChatId):
-      return "/app/user_chats/\(userChatId)/messages/receive"
+      return "/front/user-chats/\(userChatId)/messages/receive"
     case .SendEvent(let pluginId, _):
-      return "/app/plugins/\(pluginId)/events/v2"
-    case .Translate(let messageId, _):
-      return "/app/messages/\(messageId)/translate"
-    case .TouchGuest:
-      return "/app/guests/touch"
-    case .UpdateProfileItem(let messageId, _):
-      return "/app/messages/\(messageId)/profile_bot"
+      return "/front/elastic/plugins/\(pluginId)/events"
+    case .StartMarketingToSupportBot(let userChatId, let supportBotId):
+      return "/front/user-chats/\(userChatId)/support-bots/\(supportBotId)"
+    case .Translate(let userChatId, let messageId, _):
+      return "/front/user-chats/\(userChatId)/messages/\(messageId)/translate"
+    case .TouchUser(let pluginId, _):
+      return "/front/elastic/plugins/\(pluginId)/touch"
+    case .UpdateProfileItem(let userChatId, let messageId, _):
+      return "/front/user-chats/\(userChatId)/messages/\(messageId)/profile-bot"
     case .UploadFile(let userChatId, _):
-      return "/app/user_chats/\(userChatId)/messages/file"
-    case .UpdateGuest(_):
-      return "/app/guests"
-    case .UnregisterToken(let key, _):
-      return "/app/device_tokens/ios/\(key)"
+      return "/front/user-chats/\(userChatId)/messages/file"
+    case .UpdateUser(_):
+      return "/front/users/me"
+    case .UnregisterToken(let key):
+      return "/front/elastic/push-tokens/\(key)"
     }
+  }
+  
+  func addAuthForSimple(request: URLRequest) -> URLRequest {
+    var req = request
+    var headers = req.allHTTPHeaderFields ?? [String: String]()
+    
+    if let locale = CHUtils.getLocale() {
+      headers["Accept-Language"] = locale.rawValue
+    }
+    
+    headers["Accept"] = "application/json"
+    
+    headers["User-Agent"] = CHUtils.generateUserAgent()
+    
+    if let version = CHUtils.getSdkVersion() {
+      headers["x-channel-sdk"] = "ios/" + version
+    }
+    
+    if let hostApp = CHUtils.getHostAppInfo() {
+      headers["x-host-app"] = hostApp
+    }
+    
+    req.allHTTPHeaderFields = headers
+    return req
   }
   
   func addAuthHeaders(request: URLRequest) -> URLRequest {
     var req = request
     var headers = req.allHTTPHeaderFields ?? [String: String]()
     
-    if let key = PrefStore.getCurrentGuestKey() {
-      headers["X-Guest-Jwt"] = key
+    if let jwt = PrefStore.getSessionJWT() {
+      headers["x-session"] = jwt
     }
     
     if let locale = CHUtils.getLocale() {
-      headers["X-Locale"] = locale.rawValue
+      headers["Accept-language"] = locale.rawValue
     }
     
     headers["Accept"] = "application/json"
+    
     headers["User-Agent"] = CHUtils.generateUserAgent()
     
-    let now = Date()
-    let cookies = HTTPCookieStorage.shared.cookies?
-      .filter({ (cookie) -> Bool in
-        guard cookie.domain.hasSuffix("channel.io") else { return false }
-        if let expDate = cookie.expiresDate, expDate > now {
-          return true
-        }  else {
-          HTTPCookieStorage.shared.deleteCookie(cookie)
-          return false
-        }
-    }) ?? []
+    if let version = CHUtils.getSdkVersion() {
+      headers["x-channel-sdk"] = "ios/" + version
+    }
     
-    req.allHTTPHeaderFields = headers.merging(HTTPCookie.requestHeaderFields(with: cookies)) { $1 }
+    if let hostApp = CHUtils.getHostAppInfo() {
+      headers["x-host-app"] = hostApp
+    }
+    
+    req.allHTTPHeaderFields = headers
     return req
   }
   
@@ -235,7 +254,8 @@ enum RestRouter: URLRequestConvertible {
       }
     }
     
-    if let headers = parameters?["headers"] as? ParametersType, var req = try? request.asURLRequest() {
+    if let headers = parameters?["headers"] as? ParametersType,
+      var req = try? request.asURLRequest() {
       for (key, val) in headers {
         if let value = val as? String, value != "" {
           req.setValue(value, forHTTPHeaderField: key)
@@ -256,37 +276,36 @@ enum RestRouter: URLRequestConvertible {
     urlRequest.timeoutInterval = 5
     
     switch self {
-    case .Boot(_, let params),
-         .GetMessages(_, let params),
+    case .GetMessages(_, let params),
          .CreateMessage(_, let params),
+         .CreateUserChat(_, let params),
+         .CreateSupportBotChat(_, let params),
+         .CloseUserChat(_, let params),
          .UploadFile(_, let params),
          .GetUserChats(let params),
+         .GetLounge(_, let params),
          .RegisterToken(let params),
-         .SendEvent(_, let params),
-         .UpdateProfileItem(_, let params),
-         .Translate(_, let params),
-         .CloseUserChat(_, let params),
+         .UpdateProfileItem(_, _, let params),
+         .Translate(_, _, let params),
          .ReviewUserChat(_, let params),
-         .UnregisterToken(_, let params),
          .ReplySupportBot(_, _, let params),
-         .UpdateGuest(let params):
+         .UpdateUser(let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
-    case .GetUserChat, .GetPlugin,
+    case .GetAppMessengerUri,
+         .GetUserChat,
+         .GetPlugin,
          .GetCountryCodes,
-         .GetOperators,
-         .CreateUserChat,
-         .GetSupportBotEntry,
-         .CreateSupportBotChat,
+         .ClosePopup,
          .SendPushAck,
-         .GetNudges,
-         .CheckNudgeReach,
          .SetMessagesRead,
-         .CreateNudgeChat,
-         .GetSupportBot,
-         .GetExternalMessengers,
+         .StartMarketingToSupportBot,
          .GetProfileBotSchemas,
-         .KeepNudge:
+         .UnregisterToken:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
+    case .Boot(_, let params),
+         .TouchUser(_, let params),
+         .SendEvent(_, let params):
+      urlRequest = try encode(addAuthForSimple(request: urlRequest), with: params)
     default:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     }

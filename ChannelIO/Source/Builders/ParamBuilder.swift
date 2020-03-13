@@ -16,23 +16,16 @@ protocol ParamBuilder {
 
 class BootParamBuilder: ParamBuilder {
   var data = [String: Any]()
-  
-  var userId: String? = nil
+  var memberId: String? = nil
   var profile: Profile?
-  var profileData: [String: Any]?
-  var sysProfile: [String: Any]?
-  var includeDefaultSysProfile = false
+  var sessionJWT: String?
+  var veilId: String?
   
   struct ParamKey {
     static let profile = "profile"
-    static let sysProfile = "sysProfile"
-    static let userId = "userId"
-  }
-  
-  @discardableResult
-  func with(profile: [String: Any]) -> BootParamBuilder {
-    self.profileData = profile
-    return self
+    static let memberId = "memberId"
+    static let session = "sessionJWT"
+    static let veilId = "veilId"
   }
   
   @discardableResult
@@ -42,75 +35,61 @@ class BootParamBuilder: ParamBuilder {
   }
   
   @discardableResult
-  func with(userId: String?) -> BootParamBuilder {
-    self.userId = userId
+  func with(memberId: String?) -> BootParamBuilder {
+    self.memberId = memberId
     return self
   }
   
   @discardableResult
-  func with(sysProfile: [String: Any]?, includeDefault: Bool) -> BootParamBuilder {
-    self.sysProfile = sysProfile
-    self.includeDefaultSysProfile = includeDefault
+  func with(sessionJWT: String?) -> BootParamBuilder {
+    self.sessionJWT = sessionJWT
     return self
   }
   
-  private func buildProfileData() -> [String: Any]? {
-    guard let profileData = self.profileData else { return nil }
-    return profileData
+  @discardableResult
+  func with(veilId: String?) -> BootParamBuilder {
+    self.veilId = veilId
+    return self
   }
   
-  private func buildProfile() -> [String: Any?]? {
+  private func buildProfile() -> [String: AnyObject?]? {
     guard let profile = self.profile else { return nil }
     
-    var params = [String: Any?]()
-    params["name"] = profile.name
-    params["email"] = profile.email
-    params["mobileNumber"] = profile.mobileNumber
-    params["avatarUrl"] = profile.avatarUrl
+    var params = [String: AnyObject?]()
+    if let name = profile.name as AnyObject? {
+      params["name"] = name
+    }
+    if let email = profile.email as AnyObject? {
+      params["email"] = email
+    }
+    if let mobileNumber = profile.mobileNumber as AnyObject? {
+      params["mobileNumber"] = mobileNumber
+    }
+    if let avatarUrl = profile.avatarUrl as AnyObject? {
+      params["avatarUrl"] = avatarUrl
+    }
     
     let merged = params.merging(profile.property, uniquingKeysWith: { (first, _) in first })
     return merged
   }
   
-  private func buildSysProps() -> [String: Any]? {
-    var params = [String :Any]()
-    if let sysProfile = self.sysProfile {
-      params = sysProfile
-    }
-    
-    if !self.includeDefaultSysProfile {
-      return [ParamKey.sysProfile:params]
-    }
-    
-    params["platform"] = "iOS"
-    params["version"] = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    
-    return params
-  }
-  
   func build() -> CHParam {
     var data = [String: Any]()
-    if let profile = self.buildProfile() {
-      data[ParamKey.profile] = profile
+    if let profile = self.buildProfile(),
+      let jsonData = CHUtils.jsonStringify(data: profile) {
+      data[ParamKey.profile] = jsonData
     }
     
-    if let profileData = self.buildProfileData() {
-      if let profile = data[ParamKey.profile] as? [String: Any] {
-        data[ParamKey.profile] = profile.merging(profileData, uniquingKeysWith: { (_, second) in second })
-      } else {
-        data[ParamKey.profile] = profileData
-      }
+    if let memberId = self.memberId {
+      data[ParamKey.memberId] = memberId
     }
     
-    if let sysProfile = self.buildSysProps() {
-      data[ParamKey.sysProfile] = sysProfile
+    if let veilId = self.veilId {
+      data[ParamKey.veilId] = veilId
+    } else if let veilId = PrefStore.getVeilId() {
+      data[ParamKey.veilId] = veilId
     }
     
-    if let userId = self.userId {
-      data[ParamKey.userId] = userId
-    }
-    
-    return ["body": data]
+    return ["url": data]
   }
 }

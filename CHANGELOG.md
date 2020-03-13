@@ -1,3 +1,14 @@
+# 7.0.0
+## Updates
+* Added Marketing feature
+* Redesigned in app push notification views
+* Refactored chat view
+* Changed markdown to ANTLR to parse messages
+* Changed file views (image, video)
+
+## Bug fixes
+* Fixed minor bugs
+
 # 6.1.24
 ## Bug fixes
 * Cleaned up socketio connection properly

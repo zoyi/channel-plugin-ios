@@ -10,11 +10,14 @@ import SnapKit
 import ReSwift
 import RxSwift
 import UserNotifications
+import SDWebImageWebPCoder
 
 internal let mainStore = Store<AppState>(
   reducer: appReducer,
   state: nil,
-  middleware: [loggingMiddleware]
+  middleware: [
+    createMiddleware(marketingStatHook())
+  ]
 )
 
 internal func dlog(_ str: String) {
@@ -29,8 +32,7 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func willShowMessenger() -> Void /* notify when chat list is about to show */
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
-  @objc optional func onClickRedirect(url: URL) -> Bool /* notify when a user click on a link */
-  @objc optional func onChangeProfile(key: String, value: Any?) -> Void /* notify when the guest profile has been changed */
+  @objc optional func onChangeProfile(key: String, value: Any?) -> Void /* notify when the user profile has been changed */
 }
 
 @objc
@@ -52,6 +54,7 @@ public final class ChannelIO: NSObject {
       ChannelIO.launcherWindow?.inAppNotificationView = newValue
     }
   }
+  
   internal static var baseNavigation: BaseNavigationController? {
     willSet {
       if ChannelIO.baseNavigation == nil && newValue != nil {
@@ -74,8 +77,9 @@ public final class ChannelIO: NSObject {
 
   internal static var settings: ChannelPluginSettings?
   internal static var profile: Profile?
-  internal static var lastPush: CHPush?
+  internal static var lastPush: CHPushDisplayable?
   
+  internal static var hostTopControllerName: String?
   internal static var launcherView: LauncherView? {
     get {
       return ChannelIO.launcherWindow?.launcherView
@@ -85,6 +89,7 @@ public final class ChannelIO: NSObject {
     }
   }
   internal static var launcherWindow: LauncherWindow?
+
   internal static var launcherVisible: Bool = false
   internal static var willBecomeActive: Bool = false
   
@@ -93,28 +98,28 @@ public final class ChannelIO: NSObject {
     //refactor into two selectors
     func newState(state: AppState) {
       dispatch {
-        self.handleBadge(state.guest.alert)
+        self.handleBadge(state.user.alert)
         self.handlePush(push: state.push)
         
         let viewModel = LauncherViewModel(
           plugin: state.plugin,
-          guest: state.guest,
+          user: state.user,
           push: ChannelIO.lastPush
         )
         ChannelIO.launcherView?.configure(viewModel)
       }
     }
     
-    func handlePush (push: CHPush?) {
+    func handlePush (push: CHPushDisplayable?) {
       guard let push = push else { return }
       
       if ChannelIO.baseNavigation == nil &&
         ChannelIO.settings?.hideDefaultInAppPush == false &&
-        ChannelIO.lastPush != push {
+        !push.isEqual(to: ChannelIO.lastPush) {
         ChannelIO.showNotification(pushData: push)
       }
       
-      if ChannelIO.lastPush != push {
+      if !push.isEqual(to: ChannelIO.lastPush) {
         ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
         ChannelIO.lastPush = push
       }
@@ -140,6 +145,9 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
+    
+    let coder = SDImageWebPCoder.shared
+    SDImageCodersManager.shared.addCoder(coder)
   }
   
   /**
@@ -148,19 +156,19 @@ public final class ChannelIO: NSObject {
    *   Boot up ChannelIO and make it ready to use
    *
    *   - parameter settings: ChannelPluginSettings object
-   *   - parameter guest: Guest object
+   *   - parameter user: User object
    *   - parameter compeltion: ChannelPluginCompletionStatus indicating status of boot phase
    */
   @objc
   public class func boot(
     with settings: ChannelPluginSettings,
     profile: Profile? = nil,
-    completion: ((ChannelPluginCompletionStatus, Guest?) -> Void)? = nil) {
+    completion: ((ChannelPluginCompletionStatus, User?) -> Void)? = nil) {
     
     dispatch {
-      ChannelIO.prepare()
       ChannelIO.settings = settings
       ChannelIO.profile = profile
+      ChannelIO.prepare()
       
       if settings.pluginKey == "" {
         mainStore.dispatch(UpdateBootState(payload: .notInitialized))
@@ -168,40 +176,47 @@ public final class ChannelIO: NSObject {
         return
       }
       
-      AppManager
+      AppManager.shared
         .checkVersion()
-        .flatMap { (event) -> Observable<BootResult> in
+        .flatMap { (event) in
           return ChannelIO.bootChannel(profile: profile)
         }
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (_) in
           PrefStore.setChannelPluginSettings(pluginSetting: settings)
-          AppManager.registerPushToken()
-                    
-          mainStore.dispatch(ReadyToShow())
+          AppManager.shared.registerPushToken()
+          AppManager.shared.displayMarketingIfNeeeded()
           
+          if ChannelIO.launcherWindow == nil {
+            ChannelIO.launcherWindow = LauncherWindow()
+          }
+          
+          mainStore.dispatch(ReadyToShow())
           if ChannelIO.launcherVisible {
             ChannelIO.show(animated: true)
           }
-          completion?(.success, Guest(with: mainStore.state.guest))
+          completion?(.success, User(with: mainStore.state.user))
         }, onError: { error in
           let code = (error as NSError).code
           if code == -1001 {
             dlog("network timeout")
             mainStore.dispatch(UpdateBootState(payload: .networkTimeout))
             completion?(.networkTimeout, nil)
-          } else if code == CHErrorCode.versionError.rawValue {
-            dlog("version is not compatiable. please update sdk version")
-            mainStore.dispatch(UpdateBootState(payload: .notAvailableVersion))
-            completion?(.notAvailableVersion, nil)
-          } else if code == CHErrorCode.serviceBlockedError.rawValue {
-            dlog("require payment. free plan is not eligible to use SDK")
-            mainStore.dispatch(UpdateBootState(payload: .requirePayment))
-            completion?(.requirePayment, nil)
-          } else {
-            dlog("unknown")
-            mainStore.dispatch(UpdateBootState(payload: .unknown))
-            completion?(.unknown, nil)
+          } else if let error = error as? ChannelError {
+            switch error {
+            case .versionError:
+              dlog("version is not compatiable. please update sdk version")
+              mainStore.dispatch(UpdateBootState(payload: .notAvailableVersion))
+              completion?(.notAvailableVersion, nil)
+            case .serviceBlockedError:
+              dlog("require payment. free plan is not eligible to use SDK")
+              mainStore.dispatch(UpdateBootState(payload: .requirePayment))
+              completion?(.requirePayment, nil)
+            default:
+              dlog("unknown")
+              mainStore.dispatch(UpdateBootState(payload: .unknown))
+              completion?(.unknown, nil)
+            }
           }
         }).disposed(by: disposeBag)
     }
@@ -221,7 +236,7 @@ public final class ChannelIO: NSObject {
     ChannelIO.pushToken = token
     
     if ChannelIO.isValidStatus {
-      AppManager.registerPushToken()
+      AppManager.shared.registerPushToken()
     }
   }
   
@@ -230,7 +245,7 @@ public final class ChannelIO: NSObject {
     ChannelIO.pushToken = tokenString
     
     if ChannelIO.isValidStatus {
-      AppManager.registerPushToken()
+      AppManager.shared.registerPushToken()
     }
   }
 
@@ -240,11 +255,16 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func shutdown() {
-    let guestToken = PrefStore.getCurrentGuestKey() ?? ""
-    dispatch {
-      ChannelIO.reset()
-    }
-    AppManager.unregisterToken(token: guestToken)
+    AppManager.shared
+      .unregisterToken()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { _ in
+        dlog("shutdown success")
+        ChannelIO.reset()
+      }, onError: { _ in
+        dlog("shutdown fail")
+        ChannelIO.reset()
+      }).disposed(by: self.disposeBag)
   }
     
   /**
@@ -264,16 +284,12 @@ public final class ChannelIO: NSObject {
         ChannelIO.baseNavigation == nil else {
         return
       }
-            
-      if ChannelIO.launcherWindow == nil {
-        ChannelIO.launcherWindow = LauncherWindow()
-      }
       
       let launcherView = ChannelIO.launcherView ?? LauncherView()
       
       let viewModel = LauncherViewModel(
         plugin: mainStore.state.plugin,
-        guest: mainStore.state.guest,
+        user: mainStore.state.user,
         push: mainStore.state.push
       )
       
@@ -284,23 +300,25 @@ public final class ChannelIO: NSObject {
       if ChannelIO.launcherView == nil ||
         ChannelIO.launcherView?.alpha == 0 {
         if let topController = CHUtils.getTopController() {
-          ChannelIO.sendDefaultEvent(
-            .pageView,
-            property: [TargetKey.url.rawValue: "\(type(of: topController))"]
-          )
+          ChannelIO.hostTopControllerName = "\(type(of: topController))"
+          ChannelIO.sendDefaultEvent(.pageView, property: [
+            TargetKey.url.rawValue: "\(type(of: topController))"
+          ])
+        } else {
+          ChannelIO.sendDefaultEvent(.pageView)
         }
-      } else {
-        ChannelIO.sendDefaultEvent(.pageView)
       }
 
       launcherView.configure(viewModel)
-      launcherView.buttonView.signalForClick().subscribe(onNext: { _ in
-        ChannelIO.hideNotification()
-        ChannelIO.open(animated: true)
-      }).disposed(by: disposeBag)
+      launcherView.buttonView
+        .signalForClick()
+        .subscribe(onNext: { _ in
+          ChannelIO.hideNotification()
+          ChannelIO.open(animated: true)
+        }).disposed(by: disposeBag)
       
       if ChannelIO.launcherView == nil {
-        ChannelIO.launcherWindow?.addCustomView(with: launcherView)
+        ChannelIO.launcherWindow?.insertView(with: launcherView, animated: true)
         launcherView.alpha = 0
       }
       
@@ -336,7 +354,6 @@ public final class ChannelIO: NSObject {
   public class func hide(animated: Bool) {
     dispatch {
       ChannelIO.launcherView?.hide(animated: animated, completion: {
-        ChannelIO.launcherWindow = nil
         ChannelIO.launcherVisible = false
       })
     }
@@ -357,13 +374,14 @@ public final class ChannelIO: NSObject {
         return
       }
       
+      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.delegate?.willShowMessenger?()
+      ChannelIO.hostTopControllerName = "\(type(of: topController))"
+      
+      mainStore.dispatch(ChatListIsVisible())
       let loungeView = LoungeRouter.createModule()
       let controller = MainNavigationController(rootViewController: loungeView)
       ChannelIO.baseNavigation = controller
-      
-      ChannelIO.launcherView?.hide(animated: false)
-      ChannelIO.delegate?.willShowMessenger?()
-      mainStore.dispatch(ChatListIsVisible())
       topController.present(controller, animated: animated, completion: nil)
     }
   }
@@ -397,6 +415,9 @@ public final class ChannelIO: NSObject {
   @objc
   public class func openChat(with chatId: String? = nil, animated: Bool) {
     guard ChannelIO.isValidStatus else { return }
+    guard let topController = CHUtils.getTopController() else { return }
+    
+    ChannelIO.hostTopControllerName = "\(type(of: topController))"
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
   
@@ -407,11 +428,11 @@ public final class ChannelIO: NSObject {
    *                       to remove existing value
    */
   @objc
-  public class func updateGuest(_ profile: [String: Any], completion: ((Bool, Guest?) -> Void)? = nil) {
+  public class func updateUser(_ profile: [String: Any], completion: ((Bool, User?) -> Void)? = nil) {
     let profile:[String: Any?] = profile.mapValues { (value) -> Any? in
       return value is NSNull ? nil : value
     }
-    ChannelIO.updateGuest(with: profile, completion: completion)
+    ChannelIO.updateUser(with: profile, completion: completion)
   }
   
   /**
@@ -420,11 +441,11 @@ public final class ChannelIO: NSObject {
    *  - parameter profile: a dictionary with profile key and profile value pair. Set a value to nil
    *                       to remove existing value
    */
-  public class func updateGuest(with profile: [String: Any?], completion: ((Bool, Guest?) -> Void)? = nil) {
-    GuestPromise.updateProfile(with: profile)
-      .subscribe(onNext: { (guest, error) in
-        if let guest = guest {
-          completion?(true, Guest(with: guest))
+  public class func updateUser(with profile: [String: Any?], completion: ((Bool, User?) -> Void)? = nil) {
+    UserPromise.updateUser(profile: profile)
+      .subscribe(onNext: { (user, error) in
+        if let user = user {
+          completion?(true, User(with: user))
         } else {
           completion?(false, nil)
         }
@@ -442,26 +463,32 @@ public final class ChannelIO: NSObject {
   @objc
   public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
     guard ChannelIO.isValidStatus else { return }
+    guard eventName.utf16.count <= 30, eventName != "" else { return }
     
     dispatch {
-      let version = Bundle(for: ChannelIO.self)
-        .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-      
       dlog("[CHPlugin] Track \(eventName) property \(eventProperty ?? [:])")
-    
-      var sysProperty: [String: Any] = [
-        "pluginVersion": version,
-        "screenWidth": UIScreen.main.bounds.width,
-        "screenHeight": UIScreen.main.bounds.height
-      ]
-
-      if let pageName = eventProperty?["url"] {
-        sysProperty["url"] = pageName
-      } else if let controller = CHUtils.getTopController() {
-        sysProperty["url"] = "\(type(of: controller))"
+      
+      var property: [String: Any] = eventProperty ?? [:]
+      property["pluginVersion"] = CHUtils.getSdkVersion() ?? "unknown"
+      property["screenWidth"] = UIScreen.main.bounds.width
+      property["screenHeight"] = UIScreen.main.bounds.height
+      if property["url"] == nil, let controller = CHUtils.getTopController() {
+        property["url"] = "\(type(of: controller))"
       }
       
-      ChannelIO.track(eventName: eventName, eventProperty: eventProperty, sysProperty: sysProperty)
+      CHEvent.send(
+        pluginId: mainStore.state.plugin.id,
+        name: eventName,
+        property: property)
+        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
+          dlog("Error while sending the event \(eventName). Attempting to send again")
+          return true
+        })
+        .subscribe(onNext: { (event) in
+          dlog("\(eventName) event sent successfully")
+        }, onError: { (error) in
+          dlog("\(eventName) event failed")
+        }).disposed(by: disposeBag)
     }
   }
   
@@ -479,15 +506,10 @@ public final class ChannelIO: NSObject {
     guard let pushChannelId = userInfo["channelId"] as? String else { return false }
 
     let userId = PrefStore.getCurrentUserId() ?? ""
-    let veilId = PrefStore.getCurrentVeilId() ?? ""
     let channelId = PrefStore.getCurrentChannelId() ?? ""
     
     if personType == "User" {
       return personId == userId && pushChannelId == channelId
-    }
-    
-    if personType == "Veil" {
-      return personId == veilId && pushChannelId == channelId
     }
     
     return false
@@ -510,7 +532,7 @@ public final class ChannelIO: NSObject {
     
     //NOTE: if push was received on background, just send ack to the server
     if !ChannelIO.willBecomeActive {
-      AppManager.sendAck(userChatId: userChatId).subscribe(onNext: { (completed) in
+      AppManager.shared.sendAck(userChatId: userChatId).subscribe(onNext: { (completed) in
         completion?()
       }, onError: { (error) in
         completion?()
@@ -531,11 +553,11 @@ public final class ChannelIO: NSObject {
       return
     }
     
-    if let userId = PrefStore.getCurrentUserId() {
-      settings.userId = userId
+    if let memberId = PrefStore.getCurrentMemberId() {
+      settings.memberId = memberId
     }
     
-    ChannelIO.boot(with: settings, profile: profile) { (status, guest) in
+    ChannelIO.boot(with: settings, profile: profile) { (status, user) in
       if status == .success {
         ChannelIO.showUserChat(userChatId:userChatId)
       }

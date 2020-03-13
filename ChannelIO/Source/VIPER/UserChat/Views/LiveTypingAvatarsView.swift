@@ -63,36 +63,31 @@ class LiveTypingAvatarsView: BaseView {
   override func setLayouts() {
     super.setLayouts()
     
-//    self.snp.makeConstraints { [weak self] (make) in
-//      self?.widthConstraint = make.width.equalTo(0).constraint
-//    }
-    
-    self.firstAvatarView.snp.remakeConstraints { [weak self] (make) in
-      guard let s = self else { return }
-      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize))
+    self.firstAvatarView.snp.remakeConstraints { (make) in
+      make.height.width.equalTo(self.avatarSize)
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
       make.leading.equalToSuperview()
-      s.firstTrailingContraint = make.trailing.equalToSuperview().constraint
+      self.firstTrailingContraint = make.trailing.equalToSuperview().constraint
     }
 
-    self.secondAvatarView.snp.remakeConstraints { [weak self] (make) in
-      guard let s = self else { return }
-      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize))
+    self.secondAvatarView.snp.remakeConstraints { (make) in
+      make.size.equalTo(CGSize(width:self.avatarSize, height:self.avatarSize))
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
-      s.secondTrailingContraint = make.trailing.equalToSuperview().constraint
-      s.secondLeadingConstraint = make.leading.equalToSuperview().inset(s.avatarSize - s.coverMargin).priority(750).constraint
+      self.secondTrailingContraint = make.trailing.equalToSuperview().constraint
+      self.secondLeadingConstraint = make.leading.equalToSuperview()
+        .inset(self.avatarSize - self.coverMargin).priority(750).constraint
     }
 
-    self.thirdAvatarView.snp.remakeConstraints { [weak self] (make) in
-      guard let s = self else { return }
-      make.size.equalTo(CGSize(width:s.avatarSize, height:s.avatarSize))
+    self.thirdAvatarView.snp.remakeConstraints { (make) in
+      make.size.equalTo(CGSize(width:self.avatarSize, height:self.avatarSize))
       make.top.equalToSuperview()
       make.bottom.equalToSuperview()
       make.trailing.equalToSuperview()
-      s.thirdLeadingConstraint = make.leading.equalToSuperview().inset(s.avatarSize * 2 - s.coverMargin * 2).constraint
-      s.thirdLeadingConstraint?.deactivate()
+      self.thirdLeadingConstraint = make.leading.equalToSuperview()
+        .inset(self.avatarSize * 2 - self.coverMargin * 2).constraint
+      self.thirdLeadingConstraint?.deactivate()
     }
   }
   
@@ -158,5 +153,4 @@ class LiveTypingAvatarsView: BaseView {
     self.secondAvatarView.alpha = 1
     self.thirdAvatarView.alpha = 1
   }
-
 }

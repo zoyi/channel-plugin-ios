@@ -12,8 +12,8 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   var state = state
   switch action {
   case let action as GetUserChats:
-    state?.nextSeq = action.payload["next"] as! Int64
-    return state?.upsert(userChats: (action.payload["userChats"] as? [CHUserChat]) ?? []) ?? UserChatsState()
+    state?.nextSeq = action.payload.next
+    return state?.upsert(userChats: action.payload.userChats ?? []) ?? UserChatsState()
   
   case let action as GetUserChat:
     let userChat = action.payload.userChat
@@ -24,6 +24,10 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
   
   case let action as UpdateUserChat:
     return state?.upsert(userChats: [action.payload]) ?? UserChatsState()
+    
+  case let action as UpdateLoungeInfo:
+    state?.nextSeq = action.userChats.next
+    return state?.upsert(userChats: action.userChats.userChats ?? []) ?? UserChatsState()
   
   case let action as DeleteUserChat:
     return state?.remove(userChatId: action.payload.id) ?? UserChatsState()
@@ -43,7 +47,10 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
     return state?.remove(userChatId: action.payload) ?? UserChatsState()
   
   case let action as GetPush:
-    return state?.upsert(userChat: action.payload.userChat) ?? UserChatsState()
+    if let push = action.payload as? CHPush {
+      return state?.upsert(userChat: push.userChat) ?? UserChatsState()
+    }
+    return state ?? UserChatsState()
   
   case let action as UpdateVisibilityOfCompletedChats:
     if let show = action.show {
@@ -58,14 +65,6 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
       PrefStore.setVisibilityOfTranslation(on: show)
     }
     return state ?? UserChatsState()
-  
-  case let action as CreateLocalUserChat:
-    return state?.upsert(userChat: action.chat) ?? UserChatsState()
-  
-  case let action as GetNudgeChat:
-    return state?.replace(
-      chatId: CHConstants.nudgeChat + action.nudgeId,
-      userChat: action.payload.userChat) ?? UserChatsState()
   
   case _ as ShutdownSuccess:
     return state?.clear() ?? UserChatsState()

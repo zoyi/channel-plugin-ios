@@ -1,5 +1,5 @@
 //
-//  GuestPromise.swift
+//  UserPromise.swift
 //  CHPlugin
 //
 //  Created by Haeun Chung on 06/02/2017.
@@ -13,29 +13,35 @@ import SwiftyJSON
 import ObjectMapper
 import CRToast
 
-struct GuestPromise {
-  static func touch() -> Observable<CHGuest> {
+struct UserPromise {
+  static func touch(pluginId: String) -> Observable<BootResponse> {
     return Observable.create { subscriber in
-      let req = Alamofire.request(RestRouter.TouchGuest)
+      
+      var params = [
+        "url": [String:String]()
+      ]
+      
+      if let jwt = PrefStore.getSessionJWT() {
+        params["url"]?["sessionJWT"] = jwt
+      }
+      
+      let req = Alamofire
+        .request(RestRouter.TouchUser(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json:JSON = JSON(data)
-            
-            let user:CHUser? = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            let veil:CHVeil? = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-            
-            if user == nil && veil == nil {
-              subscriber.onError(CHErrorPool.guestParseError)
-            } else {
-              user == nil ? subscriber.onNext(veil!) : subscriber.onNext(user!)
-              subscriber.onCompleted()
+            guard let result = Mapper<BootResponse>().map(JSONObject: json.object) else {
+              subscriber.onError(ChannelError.parseError)
+              return
             }
-            break
+            subscriber.onNext(result)
+            subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
-            break
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       
@@ -45,28 +51,35 @@ struct GuestPromise {
     }
   }
   
-  static func updateProfile(with profiles:[String: Any?]) -> Observable<(CHGuest?, Any?)> {
-    return Observable.create({ (subscriber) -> Disposable in
-      let params = [
-        "body": profiles
-      ]
+  static func updateUser(
+    profile:[String: Any?]? = nil,
+    language: String? = nil) -> Observable<(CHUser?, Any?)> {
+    return Observable.create { (subscriber) -> Disposable in
+      var params : [String : Any] = [:]
+      if let profile = profile?.mapValues ({ (value) -> AnyObject? in return value as AnyObject? }) {
+        params = [
+          "body": ["profile": profile]
+        ]
+      }
       
-      let req = Alamofire.request(RestRouter.UpdateGuest(params as RestRouter.ParametersType))
+      if let language = language {
+        params = [
+          "body": ["language": language]
+        ]
+      }
+      
+      let req = Alamofire.request(RestRouter.UpdateUser(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json:JSON = JSON(data)
-            
-            let user:CHUser? = Mapper<CHUser>().map(JSONObject: json["user"].object)
-            let veil:CHVeil? = Mapper<CHVeil>().map(JSONObject: json["veil"].object)
-            
-            if user == nil && veil == nil {
-              subscriber.onError(CHErrorPool.guestParseError)
-            } else {
-              user != nil ? subscriber.onNext((user, nil)) : subscriber.onNext((veil, nil))
-              subscriber.onCompleted()
+            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
+              subscriber.onError(ChannelError.parseError)
+              return
             }
+            subscriber.onNext((user, nil))
+            subscriber.onCompleted()
           case .failure(let error):
             if let data = response.data {
               CRToastManager.showErrorFromData(data)
@@ -75,11 +88,34 @@ struct GuestPromise {
             subscriber.onCompleted()
           }
         })
+
+      return Disposables.create {
+        req.cancel()
+      }
+    }
+  }
+  
+  static func closePopup() -> Observable<Any?> {
+    return Observable.create { subscriber in
+      let req = Alamofire
+        .request(RestRouter.ClosePopup)
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { response in
+          switch response.result {
+          case .success(_):
+            subscriber.onNext(nil)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
+          }
+        })
       
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
 }
 

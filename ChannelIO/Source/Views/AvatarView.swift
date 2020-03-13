@@ -85,9 +85,9 @@ class AvatarView: NeverClearView {
     }
     
     self.onlineView.layer.cornerRadius = 4
-    self.onlineView.snp.makeConstraints { [weak self] (make) in
-      make.bottom.equalTo((self?.avatarImageView.snp.bottom)!)
-      make.right.equalTo((self?.avatarImageView.snp.right)!).offset(2)
+    self.onlineView.snp.makeConstraints { (make) in
+      make.bottom.equalTo(self.avatarImageView.snp.bottom)
+      make.right.equalTo(self.avatarImageView.snp.right).offset(2)
       make.height.equalTo(8)
       make.width.equalTo(8)
     }
@@ -107,15 +107,6 @@ class AvatarView: NeverClearView {
       self.avatarImageView.isHidden = false
     } else {
       self.avatarImageView.isHidden = true
-    }
-    
-    if let manager = avatar as? CHManager, self.showOnline {
-      self.onlineView.isHidden = false
-      self.onlineView.backgroundColor = manager.online ?
-        CHColors.shamrockGreen :
-        CHColors.blueyGrey
-    } else {
-      self.onlineView.isHidden = true
     }
   }
 

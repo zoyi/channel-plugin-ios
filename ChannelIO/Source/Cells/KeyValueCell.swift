@@ -7,15 +7,10 @@
 //
 
 import Foundation
-import Reusable
 import PhoneNumberKit
 
-class KeyValueCell: BaseTableViewCell, Reusable {
- let titleLabel = UILabel().then {
-    $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.blueyGrey
-    $0.numberOfLines = 1
-  }
+class KeyValueCell: BaseTableViewCell {
+ let titleLabel = UILabel()
   let valueLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 17)
     $0.textColor = CHColors.blueyGrey
@@ -57,12 +52,18 @@ class KeyValueCell: BaseTableViewCell, Reusable {
     }
   }
   
-  func configure(profile: GuestProfileItemModel) {
-    self.titleLabel.text = profile.profileName
+  func configure(profile: UserProfileItemModel) {
+    let config = CHMessageParserConfig(
+      font: UIFont.boldSystemFont(ofSize: 13),
+      textColor: CHColors.blueyGrey
+    )
+    self.titleLabel.attributedText = profile.getProfileName(with: config)
     
     if let value = profile.profileValue {
       if profile.rawData.key == "mobileNumber" {
         self.valueLabel.text = PartialFormatter().formatPartial("\(value)")
+      } else if profile.rawData.type == .date, let value = profile.profileValue as? Date {
+        self.valueLabel.text = value.fullDateString()
       } else {
         self.valueLabel.text = "\(value)"
       }

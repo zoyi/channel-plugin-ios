@@ -19,7 +19,7 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   var text = ""
-  var guest: CHGuest?
+  var user: CHUser?
   var schema: CHProfileSchema?
   
   var entityType: EntityType = .none
@@ -29,33 +29,33 @@ class ProfileEditorViewController: BaseViewController {
   private var submitSubject = PublishSubject<String>()
   var disposeBag = DisposeBag()
   
-  convenience init(type: EditFieldType, guest: CHGuest, schema: CHProfileSchema? = nil) {
+  convenience init(type: EditFieldType, user: CHUser, schema: CHProfileSchema? = nil) {
     self.init()
     
     self.type = type
-    self.guest = guest
-    self.entityType = .guest
+    self.user = user
+    self.entityType = .user
 
     switch type {
     case .name:
-      self.text = guest.name
+      self.text = user.name
       self.fieldView = CHEditTextField(
         text: self.text,
         placeholder: CHAssets.localized("ch.settings.edit.name_placeholder"))
     case .phone:
-      self.text = guest.mobileNumber ?? ""
+      self.text = user.mobileNumber ?? ""
       self.fieldView = CHPhoneField(text: self.text)
       self.footerLabel.text = CHAssets.localized("ch.settings.edit.phone_number_description")
     case .text:
       let key = schema?.key ?? ""
-      self.text = guest.profile?[key] as? String ?? ""
+      self.text = user.profile?[key] as? String ?? ""
       self.fieldView = CHEditTextField(
         text: self.text,
         type: .text,
         placeholder: CHAssets.localized("ch.profile_form.placeholder"))
     case .number:
       let key = schema?.key ?? ""
-      if let value = guest.profile?[key] {
+      if let value = user.profile?[key] {
         self.text =  "\(value)"
       }
       self.fieldView = CHEditTextField(
@@ -116,10 +116,9 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func setNavigation() {
-    let title = self.schema?.nameI18n?.getMessage()?.string ?? ""
     let titleView = SimpleNavigationTitleView()
     titleView.configure(
-      with: title,
+      with: self.schema?.nameI18n,
       textColor: mainStore.state.plugin.textUIColor
     )
     self.navigationItem.titleView = titleView
@@ -132,7 +131,7 @@ class ProfileEditorViewController: BaseViewController {
         if let text = self?.fieldView.getText() {
           self?.text = text
         }
-        self?.updateGuestInfo()
+        self?.updateUserInfo()
       })
     
     let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
@@ -153,7 +152,7 @@ class ProfileEditorViewController: BaseViewController {
     }
   }
   
-  func updateGuestInfo() {
+  func updateUserInfo() {
     SVProgressHUD.show(withStatus: CHAssets.localized("ch.loader.updating"))
     
     let numberFormatter = NumberFormatter()
@@ -164,13 +163,13 @@ class ProfileEditorViewController: BaseViewController {
       numberFormatter.number(from: self.text) :
       (self.text == "" ? nil : self.text)
     
-    self.guest?.updateProfile(key: key, value: value)
+    self.user?.updateProfile(key: key, value: value)
       .debounce(.seconds(1), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (guest, error) in
+      .subscribe(onNext: { [weak self] (user, error) in
         defer { SVProgressHUD.dismiss() }
-        ChannelIO.delegate?.onChangeProfile?(key: key, value: guest?.profile?[key])
-        mainStore.dispatch(UpdateGuest(payload: guest))
+        ChannelIO.delegate?.onChangeProfile?(key: key, value: user?.profile?[key])
+        mainStore.dispatch(UpdateUser(payload: user))
         if error == nil {
           _ = self?.navigationController?.popViewController(animated: true)
         }

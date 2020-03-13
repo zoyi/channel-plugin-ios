@@ -17,14 +17,14 @@ class LanguageOptionViewController: BaseViewController {
     $0.separatorStyle = .none
   }
   
-  private let locales = [
+  let locales = [
     CHLocaleString.korean,
     CHLocaleString.english,
     CHLocaleString.japanese
   ]
   
-  private let currentLocale: CHLocaleString? = CHUtils.getLocale()
-  private let disposeBag = DisposeBag()
+  let currentLocale: CHLocaleString? = CHUtils.getLocale()
+  let disposeBag = DisposeBag()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -137,17 +137,18 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let locale = self.locales[indexPath.row]
-    ChannelIO.settings?.locale = CHUtils.stringToLocale(locale.rawValue)
+    ChannelIO.settings?.language = CHUtils.stringToLocale(locale.rawValue)
     
     SVProgressHUD.show()
-    AppManager.touch()
-      .debounce(.milliseconds(1500), scheduler: MainScheduler.instance)
+    CHUser.updateLanguage(with: locale.rawValue)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (guest) in
+      .subscribe(onNext: { [weak self] (user, error) in
         defer { SVProgressHUD.dismiss() }
-        mainStore.dispatch(UpdateGuest(payload: guest))
-        tableView.deselectRow(at: indexPath, animated: true)
-        self?.navigationController?.popViewController(animated: true)
+        mainStore.dispatch(UpdateUser(payload: user))
+        if error == nil {
+          tableView.deselectRow(at: indexPath, animated: true)
+          _ = self?.navigationController?.popViewController(animated: true)
+        }
       }, onError: { (error) in
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)

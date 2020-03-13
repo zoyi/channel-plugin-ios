@@ -9,24 +9,80 @@
 import UIKit
 import RxSwift
 import Photos
+import TLPhotoPicker
+import MobileCoreServices
 import AVKit
 
 class UserChatRouter: NSObject, UserChatRouterProtocol {
-//  func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate) {
-//    guard let url = url else { return }
-//    let index = photoUrls.index { (photoUrl) -> Bool in
-//      return photoUrl.absoluteString == url.absoluteString
-//    }
-//
-//    let browser = MWPhotoBrowser(delegate: dataSource)
-//    browser?.zoomPhotosToFill = false
-//
-//    let navigation = MainNavigationController(rootViewController: browser!)
-//    if index != nil {
-//      browser?.setCurrentPhotoIndex(UInt(index!))
-//    }
-//    view?.present(navigation, animated: true, completion: nil)
-//  }
+  private var assetsSubject = PublishSubject<[PHAsset]>()
+  private var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
+  
+  static func createModule(userChatId: String?, text: String = "") -> UserChatView {
+    let view = UserChatView()
+    
+    let presenter = UserChatPresenter()
+    let interactor = UserChatInteractor()
+    interactor.presenter = presenter
+    
+    presenter.router = UserChatRouter()
+    presenter.interactor = interactor
+    presenter.view = view
+    presenter.userChatId = userChatId
+    presenter.preloadText = text
+    
+    view.presenter = presenter
+    return view
+  }
+  
+  func presentImageViewer(
+    with url: URL?,
+    photoUrls: [URL],
+    imageView: UIImageView,
+    from view: UIViewController?) {
+    let viewer = FullScreenSlideshowViewController()
+    viewer.slideshow.circular = false
+    viewer.slideshow.pageIndicator = LabelPageIndicator(
+      frame: CGRect(x:0,y:0, width: UIScreen.main.bounds.width, height: 60))
+    viewer.slideshow.pageIndicatorPosition = PageIndicatorPosition(
+      horizontal: .center,
+      vertical: .customTop(padding: 5))
+    viewer.inputs = photoUrls.map { (url) -> SDWebImageSource in
+      return SDWebImageSource(url: url)
+    }
+    viewer.downloadClicked = { index in
+      self.processSaveFile(url: photoUrls[index], from: viewer)
+    }
+
+    if let url = url, let index = photoUrls.firstIndex(of: url) {
+      viewer.initialPage = index
+      self.viewerTransitionDelegate = ZoomAnimatedTransitioningDelegate(
+        imageView: imageView,
+        slideshowController: viewer)
+      viewer.transitioningDelegate = self.viewerTransitionDelegate
+      viewer.slideshow.currentPageChanged = { [weak self] page in
+        self?.viewerTransitionDelegate?.referenceImageView = page != index ?
+          nil : imageView
+      }
+    }
+    
+    viewer.modalPresentationStyle = .currentContext
+    view?.present(viewer, animated: true, completion: nil)
+  }
+  
+  private func processSaveFile(url: URL, from view: UIViewController?) {
+    if #available(iOS 11.0, *), let data = try? Data(contentsOf: url) {
+      let controller = UIActivityViewController(
+        activityItems: [data],
+        applicationActivities: nil
+      )
+      view?.present(controller, animated: true, completion: nil)
+    } else {
+      CHNotification.shared.display(
+        message: CHAssets.localized("ch.error.description"),
+        config: CHNotificationConfiguration.warningNormalConfig
+      )
+    }
+  }
   
   func presentVideoPlayer(with url: URL?, from view: UIViewController?) {
     guard let url = url else { return }
@@ -38,98 +94,148 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     moviePlayer.modalTransitionStyle = .crossDissolve
     view?.present(moviePlayer, animated: true, completion: nil)
   }
-  
-  func presentSettings(from view: UIViewController?) {
 
-  }
-  
   func showNewChat(with text: String, from view: UINavigationController?) {
-    view?.popViewController(animated: false, completion: {
-      let controller = UserChatRouter.createModule(userChatId: nil)
-      _ = controller.presenter?.readyToDisplay()?.subscribe(onNext: { ready in
-        if ready {
-          view?.pushViewController(controller, animated: false)
+    view?.popViewController(animated: true, completion: {
+      let controller = UserChatRouter.createModule(userChatId: nil, text: text)
+      view?.pushViewController(controller, animated: true)
+    })
+  }
+  
+  func showOptionActionSheet(from view: UIViewController?) -> PublishSubject<[PHAsset]> {
+    self.assetsSubject = PublishSubject<[PHAsset]>()
+    
+    let alertView = UIAlertController(
+      title:nil,
+      message:nil,
+      preferredStyle: .actionSheet
+    )
+    
+    alertView.addAction(
+      UIAlertAction(
+        title: CHAssets.localized("ch.camera"),
+        style: .default) { [weak self] _ in
+        self?.presentCameraPicker(from: view)
+      }
+    )
+    alertView.addAction(
+      UIAlertAction(
+        title: CHAssets.localized("ch.photo.album"),
+        style: .default) { [weak self] _ in
+        self?.presentPhotoPicker(from: view)
+      }
+    )
+    alertView.addAction(
+      UIAlertAction(
+        title: CHAssets.localized("ch.chat.resend.cancel"),
+        style: .cancel
+      )
+    )
+    
+    CHUtils.getTopNavigation()?.present(alertView, animated: true, completion: nil)
+    return self.assetsSubject
+  }
+  
+  func showRetryActionSheet(from view: UIView?) -> Observable<Bool?> {
+    return Observable.create { (subscriber) in
+      let alertView = UIAlertController(
+        title:nil,
+        message:nil,
+        preferredStyle: .actionSheet
+      )
+      alertView.addAction(
+        UIAlertAction(
+          title: CHAssets.localized("ch.chat.retry_sending_message"),
+          style: .default) {  (_) in
+          subscriber.onNext(true)
         }
-      })
-    })
-  }
-  
-  static func createModule(userChatId: String?) -> UserChatView {
-    let view = UserChatView()
-    
-    let presenter = UserChatPresenter()
-    let interactor = UserChatInteractor()
-    presenter.router = UserChatRouter()
-    presenter.interactor = interactor
-    
-    view.presenter = presenter
-    return view
-  }
-  
-  func showOptionActionSheet(from view: UIViewController?) -> Observable<[PHAsset]> {
-    return Observable.create({ (subscriber) in
-      let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
-      
+      )
       alertView.addAction(
-        UIAlertAction(title: CHAssets.localized("ch.camera"), style: .default) { _ in
-//          _ = self?.showOptionPicker(type: .camera, from: view).subscribe(onNext: { asset in
-//            subscriber.onNext(asset)
-//          })
-      })
-      
+        UIAlertAction(
+          title: CHAssets.localized("ch.chat.delete"),
+          style: .destructive) {  (_) in
+          subscriber.onNext(false)
+        }
+      )
       alertView.addAction(
-        UIAlertAction(title: CHAssets.localized("ch.photo.album"), style: .default) { _ in
-//          _ = self?.showOptionPicker(type: .photo, max: 20, from: view).subscribe(onNext: { (assets) in
-//            subscriber.onNext(assets)
-//          })
-      })
-      
-      alertView.addAction(
-        UIAlertAction(title: CHAssets.localized("ch.chat.resend.cancel"), style: .cancel) { _ in
-          //nothing
-      })
-      
-      CHUtils.getTopNavigation()?.present(alertView, animated: true, completion: nil)
-      return Disposables.create()
-    })
-   
-  }
-  
-  func showOptionPicker(max: Int = 0, from view: UIViewController?) -> Observable<[PHAsset]> {
-    return Observable.create({ (subscriber) in
-//      let pickerController = DKImagePickerController()
-//      pickerController.sourceType = type
-//      pickerController.showsCancelButton = true
-//      pickerController.maxSelectableCount = max
-//      pickerController.assetType = assetType
-//      pickerController.didSelectAssets = { (assets: [DKAsset]) in
-//        subscriber.onNext(assets)
-//        subscriber.onCompleted()
-//      }
-//
-//      view?.present(pickerController, animated: true, completion: nil)
-      return Disposables.create()
-    })
-  }
-  
-  func showRetryActionSheet(from view: UIViewController?) -> Observable<Bool?> {
-    return Observable.create({ (subscriber) in
-      let alertView = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
-      alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.retry_sending_message"), style: .default) {  _ in
-        subscriber.onNext(true)
-      })
-      
-      alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.delete"), style: .destructive) {  _ in
-        subscriber.onNext(false)
-      })
-      
-      alertView.addAction(UIAlertAction(title: CHAssets.localized("ch.chat.resend.cancel"), style: .cancel) { _ in
-        subscriber.onNext(nil)
-      })
+        UIAlertAction(
+          title: CHAssets.localized("ch.chat.resend.cancel"),
+          style: .cancel) { (_) in
+          subscriber.onNext(nil)
+        }
+      )
       
       CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
       return Disposables.create()
-    })
+    }
+  }
+}
+
+extension UserChatRouter: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+  private func presentPhotoPicker(
+    max: Int = 20,
+    from view: UIViewController?) {
+    let viewController = TLPhotosPickerViewController(
+      withPHAssets: { (assets) in
+        self.assetsSubject.onNext(assets)
+        self.assetsSubject.onCompleted()
+      },
+      didCancel: nil)
+    var configure = TLPhotosPickerConfigure()
+    configure.maxSelectedAssets = max
+    viewController.configure = configure
+    viewController.modalPresentationStyle = .currentContext
+    view?.present(viewController, animated: true, completion: nil)
+  }
+  
+  private func presentCameraPicker(from view: UIViewController?) {
+    let controller = UIImagePickerController()
+    controller.sourceType = .camera
+    controller.allowsEditing = true
+    controller.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
+    controller.videoQuality = .typeMedium
+    controller.videoMaximumDuration = 60
+
+    controller.delegate = self
+    view?.present(controller, animated: true, completion: nil)
+  }
+  
+  func imagePickerController(
+    _ picker: UIImagePickerController,
+    didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    var request: PHAssetChangeRequest? = nil
+    
+    var placeholderAsset: PHObjectPlaceholder? = nil
+    PHPhotoLibrary.shared().performChanges({
+      if let image = info[.originalImage] as? UIImage {
+        request = PHAssetChangeRequest.creationRequestForAsset(from: image)
+      } else if (info[.mediaType] as? String) == kUTTypeMovie as String {
+        request = PHAssetChangeRequest.creationRequestForAssetFromVideo(
+          atFileURL: info[.mediaURL] as! URL)
+      }
+      guard let newAssetRequest = request else { return }
+      placeholderAsset = newAssetRequest.placeholderForCreatedAsset
+    }, completionHandler: { [weak self] (sucess, error) in
+      guard
+        sucess,
+        let identifier = placeholderAsset?.localIdentifier,
+        let asset = PHAsset.fetchAssets(
+          withLocalIdentifiers: [identifier],
+          options: nil).firstObject else {
+          if let error = error {
+            self?.assetsSubject.onError(error)
+          }
+          return
+        }
+      
+        dispatch {
+          picker.dismiss(animated: true, completion: { [weak self] in
+            self?.assetsSubject.onNext([asset])
+            self?.assetsSubject.onCompleted()
+          })
+        }
+      }
+    )
   }
 }
 
@@ -148,9 +254,10 @@ extension UserChatRouter : UIDocumentInteractionControllerDelegate {
   
   func documentInteractionControllerViewControllerForPreview(
     _ controller: UIDocumentInteractionController) -> UIViewController {
-    if let controller = CHUtils.getTopController() {
-      return controller
+    guard let controller = CHUtils.getTopController() else {
+      return UIViewController()
     }
-    return UIViewController()
+    
+    return controller
   }
 }

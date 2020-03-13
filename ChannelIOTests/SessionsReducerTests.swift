@@ -30,13 +30,15 @@ class SessionsReducerTests: QuickSpec {
       for i in 0..<10 {
         let session = CHSession(
           id: "12\(i)", chatType: "UserChat", chatId: "\(i)",
-          personType: "", personId: "", unread: i,
+          personType: .manager, personId: "", unread: i,
           alert: 0, readAt: nil, postedAt: nil)
         
         sessions.append(session)
       }
       
-      let payload = ["sessions" : sessions]
+      var payload = UserChatsResponse()
+      payload.sessions = sessions
+      
       state = sessionsReducer(action: GetUserChats(payload: payload), state: state)
       expect(state.sessions.count).to(equal(10))
     }
@@ -44,7 +46,7 @@ class SessionsReducerTests: QuickSpec {
     it("CreateSession") {
       let session = CHSession(
         id: "12", chatType: "UserChat", chatId: "0",
-        personType: "", personId: "", unread: 0,
+        personType: .manager, personId: "", unread: 0,
         alert: 0, readAt: nil, postedAt: nil)
 
       state = sessionsReducer(action: CreateSession(payload: session), state: state)
@@ -58,7 +60,7 @@ class SessionsReducerTests: QuickSpec {
     it("UpdateSession") {
       var session = CHSession(
         id: "12", chatType: "UserChat", chatId: "0",
-        personType: "", personId: "", unread: 0,
+        personType: .manager, personId: "", unread: 0,
         alert: 0, readAt: nil, postedAt: nil)
 
       state = sessionsReducer(action: CreateSession(payload: session), state: state)
@@ -77,7 +79,7 @@ class SessionsReducerTests: QuickSpec {
     it("DeleteSession") {
       let session = CHSession(
         id: "12", chatType: "UserChat", chatId: "0",
-        personType: "", personId: "", unread: 0,
+        personType: .manager, personId: "", unread: 0,
         alert: 0, readAt: nil, postedAt: nil)
 
       state = sessionsReducer(action: CreateSession(payload: session), state: state)
@@ -96,7 +98,7 @@ class SessionsReducerTests: QuickSpec {
     it("CheckOutSuccess") {
       let session = CHSession(
         id: "12", chatType: "UserChat", chatId: "0",
-        personType: "", personId: "", unread: 0,
+        personType: .manager, personId: "", unread: 0,
         alert: 0, readAt: nil, postedAt: nil)
 
       state = sessionsReducer(action: CreateSession(payload: session), state: state)

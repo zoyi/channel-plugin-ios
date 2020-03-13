@@ -47,6 +47,27 @@ extension UIButton {
   func setBackgroundColor(color: UIColor, forUIControlState state: UIControlState) {
     self.setBackgroundImage(imageWithColor(color), for: state)
   }
+  
+  var bottomHeightOffset: CGFloat {
+    let height = bounds.size.height
+
+    // adjust the button so its content is aligned w/ the bottom of the text view
+    let titleLabelMaxY: CGFloat
+    if let titleBounds = titleLabel?.frame, titleBounds != .zero {
+        titleLabelMaxY = titleBounds.maxY
+    } else {
+        titleLabelMaxY = height
+    }
+
+    let imageViewMaxY: CGFloat
+    if let imageBounds = imageView?.frame, imageBounds != .zero {
+        imageViewMaxY = imageBounds.maxY
+    } else {
+        imageViewMaxY = height
+    }
+
+    return max(height - titleLabelMaxY, height - imageViewMaxY)
+  }
 }
 
 extension Reactive where Base: UIControl {

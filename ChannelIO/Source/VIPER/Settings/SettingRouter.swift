@@ -9,12 +9,21 @@
 import Foundation
 
 class SettingRouter: SettingRouterProtocol {
+  private var isPushing = false
+  
   func pushLanguageSelector(from view: UIViewController?) {
+    guard !isPushing else { return }
+    self.isPushing = true
     let viewController = LanguageOptionViewController()
-    view?.navigationController?.pushViewController(viewController, animated: true)
+    view?.navigationController?
+      .pushViewController(viewController: viewController, animated: true) { [weak self] in
+      self?.isPushing = false
+    }
   }
   
-  func pushProfileSchemaEditor(with item: GuestProfileItemModel, from view: UIViewController?) {
+  func pushProfileSchemaEditor(with item: UserProfileItemModel, from view: UIViewController?) {
+    guard !isPushing else { return }
+    self.isPushing = true
     var type: EditFieldType
     if item.rawData.key == "mobileNumber" {
       type = .phone
@@ -23,8 +32,15 @@ class SettingRouter: SettingRouterProtocol {
     } else {
       type = .text
     }
-    let viewController = ProfileEditorViewController(type: type, guest: mainStore.state.guest, schema: item.rawData)
-    view?.navigationController?.pushViewController(viewController, animated: true)
+    let viewController = ProfileEditorViewController(
+      type: type,
+      user: mainStore.state.user,
+      schema: item.rawData
+    )
+    view?.navigationController?
+      .pushViewController(viewController: viewController, animated: true)  { [weak self] in
+      self?.isPushing = false
+    }
   }
   
   static func createModule() -> SettingView {

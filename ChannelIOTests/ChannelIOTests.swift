@@ -8,16 +8,11 @@
 
 import Quick
 import Nimble
-import ChannelIO
 
 class ChannelIOTests: QuickSpec {
-
+  let defaultTimeout: TimeInterval = 5.0
+  
   override func spec() {
-    describe("CHPlugin") {
-      it("works") {
-        expect(true).to(beTrue())
-      }
-    }
+    
   }
-
 }

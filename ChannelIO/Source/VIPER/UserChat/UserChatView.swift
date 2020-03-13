@@ -10,540 +10,652 @@ import UIKit
 import ReSwift
 import RxSwift
 import SVProgressHUD
-import CHSlackTextViewController
+import SnapKit
 import Alamofire
 
-class UserChatView: BaseSLKTextViewController, UserChatViewProtocol {
-  struct Constant {
-    static let messagePerRequest = 30
-    static let messageCellMaxWidth = UIScreen.main.bounds.width
+class UserChatView: CHMessageViewController, UserChatViewProtocol {
+  internal struct Constants {
+    static let newMessageViewHeight = 48.f
+    static let newMessageViewBottom = -6.f
+    static let newChatButtonBottom = 40.f
+    static let typerCellHeight = 40.f
+    static let fileStatusCellHeight = 60.f
+    static let MediaMessageCellLeading = 40.f
+    static let MediaMessageCellTrailing = 74.f
+    static let mediaMinWidth = 56.f
+    static let mediaMinHeight = 56.f
+    static let chatStartViewBottom = 9.f
+    static let chatStartViewSide = 6.f
+    static let chatBotStartViewHeight = 45.f
   }
-
-  var presenter: UserChatPresenterProtocol? = nil
-
-  // MARK: Properties
-  var channel: CHChannel = mainStore.state.channel
-  var userChatId: String?
-  var userChat: CHUserChat?
-
-  var preloadText: String = ""
-  //var isFetching = false
-  //var isRequstingReadAll = false
-
-  var photoUrls = [String]()
-
-  var messages = [CHMessage]()
-
-  var disposeBag = DisposeBag()
-  //var photoBrowser : MWPhotoBrowser? = nil
-  //var chatManager : ChatManager!
-
-  var newMessageView = NewMessageBannerView().then {
+  
+  internal struct Sections {
+    static let loadingFile = 0
+    static let errorFiles = 1
+    static let typer = 2
+    static let messages = 3
+  }
+  
+  internal struct Metrics {
+    static let newButtonHeight = 46
+  }
+  
+  private var viewBounds: CGRect = .zero
+  private var tableViewOriginBottomInset: CGFloat = 0.f
+  private var userChat: CHUserChat?
+  
+  var presenter: UserChatPresenterProtocol?
+  
+  internal let tableView = UITableView().then {
+    $0.clipsToBounds = true
+    $0.separatorStyle = .none
+    $0.allowsSelection = false
+    $0.showsHorizontalScrollIndicator = false
+    $0.showsVerticalScrollIndicator = false
+    $0.isHidden = true
+    
+    $0.register(cellType: MediaMessageCell.self)
+    $0.register(cellType: WebPageMessageCell.self)
+    $0.register(cellType: MessageCell.self)
+    $0.register(cellType: NewMessageDividerCell.self)
+    $0.register(cellType: DateCell.self)
+    $0.register(cellType: LogCell.self)
+    $0.register(cellType: TypingIndicatorCell.self)
+    $0.register(cellType: ProfileMessageCell.self)
+    $0.register(cellType: ProfileWebMessageCell.self)
+    $0.register(cellType: ProfileMediaMessageCell.self)
+    $0.register(cellType: ActionMessageCell.self)
+    $0.register(cellType: ActionWebMessageCell.self)
+    $0.register(cellType: ActionMediaMessageCell.self)
+    $0.register(cellType: FileStatusCell.self)
+  }
+  private var placeHolder: UIView? = nil
+  private var newMessageView = NewMessageBannerView().then {
     $0.isHidden = true
   }
-
-  var typingCell: TypingIndicatorCell!
-
-  var titleView : ChatNavigationTitleView? = nil
-
-  var newChatSubject = PublishSubject<Any?>()
-  var profileSubject = PublishSubject<Any?>()
-
-  deinit {
-    mainStore.dispatch(RemoveMessages(payload: self.userChatId))
+  private var newChatButton = CHButtonFactory.newChat().then {
+    $0.isHidden = true
   }
+  private var chatBlockView = UserChatBottomBlockView().then {
+    $0.configure(
+      message:CHAssets.localized("ch.message_input.placeholder.disabled_new_chat")
+    )
+    $0.isHidden = true
+  }
+  
+  var currentPlayingVideo: VideoPlayerView?
+  private var chatBotStartView = ChatBotStartView().then {
+    $0.isHidden = true
+  }
+  
+  internal var typers = [CHEntity]()
+  
+  private var fixedInset: Bool = false
+  private var shouldShowInputBar: Bool = false
+  
+  internal var channel: CHChannel = mainStore.state.channel
+  internal var messages = [CHMessage]()
+  var videoRecords = [CHFile: Double]()
+  
+  internal var isLoadingFile = false
+  internal var errorFiles: [ChatFileQueueItem] = []
+  internal var loadingFile: ChatFileQueueItem?
+  internal var waitingFileCount: Int = 0
 
-  // MARK: View Life Cycle
+  let disposeBag = DisposeBag()
+
   override func viewDidLoad() {
-    self.textInputBarLRC = 5
-    self.textInputBarBC = 5
-
     super.viewDidLoad()
-    self.presenter?.viewDidLoad()
     
+    self.viewBounds = self.view.bounds
     self.edgesForExtendedLayout = UIRectEdge.bottom
     self.view.backgroundColor = UIColor.white
-
-   self.initSLKTextView()
-    self.initTypingCell()
-    self.initTableView()
-    self.initInputViews()
+    self.view.addSubview(self.tableView)
+    
+    // TODO: because of issue that swipe dissmiss while scroll to up
+    if #available(iOS 13.0, *) {
+      self.isModalInPresentation = true
+    }
+    
     self.initViews()
+    self.initTableView()
+    self.initMessageView()
+    self.initNavigationViews(with: userChatSelector(
+      state: mainStore.state, userChatId: self.presenter?.userChatId)
+    )
+    self.setup(scrollView: self.tableView)
+    self.observeKeyboardChange()
+    self.initActionButtons()
+    self.showLoader()
+    
+    self.presenter?.viewDidLoad()
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    self.navigationController?.setNavigationBarHidden(false, animated: true)
+    self.navigationController?.dropShadow()
     self.presenter?.prepareDataSource()
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    if let count = self.navigationController?.viewControllers.count, count == 1 {
+      self.navigationController?.setNavigationBarHidden(true, animated: true)
+      self.navigationController?.removeShadow()
+    }
     self.presenter?.cleanDataSource()
   }
-
-  // MARK: - Helper methods
-  fileprivate func initSLKTextView() {
-    self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
-    self.textView.keyboardType = .default
-
-    if let userChat = self.userChat, userChat.isCompleted {
-      self.alwaysEnableRightButton = true
-    }
-  }
-
-  func initInputViews() {
-    self.textView.isUserInteractionEnabled = false
-    self.textView.keyboardType = .default
-    self.textView.layer.borderWidth = 0
-    self.textView.text = self.preloadText
-
-    //default textinputbar
-    self.textInputbar.barDelegate = self
-    self.textInputbar.contentInset.right = 0
-    self.textInputbar.autoHideRightButton = false
-    self.textInputbar.signalForClick()
-      .subscribe { [weak self] (_) in
-        if self?.textInputbar.barState == .disabled {
-          return
-        }
-        self?.presentKeyboard(self?.menuAccesoryView == nil)
-      }.disposed(by: self.disposeBag)
-  }
-
-  fileprivate func initTableView() {
-    // TableView configuration
-    self.tableView.register(cellType: MediaMessageCell.self)
-    self.tableView.register(cellType: FileMessageCell.self)
-    self.tableView.register(cellType: WebPageMessageCell.self)
-    self.tableView.register(cellType: MessageCell.self)
-    self.tableView.register(cellType: NewMessageDividerCell.self)
-    self.tableView.register(cellType: DateCell.self)
-    self.tableView.register(cellType: LogCell.self)
-    self.tableView.register(cellType: TypingIndicatorCell.self)
-    self.tableView.register(cellType: WatermarkCell.self)
-
-    self.tableView.estimatedRowHeight = 0
-    self.tableView.clipsToBounds = true
-    self.tableView.separatorStyle = .none
-    self.tableView.allowsSelection = false
-  }
-
-  func initTypingCell() {
-    let cell = TypingIndicatorCell()
-    cell.configure(typingUsers: [])
-    self.typingCell = cell
-  }
-
-  func initNavigationViews(with info: UserChatInfo, guest: CHGuest) {
-    self.userChat = info.userChat
-    
-    self.setNavItems(
-      showSetting: info.showSettings,
-      currentUserChat: info.userChat,
-      guest: guest,
-      textColor: info.textColor
-    )
-
-    self.initNavigationTitle(with: info.userChat, channel: info.channel, plugin: info.plugin)
+  
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    return self.navigationController?.preferredStatusBarStyle ?? .lightContent
   }
   
-  func initNavigationTitle(with userChat: CHUserChat?, channel: CHChannel, plugin: CHPlugin) {
-    let titleView = ChatNavigationTitleView()
-    titleView.configure(channel: channel, plugin: plugin)
-
-    titleView.translatesAutoresizingMaskIntoConstraints = false
-    titleView.layoutIfNeeded()
-    titleView.sizeToFit()
-    titleView.translatesAutoresizingMaskIntoConstraints = true
-
-    self.navigationItem.titleView = titleView
-    self.titleView = titleView
+  override func textDidChange(text: String) {
+    super.textDidChange(text: text)
+    self.presenter?.sendTyping(isStop: text == "")
+    
+    if text == "" && !self.channel.working && !self.channel.allowNewChat {
+      self.hideMessageView()
+    }
+  }
+  
+  private func observeKeyboardChange() {
+    let notificationCenter = NotificationCenter.default
+    notificationCenter.addObserver(
+      self,
+      selector: #selector(keyboardChange(notification:)),
+      name: UIResponder.keyboardWillShowNotification,
+      object: nil
+    )
+    notificationCenter.addObserver(
+      self,
+      selector: #selector(keyboardChange(notification:)),
+      name: UIResponder.keyboardDidShowNotification,
+      object: nil
+    )
+    notificationCenter.addObserver(
+      self,
+      selector: #selector(keyboardChange(notification:)),
+      name: UIResponder.keyboardWillHideNotification,
+      object: nil
+    )
+    notificationCenter.addObserver(
+      self,
+      selector: #selector(keyboardChange(notification:)),
+      name: UIResponder.keyboardDidHideNotification,
+      object: nil)
+    notificationCenter.addObserver(
+      self,
+      selector: #selector(keyboardChange(notification:)),
+      name: UIApplication.willResignActiveNotification,
+      object: nil
+    )
+  }
+  
+  private func initNavigationViews(with userChat: CHUserChat?) {
+    self.setNavItems(
+      currentUserChat: userChat,
+      user: mainStore.state.user
+    )
+    self.initNavigationTitle(with: userChat)
+  }
+  
+  private func initNavigationTitle(with userChat: CHUserChat? = nil) {
+    var navigationTitleView: UIView?
+    if let userChat = userChat, let assignee = userChat.assignee {
+      let titleView = ChatNavigationFollowingTitleView()
+      titleView.configure(host: assignee, plugin: mainStore.state.plugin)
+      navigationTitleView = titleView
+    } else {
+      let titleView = ChatNavigationTitleView()
+      titleView.configure(
+        channel: self.channel,
+        plugin: mainStore.state.plugin
+      )
+      navigationTitleView = titleView
+    }
+    navigationTitleView?.translatesAutoresizingMaskIntoConstraints = false
+    navigationTitleView?.layoutIfNeeded()
+    navigationTitleView?.sizeToFit()
+    navigationTitleView?.translatesAutoresizingMaskIntoConstraints = true
+    self.navigationItem.titleView = navigationTitleView
+  }
+  
+  private func initMessageView() {
+    self.messageView.delegate = self
+    self.hideMessageView()
+    self.messageView.setPlaceholder(
+      mode: .normal,
+      text: CHAssets.localized("ch.message_input.placeholder"))
+    self.messageView.setPlaceholder(
+      mode: .disabled,
+      text: CHAssets.localized("ch.message_input.placeholder"))
+    self.messageView.mode = .normal
+    let sendImage = CHAssets.getImage(
+      named: "send")?.withRenderingMode(.alwaysTemplate)
+    let clipImage = CHAssets.getImage(named: "clip")
+    self.messageView.setButton(inset: 10, position: .left)
+    self.messageView.setButton(inset: 10, position: .right)
+    self.messageView.setButton(
+      icon: clipImage,
+      for: .normal,
+      position: .left,
+      size: CGSize(width: 30, height: self.messageView.height))
+    self.messageView.setButton(
+      icon: sendImage,
+      for: .normal,
+      position: .right,
+      size: CGSize(width: 30, height: self.messageView.height))
+    self.messageView.setButton(
+      icon: sendImage,
+      for: .disabled,
+      position: .right,
+      size: CGSize(width: 30, height: self.messageView.height))
+    self.messageView.addButton(
+      target: self,
+      action: #selector(self.didPressAssetButton),
+      position: .left)
+    self.messageView.addButton(
+      target: self,
+      action: #selector(self.didPressSendButton),
+      position: .right)
+    self.messageView.rightButtonIsEnable = false
+    self.messageView.textViewInset = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 20)
+    self.messageView.font = UIFont.systemFont(ofSize: 14)
+    self.messageView.maxHeight = 184
+    self.messageView.textContainerView
+      .signalForClick()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] _ in
+        guard let self = self else { return }
+        self.messageView.becomeResponder(
+          mode: .normal,
+          animated: !self.isAccessoryViewVisible)
+    }).disposed(by: self.disposeBag)
   }
 
-  fileprivate func initViews() {
-    self.view.addSubview(self.newMessageView)
-    self.newMessageView.snp.makeConstraints { [weak self] (make) in
-      make.height.equalTo(48)
+  private func initActionButtons() {
+    self.view.addSubview(self.newChatButton)
+    self.newChatButton.signalForClick()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (_) in
+        self?.presenter?.didClickOnNewChat(with: "", from: self?.navigationController)
+    }).disposed(by: self.disposeBag)
+    
+    self.newChatButton.snp.makeConstraints { (make) in
+      make.bottom.equalToSuperview().inset(Constants.newChatButtonBottom)
       make.centerX.equalToSuperview()
-      make.bottom.equalTo((self?.textInputbar.snp.top)!).offset(-6)
+      make.height.equalTo(Metrics.newButtonHeight)
     }
+  }
 
+  private func initTableView() {
+    self.tableView.dataSource = self
+    self.tableView.delegate = self
+    self.tableViewOriginBottomInset = self.tableView.contentInset.bottom
+    self.tableView.snp.makeConstraints { (make) in
+      make.top.equalToSuperview()
+      make.bottom.equalTo(self.messageView.snp.top)
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+    }
+  }
+
+  private func initViews() {
+    self.view.addSubview(self.newMessageView)
+    self.newMessageView.snp.makeConstraints { (make) in
+      make.height.equalTo(Constants.newMessageViewHeight)
+      make.centerX.equalToSuperview()
+      make.bottom.equalTo(self.messageView.snp.top)
+        .offset(Constants.newMessageViewBottom)
+    }
+    
     self.newMessageView.signalForClick()
+      .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (event) in
-        self?.newMessageView.hide(animated: true)
         self?.scrollToBottom(false)
+      }).disposed(by: self.disposeBag)
+    
+    self.view.addSubview(self.chatBlockView)
+    self.chatBlockView.snp.makeConstraints { make in
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+      } else {
+        make.bottom.equalToSuperview()
+      }
+      make.leading.equalToSuperview()
+      make.trailing.equalToSuperview()
+    }
+    
+    self.view.addSubview(self.chatBotStartView)
+    self.chatBotStartView.snp.makeConstraints { [weak self] (make) in
+      guard let self = self else { return }
+      if #available(iOS 11.0, *) {
+        make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+          .inset(Constants.chatStartViewBottom)
+      } else {
+        make.bottom.equalToSuperview().inset(Constants.chatStartViewBottom)
+      }
+      make.leading.equalToSuperview().inset(Constants.chatStartViewSide)
+      make.trailing.equalToSuperview().inset(Constants.chatStartViewSide)
+      make.height.equalTo(Constants.chatBotStartViewHeight)
+    }
+    self.chatBotStartView.signalForClick()
+      .observeOn(MainScheduler.instance)
+      .subscribe(onNext: { [weak self] (_) in
+        self?.presenter?.didClickOnMarketingToSupportBotButton()
       }).disposed(by: self.disposeBag)
   }
 
-  fileprivate func setNavItems(showSetting: Bool, currentUserChat: CHUserChat?, guest: CHGuest, textColor: UIColor) {
+  private func setNavItems(currentUserChat: CHUserChat?, user: CHUser) {
     let tintColor = mainStore.state.plugin.textUIColor
-    if showSetting {
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "settings"),
-        tintColor: tintColor,
-        style: .plain,
-        actionHandler: { [weak self] in
-          self?.profileSubject.onNext(nil)
+    
+    let alert = (user.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
+    let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
+    let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+    spacer.width = -8
+    
+    let backButton = NavigationRoundLabelBackItem(
+      text: alert == 0 ? "" : alertCount,
+      textColor: mainStore.state.plugin.bgColor,
+      textBackgroundColor: tintColor,
+      actionHandler: { [weak self] in
+        self?.navigationController?.popViewController(animated: true)
       })
+    
+    if #available(iOS 11, *) {
+      self.navigationItem.leftBarButtonItems = [backButton]
     } else {
-      let alert = (guest.alert ?? 0) - (currentUserChat?.session?.alert ?? 0)
-      let alertCount = alert > 99 ? "99+" : (alert > 0 ? "\(alert)" : nil)
-      
-      self.navigationItem.leftBarButtonItem = NavigationItem(
-        image: CHAssets.getImage(named: "back")?.withRenderingMode(.alwaysTemplate),
-        text: alertCount,
-        textColor: tintColor,
-        actionHandler: { [weak self] in
-          mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-          _ = self?.navigationController?.popViewController(animated: true)
-      })
+      self.navigationItem.leftBarButtonItems = [spacer, backButton]
     }
-
+    
     self.navigationItem.rightBarButtonItem = NavigationItem(
-      image: CHAssets.getImage(named: "close"),
-      tintColor: tintColor,
+      image: CHAssets.getImage(named: "closeWhite"),
+      tintColor: mainStore.state.plugin.textUIColor,
       style: .plain,
       actionHandler: { [weak self] in
-        mainStore.dispatch(RemoveMessages(payload: self?.userChatId))
-        ChannelIO.close(animated: true)
+        self?.presenter?.didClickOnRightNaviItem(from: self)
+      })
+  }
+  
+  private func showLoader() {
+    guard self.placeHolder == nil else { return }
+    let placeHolder = UIImageView(image:CHAssets.getImage(named: "messageLoader"))
+    placeHolder.contentMode = .scaleToFill
+    
+    let view = UIView(frame: CGRect(
+      x: 0,
+      y: 0,
+      width: self.tableView.frame.size.width,
+      height: self.tableView.frame.size.height
+    ))
+
+    let layer = CAGradientLayer()
+    layer.colors = [CHColors.paleGrey20.cgColor, CHColors.snow.cgColor]
+    layer.startPoint = CGPoint(x:0, y:0.5)
+    layer.endPoint = CGPoint(x:1, y:0.5)
+    
+    layer.frame = view.frame
+    view.layer.addSublayer(layer)
+    
+    view.addSubview(placeHolder)
+    view.mask = placeHolder
+    view.backgroundColor = .grey200
+    
+    self.view.addSubview(view)
+
+    view.snp.makeConstraints { (make) in
+      make.edges.equalToSuperview()
+    }
+    
+    self.placeHolder = view
+  }
+  
+  private func hideLoader() {
+    guard self.placeHolder != nil else { return }
+    self.placeHolder?.removeFromSuperview()
+    self.placeHolder = nil
+    if self.shouldShowInputBar {
+      self.showMessageView()
+    }
+  }
+  
+  @objc private func didPressSendButton() {
+    guard self.messageView.text != "" else { return }
+    self.presenter?.didClickOnSendButton(text: self.messageView.text)
+    self.messageView.text = ""
+  }
+  
+  @objc private func didPressAssetButton() {
+    self.dismissKeyboard(true)
+    self.presenter?.didClickOnClipButton(from: self)
+  }
+  
+  private func updateInputField(userChat: CHUserChat?) {
+    let needToSupportBot = userChat?.lastMessage?.marketing?.enableSupportBot == true
+    let isSupportBotEntry = mainStore.state.messagesState.supportBotEntry != nil
+    
+    self.shouldShowInputBar = false
+    self.chatBlockView.isHidden = true
+    self.chatBotStartView.isHidden = true
+    
+    if userChat?.isRemoved == true {
+      _ = self.navigationController?.popViewController(animated: true)
+    } else if userChat?.isClosed == true {
+      self.hideMessageView()
+      self.newChatButton.isHidden = false
+    } else if needToSupportBot && isSupportBotEntry {
+      self.hideMessageView()
+      self.chatBotStartView.isHidden = false
+    } else if userChat?.isSupporting == true ||
+      userChat?.isSolved == true ||
+      (isSupportBotEntry && userChat == nil) {
+      self.hideMessageView()
+    } else if !self.channel.allowNewChat && self.messageView.text == "" {
+      self.hideMessageView()
+      self.chatBlockView.isHidden = false
+    } else if self.presenter?.isProfileFocus != true {
+      self.placeHolder != nil ? self.shouldShowInputBar = true : self.showMessageView()
+    }
+  }
+  
+  private func adjustTableViewInsetIfneeded(userChat: CHUserChat?) {
+    let needToSupportBot = userChat?.lastMessage?.marketing?.enableSupportBot == true
+    let isSupportBotEntry = mainStore.state.messagesState.supportBotEntry != nil
+    self.paintSafeAreaBottomInset(with: nil)
+
+    if userChat?.isClosed == true {
+      if !self.adjustTableViewInset(bottomInset: 60.f) {
+        self.fixedInset = true
+        self.scrollToBottom(false)
       }
-    )
-  }
-}
-
-//protocol
-extension UserChatView {
-  func display(messages: [CHMessage]) {
-    let hasNewMessage = false // self.presenter?.hasNewMessage(current: current, updated: updated)
-    self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages, hasNewMessage: hasNewMessage)
-    self.messages = messages
-    self.tableView.reloadData()
-  }
-  
-  func display(typers: [CHEntity]) {
-    let indexPath = IndexPath(row: 0, section: self.channel.canUseSDK ? 0 : 1)
-    if self.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let typingCell = self.typingCell {
-      typingCell.configure(typingUsers: typers)
+    } else if needToSupportBot && isSupportBotEntry {
+      self.adjustTableViewInset(bottomInset: 60.f)
+    } else if userChat?.isSupporting == true ||
+      userChat?.isSolved == true ||
+      (isSupportBotEntry && userChat == nil) {
+     self.adjustTableViewInset(bottomInset: 60.f)
+    } else if !self.channel.allowNewChat && self.messageView.text == "" {
+      let bottomInset = self.chatBlockView.viewHeight(width: self.tableView.frame.width)
+      if !self.adjustTableViewInset(bottomInset: bottomInset) {
+        self.fixedInset = true
+        self.scrollToBottom(false)
+      }
+      self.paintSafeAreaBottomInset(with: .grey200)
+    } else if self.presenter?.isProfileFocus != true {
+      self.adjustTableViewInset()
     }
+    self.tableView.layoutIfNeeded()
   }
   
-  func display(error: Error?, visible: Bool) {
+  @discardableResult
+    private func adjustTableViewInset(bottomInset: CGFloat = 0.f) -> Bool {
+      let chatViewHeight = self.tableView.frame.height
+      if self.tableView.contentSize.height <= chatViewHeight {
+        guard self.tableView.contentSize.height > 40 else { return false }
 
+        var currInset = self.tableView.contentInset
+        let newInset = chatViewHeight - self.tableView.contentSize.height
+        currInset.top = newInset < bottomInset ? bottomInset: newInset
+        currInset.bottom = self.tableViewOriginBottomInset
+
+        self.tableView.contentInset = currInset
+        return true
+      } else {
+        guard !self.fixedInset else { return false }
+
+        self.tableView.contentInset = UIEdgeInsets(
+          top: bottomInset,
+          left: 0,
+          bottom: self.tableViewOriginBottomInset,
+          right: 0)
+        return false
+      }
   }
   
-  func displayNewBanner() {
+  private func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage]) {
+    guard
+      let currentLastMessage = current.first,
+      let newLastMessage = updated.first,
+      currentLastMessage != newLastMessage,
+      !newLastMessage.isMine() else { return }
     
-  }
-  
-  func setChatInfo(info: UserChatInfo) {
-    self.userChat = info.userChat
-    
-    self.initNavigationViews(with: info, guest: mainStore.state.guest)
-  }
-  
-  func updateInputField(userChat: CHUserChat?, updatedUserChat: CHUserChat?) {
-    
-  }
-  
-  func configureNavigation(with userChat: CHUserChat?, unread: Int) {
-    
-  }
-}
-
-extension UserChatView {
-  func updateInputFieldIfNeeded(userChat: CHUserChat?, nextUserChat: CHUserChat?) {
-    let channel = mainStore.state.channel
-
-    if nextUserChat?.isCompleted == true {
-      self.textInputbar.barState = .disabled
-      self.textInputbar.hideLeftButton()
-      self.rightButton.setImage(nil, for: .normal)
-      self.rightButton.setImage(nil, for: .disabled)
-      self.rightButton.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
-      self.rightButton.setTitleColor(CHColors.cobalt, for: .normal)
-      self.textView.isEditable = false
-    } else if (!self.channel.allowNewChat && !channel.allowNewChat) {
-      //self.isNewChat(with: userChat, nextUserChat: nextUserChat) {
-      self.textInputbar.barState = .disabled
-      self.textInputbar.hideAllButtons()
-      self.textView.isEditable = false
-      self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder.disabled_new_chat")
-    } else {
-      self.rightButton.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
-      self.rightButton.setImage(CHAssets.getImage(named: "sendDisabled")?.withRenderingMode(.alwaysOriginal), for: .disabled)
-      self.rightButton.tintColor = CHColors.cobalt
-      self.rightButton.setTitle("", for: .normal)
-      self.leftButton.setImage(CHAssets.getImage(named: "clip"), for: .normal)
-
-      self.textInputbar.barState = .normal
-      self.textInputbar.setButtonsHidden(false)
-
-      self.textView.isEditable = true
-      self.textView.placeholder = CHAssets.localized("ch.message_input.placeholder")
-    }
-  }
-
-  //presenter
-  func showNewMessageBannerIfNeeded(current: [CHMessage], updated: [CHMessage], hasNewMessage: Bool) {
-    guard let lastMessage = updated.first, !lastMessage.isMine() else {
-      return
-    }
-
     let offset = self.tableView.contentOffset.y
-    if hasNewMessage && offset > UIScreen.main.bounds.height * 0.5 {
-      self.newMessageView.configure(message: lastMessage)
+    if let hasNew = self.presenter?.hasNewMessage(current: current, updated: updated),
+      hasNew && offset > self.viewBounds.height * 0.5 {
+      self.newMessageView.configure(message: newLastMessage)
       self.newMessageView.show(animated: true)
     }
   }
-
-  //no need?
-  func fixedOffsetIfNeeded(previousOffset: CGPoint, hasNewMessage: Bool) {
-    var offset = previousOffset
-    if let lastMessage = self.messages.first, !lastMessage.isMine(),
-      offset.y > UIScreen.main.bounds.height/2, hasNewMessage {
-      let previous: CHMessage? = self.messages.count >= 2 ? self.messages[1] : nil
-      let viewModel = MessageCellModel(message: lastMessage, previous: previous)
-      if lastMessage.messageType == .WebPage {
-        offset.y += WebPageMessageCell.cellHeight(fits: 0, viewModel: viewModel)
-      } else if lastMessage.messageType == .Media {
-        offset.y += MediaMessageCell.cellHeight(fits: 0, viewModel: viewModel)
-      } else if lastMessage.messageType == .File {
-        offset.y += FileMessageCell.cellHeight(fits: 0, viewModel: viewModel)
-      } else {
-        offset.y += MessageCell.cellHeight(fits: 0, viewModel: viewModel)
-      }
-
-      self.tableView.contentOffset = offset
-    } else if hasNewMessage {
-      self.scrollToBottom(false)
+  
+  private func scrollToBottom(_ animated: Bool) {
+    guard self.tableView.numberOfRows(inSection: Sections.messages) > 0 else {
+      return
+    }
+    
+    dispatch {
+      self.tableView.scrollToRow(
+        at: IndexPath(row: 0, section: Sections.messages),
+        at: .bottom,
+        animated: animated
+      )
     }
   }
-
-  fileprivate func scrollToBottom(_ animated: Bool) {
-    self.tableView.scrollToRow(
-      at: IndexPath(row:0, section:0),
-      at: .bottom,
-      animated: animated
-    )
+  
+  private func hideMessageView() {
+    self.setMessageView(hidden: true, animated: false)
+    self.dismissKeyboard(true)
+  }
+  
+  private func showMessageView() {
+    self.setMessageView(hidden: false, animated: false)
   }
 }
 
-// MARK: - SLKTextViewController
-
 extension UserChatView {
-  override func didPressLeftButton(_ sender: Any?) {
-    super.didPressLeftButton(sender)
-    self.presenter?.didClickOnOption(from: self)
+  func display(userChat: CHUserChat?, channel: CHChannel) {
+    self.channel = channel
+    self.userChat = userChat
+    self.initNavigationViews(with: userChat)
+    self.tableView.isHidden = false
+    self.fixedInset = false
+    self.updateInputField(userChat: userChat)
+    self.adjustTableViewInsetIfneeded(userChat: userChat)
+    self.hideLoader()
   }
-
-  override func didPressRightButton(_ sender: Any?) {
-    // This little trick validates any pending auto-correction or
-    // auto-spelling just after hitting the 'Send' button
-
-    self.textView.refreshFirstResponder()
-    let msg = self.textView.text!
-    //self.presenter?.send(text: msg, assets: [])
-    self.presenter?.didClickOnRightButton(text: msg, assets: [])
-    super.didPressRightButton(sender)
+  
+  func display(messages: [CHMessage], userChat: CHUserChat?, channel: CHChannel) {
+    guard messages.count > 0 else { return }
+    self.channel = channel
+    self.userChat = userChat
+    let hasNewMessage = self.presenter?.hasNewMessage(
+      current: self.messages,
+      updated: messages) ?? false
+    self.showNewMessageBannerIfNeeded(current: self.messages, updated: messages)
+    self.messages = messages
+    self.updateInputField(userChat: userChat)
+    
+    if hasNewMessage{
+      self.tableView.reloadData()
+    }
+    
+    // layoutIfNeeded need because of view flickering
+    self.tableView.layoutIfNeeded()
+    self.adjustTableViewInsetIfneeded(userChat: userChat)
+    
+    self.newChatButton.isEnabled = self.channel.allowNewChat
   }
-
-  override func forceTextInputbarAdjustment(for responder: UIResponder?) -> Bool {
-    // TODO: check if responder is equal to our text field
-    return true
+  
+  func updateNavigation(userChat: CHUserChat?) {
+    self.initNavigationViews(with: userChat)
   }
-
-  override func textViewDidChange(_ textView: UITextView) {
-    //self.chatManager.sendTyping(isStop: textView.text == "")
+  
+  func updateInputBar(state: MessageViewState) {
+    self.messageView.mode = state
+  }
+  
+  func setPreloadtext(with text: String) {
+    guard text != "" else { return }
+    self.messageView.text = text
+  }
+  
+  func display(typers: [CHEntity]) {
+    self.typers = typers
+    self.tableView.reloadSections([Sections.typer], with: .none)
+  }
+  
+  func display(loadingFile: ChatFileQueueItem, waitingCount: Int) {
+    self.isLoadingFile = true
+    self.loadingFile = loadingFile
+    self.waitingFileCount = waitingCount
+    self.tableView.reloadData()
+    self.tableView.layoutIfNeeded()
+  }
+  
+  func display(errorFiles: [ChatFileQueueItem]) {
+    self.errorFiles = errorFiles
+    self.tableView.reloadData()
+  }
+  
+  func hideLodingFile() {
+    self.isLoadingFile = false
+    self.tableView.reloadData()
+    self.tableView.layoutIfNeeded()
+  }
+  
+  func display(error: String?, visible: Bool) {
+    guard visible == true, let errorMessage = error else {
+      CHNotification.shared.dismiss()
+      return
+    }
+    CHNotification.shared.display(
+      message: errorMessage,
+      config: CHNotificationConfiguration.warningNormalConfig
+    )
+  }
+  
+  func dismissKeyboard(_ animated: Bool) {
+    self.messageView.resignResponder(animated: animated)
+  }
+  
+  @objc internal func keyboardChange(notification: Notification) {
+    self.adjustTableViewInsetIfneeded(userChat: self.userChat)
   }
 }
 
 // MARK: - UIScrollViewDelegate
-
 extension UserChatView {
-  override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    //fetch messages
-//    let yOffset = scrollView.contentOffset.y
-//    let triggerPoint = yOffset + UIScreen.main.bounds.height * 1.5
-//    if triggerPoint > scrollView.contentSize.height && self.chatManager.canLoadMore() {
-//      self.chatManager.fetchMessages()
-//    }
-//
-//    if yOffset < 100 &&
-//      !self.newMessageView.isHidden {
-//      self.newMessageView.hide(animated: false)
-//    }
-  }
-}
-
-// MARK: - UITableView
-
-extension UserChatView {
-  override func numberOfSections(in tableView: UITableView) -> Int {
-    return self.channel.canUseSDK ? 2 : 3
-  }
-
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if section == 0 {
-      return 1
-    } else if section == 1 {
-      return self.channel.canUseSDK ? self.messages.count : 1
-    } else if section == 2 {
-      return self.channel.canUseSDK ? 0 : self.messages.count
-    }
-    return 0
-  }
-
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    if indexPath.section == 0 {
-      return 40
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    let yOffset = scrollView.contentOffset.y
+    let triggerPoint: CGFloat = scrollView.contentSize.height - self.tableView.bounds.height
+    if yOffset >= triggerPoint && triggerPoint > 0 {
+      self.presenter?.fetchMessages()
     }
 
-    if indexPath.section == 1 && !self.channel.canUseSDK {
-      return 40
-    }
-
-    let message = self.messages[indexPath.row]
-    let previousMessage: CHMessage? =
-      indexPath.row == self.messages.count - 1 ?
-        self.messages[indexPath.row] :
-        self.messages[indexPath.row + 1]
-    let viewModel = MessageCellModel(message: message, previous: previousMessage)
-    switch message.messageType {
-    case .DateDivider:
-      return DateCell.cellHeight()
-    case .NewAlertMessage:
-      return NewMessageDividerCell.cellHeight()
-    case .Log:
-      return LogCell.cellHeight(fit: tableView.frame.width, viewModel: viewModel)
-   case .Media:
-      return MediaMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-    case .File:
-      return FileMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-    case .WebPage:
-      return WebPageMessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-    default:
-      let calSize = MessageCell.cellHeight(fits: Constant.messageCellMaxWidth, viewModel: viewModel)
-      return calSize
-    }
-  }
-
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let section = indexPath.section
-    if section == 0 && self.channel.blocked {
-      let cell: WatermarkCell = tableView.dequeueReusableCell(for: indexPath)
-      _ = cell.signalForClick().subscribe { _ in
-        let channel = mainStore.state.channel
-        let channelName = channel.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-        let urlString = CHUtils.getUrlForUTM(source: "plugin_watermark", content: channelName)
-
-        if let url = URL(string: urlString) {
-          url.openWithUniversal()
-        }
-      }
-      cell.transform = tableView.transform
-      return cell
-    } else if section == 0 || (section == 1 && !self.channel.canUseSDK) {
-      let cell = self.cellForTyping(tableView, cellForRowAt: indexPath)
-      cell.transform = tableView.transform
-      return cell
-    } else {
-      let cell = self.cellForMessage(tableView, cellForRowAt: indexPath)
-      cell.transform = tableView.transform
-      return cell
-    }
-  }
-
-  func cellForTyping(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if let typingCell = self.typingCell {
-      typingCell.configure(typingUsers: [])
-      typingCell.transform = tableView.transform
-      return typingCell
-    }
-    return UITableViewCell()
-  }
-
-  func cellForMessage(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let message = self.messages[indexPath.row]
-    let previousMessage: CHMessage? =
-      indexPath.row == self.messages.count - 1 ?
-        self.messages[indexPath.row] :
-        self.messages[indexPath.row + 1]
-    let viewModel = MessageCellModel(message: message, previous: previousMessage)
-
-    switch message.messageType {
-    case .NewAlertMessage:
-      let cell: NewMessageDividerCell = tableView.dequeueReusableCell(for: indexPath)
-      return cell
-    case .DateDivider:
-      let cell: DateCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(date: message.message ?? "")
-      return cell
-    case .Log:
-      let cell: LogCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(message: message)
-      return cell
-    case .UserMessage:
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel)
-      return cell
-    case .WebPage:
-      let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel)
-      cell.signalForClick().subscribe{ [weak self] _ in
-        self?.presenter?.didClickOnWeb(with: message.webPage?.url, from: self)
-      }.disposed(by: self.disposeBag)
-      return cell
-    case .Media:
-      let cell: MediaMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel)
-      cell.signalForClick().subscribe { [weak self] _ in
-        self?.presenter?.didClickOnImage(with: message.file?.fileUrl, from: self)
-      }.disposed(by: self.disposeBag)
-      return cell
-    case .File:
-      let cell: FileMessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel)
-      cell.signalForClick().subscribe { [weak self] _ in
-        self?.presenter?.didClickOnFile(with: message, from: self)
-      }.disposed(by: self.disposeBag)
-      return cell
-    default: //remote
-      let cell: MessageCell = tableView.dequeueReusableCell(for: indexPath)
-      cell.configure(viewModel)
-      return cell
-    }
-  }
-}
-
-
-// MARK: Clip handlers
-
-extension UserChatView {
-  func signalForProfile() -> Observable<Any?> {
-    return self.profileSubject
-  }
-
-  func signalForNewChat() -> Observable<Any?> {
-    return self.newChatSubject
-  }
-}
-
-extension UserChatView : SLKInputBarViewDelegate {
-  func barStateDidChange(_ state: SLKInputBarState) {
-    self.textInputbar.layer.cornerRadius = 5
-    self.textInputbar.clipsToBounds = true
-    self.textInputbar.layer.borderWidth = 2
-
-    if state == .disabled {
-      self.textInputbar.layer.borderColor = CHColors.paleGrey.cgColor
-      self.textInputbar.backgroundColor = CHColors.snow
-      self.textView.backgroundColor = UIColor.clear
-      self.textView.isHidden = false
-    } else {
-      self.textInputbar.layer.borderColor = CHColors.paleGrey.cgColor
-      self.textInputbar.backgroundColor = UIColor.white
-      self.textView.backgroundColor = UIColor.clear
-      self.textView.isHidden = false
+    if yOffset < 100 &&
+      !self.newMessageView.isHidden {
+      self.newMessageView.hide(animated: false)
     }
   }
 }

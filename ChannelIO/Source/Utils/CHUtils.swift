@@ -9,6 +9,7 @@
 import Foundation
 import SwiftyJSON
 import ObjectMapper
+import AVKit
 
 class CHUtils {
   class func getKeyWindow() -> UIWindow? {
@@ -93,6 +94,35 @@ class CHUtils {
     }
   }
   
+  class func fileTypesMap() -> [String: String] {
+    if let path = CHAssets.getPath(name: "extensions", type: "json") {
+      do {
+        let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+        let jsonArray = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+        if let jsonArray = jsonArray as? [Dictionary<String, Any>] {
+          return CHUtils.parsefileTypesIntoMap(array: jsonArray)
+        }
+      } catch {
+        return [:]
+      }
+    }
+    
+    return [:]
+  }
+  
+  class func parsefileTypesIntoMap(array: [Dictionary<String, Any>]) -> [String: String] {
+    var maps: [String: String] = [:]
+    for dict in array {
+      if let key = dict["key"] as? String, let values = dict["extensions"] as? [String] {
+        for value in values {
+          maps[value] = key
+        }
+      }
+    }
+    
+    return maps
+  }
+  
   class func emojiMap() -> [String: String] {
     if let path = CHAssets.getPath(name: "emojis", type: "json") {
       do {
@@ -137,6 +167,13 @@ class CHUtils {
     return nil
   }
   
+  class func deviceLanguage() -> String? {
+    guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
+    let start = str.startIndex
+    let end = str.index(str.startIndex, offsetBy: 2)
+    return String(str[start..<end])
+  }
+  
   class func stringToLocale(_ localeString: String) -> CHLocale {
     if localeString == "en" {
       return .english
@@ -168,8 +205,8 @@ class CHUtils {
     }
   }
   
-  class func getCurrentStage() -> String? {
-    return Bundle(for: self).object(forInfoDictionaryKey: "Stage") as? String
+  class func getCurrentStage() -> ChannelStage {
+    return ChannelIO.settings?.stage ?? .production
   }
   
   class func secondsToComponents(seconds: Int) -> (Int, Int, Int, Int) {
@@ -181,7 +218,6 @@ class CHUtils {
   
   class func secondsToRedableString(seconds: Int) -> String {
     let components = CHUtils.secondsToComponents(seconds: seconds)
-    var durationText = ""
     if components.0 > 0 {
       return String(format: CHAssets.localized("%d day"), components.0)
     }
@@ -235,31 +271,60 @@ class CHUtils {
     }
   }
   
-  class func bootQueryParams() -> [String: Any] {
-    var params = [String :Any]()
-    params["sysProfile.platform"] = "iOS"
-    params["sysProfile.version"] = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    return params
-  }
-  
   class func generateUserAgent() -> String {
-    let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-    
     let deviceType = UIDevice.current.model.hasPrefix("iPad") ? "iPad" : "iPhone"
     var ua = "Mozilla/5.0"
     ua += " (\(deviceType);"
     ua += " CPU"
     ua += deviceType == "iPhone" ? " iPhone" : ""
     ua += " OS \(UIDevice.current.systemVersion.replace(".", withString: "_"))"
-    //iphone or ipad
-    //os version
     ua += " like Mac OS X)"
+    ua += " AppleWebKit/600.1.4 (KHTML, like Gecko)"
     ua += " Mobile"
-    ua += " ChannelSDK/\(version)"
-    //Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) Mobile ChannelPlugin/1.0.0
+    //Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile
     return ua
+  }
+  
+  class func getHostAppInfo() -> String? {
+    guard
+      let appBundleId = Bundle.main.bundleIdentifier,
+      let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+      return nil
+    }
+    
+    return "\(appBundleId)/\(appVersion)"
+  }
+  
+  static func getSdkVersion() -> String? {
+    let version = Bundle(for: ChannelIO.self)
+      .infoDictionary?["CFBundleShortVersionString"] as? String
+    return version
+  }
+  
+  class func jsonStringify(data: Any?) -> String? {
+    guard let data = data else { return nil }
+    
+    do {
+      let jsonData = try JSONSerialization.data(withJSONObject: data, options: .fragmentsAllowed)
+      let jsonString = String(data: jsonData, encoding: .utf8)
+      return jsonString
+    } catch {
+      return nil
+    }
+  }
+  
+  class func getThumbnail(of asset: AVAsset?) -> UIImage? {
+    guard let asset = asset else { return nil }
+    let assetImgGenerate = AVAssetImageGenerator(asset: asset)
+    assetImgGenerate.appliesPreferredTrackTransform = true
+    let time = CMTimeMake(value: Int64(1), timescale: 100)
+    do {
+      let img = try assetImgGenerate.copyCGImage(at: time, actualTime: nil)
+      let thumbnail = UIImage(cgImage: img)
+      return thumbnail
+    } catch {
+      return nil
+    }
   }
 }
 
@@ -267,6 +332,18 @@ typealias dispatchClosure = () -> Void
 
 func dispatch(delay: Double = 0.0, execute: @escaping dispatchClosure) {
   DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay, execute: {
+    execute()
+  })
+}
+
+func dispatchSyncOnBack (execute: @escaping dispatchClosure) {
+  DispatchQueue.global(qos: .background).sync {
+    execute()
+  }
+}
+
+func dispatchAsyncOnBack (delay: Double = 0.0, execute: @escaping dispatchClosure) {
+  DispatchQueue.global(qos: .background).asyncAfter(deadline: DispatchTime.now() + delay, execute: {
     execute()
   })
 }

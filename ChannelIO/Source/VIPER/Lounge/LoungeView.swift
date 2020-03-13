@@ -160,7 +160,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       self?.presenter?.didClickOnSeeMoreChat(from: self)
     }).disposed(by: self.disposeBag)
     self.mainView.refreshSignal.subscribe(onNext: { [weak self] (_) in
-      self?.presenter?.didClickOnRefresh(for: .mainContent)
+      self?.presenter?.didClickOnRefresh()
     }).disposed(by: self.disposeBag)
     
     self.scrollView.addSubview(self.externalView)
@@ -168,7 +168,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
       self?.presenter?.didClickOnExternalSource(with: source, from: self)
     }).disposed(by: self.disposeBag)
     self.externalView.refreshSignal.subscribe(onNext: { [weak self] (_) in
-      self?.presenter?.didClickOnRefresh(for: .externalSource)
+      self?.presenter?.didClickOnRefresh()
     }).disposed(by: self.disposeBag)
     self.contentView.addSubview(self.dismissButton)
     
@@ -181,6 +181,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   func initScrollView() {
     self.scrollView.delegate = self
     self.scrollView.bounces = false
+    self.scrollView.clipsToBounds = false
     self.scrollView.showsVerticalScrollIndicator = false
     self.scrollView.showsHorizontalScrollIndicator = false
     self.scrollView.contentInset = UIEdgeInsets(
@@ -234,7 +235,9 @@ extension LoungeView {
   
   func displayHeader(with model: LoungeHeaderViewModel) {
     self.headerView.configure(model: model)
-    self.watermarkView.isHidden = model.plugin.showPoweredBy == false
+    self.watermarkView.isHidden = model.plugin.showPoweredBy == false &&
+      model.chanenl.messengerPlan == .pro &&
+      model.chanenl.state != .unpaid
   }
   
   func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {
@@ -247,13 +250,16 @@ extension LoungeView {
     self.externalView.configure(with: models)
   }
   
-  func displayError(for type: LoungeSectionType) {
+  func displayError() {
+    CHNotification.shared.display(
+      message: CHAssets.localized("ch.toast.unstable_internet"),
+      config: CHNotificationConfiguration.warningNormalConfig
+    )
+    
     self.contentView.isHidden = false
-    switch type {
-    case .header: self.headerView.displayError()
-    case .mainContent: self.mainView.displayError()
-    case .externalSource: self.externalView.displayError()
-    }
+    self.headerView.displayError()
+    self.mainView.displayError()
+    self.externalView.displayError()
   }
 }
 

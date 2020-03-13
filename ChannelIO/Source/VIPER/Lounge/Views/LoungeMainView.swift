@@ -15,6 +15,8 @@ import MGSwipeTableCell
 class LoungeMainView: BaseView {
   private struct Constants {
     static let maxNumberOfCell = 3
+    static let maxNumberOfLines = 2
+    static let maxNumberOfLinesForWelcomeCell = 8
     static let defaultCellHeight = 80.f
     static let headerHeight = 30.f
     static let defaultHeaderHeight = 10.f
@@ -81,7 +83,8 @@ class LoungeMainView: BaseView {
     if let model = self.welcomeModel, self.shouldShowWelcome {
       self.welcomeCellHeight = UserChatCell.calculateHeight(
         fits: self.frame.width,
-        viewModel: model
+        viewModel: model,
+        maxNumberOfLines: Constants.maxNumberOfLinesForWelcomeCell
       )
       
       var height = self.welcomeCellHeight +
@@ -178,8 +181,12 @@ class LoungeMainView: BaseView {
     self.errorView?.removeFromSuperview()
     self.errorView = nil
 
-    self.moreView.configure(moreCount: self.otherChatCount)
-    self.tableViewBottomConstraint?.update(inset: self.otherChatCount != 0 ? Metrics.tableViewBottom : 0)
+    self.moreView.configure(
+      moreCount: self.otherChatCount,
+      hasNext: mainStore.state.userChatsState.nextSeq != nil
+    )
+    self.tableViewBottomConstraint?
+      .update(inset: self.otherChatCount != 0 ? Metrics.tableViewBottom : 0)
     
     self.tableView.isHidden = false
     self.tableView.hideIndicatorTo(.content)
@@ -256,14 +263,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    let model = !self.shouldShowWelcome ?
-      self.activeChats[indexPath.row] :
-      self.welcomeModel
-    
-    return UserChatCell.calculateHeight(
-      fits: tableView.frame.width,
-      viewModel: model
-    )
+    return !self.shouldShowWelcome ? Constants.defaultCellHeight : self.welcomeCellHeight
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -292,6 +292,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
     if let welcomeModel = self.welcomeModel {
       let cell: UserChatCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(welcomeModel)
+      cell.messageLabel.numberOfLines = Constants.maxNumberOfLinesForWelcomeCell
       cell.rightButtons = []
       return cell
     }

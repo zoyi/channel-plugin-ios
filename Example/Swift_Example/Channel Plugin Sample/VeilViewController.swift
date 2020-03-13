@@ -36,10 +36,6 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
       ChannelIO.shutdown()
     }
   }
-
-  override var preferredStatusBarStyle: UIStatusBarStyle {
-    return .lightContent
-  }
   
   func willShowMessenger() {
     print("will show")
@@ -83,18 +79,18 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
+      pluginKey = "97ff2ea9-1c66-40d3-813c-25c562d5404f"
     }
     let settings = ChannelPluginSettings(pluginKey: pluginKey)
     settings.debugMode = true
+    settings.stage = .development
 //    settings.launcherConfig = LauncherConfig(
 //      position: .left, xMargin: 100, yMargin: 200
 //    )
     
     let profile = Profile()
-//    profile.set(propertyKey: "Coin", value: 212)
-//    profile.set(propertyKey: "age", value:1231231)
     profile.set(name: "TESTER")
+    
     ChannelIO.boot(with: settings, profile: profile) { (completion, guest) in
       
     }
@@ -105,7 +101,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   @IBAction func onClickShowChat(_ sender: Any) {
-    ChannelIO.track(eventName: "pageView", eventProperty: ["url":"Main"])
+    ChannelIO.track(eventName: "PageView", eventProperty: ["url":"Main"])
     //ChannelIO.open(animated: true)
   }
   
@@ -115,14 +111,5 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   
   @IBAction func onClickHideLauncher(_ sender: Any) {
     ChannelIO.hide(animated: true)
-  }
-}
-
-extension UINavigationController {
-  open override var childForStatusBarHidden: UIViewController? {
-    return self.topViewController
-  }
-  open override var childForStatusBarStyle: UIViewController? {
-    return self.topViewController
   }
 }

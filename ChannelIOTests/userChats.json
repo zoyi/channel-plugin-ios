@@ -1,0 +1,45 @@
+{
+  "userChats":
+    [
+      {
+        "id":"4677418",
+        "channelId":"7",
+        "personType":"user",
+        "personId":"33",
+        "name":"\uD83D\uDE04",
+        "pluginId":"26",
+        "categoryId":"1925",
+        "firstOpenedAt":1570173028760,
+        "openedAt":1570173028760,
+        "review":"test",
+        "assigneeId":"22136",
+        "assigneeType":"Manager",
+        "firstReplierType":"Manager",
+        "firstReplierId":"22136",
+        "firstRepliedAt":1570173121443,
+        "createdAt":1570173028324,
+        "appMessageId":"5d9844a49c60575c",
+        "appUpdatedAt":1570260132640,
+        "deskMessageId":"5d96f0c2c6cd4b6a",
+        "deskUpdatedAt":1570260132640,
+        "oneStop":true,
+        "waitingTime":92,
+        "avgReplyTime":92,
+        "totalReplyTime":92,
+        "replyCount":1,
+        "resolutionTime":87102,
+        "closedAt":1570260131624,
+        "updatedAt":1570260132640,
+        "lastMessageId":"5d9844a49c60575c",
+        "resolvedAt":1570260131624,
+        "talkedManagerIds":
+        ["22136"],
+        "stateV2":"closed",
+        "state":"closed"
+      }
+    ]
+}
+
+
+
+

@@ -18,26 +18,23 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var needToFetch = false
   var chatId: String?
-  var externalSources: [LoungeExternalSourceModel] = []
   
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
   
   var errorSignal = PublishSubject<Any?>()
   
-  var headerCompletion = BehaviorRelay<Bool>(value: false)
-  var mainCompletion = BehaviorRelay<Bool>(value: false)
-  var externalCompletion = BehaviorRelay<Bool>(value: false)
+  var loungeCompletion = BehaviorRelay<Bool>(value: false)
   
   var locale: CHLocaleString? = ChannelIO.settings?.appLocale
   
   func viewDidLoad() {
     self.updateHeaders()
-    self.fetchData()
+    self.fetchLoungeData()
     
     CHNotification.shared.refreshSignal
       .subscribe(onNext: { [weak self] (_) in
-        self?.fetchData()
+        self?.fetchLoungeData()
         CHNotification.shared.dismiss()
       }).disposed(by: self.disposeBag)
     
@@ -66,16 +63,10 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     self.view?.displayHeader(with: headerModel)
   }
   
-  func fetchData() {
-    self.loadHeaderInfo()
-    self.loadMainContents()
-    self.loadExternalSources()
-  }
-  
   func prepare(fetch: Bool = false) {
     if self.needToFetch || fetch {
       self.needToFetch = false
-      self.fetchData()
+      self.fetchLoungeData()
     }
     
     //handle showUserChat
@@ -105,9 +96,9 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   func initObservers() {
     ChannelAvailabilityChecker.shared.updateSignal
       .observeOn(MainScheduler.instance)
-      .flatMap({ [weak self] (_) -> Observable<CHChannel> in
+      .flatMap { [weak self] (_) -> Observable<CHChannel> in
         return self?.interactor?.getChannel() ?? .empty()
-      })
+      }
       .subscribe(onNext: { [weak self] (channel) in
         mainStore.dispatch(UpdateChannel(payload: channel))
         guard let self = self else { return }
@@ -120,7 +111,6 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         )
         self.view?.displayHeader(with: headerModel)
         
-        //update main
         self.updateMainContent()
       }).disposed(by: self.notiDisposeBag)
     
@@ -135,7 +125,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       .observeOn(MainScheduler.instance)
       .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats) in
-        if self?.mainCompletion.value == true {
+        if self?.loungeCompletion.value == true {
           self?.updateMainContent()
         }
       }).disposed(by: self.disposeBag)
@@ -147,7 +137,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     
     let welcomeModel = UserChatCellModel.getWelcomeModel(
       with: mainStore.state.plugin,
-      guest: mainStore.state.guest,
+      user: mainStore.state.user,
       supportBotMessage: supportBotEntrySelector(state: mainStore.state)
     )
     
@@ -160,8 +150,8 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   func isReadyToPresentChat(chatId: String?) -> Single<Any?> {
     return Single<Any?>.create { [weak self] subscriber in
-      guard let self = self else {
-        subscriber(.error(CHErrorPool.unknownError))
+      guard let self = self, let interactor = self.interactor else {
+        subscriber(.error(ChannelError.unknownError))
         return Disposables.create()
       }
       
@@ -172,23 +162,36 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       
       SVProgressHUD.show()
       
-      let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-      let supportSignal = CHSupportBot.get(with: mainStore.state.plugin.id, fetch: true)
-      let chatSignal = self.fetchChatIfNeeded(chatId: chatId)
-      
-      //plugin may not need
-      let signal = Observable.zip(pluginSignal, supportSignal, chatSignal)
+      let signal = Observable
+        .zip(
+          interactor.getLounge(),
+          interactor.getChats()
+        )
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-          let reloadMessage = CHAssets.localized("plugin.reload.message")
-          SVProgressHUD.show(withStatus: reloadMessage)
           return true
         })
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (plugin, entry, chatResponse) in
-          if let response = chatResponse {
-            mainStore.dispatch(GetUserChat(payload: response))
+        .subscribe(onNext: { (info, chatData) in
+          guard
+            let channel = info.channel,
+            let plugin = info.plugin,
+            let bot = info.bot,
+            let operators = info.operators else {
+              subscriber(.error(ChannelError.notFoundError))
+              SVProgressHUD.dismiss()
+              return
           }
-          mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
+          
+          mainStore.dispatch(
+            UpdateLoungeInfo(
+              channel: channel,
+              plugin: plugin,
+              bot: bot,
+              operators: operators,
+              supportBotEntryInfo: info.supportBotEntryInfo,
+              userChats: chatData
+            )
+          )
           subscriber(.success(nil))
           SVProgressHUD.dismiss()
         }, onError: { (error) in
@@ -235,16 +238,8 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     }
   }
   
-  func didClickOnRefresh(for type: LoungeSectionType) {
-    switch type {
-    case .header:
-      self.loadHeaderInfo()
-    case .mainContent:
-      self.loadHeaderInfo()
-      self.loadMainContents()
-    case .externalSource:
-      self.loadExternalSources()
-    }
+  func didClickOnRefresh() {
+    self.fetchLoungeData()
   }
   
   func didClickOnSetting(from view: UIViewController?) {
@@ -301,97 +296,65 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
 }
 
 extension LoungePresenter {
-  private func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    let pluginSignal = CHPlugin.get(with: mainStore.state.plugin.id)
-    let supportSignal =  CHSupportBot.get(with: mainStore.state.plugin.id, fetch: chatId == nil)
-    
-    //plugin may not need
-    Observable.zip(pluginSignal, supportSignal)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        let reloadMessage = CHAssets.localized("plugin.reload.message")
-        SVProgressHUD.show(withStatus: reloadMessage)
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (plugin, entry) in
-        mainStore.dispatch(GetSupportBotEntry(bot: plugin.1, entry: entry))
-        SVProgressHUD.dismiss()
-        self.router?.pushChat(with: chatId, animated: animated, from: view)
-        //view?.navigationController?.pushViewController(chatView, animated: animated)
-      }, onError: { (error) in
-        SVProgressHUD.dismiss()
-      }).disposed(by: self.disposeBag)
-  }
-  
-  private func loadHeaderInfo() {
+  private func fetchLoungeData() {
     guard let interactor = self.interactor else { return }
     
-    Observable.zip(interactor.getChannel(), interactor.getPlugin(), interactor.getOperators())
+    Observable
+      .zip(
+        interactor.getLounge(),
+        interactor.getChats()
+      )
       .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (channel, pluginInfo, operators) in
+      .subscribe(onNext: { [weak self] (info, chatData) in
+        guard
+          let channel = info.channel,
+          let plugin = info.plugin,
+          let bot = info.bot,
+          let operators = info.operators else {
+            self?.view?.displayError()
+            self?.loungeCompletion.accept(false)
+            return
+        }
+        
         mainStore.dispatch(
           UpdateLoungeInfo(
             channel: channel,
-            plugin: pluginInfo.0,
-            bot: pluginInfo.1,
-            operators: operators
-          ))
-        
+            plugin: plugin,
+            bot: bot,
+            operators: operators,
+            supportBotEntryInfo: info.supportBotEntryInfo,
+            userChats: chatData
+          )
+        )
+
         let headerModel = LoungeHeaderViewModel(
           chanenl: channel,
-          plugin: pluginInfo.0,
+          plugin: plugin,
           operators: operators
         )
+        
         self?.view?.displayHeader(with: headerModel)
-        self?.headerCompletion.accept(true)
-      }, onError: { [weak self] (error) in
-        self?.view?.displayError(for: .header)
-        self?.headerCompletion.accept(false)
-      }).disposed(by: self.disposeBag)
-  }
-  
-  private func loadMainContents() {
-    guard let interactor = self.interactor else { return }
-    
-    Observable.zip(interactor.getChats(), interactor.getSupportBot())
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        dlog("Error while fetching data... retrying.. in 3 seconds")
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (chats, entry) in
         self?.updateMainContent()
-        self?.mainCompletion.accept(true)
-      }, onError: { [weak self] (error) in
-        self?.view?.displayError(for: .mainContent)
-        self?.mainCompletion.accept(false)
-      }).disposed(by: self.disposeBag)
-  }
-  
-  private func loadExternalSources() {
-    guard let interactor = self.interactor else { return }
-    
-    interactor.getExternalSource()
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        dlog("Error while fetching data... retrying.. in 3 seconds")
-        return true
-      })
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { [weak self] (sources) in
+        
         let sources = LoungeExternalSourceModel.generate(
           with: mainStore.state.channel,
           plugin: mainStore.state.plugin,
-          thirdParties: sources)
-        self?.externalSources = sources
+          appMessengers: info.appMessengers
+        )
         self?.view?.displayExternalSources(with: sources)
-        self?.externalCompletion.accept(true)
-      }, onError: { [weak self] (error) in
-        self?.view?.displayError(for: .externalSource)
-        self?.externalCompletion.accept(false)
+        
+        self?.loungeCompletion.accept(true)
+      }, onError: { [weak self] (_) in
+        self?.view?.displayError()
+        self?.loungeCompletion.accept(false)
       }).disposed(by: self.disposeBag)
+  }
+  
+  private func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
+    self.router?.pushChat(with: chatId, animated: animated, from: view)
   }
 }

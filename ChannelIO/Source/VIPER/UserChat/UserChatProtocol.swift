@@ -10,16 +10,7 @@ import UIKit
 import RxSwift
 import Photos
 
-enum ChatEvent {
-  case messages(obj: [CHMessage], next: String)
-  case manager(obj: CHManager?)
-  case session(obj: CHSession?)
-  case chat(obj: CHUserChat?)
-  case typing(obj: [CHEntity], animated: Bool)
-  case error(obj: Error?)
-}
-
-enum ChatState {
+enum ChatProcessState {
   case idle
   case infoNotLoaded
   case infoLoading
@@ -28,106 +19,13 @@ enum ChatState {
   case chatLoaded
   case chatNotLoaded
   case chatJoining
+  case chatJoined
   case waitingSocket
+  case socketDisconnected
   case messageLoading
   case messageLoaded
   case messageNotLoaded
   case chatReady
-}
-
-protocol UserChatViewProtocol: class {
-  var presenter: UserChatPresenterProtocol? { get set }
-  
-  func display(messages: [CHMessage])
-  func display(typers: [CHEntity])
-  func display(error: Error?, visible: Bool)
-  func displayNewBanner()
-  
-  func updateInputField(userChat: CHUserChat?, updatedUserChat: CHUserChat?)
-  
-  func configureNavigation(with userChat: CHUserChat?, unread: Int)
-  func setChatInfo(info: UserChatInfo)
-}
-
-protocol UserChatPresenterProtocol: class {
-  var view: UserChatViewProtocol? { get set }
-  var interactor: UserChatInteractorProtocol? { get set }
-  var router: UserChatRouterProtocol? { get set }
-  
-  func fetchMessages()
-  
-  func didClickOnRightButton(text: String, assets: [PHAsset])
-  func send(text: String, assets: [PHAsset])
-  func sendTyping(isStop: Bool)
-  
-  func didClickOnFeedback(rating: String, from view: UIViewController?)
-  
-  func didClickOnMessageButton(originId: String?, key: String?, value: String?)
-  func didClickOnOption(from view: UIViewController?)
-  func didClickOnManager(from view: UIViewController?)
-  func didClickOnFile(with message: CHMessage?, from view: UIViewController?)
-  func didClickOnImage(with url: URL?, from view: UIViewController?)
-  func didClickOnVideo(with url: URL?, from view: UIViewController?)
-  func didClickOnWeb(with url: String?, from view: UIViewController?)
-  func didClickOnTranslate(for message: CHMessage?)
-  func didClickOnRetry(for message: CHMessage?, from view: UIViewController?)
-  func didClickOnNewChat(with text: String, from view: UINavigationController?)
-  func didClickOnSettings(from view: UIViewController?)
-  
-  func reload()
-  func readyToDisplay() -> Observable<Bool>?
-  func viewDidLoad()
-  func prepareDataSource()
-  func cleanDataSource()
-}
-
-protocol UserChatInteractorProtocol: class {
-  var presenter: UserChatPresenterProtocol? { get set }
-  
-  var userChat: CHUserChat? { get set }
-  var userChatId: String { get set }
-  var photoUrls: [URL] { get }
-  
-  var shouldFetchChat: Bool { get }
-  var shouldRefreshChat: Bool { get }
-  
-  func readyToPresent() -> Observable<Bool>
-  func refreshUserChat()
-  func subscribeDataSource()
-  func unsunbscribeDataSource()
-  
-  func joinSocket()
-  func leaveSocket()
-  
-  func canLoadMore() -> Bool
-  func createChat() -> Observable<CHUserChat>
-  func fetchChat() -> Observable<CHUserChat>
-  func fetchMessages()
-  func chatEventSignal() -> Observable<ChatEvent>
-  func translate(for message: CHMessage)
-  func sendFeedback(rating: String)
-  
-  func send(text: String, originId: String?, key: String?) -> Observable<CHMessage>
-  func send(assets: [PHAsset]) -> Observable<[CHMessage]>
-  func send(messages: [CHMessage]) -> Observable<Any?>
-  func send(message: CHMessage?) -> Observable<CHMessage?>
-  func sendTyping(isStop: Bool)
-  func delete(message: CHMessage?)
-}
-
-protocol UserChatRouterProtocol: class {
-  static func createModule(userChatId: String?) -> UserChatView
-  
-  //func presentImageViewer(with url: URL?, photoUrls: [URL], from view: UIViewController?, dataSource: MWPhotoBrowserDelegate)
-  func presentVideoPlayer(with url: URL?, from view: UIViewController?)
-  func presentSettings(from view: UIViewController?)
-  func pushFileView(with url: URL?, from view: UIViewController?)
-  
-  func showNewChat(with text: String, from view: UINavigationController?)
-  
-  func showRetryActionSheet(from view: UIViewController?) -> Observable<Bool?>
-  func showOptionActionSheet(from view: UIViewController?) -> Observable<[PHAsset]>
-  func showOptionPicker(max: Int, from view: UIViewController?) -> Observable<[PHAsset]>
 }
 
 struct UserChatInfo {
@@ -135,6 +33,114 @@ struct UserChatInfo {
   var channel: CHChannel
   var plugin: CHPlugin
   var managers: [CHManager]
-  var showSettings: Bool
   var textColor: UIColor
+}
+
+protocol UserChatViewProtocol: class {
+  var presenter: UserChatPresenterProtocol? { get set }
+  
+  func display(userChat: CHUserChat?, channel: CHChannel)
+  func display(messages: [CHMessage], userChat: CHUserChat?, channel: CHChannel)
+  func display(typers: [CHEntity])
+  func display(error: String?, visible: Bool)
+  func display(loadingFile: ChatFileQueueItem, waitingCount: Int)
+  func display(errorFiles: [ChatFileQueueItem])
+  func hideLodingFile()
+  func dismissKeyboard(_ animated: Bool)
+  
+  func updateNavigation(userChat: CHUserChat?)
+  func updateInputBar(state: MessageViewState)
+  func setPreloadtext(with text: String)
+}
+
+protocol UserChatPresenterProtocol: class {
+  var view: UserChatViewProtocol? { get set }
+  var interactor: UserChatInteractorProtocol? { get set }
+  var router: UserChatRouterProtocol? { get set }
+  
+  var userChatId: String? { get set }
+  var shouldRedrawProfileBot: Bool { get set }
+  var isProfileFocus: Bool { get set }
+  
+  func viewDidLoad()
+  func prepareDataSource()
+  func cleanDataSource()
+  func fetchMessages()
+  func handleError(with error: String?, visible: Bool, state: ChatProcessState?)
+  func hasNewMessage(current: [CHMessage], updated: [CHMessage]) -> Bool
+  func sendTyping(isStop: Bool)
+  func updateMessages(with messages: [CHMessage], userChat: CHUserChat?, channel: CHChannel)
+  func profileIsFocus(focus: Bool)
+  func sendFiles(fileDictionary: [String:Any]?)
+  
+  func didClickOnProfileUpdate(
+    with message: CHMessage?,
+    key: String?,
+    value: Any?) -> Observable<Bool>
+  func didClickOnRightNaviItem(from view: UIViewController?)
+  func didClickOnClipButton(from view: UIViewController?)
+  func didClickOnSendButton(text: String)
+  func didClickOnActionButton(originId: String?, key: String?, value: String?)
+  func didClickOnMarketingToSupportBotButton()
+  func didClickOnFile(
+    with message: CHMessage?,
+    file: CHFile?,
+    on imageView: UIImageView?,
+    from view: UIViewController?)
+  func didClickOnWeb(with message: CHMessage?, url: URL?, from view: UIViewController?)
+  func didClickOnTranslate(for message: CHMessage?)
+  func didClickOnRetry(for message: CHMessage?, from view: UIView?)
+  func didClickOnNewChat(with text: String, from view: UINavigationController?)
+  func didClickOnWaterMark()
+  func didClickOnRetryFile(with item: ChatFileQueueItem)
+  func didClickOnRemoveFile(with item: ChatFileQueueItem)
+}
+
+protocol UserChatInteractorProtocol: class {
+  var presenter: UserChatPresenterProtocol? { get set }
+  
+  var userChat: CHUserChat? { get set }
+  var userChatId: String { get set }
+  
+  var photoUrls: [URL] { get }
+  
+  func readyToPresent() -> Observable<Bool>
+  func subscribeDataSource()
+  func unsunbscribeDataSource()
+  func updateProfileItem(
+    with message: CHMessage,
+    key: String,
+    value: Any) -> Observable<CHMessage>
+  func joinSocket()
+  func leaveSocket()
+  func getChannel() -> Observable<CHChannel>
+  func canLoadMore() -> Bool
+  func createChatIfNeeded() -> Observable<CHUserChat?>
+  func createSupportBotChatIfNeeded(
+    originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
+  func startMarketingToSupportBot() -> Observable<CHMessage>
+  func fetchChat() -> Observable<CHUserChat?>
+  func fetchMessages() -> Observable<ChatProcessState>
+  func translate(for message: CHMessage) -> Observable<[CHMessageBlock]>
+  func send(message: CHMessage?) -> Observable<CHMessage?>
+  func sendTyping(isStop: Bool)
+  func delete(message: CHMessage?)
+  
+  func upload(files: [CHFile]) -> Observable<ChatQueueKey>
+}
+
+protocol UserChatRouterProtocol: class {
+  static func createModule(userChatId: String?, text: String) -> UserChatView
+  
+  func presentVideoPlayer(with url: URL?, from view: UIViewController?)
+  func presentImageViewer(
+    with url: URL?,
+    photoUrls: [URL],
+    imageView: UIImageView,
+    from view: UIViewController?)
+  func pushFileView(with url: URL?, from view: UIViewController?)
+  func showNewChat(with text: String, from view: UINavigationController?)
+  func showRetryActionSheet(from view: UIView?) -> Observable<Bool?>
+  func showOptionActionSheet(from view: UIViewController?) -> PublishSubject<[PHAsset]>
+  
 }

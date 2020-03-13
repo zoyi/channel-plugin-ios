@@ -13,23 +13,12 @@ protocol InAppNotificationViewModelType {
   var name: String? { get }
   var timestamp: String? { get }
   var avatar: CHEntity? { get }
-  
-  var title: String? { get set }
-  var imageUrl: URL? { get set }
-  var imageHeight: CGFloat { get set }
-  var imageWidth: CGFloat { get set }
-  var imageRedirect: String? { get set }
-  var buttonTitle: String? { get set }
-  var buttonRedirect: String? { get set }
-  var themeColor: UIColor? { get set }
-  var pluginTextColor: UIColor? { get set }
+  var files: [CHFile] { get set }
+  var webPage: CHWebPage? { get set }
   var mobileExposureType: InAppNotificationType { get set }
-}
-
-enum CHAttachmentType: String {
-  case none
-  case button
-  case image
+  var hasMedia: Bool { get set }
+  var hasText: Bool { get set }
+  var mkInfo: MarketingInfo? { get set }
 }
 
 struct InAppNotificationViewModel: InAppNotificationViewModelType {
@@ -37,96 +26,70 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var name: String?
   var timestamp: String?
   var avatar: CHEntity?
+  var files: [CHFile] = []
+  var webPage: CHWebPage?
+  var mobileExposureType: InAppNotificationType
+  var hasMedia: Bool = false
+  var hasText: Bool = false
+  var mkInfo: MarketingInfo?
   
-  var title: String? = nil
-  var imageUrl: URL? = nil
-  var imageHeight: CGFloat = 0.f
-  var imageWidth: CGFloat = 0.f
-  var imageRedirect: String? = nil
-  var mobileExposureType: InAppNotificationType = .banner
-  var buttonTitle: String? = nil
-  var buttonRedirect: String? = nil
-  var themeColor: UIColor? = nil
-  var pluginTextColor: UIColor? = nil
-  
-  init(push: CHPush) {
-    if let managerName = push.manager?.name {
-      self.name = managerName
-      self.avatar = push.manager
-    } else if let botName = push.bot?.name {
-      self.name = botName
-      self.avatar = push.bot
-    }
+  init(push: CHPushDisplayable) {
+    let writer = push.writer
+      ?? defaultBotSelector(state: mainStore.state)
+      ?? mainStore.state.channel
+    self.name = writer.name
+    self.avatar = writer
+    self.files = push.sortedFiles
+    self.webPage = push.webPage
+    self.timestamp = push.readableCreatedAt
+    self.mobileExposureType = push.mobileExposureType ?? .banner
     
-    if let title = push.message?.title, title != "" {
-      self.title = title
-    }
-    
-    switch push.attachmentType {
-    case .image:
-      if let file = push.message?.file, file.image {
-        self.imageUrl = URL(string: file.url)
-        self.imageWidth = file.previewThumb?.width ?? 0.f
-        self.imageHeight = file.previewThumb?.height ?? 0.f
-      }
-      self.imageRedirect = push.redirectUrl
-    case .button:
-      if let buttonTitle = push.buttonTitle {
-        self.buttonTitle = buttonTitle
-      }
-      self.buttonRedirect = push.redirectUrl
-    default:
-      break
-    }
-    
-    self.mobileExposureType = push.mobileExposureType
-    
-    self.themeColor = UIColor(mainStore.state.plugin.color)
-    self.pluginTextColor = mainStore.state.plugin.textUIColor
-    
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.alignment = .left
-    paragraphStyle.minimumLineHeight = 18
-    
-    if let logMessage = push.message?.logMessage, push.showLog {
+    let mediaFileCount = push.sortedFiles
+      .filter { $0.type == .video || $0.type == .image }
+      .count
+    self.hasMedia = mediaFileCount > 0 ||
+      push.webPage?.thumbUrl != nil ||
+      push.webPage?.youtubeId != nil
+
+    if let logMessage = push.logMessage {
       let attributedText = NSMutableAttributedString(string: logMessage)
       attributedText.addAttributes(
         [.font: UIFont.systemFont(ofSize: 13),
          .foregroundColor: UIColor.grey900,
-         .paragraphStyle: paragraphStyle
+         .paragraphStyle: UIFactory.pushParagraphStyle
         ],
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
-    } else if let message = push.message?.messageV2 {
-      var title = ""
-      if self.mobileExposureType == .banner {
-        title = self.title == nil ? "" : self.title! + " "
-      } else if self.mobileExposureType == .popup {
-        title = self.title == nil ? "" : self.title! + "\n"
-      }
-      
-      let fontSize = self.mobileExposureType == .popup ? 14.f : 13.f
-      let newAttributedString = NSMutableAttributedString(string: title)
-      newAttributedString.addAttributes(
-        [.font: UIFont.boldSystemFont(ofSize: fontSize)],
-        range: NSRange(location: 0, length: title.count)
+    } else if push.blocks.count != 0 {
+      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
+      let config = CHMessageParserConfig(
+        font: UIFont.systemFont(ofSize: fontSize),
+        style: UIFactory.pushParagraphStyle
       )
-      newAttributedString.append(message)
-      newAttributedString.enumerateAttribute(.font, in: NSMakeRange(0, newAttributedString.length), options: []) {
-        value, range, stop in
-        guard let currentFont = value as? UIFont else { return }
-        let newFont = currentFont.isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
-        newAttributedString.addAttributes([.font: newFont], range: range)
+      let transformer = CustomBlockTransform(config: config)
+      let result = transformer.parser.parse(blocks: push.blocks)
+      if result.string.containsOnlyEmoji {
+        result.addAttribute(
+          .font,
+          value: UIFont.systemFont(ofSize: fontSize),
+          range: NSRange(location: 0, length: result.string.utf16.count)
+        )
       }
-
-      newAttributedString.addAttributes(
-        [.foregroundColor: UIColor.grey900,
-         .paragraphStyle: paragraphStyle
+      self.message = result
+    } else if let webPage = push.webPage {
+      let text = webPage.title ?? webPage.url?.absoluteString ?? ""
+      let attributedText = NSMutableAttributedString(string: text)
+      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
+      attributedText.addAttributes(
+        [.font: UIFont.systemFont(ofSize: fontSize),
+         .paragraphStyle: UIFactory.pushParagraphStyle
         ],
-        range: NSRange(location: 0, length: message.string.count))
-      self.message = newAttributedString
+        range: NSRange(location: 0, length: text.count)
+      )
+      self.message = attributedText
     }
-
-    self.timestamp = push.message?.readableCreatedAt
+    
+    self.hasText = self.message != nil && self.message?.string != ""
+    self.mkInfo = push.mkInfo
   }
 }

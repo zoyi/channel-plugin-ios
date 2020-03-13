@@ -16,43 +16,38 @@ struct EventPromise {
   static func sendEvent(
     pluginId: String,
     name: String,
-    property: [String: Any?]? = nil,
-    sysProperty: [String: Any?]? = nil) -> Observable<(CHEvent, [CHNudge])> {
+    property: [String: Any?]? = nil) -> Observable<CHEvent> {
     return Observable.create { subscriber in
       var params = [
-        "body": [String:AnyObject]()
+        "url": [String:String]()
       ]
       
-      var event = [String: Any]()
-      event["name"] = name
-      
-      if let property = property, property.count != 0 {
-        event["property"] = property
+      params["url"]?["name"] = name
+      if let property = CHUtils.jsonStringify(data: property) {
+        params["url"]?["property"] = property
       }
-      
-      if let sysProperty = sysProperty, sysProperty.count != 0 {
-        event["sysProperty"] = sysProperty
+      if let jwt = PrefStore.getSessionJWT() {
+        params["url"]?["sessionJWT"] = jwt
       }
-      
-      params["body"]?["event"] = event as AnyObject?
-      params["body"]?["guest"] = mainStore.state.guest.dict as AnyObject?
-      
-      Alamofire.request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
+
+      Alamofire
+        .request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            guard let event = Mapper<CHEvent>().map(JSONObject: json["event"].object) else {
-              subscriber.onError(CHErrorPool.eventParseError)
-              return
+            guard let event = Mapper<CHEvent>()
+              .map(JSONObject: json["event"].object) else {
+                subscriber.onError(ChannelError.parseError)
+                return
             }
-            let nudges = Mapper<CHNudge>().mapArray(JSONObject: json["nudgeCandidates"].object) ?? []
-            
-            subscriber.onNext((event, nudges))
+            subscriber.onNext(event)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
         })
       

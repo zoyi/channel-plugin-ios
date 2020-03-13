@@ -16,12 +16,12 @@ class SettingInteractor: SettingInteractorProtocol {
   
   var channel: CHChannel? = nil
   var plugin: CHPlugin? = nil
-  var guest: CHGuest? = nil
+  var user: CHUser? = nil
   var showCloseChat: Bool? = nil
   var showTranslation: Bool? = nil
-  var locale: CHLocale? = nil
+  var language: CHLocale? = nil
   
-  var updateSignal = PublishRelay<CHGuest>()
+  var updateSignal = PublishRelay<CHUser>()
   var updateOptionSignal = PublishRelay<Any?>()
   var updateGeneralSignal = PublishRelay<(CHChannel, CHPlugin)>()
   
@@ -34,7 +34,7 @@ class SettingInteractor: SettingInteractorProtocol {
   }
   
   func getChannel() -> Observable<CHChannel> {
-    return ChannelPromise.getChannel()
+    return CHChannel.get()
   }
   
   func getProfileSchemas() -> Observable<[CHProfileSchema]> {
@@ -42,14 +42,14 @@ class SettingInteractor: SettingInteractorProtocol {
   }
   
   func getCurrentLocale() -> CHLocale? {
-    return ChannelIO.settings?.locale
+    return ChannelIO.settings?.language
   }
   
   func getTranslationEnabled() -> Bool {
     return mainStore.state.userChatsState.showTranslation
   }
   
-  func updateGuest() -> Observable<CHGuest> {
+  func updateUser() -> Observable<CHUser> {
     return self.updateSignal.asObservable()
   }
   
@@ -71,15 +71,15 @@ extension SettingInteractor: StoreSubscriber {
       self.updateGeneralSignal.accept((state.channel, state.plugin))
     }
     
-    if self.guest == nil || self.guest?.isSame(state.guest) == false {
-      self.guest = state.guest
-      self.updateSignal.accept(state.guest)
+    if self.user == nil || self.user != state.user {
+      self.user = state.user
+      self.updateSignal.accept(state.user)
     }
     
-    if self.locale != ChannelIO.settings?.locale ||
+    if self.language != ChannelIO.settings?.language ||
       self.showTranslation != state.userChatsState.showTranslation ||
       self.showCloseChat != state.userChatsState.showCompletedChats {
-      self.locale = ChannelIO.settings?.locale
+      self.language = ChannelIO.settings?.language
       self.showTranslation = state.userChatsState.showTranslation
       self.showCloseChat = state.userChatsState.showCompletedChats
       self.updateOptionSignal.accept(nil)

@@ -22,7 +22,7 @@ class WsServiceTests: QuickSpec {
     
     beforeEach {
       PrefStore.setCurrentChannelId(channelId: "10")
-      PrefStore.setCurrentVeilId(veilId: "58a154dec843f78f")
+      PrefStore.setCurrentUserId(userId: "58a154dec843f78f")
     }
     
     afterEach {

@@ -11,9 +11,7 @@ import ObjectMapper
 
 struct CHLog {
   var action = ""
-  var object = ""
-  var objectId = ""
-  var objectType = ""
+  var values: [String] = []
 }
 
 extension CHLog: Mappable {
@@ -22,8 +20,6 @@ extension CHLog: Mappable {
   }
   mutating func mapping(map: Map) {
     action       <- map["action"]
-    object       <- map["object"]
-    objectId     <- map["objectId"]
-    objectType   <- map["objectType"]
+    values       <- map["values"]
   }
 }

@@ -10,8 +10,11 @@ import Foundation
 import ObjectMapper
 
 enum ProfileSchemaType: String {
-  case string = "String"
-  case number = "Number"
+  case string
+  case number
+  case boolean
+  case date
+  case list
 }
 
 struct CHProfileSchema {

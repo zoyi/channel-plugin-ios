@@ -8,8 +8,12 @@
 
 import ReSwift
 
+struct GetTouchSuccess: Action {
+  public let payload: BootResponse
+}
+
 struct BootSuccess: Action {
-  public let payload: BootResult
+  public let payload: BootResponse
 }
 
 struct ShutdownSuccess: Action {}
@@ -19,6 +23,8 @@ struct UpdateLoungeInfo: Action {
   public let plugin: CHPlugin
   public let bot: CHBot?
   public let operators: [CHManager]
+  public let supportBotEntryInfo: CHSupportBotEntryInfo?
+  public let userChats: UserChatsResponse
 }
 
 struct GetPlugin: Action {
@@ -32,9 +38,4 @@ struct UpdateChannel: Action {
 
 struct UpdateLocale: Action {
   public let payload: CHLocaleString
-}
-
-struct GetSupportBotEntry: Action {
-  public let bot: CHBot?
-  public let entry: CHSupportBotEntryInfo?
 }

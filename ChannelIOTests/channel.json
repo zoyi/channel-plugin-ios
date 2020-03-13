@@ -1,0 +1,72 @@
+{
+   "channel":{
+      "id":"1",
+      "name":"ZOYI",
+      "homepageUrl":"https://zoyi.co",
+      "country":"KR",
+      "createdAt":1456284166216,
+      "domain":"zoyi",
+      "color":"#4c64fc",
+      "userInfoUrl":"http://activeadmin.channel.io/managers/${id}",
+      "timeZone":"Asia/Seoul",
+      "workingTime":{
+         "mon":{
+            "from":600,
+            "to":1140
+         },
+         "tue":{
+            "from":600,
+            "to":1140
+         },
+         "wed":{
+            "from":600,
+            "to":1140
+         },
+         "thu":{
+            "from":600,
+            "to":1140
+         },
+         "fri":{
+            "from":600,
+            "to":1140
+         }
+      },
+      "messengerPlan":"pro",
+      "pushBotPlan":"pro",
+      "supportBotPlan":"pro",
+      "enableTexting":true,
+      "state":"active",
+      "trialBeginDate":"2016-02-24",
+      "trialEndDate":"2016-05-23",
+      "autoSolvingTimeMinutes":1440,
+      "defaultPluginId":"28",
+      "requestUserInfo":true,
+      "expectedResponseDelay":"instant",
+      "workingType":"custom",
+      "awayOption":"active",
+      "enableDelayMessage":true,
+      "workingDelayMessageI18n":{
+         "text":"상담원 연결까지 시간이 걸릴 수 있습니다. 궁금한 내용을 편하게 남겨두시면 최대한 빨리 담당자를 통해 답변드리겠습니다. :blush:",
+         "en":"We will get back to you as soon as possible. We really appreciate your patience :blush:",
+         "ja":"現在返信まで少し時間がかかっております。お問い合わせ内容をご送信いただくと、できるだけ早く回答いたします :blush:"
+      },
+      "awayDelayMessageI18n":{
+         "text":"죄송합니다. 지금은 상담 운영시간이 아닙니다. :last_quarter_moon_with_face: 다음 운영시간까지 답변이 늦어질 수 있습니다. 궁금한 내용을 편하게 남겨두시면 놓치지 않고 답변드리겠습니다. :blush:",
+         "en":"Please leave a message and we will get back to you on the next business hours :blush:",
+         "ja":"現在、運営時間外となっております。メッセージを残していただければ営業時間内にご対応いたします :blush:"
+      },
+      "limited":false,
+      "avatarUrl":"https://img.channel.io/200x200/channel/1-avatar-6b8b48128dd52b9c8653828d3a5b78c8",
+      "initial":"Z",
+      "working":false,
+      "trial":false,
+      "blocked":false,
+      "textColor":"white",
+      "servicePlan":"pro",
+      "outOfWorkPlugin":false,
+      "serviceBlocked":false,
+      "enableXms":true,
+      "trialExpiryDate":"2016-05-23",
+      "utcOffset":"+09:00"
+   }
+}

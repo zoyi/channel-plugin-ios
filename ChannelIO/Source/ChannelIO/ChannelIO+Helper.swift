@@ -14,11 +14,11 @@ import SVProgressHUD
 extension ChannelIO {
   
   internal class func reset() {
-    PushBotManager.reset()
     ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.close(animated: false)
     ChannelIO.hideNotification()
     ChannelIO.launcherWindow = nil
+    ChannelIO.lastPush = nil
     mainStore.dispatch(ShutdownSuccess())
     WsService.shared.disconnect()
     disposeBag = DisposeBag()
@@ -48,79 +48,56 @@ extension ChannelIO {
     CRToastManager.setDefaultOptions(toastOptions)
     SVProgressHUD.setDefaultStyle(.dark)
   }
-  
-  internal class func track(eventName: String, eventProperty: [String: Any]?, sysProperty: [String: Any]?) {
-    if eventName.utf16.count > 30 || eventName == "" {
-      return
-    }
-    
-    CHEvent.send(
-      pluginId: mainStore.state.plugin.id,
-      name: eventName,
-      property: eventProperty,
-      sysProperty: sysProperty)
-      .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-        dlog("Error while sending the event \(eventName). Attempting to send again")
-        return true
-      })
-      .subscribe(onNext: { (event, nudges) in
-        dlog("\(eventName) event sent successfully")
-        PushBotManager.process(with: nudges, property: eventProperty ?? [:])
-      }, onError: { (error) in
-        dlog("\(eventName) event failed")
-      }).disposed(by: disposeBag)
-  }
 
-  internal class func bootChannel(profile: Profile? = nil) -> Observable<BootResult> {
+  internal class func bootChannel(profile: Profile? = nil) -> Observable<BootResponse> {
     return Observable.create { subscriber in
       guard let settings = ChannelIO.settings else {
-        subscriber.onError(CHErrorPool.unknownError)
+        subscriber.onError(ChannelError.unknownError)
         return Disposables.create()
       }
       
       guard settings.pluginKey != "" else {
-        subscriber.onError(CHErrorPool.pluginKeyError)
+        subscriber.onError(ChannelError.parameterError)
         return Disposables.create()
       }
       
-      if let userId = settings.userId, userId != "" {
-        PrefStore.setCurrentUserId(userId: userId)
+      if let memberId = settings.memberId, memberId != "" {
+        PrefStore.setCurrentMemberId(memberId)
       } else {
-        PrefStore.clearCurrentUserId()
+        PrefStore.clearCurrentMemberId()
       }
 
       let params = BootParamBuilder()
-        .with(userId: settings.userId)
+        .with(memberId: settings.memberId)
         .with(profile: profile)
-        .with(sysProfile: nil, includeDefault: true)
         .build()
       
-      //refactor into one class
-      AppManager
+      AppManager.shared
         .boot(pluginKey: settings.pluginKey, params: params)
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           dlog("Error while booting channelSDK. Attempting to boot again")
           return true
         })
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (data) in
-          guard let channel = data.channel else {
-            subscriber.onError(CHErrorPool.unknownError)
-            return
-          }
-
-          if !channel.canUseSDK {
-            subscriber.onError(CHErrorPool.serviceBlockedError)
+        .subscribe(onNext: { (result) in
+          guard let result = result else {
+            subscriber.onError(ChannelError.unknownError)
             return
           }
           
-          mainStore.dispatch(BootSuccess(payload: data))
+          if result.channel?.canUseSDK == false {
+            subscriber.onError(ChannelError.serviceBlockedError)
+            return
+          }
+          
+          mainStore.dispatch(BootSuccess(payload: result))
+
           WsService.shared.connect()
           WsService.shared
             .ready()
             .take(1)
             .subscribe(onNext: { _ in
-              subscriber.onNext(data)
+              subscriber.onNext(result)
               subscriber.onCompleted()
             }).disposed(by: disposeBag)
         }, onError: { error in
@@ -143,9 +120,9 @@ extension ChannelIO {
       mainStore.dispatch(ChatListIsVisible())
       
       //chat view but different chatId
-      if let userChatViewController = topController as? UserChatViewController {
-        if userChatViewController.userChatId != userChatId {
-          userChatViewController.navigationController?.popToRootViewController(animated: true, completion: {
+      if let userChatView = topController as? UserChatView {
+        if userChatView.presenter?.userChatId != userChatId {
+          userChatView.navigationController?.popToRootViewController(animated: true, completion: {
             if let loungeView = CHUtils.getTopController() as? LoungeView,
               let presenter = loungeView.presenter as? LoungePresenter,
               let router = presenter.router {
@@ -169,20 +146,20 @@ extension ChannelIO {
         let loungeView = LoungeRouter.createModule(with: userChatId)
         let controller = MainNavigationController(rootViewController: loungeView)
         ChannelIO.baseNavigation = controller
-        
-        loungeView.presenter?.isReadyToPresentChat(chatId: userChatId)
+        loungeView
+          .presenter?
+          .isReadyToPresentChat(chatId: userChatId)
           .subscribe(onSuccess: { (_) in
             topController.present(controller, animated: animated, completion: nil)
-          }, onError: { (error) in
-            
+          }, onError: { error in
+            ChannelIO.open(animated: false)
           }).disposed(by: self.disposeBag)
       }
     }
   }
   
-  internal class func showNotification(pushData: CHPush?) {
-    guard let view = ChannelIO.launcherWindow?.rootViewController?.view else { return }
-    guard let push = pushData else { return }
+  internal class func showNotification(pushData: CHPushDisplayable?) {
+    guard let push = pushData, !push.removed else { return }
     
     if ChannelIO.inAppNotificationView != nil {
       ChannelIO.inAppNotificationView?.removeView(animated: true)
@@ -190,13 +167,18 @@ extension ChannelIO {
     }
     
     var notificationView: InAppNotification?
-    if !push.isNudgePush || push.mobileExposureType == .banner {
-      notificationView = BannerInAppNotificationView()
-    } else {
-      notificationView = PopupInAppNotificationView()
-    }
-    
+    var view: UIView?
     let viewModel = InAppNotificationViewModel(push: push)
+    
+    if viewModel.mobileExposureType == .fullScreen {
+      ChannelIO.launcherView?.hide(animated: true)
+      notificationView = PopupInAppNotificationView()
+      view = CHUtils.getKeyWindow()?.rootViewController?.view
+    } else {
+      notificationView = BannerInAppNotificationView()
+      view = ChannelIO.launcherWindow?.rootViewController?.view
+    }
+
     notificationView?.configure(with: viewModel)
     notificationView?.insertView(on: view)
     
@@ -205,7 +187,7 @@ extension ChannelIO {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (event) in
         ChannelIO.hideNotification()
-        ChannelIO.showUserChat(userChatId: push.userChat?.id)
+        ChannelIO.showUserChat(userChatId: push.chatId)
       }).disposed(by: disposeBag)
     
     notificationView?
@@ -215,17 +197,9 @@ extension ChannelIO {
         ChannelIO.hideNotification()
       }.disposed(by: disposeBag)
     
-    notificationView?
-      .signalForRedirect()
-      .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (urlString) in
-        guard let url = URL(string: urlString ?? "") else { return }
-        let shouldHandle = ChannelIO.delegate?.onClickRedirect?(url: url)
-        if shouldHandle == false || shouldHandle == nil {
-          url.openWithUniversal()
-        }
-        ChannelIO.hideNotification()
-      }).disposed(by: disposeBag)
+    if let mkInfo = push.mkInfo, viewModel.mobileExposureType == .fullScreen {
+      mainStore.dispatch(ViewMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
     
     ChannelIO.inAppNotificationView = notificationView
     CHAssets.playPushSound()
@@ -241,6 +215,9 @@ extension ChannelIO {
     guard ChannelIO.inAppNotificationView != nil else { return }
     
     dispatch {
+      if ChannelIO.launcherVisible == true {
+        ChannelIO.launcherView?.show(animated: true)
+      }
       mainStore.dispatch(RemovePush())
       ChannelIO.inAppNotificationView?.removeView(animated: true)
       ChannelIO.inAppNotificationView = nil
@@ -302,11 +279,11 @@ extension ChannelIO {
     guard self.isValidStatus else { return }
     _ = WsService.shared.ready()
       .take(1)
-      .flatMap({ (_) -> Observable<CHGuest> in
-        return AppManager.touch()
+      .flatMap({ (_) -> Observable<BootResponse> in
+        return AppManager.shared.touch()
       })
-      .subscribe(onNext: { (guest) in
-        mainStore.dispatch(UpdateGuest(payload: guest))
+      .subscribe(onNext: { (result) in
+        mainStore.dispatch(GetTouchSuccess(payload: result))
       })
 
     WsService.shared.connect()

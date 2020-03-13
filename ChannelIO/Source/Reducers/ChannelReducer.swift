@@ -10,6 +10,7 @@ import ReSwift
 
 func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
   switch action {
+    
   case let action as BootSuccess:
     if let channel = action.payload.channel {
       PrefStore.setCurrentChannelId(channelId: channel.id)
@@ -19,6 +20,7 @@ func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
     
   case _ as ShutdownSuccess:
     PrefStore.clearAllLocalData()
+    RestRouter.channelId = ""
     return CHChannel()
     
   case let action as UpdateLoungeInfo:

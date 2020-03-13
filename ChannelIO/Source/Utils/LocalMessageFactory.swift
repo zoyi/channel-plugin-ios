@@ -71,15 +71,20 @@ struct LocalMessageFactory {
   }
   
   private static func getWelcomeMessage() -> CHMessage? {
-    // TODO: consider to cut coupling between main store states    
-    let guest = mainStore.state.guest
-    let msg = guest.getWelcome()
-    let bot = mainStore.state.botsState.getDefaultBot()
+    let user = mainStore.state.user
+    guard var block = user.getWelcomeBlock() else {
+      return nil
+    }
+    
+    block.displayText = user.getWelcome(
+      with: CHMessageParserConfig(font: UIFont.systemFont(ofSize: 15))
+    )
+    
     return CHMessage(
       chatId: "welcome_dummy",
-      attributedMessage: msg,
+      blocks: [block],
       type: .WelcomeMessage,
-      entity: bot,
+      entity: botSelector(state: mainStore.state) ?? mainStore.state.channel,
       id: "welcome_dummy"
     )
   }

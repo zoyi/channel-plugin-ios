@@ -42,12 +42,6 @@ final class LauncherWindow: UIWindow {
   internal override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
     var result: Bool = false
     
-    if let popupView = self.inAppNotificationView as? PopupInAppNotificationView,
-      popupView.alpha != 0 {
-      let popupPoint = convert(point, to: popupView)
-      result = result || popupView.point(inside: popupPoint, with: event)
-    }
-    
     if let bannerView = self.inAppNotificationView as? BannerInAppNotificationView,
       bannerView.alpha != 0 {
       let bannerPoint = convert(point, to: bannerView)
@@ -74,13 +68,10 @@ final class LauncherWindow: UIWindow {
     self.hostKeyWindow?.makeKey()
   }
   
-  func addCustomView(with view: UIView) {
-    self.rootViewController?.view.addSubview(view)
-    if let view = view as? PopupInAppNotificationView {
-      view.layer.zPosition = 1
-    } else if let view = view as? BannerInAppNotificationView {
-      view.layer.zPosition = 1
-    }
+  func insertView(with view: UIView, animated: Bool) {
+    guard let rootView = self.rootViewController?.view else { return }
+    
+    view.insert(on: rootView, animated: animated)
   }
   
   func updateStatusBarAppearance() {

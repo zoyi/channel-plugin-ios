@@ -12,63 +12,58 @@ import SwiftyJSON
 import RxSwift
 import ObjectMapper
 
-struct SupportBotPromise {
-  static func getSupportBot(pluginId: String) -> Observable<CHSupportBotEntryInfo> {
-    return Observable.create({ (subscriber) in
-      let req = Alamofire.request(RestRouter.GetSupportBot(pluginId))
+struct SupportBotPromise {  
+  static func createSupportBotUserChat(
+    supportBotId: String,
+    url: String) -> Observable<ChatResponse> {
+    let params = [
+      "url": ["url" : url]
+    ]
+    
+    return Observable.create { (subscriber) in
+      let req = Alamofire
+        .request(RestRouter.CreateSupportBotChat(
+          supportBotId,
+          params as RestRouter.ParametersType)
+        )
         .validate(statusCode: 200..<300)
-        .asyncResponse(completionHandler: { (response) in
+        .responseJSON { (response) in
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            let supportBot = Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
-            let step = Mapper<CHSupportBotStep>().map(JSONObject: json["step"].object)
-            let buttons = Mapper<CHActionButton>().mapArray(JSONObject: json["buttons"].object) ?? []
-            let data = CHSupportBotEntryInfo(supportBot: supportBot, step: step, buttons: buttons)
-
-            subscriber.onNext(data)
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(error)
-          }
-        })
-      
-      return Disposables.create {
-        req.cancel()
-      }
-    })
-  }
-  
-  static func createSupportBotUserChat(supportBotId: String) -> Observable<ChatResponse> {
-    return Observable.create({ (subscriber) in
-      let req = Alamofire.request(RestRouter.CreateSupportBotChat(supportBotId))
-        .validate(statusCode: 200..<300)
-        .asyncResponse(completionHandler: { (response) in
-          switch response.result {
-          case .success(let data):
-            let json = SwiftyJSON.JSON(data)
-            guard let chatResponse = Mapper<ChatResponse>().map(JSONObject: json.object) else {
-              subscriber.onError(CHErrorPool.chatResponseParseError)
-              break
+            guard let chatResponse = Mapper<ChatResponse>()
+              .map(JSONObject: json.object) else {
+                subscriber.onError(ChannelError.parseError)
+                break
             }
             subscriber.onNext(chatResponse)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(
+              msg: error.localizedDescription
+            ))
           }
-        })
+        }
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
   }
   
-  static func replySupportBot(userChatId: String?, actionId: String?, buttonId: String?, requestId: String? = nil) -> Observable<CHMessage> {
-    return Observable.create({ (subscriber) in
-      guard let chatId = userChatId, let buttonId = buttonId, let actionId = actionId , let requestId = requestId else {
-        subscriber.onError(CHErrorPool.unknownError)
-        return Disposables.create()
-      }
+  static func replySupportBot(
+    userChatId: String?,
+    actionId: String?,
+    buttonKey: String?,
+    requestId: String? = nil) -> Observable<CHMessage> {
+    return Observable.create { (subscriber) in
+      guard
+        let chatId = userChatId,
+        let buttonKey = buttonKey,
+        let actionId = actionId,
+        let requestId = requestId else {
+          subscriber.onError(ChannelError.parameterError)
+          return Disposables.create()
+        }
       
       let params = [
         "query": [
@@ -77,25 +72,66 @@ struct SupportBotPromise {
         ]
       ]
       
-      let req = Alamofire.request(RestRouter.ReplySupportBot(chatId, buttonId, params as RestRouter.ParametersType))
+      let req = Alamofire
+        .request(RestRouter.ReplySupportBot(
+          chatId,
+          buttonKey,
+          params as RestRouter.ParametersType
+        ))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            guard let message = Mapper<CHMessage>().map(JSONObject: json["message"].object) else {
-              subscriber.onError(CHErrorPool.messageParseError)
+            guard let message = Mapper<CHMessage>()
+              .map(JSONObject: json["message"].object) else {
+              subscriber.onError(ChannelError.parseError)
               break
             }
             subscriber.onNext(message)
             subscriber.onCompleted()
           case .failure(let error):
-            subscriber.onError(error)
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
           }
         })
       return Disposables.create {
         req.cancel()
       }
-    })
+    }
+  }
+  
+  static func startMarketingToSupportBot(
+    userChatId: String?,
+    supportBotId: String?) -> Observable<CHMessage> {
+    guard
+      let userChatId = userChatId,
+      let supportBotId = supportBotId else {
+        return .empty()
+      }
+    
+    return Observable.create { (subscriber) in
+      let req = Alamofire
+        .request(RestRouter.StartMarketingToSupportBot(userChatId, supportBotId))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { (response) in
+          switch response.result {
+          case .success(let data):
+            let json = SwiftyJSON.JSON(data)
+            guard let message = Mapper<CHMessage>()
+              .map(JSONObject: json["message"].object) else {
+                subscriber.onError(ChannelError.parseError)
+                break
+            }
+            subscriber.onNext(message)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
+          }
+        })
+      
+      return Disposables.create {
+        req.cancel()
+      }
+    }
   }
 }

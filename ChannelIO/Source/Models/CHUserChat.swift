@@ -16,24 +16,54 @@ enum ReviewType: String {
 }
 
 enum UserChatState: String {
-  case ready
-  case supporting
   case unassigned
   case assigned
   case holding
   case solved
   case closed
-  case removed
+  case trash
+}
+
+enum ChatType: String {
+  case userChat = "userChat"
+
+  init?(_ type: String?) {
+    guard let type = type else { return nil }
+    switch type {
+    case "UserChat": self = .userChat
+    default: return nil
+    }
+  }
+}
+
+enum PersonType: String {
+  case manager = "manager"
+  case user = "user"
+  case bot = "bot"
+
+  init?(_ type: String?) {
+    guard let type = type else { return nil }
+    switch type {
+    case "Manager": self = .manager
+    case "User": self = .user
+    case "Bot": self = .bot
+    default: return nil
+    }
+  }
+}
+
+enum ChatHandlingStatus: String {
+  case support
 }
 
 struct CHUserChat: ModelType {
   // ModelType
   var id = ""
   // UserChat
-  var personType: String = ""
-  var personId: String = ""
+  var userId: String = ""
   var channelId: String = ""
-  var state: UserChatState = .ready
+  var name: String = ""
+  var state: UserChatState?
   var review: String = ""
   var createdAt: Date?
   var openedAt: Date?
@@ -42,10 +72,12 @@ struct CHUserChat: ModelType {
   var resolvedAt: Date?
   var closedAt: Date?
   var assigneeId: String? = nil
-  var assigneeType: String? = nil
-  
-  var appMessageId: String?
+  var managerIds: [String] = []
+  var handling: ChatHandlingStatus?
+  var frontMessageId: String?
   var resolutionTime: Int = 0
+  var askedAt: Date?
+  var firstOpenedAt: Date?
   
   // Dependencies
   var lastMessage: CHMessage?
@@ -54,7 +86,11 @@ struct CHUserChat: ModelType {
   var hasRemoved: Bool = false
   
   var assignee: CHEntity? {
-    return personSelector(state: mainStore.state, personType: self.assigneeType, personId: self.assigneeId)
+    return personSelector(
+      state: mainStore.state,
+      personType: .manager,
+      personId: self.assigneeId
+    )
   }
   
   var readableUpdatedAt: String {
@@ -63,14 +99,6 @@ struct CHUserChat: ModelType {
     }
     return ""
   }
-  
-  var name: String {
-    if let host = self.assignee {
-      return host.name
-    }
-    
-    return self.channel?.name ?? CHAssets.localized("ch.unknown")
-  }
 }
 
 extension CHUserChat: Mappable {
@@ -78,65 +106,96 @@ extension CHUserChat: Mappable {
   
   init(chatId: String, lastMessageId: String) {
     self.id = chatId
-    self.state = .ready
-    self.appMessageId = lastMessageId
+    self.state = nil
+    self.frontMessageId = lastMessageId
     self.createdAt = Date()
     self.updatedAt = Date()
   }
   
   mutating func mapping(map: Map) {
-    id               <- map["id"]
-    personType       <- map["personType"]
-    personId         <- map["personId"]
-    channelId        <- map["channelId"]
-    review           <- map["review"]
-    createdAt        <- (map["createdAt"], CustomDateTransform())
-    openedAt         <- (map["openedAt"], CustomDateTransform())
-    followedAt       <- (map["followedAt"], CustomDateTransform())
-    resolvedAt       <- (map["resolvedAt"], CustomDateTransform())
-    closedAt         <- (map["closedAt"], CustomDateTransform())
-    updatedAt        <- (map["appUpdatedAt"], CustomDateTransform())
-    appMessageId     <- map["appMessageId"]
-    assigneeId       <- map["assigneeId"]
-    assigneeType     <- map["assigneeType"]
-    resolutionTime   <- map["resolutionTime"]
+    id                <- map["id"]
+    userId            <- map["userId"]
+    name              <- map["name"]
+    channelId         <- map["channelId"]
+    managerIds        <- map["managerIds"]
+    review            <- map["review"]
+    createdAt         <- (map["createdAt"], CustomDateTransform())
+    openedAt          <- (map["openedAt"], CustomDateTransform())
+    followedAt        <- (map["followedAt"], CustomDateTransform())
+    resolvedAt        <- (map["resolvedAt"], CustomDateTransform())
+    closedAt          <- (map["closedAt"], CustomDateTransform())
+    updatedAt         <- (map["frontUpdatedAt"], CustomDateTransform())
+    askedAt           <- (map["askedAt"], CustomDateTransform())
+    firstOpenedAt     <- (map["firstOpenedAt"], CustomDateTransform())
+    handling          <- map["handling"]
+    frontMessageId    <- map["frontMessageId"]
+    assigneeId        <- map["assigneeId"]
+    resolutionTime    <- map["resolutionTime"]
+    state             <- map["state"]
     
-    if let s = map["stateV2"].currentValue as? String {
-      state <- map["stateV2"]
-    } else {
-      state <- map["state"]
-    }
+    self.updatedAt = self.updatedAt ?? self.createdAt
   }
 }
 
 //TODO: Refactor to AsyncActionCreator
 extension CHUserChat {
-  
   static func get(userChatId: String) -> Observable<ChatResponse> {
     return UserChatPromise.getChat(userChatId: userChatId)
   }
   
-  static func getChats(since: Int64?=nil, showCompleted: Bool = false) -> Observable<[String: Any?]> {
-    return UserChatPromise.getChats(since: since, limit: 30, showCompleted: showCompleted)
+  static func getChats(
+    since: String? = nil,
+    limit: Int,
+    showCompleted: Bool = false) -> Observable<UserChatsResponse> {
+    return UserChatPromise.getChats(
+      since: since,
+      limit: limit,
+      showCompleted: showCompleted
+    )
   }
   
-  static func create(pluginId: String) -> Observable<ChatResponse>{
-    return UserChatPromise.createChat(pluginId: pluginId)
+  static func getMessages(
+    userChatId: String,
+    since: String?,
+    limit: Int,
+    sortOrder:String) -> Observable<[String: Any]> {
+    
+    return UserChatPromise.getMessages(
+      userChatId: userChatId,
+      since: since,
+      limit: limit,
+      sortOrder: sortOrder)
+  }
+  
+  static func create() -> Observable<ChatResponse>{
+    return UserChatPromise.createChat(
+      pluginId: mainStore.state.plugin.id,
+      url: ChannelIO.hostTopControllerName ?? ""
+    )
   }
 
   func remove() -> Observable<Any?> {
-    if self.isLocal {
-      return .just(nil)
-    }
     return UserChatPromise.remove(userChatId: self.id)
   }
   
-  func close(mid: String, requestId: String = "") -> Observable<CHUserChat> {
-    return UserChatPromise.close(userChatId: self.id, formId: mid, requestId: requestId)
+  func close(actionId: String, requestId: String = "") -> Observable<CHUserChat> {
+    return UserChatPromise.close(
+      userChatId: self.id,
+      actionId: actionId,
+      requestId: requestId
+    )
   }
   
-  func review(mid: String, rating: ReviewType, requestId: String) -> Observable<CHUserChat> {
-    return UserChatPromise.review(userChatId: self.id, formId: mid, rating: rating, requestId: requestId)
+  func review(
+    actionId: String,
+    rating: ReviewType,
+    requestId: String) -> Observable<CHUserChat> {
+    return UserChatPromise.review(
+      userChatId: self.id,
+      actionId: actionId,
+      rating: rating,
+      requestId: requestId
+    )
   }
   
   func shouldRequestRead(otherChat: CHUserChat?) -> Bool {
@@ -158,21 +217,10 @@ extension CHUserChat {
   
   func read() -> Observable<Bool> {
     return Observable.create({ (subscriber) in
-      let signal = self.isLocal ?
-        Observable.just(nil) :
-        UserChatPromise.setMessageRead(userChatId: self.id)
+      let signal = UserChatPromise.setMessageRead(userChatId: self.id)
           
       let dispose = signal.subscribe(onNext: { (_) in
-        if self.isLocal {
-          let guest = personSelector(
-            state: mainStore.state,
-            personType: self.personType,
-            personId: self.personId
-          ) as? CHGuest
-          mainStore.dispatch(UpdateGuestWithLocalRead(guest:guest, session:self.session))
-        } else {
-          mainStore.dispatch(ReadSession(payload: self.session))
-        }
+        mainStore.dispatch(ReadSession(payload: self.session))
         subscriber.onNext(true)
         subscriber.onCompleted()
       }, onError: { (error) in
@@ -188,20 +236,8 @@ extension CHUserChat {
 }
 
 extension CHUserChat {
-  var isLocal: Bool {
-    return self.id.hasPrefix(CHConstants.local)
-  }
-  
-  var fromNudge: Bool {
-    return self.id.hasPrefix(CHConstants.nudgeChat)
-  }
-  
-  var nudgeId: String? {
-    return self.id.components(separatedBy: CHConstants.nudgeChat).last
-  }
-  
   var isActive: Bool {
-    return self.state != .closed && self.state != .solved && self.state != .removed
+    return self.state != .closed && self.state != .solved && self.state != .trash
   }
   
   var isClosed: Bool {
@@ -209,7 +245,7 @@ extension CHUserChat {
   }
   
   var isRemoved: Bool {
-    return self.state == .removed
+    return self.state == .trash
   }
   
   var isSolved: Bool {
@@ -217,11 +253,11 @@ extension CHUserChat {
   }
   
   var isCompleted: Bool {
-    return self.state == .closed || self.state == .solved || self.state == .removed
+    return self.state == .closed || self.state == .solved || self.state == .trash
   }
   
   var isReadyOrOpen: Bool {
-    return self.state == .ready || self.state == .unassigned
+    return self.state == nil || self.state == .unassigned
   }
   
   var isUnassigned: Bool {
@@ -229,7 +265,7 @@ extension CHUserChat {
   }
   
   var isReady: Bool {
-    return self.state == .ready
+    return self.state == nil && self.handling == nil
   }
   
   var isEngaged: Bool {
@@ -237,7 +273,7 @@ extension CHUserChat {
   }
   
   var isSupporting: Bool {
-    return self.state == .supporting
+    return self.state == nil && self.handling == .support
   }
 
   static func becomeActive(current: CHUserChat?, next: CHUserChat?) -> Bool {
@@ -249,26 +285,6 @@ extension CHUserChat {
     guard let current = current, let next = next else { return false }
     return current.isSolved && next.isReadyOrOpen
   }
-  
-  static func createLocal(writer: CHEntity?, variant: CHNudgeVariant?) -> (CHUserChat?, CHMessage?, CHSession?) {
-    guard let writer = writer, let variant = variant else { return (nil, nil, nil) }
-    let file = variant.attachment == .image ?
-      CHFile.create(imageable: variant) : nil
-    let button = variant.attachment == .button ?
-      [CHLink(title: variant.buttonTitle ?? "", url: variant.buttonRedirectUrl ?? "")] : nil
-    let chatId = CHConstants.nudgeChat + variant.nudgeId
-    let message = CHMessage(
-      chatId: chatId,
-      entity: writer,
-      title: variant.title,
-      message: variant.message,
-      file: file,
-      buttons: button)
-    
-    let session = CHSession(id: chatId, chatId: chatId, guest: mainStore.state.guest, alert: 1)
-    let userChat = CHUserChat(chatId: chatId, lastMessageId: message.id)
-    return (userChat, message, session)
-  }
 }
 
 extension CHUserChat: Equatable {
@@ -278,7 +294,6 @@ extension CHUserChat: Equatable {
       lhs.state == rhs.state &&
       lhs.lastMessage == rhs.lastMessage &&
       lhs.assigneeId == rhs.assigneeId &&
-      lhs.assigneeType == rhs.assigneeType &&
       lhs.resolutionTime == rhs.resolutionTime
   }
 }

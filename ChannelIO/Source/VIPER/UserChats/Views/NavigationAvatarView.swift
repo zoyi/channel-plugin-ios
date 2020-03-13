@@ -63,6 +63,8 @@ class NavigationAvatarView: NeverClearView {
       self.avatarImageView.isHidden = false
     }
     
-    self.onlineView.backgroundColor = avatar.online ? CHColors.shamrockGreen : CHColors.blueyGrey
+    self.onlineView.backgroundColor = avatar.online != nil ?
+      CHColors.shamrockGreen :
+      CHColors.blueyGrey
   }
 }

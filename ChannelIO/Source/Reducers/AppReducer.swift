@@ -13,7 +13,7 @@ func appReducer(action: Action, state: AppState?) -> AppState {
     bootState: bootReducer(action: action, state: state?.bootState),
     plugin: pluginReducer(action: action, plugin: state?.plugin),
     channel: channelReducer(action: action, channel: state?.channel),
-    guest: guestReducer(action: action, guest: state?.guest),
+    user: userReducer(action: action, user: state?.user),
     userChatsState: userChatsReducer(action: action, state: state?.userChatsState),
     push: pushReducer(action: action, push: state?.push),
     managersState: managersReducer(action: action, state: state?.managersState),
@@ -22,6 +22,7 @@ func appReducer(action: Action, state: AppState?) -> AppState {
     messagesState: messagesReducer(action: action, state: state?.messagesState),
     uiState: uiReducer(action: action, state: state?.uiState),
     socketState: socketReducer(action: action, state: state?.socketState),
-    countryCodeState: countryCodeReducer(action: action, state: state?.countryCodeState)
+    countryCodeState: countryCodeReducer(action: action, state: state?.countryCodeState),
+    chatState: ChatReducer(action: action, state: state?.chatState)
   )
 }
