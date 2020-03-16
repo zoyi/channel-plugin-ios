@@ -1,3 +1,7 @@
+# 7.0.1
+## Updates
+* Update Alamofire version 4.9 -> 5.0
+
 # 7.0.0
 ## Updates
 * Added Marketing feature

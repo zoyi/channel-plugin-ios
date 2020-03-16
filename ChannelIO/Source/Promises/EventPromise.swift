@@ -30,7 +30,7 @@ struct EventPromise {
         params["url"]?["sessionJWT"] = jwt
       }
 
-      Alamofire
+      AF
         .request(RestRouter.SendEvent(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in

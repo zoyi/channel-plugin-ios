@@ -14,7 +14,7 @@ import ObjectMapper
 struct AppMessengerPromise {
   static func getUri(with name: String) -> Observable<UriResponse> {
     return Observable.create { subscriber in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.GetAppMessengerUri(name))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in

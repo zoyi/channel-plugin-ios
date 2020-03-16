@@ -33,19 +33,19 @@ enum CDNService: URLConvertible {
   }
 
   var authHeaders: HTTPHeaders {
-    var headers: [String: String] = [:]
+    var headers: [HTTPHeader] = []
 
     if let jwt = PrefStore.getSessionJWT() {
-      headers["x-session"] = jwt
+      headers.append(HTTPHeader(name: "x-session", value: jwt))
     }
 
     if let locale = CHUtils.getLocale() {
-      headers["Accept-language"] = locale.rawValue
+      headers.append(HTTPHeader(name: "Accept-language", value: locale.rawValue))
     }
 
-    headers["Accept"] = "application/json"
-    headers["User-Agent"] = CHUtils.generateUserAgent()
-    return headers
+    headers.append(HTTPHeader(name: "Accept", value: "application/json"))
+    headers.append(HTTPHeader(name: "User-Agent", value: CHUtils.generateUserAgent()))
+    return HTTPHeaders(headers)
   }
 
   func asURL() throws -> URL {

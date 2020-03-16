@@ -17,7 +17,7 @@ struct LoungePromise {
         "url": ["url": url]
       ]
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.GetLounge(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in

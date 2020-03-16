@@ -27,7 +27,7 @@ struct UserChatPromise {
         params["query"]?["since"] = since
       }
 
-      Alamofire
+      AF
         .request(RestRouter.GetUserChats(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -58,7 +58,7 @@ struct UserChatPromise {
         "url": ["url" : url]
       ]
       
-      Alamofire
+      AF
         .request(RestRouter.CreateUserChat(
           pluginId,
           params as RestRouter.ParametersType)
@@ -87,7 +87,7 @@ struct UserChatPromise {
   
   static func getChat(userChatId: String) -> Observable<ChatResponse> {
     return Observable.create { subscriber in
-      Alamofire
+      AF
         .request(RestRouter.GetUserChat(userChatId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -124,7 +124,7 @@ struct UserChatPromise {
           "requestId": requestId
         ]
       ]
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.CloseUserChat(
           userChatId,
           params as RestRouter.ParametersType
@@ -170,7 +170,7 @@ struct UserChatPromise {
         ]
       ]
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.ReviewUserChat(
           userChatId,
           params as RestRouter.ParametersType
@@ -202,7 +202,7 @@ struct UserChatPromise {
 
   static func remove(userChatId: String) -> Observable<Any?> {
     return Observable.create { subscriber in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.RemoveUserChat(userChatId))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
@@ -239,7 +239,7 @@ struct UserChatPromise {
         params["query"]?["since"] = since
       }
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.GetMessages(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -322,7 +322,7 @@ struct UserChatPromise {
       
       params["body"]?["requestId"] = requestId
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.CreateMessage(userChatId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -361,7 +361,7 @@ struct UserChatPromise {
         ]
       ]
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.UpdateProfileItem(
           userChatId,
           messageId,
@@ -392,7 +392,7 @@ struct UserChatPromise {
 
   static func setMessageRead(userChatId: String) -> Observable<Any?> {
     return Observable.create { subscriber in
-      let req = Alamofire.request(RestRouter.SetMessagesRead(userChatId))
+      let req = AF.request(RestRouter.SetMessagesRead(userChatId))
         .validate(statusCode: 200..<300)
         .responseJSON (completionHandler: { (response) in
           switch response.result {
@@ -419,7 +419,7 @@ struct UserChatPromise {
           "language": language
         ]
       ]
-      let req = Alamofire.request(
+      let req = AF.request(
         RestRouter.Translate(
           userChatId,
           messageId,

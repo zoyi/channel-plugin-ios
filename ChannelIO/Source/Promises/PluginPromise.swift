@@ -23,7 +23,7 @@ struct PluginPromise {
         ]
       ]
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.RegisterToken(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -54,7 +54,7 @@ struct PluginPromise {
     return Observable.create { subscriber in
 
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.UnregisterToken(key))
         .validate(statusCode: 200..<300)
         .response { response in
@@ -73,7 +73,7 @@ struct PluginPromise {
   
   static func checkVersion() -> Observable<Any?> {
     return Observable.create { subscriber in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.CheckVersion)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -109,7 +109,7 @@ struct PluginPromise {
 
   static func getPlugin(pluginKey: String) -> Observable<(CHPlugin, CHBot?)> {
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.GetPlugin(pluginKey))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -139,7 +139,7 @@ struct PluginPromise {
   
   static func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
@@ -170,7 +170,7 @@ struct PluginPromise {
         return Disposables.create()
       }
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.SendPushAck(chatId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
@@ -193,7 +193,7 @@ struct PluginPromise {
   
   static func getProfileSchemas(pluginId: String) -> Observable<[CHProfileSchema]> {
     return Observable.create { (subscriber) -> Disposable in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.GetProfileBotSchemas(pluginId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
