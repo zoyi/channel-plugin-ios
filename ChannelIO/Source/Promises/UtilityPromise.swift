@@ -15,7 +15,7 @@ import ObjectMapper
 struct UtilityPromise {
   static func getGeoIP() -> Observable<GeoIPInfo> {
     return Observable.create { subscriber in
-      Alamofire
+      AF
         .request(RestRouter.GetGeoIP)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
@@ -50,7 +50,7 @@ struct UtilityPromise {
         return Disposables.create()
       }
       
-      Alamofire
+      AF
         .request(RestRouter.GetCountryCodes)
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in

@@ -21,7 +21,7 @@ struct SupportBotPromise {
     ]
     
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.CreateSupportBotChat(
           supportBotId,
           params as RestRouter.ParametersType)
@@ -72,7 +72,7 @@ struct SupportBotPromise {
         ]
       ]
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.ReplySupportBot(
           chatId,
           buttonKey,
@@ -110,7 +110,7 @@ struct SupportBotPromise {
       }
     
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.StartMarketingToSupportBot(userChatId, supportBotId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in

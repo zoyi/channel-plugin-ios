@@ -15,7 +15,7 @@ import SwiftyJSON
 struct MarketingPromise {
   static func clickCampaign(id: String) -> Observable<Any?> {
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.CampaignClick(id))
         .responseData { (response) in
           switch response.result {
@@ -36,7 +36,7 @@ struct MarketingPromise {
   
   static func viewCampaign(id: String) -> Observable<Any?> {
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.CampaignView(id))
         .responseData { (response) in
           switch response.result {
@@ -57,7 +57,7 @@ struct MarketingPromise {
   
   static func clickOneTimeMsg(id: String) -> Observable<Any?> {
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.OneTimeMsgClick(id))
         .responseData { (response) in
           switch response.result {
@@ -78,7 +78,7 @@ struct MarketingPromise {
   
   static func viewOneTimeMsg(id: String) -> Observable<Any?> {
     return Observable.create { (subscriber) in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.OneTimeMsgView(id))
         .responseData { (response) in
           switch response.result {

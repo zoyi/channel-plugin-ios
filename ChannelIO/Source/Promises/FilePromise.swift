@@ -18,7 +18,7 @@ struct FilePromise {
     data: Data) -> Observable<([String:Any]?, Double)> {
     return Observable.create { subscriber in
       let url = CDNService.UploadFile(channelId, filename)
-      let req = Alamofire
+      let req = AF
         .upload(data, to: url, method: url.method, headers: url.authHeaders)
         .uploadProgress(closure: { progress in
           subscriber.onNext((nil, progress.fractionCompleted))

@@ -280,14 +280,14 @@ extension CHFile {
         return Disposables.create()
       }
       
-      let destination: DownloadRequest.DownloadFileDestination = { _, response in
+      let destination: DownloadRequest.Destination = { _, response in
         let documentsURL:URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let fileURL:URL = documentsURL.appendingPathComponent(response.suggestedFilename!)
         
         return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
       }
       
-      let req = Alamofire.download(url, to: destination)
+      let req = AF.download(url, to: destination)
         .downloadProgress { (download) in
           DispatchQueue.main.async() {
             subscriber.onNext((nil, Float(download.fractionCompleted)))

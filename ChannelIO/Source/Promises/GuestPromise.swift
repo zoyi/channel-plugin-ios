@@ -25,7 +25,7 @@ struct UserPromise {
         params["url"]?["sessionJWT"] = jwt
       }
       
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.TouchUser(pluginId, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -68,7 +68,7 @@ struct UserPromise {
         ]
       }
       
-      let req = Alamofire.request(RestRouter.UpdateUser(params as RestRouter.ParametersType))
+      let req = AF.request(RestRouter.UpdateUser(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
@@ -97,7 +97,7 @@ struct UserPromise {
   
   static func closePopup() -> Observable<Any?> {
     return Observable.create { subscriber in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.ClosePopup)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in

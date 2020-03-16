@@ -15,7 +15,7 @@ import SwiftyJSON
 struct ChannelPromise {
   static func getChannel() -> Observable<CHChannel> {
     return Observable.create { (subscriber) -> Disposable in
-      let req = Alamofire
+      let req = AF
         .request(RestRouter.GetChannel)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in

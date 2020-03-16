@@ -21,26 +21,12 @@ extension DataRequest {
   public func asyncResponse(
     queue: DispatchQueue? = nil,
     options: JSONSerialization.ReadingOptions = .allowFragments,
-    completionHandler: @escaping (DataResponse<Data>) -> Void) -> Self {
+    completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
     return response(
-      queue: queue == nil ? RestRouter.queue : queue,
-      responseSerializer: DataRequest.dataResponseSerializer(options: options),
+      queue: queue == nil ? RestRouter.queue : queue!,
+      responseSerializer: DataResponseSerializer(),
       completionHandler: completionHandler
     )
-  }
-  
-  public static func dataResponseSerializer(
-    options: JSONSerialization.ReadingOptions = .allowFragments) -> DataResponseSerializer<Data> {
-    return DataResponseSerializer { _, response, data, error in
-      let result = Request.serializeResponseData(response: response, data: data, error: error)
-      
-      switch result {
-      case .success(let value):
-        return .success(value)
-      case .failure(let error):
-        return .failure(error)
-      }
-    }
   }
 }
 
