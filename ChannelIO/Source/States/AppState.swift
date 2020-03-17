@@ -29,7 +29,7 @@ struct AppState: StateType {
   case english
   case korean
   case japanese
-  // TODO remove device and make CHLocale Optional
+  // it need becase Objective c can't use optional
   case device
 }
 
