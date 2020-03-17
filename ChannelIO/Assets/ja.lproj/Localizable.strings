@@ -179,4 +179,4 @@
 "ch.file_upload.wait_count" = "%s件待機中";
 "ch.common_error" = "処理に失敗しました。再試行してください";
 "ch.lounge.show_previous_chats_more" = "%s件以上の問合せ履歴を見る";
-"ch.chat.marketing_to_support_bot" = "サポートbotから始める";
+"ch.chat.marketing_to_support_bot" = "チャットをはじめる";
