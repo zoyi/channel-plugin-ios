@@ -83,7 +83,16 @@ public class ChannelPluginSettings: NSObject, NSCoding {
       }
     }
     set {
-      if newValue == .korean {
+      if newValue == .device {
+        let deviceLocale = CHUtils.getLocale()
+        if deviceLocale == .japanese {
+          self.appLocale = .japanese
+        } else if deviceLocale == .korean {
+          self.appLocale = .korean
+        } else {
+          self.appLocale = .english
+        }
+      } else if newValue == .korean {
         self.appLocale = .korean
       } else if newValue == .japanese {
         self.appLocale = .japanese
