@@ -1,3 +1,7 @@
+# 7.0.3
+## Updates
+* Update some localize string
+
 # 7.0.2
 ## Bug fixes
 * Fixed RN language bug
