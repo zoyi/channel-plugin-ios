@@ -1,3 +1,12 @@
+# 7.0.3
+## Updates
+* Update some localize string
+
+# 7.0.2
+## Bug fixes
+* Fixed RN language bug
+
+
 # 7.0.1
 ## Updates
 * Update Alamofire version 4.9 -> 5.0
