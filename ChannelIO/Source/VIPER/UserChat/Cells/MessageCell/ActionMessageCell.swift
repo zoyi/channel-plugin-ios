@@ -14,7 +14,7 @@ class ActionMessageCell: MessageCell {
   private let actionView = ActionView()
   private var messageId = ""
 
-  private struct Metric {
+  private struct ActionMetrics {
     static let ActionViewTop = 16.f
     static let ActionViewTrailing = 10.f
   }
@@ -40,9 +40,9 @@ class ActionMessageCell: MessageCell {
     self.messageBottomConstraint?.deactivate()
     
     self.actionView.snp.makeConstraints { make in
-      make.top.equalToSuperview().inset(Metric.ActionViewTop)
+      make.top.equalToSuperview().inset(ActionMetrics.ActionViewTop)
       make.leading.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.ActionViewTrailing)
+      make.trailing.equalToSuperview().inset(ActionMetrics.ActionViewTrailing)
       make.bottom.equalToSuperview()
     }
   }
@@ -57,14 +57,14 @@ class ActionMessageCell: MessageCell {
     self.actionView.configure(viewModel)
     self.actionView.snp.remakeConstraints { make in
       if viewModel.text != nil || viewModel.showTranslation {
-        make.top.equalTo(self.translateView.snp.bottom).offset(Metric.ActionViewTop)
+        make.top.equalTo(self.translateView.snp.bottom).offset(ActionMetrics.ActionViewTop)
       } else if viewModel.isContinuous {
-        make.top.equalToSuperview().inset(Metric.ActionViewTop)
+        make.top.equalToSuperview().inset(ActionMetrics.ActionViewTop)
       } else {
-        make.top.equalTo(self.usernameLabel.snp.bottom).offset(Metric.ActionViewTop)
+        make.top.equalTo(self.usernameLabel.snp.bottom).offset(ActionMetrics.ActionViewTop)
       }
       make.leading.equalToSuperview()
-      make.trailing.equalToSuperview().inset(Metric.ActionViewTrailing)
+      make.trailing.equalToSuperview().inset(ActionMetrics.ActionViewTrailing)
       make.height.equalTo(ActionView.viewHeight(buttons: viewModel.action?.buttons ?? []))
       make.bottom.equalToSuperview()
     }
@@ -75,7 +75,7 @@ class ActionMessageCell: MessageCell {
     viewModel: MessageCellModelType) -> CGFloat {
     let height = super.cellHeight(fits: width, viewModel: viewModel)
     return height
-      + Metric.ActionViewTop
+      + ActionMetrics.ActionViewTop
       + ActionView.viewHeight(buttons: viewModel.action?.buttons ?? [])
   }
 }

@@ -7,7 +7,7 @@ github "ReSwift/ReSwift" ~> 4.0.1
 github "tristanhimmelman/ObjectMapper" ~> 3.5
 github "ninjaprox/NVActivityIndicatorView" ~> 4.7.0
 github "zoyi/Dwifft"
-github "Alamofire/Alamofire" ~> 4.9
+github "Alamofire/Alamofire" ~> 5.0.2
 github "socketio/socket.io-client-swift" ~> 15.0.0
 github "MortimerGoro/MGSwipeTableCell" ~> 1.6.8
 github "SVProgressHUD/SVProgressHUD" ~> 2.2.5
