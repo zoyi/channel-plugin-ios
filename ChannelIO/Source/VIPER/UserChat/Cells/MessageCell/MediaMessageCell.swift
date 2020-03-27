@@ -15,7 +15,7 @@ protocol MediaMessageProtocol {
 }
 
 class MediaMessageCell: MessageCell, MediaMessageProtocol {
-  private struct Metric {
+  private struct MediaMetrics {
     static let mediaInSideMargin = 40.f
     static let mediaOutSideMargin = 75.f
     static let mediaTop = 6.f
@@ -44,17 +44,17 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
 
     self.mediaCollectionView.snp.makeConstraints { make in
       self.mediaTopConstraint = make.top.equalToSuperview()
-        .inset(Metric.mediaTop).priority(750).constraint
+        .inset(MediaMetrics.mediaTop).priority(750).constraint
       self.mediaTopToNameTopConstraint = make.top.equalTo(self.usernameLabel.snp.bottom)
-        .offset(Metric.mediaTop).priority(850).constraint
+        .offset(MediaMetrics.mediaTop).priority(850).constraint
       self.mediaTopToTextViewTopContraint = make.top.equalTo(self.translateView.snp.bottom)
-        .offset(Metric.mediaTop).constraint
+        .offset(MediaMetrics.mediaTop).constraint
       self.leftTextViewConstraint = make.leading.equalTo(self.textView.snp.leading)
         .priority(750).constraint
       self.leftConstraint = make.leading.equalToSuperview()
-        .inset(Metric.mediaInSideMargin).priority(850).constraint
+        .inset(MediaMetrics.mediaInSideMargin).priority(850).constraint
       self.rightConstraint = make.trailing.equalToSuperview()
-        .inset(Metric.mediaOutSideMargin).constraint
+        .inset(MediaMetrics.mediaOutSideMargin).constraint
       
       self.mediaViewBottomConstraint = make.bottom.equalToSuperview().constraint
     }
@@ -71,7 +71,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     let bubbleMaxWidth = viewModel.createdByMe ?
       width - Metric.messageLeftMinMargin - Metric.cellRightPadding :
       width - Metric.messageRightMinMargin - Metric.bubbleLeftMargin
-    height += Metric.mediaTop
+    height += MediaMetrics.mediaTop
     height += MediaCollectionView.viewHeight(fit: bubbleMaxWidth, models: viewModel.files)
     return height
   }
@@ -85,12 +85,12 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
     self.mediaCollectionView.configure(models: viewModel.files)
 
     if viewModel.showTranslation {
-      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTop)
+      self.mediaTopToTextViewTopContraint?.update(offset: MediaMetrics.mediaTop)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()
     } else if viewModel.text != nil {
-      self.mediaTopToTextViewTopContraint?.update(offset: Metric.mediaTop)
+      self.mediaTopToTextViewTopContraint?.update(offset: MediaMetrics.mediaTop)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()
