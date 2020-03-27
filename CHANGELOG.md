@@ -1,3 +1,7 @@
+# 7.0.4
+## Bug fixes
+* Fixed private name duplicate issue after xcode 11.4 updating
+
 # 7.0.3
 ## Updates
 * Update some localize string
