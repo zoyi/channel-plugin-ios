@@ -435,6 +435,29 @@ public final class ChannelIO: NSObject {
     ChannelIO.updateUser(with: profile, completion: completion)
   }
   
+  @objc
+  public class func updateUser(
+    profile: [String: Any]? = nil,
+    profileOnce: [String: Any]? = nil,
+    tags: [String]? = nil,
+    language: String? = nil,
+    completion: ((User?, Error?) -> Void)? = nil) {
+    let profile: [String: Any?]? = profile?.mapValues { (value) -> Any? in
+      return value is NSNull ? nil : value
+    }
+    let profileOnce: [String: Any?]? = profileOnce?.mapValues { (value) -> Any? in
+      return value is NSNull ? nil : value
+    }
+    
+    ChannelIO.updateUser(
+      profile: profile,
+      profileOnce: profileOnce,
+      tags: tags,
+      language: language,
+      completion: completion
+    )
+  }
+  
   /**
    *  Update user profile
    *
@@ -442,7 +465,8 @@ public final class ChannelIO: NSObject {
    *                       to remove existing value
    */
   public class func updateUser(with profile: [String: Any?], completion: ((Bool, User?) -> Void)? = nil) {
-    UserPromise.updateUser(profile: profile)
+    UserPromise
+      .updateUser(profile: profile)
       .subscribe(onNext: { (user, error) in
         if let user = user {
           completion?(true, User(with: user))
@@ -451,6 +475,60 @@ public final class ChannelIO: NSObject {
         }
       }, onError: { error in
         completion?(false, nil)
+      }).disposed(by: disposeBag)
+  }
+  
+  public class func updateUser(
+    profile: [String: Any?]? = nil,
+    profileOnce: [String: Any?]? = nil,
+    tags: [String]? = nil,
+    language: String? = nil,
+    completion: ((User?, Error?) -> Void)? = nil) {
+    CHUser
+      .updateUser(
+        profile: profile,
+        profileOnce: profileOnce,
+        tags: tags,
+        language: language
+      )
+      .subscribe(onNext: { (user, error) in
+        guard let user = user else {
+          completion?(nil, error)
+          return
+        }
+        completion?(User(with: user), nil)
+      }, onError: { error in
+        completion?(nil, error)
+      }).disposed(by: disposeBag)
+   }
+  
+  @objc
+  public class func addTags(_ tags: [String], completion: ((User?, Error?) -> Void)? = nil) {
+    CHUser
+      .addTags(tags: tags)
+      .subscribe(onNext: { (user, error) in
+        guard let user = user else {
+          completion?(nil, error)
+          return
+        }
+        completion?(User(with: user), nil)
+      }, onError: { error in
+        completion?(nil, error)
+      }).disposed(by: disposeBag)
+  }
+  
+  @objc
+  public class func removeTags(_ tags: [String], completion: ((User?, Error?) -> Void)? = nil) {
+    CHUser
+      .removeTags(tags: tags)
+      .subscribe(onNext: { (user, error) in
+        guard let user = user else {
+          completion?(nil, error)
+          return
+        }
+        completion?(User(with: user), nil)
+      }, onError: { error in
+        completion?(nil, error)
       }).disposed(by: disposeBag)
   }
   

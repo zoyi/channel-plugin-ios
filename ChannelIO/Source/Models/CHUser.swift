@@ -125,12 +125,33 @@ extension CHUser {
     return mainStore.state.plugin.welcomeI18n?.getMessageBlock()
   }
   
-  func updateProfile(key: String, value: Any?) -> Observable<(CHUser?, Any?)> {
+  func updateProfile(key: String, value: Any?) -> Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(profile: [key: value])
   }
   
-  static func updateLanguage(with language: String) -> Observable<(CHUser?, Any?)> {
+  static func updateLanguage(with language: String) -> Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(language: language)
+  }
+  
+  static func updateUser(
+    profile: [String: Any?]? = nil,
+    profileOnce: [String: Any?]? = nil,
+    tags: [String]? = nil,
+    language: String? = nil) -> Observable<(CHUser?, ChannelError?)> {
+    return UserPromise.updateUser(
+      profile: profile,
+      profileOnce: profileOnce,
+      tags: tags,
+      language: language
+    )
+  }
+  
+  static func addTags(tags: [String]?) -> Observable<(CHUser?, ChannelError?)> {
+    return UserPromise.addTags(tags: tags)
+  }
+  
+  static func removeTags(tags: [String]?) -> Observable<(CHUser?, ChannelError?)> {
+    return UserPromise.removeTags(tags: tags)
   }
   
   static func closePopup() -> Observable<Any?> {

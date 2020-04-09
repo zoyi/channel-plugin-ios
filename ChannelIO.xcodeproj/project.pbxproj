@@ -387,7 +387,7 @@
 		659793821FA716CB00840F6A /* CHWebPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792EA1FA7167B00840F6A /* CHWebPage.swift */; };
 		659793841FA716CB00840F6A /* ModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792EC1FA7167B00840F6A /* ModelType.swift */; };
 		659793861FA716CB00840F6A /* EventPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BB1FA7167B00840F6A /* EventPromise.swift */; };
-		659793871FA716CB00840F6A /* GuestPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BC1FA7167B00840F6A /* GuestPromise.swift */; };
+		659793871FA716CB00840F6A /* UserPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BC1FA7167B00840F6A /* UserPromise.swift */; };
 		659793881FA716CB00840F6A /* PluginPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BD1FA7167B00840F6A /* PluginPromise.swift */; };
 		6597938A1FA716CB00840F6A /* UserChatPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792BF1FA7167B00840F6A /* UserChatPromise.swift */; };
 		6597938B1FA716CB00840F6A /* UtilityPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792C01FA7167B00840F6A /* UtilityPromise.swift */; };
@@ -929,7 +929,7 @@
 		659792B71FA7167A00840F6A /* LocalMessageFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalMessageFactory.swift; sourceTree = "<group>"; };
 		659792B81FA7167A00840F6A /* PrefStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefStore.swift; sourceTree = "<group>"; };
 		659792BB1FA7167B00840F6A /* EventPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPromise.swift; sourceTree = "<group>"; };
-		659792BC1FA7167B00840F6A /* GuestPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestPromise.swift; sourceTree = "<group>"; };
+		659792BC1FA7167B00840F6A /* UserPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPromise.swift; sourceTree = "<group>"; };
 		659792BD1FA7167B00840F6A /* PluginPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginPromise.swift; sourceTree = "<group>"; };
 		659792BF1FA7167B00840F6A /* UserChatPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatPromise.swift; sourceTree = "<group>"; };
 		659792C01FA7167B00840F6A /* UtilityPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityPromise.swift; sourceTree = "<group>"; };
@@ -1821,7 +1821,7 @@
 				3931CAEE23C333AF005E8444 /* LoungePromise.swift */,
 				65BC640B229273B2000F8508 /* ChannelPromise.swift */,
 				659792BB1FA7167B00840F6A /* EventPromise.swift */,
-				659792BC1FA7167B00840F6A /* GuestPromise.swift */,
+				659792BC1FA7167B00840F6A /* UserPromise.swift */,
 				659792BD1FA7167B00840F6A /* PluginPromise.swift */,
 				659792BF1FA7167B00840F6A /* UserChatPromise.swift */,
 				659792C01FA7167B00840F6A /* UtilityPromise.swift */,
@@ -2689,7 +2689,7 @@
 				39F4B9BD23C42CC00043B25A /* DFA.swift in Sources */,
 				3931CAE423C3335D005E8444 /* CHClip.swift in Sources */,
 				39F4BA0723C42CC10043B25A /* RangeTransition.swift in Sources */,
-				659793871FA716CB00840F6A /* GuestPromise.swift in Sources */,
+				659793871FA716CB00840F6A /* UserPromise.swift in Sources */,
 				3931CB0C23C33469005E8444 /* Int+Extension.swift in Sources */,
 				3931CAEC23C3338C005E8444 /* MediaCollectionView.swift in Sources */,
 				39F4B9FE23C42CC10043B25A /* DecisionEventInfo.swift in Sources */,

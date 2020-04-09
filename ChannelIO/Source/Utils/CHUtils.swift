@@ -313,6 +313,19 @@ class CHUtils {
     }
   }
   
+  class func getServerErrorMessage(data: Data?) -> [String]? {
+    guard let data = data else { return nil }
+    
+    let json = SwiftyJSON.JSON(data)
+    
+    guard
+      let errors: [CHError] = Mapper<CHError>().mapArray(JSONObject: json["errors"].object) else {
+      return nil
+    }
+    
+    return errors.map { $0.message }
+  }
+  
   class func getThumbnail(of asset: AVAsset?) -> UIImage? {
     guard let asset = asset else { return nil }
     let assetImgGenerate = AVAssetImageGenerator(asset: asset)
