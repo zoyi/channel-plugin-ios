@@ -11,6 +11,7 @@ import SnapKit
 import Reusable
 import RxSwift
 import SVProgressHUD
+import CRToast
 
 class LanguageOptionViewController: BaseViewController {
   private let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
@@ -140,15 +141,21 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     ChannelIO.settings?.language = CHUtils.stringToLocale(locale.rawValue)
     
     SVProgressHUD.show()
-    CHUser.updateLanguage(with: locale.rawValue)
+    CHUser
+      .updateLanguage(with: locale.rawValue)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user, error) in
         defer { SVProgressHUD.dismiss() }
+        
         mainStore.dispatch(UpdateUser(payload: user))
-        if error == nil {
+        
+        guard let error = error else {
           tableView.deselectRow(at: indexPath, animated: true)
           _ = self?.navigationController?.popViewController(animated: true)
+          return
         }
+        
+        CRToastManager.showErrorMessage(error.errorDescription ?? error.localizedDescription)
       }, onError: { (error) in
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)

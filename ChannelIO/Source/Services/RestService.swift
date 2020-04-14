@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 
 enum RestRouter: URLRequestConvertible {
+  case AddTags(ParametersType)
   case Boot(String, ParametersType)
   case CreateUserChat(String, ParametersType)
   case ClosePopup
@@ -33,6 +34,7 @@ enum RestRouter: URLRequestConvertible {
   case OneTimeMsgView(String)
   case ReplySupportBot(String, String, ParametersType)
   case RegisterToken(ParametersType)
+  case RemoveTags(ParametersType)
   case RemoveUserChat(String)
   case ReviewUserChat(String, ParametersType)
   case SendEvent(String, ParametersType)
@@ -84,7 +86,8 @@ enum RestRouter: URLRequestConvertible {
          .GetChannel,
          .Translate:
       return .get
-    case .UpdateUser:
+    case .AddTags,
+         .UpdateUser:
       return .patch
     case .CampaignClick,
          .CampaignView,
@@ -97,6 +100,7 @@ enum RestRouter: URLRequestConvertible {
       return .put
     case .ClosePopup,
          .UnregisterToken,
+         .RemoveTags,
          .RemoveUserChat:
       return .delete
     }
@@ -107,6 +111,8 @@ enum RestRouter: URLRequestConvertible {
     let channelId = RestRouter.channelId
     
     switch self {
+    case .AddTags(_):
+      return "/front/users/me/tags"
     case .Boot(let pluginKey, _):
       return "/front/elastic/plugins/\(pluginKey)/boot"
     case .CampaignClick(let campaignId):
@@ -149,6 +155,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/one-time-msgs/\(oneTimeMsgId)/click"
     case .OneTimeMsgView(let oneTimeMsgId):
       return "/front/one-time-msgs/\(oneTimeMsgId)/view"
+    case .RemoveTags(_):
+      return "/front/users/me/tags"
     case .RemoveUserChat(let userChatId):
       return "/front/user-chats/\(userChatId)"
     case .ReviewUserChat(let userChatId, _):
@@ -289,7 +297,9 @@ enum RestRouter: URLRequestConvertible {
          .Translate(_, _, let params),
          .ReviewUserChat(_, let params),
          .ReplySupportBot(_, _, let params),
-         .UpdateUser(let params):
+         .UpdateUser(let params),
+         .AddTags(let params),
+         .RemoveTags(let params):
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: params)
     case .GetAppMessengerUri,
          .GetUserChat,
