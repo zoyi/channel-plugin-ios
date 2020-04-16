@@ -1,3 +1,7 @@
+# 7.0.5
+## Bug fixes
+* Fixed launcher window cut off issue
+
 # 7.0.4
 ## Bug fixes
 * Fixed private name duplicate issue after xcode 11.4 updating
