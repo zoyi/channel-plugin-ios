@@ -25,8 +25,8 @@ final class LauncherWindow: UIWindow {
       y += viewController.navigationController?.navigationBar.bounds.height ?? 0
       bounds = CGRect(
         x: 0, y: y,
-        width: viewController.view.frame.width,
-        height: viewController.view.frame.height
+        width: defaultSize.width,
+        height: defaultSize.height - y
       )
     }
     
