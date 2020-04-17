@@ -52,7 +52,7 @@ Pod::Spec.new do |s|
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
   s.dependency 'MGSwipeTableCell'
   s.dependency 'SVProgressHUD'
-  s.dependency 'CRToast'
+  s.dependency 'NotificationBannerSwift'
   s.dependency 'PhoneNumberKit', '~> 3.0'
   s.dependency 'SDWebImage', '~> 5.0'
   s.dependency 'SDWebImageWebPCoder'

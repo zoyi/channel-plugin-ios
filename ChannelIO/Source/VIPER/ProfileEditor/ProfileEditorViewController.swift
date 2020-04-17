@@ -170,11 +170,14 @@ class ProfileEditorViewController: BaseViewController {
         defer { SVProgressHUD.dismiss() }
         ChannelIO.delegate?.onChangeProfile?(key: key, value: user?.profile?[key])
         mainStore.dispatch(UpdateUser(payload: user))
-        if error == nil {
+        if let error = error {
+          CustomFloatingBanner(
+            title: error.errorDescription ?? error.localizedDescription,
+            style: .warning
+          ).show()
+        } else {
           _ = self?.navigationController?.popViewController(animated: true)
         }
-      }, onError: { (error) in
-          //error
       }).disposed(by: self.disposeBag)
   }
 }

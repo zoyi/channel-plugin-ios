@@ -11,7 +11,6 @@ import SnapKit
 import Reusable
 import RxSwift
 import SVProgressHUD
-import CRToast
 
 class LanguageOptionViewController: BaseViewController {
   private let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
@@ -155,7 +154,10 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
           return
         }
         
-        CRToastManager.showErrorMessage(error.errorDescription ?? error.localizedDescription)
+        CustomFloatingBanner(
+          title: error.errorDescription ?? error.localizedDescription,
+          style: .warning
+        ).show()
       }, onError: { (error) in
         SVProgressHUD.dismiss()
       }).disposed(by: self.disposeBag)

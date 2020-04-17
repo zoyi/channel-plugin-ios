@@ -11,7 +11,6 @@ import Alamofire
 import RxSwift
 import SwiftyJSON
 import ObjectMapper
-import CRToast
 
 struct UserPromise {
   static func touch(pluginId: String) -> Observable<BootResponse> {
