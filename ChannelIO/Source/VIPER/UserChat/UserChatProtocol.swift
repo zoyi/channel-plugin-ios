@@ -51,6 +51,10 @@ protocol UserChatViewProtocol: class {
   func updateNavigation(userChat: CHUserChat?)
   func updateInputBar(state: MessageViewState)
   func setPreloadtext(with text: String)
+  
+  func showProgressHUD(progress: Float)
+  func showHUD()
+  func dismissHUD()
 }
 
 protocol UserChatPresenterProtocol: class {

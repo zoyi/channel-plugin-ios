@@ -8,7 +8,7 @@
 
 import Foundation
 import RxSwift
-import SVProgressHUD
+import JGProgressHUD
 import SnapKit
 
 class ProfileEditorViewController: BaseViewController {
@@ -153,7 +153,9 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func updateUserInfo() {
-    SVProgressHUD.show(withStatus: CHAssets.localized("ch.loader.updating"))
+    let hud = JGProgressHUD(style: .dark)
+    hud.textLabel.text = CHAssets.localized("ch.loader.updating")
+    hud.show(in: self.view)
     
     let numberFormatter = NumberFormatter()
     numberFormatter.numberStyle = .decimal
@@ -167,14 +169,17 @@ class ProfileEditorViewController: BaseViewController {
       .debounce(.seconds(1), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user, error) in
-        defer { SVProgressHUD.dismiss() }
+        defer { hud.dismiss() }
         ChannelIO.delegate?.onChangeProfile?(key: key, value: user?.profile?[key])
         mainStore.dispatch(UpdateUser(payload: user))
-        if error == nil {
+        if let error = error {
+          CustomFloatingBanner(
+            title: error.errorDescription ?? error.localizedDescription,
+            style: .warning
+          ).show()
+        } else {
           _ = self?.navigationController?.popViewController(animated: true)
         }
-      }, onError: { (error) in
-          //error
       }).disposed(by: self.disposeBag)
   }
 }

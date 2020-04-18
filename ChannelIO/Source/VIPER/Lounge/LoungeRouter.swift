@@ -9,10 +9,11 @@
 import Foundation
 import RxSwift
 import RxSwiftExt
-import SVProgressHUD
+import JGProgressHUD
 import MessageUI
 
 class LoungeRouter: NSObject, LoungeRouterProtocol {
+  weak var view: LoungeViewProtocol?
   private var isPushing = false
   var disposeBag = DisposeBag()
   
@@ -82,14 +83,14 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
         message: CHAssets.localized("ch.integrations.copy_link.success")
       )
     default:
-      SVProgressHUD.show()
+      self.view?.showHUD()
       CHAppMessenger
         .getUri(with: source.value)
         .retry(.delayed(maxCount: 3, time: 3.0))
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (result) in
           defer {
-            SVProgressHUD.dismiss()
+            self.view?.dismissHUD()
           }
           guard let uri = result.uri, let url = URL(string: uri) else {
             CHNotification.shared.display(
@@ -100,7 +101,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
           }
           url.openWithUniversal()
         }, onError: { (_) in
-          SVProgressHUD.dismiss()
+          self.view?.dismissHUD()
           CHNotification.shared.display(
             message: CHAssets.localized("ch.common_error"),
             config: .warningConfig
@@ -122,6 +123,8 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     presenter.interactor = interactor
     presenter.router = router
     presenter.chatId = chatId
+    
+    router.view = view
     
     interactor.presenter = presenter
     return view

@@ -13,7 +13,7 @@ import RxSwift
 import RxCocoa
 import RxSwiftExt
 import SnapKit
-import SVProgressHUD
+import JGProgressHUD
 import MGSwipeTableCell
 
 //TODO: refactoring VIPER
@@ -391,8 +391,9 @@ extension UserChatsViewController {
     isInit: Bool = false,
     showIndicator: Bool = false,
     isReload: Bool = false) {
+    let hud = JGProgressHUD(style: .dark)
     if showIndicator {
-      SVProgressHUD.show()
+      hud.show(in: self.view)
     }
     
     CHUserChat
@@ -415,10 +416,10 @@ extension UserChatsViewController {
         //self?.errorToastView.display(animated:true)
         self?.didLoad = false
 
-        SVProgressHUD.dismiss()
+        hud.dismiss()
         mainStore.dispatch(FailedGetUserChats(error: error))
       }, onCompleted: {
-        SVProgressHUD.dismiss()
+        hud.dismiss()
         dlog("Get UserChats complete")
       }).disposed(by: self.disposeBag)
   }

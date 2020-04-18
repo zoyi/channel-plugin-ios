@@ -10,8 +10,7 @@ import UIKit
 import SnapKit
 import Reusable
 import RxSwift
-import SVProgressHUD
-import CRToast
+import JGProgressHUD
 
 class LanguageOptionViewController: BaseViewController {
   private let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
@@ -140,12 +139,14 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     let locale = self.locales[indexPath.row]
     ChannelIO.settings?.language = CHUtils.stringToLocale(locale.rawValue)
     
-    SVProgressHUD.show()
+    let hud = JGProgressHUD(style: .dark)
+    hud.show(in: self.view)
+    
     CHUser
       .updateLanguage(with: locale.rawValue)
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user, error) in
-        defer { SVProgressHUD.dismiss() }
+        defer { hud.dismiss() }
         
         mainStore.dispatch(UpdateUser(payload: user))
         
@@ -155,9 +156,12 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
           return
         }
         
-        CRToastManager.showErrorMessage(error.errorDescription ?? error.localizedDescription)
+        CustomFloatingBanner(
+          title: error.errorDescription ?? error.localizedDescription,
+          style: .warning
+        ).show()
       }, onError: { (error) in
-        SVProgressHUD.dismiss()
+        hud.dismiss()
       }).disposed(by: self.disposeBag)
   }
 }

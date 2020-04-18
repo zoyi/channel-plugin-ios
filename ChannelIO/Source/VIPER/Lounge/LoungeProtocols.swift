@@ -27,6 +27,8 @@ protocol LoungeViewProtocol: class {
   func displayExternalSources(with models: [LoungeExternalSourceModel])
   
   func displayError()
+  func showHUD()
+  func dismissHUD()
 }
 
 protocol LoungePresenterProtocol: class {

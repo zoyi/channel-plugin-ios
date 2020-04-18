@@ -9,7 +9,7 @@
 import RxSwift
 import RxSwiftExt
 import RxCocoa
-import SVProgressHUD
+import JGProgressHUD
 
 class LoungePresenter: NSObject, LoungePresenterProtocol {
   weak var view: LoungeViewProtocol?
@@ -160,7 +160,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         return Disposables.create()
       }
       
-      SVProgressHUD.show()
+      self.view?.showHUD()
       
       let signal = Observable
         .zip(
@@ -178,7 +178,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
             let bot = info.bot,
             let operators = info.operators else {
               subscriber(.error(ChannelError.notFoundError))
-              SVProgressHUD.dismiss()
+              self.view?.dismissHUD()
               return
           }
           
@@ -193,10 +193,10 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
             )
           )
           subscriber(.success(nil))
-          SVProgressHUD.dismiss()
+          self.view?.dismissHUD()
         }, onError: { (error) in
           subscriber(.error(error))
-          SVProgressHUD.dismiss()
+          self.view?.dismissHUD()
         })
       
       return Disposables.create{

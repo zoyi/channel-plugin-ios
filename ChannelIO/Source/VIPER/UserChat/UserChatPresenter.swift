@@ -9,7 +9,7 @@
 import RxSwift
 import ReSwift
 import UIKit
-import SVProgressHUD
+import JGProgressHUD
 import Photos
 import AVKit
 
@@ -352,14 +352,14 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   }
   
   func didClickOnMarketingToSupportBotButton() {
-    SVProgressHUD.show()
+    self.view?.showHUD()
     self.interactor?
       .startMarketingToSupportBot()
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { _ in
-        SVProgressHUD.dismiss()
+        self.view?.dismissHUD()
       }, onError: { [weak self] (error) in
-        SVProgressHUD.dismiss()
+        self?.view?.dismissHUD()
         self?.view?.display(error: error.localizedDescription, visible: true)
       }).disposed(by: self.disposeBag)
   }
@@ -447,22 +447,22 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       view?.present(controller, animated: true, completion: nil)
     } else {
       guard let file = file else { return }
-      SVProgressHUD.showProgress(0)
+      self.view?.showProgressHUD(progress: 0)
       file
         .download()
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (fileURL, progress) in
           if let fileURL = fileURL {
-            SVProgressHUD.dismiss()
+            self?.view?.dismissHUD()
             self?.router?.pushFileView(with: fileURL, from: view)
           }
           if progress < 1 {
-            SVProgressHUD.showProgress(progress)
+            self?.view?.showProgressHUD(progress: progress)
           }
-        }, onError: { (error) in
-          SVProgressHUD.dismiss()
-        }, onCompleted: {
-          SVProgressHUD.dismiss()
+        }, onError: { [weak self] (error) in
+          self?.view?.dismissHUD()
+        }, onCompleted: { [weak self] in
+          self?.view?.dismissHUD()
         }).disposed(by: self.disposeBag)
     }
   }

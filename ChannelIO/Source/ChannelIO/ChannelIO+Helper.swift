@@ -8,8 +8,6 @@
 
 import RxSwift
 import RxSwiftExt
-import CRToast
-import SVProgressHUD
 
 extension ChannelIO {
   
@@ -29,24 +27,11 @@ extension ChannelIO {
       mainStore.unsubscribe(subscriber)
     }
     
-    let toastOptions:[AnyHashable: Any] = [
-      kCRToastNotificationPresentationTypeKey: CRToastPresentationType.cover.rawValue,
-      kCRToastNotificationTypeKey: CRToastType.navigationBar.rawValue,
-      kCRToastAnimationInDirectionKey: CRToastAnimationDirection.top.rawValue,
-      kCRToastAnimationOutDirectionKey: CRToastAnimationDirection.top.rawValue,
-      kCRToastBackgroundColorKey: CHColors.yellow,
-      kCRToastTextColorKey: UIColor.white,
-      kCRToastFontKey: UIFont.boldSystemFont(ofSize: 13)
-    ]
-    
     ChannelIO.reset()
   
     let subscriber = CHPluginSubscriber()
     mainStore.subscribe(subscriber)
     ChannelIO.subscriber = subscriber
-    
-    CRToastManager.setDefaultOptions(toastOptions)
-    SVProgressHUD.setDefaultStyle(.dark)
   }
 
   internal class func bootChannel(profile: Profile? = nil) -> Observable<BootResponse> {
