@@ -22,11 +22,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#if os(iOS)
 import UIKit
 import WebKit
 
-public protocol YoutubePlayerViewDelegate: class {
+public protocol YoutubePlayerViewDelegate: NSObject {
   /// Invoked when the player view is ready to receive API calls.
   ///
   /// - Parameter playerView: The `YoutubePlayerView` instance that has become ready.
@@ -798,5 +797,3 @@ extension YoutubePlayerView {
     }
   }
 }
-
-#endif
