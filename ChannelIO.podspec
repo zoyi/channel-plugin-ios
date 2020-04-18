@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
   s.dependency 'Alamofire', '~> 5.0'
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
   s.dependency 'MGSwipeTableCell'
-  s.dependency 'SVProgressHUD'
+  s.dependency 'JGProgressHUD'
   s.dependency 'NotificationBannerSwift'
   s.dependency 'PhoneNumberKit', '~> 3.0'
   s.dependency 'SDWebImage', '~> 5.0'

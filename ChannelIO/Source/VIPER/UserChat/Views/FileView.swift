@@ -7,7 +7,6 @@
 
 import Alamofire
 import NVActivityIndicatorView
-import SVProgressHUD
 import UIKit
 
 final class FileView: BaseView {

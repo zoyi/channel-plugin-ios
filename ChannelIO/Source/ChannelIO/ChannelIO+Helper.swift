@@ -8,7 +8,6 @@
 
 import RxSwift
 import RxSwiftExt
-import SVProgressHUD
 
 extension ChannelIO {
   
@@ -33,8 +32,6 @@ extension ChannelIO {
     let subscriber = CHPluginSubscriber()
     mainStore.subscribe(subscriber)
     ChannelIO.subscriber = subscriber
-    
-    SVProgressHUD.setDefaultStyle(.dark)
   }
 
   internal class func bootChannel(profile: Profile? = nil) -> Observable<BootResponse> {

@@ -9,7 +9,7 @@
 import UIKit
 import ReSwift
 import RxSwift
-import SVProgressHUD
+import JGProgressHUD
 import SnapKit
 import Alamofire
 
@@ -101,6 +101,13 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal var errorFiles: [ChatFileQueueItem] = []
   internal var loadingFile: ChatFileQueueItem?
   internal var waitingFileCount: Int = 0
+  
+  let progressHud = JGProgressHUD(style: .dark).then {
+    $0.indicatorView = JGProgressHUDPieIndicatorView()
+    $0.progress = 0
+  }
+  
+  private let hud = JGProgressHUD(style: .dark)
 
   let disposeBag = DisposeBag()
 
@@ -641,6 +648,20 @@ extension UserChatView {
   
   @objc internal func keyboardChange(notification: Notification) {
     self.adjustTableViewInsetIfneeded(userChat: self.userChat)
+  }
+  
+  func showProgressHUD(progress: Float) {
+    self.progressHud.setProgress(progress, animated: true)
+    self.progressHud.show(in: self.view)
+  }
+  
+  func showHUD() {
+    self.hud.show(in: self.view)
+  }
+  
+  func dismissHUD() {
+    self.progressHud.dismiss()
+    self.hud.dismiss()
   }
 }
 

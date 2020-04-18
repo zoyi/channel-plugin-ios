@@ -9,7 +9,7 @@
 import UIKit
 import RxSwift
 import SnapKit
-import SVProgressHUD
+import JGProgressHUD
 
 class LoungeView: BaseViewController, LoungeViewProtocol {
   struct Metrics {
@@ -39,6 +39,8 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   var dismissButton = CHButtonFactory.dismiss().then {
     $0.alpha = 1
   }
+  
+  private let hud = JGProgressHUD(style: .dark)
   
   var disposeBag = DisposeBag()
   
@@ -229,8 +231,7 @@ extension LoungeView {
   }
   
   func displayReady() {
-    //self.contentView.isHidden = false
-    SVProgressHUD.dismiss()
+    self.hud.dismiss()
   }
   
   func displayHeader(with model: LoungeHeaderViewModel) {
@@ -260,6 +261,14 @@ extension LoungeView {
     self.headerView.displayError()
     self.mainView.displayError()
     self.externalView.displayError()
+  }
+  
+  func showHUD() {
+    self.hud.show(in: self.view)
+  }
+  
+  func dismissHUD() {
+    self.hud.dismiss()
   }
 }
 
