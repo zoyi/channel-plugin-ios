@@ -88,7 +88,7 @@
 		3964D97B2410F910005B1282 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3964D97A2410F910005B1282 /* AlertView.swift */; };
 		3964D97D2410F939005B1282 /* AlertItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3964D97C2410F939005B1282 /* AlertItemView.swift */; };
 		3964D97F2410F951005B1282 /* AlertCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3964D97E2410F951005B1282 /* AlertCompletionView.swift */; };
-		3965BB04244A366C009B84FE /* CustomBannerColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3965BB03244A366C009B84FE /* CustomBannerColors.swift */; };
+		3965BB0B244D8082009B84FE /* JGProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3965BB0A244D8082009B84FE /* JGProgressHUD.framework */; };
 		39711A8923FABF36004F56D0 /* ChatBotStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39711A8823FABF36004F56D0 /* ChatBotStartView.swift */; };
 		398205D423C5C99E008814B4 /* AttachmentFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */; };
 		398205D623C5D62E008814B4 /* InAppMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398205D523C5D62E008814B4 /* InAppMediaView.swift */; };
@@ -475,7 +475,6 @@
 		65CD481821F9BDBF001F0113 /* TableViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD481721F9BDBF001F0113 /* TableViewAnimator.swift */; };
 		65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962962166205E0032F5C5 /* Alamofire.framework */; };
 		65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A7216620600032F5C5 /* CHDwifft.framework */; };
-		65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A52166205F0032F5C5 /* CRToast.framework */; };
 		65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962992166205E0032F5C5 /* MGSwipeTableCell.framework */; };
 		65D3563521BA4BD4001D6A30 /* NVActivityIndicatorView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962B4216620610032F5C5 /* NVActivityIndicatorView.framework */; };
 		65D3563721BA4BD4001D6A30 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629B2166205E0032F5C5 /* ObjectMapper.framework */; };
@@ -488,7 +487,6 @@
 		65D3563F21BA4BD4001D6A30 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2259629E2166205F0032F5C5 /* SnapKit.framework */; };
 		65D3564021BA4BD4001D6A30 /* SocketIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962B2216620610032F5C5 /* SocketIO.framework */; };
 		65D3564121BA4BD4001D6A30 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AB216620600032F5C5 /* Starscream.framework */; };
-		65D3564221BA4BD4001D6A30 /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962A9216620600032F5C5 /* SVProgressHUD.framework */; };
 		65D3564321BA4BD4001D6A30 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225962AD216620600032F5C5 /* SwiftyJSON.framework */; };
 		65D358CD21BE4E1F001D6A30 /* CHLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D358CC21BE4E1F001D6A30 /* CHLink.swift */; };
 		65D358DC21BE58B9001D6A30 /* ChannelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D2AA741E24AE06006FEE22 /* ChannelIO.framework */; };
@@ -541,16 +539,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9C0951DD23D5643A00DE5799 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -662,7 +650,8 @@
 		3964D97A2410F910005B1282 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		3964D97C2410F939005B1282 /* AlertItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertItemView.swift; sourceTree = "<group>"; };
 		3964D97E2410F951005B1282 /* AlertCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertCompletionView.swift; sourceTree = "<group>"; };
-		3965BB03244A366C009B84FE /* CustomBannerColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBannerColors.swift; sourceTree = "<group>"; };
+		3965BB07244D8078009B84FE /* NotificationBanner.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationBanner.framework; path = Carthage/Build/iOS/NotificationBanner.framework; sourceTree = "<group>"; };
+		3965BB0A244D8082009B84FE /* JGProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JGProgressHUD.framework; path = Carthage/Build/iOS/JGProgressHUD.framework; sourceTree = "<group>"; };
 		39711A8823FABF36004F56D0 /* ChatBotStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStartView.swift; sourceTree = "<group>"; };
 		398205D323C5C99E008814B4 /* AttachmentFileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentFileInfoView.swift; sourceTree = "<group>"; };
 		398205D523C5D62E008814B4 /* InAppMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMediaView.swift; sourceTree = "<group>"; };
@@ -1106,7 +1095,6 @@
 				65581E631E7BDCDB008B8C70 /* MediaPlayer.framework in Frameworks */,
 				65D3562A21BA4BD4001D6A30 /* Alamofire.framework in Frameworks */,
 				65D3562C21BA4BD4001D6A30 /* CHDwifft.framework in Frameworks */,
-				65D3562F21BA4BD4001D6A30 /* CRToast.framework in Frameworks */,
 				65D3563421BA4BD4001D6A30 /* MGSwipeTableCell.framework in Frameworks */,
 				65D3563521BA4BD4001D6A30 /* NVActivityIndicatorView.framework in Frameworks */,
 				65D3563721BA4BD4001D6A30 /* ObjectMapper.framework in Frameworks */,
@@ -1118,10 +1106,10 @@
 				65D3563D21BA4BD4001D6A30 /* RxSwift.framework in Frameworks */,
 				65D3563E21BA4BD4001D6A30 /* SDWebImage.framework in Frameworks */,
 				65D3563F21BA4BD4001D6A30 /* SnapKit.framework in Frameworks */,
+				3965BB0B244D8082009B84FE /* JGProgressHUD.framework in Frameworks */,
 				65D3564021BA4BD4001D6A30 /* SocketIO.framework in Frameworks */,
 				9C0951DF23D5644C00DE5799 /* SDWebImageMapKit.framework in Frameworks */,
 				65D3564121BA4BD4001D6A30 /* Starscream.framework in Frameworks */,
-				65D3564221BA4BD4001D6A30 /* SVProgressHUD.framework in Frameworks */,
 				65D3564321BA4BD4001D6A30 /* SwiftyJSON.framework in Frameworks */,
 				65581E611E7BDCC4008B8C70 /* CFNetwork.framework in Frameworks */,
 				65581E5F1E7BDCBD008B8C70 /* Photos.framework in Frameworks */,
@@ -1148,6 +1136,8 @@
 		143D7E321E24DBE40095961F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3965BB0A244D8082009B84FE /* JGProgressHUD.framework */,
+				3965BB07244D8078009B84FE /* NotificationBanner.framework */,
 				9C0951DE23D5644C00DE5799 /* SDWebImageMapKit.framework */,
 				9C0951DA23D5643A00DE5799 /* SDWebImageWebPCoder.framework */,
 				65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */,
@@ -1787,7 +1777,6 @@
 				6517FC38229CF55E00B64DB4 /* UIView+Extensions.swift */,
 				9C41611D22F1F21D0035232D /* UIColor+Additions.swift */,
 				22423DD023D69B3000E909DD /* UIResponder+Extensions.swift */,
-				3965BB03244A366C009B84FE /* CustomBannerColors.swift */,
 			);
 			name = Extensions;
 			path = Source/Extensions;
@@ -2284,7 +2273,6 @@
 				14D2AA721E24AE06006FEE22 /* Resources */,
 				65F77B061E80E479001E8FBA /* ShellScript */,
 				394C5AF723C6F0AA00E17BE7 /* Download file types and image assets */,
-				9C0951DD23D5643A00DE5799 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2817,7 +2805,6 @@
 				3931CAE523C3335D005E8444 /* FileCellModel.swift in Sources */,
 				39F4B9EE23C42CC00043B25A /* EpsilonTransition.swift in Sources */,
 				6512BA0E2271772000757CB2 /* NavigationAvatarView.swift in Sources */,
-				3965BB04244A366C009B84FE /* CustomBannerColors.swift in Sources */,
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
 				9C0951D423D54A3C00DE5799 /* CHPAttributes.swift in Sources */,
 				9C0951D123D54A3C00DE5799 /* CHCodeParser.swift in Sources */,
@@ -3116,7 +3103,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(SRCROOT)/Carthage/Build/iOS";
 				LIBRARY_SEARCH_PATHS = "";
-				MARKETING_VERSION = 7.0.5;
+				MARKETING_VERSION = 7.0.6;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -3160,7 +3147,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(SRCROOT)/Carthage/Build/iOS";
 				LIBRARY_SEARCH_PATHS = "";
-				MARKETING_VERSION = 7.0.5;
+				MARKETING_VERSION = 7.0.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

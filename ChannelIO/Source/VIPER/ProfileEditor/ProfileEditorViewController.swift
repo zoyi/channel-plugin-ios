@@ -173,10 +173,10 @@ class ProfileEditorViewController: BaseViewController {
         ChannelIO.delegate?.onChangeProfile?(key: key, value: user?.profile?[key])
         mainStore.dispatch(UpdateUser(payload: user))
         if let error = error {
-          CustomFloatingBanner(
-            title: error.errorDescription ?? error.localizedDescription,
-            style: .warning
-          ).show()
+          CHNotification.shared.display(
+            message: error.errorDescription ?? error.localizedDescription,
+            config: CHNotificationConfiguration.warningServerErrorConfig
+          )
         } else {
           _ = self?.navigationController?.popViewController(animated: true)
         }

@@ -10,7 +10,6 @@ github "zoyi/Dwifft"
 github "Alamofire/Alamofire" ~> 5.0.2
 github "socketio/socket.io-client-swift" ~> 15.0.0
 github "MortimerGoro/MGSwipeTableCell" ~> 1.6.8
-github "Daltron/NotificationBanner" ~> 3.0.4
 github "JonasGessner/JGProgressHUD"
 github "marmelroy/PhoneNumberKit" ~> 3.0.0
 github "rs/SDWebImage" ~> 5.0.0

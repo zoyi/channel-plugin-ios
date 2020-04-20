@@ -156,10 +156,10 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
           return
         }
         
-        CustomFloatingBanner(
-          title: error.errorDescription ?? error.localizedDescription,
-          style: .warning
-        ).show()
+        CHNotification.shared.display(
+          message: error.errorDescription ?? error.localizedDescription,
+          config: CHNotificationConfiguration.warningServerErrorConfig
+        )
       }, onError: { (error) in
         hud.dismiss()
       }).disposed(by: self.disposeBag)

@@ -63,6 +63,19 @@ struct CHNotificationConfiguration {
       actionImage: CHAssets.getImage(named: "refresh")
     )
   }
+  
+  static var warningServerErrorConfig: CHNotificationConfiguration {
+    return CHNotificationConfiguration(
+      textColor: .white,
+      font: UIFont.boldSystemFont(ofSize: 13),
+      numberOfLines: 2,
+      backgroundColor: CHColors.yellowishOrange,
+      timeout: 3,
+      alpha: 1.f,
+      margin: 2.f,
+      actionable: false
+    )
+  }
 }
 
 class CHNotification {
@@ -84,7 +97,6 @@ class CHNotification {
     notificationView.configure(config)
     notificationView.refreshView.signalForClick()
       .subscribe(onNext: { [weak self] (_) in
-        //notificationView.refreshView.rotate()
         self?.refreshSignal.accept(nil)
       })
       .disposed(by: self.disposeBag)
@@ -116,8 +128,6 @@ class CHNotification {
   }
   
   @objc func dismiss() {
-    //self.notificationView?.refreshView.stopRotating()
-    
     UIView.animate(withDuration: 0.6, animations: { [weak self] in
       self?.notificationView?.alpha = 0
     }) { [weak self] (completed) in
