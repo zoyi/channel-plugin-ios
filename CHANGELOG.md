@@ -1,3 +1,9 @@
+# 7.0.6
+## Bug fixes
+* Changed thirdparty library from SVProgressHUD to JGProgressHUD
+* Remove CRToast
+* Fixed some objective-c issue
+
 # 7.0.5
 ## Bug fixes
 * Fixed launcher window cut off issue
