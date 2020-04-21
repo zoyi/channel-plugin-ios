@@ -21,8 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     registerForRemoteNotification(application)
     ChannelIO.initialize(application)
-    let coder = SDImageWebPCoder.shared
-    SDImageCodersManager.shared.addCoder(coder)
     
     return true
   }

@@ -72,6 +72,7 @@ class MediaCollectionViewCell: BaseCollectionViewCell {
     case .image:
       self.imageView.sd_setImage(with: model.thumbUrl) { _, error, _, _ in
         if let error = error {
+          dlog("CollectionView setImage error: \(error.localizedDescription), thumbUrl: \(String(describing: model.thumbUrl))")
         }
       }
     case .video:
