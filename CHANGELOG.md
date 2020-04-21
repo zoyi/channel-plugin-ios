@@ -1,3 +1,7 @@
+# 7.0.7
+## Updates
+* Add some debug log
+
 # 7.0.6
 ## Bug fixes
 * Changed thirdparty library from SVProgressHUD to JGProgressHUD
