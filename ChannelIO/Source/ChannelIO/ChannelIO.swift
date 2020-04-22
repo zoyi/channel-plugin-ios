@@ -145,9 +145,15 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
-    
     let coder = SDImageWebPCoder.shared
     SDImageCodersManager.shared.addCoder(coder)
+  }
+  
+  @available(iOS 13.0, *)
+  @objc
+  public class func initializeWindow(with scene: UIWindowScene) -> UIWindow? {
+    ChannelIO.launcherWindow = LauncherWindow(windowScene: scene)
+    return ChannelIO.launcherWindow
   }
   
   /**
@@ -186,6 +192,16 @@ public final class ChannelIO: NSObject {
           PrefStore.setChannelPluginSettings(pluginSetting: settings)
           AppManager.shared.registerPushToken()
           AppManager.shared.displayMarketingIfNeeeded()
+          
+          if #available(iOS 13.0, *) {
+            if ChannelIO.launcherWindow == nil,
+              let window = CHUtils
+                .getWindowsOnScenes()?
+                .filter({ $0 is LauncherWindow })
+                .first as? LauncherWindow {
+              ChannelIO.launcherWindow = window
+            }
+          }
           
           if ChannelIO.launcherWindow == nil {
             ChannelIO.launcherWindow = LauncherWindow()

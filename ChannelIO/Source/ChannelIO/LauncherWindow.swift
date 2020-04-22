@@ -34,6 +34,33 @@ final class LauncherWindow: UIWindow {
     self.hostKeyWindow = CHUtils.getKeyWindow()
     self.initWindowSettings()
   }
+  
+  @available(iOS 13.0, *)
+  override init(windowScene: UIWindowScene) {
+    super.init(windowScene: windowScene)
+    
+    let defaultSize = UIScreen.main.bounds.size
+    var y = UIApplication.shared.statusBarFrame.height
+    
+    var bounds = CGRect(
+      x: 0, y: y,
+      width: defaultSize.width,
+      height: defaultSize.height - y
+    )
+    
+    if let viewController = CHUtils.getTopController() {
+      y += viewController.navigationController?.navigationBar.bounds.height ?? 0
+      bounds = CGRect(
+        x: 0, y: y,
+        width: defaultSize.width,
+        height: defaultSize.height - y
+      )
+    }
+    self.frame = bounds
+    self.windowScene = windowScene
+    self.hostKeyWindow = CHUtils.getKeyWindow()
+    self.initWindowSettings()
+  }
 
   required init?(coder aDecoder: NSCoder) {
     fatalError()
