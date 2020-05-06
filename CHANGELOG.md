@@ -1,3 +1,7 @@
+# 7.0.9
+## Updates
+* Update Rx version because of UIWebview deprecated
+
 # 7.0.8
 ## Bug fixes
 * Fixed not showing launcher button on multi window envirnment(with SceneDelegate). Please check 'https://developers.channel.io/docs/ios-installation' if you use SceneDelegate.
