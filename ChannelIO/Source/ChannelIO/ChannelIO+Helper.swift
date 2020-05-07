@@ -200,9 +200,6 @@ extension ChannelIO {
     guard ChannelIO.inAppNotificationView != nil else { return }
     
     dispatch {
-      if ChannelIO.launcherVisible == true {
-        ChannelIO.launcherView?.show(animated: true)
-      }
       mainStore.dispatch(RemovePush())
       ChannelIO.inAppNotificationView?.removeView(animated: true)
       ChannelIO.inAppNotificationView = nil
