@@ -329,7 +329,6 @@ public final class ChannelIO: NSObject {
       launcherView.buttonView
         .signalForClick()
         .subscribe(onNext: { _ in
-          ChannelIO.hideNotification()
           ChannelIO.open(animated: true)
         }).disposed(by: disposeBag)
       
@@ -390,6 +389,7 @@ public final class ChannelIO: NSObject {
         return
       }
       
+      ChannelIO.hideNotification()
       ChannelIO.launcherView?.isHidden = true
       ChannelIO.delegate?.willShowMessenger?()
       ChannelIO.hostTopControllerName = "\(type(of: topController))"
@@ -433,6 +433,8 @@ public final class ChannelIO: NSObject {
     guard ChannelIO.isValidStatus else { return }
     guard let topController = CHUtils.getTopController() else { return }
     
+    ChannelIO.hideNotification()
+    ChannelIO.launcherView?.isHidden = true
     ChannelIO.hostTopControllerName = "\(type(of: topController))"
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
