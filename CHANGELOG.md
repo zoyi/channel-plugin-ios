@@ -1,3 +1,7 @@
+# 7.0.10
+## Updates
+* Fixed logic so that in-app push disappears when Open, OpenChat function is called
+
 # 7.0.9
 ## Updates
 * Update Rx version because of UIWebview deprecated
