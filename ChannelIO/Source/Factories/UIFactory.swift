@@ -24,6 +24,13 @@ struct UIFactory {
     return style
   }
   
+  static var actionButtonParagraphStyle: NSParagraphStyle {
+    let style = NSMutableParagraphStyle()
+    style.alignment = .left
+    style.minimumLineHeight = 15
+    return style
+  }
+  
   static var onlyEmojiParagraphStyle: NSParagraphStyle {
     let style = NSMutableParagraphStyle()
     style.alignment = .left

@@ -13,11 +13,19 @@ enum StringTagType : String {
 }
 
 extension NSAttributedString {
-  func addFont(_ font: UIFont, color: UIColor, on range: NSRange) -> NSAttributedString {
+  func addFont(
+    _ font: UIFont,
+    color: UIColor,
+    style: NSParagraphStyle,
+    on range: NSRange) -> NSAttributedString {
     let attributedText = NSMutableAttributedString(attributedString: self)
-    attributedText.addAttributes([
-      .foregroundColor: color,
-      .font: font], range: range)
+    attributedText.addAttributes(
+    [.paragraphStyle: style,
+     .foregroundColor: color,
+     .font: font,
+     .baselineOffset: (style.minimumLineHeight - font.lineHeight)/4],
+      range: range
+    )
     return attributedText
   }
   

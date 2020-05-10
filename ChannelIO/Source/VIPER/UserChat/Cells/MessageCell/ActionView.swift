@@ -44,6 +44,7 @@ class ActionButton: UIButton {
       let text = self.text?.addFont(
         UIFont.systemFont(ofSize: 15),
         color: color,
+        style: UIFactory.actionButtonParagraphStyle,
         on: NSRange(location:0, length: self.text?.length ?? 0))
       
       self.setAttributedTitle(text, for: .highlighted)
@@ -85,7 +86,9 @@ class ActionButton: UIButton {
     self.text = self.text?.addFont(
       UIFont.systemFont(ofSize: 15),
       color: CHColors.dark80,
-      on: NSRange(location:0, length: button.text?.length ?? 0))
+      style: UIFactory.actionButtonParagraphStyle,
+      on: NSRange(location:0, length: button.text?.length ?? 0)
+    )
     
     let layout = ActionViewMarginLayout()
     
