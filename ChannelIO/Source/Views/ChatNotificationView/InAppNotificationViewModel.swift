@@ -68,21 +68,23 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
       )
       let transformer = CustomBlockTransform(config: config)
       let result = transformer.parser.parse(blocks: push.blocks)
-      if result.string.containsOnlyEmoji {
-        result.addAttribute(
-          .font,
-          value: UIFont.systemFont(ofSize: fontSize),
-          range: NSRange(location: 0, length: result.string.utf16.count)
-        )
-      }
+      let font = UIFont.systemFont(ofSize: fontSize)
+      result.addAttributes(
+        [.font: font,
+         .paragraphStyle: UIFactory.pushParagraphStyle,
+         .baselineOffset: (UIFactory.pushParagraphStyle.minimumLineHeight - font.lineHeight) / 4
+        ]
+        ,range: NSRange(location: 0, length: result.string.utf16.count)
+      )
       self.message = result
     } else if let webPage = push.webPage {
       let text = webPage.title ?? webPage.url?.absoluteString ?? ""
       let attributedText = NSMutableAttributedString(string: text)
-      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
+      let font = UIFont.systemFont(ofSize: self.mobileExposureType == .fullScreen ? 14.f : 13.f)
       attributedText.addAttributes(
-        [.font: UIFont.systemFont(ofSize: fontSize),
-         .paragraphStyle: UIFactory.pushParagraphStyle
+        [.font: font,
+         .paragraphStyle: UIFactory.pushParagraphStyle,
+         .baselineOffset: (UIFactory.pushParagraphStyle.minimumLineHeight - font.lineHeight) / 4
         ],
         range: NSRange(location: 0, length: text.count)
       )
