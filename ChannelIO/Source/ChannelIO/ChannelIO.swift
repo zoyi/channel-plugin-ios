@@ -604,7 +604,7 @@ public final class ChannelIO: NSObject {
     let userId = PrefStore.getCurrentUserId() ?? ""
     let channelId = PrefStore.getCurrentChannelId() ?? ""
     
-    if personType == "User" {
+    if personType == PersonType.user.rawValue {
       return personId == userId && pushChannelId == channelId
     }
     
