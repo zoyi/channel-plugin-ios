@@ -1,3 +1,10 @@
+# 7.0.12
+## Bug fixes
+* Fixed pad actionsheet crash issue
+* Fixed token not delete issue
+* Fixed push ack not send issue
+* Fixed in-app-push giant emoji height bug
+
 # 7.0.11
 ## Bug fixes
 * Fixed wrong size when supportbot button has only emoji
