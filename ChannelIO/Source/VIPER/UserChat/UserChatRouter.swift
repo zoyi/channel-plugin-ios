@@ -132,6 +132,19 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
       )
     )
     
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      if let popoverController = alertView.popoverPresentationController, let view = view {
+        popoverController.sourceView = view.view
+        popoverController.sourceRect = CGRect(
+          x: view.view.bounds.midX,
+          y: view.view.bounds.midY,
+          width: 0,
+          height: 0
+        )
+        popoverController.permittedArrowDirections = []
+      }
+    }
+    
     CHUtils.getTopNavigation()?.present(alertView, animated: true, completion: nil)
     return self.assetsSubject
   }
