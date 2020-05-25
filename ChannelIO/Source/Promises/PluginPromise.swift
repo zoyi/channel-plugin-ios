@@ -55,7 +55,7 @@ struct PluginPromise {
 
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let req = AF
-        .request(RestRouter.UnregisterToken(key))
+        .request(RestRouter.UnregisterToken("ios-\(key)"))
         .validate(statusCode: 200..<300)
         .response { response in
           if let error = response.error {
