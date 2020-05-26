@@ -1,3 +1,7 @@
+# 7.0.13
+## Bug fixes
+* Fixed supprotBot Button on lastline didn't click sometimes issue  
+
 # 7.0.12
 ## Bug fixes
 * Fixed pad actionsheet crash issue
