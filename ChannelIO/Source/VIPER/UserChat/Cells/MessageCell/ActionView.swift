@@ -243,7 +243,7 @@ class ActionView: BaseView {
       let width = size.width + Metrics.sideMargin * 2
       let height = size.height + Metrics.topBottomMargin * 2
       
-      if layout.widthIncludeMargins < cx + width {
+      if layout.widthIncludeMargins - (Metrics.sideMargin * 2) < cx + width {
         cy += height + Metrics.itemBetweenMargin
         cx = width  + Metrics.itemBetweenMargin
       } else {
