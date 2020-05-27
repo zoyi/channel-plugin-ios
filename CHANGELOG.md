@@ -1,3 +1,7 @@
+# 7.0.14
+## Bug fixes
+* Fixed an issue that always has a click event even if the plugin button is not visible
+
 # 7.0.13
 ## Bug fixes
 * Fixed supprotBot Button on lastline didn't click sometimes issue  
