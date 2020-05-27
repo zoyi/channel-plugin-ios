@@ -390,7 +390,7 @@ public final class ChannelIO: NSObject {
       }
       
       ChannelIO.hideNotification()
-      ChannelIO.launcherView?.isHidden = true
+      ChannelIO.launcherView?.hide(animated: true)
       ChannelIO.delegate?.willShowMessenger?()
       ChannelIO.hostTopControllerName = "\(type(of: topController))"
       
@@ -434,7 +434,7 @@ public final class ChannelIO: NSObject {
     guard let topController = CHUtils.getTopController() else { return }
     
     ChannelIO.hideNotification()
-    ChannelIO.launcherView?.isHidden = true
+    ChannelIO.launcherView?.hide(animated: true)
     ChannelIO.hostTopControllerName = "\(type(of: topController))"
     ChannelIO.showUserChat(userChatId: chatId, animated: animated)
   }
@@ -625,6 +625,8 @@ public final class ChannelIO: NSObject {
   public class func handlePushNotification(_ userInfo:[AnyHashable : Any], completion: (() -> Void)? = nil) {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
     guard let userChatId = userInfo["chatId"] as? String else { return }
+    
+    dump(userInfo)
     
     //NOTE: if push was received on background, just send ack to the server
     if !ChannelIO.willBecomeActive {
