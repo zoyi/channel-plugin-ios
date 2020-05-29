@@ -35,6 +35,7 @@ Pod::Spec.new do |s|
       'ChannelIO/Assets/*'
     ]
   }
+  s.resources = 'ChannelIO/Assets/*'
   s.swift_version = '5.0'
 
   s.frameworks = 'CoreTelephony'
