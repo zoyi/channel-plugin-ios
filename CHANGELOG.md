@@ -1,3 +1,7 @@
+# 7.0.15
+## Updates
+* Add resoures on podspec because of flutter asset not displaying issue
+
 # 7.0.14
 ## Bug fixes
 * Fixed an issue that always has a click event even if the plugin button is not visible
