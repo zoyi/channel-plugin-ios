@@ -39,7 +39,7 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
     
   case let action as UpdateLoungeInfo:
     if let bot = action.supportBotEntryInfo?.supportBot {
-      _ = state?.upsertSupportBots(bots: [bot])
+      _ = state?.upsertSupportBot(with: bot)
     }
     
     if let bots = action.userChats.bots {
