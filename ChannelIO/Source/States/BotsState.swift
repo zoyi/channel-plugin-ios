@@ -10,7 +10,7 @@ import ReSwift
 
 struct BotsState: StateType {
   var botDictionary: [String: CHBot] = [:]
-  var supportBots: [CHSupportBot] = []
+  var supportBot: CHSupportBot?
   
   func getDefaultBot() -> CHBot? {
     return self.findBy(name: mainStore.state.plugin.botName)
@@ -37,7 +37,7 @@ struct BotsState: StateType {
   }
   
   func findSupportBot() -> CHSupportBot? {
-    return self.supportBots.first
+    return self.supportBot
   }
   
   mutating func upsert(bots: [CHBot]) -> BotsState {
@@ -51,20 +51,14 @@ struct BotsState: StateType {
     return self
   }
   
-  mutating func upsertSupportBots(bots: [CHSupportBot]) -> BotsState {
-    bots.forEach { (bot) in
-      if let index = self.supportBots.firstIndex(where: { $0.id == bot.id }) {
-        self.supportBots[index] = bot
-      } else {
-        self.supportBots.insert(bot, at: 0)
-      }
-    }
+  mutating func upsertSupportBot(with bot: CHSupportBot) -> BotsState {
+    self.supportBot = bot
     return self
   }
   
   mutating func clear() -> BotsState {
     self.botDictionary.removeAll()
-    self.supportBots.removeAll()
+    self.supportBot = nil
     return self
   }
 }
