@@ -1,3 +1,7 @@
+# 7.0.16
+## Bug fixes
+* Fixed support bot change issue when state is unstable
+
 # 7.0.15
 ## Updates
 * Add resoures on podspec because of flutter asset not displaying issue
