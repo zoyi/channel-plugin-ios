@@ -11,7 +11,7 @@ import Reusable
 import SnapKit
 
 class WebPageMessageCell: MessageCell {
-  struct WebMetrics {
+  private struct WebMetrics {
     static let webViewTranslateTop = 3.f
     static let resendButtonRight = -4.f
     static let resendButtonSide = 40.f

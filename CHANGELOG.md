@@ -1,3 +1,7 @@
+# 7.0.17
+## Bug fixes
+* Fixed issue where support bot first messages containing webpage were not displayed correctly.
+
 # 7.0.16
 ## Bug fixes
 * Fixed support bot change issue when state is unstable
