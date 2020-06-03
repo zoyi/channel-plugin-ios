@@ -169,6 +169,7 @@ extension CHMessage: Mappable {
     chatId: String,
     blocks: [CHMessageBlock],
     files: [CHFile] = [],
+    webPage: CHWebPage? = nil,
     type: MessageType,
     entity: CHEntity? = nil,
     action: CHAction? = nil,
@@ -189,6 +190,7 @@ extension CHMessage: Mappable {
     self.progress = 1
     self.blocks = blocks
     self.files = files
+    self.webPage = webPage
   }
   
   init(
