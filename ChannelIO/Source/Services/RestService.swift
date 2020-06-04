@@ -249,7 +249,7 @@ enum RestRouter: URLRequestConvertible {
     }
     
     if let url = parameters?["url"] as? ParametersType {
-      request = try URLEncoding.default.encode(request, with: url)
+      request = try URLEncoding.init(boolEncoding: .literal).encode(request, with: url)
     }
     
     if let query = parameters?["query"] as? ParametersType {

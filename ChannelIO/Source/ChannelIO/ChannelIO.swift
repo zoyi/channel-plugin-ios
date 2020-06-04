@@ -458,6 +458,7 @@ public final class ChannelIO: NSObject {
     profile: [String: Any]? = nil,
     profileOnce: [String: Any]? = nil,
     tags: [String]? = nil,
+    unsubscribed: String? = nil,
     language: String? = nil,
     completion: ((User?, Error?) -> Void)? = nil) {
     let profile: [String: Any?]? = profile?.mapValues { (value) -> Any? in
@@ -467,10 +468,19 @@ public final class ChannelIO: NSObject {
       return value is NSNull ? nil : value
     }
     
+    var unsubscribedBool: Bool? = nil
+    
+    if unsubscribed?.lowercased() == "true" {
+      unsubscribedBool = true
+    } else if unsubscribed?.lowercased() == "false" {
+      unsubscribedBool = false
+    }
+    
     ChannelIO.updateUser(
       profile: profile,
       profileOnce: profileOnce,
       tags: tags,
+      unsubscribed: unsubscribedBool,
       language: language,
       completion: completion
     )
@@ -500,6 +510,7 @@ public final class ChannelIO: NSObject {
     profile: [String: Any?]? = nil,
     profileOnce: [String: Any?]? = nil,
     tags: [String]? = nil,
+    unsubscribed: Bool? = nil,
     language: String? = nil,
     completion: ((User?, Error?) -> Void)? = nil) {
     CHUser
@@ -507,6 +518,7 @@ public final class ChannelIO: NSObject {
         profile: profile,
         profileOnce: profileOnce,
         tags: tags,
+        unsubscribed: unsubscribed,
         language: language
       )
       .subscribe(onNext: { (user, error) in

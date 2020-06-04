@@ -48,6 +48,13 @@ struct SettingOptionModel {
         model.option = .switchable
         model.value = mainStore.state.userChatsState.showCompletedChats
         models.append(model)
+      case .marketingUnsubscribed:
+        var model = SettingOptionModel()
+        model.title = CHAssets.localized("ch.settings.unsubscribed")
+        model.type = option
+        model.option = .switchable
+        model.value = mainStore.state.user.unsubscribed
+        models.append(model)
       }
     }
     return models
@@ -58,6 +65,7 @@ enum SettingOptionType {
   case language
   case closeChatVisibility
   case translation
+  case marketingUnsubscribed
 }
 
 enum SettingOptionValueType {

@@ -28,6 +28,7 @@ struct CHUser: CHEntity {
   var segment: String?
   var avatarUrl: String?
   var mobileNumber: String?
+  var unsubscribed: Bool = false
   }
 
 extension CHUser: Mappable {
@@ -63,6 +64,7 @@ extension CHUser: Mappable {
     segment         <- map["rfsegment"]
     avatarUrl       <- map["avatarUrl"]
     mobileNumber    <- map["mobileNumber"]
+    unsubscribed    <- map["unsubscribed"]
   }
 }
 
@@ -84,7 +86,8 @@ func ==(lhs: CHUser, rhs: CHUser) -> Bool {
     lhs.alert == rhs.alert &&
     lhs.unread == rhs.unread &&
     lhs.createdAt == rhs.createdAt &&
-    lhs.updatedAt == rhs.updatedAt
+    lhs.updatedAt == rhs.updatedAt &&
+    lhs.unsubscribed == rhs.unsubscribed
 }
 
 extension CHUser {
@@ -133,15 +136,21 @@ extension CHUser {
     return UserPromise.updateUser(language: language)
   }
   
+  static func updateUnsubscribed(with unsubscribed: Bool) -> Observable<(CHUser?, ChannelError?)> {
+    return UserPromise.updateUser(unsubscribed: unsubscribed)
+  }
+  
   static func updateUser(
     profile: [String: Any?]? = nil,
     profileOnce: [String: Any?]? = nil,
     tags: [String]? = nil,
+    unsubscribed: Bool? = nil,
     language: String? = nil) -> Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(
       profile: profile,
       profileOnce: profileOnce,
       tags: tags,
+      unsubscribed: unsubscribed,
       language: language
     )
   }
