@@ -55,6 +55,7 @@ extension ChannelIO {
       let params = BootParamBuilder()
         .with(memberId: settings.memberId)
         .with(profile: profile)
+        .with(unsubscribed: settings.unsubscribed)
         .build()
       
       AppManager.shared

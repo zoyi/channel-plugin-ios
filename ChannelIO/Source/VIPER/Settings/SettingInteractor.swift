@@ -18,12 +18,16 @@ class SettingInteractor: SettingInteractorProtocol {
   var plugin: CHPlugin? = nil
   var user: CHUser? = nil
   var showCloseChat: Bool? = nil
+  var userUnsubscribed: Bool? = nil
   var showTranslation: Bool? = nil
   var language: CHLocale? = nil
   
   var updateSignal = PublishRelay<CHUser>()
   var updateOptionSignal = PublishRelay<Any?>()
   var updateGeneralSignal = PublishRelay<(CHChannel, CHPlugin)>()
+  
+  private var isUpdatingUnsubscribed = false
+  private let disposeBag = DisposeBag()
   
   func subscribeDataSource() {
     mainStore.subscribe(self)
@@ -53,6 +57,24 @@ class SettingInteractor: SettingInteractorProtocol {
     return self.updateSignal.asObservable()
   }
   
+  func updateUserUnsubscribed(with unsubscribed: Bool) {
+    self.isUpdatingUnsubscribed = true
+    CHUser
+    .updateUnsubscribed(with: unsubscribed)
+    .observeOn(MainScheduler.instance)
+    .subscribe(onNext: { (user, error) in
+      mainStore.dispatch(UpdateUser(payload: user))
+      self.isUpdatingUnsubscribed = false
+      
+      guard let error = error else { return }
+      
+      CHNotification.shared.display(
+        message: error.errorDescription ?? error.localizedDescription,
+        config: CHNotificationConfiguration.warningServerErrorConfig
+      )
+    }).disposed(by: self.disposeBag)
+  }
+  
   func updateOptions() -> Observable<Any?> {
     return self.updateOptionSignal.asObservable()
   }
@@ -71,18 +93,20 @@ extension SettingInteractor: StoreSubscriber {
       self.updateGeneralSignal.accept((state.channel, state.plugin))
     }
     
-    if self.user == nil || self.user != state.user {
-      self.user = state.user
-      self.updateSignal.accept(state.user)
-    }
-    
     if self.language != ChannelIO.settings?.language ||
       self.showTranslation != state.userChatsState.showTranslation ||
-      self.showCloseChat != state.userChatsState.showCompletedChats {
+      self.showCloseChat != state.userChatsState.showCompletedChats ||
+      self.userUnsubscribed != state.user.unsubscribed {
       self.language = ChannelIO.settings?.language
       self.showTranslation = state.userChatsState.showTranslation
       self.showCloseChat = state.userChatsState.showCompletedChats
+      self.userUnsubscribed = state.user.unsubscribed
       self.updateOptionSignal.accept(nil)
+    }
+    
+    if (self.user == nil || self.user != state.user) && !self.isUpdatingUnsubscribed {
+      self.user = state.user
+      self.updateSignal.accept(state.user)
     }
   }
 }
