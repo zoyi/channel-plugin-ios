@@ -28,6 +28,7 @@ struct CHUser: CHEntity {
   var segment: String?
   var avatarUrl: String?
   var mobileNumber: String?
+  var systemLanguage: CHLocaleString?
   }
 
 extension CHUser: Mappable {
@@ -63,6 +64,7 @@ extension CHUser: Mappable {
     segment         <- map["rfsegment"]
     avatarUrl       <- map["avatarUrl"]
     mobileNumber    <- map["mobileNumber"]
+    systemLanguage  <- map["systemLanguage"]
   }
 }
 

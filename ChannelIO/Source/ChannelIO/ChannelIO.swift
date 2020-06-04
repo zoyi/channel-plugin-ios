@@ -206,7 +206,7 @@ public final class ChannelIO: NSObject {
           if ChannelIO.launcherWindow == nil {
             ChannelIO.launcherWindow = LauncherWindow()
           }
-          
+          ChannelIO.settings?.appLocale = CHUser.get().systemLanguage
           mainStore.dispatch(ReadyToShow())
           if ChannelIO.launcherVisible {
             ChannelIO.show(animated: true)
