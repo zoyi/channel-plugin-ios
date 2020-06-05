@@ -40,6 +40,9 @@ public class User: NSObject {
   @objc public let avatarUrl: String?
   @objc public let profile: [String : Any]?
   @objc public let alert: Int
+  @objc public let tags: [String]?
+  @objc public let systemLanguage: String?
+  @objc public let language: String?
   
   init(with user: CHUser) {
     self.id = user.id
@@ -47,6 +50,9 @@ public class User: NSObject {
     self.avatarUrl = user.avatarUrl
     self.profile = user.profile
     self.alert = user.alert ?? 0
+    self.tags = user.tags
+    self.systemLanguage = user.systemLanguage?.rawValue
+    self.language = user.language
   }
   
   @objc
@@ -56,7 +62,9 @@ public class User: NSObject {
       "name": self.name,
       "avatarUrl": self.avatarUrl ?? "",
       "profile": self.profile ?? "",
-      "alert": self.alert
+      "alert": self.alert,
+      "systemLanguage": self.systemLanguage ?? "",
+      "language": self.language ?? ""
     ]
   }
 }
