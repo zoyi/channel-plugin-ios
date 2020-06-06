@@ -66,7 +66,7 @@ public class User: NSObject {
       "profile": self.profile ?? "",
       "alert": self.alert,
       "systemLanguage": self.systemLanguage ?? "",
-      "language": self.language ?? ""
+      "language": self.language ?? "",
       "unsubscribed": self.unsubscribed
     ]
   }

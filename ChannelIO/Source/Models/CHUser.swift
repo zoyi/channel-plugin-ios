@@ -118,6 +118,7 @@ extension CHUser {
   
   static func updateUser(param: UpdateUserParam) -> Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(param: param)
+  }
 
   static func updateUnsubscribed(with unsubscribed: Bool) -> Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(unsubscribed: unsubscribed)
