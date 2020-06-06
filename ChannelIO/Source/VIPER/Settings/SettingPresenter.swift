@@ -35,7 +35,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         let settingOptions = SettingOptionModel.generate(
-          options: [.language, .closeChatVisibility, .translation])
+          options: [.language, .closeChatVisibility, .translation, .marketingUnsubscribed])
         self?.view?.displayOptions(with: settingOptions)
       }).disposed(by: self.disposeBag)
     
@@ -66,7 +66,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
   }
   
   func prepare() {
-    let settingOptions = SettingOptionModel.generate(options: [.language, .closeChatVisibility, .translation])
+    let settingOptions = SettingOptionModel.generate(options: [.language, .closeChatVisibility, .translation, .marketingUnsubscribed])
     self.view?.displayOptions(with: settingOptions)
 
     self.interactor?.subscribeDataSource()
@@ -85,6 +85,9 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     }
     else if item.type == .closeChatVisibility, let nextValue = nextValue as? Bool {
       mainStore.dispatch(UpdateVisibilityOfCompletedChats(show: nextValue))
+    }
+    else if item.type == .marketingUnsubscribed, let nextValue = nextValue as? Bool {
+      self.interactor?.updateUserUnsubscribed(with: nextValue)
     }
   }
   

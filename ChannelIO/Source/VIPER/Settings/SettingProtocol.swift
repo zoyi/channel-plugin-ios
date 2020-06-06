@@ -45,6 +45,7 @@ protocol SettingInteractorProtocol {
   func updateGeneral() -> Observable<(CHChannel, CHPlugin)>
   func updateUser() -> Observable<CHUser>
   func updateOptions() -> Observable<Any?>
+  func updateUserUnsubscribed(with unsubscribed: Bool)
 }
 
 protocol SettingRouterProtocol {

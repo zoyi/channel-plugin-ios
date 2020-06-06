@@ -104,6 +104,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   
   @objc public var stage: ChannelStage = .production
   
+  var unsubscribed: Bool? = nil
   var appLocale: CHLocaleString? = nil
   
   @objc
@@ -221,6 +222,13 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc
   public func set(language: CHLocale) -> ChannelPluginSettings {
     self.language = language
+    return self
+  }
+  
+  @discardableResult
+  @objc
+  public func set(unsubscribed: Bool) -> ChannelPluginSettings {
+    self.unsubscribed = unsubscribed
     return self
   }
 }
