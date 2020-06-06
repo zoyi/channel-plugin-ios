@@ -54,6 +54,7 @@ extension ChannelIO {
 
       let params = BootParamBuilder()
         .with(memberId: settings.memberId)
+        .with(memberHash: settings.memberHash)
         .with(profile: profile)
         .with(unsubscribed: settings.unsubscribed)
         .build()

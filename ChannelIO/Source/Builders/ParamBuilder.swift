@@ -17,6 +17,7 @@ protocol ParamBuilder {
 class BootParamBuilder: ParamBuilder {
   var data = [String: Any]()
   var memberId: String? = nil
+  var memberHash: String? = nil
   var profile: Profile?
   var sessionJWT: String?
   var veilId: String?
@@ -25,6 +26,7 @@ class BootParamBuilder: ParamBuilder {
   struct ParamKey {
     static let profile = "profile"
     static let memberId = "memberId"
+    static let memberHash = "memberHash"
     static let session = "sessionJWT"
     static let veilId = "veilId"
     static let unsubscribed = "unsubscribed"
@@ -39,6 +41,12 @@ class BootParamBuilder: ParamBuilder {
   @discardableResult
   func with(memberId: String?) -> BootParamBuilder {
     self.memberId = memberId
+    return self
+  }
+  
+  @discardableResult
+  func with(memberHash: String?) -> BootParamBuilder {
+    self.memberHash = memberHash
     return self
   }
   
@@ -90,6 +98,10 @@ class BootParamBuilder: ParamBuilder {
     
     if let memberId = self.memberId {
       data[ParamKey.memberId] = memberId
+    }
+    
+    if let memberHash = self.memberHash {
+      data[ParamKey.memberHash] = memberHash
     }
     
     if let veilId = self.veilId {
