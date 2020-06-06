@@ -159,8 +159,6 @@
 "ch.integrations.title" = "他の方法でお問い合わせ";
 "ch.integrations.copy_link.success" = "クリップボードにコピーされました";
 "ch.lounge.see_all" = "一覧";
-"ch.navigation.next_operation.hour_left" = "営業時間%d時間前";
-"ch.navigation.next_operation.minutes_left" = "営業時間%d分前";
 "ch.business_hours" = "営業時間";
 "ch.settings.options" = "オプション";
 "ch.settings.my_profile" = "マイプロフィール";
@@ -171,7 +169,6 @@
 "ch.lounge.proceeding_chat" = "会話中のチャット";
 "ch.lounge.show_previous_chats" = "過去の%s件のチャットをみる";
 "ch.message_stream.message.deleted_message" = "削除されたメッセージです";
-"ch.navigation.next_operation" = "営業時間 %s前";
 "ch.minute" = "分";
 "ch.hour" = "時間";
 "ch.day" = "日";
@@ -180,3 +177,6 @@
 "ch.common_error" = "処理に失敗しました。再試行してください";
 "ch.lounge.show_previous_chats_more" = "%s件以上の問合せ履歴を見る";
 "ch.chat.marketing_to_support_bot" = "チャットをはじめる";
+"ch.navigation.next_operation.minutes_left" = "営業時間%d分後";
+"ch.navigation.next_operation.hour_left" = "営業時間%d時間後";
+"ch.settings.unsubscribed" = "マーケティング通知を受信拒否";

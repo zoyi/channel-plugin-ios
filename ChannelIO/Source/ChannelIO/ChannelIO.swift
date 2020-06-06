@@ -452,7 +452,7 @@ public final class ChannelIO: NSObject {
     }
     ChannelIO.updateUser(with: profile, completion: completion)
   }
-  
+
   /**
    *  Update user profile
    *
@@ -478,9 +478,7 @@ public final class ChannelIO: NSObject {
     param: UpdateUserParam,
     completion: ((User?, Error?) -> Void)? = nil) {
     CHUser
-      .updateUser(
-      param: param
-      )
+      .updateUser(param: param)
       .subscribe(onNext: { (user, error) in
         guard let user = user else {
           completion?(nil, error)

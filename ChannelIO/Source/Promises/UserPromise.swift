@@ -54,6 +54,7 @@ struct UserPromise {
     profile: [String: Any?]? = nil,
     profileOnce: [String: Any?]? = nil,
     tags: [String]? = nil,
+    unsubscribed: Bool? = nil,
     language: String? = nil) -> Observable<(CHUser?, ChannelError?)> {
     return Observable.create { (subscriber) -> Disposable in
       var params = [
@@ -71,6 +72,10 @@ struct UserPromise {
       
       if let tags = tags {
         params["body"]?["tags"] = tags
+      }
+      
+      if let unsubscribed = unsubscribed {
+        params["body"]?["unsubscribed"] = unsubscribed
       }
       
       if let language = language {

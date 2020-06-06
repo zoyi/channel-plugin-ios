@@ -154,8 +154,6 @@
 "ch.integrations.title" = "다른 방법으로 문의";
 "ch.integrations.copy_link.success" = "링크가 복사되었습니다!";
 "ch.lounge.see_all" = "전체 보기";
-"ch.navigation.next_operation.hour_left" = "%d시간 뒤 상담이 운영됩니다";
-"ch.navigation.next_operation.minutes_left" = "%d분 뒤 상담이 운영됩니다";
 "ch.business_hours" = "운영시간";
 "ch.settings.options" = "옵션";
 "ch.settings.my_profile" = "내 프로필 설정";
@@ -166,7 +164,6 @@
 "ch.lounge.proceeding_chat" = "진행중인 상담";
 "ch.lounge.show_previous_chats" = "%s건의 이전 상담보기";
 "ch.message_stream.message.deleted_message" = "삭제된 메시지입니다";
-"ch.navigation.next_operation" = "%s 뒤 상담이 운영됩니다";
 "ch.minute" = "분";
 "ch.hour" = "시간";
 "ch.day" = "일";
@@ -175,3 +172,6 @@
 "ch.common_error" = "처리하는데 실패했습니다. 다시 시도해주세요.";
 "ch.lounge.show_previous_chats_more" = "%s건 이상의 이전 상담보기";
 "ch.chat.marketing_to_support_bot" = "챗봇 시작하기";
+"ch.navigation.next_operation.minutes_left" = "%d분 뒤 상담이 운영됩니다";
+"ch.navigation.next_operation.hour_left" = "%d시간 뒤 상담이 운영됩니다";
+"ch.settings.unsubscribed" = "마케팅 메시지 수신거부";

@@ -43,6 +43,7 @@ public class User: NSObject {
   @objc public let tags: [String]?
   @objc public let systemLanguage: String?
   @objc public let language: String?
+  @objc public let unsubscribed: Bool
   
   init(with user: CHUser) {
     self.id = user.id
@@ -53,6 +54,7 @@ public class User: NSObject {
     self.tags = user.tags
     self.systemLanguage = user.systemLanguage?.rawValue
     self.language = user.language
+    self.unsubscribed = user.unsubscribed
   }
   
   @objc
@@ -65,6 +67,7 @@ public class User: NSObject {
       "alert": self.alert,
       "systemLanguage": self.systemLanguage ?? "",
       "language": self.language ?? ""
+      "unsubscribed": self.unsubscribed
     ]
   }
 }

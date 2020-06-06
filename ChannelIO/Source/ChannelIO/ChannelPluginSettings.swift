@@ -12,6 +12,7 @@ struct ChannelPluginSettingKey {
   static let pluginKey = "ch_pluginKey"
   static let legacy_userId = "ch_userId" //legacy
   static let memberId = "ch_memberId"
+  static let memberHash = "ch_memberHash"
   static let debugMode = "ch_debugMode"
   static let launcherConfig = "ch_launcherConfig"
   static let hideDefaultLauncher = "ch_hideDefaultLauncher"
@@ -59,6 +60,9 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   /* user id to distinguish normal user and anonymous user */
   @objc public var memberId: String? = nil
   
+  /* user id to distinguish normal user and anonymous user */
+  @objc public var memberHash: String? = nil
+  
   /* true if debug information to be printed in console. Default is false */
   @objc public var debugMode: Bool = false
   
@@ -104,6 +108,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   
   @objc public var stage: ChannelStage = .production
   
+  var unsubscribed: Bool? = nil
   var appLocale: CHLocaleString? = nil
   
   @objc
@@ -115,6 +120,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   public init(
     pluginKey: String,
     memberId: String? = nil,
+    memberHash: String? = nil,
     debugMode: Bool = false,
     launcherConfig: LauncherConfig? = nil,
     hideDefaultInAppPush: Bool = false,
@@ -124,6 +130,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     
     self.pluginKey = pluginKey
     self.memberId = memberId
+    self.memberHash = memberHash
     self.debugMode = debugMode
     self.launcherConfig = launcherConfig
     self.hideDefaultInAppPush = hideDefaultInAppPush
@@ -148,6 +155,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     let pluginKey = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.pluginKey) as? String ?? ""
     let memberId = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.legacy_userId) as? String ??
       aDecoder.decodeObject(forKey: ChannelPluginSettingKey.memberId) as? String
+    let memberHash = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.memberHash) as? String
     let debugMode = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.debugMode)
     let launcherConfig = aDecoder.decodeObject(forKey: ChannelPluginSettingKey.launcherConfig) as? LauncherConfig
     let hideDefaultInAppPush = aDecoder.decodeBool(forKey: ChannelPluginSettingKey.hideDefaultInAppPush)
@@ -157,6 +165,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     self.init(
       pluginKey: pluginKey,
       memberId: memberId,
+      memberHash: memberHash,
       debugMode: debugMode,
       launcherConfig: launcherConfig,
       hideDefaultInAppPush: hideDefaultInAppPush,
@@ -168,6 +177,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   public func encode(with aCoder: NSCoder) {
     aCoder.encode(self.pluginKey, forKey: ChannelPluginSettingKey.pluginKey)
     aCoder.encode(self.memberId, forKey: ChannelPluginSettingKey.memberId)
+    aCoder.encode(self.memberHash, forKey: ChannelPluginSettingKey.memberHash)
     aCoder.encode(self.debugMode, forKey: ChannelPluginSettingKey.debugMode)
     aCoder.encode(self.launcherConfig, forKey: ChannelPluginSettingKey.launcherConfig)
     aCoder.encode(self.hideDefaultInAppPush, forKey: ChannelPluginSettingKey.hideDefaultInAppPush)
@@ -179,6 +189,13 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc
   public func set(memberId: String?) -> ChannelPluginSettings {
     self.memberId = memberId
+    return self
+  }
+  
+  @discardableResult
+  @objc
+  public func set(memberHash: String?) -> ChannelPluginSettings {
+    self.memberHash = memberHash
     return self
   }
   
@@ -221,6 +238,13 @@ public class ChannelPluginSettings: NSObject, NSCoding {
   @objc
   public func set(language: CHLocale) -> ChannelPluginSettings {
     self.language = language
+    return self
+  }
+  
+  @discardableResult
+  @objc
+  public func set(unsubscribed: Bool) -> ChannelPluginSettings {
+    self.unsubscribed = unsubscribed
     return self
   }
 }

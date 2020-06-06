@@ -17,15 +17,19 @@ protocol ParamBuilder {
 class BootParamBuilder: ParamBuilder {
   var data = [String: Any]()
   var memberId: String? = nil
+  var memberHash: String? = nil
   var profile: Profile?
   var sessionJWT: String?
   var veilId: String?
+  var unsubscribed: Bool?
   
   struct ParamKey {
     static let profile = "profile"
     static let memberId = "memberId"
+    static let memberHash = "memberHash"
     static let session = "sessionJWT"
     static let veilId = "veilId"
+    static let unsubscribed = "unsubscribed"
   }
   
   @discardableResult
@@ -41,6 +45,12 @@ class BootParamBuilder: ParamBuilder {
   }
   
   @discardableResult
+  func with(memberHash: String?) -> BootParamBuilder {
+    self.memberHash = memberHash
+    return self
+  }
+  
+  @discardableResult
   func with(sessionJWT: String?) -> BootParamBuilder {
     self.sessionJWT = sessionJWT
     return self
@@ -49,6 +59,12 @@ class BootParamBuilder: ParamBuilder {
   @discardableResult
   func with(veilId: String?) -> BootParamBuilder {
     self.veilId = veilId
+    return self
+  }
+  
+  @discardableResult
+  func with(unsubscribed: Bool?) -> BootParamBuilder {
+    self.unsubscribed = unsubscribed
     return self
   }
   
@@ -84,10 +100,18 @@ class BootParamBuilder: ParamBuilder {
       data[ParamKey.memberId] = memberId
     }
     
+    if let memberHash = self.memberHash {
+      data[ParamKey.memberHash] = memberHash
+    }
+    
     if let veilId = self.veilId {
       data[ParamKey.veilId] = veilId
     } else if let veilId = PrefStore.getVeilId() {
       data[ParamKey.veilId] = veilId
+    }
+    
+    if let unsubscribed = self.unsubscribed {
+      data[ParamKey.unsubscribed] = unsubscribed
     }
     
     return ["url": data]
