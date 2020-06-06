@@ -120,7 +120,7 @@ class BootParamBuilder: ParamBuilder {
 
 public typealias UpdateUserParam = [String: Any]
 
-public class UpdateUserParamBuilder: NSObject, ParamBuilder {
+public class UpdateUserParamBuilder: ParamBuilder {
   private var params = [
     "body": [String: AnyObject?]()
   ]
@@ -134,19 +134,26 @@ public class UpdateUserParamBuilder: NSObject, ParamBuilder {
   
   @discardableResult
   public func with(profile: [String: Any?]?) -> UpdateUserParamBuilder {
-    self.params["body"]?["profile"] =  profile?.mapValues ({ (value) -> AnyObject? in return value as AnyObject? }) as AnyObject?
+    self.params["body"]?[ParamKey.profile] =  profile?
+      .mapValues { (value) -> AnyObject? in
+        return value as AnyObject?
+      } as AnyObject?
+    
     return self
   }
   
   @discardableResult
   public func with(profileOnce: [String: Any?]?) -> UpdateUserParamBuilder {
-    self.params["body"]?["profileOnce"] = profileOnce?.mapValues ({ (value) -> AnyObject? in return value as AnyObject? }) as AnyObject?
+    self.params["body"]?[ParamKey.profileOnce] = profileOnce?
+      .mapValues { (value) -> AnyObject? in
+        return value as AnyObject?
+      } as AnyObject?
     return self
   }
   
   @discardableResult
   public func with(tags: [String]?) -> UpdateUserParamBuilder {
-    self.params["body"]?["tags"] = tags as AnyObject?
+    self.params["body"]?[ParamKey.tags] = tags as AnyObject?
     return self
   }
   
@@ -163,7 +170,7 @@ public class UpdateUserParamBuilder: NSObject, ParamBuilder {
       locale = .english
     }
     
-    self.params["body"]?["language"] = locale.rawValue as AnyObject?
+    self.params["body"]?[ParamKey.language] = locale.rawValue as AnyObject?
     return self
   }
   
@@ -171,3 +178,99 @@ public class UpdateUserParamBuilder: NSObject, ParamBuilder {
     return self.params
   }
 }
+
+public class UpdateUserParamObjcBuilder: NSObject, ParamBuilder {
+  private var params = [
+    "body": [String: AnyObject?]()
+  ]
+  
+  private var profile:[String:AnyObject?] = [:]
+  private var profileOnce:[String:AnyObject?] = [:]
+  
+  private var hasProfile = false
+  private var hasProfileOnce = false
+  
+  private struct ParamKey {
+    static let profile = "profile"
+    static let profileOnce = "profileOnce"
+    static let tags = "tags"
+    static let language = "language"
+  }
+  
+  @discardableResult
+  @objc public func with(profileKey:String, value:AnyObject?) -> UpdateUserParamObjcBuilder {
+    self.hasProfile = true
+    self.profile[profileKey] = value
+    return self
+  }
+  
+  @discardableResult
+  @objc public func setProfileNil() -> UpdateUserParamObjcBuilder {
+    self.hasProfile = true
+    self.profile = [:]
+    return self
+  }
+  
+  @discardableResult
+  @objc public func with(profileOnceKey:String, value:AnyObject?) -> UpdateUserParamObjcBuilder {
+    self.hasProfileOnce = true
+    self.profileOnce[profileOnceKey] = value
+    return self
+  }
+  
+  @discardableResult
+  @objc public func setProfileOnceNil() -> UpdateUserParamObjcBuilder {
+    self.hasProfileOnce = true
+    self.profileOnce = [:]
+    return self
+  }
+  
+  @discardableResult
+  @objc
+  public func with(tags: [String]?) -> UpdateUserParamObjcBuilder {
+    self.params["body"]?[ParamKey.tags] = tags as AnyObject?
+    return self
+  }
+  
+  @discardableResult
+  @objc
+  public func with(language: CHLocale) -> UpdateUserParamObjcBuilder {
+    guard language != .device else { return self }
+    
+    var locale: CHLocaleString = .english
+    if language == .japanese {
+      locale = .japanese
+    } else if language == .korean {
+      locale = .korean
+    } else {
+      locale = .english
+    }
+    
+    self.params["body"]?[ParamKey.language] = locale.rawValue as AnyObject?
+    return self
+  }
+  
+  @objc
+  public func build() -> UpdateUserParam {
+    if self.hasProfile, self.profile.count != 0 {
+      self.params["body"]?[ParamKey.profile] = self.profile
+        .mapValues { (value) -> AnyObject? in
+          return value as AnyObject?
+        } as AnyObject?
+    } else if hasProfile, self.profile.count == 0 {
+      self.params["body"]?[ParamKey.profile] = nil as AnyObject?
+    }
+    
+    if self.hasProfileOnce, self.profileOnce.count != 0 {
+      self.params["body"]?[ParamKey.profileOnce] = self.profileOnce
+        .mapValues { (value) -> AnyObject? in
+          return value as AnyObject?
+        } as AnyObject?
+    } else if self.hasProfileOnce, self.profileOnce.count == 0 {
+      self.params["body"]?[ParamKey.profileOnce] = nil as AnyObject?
+    }
+    
+    return self.params
+  }
+}
+
