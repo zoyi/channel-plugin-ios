@@ -110,6 +110,36 @@ struct UserPromise {
     }
   }
   
+  static func updateUser(param: UpdateUserParam) -> Observable<(CHUser?, ChannelError?)> {
+    return Observable.create { (subscriber) -> Disposable in
+      let req = AF.request(RestRouter.UpdateUser(param as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
+        .responseJSON(completionHandler: { response in
+          switch response.result {
+          case .success(let data):
+            let json:JSON = JSON(data)
+            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
+              subscriber.onError(ChannelError.parseError)
+              return
+            }
+            subscriber.onNext((user, nil))
+            subscriber.onCompleted()
+          case .failure(let error):
+            if let error =  CHUtils.getServerErrorMessage(data: response.data)?.first {
+              subscriber.onNext((nil, ChannelError.serverError(msg: error)))
+            } else {
+              subscriber.onNext((nil, ChannelError.serverError(msg: error.localizedDescription)))
+            }
+            subscriber.onCompleted()
+          }
+        })
+
+      return Disposables.create {
+        req.cancel()
+      }
+    }
+  }
+  
   static func addTags(tags: [String]?) -> Observable<(CHUser?, ChannelError?)> {
     return Observable.create { (subscriber) -> Disposable in
       let params = [

@@ -40,6 +40,9 @@ public class User: NSObject {
   @objc public let avatarUrl: String?
   @objc public let profile: [String : Any]?
   @objc public let alert: Int
+  @objc public let tags: [String]?
+  @objc public let systemLanguage: String?
+  @objc public let language: String?
   @objc public let unsubscribed: Bool
   
   init(with user: CHUser) {
@@ -48,6 +51,9 @@ public class User: NSObject {
     self.avatarUrl = user.avatarUrl
     self.profile = user.profile
     self.alert = user.alert ?? 0
+    self.tags = user.tags
+    self.systemLanguage = user.systemLanguage?.rawValue
+    self.language = user.language
     self.unsubscribed = user.unsubscribed
   }
   
@@ -59,6 +65,8 @@ public class User: NSObject {
       "avatarUrl": self.avatarUrl ?? "",
       "profile": self.profile ?? "",
       "alert": self.alert,
+      "systemLanguage": self.systemLanguage ?? "",
+      "language": self.language ?? ""
       "unsubscribed": self.unsubscribed
     ]
   }

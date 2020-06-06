@@ -28,6 +28,9 @@ struct CHUser: CHEntity {
   var segment: String?
   var avatarUrl: String?
   var mobileNumber: String?
+  var tags: [String]?
+  var systemLanguage: CHLocaleString?
+  var language: String?
   var unsubscribed: Bool = false
   }
 
@@ -64,6 +67,9 @@ extension CHUser: Mappable {
     segment         <- map["rfsegment"]
     avatarUrl       <- map["avatarUrl"]
     mobileNumber    <- map["mobileNumber"]
+    tags            <- map["tags"]
+    systemLanguage  <- map["systemLanguage"]
+    language        <- map["language"]
     unsubscribed    <- map["unsubscribed"]
   }
 }
@@ -85,38 +91,12 @@ func ==(lhs: CHUser, rhs: CHUser) -> Bool {
     lhs.city == rhs.city &&
     lhs.alert == rhs.alert &&
     lhs.unread == rhs.unread &&
+    lhs.tags == rhs.tags &&
+    lhs.systemLanguage == rhs.systemLanguage &&
+    lhs.language == rhs.language &&
     lhs.createdAt == rhs.createdAt &&
     lhs.updatedAt == rhs.updatedAt &&
     lhs.unsubscribed == rhs.unsubscribed
-}
-
-extension CHUser {
-  var dict: [String: Any] {
-    var data = [String: Any]()
-    data["country"] = self.country
-    data["city"] = self.city
-    data["locale"] = self.locale
-    
-    if let alert = self.alert {
-      data["alert"] = alert
-    }
-    if let unread = self.unread {
-      data["unread"] = unread
-    }
-    if let profile = self.profile {
-      data["profile"] = profile
-    }
-    if let segment = self.segment {
-      data["rfsegment"] = segment
-    }
-    if let createdAt = self.createdAt {
-      data["createdAt"] = UInt64(createdAt.timeIntervalSince1970 * 1000)
-    }
-    if let updatedAt = self.updatedAt {
-      data["updatedAt"] = UInt64(updatedAt.timeIntervalSince1970 * 1000)
-    }
-    return data
-  }
 }
 
 extension CHUser {
@@ -136,6 +116,9 @@ extension CHUser {
     return UserPromise.updateUser(language: language)
   }
   
+  static func updateUser(param: UpdateUserParam) -> Observable<(CHUser?, ChannelError?)> {
+    return UserPromise.updateUser(param: param)
+
   static func updateUnsubscribed(with unsubscribed: Bool) -> Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(unsubscribed: unsubscribed)
   }

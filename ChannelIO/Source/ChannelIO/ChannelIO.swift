@@ -206,7 +206,7 @@ public final class ChannelIO: NSObject {
           if ChannelIO.launcherWindow == nil {
             ChannelIO.launcherWindow = LauncherWindow()
           }
-          
+          ChannelIO.settings?.appLocale = CHUser.get().systemLanguage
           mainStore.dispatch(ReadyToShow())
           if ChannelIO.launcherVisible {
             ChannelIO.show(animated: true)
@@ -452,40 +452,7 @@ public final class ChannelIO: NSObject {
     }
     ChannelIO.updateUser(with: profile, completion: completion)
   }
-  
-  @objc
-  public class func updateUser(
-    profile: [String: Any]? = nil,
-    profileOnce: [String: Any]? = nil,
-    tags: [String]? = nil,
-    unsubscribed: String? = nil,
-    language: String? = nil,
-    completion: ((User?, Error?) -> Void)? = nil) {
-    let profile: [String: Any?]? = profile?.mapValues { (value) -> Any? in
-      return value is NSNull ? nil : value
-    }
-    let profileOnce: [String: Any?]? = profileOnce?.mapValues { (value) -> Any? in
-      return value is NSNull ? nil : value
-    }
-    
-    var unsubscribedBool: Bool? = nil
-    
-    if unsubscribed?.lowercased() == "true" {
-      unsubscribedBool = true
-    } else if unsubscribed?.lowercased() == "false" {
-      unsubscribedBool = false
-    }
-    
-    ChannelIO.updateUser(
-      profile: profile,
-      profileOnce: profileOnce,
-      tags: tags,
-      unsubscribed: unsubscribedBool,
-      language: language,
-      completion: completion
-    )
-  }
-  
+
   /**
    *  Update user profile
    *
@@ -506,21 +473,12 @@ public final class ChannelIO: NSObject {
       }).disposed(by: disposeBag)
   }
   
+  @objc
   public class func updateUser(
-    profile: [String: Any?]? = nil,
-    profileOnce: [String: Any?]? = nil,
-    tags: [String]? = nil,
-    unsubscribed: Bool? = nil,
-    language: String? = nil,
+    param: UpdateUserParam,
     completion: ((User?, Error?) -> Void)? = nil) {
     CHUser
-      .updateUser(
-        profile: profile,
-        profileOnce: profileOnce,
-        tags: tags,
-        unsubscribed: unsubscribed,
-        language: language
-      )
+      .updateUser(param: param)
       .subscribe(onNext: { (user, error) in
         guard let user = user else {
           completion?(nil, error)

@@ -91,7 +91,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     let profile = Profile()
     profile.set(name: "TESTER")
     
-    ChannelIO.boot(with: settings, profile: profile) { (completion, guest) in
+    ChannelIO.boot(with: settings, profile: profile) { (completion, user) in
       
     }
   }

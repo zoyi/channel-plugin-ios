@@ -117,3 +117,57 @@ class BootParamBuilder: ParamBuilder {
     return ["url": data]
   }
 }
+
+public typealias UpdateUserParam = [String: Any]
+
+public class UpdateUserParamBuilder: NSObject, ParamBuilder {
+  private var params = [
+    "body": [String: AnyObject?]()
+  ]
+  
+  private struct ParamKey {
+    static let profile = "profile"
+    static let profileOnce = "profileOnce"
+    static let tags = "tags"
+    static let language = "language"
+  }
+  
+  @discardableResult
+  public func with(profile: [String: Any?]?) -> UpdateUserParamBuilder {
+    self.params["body"]?["profile"] =  profile?.mapValues ({ (value) -> AnyObject? in return value as AnyObject? }) as AnyObject?
+    return self
+  }
+  
+  @discardableResult
+  public func with(profileOnce: [String: Any?]?) -> UpdateUserParamBuilder {
+    self.params["body"]?["profileOnce"] = profileOnce?.mapValues ({ (value) -> AnyObject? in return value as AnyObject? }) as AnyObject?
+    return self
+  }
+  
+  @discardableResult
+  public func with(tags: [String]?) -> UpdateUserParamBuilder {
+    self.params["body"]?["tags"] = tags as AnyObject?
+    return self
+  }
+  
+  @discardableResult
+  public func with(language: CHLocale) -> UpdateUserParamBuilder {
+    guard language != .device else { return self }
+    
+    var locale: CHLocaleString = .english
+    if language == .japanese {
+      locale = .japanese
+    } else if language == .korean {
+      locale = .korean
+    } else {
+      locale = .english
+    }
+    
+    self.params["body"]?["language"] = locale.rawValue as AnyObject?
+    return self
+  }
+  
+  public func build() -> UpdateUserParam {
+    return self.params
+  }
+}
