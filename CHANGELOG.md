@@ -1,3 +1,9 @@
+# 7.0.18
+## Updates
+* Add memberHash on boot.
+* Add userUpdate function.
+* Add unsubscribed option on boot, userUpdate, settingView.
+
 # 7.0.17
 ## Bug fixes
 * Fixed issue where support bot first messages containing webpage were not displayed correctly.

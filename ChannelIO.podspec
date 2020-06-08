@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ChannelIO'
-  s.version          = '7.0.17'
+  s.version          = '7.1.0'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -43,19 +43,19 @@ Pod::Spec.new do |s|
   s.dependency 'Reusable', '~> 4.1'
   s.dependency 'SnapKit', '~> 5.0'
   s.dependency 'SwiftyJSON', '~> 5.0'
-  s.dependency 'ReSwift', '~> 4.0'
+  s.dependency 'ReSwift', '~> 5.0'
   s.dependency 'RxSwift', '~> 5.1'
   s.dependency 'RxCocoa', '~> 5.1'
-  s.dependency 'ObjectMapper', '~> 3.5'
+  s.dependency 'ObjectMapper', '~> 4.2'
   s.dependency 'NVActivityIndicatorView', '~> 4.7'
   s.dependency 'CHDwifft'
-  s.dependency 'Alamofire', '~> 5.0'
+  s.dependency 'Alamofire', '~> 5.2'
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
   s.dependency 'MGSwipeTableCell'
   s.dependency 'JGProgressHUD'
-  s.dependency 'PhoneNumberKit', '~> 3.0'
-  s.dependency 'SDWebImage', '~> 5.0'
+  s.dependency 'PhoneNumberKit', '~> 3.1'
+  s.dependency 'SDWebImage', '~> 5.8'
   s.dependency 'SDWebImageWebPCoder'
-  s.dependency 'RxSwiftExt', '~> 5.1'
+  s.dependency 'RxSwiftExt', '~> 5.2'
   s.dependency 'TLPhotoPicker'
 end
