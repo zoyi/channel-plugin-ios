@@ -240,6 +240,9 @@ extension CHPhoneField {
         }
         
         let pickerView = CountryCodePickerView(frame: (controller?.view.frame)!)
+        if #available(iOS 13.0, *) {
+          pickerView.overrideUserInterfaceStyle = .light
+        }
         
         pickerView.countries = self?.countries ?? []
         pickerView.pickedCode = self?.code ?? ""
