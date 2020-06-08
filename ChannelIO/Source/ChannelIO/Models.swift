@@ -65,6 +65,7 @@ public class User: NSObject {
       "avatarUrl": self.avatarUrl ?? "",
       "profile": self.profile ?? "",
       "alert": self.alert,
+      "tags": self.tags ?? [],
       "systemLanguage": self.systemLanguage ?? "",
       "language": self.language ?? "",
       "unsubscribed": self.unsubscribed
