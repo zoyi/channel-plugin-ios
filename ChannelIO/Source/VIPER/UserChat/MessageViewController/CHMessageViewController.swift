@@ -250,7 +250,7 @@ class CHMessageViewController: UIViewController {
   internal func cache() {
     guard let key = fullCacheKey else { return }
     let text = messageView.text.trimmingCharacters(in: .whitespacesAndNewlines)
-    let defaults = UserDefaults.standard
+    let defaults = PrefStore.getStorage()
     if text.isEmpty {
         defaults.removeObject(forKey: key)
     } else {
@@ -260,7 +260,7 @@ class CHMessageViewController: UIViewController {
 
   var cachedText: String? {
     guard let key = fullCacheKey else { return nil }
-    return UserDefaults.standard.string(forKey: key)
+    return PrefStore.getStorage().string(forKey: key)
   }
 
   func hideKeyboard() {

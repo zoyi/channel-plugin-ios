@@ -11,6 +11,7 @@ import ReSwift
 import RxSwift
 import UserNotifications
 import SDWebImageWebPCoder
+import Alamofire
 
 internal let mainStore = Store<AppState>(
   reducer: appReducer,
@@ -145,6 +146,7 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
+    PrefStore.migrateIfNeeded()
     let coder = SDImageWebPCoder.shared
     SDImageCodersManager.shared.addCoder(coder)
   }
@@ -566,19 +568,14 @@ public final class ChannelIO: NSObject {
    */
   @objc
   public class func isChannelPushNotification(_ userInfo:[AnyHashable: Any]) -> Bool {
-    guard let provider = userInfo["provider"] as? String, provider  == CHConstants.channelio else { return false }
-    guard let personType = userInfo["personType"] as? String else { return false }
-    guard let personId = userInfo["personId"] as? String else { return false }
-    guard let pushChannelId = userInfo["channelId"] as? String else { return false }
-
-    let userId = PrefStore.getCurrentUserId() ?? ""
-    let channelId = PrefStore.getCurrentChannelId() ?? ""
-    
-    if personType == PersonType.user.rawValue {
-      return personId == userId && pushChannelId == channelId
+    guard
+      let provider = userInfo["provider"] as? String,
+      provider  == CHConstants.channelio
+    else {
+      return false
     }
     
-    return false
+    return true
   }
   
   /**
@@ -595,8 +592,6 @@ public final class ChannelIO: NSObject {
   public class func handlePushNotification(_ userInfo:[AnyHashable : Any], completion: (() -> Void)? = nil) {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
     guard let userChatId = userInfo["chatId"] as? String else { return }
-    
-    dump(userInfo)
     
     //NOTE: if push was received on background, just send ack to the server
     if !ChannelIO.willBecomeActive {

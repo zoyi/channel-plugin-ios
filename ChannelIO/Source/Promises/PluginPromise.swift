@@ -173,6 +173,17 @@ struct PluginPromise {
       let req = AF
         .request(RestRouter.SendPushAck(chatId))
         .validate(statusCode: 200..<300)
+        .response { response in
+          if let error = CHUtils.getServerErrorMessage(data: response.data)?.first {
+            subscriber.onError(ChannelError.serverError(msg: error))
+          } else if let error = response.error {
+            subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
+          } else {
+            subscriber.onNext(true)
+            subscriber.onCompleted()
+          }
+        }
+        
         .responseJSON(completionHandler: { (response) in
           switch response.result {
           case .success(_):
