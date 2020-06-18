@@ -570,7 +570,9 @@ public final class ChannelIO: NSObject {
   public class func isChannelPushNotification(_ userInfo:[AnyHashable: Any]) -> Bool {
     guard
       let provider = userInfo["provider"] as? String,
-      provider  == CHConstants.channelio
+      let personType = userInfo["personType"] as? String,
+      provider  == CHConstants.channelio,
+      personType == PersonType.user.rawValue
     else {
       return false
     }
