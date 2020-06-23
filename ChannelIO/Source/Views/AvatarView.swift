@@ -27,6 +27,7 @@ class AvatarView: NeverClearView {
   let avatarImageView = SDAnimatedImageView().then {
     $0.clipsToBounds = true
     $0.backgroundColor = UIColor.white
+    $0.contentMode = .scaleAspectFill
   }
   
   let onlineView = UIView().then {
