@@ -103,6 +103,7 @@ extension ChannelIO {
         return
       }
       
+      ChannelIO.hideNotification()
       ChannelIO.launcherView?.hide(animated: false)
       mainStore.dispatch(ChatListIsVisible())
       
