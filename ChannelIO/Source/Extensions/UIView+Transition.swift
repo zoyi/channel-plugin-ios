@@ -59,8 +59,9 @@ internal extension UIView {
   }
   
   func hide(animated: Bool, completion: (() -> ())? = nil) {
-    if !animated {
+    guard animated else {
       self.alpha = 0
+      completion?()
       return
     }
 
