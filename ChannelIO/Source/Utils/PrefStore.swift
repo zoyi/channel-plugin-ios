@@ -30,50 +30,7 @@ class PrefStore {
         return PrefStore.userDefaults!
       }
     } else {
-      guard
-        let bundleId = Bundle.main.bundleIdentifier,
-        let group = UserDefaults(suiteName: "group.\(bundleId).channelio")
-      else {
-        return UserDefaults.standard
-      }
-      
-      return group
-    }
-  }
-  
-  static func migrateIfNeeded() {
-    guard
-      let bundleId = Bundle.main.bundleIdentifier,
-      let group = UserDefaults(suiteName: "group.\(bundleId).channelio")
-    else {
-      return
-    }
-    
-    let stringKeys = [
-      CHANNEL_ID_KEY, USER_ID_KEY, PUSH_OPTION_KEY, SESSION_JWT_KEY, VEIL_ID_KEY, MEMBER_ID_KEY
-    ]
-    
-    let boolKeys = [VISIBLE_CLOSED_USERCHAT_KEY, VISIBLE_TRANSLATION]
-    
-    let dataKeys = [CHANNEL_PLUGIN_SETTINGS_KEY]
-    
-    stringKeys.forEach {
-      group.set(UserDefaults.standard.string(forKey: $0), forKey: $0)
-      UserDefaults.standard.removeObject(forKey: $0)
-    }
-    
-    boolKeys.forEach {
-      if let value = UserDefaults.standard.object(forKey: $0) as? Bool {
-        group.set(value, forKey: $0)
-        UserDefaults.standard.removeObject(forKey: $0)
-      }
-    }
-    
-    dataKeys.forEach {
-      if let value = UserDefaults.standard.object(forKey: $0) as? Data {
-        group.set(value, forKey: $0)
-        UserDefaults.standard.removeObject(forKey: $0)
-      }
+      return UserDefaults.standard
     }
   }
   

@@ -146,7 +146,6 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
-    PrefStore.migrateIfNeeded()
     let coder = SDImageWebPCoder.shared
     SDImageCodersManager.shared.addCoder(coder)
   }
