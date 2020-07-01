@@ -213,6 +213,12 @@ public final class ChannelIO: NSObject {
             ChannelIO.show(animated: true)
           }
           completion?(.success, User(with: mainStore.state.user))
+          
+          // double boot handling when sdk push click
+          if let userChatId = PrefStore.getPushData()?["chatId"] as? String {
+            ChannelIO.showUserChat(userChatId: userChatId)
+          }
+          PrefStore.clearPushData()
         }, onError: { error in
           let code = (error as NSError).code
           if code == -1001 {
@@ -621,11 +627,10 @@ public final class ChannelIO: NSObject {
       settings.memberId = memberId
     }
     
-    ChannelIO.boot(with: settings, profile: profile) { (status, user) in
-      if status == .success {
-        ChannelIO.showUserChat(userChatId:userChatId)
-      }
-      completion?()
-    }
+    PrefStore.setPushData(userInfo: userInfo)
+    
+    // boot can stop because of multiple boot
+    ChannelIO.boot(with: settings, profile: profile)
+    completion?()
   }
 }

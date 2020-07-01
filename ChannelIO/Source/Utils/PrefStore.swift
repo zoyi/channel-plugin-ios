@@ -18,6 +18,7 @@ class PrefStore {
   static let SESSION_JWT_KEY = "CHPlugin_session_jwt"
   static let VEIL_ID_KEY = "CHPlugin_veil_id"
   static let MEMBER_ID_KEY = "CHPlugin_member_id"
+  static let PUSH_DATA = "CHPlugin_push_data"
   
   static var userDefaults: UserDefaults? = nil
   
@@ -154,7 +155,26 @@ class PrefStore {
     PrefStore.getStorage().synchronize()
   }
   
+  static func setPushData(userInfo: [AnyHashable : Any]) {
+    let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: userInfo)
+    PrefStore.getStorage().set(encodedData, forKey: PUSH_DATA)
+    PrefStore.getStorage().synchronize()
+  }
+  
+  static func getPushData() -> [AnyHashable : Any]? {
+    if let data = PrefStore.getStorage().object(forKey: PUSH_DATA) as? Data {
+      return NSKeyedUnarchiver.unarchiveObject(with: data) as? [AnyHashable : Any]
+    }
+    return nil
+  }
+  
+  static func clearPushData() {
+    PrefStore.getStorage().removeObject(forKey: PUSH_DATA)
+    PrefStore.getStorage().synchronize()
+  }
+  
   static func clearAllLocalData() {
+    PrefStore.clearCurrentUserId()
     PrefStore.clearCurrentMemberId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()
