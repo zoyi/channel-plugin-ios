@@ -1,4 +1,12 @@
-# 7.0.18
+# 7.1.1
+## Bug fixes
+* Add misssing permission on photo and camera
+* Fixed issue which avatar image was distorted
+* Fixed hide function completion not working when animated option is ture
+* Add existing inappNotification hide logic when showUserChat function called
+* Fixed sdk push click logic because of double boot
+
+# 7.1.0
 ## Updates
 * Add memberHash on boot.
 * Add userUpdate function.
