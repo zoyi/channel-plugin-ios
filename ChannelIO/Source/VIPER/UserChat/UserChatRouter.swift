@@ -17,19 +17,6 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
   private var assetsSubject = PublishSubject<[PHAsset]>()
   private var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
   
-  private let alert = AlertViewController(
-    title: nil,
-    message: CHAssets.localized("ch.permission.denied"),
-    type: .normal
-  ).then {
-    $0.addAction(
-      AlertAction(title: CHAssets.localized("ch.button_confirm"), type: .normal, handler: { _ in
-        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-      })
-    )
-  }
-  
   static func createModule(userChatId: String?, text: String = "") -> UserChatView {
     let view = UserChatView()
     
@@ -128,14 +115,23 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
       UIAlertAction(
         title: CHAssets.localized("ch.camera"),
         style: .default) { [weak self] _ in
-        self?.presentCameraPicker(from: view)
+          self?.checkCameraPermission() { [weak self] in
+            self?.checkPhotoLibraryPermission() { [weak self] in
+              dispatch {
+                self?.presentCameraPicker(from: view)
+              }
+            }
+          }
       }
     )
     alertView.addAction(
       UIAlertAction(
         title: CHAssets.localized("ch.photo.album"),
-        style: .default) { [weak self] _ in
-        self?.presentPhotoPicker(from: view)
+        style: .default
+      ) { [weak self] _ in
+        self?.checkPhotoLibraryPermission() { [weak self] in
+          self?.presentPhotoPicker(from: view)
+        }
       }
     )
     alertView.addAction(
@@ -160,6 +156,81 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     
     CHUtils.getTopNavigation()?.present(alertView, animated: true, completion: nil)
     return self.assetsSubject
+  }
+  
+  private func checkPhotoLibraryPermission(completion: (() -> Void)? = nil) {
+    dispatch {
+      let status = PHPhotoLibrary.authorizationStatus()
+      switch status {
+      case .authorized: completion?()
+      case .denied, .restricted :
+        dispatch {
+          self.showPermissionError()
+        }
+      case .notDetermined:
+        PHPhotoLibrary.requestAuthorization { [weak self] status in
+          guard let self = self else { return }
+          switch status {
+          case .authorized:
+            completion?()
+          case .denied, .restricted:
+            dispatch {
+              self.showPermissionError()
+            }
+          case .notDetermined: break
+          default:
+            break
+          }
+        }
+      default:
+        break
+      }
+    }
+  }
+  
+  private func checkCameraPermission(completion: (() -> Void)? = nil) {
+    dispatch {
+      let status = AVCaptureDevice.authorizationStatus(for: .video)
+      switch status {
+      case .authorized: completion?()
+      case .denied, .restricted :
+        dispatch {
+          self.showPermissionError()
+        }
+      case .notDetermined:
+        AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+          guard let self = self else { return }
+          guard granted else {
+            dispatch {
+              self.showPermissionError()
+            }
+            return
+          }
+          completion?()
+        }
+      default: break
+      }
+    }
+  }
+  
+  private func showPermissionError() {
+    dispatch {
+      let permissionAlert = AlertViewController(
+        title: nil,
+        message: CHAssets.localized("ch.permission.denied"),
+        type: .normal
+      ).then {
+        $0.addAction(
+          AlertAction(title: CHAssets.localized("ch.button_confirm"), type: .normal, handler: { _ in
+            guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+          })
+        )
+      }
+      
+      self.assetsSubject.onError(ChannelError.init(msg: "permission denied"))
+      CHUtils.getTopController()?.present(permissionAlert, animated: true, completion: nil)
+    }
   }
   
   func showRetryActionSheet(from view: UIView?) -> Observable<Bool?> {
@@ -202,88 +273,63 @@ extension UserChatRouter: UIImagePickerControllerDelegate, UINavigationControlle
     max: Int = 20,
     from view: UIViewController?
   ) {
-    let viewController = TLPhotosPickerViewController(
-      withPHAssets: { (assets) in
-        self.assetsSubject.onNext(assets)
-        self.assetsSubject.onCompleted()
-      },
-      didCancel: nil
-    )
-    
-    var configure = TLPhotosPickerConfigure()
-    configure.maxSelectedAssets = max
-    viewController.configure = configure
-    
-    viewController.handleNoAlbumPermissions = { [weak self] picker in
-      guard let self = self else { return }
-      dispatch {
-        picker.dismiss(animated: true, completion: {
-          CHUtils.getTopController()?.present(self.alert, animated: true, completion: nil)
-        })
+    dispatch {
+      let viewController = TLPhotosPickerViewController(
+        withPHAssets: { (assets) in
+          self.assetsSubject.onNext(assets)
+          self.assetsSubject.onCompleted()
+        },
+        didCancel: nil
+      )
+      
+      var configure = TLPhotosPickerConfigure()
+      configure.maxSelectedAssets = max
+      viewController.configure = configure
+      
+      viewController.handleNoAlbumPermissions = { [weak self] picker in
+        guard let self = self else { return }
+        dispatch {
+          picker.dismiss(animated: true, completion: { [weak self] in
+            dispatch {
+              self?.showPermissionError()
+            }
+          })
+        }
+        
       }
       
-    }
-    
-    viewController.handleNoCameraPermissions = { [weak self] picker in
-      guard let self = self else { return }
-      dispatch {
-        picker.dismiss(animated: true, completion: {
-          CHUtils.getTopController()?.present(self.alert, animated: true, completion: nil)
-        })
+      viewController.handleNoCameraPermissions = { [weak self] picker in
+        guard let self = self else { return }
+        dispatch {
+          picker.dismiss(animated: true, completion: { [weak self] in
+            dispatch {
+              self?.showPermissionError()
+            }
+          })
+        }
       }
+      
+      view?.present(viewController, animated: true, completion: nil)
     }
-    
-    view?.present(viewController, animated: true, completion: nil)
   }
   
   private func presentCameraPicker(from view: UIViewController?) {
-    let controller = UIImagePickerController()
-    controller.sourceType = .camera
-    controller.allowsEditing = true
-    controller.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
-    controller.videoQuality = .typeMedium
-    controller.videoMaximumDuration = 60
+    dispatch {
+      let controller = UIImagePickerController()
+      controller.sourceType = .camera
+      controller.allowsEditing = true
+      controller.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
+      controller.videoQuality = .typeMedium
+      controller.videoMaximumDuration = 60
 
-    controller.delegate = self
-    view?.present(controller, animated: true, completion: nil)
+      controller.delegate = self
+      view?.present(controller, animated: true, completion: nil)
+    }
   }
   
   func imagePickerController(
     _ picker: UIImagePickerController,
     didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-    // 사진 권한이 없고 카메라권한만 있을때 카메라로 찍고 사진사용 누를시 권한이 없어서 crash 나서 추가함(By Jam)
-    let status = PHPhotoLibrary.authorizationStatus()
-    switch status {
-    case .authorized: break
-    case .denied, .restricted :
-      dispatch {
-        picker.dismiss(animated: true, completion: { [weak self] in
-          guard let self = self else { return }
-          self.assetsSubject.onError(ChannelError.init(msg: "permission denied"))
-          CHUtils.getTopController()?.present(self.alert, animated: true, completion: nil)
-        })
-        return
-      }
-    case .notDetermined:
-      PHPhotoLibrary.requestAuthorization { status in
-        switch status {
-        case .authorized: break
-        case .denied, .restricted:
-          dispatch {
-            picker.dismiss(animated: true, completion: { [weak self] in
-              guard let self = self else { return }
-              self.assetsSubject.onError(ChannelError.init(msg: "permission denied"))
-              CHUtils.getTopController()?.present(self.alert, animated: true, completion: nil)
-            })
-            return
-          }
-        case .notDetermined: break
-        default: break
-        }
-      }
-    default: break
-    }
-    
     var request: PHAssetChangeRequest? = nil
     
     var placeholderAsset: PHObjectPlaceholder? = nil

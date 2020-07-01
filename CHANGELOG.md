@@ -1,3 +1,8 @@
+# 7.1.2
+## Bug fixes
+* Fixed permission logic properly
+
+
 # 7.1.1
 ## Bug fixes
 * Add misssing permission on photo and camera
