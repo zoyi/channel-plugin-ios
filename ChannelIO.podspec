@@ -29,12 +29,6 @@ Pod::Spec.new do |s|
   #  :execution_position => :before_compile
   #}
   s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
-  
-  s.resource_bundles = {
-    'ChannelIO' => [
-      'ChannelIO/Assets/*'
-    ]
-  }
   s.resources = 'ChannelIO/Assets/*'
   s.swift_version = '5.0'
 
