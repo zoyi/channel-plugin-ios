@@ -49,6 +49,7 @@ class UserViewController : UIViewController {
       case .success:
         break
       default:
+        print("failed to boot: status = \(completion.description)")
         break
       }
     }
