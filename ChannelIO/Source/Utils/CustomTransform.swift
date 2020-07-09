@@ -64,11 +64,12 @@ class CustomBlockTransform: TransformType {
   static var emojiMap = CHUtils.emojiMap()
   var parser: CHMessageParser
 
-  public init(config: CHMessageParserConfig) {
+  public init(config: CHMessageParserConfig, isInappPush: Bool = false) {
     self.parser = CHMessageParser(
       config: config,
       emojiMap: CustomBlockTransform.emojiMap,
-      profiles: userSelector(state: mainStore.state).profile ?? [:]
+      profiles: userSelector(state: mainStore.state).profile ?? [:],
+      isInappPush: isInappPush
     )
   }
 

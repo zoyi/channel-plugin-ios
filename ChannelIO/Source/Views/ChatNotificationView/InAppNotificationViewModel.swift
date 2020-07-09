@@ -53,10 +53,12 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
 
     if let logMessage = push.logMessage {
       let attributedText = NSMutableAttributedString(string: logMessage)
+      let font = UIFont.systemFont(ofSize: 13)
       attributedText.addAttributes(
-        [.font: UIFont.systemFont(ofSize: 13),
+        [.font: font,
          .foregroundColor: UIColor.grey900,
-         .paragraphStyle: UIFactory.pushParagraphStyle
+         .paragraphStyle: UIFactory.pushParagraphStyle,
+         .baselineOffset: (UIFactory.pushParagraphStyle.minimumLineHeight - font.lineHeight) / 4
         ],
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
@@ -66,16 +68,8 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         font: UIFont.systemFont(ofSize: fontSize),
         style: UIFactory.pushParagraphStyle
       )
-      let transformer = CustomBlockTransform(config: config)
-      let result = transformer.parser.parse(blocks: push.blocks)
-      let font = UIFont.systemFont(ofSize: fontSize)
-      result.addAttributes(
-        [.font: font,
-         .paragraphStyle: UIFactory.pushParagraphStyle,
-         .baselineOffset: (UIFactory.pushParagraphStyle.minimumLineHeight - font.lineHeight) / 4
-        ]
-        ,range: NSRange(location: 0, length: result.string.utf16.count)
-      )
+      let transformer = CustomBlockTransform(config: config, isInappPush: true)
+      let result = transformer.parser.parse(blocks: push.blocks)     
       self.message = result
     } else if let webPage = push.webPage {
       let text = webPage.title ?? webPage.url?.absoluteString ?? ""

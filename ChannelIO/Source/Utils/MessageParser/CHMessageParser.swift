@@ -21,14 +21,18 @@ class CHMessageParser {
   var emojiMap: [String: String] = [:]
   var profiles: [String: Any] = [:]
   var results: [CHMessageBlock] = []
+  var isInappPush: Bool = false
 
   init(
     config: CHMessageParserConfig,
     emojiMap: [String: String],
-    profiles: [String: Any] = [:]) {
+    profiles: [String: Any] = [:],
+    isInappPush: Bool
+  ) {
     self.config = config
     self.emojiMap = emojiMap
     self.profiles = profiles
+    self.isInappPush = isInappPush
 
     self.codeParser = CHCodeParser(config: config)
     self.bulletParser = CHBulletParser(config: config)
@@ -89,7 +93,8 @@ class CHMessageParser {
     let listener = CHTextParserListener(
       input: charStream,
       emojiMap: self.emojiMap,
-      config: self.config
+      config: self.config,
+      isInappPush: self.isInappPush
     )
     listener.profiles = profiles
     let walker = ParseTreeWalker()

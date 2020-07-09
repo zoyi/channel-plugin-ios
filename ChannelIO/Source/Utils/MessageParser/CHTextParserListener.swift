@@ -29,6 +29,7 @@ class CHTextParserListener: TextBlockParserListener {
   var isLink = false
   var isVariable = false
   var isOnlyEmoji = true
+  var isInappPush = false
   
   var stack: [CHPBlock] = []
   var profiles: [String: Any] = [:]
@@ -44,10 +45,12 @@ class CHTextParserListener: TextBlockParserListener {
   init(
     input: CharStream,
     emojiMap: [String: String],
-    config: CHMessageParserConfig) {
+    config: CHMessageParserConfig,
+    isInappPush: Bool) {
     self.input = input
     self.emojiMap = emojiMap
     self.config = config
+    self.isInappPush = isInappPush
   }
 
   func enterBlock(_ ctx: TextBlockParser.BlockContext) {}
@@ -65,23 +68,13 @@ class CHTextParserListener: TextBlockParserListener {
     for (index, text) in texts.enumerated() {
       let onlyEmoji = text.string.containsOnlyEmoji
       self.isOnlyEmoji = self.isOnlyEmoji && onlyEmoji
-      let font = onlyEmoji ? self.config.emojiOnlyFont : self.config.font
-      if onlyEmoji {
-        text.addAttribute(
-          .font,
-          value: font,
-          range: NSRange(location: 0, length: text.string.utf16.count)
-        )
-        
-        text.addAttribute(
-          .paragraphStyle,
-          value: UIFactory.onlyEmojiParagraphStyle,
-          range: NSRange(location: 0, length: text.string.utf16.count)
-        )
-        
-        text.addAttribute(
-          .baselineOffset,
-          value: (UIFactory.onlyEmojiParagraphStyle.minimumLineHeight - font.lineHeight)/4,
+      let font = onlyEmoji && !isInappPush ? self.config.emojiOnlyFont : self.config.font
+      if onlyEmoji && !isInappPush {
+        text.addAttributes(
+          [.font: font,
+           .paragraphStyle: UIFactory.onlyEmojiParagraphStyle,
+           .baselineOffset: (UIFactory.onlyEmojiParagraphStyle.minimumLineHeight - font.lineHeight)/4
+          ],
           range: NSRange(location: 0, length: text.string.utf16.count)
         )
       }
