@@ -1,7 +1,11 @@
+# 7.1.3
+## Bug fixes
+* Fixed issue that inappPush face-type not working correctly
+
+
 # 7.1.2
 ## Bug fixes
 * Fixed permission logic properly
-
 
 # 7.1.1
 ## Bug fixes

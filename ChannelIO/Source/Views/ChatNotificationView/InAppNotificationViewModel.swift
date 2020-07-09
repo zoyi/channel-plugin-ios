@@ -69,7 +69,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         style: UIFactory.pushParagraphStyle
       )
       let transformer = CustomBlockTransform(config: config, isInappPush: true)
-      let result = transformer.parser.parse(blocks: push.blocks)     
+      let result = transformer.parser.parse(blocks: push.blocks)
       self.message = result
     } else if let webPage = push.webPage {
       let text = webPage.title ?? webPage.url?.absoluteString ?? ""
