@@ -529,6 +529,7 @@
 		9CF1098523FA7E5800D42D03 /* MiddlewareModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1098323FA7E5800D42D03 /* MiddlewareModel.swift */; };
 		9CF1098623FA7E5800D42D03 /* Middlewares.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1098423FA7E5800D42D03 /* Middlewares.swift */; };
 		9CF1098823FA7F1200D42D03 /* MarketingActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1098723FA7F1200D42D03 /* MarketingActions.swift */; };
+		EF83CE6724B75ED900927679 /* UIStatetests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF83CE6624B75ED900927679 /* UIStatetests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1082,6 +1083,7 @@
 		9CF1098323FA7E5800D42D03 /* MiddlewareModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiddlewareModel.swift; sourceTree = "<group>"; };
 		9CF1098423FA7E5800D42D03 /* Middlewares.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Middlewares.swift; sourceTree = "<group>"; };
 		9CF1098723FA7F1200D42D03 /* MarketingActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingActions.swift; sourceTree = "<group>"; };
+		EF83CE6624B75ED900927679 /* UIStatetests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStatetests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1639,6 +1641,7 @@
 				650D7C3C1E7254B2007DE358 /* ManagersStateTests.swift */,
 				650D7C3E1E7254C9007DE358 /* UserChatsStateTests.swift */,
 				650D7C401E725559007DE358 /* SessionsStateTests.swift */,
+				EF83CE6624B75ED900927679 /* UIStatetests.swift */,
 			);
 			name = States;
 			sourceTree = "<group>";
@@ -2929,6 +2932,7 @@
 				650D7C451E72568C007DE358 /* ManagersReducerTests.swift in Sources */,
 				650D7C351E724AD7007DE358 /* LocalMessageFactorTests.swift in Sources */,
 				1469AF9B1E2F6CF9000A8675 /* UserChatTests.swift in Sources */,
+				EF83CE6724B75ED900927679 /* UIStatetests.swift in Sources */,
 				65C4A75F1E49AC78006D7CD5 /* UserChatPromiseTests.swift in Sources */,
 				225B05FE1E4EDA14001DE109 /* GuestTests.swift in Sources */,
 				22634860209DC83C0072801B /* ChannelIOTests.swift in Sources */,
