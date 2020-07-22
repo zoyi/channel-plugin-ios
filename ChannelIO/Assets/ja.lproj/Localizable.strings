@@ -180,3 +180,7 @@
 "ch.navigation.next_operation.minutes_left" = "営業時間%d分後";
 "ch.navigation.next_operation.hour_left" = "営業時間%d時間後";
 "ch.settings.unsubscribed" = "マーケティング通知を受信拒否";
+"ch.profile_form.datetime_pick" = "日時の選択";
+"ch.profile_form.boolean.yes" = "はい";
+"ch.profile_form.boolean.no" = "いいえ";
+"ch.profile_form.boolean.none" = "選択しない";
