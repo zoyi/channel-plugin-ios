@@ -18,7 +18,7 @@ enum RestRouter: URLRequestConvertible {
   case CreateMessage(String, ParametersType)
   case CheckVersion
   case CreateSupportBotChat(String, ParametersType)
-  case CampaignClick(String)
+  case CampaignClick(String, String)
   case CampaignView(String)
   case GetAppMessengerUri(String)
   case GetPlugin(String)
@@ -30,7 +30,7 @@ enum RestRouter: URLRequestConvertible {
   case GetUserChat(String)
   case GetMessages(String, ParametersType)
   case GetProfileBotSchemas(String)
-  case OneTimeMsgClick(String)
+  case OneTimeMsgClick(String, String)
   case OneTimeMsgView(String)
   case ReplySupportBot(String, String, ParametersType)
   case RegisterToken(ParametersType)
@@ -74,7 +74,8 @@ enum RestRouter: URLRequestConvertible {
          .UpdateProfileItem,
          .UploadFile:
       return .post
-    case .CheckVersion,
+    case .CampaignClick,
+         .CheckVersion,
          .GetAppMessengerUri,
          .GetCountryCodes,
          .GetGeoIP,
@@ -84,15 +85,14 @@ enum RestRouter: URLRequestConvertible {
          .GetPlugin,
          .GetProfileBotSchemas,
          .GetChannel,
+         .OneTimeMsgClick,
          .Translate:
       return .get
     case .AddTags,
          .UpdateUser:
       return .patch
-    case .CampaignClick,
-         .CampaignView,
+    case .CampaignView,
          .CloseUserChat,
-         .OneTimeMsgClick,
          .OneTimeMsgView,
          .ReviewUserChat,
          .SetMessagesRead,
@@ -115,8 +115,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/users/me/tags"
     case .Boot(let pluginKey, _):
       return "/front/elastic/plugins/\(pluginKey)/boot"
-    case .CampaignClick(let campaignId):
-      return "/front/campaigns/\(campaignId)/click"
+    case .CampaignClick(let campaignId, let userId):
+      return "/front/campaigns/\(campaignId)/users/\(userId)/click"
     case .CampaignView(let campaignId):
       return "/front/campaigns/\(campaignId)/view"
     case .CreateUserChat(let pluginId, _):
@@ -151,8 +151,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/user-chats/\(userChatId)"
     case .GetProfileBotSchemas(let pluginId):
       return "/front/plugins/\(pluginId)/profile-bot-schemas"
-    case .OneTimeMsgClick(let oneTimeMsgId):
-      return "/front/one-time-msgs/\(oneTimeMsgId)/click"
+    case .OneTimeMsgClick(let oneTimeMsgId, let userId):
+      return "/front/one-time-msgs/\(oneTimeMsgId)/users/\(userId)/click"
     case .OneTimeMsgView(let oneTimeMsgId):
       return "/front/one-time-msgs/\(oneTimeMsgId)/view"
     case .RemoveTags(_):

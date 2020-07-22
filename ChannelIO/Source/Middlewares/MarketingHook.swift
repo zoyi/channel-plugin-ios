@@ -17,7 +17,11 @@ func marketingStat(action: Action, context: MiddlewareContext<AppState>) -> Acti
   if let action = action as? ViewMarketing {
     AppManager.shared.sendViewMarketing(type: action.type, id: action.id)
   } else if let action = action as? ClickMarketing {
-    AppManager.shared.sendClickMarketing(type: action.type, id: action.id)
+    AppManager.shared.sendClickMarketing(
+      type: action.type,
+      id: action.id,
+      userId: PrefStore.getCurrentUserId()
+    )
   }
   return action
 }

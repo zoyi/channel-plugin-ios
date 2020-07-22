@@ -14,7 +14,7 @@ class AppManager {
   let disposeBag = DisposeBag()
   
   private var viewSignal = PublishSubject<(CHMarketingType?, String?)>()
-  private var clickSignal = PublishSubject<(CHMarketingType?, String?)>()
+  private var clickSignal = PublishSubject<(CHMarketingType?, String?, String?)>()
   
   private init() {
     self.viewSignal
@@ -37,17 +37,17 @@ class AppManager {
     
     self.clickSignal
       .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
-      .subscribe(onNext: { (type, id) in
-        guard let type = type, let id = id else { return }
+      .subscribe(onNext: { (type, id, userId) in
+        guard let type = type, let id = id, let userId = userId else { return }
         switch type {
         case .campaign:
           MarketingPromise
-            .clickCampaign(id: id)
+            .clickCampaign(id: id, userId: userId)
             .subscribe()
             .disposed(by: self.disposeBag)
         case .oneTimeMsg:
           MarketingPromise
-            .clickOneTimeMsg(id: id)
+            .clickOneTimeMsg(id: id, userId: userId)
             .subscribe()
             .disposed(by: self.disposeBag)
         }
@@ -105,7 +105,7 @@ class AppManager {
     self.viewSignal.onNext((type, id))
   }
   
-  func sendClickMarketing(type: CHMarketingType?, id: String?) {
-    self.clickSignal.onNext((type, id))
+  func sendClickMarketing(type: CHMarketingType?, id: String?, userId: String?) {
+    self.clickSignal.onNext((type, id, userId))
   }
 }

@@ -13,10 +13,10 @@ import SwiftyJSON
 
 
 struct MarketingPromise {
-  static func clickCampaign(id: String) -> Observable<Any?> {
+  static func clickCampaign(id: String, userId: String) -> Observable<Any?> {
     return Observable.create { (subscriber) in
       let req = AF
-        .request(RestRouter.CampaignClick(id))
+        .request(RestRouter.CampaignClick(id, userId))
         .responseData { (response) in
           switch response.result {
           case .success(_):
@@ -55,10 +55,10 @@ struct MarketingPromise {
     }
   }
   
-  static func clickOneTimeMsg(id: String) -> Observable<Any?> {
+  static func clickOneTimeMsg(id: String, userId: String) -> Observable<Any?> {
     return Observable.create { (subscriber) in
       let req = AF
-        .request(RestRouter.OneTimeMsgClick(id))
+        .request(RestRouter.OneTimeMsgClick(id, userId))
         .responseData { (response) in
           switch response.result {
           case .success(_):
