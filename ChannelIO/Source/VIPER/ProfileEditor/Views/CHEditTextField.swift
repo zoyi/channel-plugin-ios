@@ -11,25 +11,6 @@ import RxSwift
 import RxCocoa
 import UIKit
 
-protocol CHFieldDelegate: class {
-  var field: UITextField { get }
-  func getText() -> String
-  func setText(_ value: String)
-  func isValid() -> Observable<Bool>
-  func hasChanged() -> Observable<String>
-}
-
-enum EditFieldType {
-  case name
-  case phone
-  case text
-  case number
-}
-
-enum EntityType {
-  case user
-  case none
-}
 
 final class CHEditTextField : BaseView {
   let topDivider = UIView().then {

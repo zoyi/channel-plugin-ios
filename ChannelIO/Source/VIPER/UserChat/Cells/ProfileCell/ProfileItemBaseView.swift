@@ -58,20 +58,24 @@ class ProfileItemBaseView: BaseView {
       self?.presenter?.profileIsFocus(focus: focus)
     }).disposed(by: self.disposeBag)
     
-    self.fieldView?.signalForText().subscribe(onNext: { [weak self] (text) in
+    self.fieldView?.signalForText()?.subscribe(onNext: { [weak self] (text) in
       self?.setTitle(with: self?.item?.name)
     }).disposed(by: self.disposeBag)
     
     self.fieldView?.signalForAction().subscribe(onNext: { [weak self] (value) in
       if let index = self?.index, let item = self?.model?.profileItems[index] {
         self?.fieldView?.setLoading()
-        _ = self?.presenter?.didClickOnProfileUpdate(with: self?.model?.message, key: item.key, value: value)
-          .subscribe(onNext: { (completed) in
-            if !completed {
-              self?.fieldView?.setInvalid()
-              self?.setInvalidTitle(with: CHAssets.localized("ch.profile_form.error"))
-            }
-          })
+        _ = self?.presenter?.didClickOnProfileUpdate(
+          with: self?.model?.message,
+          key: item.key,
+          type: item.type,
+          value: value
+        ).subscribe(onNext: { (completed) in
+          if !completed {
+            self?.fieldView?.setInvalid()
+            self?.setInvalidTitle(with: CHAssets.localized("ch.profile_form.error"))
+          }
+        })
       }
     }).disposed(by: self.disposeBag)
   }

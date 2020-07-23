@@ -235,7 +235,7 @@ extension PhoneActionView {
     return self.submitSubject.asObserver()
   }
   
-  func signalForText() -> Observable<String?> {
+  func signalForText() -> Observable<String?>? {
     return self.phoneField.rx.text.asObservable()
   }
   

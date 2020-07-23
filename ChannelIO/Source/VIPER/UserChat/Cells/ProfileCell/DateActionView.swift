@@ -1,9 +1,9 @@
 //
-//  TextActionView.swift
-//  CHPlugin
+//  DateActionView.swift
+//  ChannelIO
 //
-//  Created by Haeun Chung on 16/02/2017.
-//  Copyright © 2017 ZOYI. All rights reserved.
+//  Created by 김진학 on 2020/07/23.
+//  Copyright © 2020 ZOYI. All rights reserved.
 //
 
 import Foundation
@@ -12,25 +12,32 @@ import SnapKit
 import RxCocoa
 import NVActivityIndicatorView
 
-class TextActionView: BaseView, Actionable {
+class DateActionView: BaseView {
   let submitSubject = PublishSubject<Any?>()
   let focusSubject = PublishSubject<Bool>()
   
-  let confirmButton = UIButton().then {
-    $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
-    $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysOriginal), for: .disabled)
+  let selectButton = UIImageView().then {
+    $0.image = CHAssets.getImage(named: "triangleDown")?.tint(with: .grey700)
   }
   
-  let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
-    $0.type = .circleStrokeSpin
-    $0.color = CHColors.light
-    $0.isHidden = true
-  }
+  let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+    .then {
+      $0.type = .circleStrokeSpin
+      $0.color = CHColors.light
+      $0.isHidden = true
+    }
   
   let textField = UITextField().then {
     $0.font = UIFont.systemFont(ofSize: 16)
-    $0.textColor = CHColors.dark
-    $0.placeholder = CHAssets.localized("ch.profile_form.placeholder")
+    $0.textColor = .grey500
+    $0.placeholder = CHAssets.localized("ch.profile_form.datetime_pick")
+  }
+  
+  var date: Date? {
+    didSet {
+      let text = self.date?.fullDateString() ?? ""
+      self.textField.text = text
+    }
   }
   
   let disposeBag = DisposeBag()
@@ -43,7 +50,7 @@ class TextActionView: BaseView, Actionable {
     self.layer.borderWidth = 1.f
     self.layer.borderColor = CHColors.paleGrey20.cgColor
     
-    self.addSubview(self.confirmButton)
+    self.addSubview(self.selectButton)
     self.addSubview(self.textField)
     self.addSubview(self.loadIndicator)
     
@@ -54,27 +61,18 @@ class TextActionView: BaseView, Actionable {
       }).disposed(by: self.disposeBag)
     
     self.textField.delegate = self
-    self.textField.rx.text.subscribe(onNext: { [weak self] (text) in
-      if let text = text {
-        self?.confirmButton.isHidden = text.count == 0
-      }
-      self?.setFocus()
-    }).disposed(by: self.disposeBag)
     
-    self.confirmButton.signalForClick()
-      .subscribe(onNext: { [weak self] _ in
-        self?.didFocus = true
-
-        if let text = self?.textField.text, self?.textField.keyboardType == .decimalPad {
-          let numberFormatter = NumberFormatter()
-          numberFormatter.numberStyle = .decimal
-          let value = numberFormatter.number(from: text)
-          self?.submitSubject.onNext(value)
-        } else {
-          self?.submitSubject.onNext(self?.textField.text)
-        }
-        
-      }).disposed(by: self.disposeBag)
+    self.textField.signalForClick()
+      .bind { [weak self] _ in
+        guard self != nil else { return }
+        self!.openDateSelector()
+      }.disposed(by: self.disposeBag)
+    
+    self.selectButton.signalForClick()
+      .bind { [weak self] _ in
+        guard self != nil else { return }
+        self!.openDateSelector()
+      }.disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -86,22 +84,38 @@ class TextActionView: BaseView, Actionable {
       make.bottom.equalToSuperview()
     }
     
-    self.confirmButton.snp.makeConstraints { [weak self] (make) in
+    self.selectButton.snp.makeConstraints { [weak self] (make) in
       make.left.equalTo((self?.textField.snp.right)!)
-      make.width.equalTo(44)
-      make.height.equalTo(44)
-      make.trailing.equalToSuperview()
+      make.width.equalTo(20)
+      make.height.equalTo(20)
+      make.trailing.equalToSuperview().inset(10)
       make.centerY.equalToSuperview()
     }
     
     self.loadIndicator.snp.makeConstraints { [weak self] (make) in
-      make.centerX.equalTo((self?.confirmButton.snp.centerX)!)
-      make.centerY.equalTo((self?.confirmButton.snp.centerY)!)
+      make.centerX.equalTo((self?.selectButton.snp.centerX)!)
+      make.centerY.equalTo((self?.selectButton.snp.centerY)!)
     }
   }
   
-  //MARK: UserActionView Protocol
-  
+  private func openDateSelector() {
+    UIApplication.shared.sendAction(
+      #selector(UIApplication.resignFirstResponder),
+      to: nil,
+      from: nil,
+      for: nil
+    )
+    CHDateSelectorView.create(with: self.date)
+      .bind { [weak self] date in
+        if let date = date {
+          self?.date = date
+          self?.submitSubject.onNext(date)
+        }
+      }.disposed(by: self.disposeBag)
+  }
+}
+
+extension DateActionView: Actionable {
   func signalForAction() -> Observable<Any?> {
     return self.submitSubject.asObserver()
   }
@@ -109,25 +123,19 @@ class TextActionView: BaseView, Actionable {
   func signalForText() -> Observable<String?>? {
     return self.textField.rx.text.asObservable()
   }
-}
-
-extension TextActionView {
-  func setIntialValue(with value: String) {
-    if let text = self.textField.text, text == "" {
-      self.textField.text = value
-    }
-    self.confirmButton.isHidden = value == ""
+  
+  func signalForFocus() -> Observable<Bool> {
+    return self.focusSubject
   }
   
   func setLoading() {
-    self.confirmButton.isHidden = true
+    self.selectButton.isHidden = true
     self.loadIndicator.isHidden = false
     self.loadIndicator.startAnimating()
   }
   
   func setFocus() {
     self.layer.borderColor = CHColors.brightSkyBlue.cgColor
-    self.confirmButton.isEnabled = true
     self.focusSubject.onNext(true)
   }
   
@@ -138,17 +146,12 @@ extension TextActionView {
   
   func setInvalid() {
     self.layer.borderColor = CHColors.yellowishOrange.cgColor
-    self.confirmButton.isEnabled = false
-    self.confirmButton.isHidden = false
+    self.selectButton.isHidden = false
     self.loadIndicator.isHidden = true
-  }
-  
-  func signalForFocus() -> Observable<Bool> {
-    return self.focusSubject
   }
 }
 
-extension TextActionView: UITextFieldDelegate {
+extension DateActionView: UITextFieldDelegate {
   func textFieldDidBeginEditing(_ textField: UITextField) {
     if self.textField == textField {
       self.didFocus = true
@@ -168,3 +171,4 @@ extension TextActionView: UITextFieldDelegate {
     return false
   }
 }
+

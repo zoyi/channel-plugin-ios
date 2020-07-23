@@ -80,6 +80,7 @@ protocol UserChatPresenterProtocol: class {
   func didClickOnProfileUpdate(
     with message: CHMessage?,
     key: String?,
+    type: ProfileSchemaType,
     value: Any?) -> Observable<Bool>
   func didClickOnRightNaviItem(from view: UIViewController?)
   func didClickOnClipButton(from view: UIViewController?)
@@ -114,7 +115,9 @@ protocol UserChatInteractorProtocol: class {
   func updateProfileItem(
     with message: CHMessage,
     key: String,
-    value: Any) -> Observable<CHMessage>
+    type: ProfileSchemaType,
+    value: Any
+  ) -> Observable<CHMessage>
   func joinSocket()
   func leaveSocket()
   func getChannel() -> Observable<CHChannel>

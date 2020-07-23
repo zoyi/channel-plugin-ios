@@ -13,7 +13,7 @@ import RxSwift
 
 protocol Actionable: class {
   func signalForAction() -> Observable<Any?>
-  func signalForText() -> Observable<String?>
+  func signalForText() -> Observable<String?>?
   func signalForFocus() -> Observable<Bool>
   func setLoading()
   func setFocus()

@@ -106,7 +106,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     }
   }
   
-  @objc public var stage: ChannelStage = .production
+  @objc public var stage: ChannelStage = .development
   
   var unsubscribed: Bool? = nil
   var appLocale: CHLocaleString? = nil

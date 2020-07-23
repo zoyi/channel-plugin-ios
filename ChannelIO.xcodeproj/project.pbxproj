@@ -529,6 +529,15 @@
 		9CF1098523FA7E5800D42D03 /* MiddlewareModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1098323FA7E5800D42D03 /* MiddlewareModel.swift */; };
 		9CF1098623FA7E5800D42D03 /* Middlewares.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1098423FA7E5800D42D03 /* Middlewares.swift */; };
 		9CF1098823FA7F1200D42D03 /* MarketingActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1098723FA7F1200D42D03 /* MarketingActions.swift */; };
+		CF52018924C813790010A9AC /* CHFieldProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52018824C813790010A9AC /* CHFieldProtocols.swift */; };
+		CF52018B24C8138C0010A9AC /* CHBooleanField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52018A24C8138C0010A9AC /* CHBooleanField.swift */; };
+		CF52018D24C8139B0010A9AC /* CHDateField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52018C24C8139B0010A9AC /* CHDateField.swift */; };
+		CF52018F24C813BF0010A9AC /* CHBooleanSelectCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52018E24C813BF0010A9AC /* CHBooleanSelectCell.swift */; };
+		CF52019124C830C50010A9AC /* CHDateSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52019024C830C50010A9AC /* CHDateSelectorViewController.swift */; };
+		CF52019324C963620010A9AC /* ProfileDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52019224C963620010A9AC /* ProfileDateView.swift */; };
+		CF52019524C963760010A9AC /* ProfileBooleanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52019424C963760010A9AC /* ProfileBooleanView.swift */; };
+		CF52019724C965D00010A9AC /* BooleanActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52019624C965D00010A9AC /* BooleanActionView.swift */; };
+		CF52019924C968480010A9AC /* DateActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF52019824C968480010A9AC /* DateActionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1082,6 +1091,15 @@
 		9CF1098323FA7E5800D42D03 /* MiddlewareModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiddlewareModel.swift; sourceTree = "<group>"; };
 		9CF1098423FA7E5800D42D03 /* Middlewares.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Middlewares.swift; sourceTree = "<group>"; };
 		9CF1098723FA7F1200D42D03 /* MarketingActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingActions.swift; sourceTree = "<group>"; };
+		CF52018824C813790010A9AC /* CHFieldProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHFieldProtocols.swift; sourceTree = "<group>"; };
+		CF52018A24C8138C0010A9AC /* CHBooleanField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHBooleanField.swift; sourceTree = "<group>"; };
+		CF52018C24C8139B0010A9AC /* CHDateField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHDateField.swift; sourceTree = "<group>"; };
+		CF52018E24C813BF0010A9AC /* CHBooleanSelectCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHBooleanSelectCell.swift; sourceTree = "<group>"; };
+		CF52019024C830C50010A9AC /* CHDateSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHDateSelectorViewController.swift; sourceTree = "<group>"; };
+		CF52019224C963620010A9AC /* ProfileDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDateView.swift; sourceTree = "<group>"; };
+		CF52019424C963760010A9AC /* ProfileBooleanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBooleanView.swift; sourceTree = "<group>"; };
+		CF52019624C965D00010A9AC /* BooleanActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooleanActionView.swift; sourceTree = "<group>"; };
+		CF52019824C968480010A9AC /* DateActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateActionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1301,8 +1319,13 @@
 		22D879FA2270207D00CC1DDB /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				659793241FA7167C00840F6A /* CHPhoneField.swift */,
+				CF52018824C813790010A9AC /* CHFieldProtocols.swift */,
 				22D879FB2270208B00CC1DDB /* CHEditTextField.swift */,
+				659793241FA7167C00840F6A /* CHPhoneField.swift */,
+				CF52018A24C8138C0010A9AC /* CHBooleanField.swift */,
+				CF52018C24C8139B0010A9AC /* CHDateField.swift */,
+				CF52018E24C813BF0010A9AC /* CHBooleanSelectCell.swift */,
+				CF52019024C830C50010A9AC /* CHDateSelectorViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1718,6 +1741,10 @@
 				655A27FB20B2699700935C1F /* CompleteActionView.swift */,
 				655A27FC20B2699700935C1F /* ProfileTextView.swift */,
 				655A27FD20B2699700935C1F /* ProfileExtendableView.swift */,
+				CF52019224C963620010A9AC /* ProfileDateView.swift */,
+				CF52019424C963760010A9AC /* ProfileBooleanView.swift */,
+				CF52019624C965D00010A9AC /* BooleanActionView.swift */,
+				CF52019824C968480010A9AC /* DateActionView.swift */,
 			);
 			path = ProfileCell;
 			sourceTree = "<group>";
@@ -2505,9 +2532,11 @@
 				3964D9792410F8EB005B1282 /* AlertViewController.swift in Sources */,
 				6549CFB2207B6C6A000091D2 /* CheckableLabelCell.swift in Sources */,
 				3931CAEA23C3338C005E8444 /* FileView.swift in Sources */,
+				CF52018D24C8139B0010A9AC /* CHDateField.swift in Sources */,
 				22F094F62176E8A00035C777 /* Then.swift in Sources */,
 				655A280420B2699700935C1F /* CompleteActionView.swift in Sources */,
 				39F4BA1523C42CC10043B25A /* StarLoopEntryState.swift in Sources */,
+				CF52019324C963620010A9AC /* ProfileDateView.swift in Sources */,
 				6597935D1FA716CB00840F6A /* Array+Extensions.swift in Sources */,
 				39F4B9D023C42CC00043B25A /* IntStream.swift in Sources */,
 				655A280220B2699700935C1F /* ProfilePhoneView.swift in Sources */,
@@ -2561,6 +2590,7 @@
 				39F4BA0F23C42CC10043B25A /* LexerChannelAction.swift in Sources */,
 				6597936C1FA716CB00840F6A /* CHAssets.swift in Sources */,
 				65CB1426206A02F200E456B5 /* MediaMessageCell.swift in Sources */,
+				CF52018B24C8138C0010A9AC /* CHBooleanField.swift in Sources */,
 				39F4B9E823C42CC00043B25A /* PredicateEvalInfo.swift in Sources */,
 				6556A29A1FA7318A00B80F4E /* ChannelIO.swift in Sources */,
 				39F4B9D923C42CC00043B25A /* DecisionState.swift in Sources */,
@@ -2584,6 +2614,7 @@
 				6512BA03226EDA2700757CB2 /* SettingHeaderView.swift in Sources */,
 				3931CB0723C33432005E8444 /* ChatFileQueueItem.swift in Sources */,
 				654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */,
+				CF52018924C813790010A9AC /* CHFieldProtocols.swift in Sources */,
 				6512BA3E2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift in Sources */,
 				65CB14052069E2B800E456B5 /* UserChatInteractor.swift in Sources */,
 				39F4B9D523C42CC00043B25A /* ContextSensitivityInfo.swift in Sources */,
@@ -2608,6 +2639,7 @@
 				9CF1098823FA7F1200D42D03 /* MarketingActions.swift in Sources */,
 				659793761FA716CB00840F6A /* CHLog.swift in Sources */,
 				39F4B9F223C42CC00043B25A /* SingletonPredictionContext.swift in Sources */,
+				CF52019524C963760010A9AC /* ProfileBooleanView.swift in Sources */,
 				6512BA342271A8FF00757CB2 /* LoungeMainView.swift in Sources */,
 				659793771FA716CB00840F6A /* CHManager.swift in Sources */,
 				6512BA322271A8C800757CB2 /* LoungeHeaderView.swift in Sources */,
@@ -2627,6 +2659,7 @@
 				6512132F224DF47F00737089 /* ZoomAnimatedTransitioning.swift in Sources */,
 				6597937A1FA716CB00840F6A /* CHPlugin.swift in Sources */,
 				39F4B9A623C42CC00043B25A /* TagChunk.swift in Sources */,
+				CF52018F24C813BF0010A9AC /* CHBooleanSelectCell.swift in Sources */,
 				39F4B9BC23C42CC00043B25A /* DFAState.swift in Sources */,
 				657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */,
 				2252145A224CFB5B00F2C9CE /* PHAsset+Extensions.swift in Sources */,
@@ -2648,6 +2681,7 @@
 				39F4B9F723C42CC10043B25A /* LexerMoreAction.swift in Sources */,
 				65CB1428206A02F200E456B5 /* MessageCell.swift in Sources */,
 				6597937F1FA716CB00840F6A /* CHUser.swift in Sources */,
+				CF52019724C965D00010A9AC /* BooleanActionView.swift in Sources */,
 				659793801FA716CB00840F6A /* CHUserChat.swift in Sources */,
 				22E2138B23392E7C002B3EF4 /* PopupInAppNotificationView.swift in Sources */,
 				659793821FA716CB00840F6A /* CHWebPage.swift in Sources */,
@@ -2777,6 +2811,7 @@
 				39265D0F23D5A63A007E743F /* CHMarketing.swift in Sources */,
 				22F838BC2176EA2D004709F9 /* CGFloatLiteral.swift in Sources */,
 				39F4B9C623C42CC00043B25A /* TokenSource.swift in Sources */,
+				CF52019924C968480010A9AC /* DateActionView.swift in Sources */,
 				39F4B9CC23C42CC00043B25A /* UnbufferedTokenStream.swift in Sources */,
 				39F4B99C23C42CC00043B25A /* ParseTreeVisitor.swift in Sources */,
 				39F4B9DC23C42CC00043B25A /* ATNConfigSet.swift in Sources */,
@@ -2797,6 +2832,7 @@
 				65FB143C2298044F00393AA2 /* UserChatBottomBlockView.swift in Sources */,
 				9C0951E523D5736200DE5799 /* ResizableCollectionView.swift in Sources */,
 				3964D97D2410F939005B1282 /* AlertItemView.swift in Sources */,
+				CF52019124C830C50010A9AC /* CHDateSelectorViewController.swift in Sources */,
 				65121332224DF47F00737089 /* PageIndicator.swift in Sources */,
 				9C4D68F523ED598C0072280E /* UIFont+Traits.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,

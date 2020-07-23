@@ -29,9 +29,14 @@ class SettingRouter: SettingRouterProtocol {
       type = .phone
     } else if item.profileType == .number {
       type = .number
+    } else if item.profileType == .boolean {
+      type = .boolean
+    } else if item.profileType == .date {
+      type = .date
     } else {
       type = .text
     }
+    
     let viewController = ProfileEditorViewController(
       type: type,
       user: mainStore.state.user,

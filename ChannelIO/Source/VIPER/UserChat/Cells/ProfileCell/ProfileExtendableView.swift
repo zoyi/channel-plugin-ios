@@ -133,6 +133,20 @@ class ProfileExtendableView: BaseView {
           self.addSubview(phoneView)
           self.items.append(phoneView)
           itemView = phoneView
+        } else if item.type == .boolean {
+          let booleanView = ProfileBooleanView()
+          booleanView.fieldType = item.fieldType
+          booleanView.configure(model: model, index: index, presenter: presenter)
+          self.addSubview(booleanView)
+          self.items.append(booleanView)
+          itemView = booleanView
+        } else if item.type == .date {
+          let dateView = ProfileDateView()
+          dateView.fieldType = item.fieldType
+          dateView.configure(model: model, index: index, presenter: presenter)
+          self.addSubview(dateView)
+          self.items.append(dateView)
+          itemView = dateView
         } else {
           let textView = ProfileTextView()
           textView.fieldType = item.fieldType

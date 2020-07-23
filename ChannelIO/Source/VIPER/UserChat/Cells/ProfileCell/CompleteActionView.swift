@@ -47,7 +47,7 @@ class CompleteActionView: BaseView, Actionable {
     }
   }
   
-  func signalForText() -> Observable<String?> {
+  func signalForText() -> Observable<String?>? {
     return self.textSubject.asObserver()
   }
   
