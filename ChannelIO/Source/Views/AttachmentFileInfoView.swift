@@ -12,13 +12,13 @@ class AttachmentFileInfoView: BaseView {
   private struct Metrics {
     static let containerHeight = 18.f
     static let smallClipImageSide = 12.f
-    static let largeClipImageSide = 16.f
+    static let inAppClipImageSide = 16.f
   }
   
   private struct Fonts {
-    static let largeName = 14.f
-    static let largeSize = 12.f
-    static let largeCount = 14.f
+    static let inAppName = 13.f
+    static let inAppSize = 11.f
+    static let inAppCount = 13.f
     static let smallName = 13.f
     static let smallSize = 12.f
     static let smallCount = 13.f
@@ -27,11 +27,11 @@ class AttachmentFileInfoView: BaseView {
   private let containerView = UIStackView().then {
     $0.axis = .horizontal
     $0.alignment = .center
-    $0.spacing = 2.f
+    $0.spacing = 4.f
   }
   
   private let clipImageView = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "clipSmall900")
+    $0.image = CHAssets.getImage(named: "clip16")
   }
   
   private let contentStackView = UIStackView().then {
@@ -86,7 +86,7 @@ class AttachmentFileInfoView: BaseView {
   
   func configure(
     with files: [CHFile],
-    isLarge: Bool,
+    isInAppPush: Bool,
     hideFileSize: Bool = false) {
     guard let file = files.first else { return }
     
@@ -94,24 +94,22 @@ class AttachmentFileInfoView: BaseView {
     self.fileSizeLabel.text = "(\(file.size.toBytes))"
     self.fileCountLabel.text = "+\(files.count - 1)"
     
-    if isLarge {
-      self.fileNameLabel.font = UIFont.systemFont(ofSize: Fonts.largeName)
-      self.fileSizeLabel.font = UIFont.systemFont(ofSize: Fonts.largeSize)
-      self.fileCountLabel.font = UIFont.systemFont(ofSize: Fonts.largeCount)
-      self.clipImageView.image = CHAssets.getImage(named: "clipLarge900")
-      self.clipImageView.snp.remakeConstraints { make in
-        make.width.equalTo(Metrics.largeClipImageSide)
-        make.height.equalTo(Metrics.largeClipImageSide)
-      }
-    } else {
-      self.fileNameLabel.font = UIFont.systemFont(ofSize: Fonts.smallName)
-      self.fileSizeLabel.font = UIFont.systemFont(ofSize: Fonts.smallSize)
-      self.fileCountLabel.font = UIFont.systemFont(ofSize: Fonts.smallCount)
-      self.clipImageView.image = CHAssets.getImage(named: "clipSmall900")
-      self.clipImageView.snp.remakeConstraints { make in
-        make.width.equalTo(Metrics.smallClipImageSide)
-        make.height.equalTo(Metrics.smallClipImageSide)
-      }
+    self.fileNameLabel.font = isInAppPush
+      ? UIFont.systemFont(ofSize: Fonts.inAppName) : UIFont.systemFont(ofSize: Fonts.smallName)
+    self.fileSizeLabel.font = isInAppPush
+      ? UIFont.systemFont(ofSize: Fonts.inAppSize) : UIFont.systemFont(ofSize: Fonts.smallSize)
+    self.fileCountLabel.font = isInAppPush
+      ? UIFont.systemFont(ofSize: Fonts.inAppCount) : UIFont.systemFont(ofSize: Fonts.smallCount)
+    self.fileNameLabel.textColor = isInAppPush ? .grey700 : .grey900
+    self.fileSizeLabel.textColor = isInAppPush ? .grey700 : .grey900
+    self.fileCountLabel.textColor = isInAppPush ? .grey700 : .grey900
+    self.clipImageView.tintColor = isInAppPush ? .grey700 : .grey900
+    self.clipImageView.image = isInAppPush
+      ? CHAssets.getImage(named: "clip16") : CHAssets.getImage(named: "clip12")
+    self.clipImageView.snp.remakeConstraints { make in
+      make.width.height.equalTo(
+        isInAppPush ? Metrics.inAppClipImageSide: Metrics.smallClipImageSide
+      )
     }
     
     self.fileCountLabel.isHidden = files.count <= 1

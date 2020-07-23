@@ -11,18 +11,31 @@ import RxSwift
 import SnapKit
 
 class BannerInAppNotificationView: BaseView, InAppNotification {
-  private struct Metrics {
-    static let containerViewHeight = 78.f
-    static let avatarLength = 44.f
-    static let avatarLeading = 12.f
-    static let nameLabelBottom = 2.f
-    static let nameLabelHeight = 16.f
-    static let closeImageLength = 18.f
-    static let closeButtonViewWidth = 42.f
-    static let rightStackTrailing = -4.f
-    static let rightStackSide = 12.f
-    static let containerViewSide = 10.f
-    static let containerBottom = 10.f
+  private enum Metric {
+    static let bannerMaxWidth = 520.f
+    static let bannerTop = 24.f
+    static let bannerSide = 8.f
+    static let containerStackHeight = 88.f
+    static let mediaTopBottom = 8.f
+    static let mediaLeading = 8.f
+    static let buttonContainerHeight = 44.f
+    static let buttonStackSide = 8.f
+    static let headerViewLeading = 8.f
+    static let headerViewHeight = 38.f
+    static let headerCenterYInset = -2.f
+    static let avatarViewTraling = 4.f
+    static let nameContainerTrailing = 6.f
+    static let nameViewLeading = 2.f
+    static let messageFileStackSide = 10.f
+    static let messageFileStackBottom = 10.f
+    static let avatarViewLength = 24.f
+    static let closeImageViewLength = 16.f
+    static let closeContainerCenterYInset = -2.f
+    static let closeContainerLength = 24.f
+    static let closeContainerLeading = 12.f
+    static let closeContainerTrailing = 6.f
+    static let closeClickWidth = 42.f
+    static let buttonHeight = 36.f
   }
   
   private struct Constants {
@@ -30,39 +43,65 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     static let maxLineWithFileInfo = 1
   }
   
-  let notiType: InAppNotificationType = .banner
-  
   private let containerView = UIView().then {
-    $0.layer.cornerRadius = 10.f
+    $0.layer.cornerRadius = 12.f
     $0.backgroundColor = .white
-    $0.clipsToBounds = true
   }
-  
-  private let leftStackView = UIStackView().then {
-    $0.axis = .horizontal
-    $0.alignment = .center
-  }
-  private let avatarView = AvatarView()
-  
-  private let mediaView = InAppMediaView()
-  
-  private let rightStackView = UIStackView().then {
+  private let containerStackView = UIStackView().then {
     $0.axis = .vertical
-    $0.alignment = .top
   }
-  
-  private let nameContainerView = UIView()
-  private let nameLabel = UILabel().then {
-    $0.font = UIFont.systemFont(ofSize: 12)
-    $0.textColor = .grey900
+  // NOTE: Because of UISV-canvas-connection on nested uistackview issue,
+  // we need wrappint uiview on nested stackview
+  private let upperContentContainerView = UIView()
+  private let upperContentStackView = UIStackView().then {
+    $0.axis = .horizontal
   }
-
+  private let buttonContainerView = UIView().then {
+    $0.isHidden = true
+  }
+  private let buttonStackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.spacing = 8.f
+    $0.distribution = .fillEqually
+  }
+  private let firstButtonView = UILabel().then {
+    $0.layer.cornerRadius = 6.f
+    $0.clipsToBounds = true
+    $0.isHidden = true
+    $0.font = UIFont.systemFont(ofSize: 14)
+    $0.textAlignment = .center
+  }
+  private let secondButtonView = UILabel().then {
+    $0.layer.cornerRadius = 6.f
+    $0.clipsToBounds = true
+    $0.isHidden = true
+    $0.font = UIFont.systemFont(ofSize: 14)
+    $0.textAlignment = .center
+  }
+  private let rightInfoView = UIView()
+  private let mediaContainerView = UIView()
+  private let headerView = UIView()
+  private let userInfoStackView = UIStackView().then {
+    $0.axis = .horizontal
+  }
+  private let closeClickView = UIView()
+  private let closeContainerView = UIView().then {
+    $0.layer.cornerRadius = 12
+    $0.backgroundColor = .black5
+  }
+  private let closeImageView = UIImageView().then {
+    $0.image = CHAssets.getImage(named: "cancel")
+  }
+  private let messageAndFileStackView = UIStackView().then {
+    $0.axis = .vertical
+  }
   private let messageView = UITextView().then {
     $0.isScrollEnabled = false
     $0.isEditable = false
+    $0.isSelectable = true
     $0.isUserInteractionEnabled = false
     
-    $0.font = UIFont.systemFont(ofSize: 13)
+    $0.font = UIFont.systemFont(ofSize: 15)
     $0.textColor = UIColor.grey900
     $0.backgroundColor = .white
     $0.textContainer.maximumNumberOfLines = 0
@@ -76,16 +115,30 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       .underlineStyle: 0
     ]
   }
-  
   private let fileInfoView = AttachmentFileInfoView().then {
     $0.isHidden = true
   }
-  
-  private let closeContainerView = UIView()
-    
-  private let closeImageView = UIImageView().then {
-    $0.image = CHAssets.getImage(named: "cancel")
+  private let avatarView = AvatarView().then {
+    $0.isRound = false
+    $0.avatarImageView.layer.cornerRadius = 8.f
   }
+  private let medialayerView = UIView().then {
+    $0.layer.cornerRadius = 6.f
+    $0.clipsToBounds = true
+  }
+  private let mediaView = InAppMediaView()
+  private let nameContainerView = UIView()
+  private let nameLabel = UILabel().then {
+    $0.font = UIFont.boldSystemFont(ofSize: 13)
+    $0.textColor = .grey900
+  }
+  private let timeLabel = UILabel().then {
+    $0.font = UIFont.systemFont(ofSize: 11)
+    $0.textColor = .grey500
+  }
+  
+  let notiType: InAppNotificationType = .banner
+  private var mkInfo: MarketingInfo?
   private var chatSignal = PublishSubject<Any?>()
   private var closeSignal = PublishSubject<Any?>()
   private let disposeBag = DisposeBag()
@@ -94,15 +147,33 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     super.initialize()
     
     self.addSubview(self.containerView)
-    self.containerView.addSubview(self.leftStackView)
-    self.containerView.addSubview(self.rightStackView)
-    self.leftStackView.addArrangedSubview(self.avatarView)
-    self.leftStackView.addArrangedSubview(self.mediaView)
-    self.rightStackView.addArrangedSubview(self.nameLabel)
-    self.rightStackView.addArrangedSubview(self.messageView)
-    self.rightStackView.addArrangedSubview(self.fileInfoView)
+    self.containerView.addSubview(self.containerStackView)
+    
+    self.containerStackView.addArrangedSubview(self.upperContentContainerView)
+    self.containerStackView.addArrangedSubview(self.buttonContainerView)
+    
+    self.upperContentContainerView.addSubview(self.upperContentStackView)
+    self.buttonContainerView.addSubview(self.buttonStackView)
+    
+    self.upperContentStackView.addArrangedSubview(self.mediaContainerView)
+    self.mediaContainerView.addSubview(self.medialayerView)
+    self.medialayerView.addSubview(self.mediaView)
+    self.upperContentStackView.addArrangedSubview(self.rightInfoView)
+    self.rightInfoView.addSubview(self.headerView)
+    self.rightInfoView.addSubview(self.messageAndFileStackView)
+    self.headerView.addSubview(self.userInfoStackView)
+    self.userInfoStackView.addArrangedSubview(self.avatarView)
+    self.userInfoStackView.addArrangedSubview(self.nameContainerView)
+    self.nameContainerView.addSubview(self.nameLabel)
+    self.userInfoStackView.addArrangedSubview(self.timeLabel)
+    self.headerView.addSubview(self.closeClickView)
+    self.closeClickView.addSubview(self.closeContainerView)
     self.closeContainerView.addSubview(self.closeImageView)
-    self.containerView.addSubview(self.closeContainerView)
+    self.messageAndFileStackView.addArrangedSubview(self.messageView)
+    self.messageAndFileStackView.addArrangedSubview(self.fileInfoView)
+    
+    self.buttonStackView.addArrangedSubview(self.firstButtonView)
+    self.buttonStackView.addArrangedSubview(self.secondButtonView)
     
     self.layer.zPosition = 1
     
@@ -112,90 +183,183 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (bounds) in
         self?.layer.applySketchShadow(
-          color: .black15, alpha: 1, x: 0, y: 3, blur: 12, spread: 1
+          color: .black20, alpha: 1, x: 0, y: 4, blur: 20, spread: 0
         )
       }).disposed(by: self.disposeBag)
     
-    self.signalForClick().subscribe(onNext: { [weak self] (_) in
-      self?.chatSignal.onNext(nil)
-      self?.chatSignal.onCompleted()
-    }).disposed(by: self.disposeBag)
+    self.signalForClick()
+      .bind { [weak self] _ in
+        self?.chatSignal.onNext(nil)
+        self?.chatSignal.onCompleted()
+      }.disposed(by: self.disposeBag)
     
-    self.messageView.signalForClick().subscribe(onNext: { [weak self] (_) in
-      self?.chatSignal.onNext(nil)
-      self?.chatSignal.onCompleted()
-    }).disposed(by: self.disposeBag)
+    self.messageView
+      .signalForClick()
+      .bind { [weak self] _ in
+        self?.chatSignal.onNext(nil)
+        self?.chatSignal.onCompleted()
+      }.disposed(by: self.disposeBag)
     
     self.closeContainerView
       .signalForClick()
-      .subscribe(onNext: { [weak self] (_) in
+      .bind { [weak self] _ in
         guard let self = self else { return }
         CHUser.closePopup().subscribe().disposed(by: self.disposeBag)
         self.closeSignal.onNext(nil)
         self.closeSignal.onCompleted()
-      }).disposed(by: self.disposeBag)
+      }.disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
     super.setLayouts()
     
     self.containerView.snp.makeConstraints { make in
-      make.height.equalTo(Metrics.containerViewHeight)
-      make.top.bottom.equalToSuperview()
-      make.leading.trailing.equalToSuperview().inset(Metrics.containerViewSide)
+      make.edges.equalToSuperview()
     }
     
-    self.leftStackView.snp.makeConstraints { make in
-      make.top.bottom.equalToSuperview()
+    self.containerStackView.snp.makeConstraints { make in
+      make.edges.equalToSuperview()
+    }
+    
+    self.upperContentContainerView.snp.makeConstraints { make in
+      make.leading.trailing.equalToSuperview()
+      make.height.equalTo(Metric.containerStackHeight)
+    }
+    
+    self.upperContentStackView.snp.makeConstraints { make in
+      make.edges.equalToSuperview()
+    }
+    
+    self.buttonContainerView.snp.makeConstraints { make in
+      make.leading.trailing.equalToSuperview()
+      make.height.equalTo(Metric.buttonContainerHeight)
+    }
+    
+    self.buttonStackView.snp.makeConstraints { make in
+      make.leading.trailing.bottom.equalToSuperview().inset(Metric.buttonStackSide)
+    }
+    
+    self.medialayerView.snp.makeConstraints { make in
+      make.leading.equalToSuperview().inset(Metric.mediaLeading)
+      make.trailing.equalToSuperview()
+      make.top.bottom.equalToSuperview().inset(Metric.mediaTopBottom)
+    }
+    
+    self.mediaView.snp.makeConstraints { make in
+      make.edges.equalToSuperview()
+    }
+    
+    self.headerView.snp.makeConstraints { make in
+      make.leading.equalToSuperview().inset(Metric.headerViewLeading)
+      make.top.trailing.equalToSuperview()
+      make.height.equalTo(Metric.headerViewHeight)
+    }
+    
+    self.userInfoStackView.snp.makeConstraints { make in
       make.leading.equalToSuperview()
+      make.centerY.equalToSuperview().inset(Metric.headerCenterYInset)
+    }
+    
+    if #available(iOS 11.0, *) {
+      self.userInfoStackView.setCustomSpacing(Metric.avatarViewTraling, after: self.avatarView)
+      self.userInfoStackView.setCustomSpacing(
+        Metric.nameContainerTrailing,
+        after: self.nameContainerView
+      )
     }
     
     self.nameLabel.snp.makeConstraints { make in
-      make.height.equalTo(Metrics.nameLabelHeight)
+      make.leading.equalToSuperview().inset(Metric.nameViewLeading)
+      make.top.bottom.trailing.equalToSuperview()
     }
     
-    self.rightStackView.snp.makeConstraints { make in
-      make.centerY.equalToSuperview()
-      make.leading.equalTo(self.leftStackView.snp.trailing)
-        .offset(Metrics.rightStackSide)
-      make.trailing.equalTo(self.closeContainerView.snp.leading)
-        .offset(Metrics.rightStackTrailing)
+    self.messageAndFileStackView.snp.makeConstraints { make in
+      make.leading.trailing.equalToSuperview().inset(Metric.messageFileStackSide)
+      make.top.equalTo(self.headerView.snp.bottom)
+      make.bottom.lessThanOrEqualToSuperview().inset(Metric.messageFileStackBottom)
     }
     
     self.avatarView.snp.makeConstraints { make in
-      make.leading.equalToSuperview().inset(Metrics.avatarLeading)
-      make.centerY.equalToSuperview()
-      make.width.equalTo(Metrics.avatarLength)
-      make.height.equalTo(Metrics.avatarLength)
+      make.width.height.equalTo(Metric.avatarViewLength)
     }
     
     self.closeImageView.snp.makeConstraints { make in
-      make.width.equalTo(Metrics.closeImageLength)
-      make.height.equalTo(Metrics.closeImageLength)
+      make.width.height.equalTo(Metric.closeImageViewLength)
       make.centerX.centerY.equalToSuperview()
     }
-    
+
     self.closeContainerView.snp.makeConstraints { make in
-      make.top.bottom.trailing.equalToSuperview()
-      make.width.equalTo(Metrics.closeButtonViewWidth)
+      make.centerY.equalToSuperview().inset(Metric.closeContainerCenterYInset)
+      make.width.height.equalTo(Metric.closeContainerLength)
+      make.leading.equalToSuperview().inset(Metric.closeContainerLeading)
+      make.trailing.equalToSuperview().inset(Metric.closeContainerTrailing)
+    }
+    
+    self.closeClickView.snp.makeConstraints { make in
+      make.top.trailing.bottom.equalToSuperview()
+      make.width.equalTo(Metric.closeClickWidth)
+    }
+    
+    self.firstButtonView.snp.makeConstraints { make in
+      make.height.equalTo(Metric.buttonHeight)
+    }
+    
+    self.secondButtonView.snp.makeConstraints { make in
+      make.height.equalTo(Metric.buttonHeight)
     }
   }
   
   func configure(with viewModel: InAppNotificationViewModel) {
+    self.mkInfo = viewModel.mkInfo
     let fileInfoVisibility = viewModel.hasMedia ?
       !viewModel.hasText : viewModel.files.count > 0
-    
     self.nameLabel.text = viewModel.name
     self.avatarView.isHidden = viewModel.hasMedia
     self.avatarView.configure(viewModel.avatar)
-    self.mediaView.isHidden = !viewModel.hasMedia
+    self.timeLabel.text = viewModel.timestamp
+    self.mediaContainerView.isHidden = !viewModel.hasMedia
     self.mediaView.configure(model: viewModel)
     self.messageView.isHidden = !viewModel.hasText
     self.messageView.attributedText = viewModel.message
     self.messageView.textContainer.maximumNumberOfLines = fileInfoVisibility ?
       Constants.maxLineWithFileInfo : Constants.maxLineWithOnlyText
     self.fileInfoView.isHidden = !fileInfoVisibility
-    self.fileInfoView.configure(with: viewModel.files, isLarge: false)
+    self.fileInfoView.configure(with: viewModel.files, isInAppPush: true)
+    
+    self.buttonContainerView.isHidden = viewModel.buttons.count == 0
+    self.firstButtonView.isHidden = true
+    self.secondButtonView.isHidden = true
+    if let first = viewModel.buttons.get(index: 0) {
+      self.firstButtonView.isHidden = false
+      self.firstButtonView.text = first.title
+      self.firstButtonView.textColor = first.theme == nil ? .grey900 : .white
+      self.firstButtonView.backgroundColor = first.theme?.color ?? .black5
+      self.firstButtonView
+        .signalForClick()
+        .bind { _ in
+          if let url = URL(string: first.url) {
+            self.closeSignal.onNext(nil)
+            self.closeSignal.onCompleted()
+            url.openWithUniversal()
+          }
+        }.disposed(by: self.disposeBag)
+    }
+    
+    if let second = viewModel.buttons.get(index: 1) {
+      self.secondButtonView.isHidden = false
+      self.secondButtonView.text = second.title
+      self.secondButtonView.textColor = second.theme == nil ? .grey900 : .white
+      self.secondButtonView.backgroundColor = second.theme?.color ?? .black5
+      self.secondButtonView
+        .signalForClick()
+        .bind { _ in
+          if let url = URL(string: second.url) {
+            self.closeSignal.onNext(nil)
+            self.closeSignal.onCompleted()
+            url.openWithUniversal()
+          }
+        }.disposed(by: self.disposeBag)
+    }
   }
   
   func insertView(on view: UIView?) {
@@ -208,23 +372,16 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       self.insert(on: view, animated: true)
     }
     
-    let maxWidth = 520.f
+    let maxWidth = Metric.bannerMaxWidth
     
     self.snp.makeConstraints { make in
       if view.bounds.width > maxWidth {
         make.centerX.equalToSuperview()
         make.width.equalTo(maxWidth)
       } else {
-        make.leading.equalToSuperview()
-        make.trailing.equalToSuperview()
+        make.leading.trailing.equalToSuperview().inset(Metric.bannerSide)
       }
-      
-      if #available(iOS 11.0, *) {
-        make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-          .inset(Metrics.containerBottom)
-      } else {
-        make.bottom.equalToSuperview().inset(Metrics.containerBottom)
-      }
+      make.top.equalToSuperview().inset(Metric.bannerTop)
     }
   }
   
@@ -247,14 +404,27 @@ extension BannerInAppNotificationView : UITextViewDelegate {
   func textView(
     _ textView: UITextView,
     shouldInteractWith URL: URL,
-    in characterRange: NSRange,
-    interaction: UITextItemInteraction) -> Bool {
+    in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+    if let mkInfo = self.mkInfo {
+      mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
+    }
+    
     if interaction == .invokeDefaultAction {
-      let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
-      if handled == false || handled == nil {
-        URL.openWithUniversal()
+      let scheme = URL.scheme ?? ""
+      switch scheme {
+      case "tel":
+        return true
+      case "mailto":
+        return true
+      default:
+        let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
+        if handled == false || handled == nil {
+          self.closeSignal.onNext(nil)
+          self.closeSignal.onCompleted()
+          URL.openWithUniversal()
+        }
+        return false
       }
-      return false
     }
     
     return true

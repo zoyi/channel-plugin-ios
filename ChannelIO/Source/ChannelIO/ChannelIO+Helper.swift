@@ -157,7 +157,6 @@ extension ChannelIO {
     var notificationView: InAppNotification?
     var view: UIView?
     let viewModel = InAppNotificationViewModel(push: push)
-    
     if viewModel.mobileExposureType == .fullScreen {
       ChannelIO.launcherView?.hide(animated: true)
       notificationView = PopupInAppNotificationView()

@@ -72,6 +72,7 @@ struct CHMessage: ModelType {
   var webPage: CHWebPage?
   var log: CHLog?
   var marketing: CHMarketing?
+  var buttons: [CHLinkButton] = []
   
   // Dependencies
   var entity: CHEntity?
@@ -348,6 +349,7 @@ extension CHMessage: Mappable {
     action      <- map["action"]
     submit      <- map["submit"]
     language    <- map["language"]
+    buttons     <- map["buttons"]
     
     messageType = self.contextType()
   }

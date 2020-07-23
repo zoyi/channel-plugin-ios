@@ -16,7 +16,6 @@ class InAppMediaView: BaseView {
     static let popupWidth = 312.f
     static let maxRatio = 16.f / 9.f
     static let minRatio = 1.f
-    static let cornerRadius = 10.f
     static let multiIndicatorBannerSide = 4.f
     static let multiIndicatorPopupSide = 4.f
     static let volumeImageLength = 24.f
@@ -161,7 +160,6 @@ class InAppMediaView: BaseView {
     let isBanner = model.mobileExposureType == .banner
     self.containerView.axis = isBanner ? .horizontal : .vertical
     self.containerView.alignment = isBanner ? .center : .fill
-    self.layer.cornerRadius = isBanner ? 0.f : Metrics.cornerRadius
     let multiIndicatorMargin = isBanner ?
       Metrics.multiIndicatorBannerSide :
       Metrics.multiIndicatorPopupSide
@@ -297,6 +295,7 @@ class InAppMediaView: BaseView {
     width: CGFloat,
     height: CGFloat,
     type: InAppNotificationType) -> CGFloat {
+    guard height != 0 else { return 1 / Metrics.maxRatio }
     let ratio = type == .banner ? width / height : height / width
     let maxRatio = type == .banner ? Metrics.maxRatio : 1 / Metrics.maxRatio
     
