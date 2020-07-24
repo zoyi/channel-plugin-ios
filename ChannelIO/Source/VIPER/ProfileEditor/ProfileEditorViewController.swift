@@ -17,24 +17,24 @@ class ProfileEditorViewController: BaseViewController {
     static let booleanHeight = 156.f
   }
   
-  let footerLabel = UILabel().then {
+  private let footerLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
     $0.numberOfLines = 0
   }
   
-  var text = ""
-  var user: CHUser?
-  var schema: CHProfileSchema?
+  private var text = ""
+  private var user: CHUser?
+  private var schema: CHProfileSchema?
   
-  var entityType: EntityType = .none
-  var type: EditFieldType = .name
-  var fieldView: CHFieldDelegate!
+  private var entityType: EntityType = .none
+  private var type: EditFieldType = .name
+  private var fieldView: CHFieldDelegate!
   
   private var isBoolean: Bool = false
   
   private var submitSubject = PublishSubject<String>()
-  var disposeBag = DisposeBag()
+  private var disposeBag = DisposeBag()
   
   convenience init(type: EditFieldType, user: CHUser, schema: CHProfileSchema? = nil) {
     self.init()
@@ -42,7 +42,6 @@ class ProfileEditorViewController: BaseViewController {
     self.type = type
     self.user = user
     self.entityType = .user
-    
     self.isBoolean = false
     
     switch type {
@@ -73,9 +72,8 @@ class ProfileEditorViewController: BaseViewController {
         placeholder: CHAssets.localized("ch.profile_form.placeholder"))
     case .date:
       let key = schema?.key ?? ""
-      let value: Double? = user.profile?[key] as? Double
       var date: Date? = nil
-      if let value = value {
+      if let value = user.profile?[key] as? Double {
         date = Date.init(timeIntervalSince1970: value / 1000)
       }
       self.text = date?.fullDateString() ?? ""

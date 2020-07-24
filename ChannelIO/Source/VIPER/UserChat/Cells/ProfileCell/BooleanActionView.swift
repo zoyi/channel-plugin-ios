@@ -6,45 +6,53 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import Foundation
 import RxSwift
 import SnapKit
 import RxCocoa
 import NVActivityIndicatorView
 
-class BooleanActionView: BaseView {
-  let submitSubject = PublishSubject<Any?>()
-  let focusSubject = PublishSubject<Bool>()
+final class BooleanActionView: BaseView {
+  private enum Metric {
+    static let indicatorSize = 20.f
+    static let borderWidth = 1.f
+    static let cornerRadius = 5.f
+    static let buttonWidth = 148.5.f
+    static let dividerWidth = 1.f
+  }
   
-  let yesBackground = UIView()
+  private let submitSubject = PublishSubject<Any?>()
+  private let focusSubject = PublishSubject<Bool>()
   
-  let yesLabel = UILabel().then {
+  private let yesBackground = UIView()
+  
+  private let yesLabel = UILabel().then {
     $0.text = CHAssets.localized("ch.profile_form.boolean.yes")
-    $0.textColor = .grey300
+    $0.textColor = .grey500
   }
   
-  let noBackground = UIView()
+  private let noBackground = UIView()
   
-  let noLabel = UILabel().then {
+  private let noLabel = UILabel().then {
     $0.text = CHAssets.localized("ch.profile_form.boolean.no")
-    $0.textColor = .grey300
+    $0.textColor = .grey500
   }
   
-  let verticalDivider = UIView().then {
+  private let verticalDivider = UIView().then {
     $0.backgroundColor = .grey300
   }
   
-  let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20)).then {
+  private let loadIndicator = NVActivityIndicatorView(
+    frame: CGRect(x: 0, y: 0, width: Metric.indicatorSize, height:  Metric.indicatorSize)
+  ).then {
     $0.type = .circleStrokeSpin
     $0.color = .grey500
     $0.isHidden = true
   }
   
-  var yesLoadIndicatorConstraint: Constraint?
-  var noLoadIndicatorConstraint: Constraint?
+  private var yesLoadIndicatorConstraint: Constraint?
+  private var noLoadIndicatorConstraint: Constraint?
   
-  let disposeBag = DisposeBag()
-  var didFocus: Bool = false
+  private let disposeBag = DisposeBag()
   var selectedValue: Bool? {
     didSet {
       self.yesBackground.layer.backgroundColor = UIColor.white.cgColor
@@ -68,13 +76,14 @@ class BooleanActionView: BaseView {
       }
     }
   }
+  var didFocus: Bool = false
   
   override func initialize() {
     super.initialize()
     
     self.layer.borderColor = UIColor.grey300.cgColor
-    self.layer.borderWidth = 1.f
-    self.layer.cornerRadius = 5.f
+    self.layer.borderWidth = Metric.borderWidth
+    self.layer.cornerRadius = Metric.cornerRadius
     self.layer.masksToBounds = true
     
     self.addSubview(self.yesBackground)
@@ -101,7 +110,7 @@ class BooleanActionView: BaseView {
   
   override func setLayouts() {
     self.yesBackground.snp.makeConstraints { make in
-      make.width.equalTo(148.5.f)
+      make.width.equalTo(Metric.buttonWidth)
       make.top.bottom.leading.equalToSuperview()
       make.trailing.equalTo(self.verticalDivider.snp.leading)
     }
@@ -111,13 +120,13 @@ class BooleanActionView: BaseView {
     }
     
     self.verticalDivider.snp.makeConstraints { make in
-      make.width.equalTo(1.f)
+      make.width.equalTo(Metric.dividerWidth)
       make.top.bottom.equalToSuperview()
       make.trailing.equalTo(noBackground.snp.leading)
     }
     
     self.noBackground.snp.makeConstraints { make in
-      make.width.equalTo(148.5.f)
+      make.width.equalTo(Metric.buttonWidth)
       make.top.bottom.trailing.equalToSuperview()
     }
     
@@ -134,7 +143,7 @@ class BooleanActionView: BaseView {
 
 extension BooleanActionView: Actionable {
   func signalForAction() -> Observable<Any?> {
-    return self.submitSubject.asObserver()
+    return self.submitSubject
   }
   
   func signalForText() -> Observable<String?>? {

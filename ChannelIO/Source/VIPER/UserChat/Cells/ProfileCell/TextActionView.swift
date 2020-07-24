@@ -12,16 +12,16 @@ import SnapKit
 import RxCocoa
 import NVActivityIndicatorView
 
-class TextActionView: BaseView, Actionable {
-  let submitSubject = PublishSubject<Any?>()
-  let focusSubject = PublishSubject<Bool>()
+final class TextActionView: BaseView, Actionable {
+  private let submitSubject = PublishSubject<Any?>()
+  private let focusSubject = PublishSubject<Bool>()
   
-  let confirmButton = UIButton().then {
+  private let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
     $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysOriginal), for: .disabled)
   }
   
-  let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
+  private let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
     $0.type = .circleStrokeSpin
     $0.color = CHColors.light
     $0.isHidden = true
@@ -33,7 +33,7 @@ class TextActionView: BaseView, Actionable {
     $0.placeholder = CHAssets.localized("ch.profile_form.placeholder")
   }
   
-  let disposeBag = DisposeBag()
+  private let disposeBag = DisposeBag()
   var didFocus = false
   
   override func initialize() {

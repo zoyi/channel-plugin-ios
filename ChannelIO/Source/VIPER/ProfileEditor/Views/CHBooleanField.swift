@@ -30,19 +30,18 @@ final class CHBooleanField: BaseView {
     $0.register(cellType: CHBooleanSelectCell.self)
   }
 
-  let validSubject = PublishSubject<Bool>()
-  let changeSubject = PublishRelay<String>()
+  private let validSubject = PublishRelay<Bool>()
+  private let changeSubject = PublishRelay<String>()
   
   private var selectedPosition: Int = 2
 
   convenience init(bool: Bool?) {
     self.init(frame: CGRect.zero)
-
-    guard bool != nil else {
-      self.setText("")
-      return
-    }
-    self.setText(bool == true ? "true" : "false")
+    self.setText(
+      bool == true
+        ? "true" : bool == false
+        ? "false" : ""
+    )
   }
 
   override func initialize() {
@@ -62,23 +61,19 @@ final class CHBooleanField: BaseView {
     super.setLayouts()
 
     self.topDivider.snp.makeConstraints { make in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-      make.top.equalToSuperview()
+      make.top.leading.trailing.equalToSuperview()
       make.height.equalTo(Metrics.dividerHeight)
     }
 
     self.botDivider.snp.makeConstraints { make in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
+      make.leading.trailing.equalToSuperview()
       make.bottom.equalToSuperview().inset(Metrics.dividerHeight)
       make.height.equalTo(Metrics.dividerHeight)
     }
 
     self.tableView.snp.makeConstraints { make in
       make.leading.trailing.equalToSuperview()
-      make.top.equalToSuperview().inset(Metrics.dividerHeight)
-      make.bottom.equalToSuperview().inset(Metrics.dividerHeight)
+      make.top.bottom.equalToSuperview().inset(Metrics.dividerHeight)
     }
   }
 }
@@ -104,7 +99,7 @@ extension CHBooleanField: CHFieldDelegate {
   }
   
   func isValid() -> Observable<Bool> {
-    return self.validSubject
+    return self.validSubject.asObservable()
   }
   
   func hasChanged() -> Observable<String> {
@@ -154,7 +149,7 @@ extension CHBooleanField: UITableViewDelegate, UITableViewDataSource {
     self.selectedPosition = indexPath.row
     tableView.reloadData()
     tableView.deselectRow(at: indexPath, animated: false)
-    self.validSubject.onNext(true)
+    self.validSubject.accept(true)
     self.changeSubject.accept(self.getText())
   }
 }

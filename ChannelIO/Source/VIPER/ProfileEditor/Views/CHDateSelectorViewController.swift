@@ -20,9 +20,7 @@ class CHDateSelectorView: BaseView {
     static let pickerHeight = 190.f
     static let buttonHeight = 40.f
     static let pickerBottomPadding = 6.f
-    
     static let selectorHeight = 284.f
-    
     static let backgroundAlpha = 0.4.f
   }
   
@@ -58,8 +56,6 @@ class CHDateSelectorView: BaseView {
   
   private let disposeBag = DisposeBag()
   
-  private var bottomContraint: Constraint?
-  
   override func initialize() {
     super.initialize()
     
@@ -92,27 +88,20 @@ class CHDateSelectorView: BaseView {
   }
   
   override func setLayouts() {
-    self.backgroundView.snp.makeConstraints { (make) in
+    self.backgroundView.snp.makeConstraints { make in
       make.edges.equalToSuperview()
     }
     
-    self.containerView.snp.remakeConstraints { [weak self] (make) in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
+    self.containerView.snp.makeConstraints { make in
+      make.leading.trailing.equalToSuperview()
       
       if #available(iOS 11.0, *) {
         let bottom = CHUtils.getKeyWindow()?.rootViewController?.view.safeAreaInsets.bottom ?? 0.f
         make.height.equalTo(Metrics.selectorHeight + bottom)
-        self?.bottomContraint = make.bottom
-          .equalToSuperview()
-          .inset(-Metrics.selectorHeight - bottom)
-          .constraint
+        make.bottom.equalToSuperview().inset(-Metrics.selectorHeight - bottom)
       } else {
         make.height.equalTo(Metrics.selectorHeight)
-        self?.bottomContraint = make.bottom
-          .equalToSuperview()
-          .inset(-Metrics.selectorHeight)
-          .constraint
+        make.bottom.equalToSuperview().inset(-Metrics.selectorHeight)
       }
     }
     
@@ -139,58 +128,67 @@ class CHDateSelectorView: BaseView {
   }
   
   func signalForSubmit() -> Observable<Date> {
-    return self.submitSubject.asObservable()
+    return self.submitSubject
   }
   
   func signalForCancel() -> Observable<Any?> {
-    return self.cancelSubject.asObservable()
+    return self.cancelSubject
   }
 
   static func create(with date: Date?) -> Observable<(Date?)> {
-    return Observable.create({ (subscriber) in
-      var controller = CHUtils.getTopController()
-      if let navigation = controller?.navigationController {
+    return Observable.create { subscriber in
+      guard var controller = CHUtils.getTopController() else { return Disposables.create() }
+      if let navigation = controller.navigationController {
         controller = navigation
       }
       
-      let selectorView = CHDateSelectorView(frame: (controller?.view.frame)!)
+      let selectorView = CHDateSelectorView(frame: controller.view.frame)
       selectorView.date = date
       
-      selectorView.showSelector(onView: (controller?.view)!,animated: true)
-      let submitSignal = selectorView.signalForSubmit().subscribe(onNext: { (date) in
-        subscriber.onNext(date)
-        subscriber.onCompleted()
-      })
+      selectorView.showSelector(onView: controller.view, animated: true)
+      let submitSignal = selectorView
+        .signalForSubmit()
+        .bind { date in
+          subscriber.onNext(date)
+          subscriber.onCompleted()
+        }
       
-      let cancelSignal = selectorView.signalForCancel().subscribe(onNext: { (_) in
-        subscriber.onNext(nil)
-        subscriber.onCompleted()
-      })
+      let cancelSignal = selectorView
+        .signalForCancel()
+        .bind { _ in
+          subscriber.onNext(nil)
+          subscriber.onCompleted()
+        }
       
       return Disposables.create {
         submitSignal.dispose()
         cancelSignal.dispose()
       }
-    })
+    }
   }
 }
 
 extension CHDateSelectorView {
+  private func showView(onView: UIView) {
+    self.backgroundView.alpha = Metrics.backgroundAlpha
+    self.containerView.snp.updateConstraints { make in
+      make.bottom.equalToSuperview().inset(0)
+    }
+    onView.layoutIfNeeded()
+  }
+  
   func showSelector(onView: UIView, animated: Bool) {
     self.backgroundView.alpha = 0
     
     onView.addSubview(self)
     onView.layoutIfNeeded()
     
-    if !animated {
-      return
-    }
-    UIView.animate(withDuration: 0.3) {
-      self.backgroundView.alpha = Metrics.backgroundAlpha
-      self.containerView.snp.updateConstraints { (make) in
-        make.bottom.equalToSuperview().inset(0)
+    if animated {
+      UIView.animate(withDuration: 0.3) { [weak self] in
+        self?.showView(onView: onView)
       }
-      onView.layoutIfNeeded()
+    } else {
+      self.showView(onView: onView)
     }
   }
   
@@ -209,7 +207,7 @@ extension CHDateSelectorView {
             .rootViewController?
             .view.safeAreaInsets
             .bottom ?? 0.f
-
+          
           make.bottom
             .equalToSuperview()
             .inset(-Metrics.selectorHeight - bottom)

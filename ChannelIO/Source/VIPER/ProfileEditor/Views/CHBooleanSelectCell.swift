@@ -7,7 +7,6 @@
 //
 
 import SnapKit
-import UIKit
 
 final class CHBooleanSelectCell: BaseTableViewCell {
   private enum Metrics {

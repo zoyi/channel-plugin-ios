@@ -27,8 +27,8 @@ final class CHEditTextField : BaseView {
     $0.backgroundColor = CHColors.dark20
   }
   
-  let changeSubject = PublishRelay<String>()
-  let validSubject = PublishSubject<Bool>()
+  private let changeSubject = PublishRelay<String>()
+  private let validSubject = PublishRelay<Bool>()
   var fieldType: EditFieldType = .text
   
   convenience init(text: String = "", type: EditFieldType = .text, placeholder: String) {
@@ -92,11 +92,11 @@ extension CHEditTextField: CHFieldDelegate {
   }
   
   func isValid() -> Observable<Bool> {
-    return self.validSubject
+    return self.validSubject.asObservable()
   }
   
   @objc func textFieldDidChange(_ textField: UITextField) {
-    self.validSubject.onNext(true)
+    self.validSubject.accept(true)
     if let text = textField.text {
       self.changeSubject.accept(text)
     }

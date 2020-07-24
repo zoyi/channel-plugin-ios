@@ -6,13 +6,8 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import Foundation
-import UIKit
-import SnapKit
-
-
-class ProfileDateView: ProfileItemBaseView, ProfileContentProtocol {
-  let dateView = DateActionView()
+final class ProfileDateView: ProfileItemBaseView, ProfileContentProtocol {
+  private let dateView = DateActionView()
   var responder: UIView {
     return self.dateView.textField
   }

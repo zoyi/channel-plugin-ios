@@ -10,8 +10,9 @@ import RxSwift
 import RxCocoa
 
 final class CHDateField: BaseView {
-  private enum Metrics {
+  private enum Metric {
     static let dividerHeight = 0.5.f
+    static let fieldLeading = 20.f
   }
   
   private let topDivider = UIView().then {
@@ -28,14 +29,14 @@ final class CHDateField: BaseView {
     $0.backgroundColor = UIColor.grey300
   }
   
-  let validSubject = PublishSubject<Bool>()
-  let changeSubject = PublishRelay<String>()
+  private let validSubject = PublishRelay<Bool>()
+  private let changeSubject = PublishRelay<String>()
 
   private var date: Date? {
     didSet {
       let text = self.date?.fullDateString() ?? ""
       self.setText(text)
-      self.validSubject.onNext(true)
+      self.validSubject.accept(true)
       self.changeSubject.accept(text)
     }
   }
@@ -47,24 +48,23 @@ final class CHDateField: BaseView {
     self.field.placeholder = CHAssets.localized("ch.profile_form.datetime_pick")
     self.field.delegate = self
 
-    defer {
+    defer { // didSet 실행을 위해 사용
       self.date = date
     }
   }
 
   override func initialize() {
     super.initialize()
-
+    
     self.field
       .signalForClick()
-      .bind { [weak self] _ in
-        guard self != nil else { return }
-        CHDateSelectorView.create(with: self!.date)
-          .bind { date in
-            if let date = date {
-              self!.date = date
-            }
-          }.disposed(by: self!.disposeBag)
+      .flatMap { [weak self] _ -> Observable<(Date?)> in
+        return CHDateSelectorView.create(with: self?.date)
+      }
+      .bind { [weak self] date in
+        if let date = date {
+          self?.date = date
+        }
       }.disposed(by: self.disposeBag)
 
     self.backgroundColor = UIColor.white
@@ -77,24 +77,20 @@ final class CHDateField: BaseView {
     super.setLayouts()
 
     self.topDivider.snp.makeConstraints { make in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-      make.top.equalToSuperview()
-      make.height.equalTo(Metrics.dividerHeight)
+      make.top.leading.trailing.equalToSuperview()
+      make.height.equalTo(Metric.dividerHeight)
     }
 
     self.field.snp.makeConstraints { make in
-      make.leading.equalToSuperview().inset(20)
+      make.leading.equalToSuperview().inset(Metric.fieldLeading)
       make.trailing.equalToSuperview()
-      make.top.equalToSuperview().inset(Metrics.dividerHeight)
-      make.bottom.equalToSuperview().inset(Metrics.dividerHeight)
+      make.top.bottom.equalToSuperview().inset(Metric.dividerHeight)
     }
 
     self.botDivider.snp.makeConstraints { make in
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-      make.bottom.equalToSuperview().inset(Metrics.dividerHeight)
-      make.height.equalTo(Metrics.dividerHeight)
+      make.leading.trailing.equalToSuperview()
+      make.bottom.equalToSuperview().inset(Metric.dividerHeight)
+      make.height.equalTo(Metric.dividerHeight)
     }
   }
 
@@ -115,7 +111,7 @@ extension CHDateField: CHFieldDelegate {
   }
   
   func isValid() -> Observable<Bool> {
-    return self.validSubject
+    return self.validSubject.asObservable()
   }
   
   func hasChanged() -> Observable<String> {

@@ -6,8 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import Foundation
-import UIKit
 import SnapKit
 
 class ProfileBooleanView: ProfileItemBaseView, ProfileContentProtocol {
@@ -26,7 +24,7 @@ class ProfileBooleanView: ProfileItemBaseView, ProfileContentProtocol {
   override func initialize() {
     super.initialize()
     self.booleanView.setOutFocus()
-    resignFirstResponder()
+    self.resignFirstResponder()
   }
   
   override func configure(model: MessageCellModelType, index: Int?, presenter: UserChatPresenterProtocol?) {
