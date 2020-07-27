@@ -54,7 +54,9 @@ class AvatarView: NeverClearView {
         self.avatarImageView.layer.borderWidth = newValue ? Metric.borderWidth : 0
       } else {
         self.layer.borderWidth = newValue ? Metric.borderWidth : 0
-        self.layer.cornerRadius = newValue ? self.avatarSize / 2 : 0
+        if self.isRound {
+          self.layer.cornerRadius = newValue ? self.avatarSize / 2 : 0
+        }
       }
     }
     get {
@@ -73,6 +75,8 @@ class AvatarView: NeverClearView {
     }
   }
   
+  var isRound: Bool = true
+  
   // MARK: Initializing
 
   override func initialize() {
@@ -82,7 +86,7 @@ class AvatarView: NeverClearView {
     self.addSubview(self.onlineView)
     
     self.avatarImageView.snp.makeConstraints { (make) in
-      make.edges.equalToSuperview().inset(1)
+      make.edges.equalToSuperview()
     }
     
     self.onlineView.layer.cornerRadius = 4
@@ -116,6 +120,8 @@ class AvatarView: NeverClearView {
   override func layoutSubviews() {
     super.layoutSubviews()
     self.layer.cornerRadius = !self.showOnline ? self.frame.size.height / 2 : 0
-    self.avatarImageView.layer.cornerRadius = (self.frame.size.height - 2) / 2
+    if isRound {
+      self.avatarImageView.layer.cornerRadius = (self.frame.size.height) / 2
+    }
   }
 }

@@ -152,7 +152,7 @@ final class UserChatCell: BaseTableViewCell {
     self.fileInfoView.isHidden = !hasFiles
     self.fileInfoView.configure(
       with: viewModel.files,
-      isLarge: false,
+      isInAppPush: false,
       hideFileSize: true
     )
     

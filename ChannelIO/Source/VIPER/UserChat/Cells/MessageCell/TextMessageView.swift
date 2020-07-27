@@ -169,7 +169,6 @@ extension TextMessageView : UITextViewDelegate {
     }
   }
   
-  @available(iOS 10.0, *)
   func textView(
     _ textView: UITextView,
     shouldInteractWith URL: URL,
@@ -196,5 +195,4 @@ extension TextMessageView : UITextViewDelegate {
     
     return true
   }
-
 }

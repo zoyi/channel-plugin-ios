@@ -20,7 +20,7 @@ struct UIFactory {
   static var pushParagraphStyle: NSParagraphStyle {
     let style = NSMutableParagraphStyle()
     style.alignment = .left
-    style.minimumLineHeight = 18
+    style.minimumLineHeight = 20
     return style
   }
   

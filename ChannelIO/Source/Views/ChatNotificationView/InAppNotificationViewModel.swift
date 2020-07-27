@@ -19,6 +19,7 @@ protocol InAppNotificationViewModelType {
   var hasMedia: Bool { get set }
   var hasText: Bool { get set }
   var mkInfo: MarketingInfo? { get set }
+  var buttons: [CHLinkButton] { get set }
 }
 
 struct InAppNotificationViewModel: InAppNotificationViewModelType {
@@ -32,6 +33,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var hasMedia: Bool = false
   var hasText: Bool = false
   var mkInfo: MarketingInfo?
+  var buttons: [CHLinkButton] = []
   
   init(push: CHPushDisplayable) {
     let writer = push.writer
@@ -41,6 +43,7 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
     self.avatar = writer
     self.files = push.sortedFiles
     self.webPage = push.webPage
+    self.buttons = push.buttons
     self.timestamp = push.readableCreatedAt
     self.mobileExposureType = push.mobileExposureType ?? .banner
     
@@ -53,20 +56,21 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
 
     if let logMessage = push.logMessage {
       let attributedText = NSMutableAttributedString(string: logMessage)
-      let font = UIFont.systemFont(ofSize: 13)
+      let font = UIFont.systemFont(ofSize: 15)
       attributedText.addAttributes(
         [.font: font,
          .foregroundColor: UIColor.grey900,
+         .kern: -0.1,
          .paragraphStyle: UIFactory.pushParagraphStyle,
          .baselineOffset: (UIFactory.pushParagraphStyle.minimumLineHeight - font.lineHeight) / 4
         ],
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
     } else if push.blocks.count != 0 {
-      let fontSize = self.mobileExposureType == .fullScreen ? 14.f : 13.f
       let config = CHMessageParserConfig(
-        font: UIFont.systemFont(ofSize: fontSize),
-        style: UIFactory.pushParagraphStyle
+        font: UIFont.systemFont(ofSize: 15.f),
+        style: UIFactory.pushParagraphStyle,
+        letterSpacing: -0.1
       )
       let transformer = CustomBlockTransform(config: config, isInappPush: true)
       let result = transformer.parser.parse(blocks: push.blocks)
@@ -74,9 +78,10 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
     } else if let webPage = push.webPage {
       let text = webPage.title ?? webPage.url?.absoluteString ?? ""
       let attributedText = NSMutableAttributedString(string: text)
-      let font = UIFont.systemFont(ofSize: self.mobileExposureType == .fullScreen ? 14.f : 13.f)
+      let font = UIFont.systemFont(ofSize: 15.f)
       attributedText.addAttributes(
         [.font: font,
+         .kern: -0.1,
          .paragraphStyle: UIFactory.pushParagraphStyle,
          .baselineOffset: (UIFactory.pushParagraphStyle.minimumLineHeight - font.lineHeight) / 4
         ],

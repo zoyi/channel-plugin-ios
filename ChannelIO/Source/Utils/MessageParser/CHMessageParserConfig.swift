@@ -17,6 +17,7 @@ struct CHMessageParserConfig {
   var codeFont: UIFont?
   var codeTextColor: UIColor
   var emojiOnlyFont: UIFont
+  var letterSpacing: Float
 
   init(
     font: UIFont,
@@ -26,7 +27,9 @@ struct CHMessageParserConfig {
     linkColor: UIColor = .cobalt400,
     backgroundColor: UIColor = .clear,
     codeFont: UIFont? = UIFont.init(name: "AppleSDGothicNeo-Regular", size: 14),
-    codeTextColor: UIColor = .grey700) {
+    codeTextColor: UIColor = .grey700,
+    letterSpacing: Float = 0
+  ) {
     self.font = font
     self.style = style
     self.textColor = textColor
@@ -35,5 +38,6 @@ struct CHMessageParserConfig {
     self.codeFont = codeFont ?? font
     self.codeTextColor = codeTextColor
     self.emojiOnlyFont = emojiOnlyFont
+    self.letterSpacing = letterSpacing
   }
 }

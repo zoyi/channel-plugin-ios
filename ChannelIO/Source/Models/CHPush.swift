@@ -20,6 +20,7 @@ protocol CHPushDisplayable {
   var chatId: String { get }
   var removed: Bool { get }
   var mkInfo: MarketingInfo? { get }
+  var buttons: [CHLinkButton] { get }
 }
 
 extension CHPushDisplayable {
@@ -88,6 +89,10 @@ struct CHPush: CHPushDisplayable {
   var mkInfo: MarketingInfo? {
     guard let marketing = self.message?.marketing else { return nil }
     return (marketing.type, marketing.id)
+  }
+  
+  var buttons: [CHLinkButton] {
+    return self.message?.buttons ?? []
   }
 }
 
