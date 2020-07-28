@@ -14,6 +14,7 @@ protocol MessageCellModelType {
   var timestamp: String { get }
   var timestampIsHidden: Bool { get }
   var message: CHMessage { get }
+  var buttons: [CHLinkButton] { get }
   var text: NSAttributedString? { get }
   var avatarEntity: CHEntity { get }
   var avatarIsHidden: Bool { get }
@@ -49,6 +50,7 @@ struct MessageCellModel: MessageCellModelType {
   let timestampIsHidden: Bool
   let message: CHMessage
   let text: NSAttributedString?
+  let buttons: [CHLinkButton]
   let avatarEntity: CHEntity
   let avatarIsHidden: Bool
   let bubbleBackgroundColor: UIColor
@@ -101,6 +103,7 @@ struct MessageCellModel: MessageCellModelType {
     self.name = message.entity?.name ?? ""
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
+    self.buttons = message.buttons
   
     if message.removed {
       self.text = MessageFactory.deleted()

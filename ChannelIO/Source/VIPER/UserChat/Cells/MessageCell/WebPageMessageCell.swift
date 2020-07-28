@@ -78,7 +78,7 @@ class WebPageMessageCell: MessageCell {
       self.webViewTopToTranslateConstraint?.activate()
       self.webViewTopConstraint?.deactivate()
       self.webViewTopToNameTopConstraint?.deactivate()
-    } else if viewModel.text != nil {
+    } else if viewModel.text != nil || !viewModel.buttons.isEmpty {
       self.webViewTopToTranslateConstraint?.activate()
       self.webViewTopConstraint?.deactivate()
       self.webViewTopToNameTopConstraint?.deactivate()

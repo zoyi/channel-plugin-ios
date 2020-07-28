@@ -173,6 +173,7 @@ extension CHMessage: Mappable {
     webPage: CHWebPage? = nil,
     type: MessageType,
     entity: CHEntity? = nil,
+    buttons: [CHLinkButton] = [],
     action: CHAction? = nil,
     createdAt:Date? = Date(),
     id: String? = nil) {
@@ -192,6 +193,7 @@ extension CHMessage: Mappable {
     self.blocks = blocks
     self.files = files
     self.webPage = webPage
+    self.buttons = buttons
   }
   
   init(

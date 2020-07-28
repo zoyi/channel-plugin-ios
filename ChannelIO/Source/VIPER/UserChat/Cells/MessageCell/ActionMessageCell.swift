@@ -56,7 +56,7 @@ class ActionMessageCell: MessageCell {
     self.messageId = viewModel.id
     self.actionView.configure(viewModel)
     self.actionView.snp.remakeConstraints { make in
-      if viewModel.text != nil || viewModel.showTranslation {
+      if viewModel.text != nil || viewModel.showTranslation || !viewModel.buttons.isEmpty {
         make.top.equalTo(self.translateView.snp.bottom).offset(ActionMetrics.ActionViewTop)
       } else if viewModel.isContinuous {
         make.top.equalToSuperview().inset(ActionMetrics.ActionViewTop)

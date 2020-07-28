@@ -32,6 +32,17 @@ struct CHLinkButton {
   var title: String = ""
   var theme: LinkButtonTheme?
   var url: String = ""
+  
+  var linkURL: URL? {
+    get {
+      guard
+        let link = self.url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+      else {
+        return URL(string: url)
+      }
+      return URL(string: link)
+    }
+  }
 }
 
 extension CHLinkButton: Mappable {
