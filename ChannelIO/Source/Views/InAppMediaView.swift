@@ -13,7 +13,7 @@ import RxSwift
 class InAppMediaView: BaseView {
   private struct Metrics {
     static let bannerHeight = 72.f
-    static let popupWidth = 312.f
+    static let popupWidth = 320.f
     static let maxRatio = 16.f / 9.f
     static let minRatio = 1.f
     static let multiIndicatorBannerSide = 4.f
@@ -299,9 +299,9 @@ class InAppMediaView: BaseView {
     let ratio = width / height
     
     var result = 0.f
-    if ratio > Metrics.maxRatio {
+    if ratio >= Metrics.maxRatio {
       result = Metrics.maxRatio
-    } else if ratio < Metrics.minRatio {
+    } else if ratio <= Metrics.minRatio {
       result = Metrics.minRatio
     } else {
      result = ratio

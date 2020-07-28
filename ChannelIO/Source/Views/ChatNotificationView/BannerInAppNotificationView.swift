@@ -49,8 +49,6 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   private let containerStackView = UIStackView().then {
     $0.axis = .vertical
   }
-  // NOTE: Because of UISV-canvas-connection on nested uistackview issue,
-  // we need wrappint uiview on nested stackview
   private let upperContentContainerView = UIView()
   private let upperContentStackView = UIStackView().then {
     $0.axis = .horizontal
@@ -221,8 +219,10 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       make.edges.equalToSuperview()
     }
     
+    // NOTE: Because of UISV-canvas-connection on nested uistackview issue,
+    // we need wrappint uiview on nested stackview
     self.upperContentContainerView.snp.makeConstraints { make in
-      make.leading.trailing.equalToSuperview()
+      make.top.bottom.leading.trailing.equalToSuperview()
     }
     
     self.upperContentStackView.snp.makeConstraints { make in
@@ -355,7 +355,6 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
         .signalForClick()
         .bind { _ in
           if let url = second.linkURL {
-
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()

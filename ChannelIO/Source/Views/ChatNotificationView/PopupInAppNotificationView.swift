@@ -213,6 +213,10 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
       make.height.equalTo(Metric.headerViewHeight)
     }
     
+    self.infoView.snp.makeConstraints { make in
+      make.leading.trailing.equalToSuperview()
+    }
+    
     self.userInfoStackView.snp.makeConstraints { make in
       make.leading.equalToSuperview()
       make.trailing.lessThanOrEqualTo(self.closeClickView.snp.leading)
