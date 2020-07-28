@@ -89,7 +89,7 @@ public extension YoutubePlayerViewDelegate {
 }
 
 open class YoutubePlayerView: UIView {
-  private var webView: WKWebView!
+  var webView: WKWebView!
   fileprivate weak var loadingView: UIView?
   private var autoplay = false
 
@@ -127,6 +127,9 @@ open class YoutubePlayerView: UIView {
     webView.scrollView.isScrollEnabled = false
     webView.scrollView.bounces = false
     webView.navigationDelegate = self
+    if #available(iOS 11.0, *) {
+      webView.scrollView.contentInsetAdjustmentBehavior = .never
+    }
     add(subview: webView)
   }
 
