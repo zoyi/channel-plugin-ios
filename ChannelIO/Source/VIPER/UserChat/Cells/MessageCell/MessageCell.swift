@@ -70,12 +70,10 @@ class MessageCell: BaseTableViewCell {
   }
 
   var viewModel: MessageCellModelType?
-  var titleHeightConstraint: Constraint?
+  private var titleHeightConstraint: Constraint?
   var messageBottomConstraint: Constraint?
-  var translateHeightConstraint: Constraint?
-  var translateTopConstraint: Constraint?
-  
-  var buttonHeightConstraint: Constraint?
+  private var translateHeightConstraint: Constraint?
+  private var translateTopConstraint: Constraint?
   
   // MARK: Initializing
 

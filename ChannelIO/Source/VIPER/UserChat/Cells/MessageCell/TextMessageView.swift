@@ -56,14 +56,14 @@ class TextMessageView : BaseView {
     $0.textContainerInset = Metric.textViewInset
   }
   
-  let buttonStack = UIStackView().then {
+  private let buttonStack = UIStackView().then {
     $0.axis = .vertical
     $0.alignment = .fill
     $0.distribution = .equalSpacing
     $0.spacing = Metric.buttonSpace
     $0.backgroundColor = .clear
   }
-  let firstButtonView = UILabel().then {
+  private let firstButtonView = UILabel().then {
     $0.font = .systemFont(ofSize: 14.f)
     $0.textColor = .grey900
     $0.backgroundColor = .white
@@ -72,7 +72,7 @@ class TextMessageView : BaseView {
     $0.clipsToBounds = true
     $0.layer.cornerRadius = Metric.buttonRadius
   }
-  let secondButtonView = UILabel().then {
+  private let secondButtonView = UILabel().then {
     $0.font = .systemFont(ofSize: 14.f)
     $0.textColor = .grey900
     $0.backgroundColor = .white
@@ -85,14 +85,14 @@ class TextMessageView : BaseView {
 
   var viewModel: MessageCellModelType?
   
-  var messageTopConstraint: Constraint?
+  private var messageTopConstraint: Constraint?
   var leadingConstraint: Constraint?
   var trailingConstraint: Constraint?
-  var messageBottomConstraint: Constraint?
+  private var messageBottomConstraint: Constraint?
   
-  var buttonTopConstraint: Constraint?
-  var buttonTopMessageConstraint: Constraint?
-  var buttonBottomConstraint: Constraint?
+  private var buttonTopConstraint: Constraint?
+  private var buttonTopMessageConstraint: Constraint?
+  private var buttonBottomConstraint: Constraint?
   
   private let disposeBag = DisposeBag()
   
@@ -137,8 +137,7 @@ class TextMessageView : BaseView {
         .inset(Metric.topBottomPadding).constraint
       self.buttonTopMessageConstraint = make.top.equalTo(self.messageView.snp.bottom)
         .offset(Metric.topBottomPadding).constraint
-      make.leading.equalToSuperview().inset(Metric.leftRightPadding)
-      make.trailing.equalToSuperview().inset(Metric.leftRightPadding)
+      make.leading.trailing.equalToSuperview().inset(Metric.leftRightPadding)
       self.buttonBottomConstraint = make.bottom.equalToSuperview()
         .inset(Metric.topBottomPadding).constraint
     }
@@ -152,13 +151,7 @@ class TextMessageView : BaseView {
       self.messageView.isHidden = false
       self.backgroundColor = viewModel.isOnlyEmoji ?
         UIColor.clear : viewModel.bubbleBackgroundColor
-      let attrText = NSMutableAttributedString(attributedString: displayText)
-      attrText.addAttribute(
-        .foregroundColor,
-        value: viewModel.textColor,
-        range: NSRange(location: 0, length: attrText.string.utf16.count)
-      )
-      self.messageView.attributedText = attrText
+      self.messageView.attributedText = displayText
       self.messageView.linkTextAttributes = [
         .foregroundColor: viewModel.linkColor,
         .underlineStyle: 1

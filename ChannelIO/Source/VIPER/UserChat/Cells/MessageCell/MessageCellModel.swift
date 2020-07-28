@@ -104,12 +104,6 @@ struct MessageCellModel: MessageCellModelType {
     self.timestamp = message.readableCreatedAt
     self.timestampIsHidden = isContinuous
     self.buttons = message.buttons
-  
-    if message.removed {
-      self.text = MessageFactory.deleted()
-    } else {
-      self.text = message.attributedText
-    }
     
     if message.removed {
       self.textColor = .grey500
@@ -160,5 +154,23 @@ struct MessageCellModel: MessageCellModelType {
 
     self.isDeleted = message.removed
     self.isOnlyEmoji = message.isOnlyEmoji
+    
+    var attrText: NSAttributedString?
+    if message.removed {
+      attrText = MessageFactory.deleted()
+    } else {
+      attrText = message.attributedText
+    }
+    
+    if let text = attrText {
+      let mutableAttrText = NSMutableAttributedString(attributedString: text)
+      mutableAttrText.addAttribute(
+        .foregroundColor,
+        value: self.textColor,
+        range: NSRange(location: 0, length: text.string.utf16.count)
+      )
+      attrText = mutableAttrText
+    }
+    self.text = attrText
   }
 }
