@@ -230,10 +230,26 @@ extension UserChatInteractor {
     }
   }
   
-  func updateProfileItem(with message: CHMessage, key: String, value: Any) -> Observable<CHMessage> {
+  func updateProfileItem(
+    with message: CHMessage,
+    key: String,
+    type: ProfileSchemaType,
+    value: Any
+  ) -> Observable<CHMessage> {
+    let numberFormatter = NumberFormatter()
+    numberFormatter.numberStyle = .decimal
+    
+    var param = value
+    switch type {
+    case .date:
+      let date = value as? Date
+      param = (date?.timeIntervalSince1970 ?? 0) * 1000
+    default: break
+    }
+    
     return Observable.create { (subscriber) in
       let signal = message
-        .updateProfile(with: key, value: value)
+        .updateProfile(with: key, value: param)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (message) in
           subscriber.onNext(message)

@@ -28,8 +28,8 @@ final class PhoneActionView: BaseView, Actionable {
   }
 
   //MARK: Properties
-  let submitSubject = PublishSubject<Any?>()
-  let focusSubject = PublishSubject<Bool>()
+  private let submitSubject = PublishSubject<Any?>()
+  private let focusSubject = PublishSubject<Bool>()
   let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
     $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysOriginal), for: .disabled)
@@ -235,7 +235,7 @@ extension PhoneActionView {
     return self.submitSubject.asObserver()
   }
   
-  func signalForText() -> Observable<String?> {
+  func signalForText() -> Observable<String?>? {
     return self.phoneField.rx.text.asObservable()
   }
   

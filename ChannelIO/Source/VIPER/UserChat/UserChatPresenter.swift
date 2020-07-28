@@ -367,6 +367,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   func didClickOnProfileUpdate(
     with message: CHMessage?,
     key: String?,
+    type: ProfileSchemaType,
     value: Any?) -> Observable<Bool> {
     guard let message = message, let key = key, let value = value else {
       return .just(false)
@@ -374,7 +375,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     
     return Observable.create { (subscriber) in
       let signal = self.interactor?
-        .updateProfileItem(with: message, key: key, value: value)
+        .updateProfileItem(with: message, key: key, type: type, value: value)
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { [weak self] (message) in
           self?.shouldRedrawProfileBot = true

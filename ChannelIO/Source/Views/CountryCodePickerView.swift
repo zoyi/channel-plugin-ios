@@ -42,7 +42,9 @@ final class CountryCodePickerView : BaseView {
     $0.setTitle(CHAssets.localized("ch.button_confirm"), for: .normal)
     $0.titleLabel?.font = UIFont.systemFont(ofSize: 17.f)
   }
-  let pickerView = UIPickerView()
+  let pickerView = UIPickerView().then {
+    $0.setValue(UIColor.grey900, forKeyPath: "textColor")
+  }
   let pickerContainerView = UIView().then {
     $0.backgroundColor = CHColors.white
   }

@@ -175,3 +175,7 @@
 "ch.navigation.next_operation.minutes_left" = "%d분 뒤 상담이 운영됩니다";
 "ch.navigation.next_operation.hour_left" = "%d시간 뒤 상담이 운영됩니다";
 "ch.settings.unsubscribed" = "마케팅 메시지 수신거부";
+"ch.profile_form.datetime_pick" = "날짜 및 시간 선택";
+"ch.profile_form.boolean.yes" = "네";
+"ch.profile_form.boolean.no" = "아니요";
+"ch.profile_form.boolean.none" = "선택안함";

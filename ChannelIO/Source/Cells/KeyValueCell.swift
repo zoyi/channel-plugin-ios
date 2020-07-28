@@ -64,7 +64,23 @@ class KeyValueCell: BaseTableViewCell {
         self.valueLabel.text = PartialFormatter().formatPartial("\(value)")
       } else if profile.rawData.type == .date, let value = profile.profileValue as? Date {
         self.valueLabel.text = value.fullDateString()
-      } else {
+      } else if profile.rawData.type == .date, let value = profile.profileValue as? Double {
+        self.valueLabel.text = Date(timeIntervalSince1970: value / 1000 ).fullDateString()
+      } else if profile.rawData.type == .boolean, let value = profile.profileValue as? String {
+        self.valueLabel.text = CHAssets.localized(
+          value == "true"
+            ? "ch.profile_form.boolean.yes" : value == "false"
+            ? "ch.profile_form.boolean.no" : "ch.settings.empty_content"
+        )
+      } else if profile.rawData.type == .boolean {
+        let value = profile.profileValue as? Bool
+        self.valueLabel.text = CHAssets.localized(
+          value == true
+            ? "ch.profile_form.boolean.yes" : value == false
+            ? "ch.profile_form.boolean.no" : "ch.settings.empty_content"
+        )
+      }
+      else {
         self.valueLabel.text = "\(value)"
       }
       self.valueLabel.textColor = CHColors.charcoalGrey

@@ -42,6 +42,13 @@ class ProfileCompletionView: ProfileItemBaseView, ProfileContentProtocol {
       let unwrapped = unwrap(any: value)
       if self.item?.fieldType == .mobileNumber {
         self.contentView.contentLabel.text = PartialFormatter().formatPartial("\(unwrapped)")
+      } else if self.item?.type == .boolean, let value = value as? Bool {
+        self.contentView.contentLabel.text = value
+          ? CHAssets.localized("ch.profile_form.boolean.yes")
+          : CHAssets.localized("ch.profile_form.boolean.no")
+      } else if self.item?.type == .date, let value = value as? Double {
+        self.contentView.contentLabel.text = Date(timeIntervalSince1970: value / 1000)
+          .fullDateString()
       } else {
         self.contentView.contentLabel.text = "\(unwrapped)"
       }

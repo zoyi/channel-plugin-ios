@@ -9,9 +9,9 @@
 import Foundation
 import RxSwift
 
-class CompleteActionView: BaseView, Actionable {
-  let submitSubject = PublishSubject<Any?>()
-  let textSubject = PublishSubject<String?>()
+final class CompleteActionView: BaseView, Actionable {
+  private let submitSubject = PublishSubject<Any?>()
+  private let textSubject = PublishSubject<String?>()
   
   let contentLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 18)
@@ -47,7 +47,7 @@ class CompleteActionView: BaseView, Actionable {
     }
   }
   
-  func signalForText() -> Observable<String?> {
+  func signalForText() -> Observable<String?>? {
     return self.textSubject.asObserver()
   }
   

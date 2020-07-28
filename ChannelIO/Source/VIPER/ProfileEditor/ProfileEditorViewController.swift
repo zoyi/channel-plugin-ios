@@ -12,22 +12,29 @@ import JGProgressHUD
 import SnapKit
 
 class ProfileEditorViewController: BaseViewController {
-  let footerLabel = UILabel().then {
+  private enum Metrics {
+    static let defaultHeight = 52.f
+    static let booleanHeight = 156.f
+  }
+  
+  private let footerLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
     $0.textColor = CHColors.blueyGrey
     $0.numberOfLines = 0
   }
   
-  var text = ""
-  var user: CHUser?
-  var schema: CHProfileSchema?
+  private var text = ""
+  private var user: CHUser?
+  private var schema: CHProfileSchema?
   
-  var entityType: EntityType = .none
-  var type: EditFieldType = .name
-  var fieldView: CHFieldDelegate!
+  private var entityType: EntityType = .none
+  private var type: EditFieldType = .name
+  private var fieldView: CHFieldDelegate!
+  
+  private var isBoolean: Bool = false
   
   private var submitSubject = PublishSubject<String>()
-  var disposeBag = DisposeBag()
+  private var disposeBag = DisposeBag()
   
   convenience init(type: EditFieldType, user: CHUser, schema: CHProfileSchema? = nil) {
     self.init()
@@ -35,7 +42,8 @@ class ProfileEditorViewController: BaseViewController {
     self.type = type
     self.user = user
     self.entityType = .user
-
+    self.isBoolean = false
+    
     switch type {
     case .name:
       self.text = user.name
@@ -62,6 +70,25 @@ class ProfileEditorViewController: BaseViewController {
         text: self.text,
         type: .number,
         placeholder: CHAssets.localized("ch.profile_form.placeholder"))
+    case .date:
+      let key = schema?.key ?? ""
+      var date: Date? = nil
+      if let value = user.profile?[key] as? Double {
+        date = Date.init(timeIntervalSince1970: value / 1000)
+      }
+      self.text = date?.fullDateString() ?? ""
+      self.fieldView = CHDateField(date: date)
+    case .boolean:
+      self.isBoolean = true
+      let key = schema?.key ?? ""
+      if let value = user.profile?[key] {
+        self.text =  "\(value)"
+      }
+      self.fieldView = CHBooleanField(
+        bool: self.text == "true"
+          ? true : self.text.isEmpty
+          ? nil : false
+      )
     }
     
     self.schema = schema
@@ -105,7 +132,7 @@ class ProfileEditorViewController: BaseViewController {
       make.leading.equalToSuperview()
       make.trailing.equalToSuperview()
       make.top.equalToSuperview().inset(38)
-      make.height.equalTo(52)
+      make.height.equalTo(self.isBoolean ? Metrics.booleanHeight : Metrics.defaultHeight)
     }
     
     self.footerLabel.snp.remakeConstraints { (make) in
@@ -161,10 +188,15 @@ class ProfileEditorViewController: BaseViewController {
     numberFormatter.numberStyle = .decimal
     
     let key : String = self.schema?.key ?? ""
-    let value : Any? = self.type == .number ?
-      numberFormatter.number(from: self.text) :
-      (self.text == "" ? nil : self.text)
+    let value : Any?
     
+    switch self.type {
+    case .number, .date:
+      value = numberFormatter.number(from: self.text)
+    default:
+      value = self.text == "" ? nil : self.text
+    }
+      
     self.user?.updateProfile(key: key, value: value)
       .debounce(.seconds(1), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
