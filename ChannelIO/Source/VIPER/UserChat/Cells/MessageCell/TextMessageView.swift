@@ -8,15 +8,20 @@
 
 import Foundation
 import SnapKit
+import RxSwift
 
 class TextMessageView : BaseView {
-  private struct Metrics {
+  private struct Metric {
     static let topBottomPadding = 10.f
     static let leftRightPadding = 12.f
     static let minimalTopBottomPadding = 2.f
     static let minimalLeftRightPadding = 5.f
     static let textViewMinimalWidth = 20.f
     static let textViewInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+    static let buttonRadius = 6.f
+    static let buttonHeight = 36.f
+    static let buttonSpace = 6.f
+    static let buttonWidth = 232.f
   }
 
   private struct Constants {
@@ -48,15 +53,48 @@ class TextMessageView : BaseView {
     
     $0.dataDetectorTypes = [.link, .phoneNumber]
     $0.textContainer.lineFragmentPadding = 0
-    $0.textContainerInset = Metrics.textViewInset
+    $0.textContainerInset = Metric.textViewInset
   }
+  
+  let buttonStack = UIStackView().then {
+    $0.axis = .vertical
+    $0.alignment = .fill
+    $0.distribution = .equalSpacing
+    $0.spacing = Metric.buttonSpace
+    $0.backgroundColor = .clear
+  }
+  let firstButtonView = UILabel().then {
+    $0.font = .systemFont(ofSize: 14.f)
+    $0.textColor = .grey900
+    $0.backgroundColor = .white
+    $0.textAlignment = .center
+    
+    $0.clipsToBounds = true
+    $0.layer.cornerRadius = Metric.buttonRadius
+  }
+  let secondButtonView = UILabel().then {
+    $0.font = .systemFont(ofSize: 14.f)
+    $0.textColor = .grey900
+    $0.backgroundColor = .white
+    $0.textAlignment = .center
+    
+    $0.clipsToBounds = true
+    $0.layer.cornerRadius = Metric.buttonRadius
+  }
+  
 
   var viewModel: MessageCellModelType?
   
-  var topConstraint: Constraint?
+  var messageTopConstraint: Constraint?
   var leadingConstraint: Constraint?
   var trailingConstraint: Constraint?
-  var bottomConstraint: Constraint?
+  var messageBottomConstraint: Constraint?
+  
+  var buttonTopConstraint: Constraint?
+  var buttonTopMessageConstraint: Constraint?
+  var buttonBottomConstraint: Constraint?
+  
+  private let disposeBag = DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -64,6 +102,9 @@ class TextMessageView : BaseView {
     
     self.layer.cornerRadius = Constants.singleCornerRadius
     self.addSubview(self.messageView)
+    self.buttonStack.addArrangedSubview(self.firstButtonView)
+    self.buttonStack.addArrangedSubview(self.secondButtonView)
+    self.addSubview(self.buttonStack)
   }
   
   override func setLayouts() {
@@ -71,37 +112,123 @@ class TextMessageView : BaseView {
 
     self.messageView.snp.makeConstraints { make in
       self.leadingConstraint = make.leading.equalToSuperview()
-        .inset(Metrics.leftRightPadding).constraint
-      self.topConstraint = make.top.equalToSuperview()
-        .inset(Metrics.topBottomPadding).constraint
+        .inset(Metric.leftRightPadding).constraint
+      self.messageTopConstraint = make.top.equalToSuperview()
+        .inset(Metric.topBottomPadding).constraint
       self.trailingConstraint = make.trailing.equalToSuperview()
-        .inset(Metrics.leftRightPadding).constraint
-      self.bottomConstraint = make.bottom.equalToSuperview()
-        .inset(Metrics.topBottomPadding).constraint
-      make.width.greaterThanOrEqualTo(Metrics.textViewMinimalWidth)
+        .inset(Metric.leftRightPadding).constraint
+      self.messageBottomConstraint = make.bottom.equalToSuperview()
+        .inset(Metric.topBottomPadding).constraint
+      make.width.greaterThanOrEqualTo(Metric.textViewMinimalWidth)
+    }
+    
+    self.firstButtonView.snp.remakeConstraints { make in
+      make.height.equalTo(Metric.buttonHeight)
+      make.width.equalTo(Metric.buttonWidth)
+    }
+    
+    self.secondButtonView.snp.remakeConstraints { make in
+      make.height.equalTo(Metric.buttonHeight)
+      make.width.equalTo(Metric.buttonWidth)
+    }
+    
+    self.buttonStack.snp.makeConstraints { make in
+      self.buttonTopConstraint = make.top.equalToSuperview()
+        .inset(Metric.topBottomPadding).constraint
+      self.buttonTopMessageConstraint = make.top.equalTo(self.messageView.snp.bottom)
+        .offset(Metric.topBottomPadding).constraint
+      make.leading.equalToSuperview().inset(Metric.leftRightPadding)
+      make.trailing.equalToSuperview().inset(Metric.leftRightPadding)
+      self.buttonBottomConstraint = make.bottom.equalToSuperview()
+        .inset(Metric.topBottomPadding).constraint
     }
   }
 
   func configure(_ viewModel: MessageCellModelType) {
     self.viewModel = viewModel
-    guard let displayText = viewModel.text else {
-      self.isHidden = true
-      return
+    var hasContents = false
+    if let displayText = viewModel.text {
+      hasContents = true
+      self.messageView.isHidden = false
+      self.backgroundColor = viewModel.isOnlyEmoji ?
+        UIColor.clear : viewModel.bubbleBackgroundColor
+      let attrText = NSMutableAttributedString(attributedString: displayText)
+      attrText.addAttribute(
+        .foregroundColor,
+        value: viewModel.textColor,
+        range: NSRange(location: 0, length: attrText.string.utf16.count)
+      )
+      self.messageView.attributedText = attrText
+      self.messageView.linkTextAttributes = [
+        .foregroundColor: viewModel.linkColor,
+        .underlineStyle: 1
+      ]
+    } else {
+      self.messageView.isHidden = true
     }
-    self.isHidden = false
-    self.backgroundColor = viewModel.isOnlyEmoji ?
-      UIColor.clear : viewModel.bubbleBackgroundColor
-    let attrText = NSMutableAttributedString(attributedString: displayText)
-    attrText.addAttribute(
-      .foregroundColor,
-      value: viewModel.textColor,
-      range: NSRange(location: 0, length: attrText.string.utf16.count)
-    )
-    self.messageView.attributedText = attrText
-    self.messageView.linkTextAttributes = [
-      .foregroundColor: viewModel.linkColor,
-      .underlineStyle: 1
-    ]
+    
+    if viewModel.buttons.count > 0 {
+      self.buttonStack.isHidden = false
+      self.backgroundColor = viewModel.bubbleBackgroundColor
+            
+      if let button = viewModel.buttons.get(index: 0) {
+        hasContents = true
+        self.firstButtonView.isHidden = false
+        self.firstButtonView.text = button.title
+        self.firstButtonView.textColor = button.theme?.color ?? .grey900
+        self.firstButtonView
+          .signalForClick()
+          .bind { _ in
+            if let url = button.linkURL {
+              url.openWithUniversal()
+            }
+          }.disposed(by: self.disposeBag)
+      } else {
+        self.firstButtonView.isHidden = true
+      }
+      
+      if let button = viewModel.buttons.get(index: 1) {
+        hasContents = true
+        self.secondButtonView.isHidden = false
+        self.secondButtonView.text = button.title
+        self.secondButtonView.textColor = button.theme?.color ?? .grey900
+        self.secondButtonView
+          .signalForClick()
+          .bind { _ in
+            if let url = button.linkURL {
+              url.openWithUniversal()
+            }
+          }.disposed(by: self.disposeBag)
+      } else {
+        self.secondButtonView.isHidden = true
+      }
+    } else {
+      self.buttonStack.isHidden = true
+      self.firstButtonView.isHidden = true
+      self.secondButtonView.isHidden = true
+    }
+    
+    if viewModel.text != nil, !viewModel.buttons.isEmpty {
+      self.messageTopConstraint?.activate()
+      self.messageBottomConstraint?.deactivate()
+      self.buttonTopConstraint?.deactivate()
+      self.buttonTopMessageConstraint?.activate()
+      self.buttonBottomConstraint?.activate()
+    } else if viewModel.text != nil, viewModel.buttons.isEmpty {
+      self.messageTopConstraint?.activate()
+      self.messageBottomConstraint?.activate()
+      self.buttonTopConstraint?.deactivate()
+      self.buttonTopMessageConstraint?.deactivate()
+      self.buttonBottomConstraint?.deactivate()
+    } else if !viewModel.buttons.isEmpty {
+      self.messageTopConstraint?.deactivate()
+      self.messageBottomConstraint?.deactivate()
+      self.buttonTopConstraint?.activate()
+      self.buttonTopMessageConstraint?.deactivate()
+      self.buttonBottomConstraint?.activate()
+    }
+    
+    self.isHidden = !hasContents
   }
   
   override func updateConstraints() {
@@ -138,13 +265,21 @@ class TextMessageView : BaseView {
     fit width: CGFloat,
     model: MessageCellModelType,
     edgeInset: UIEdgeInsets? = nil) -> CGFloat {
-    guard let text = model.text, text.string != "" else {
-      return 0
+    var textHeight = 0.f
+    if let text = model.text, text.string != "" {
+      let maxWidth = width - Metric.leftRightPadding * 2
+      textHeight = text.height(fits: maxWidth) + Metric.topBottomPadding
     }
-
-    let maxWidth = width - Metrics.leftRightPadding * 2
-    let topBottomPadding = Metrics.topBottomPadding * 2
-    return text.height(fits: maxWidth) + topBottomPadding
+    
+    var buttonHeight = 0.f
+    switch model.buttons.count {
+    case 1: buttonHeight += Metric.buttonHeight + Metric.topBottomPadding
+    case 2: buttonHeight += Metric.buttonHeight * 2 + Metric.buttonSpace + Metric.topBottomPadding
+    default: break
+    }
+    
+    let totalHeight = textHeight + buttonHeight
+    return totalHeight == 0 ? 0 : totalHeight + Metric.topBottomPadding
   }
 }
 

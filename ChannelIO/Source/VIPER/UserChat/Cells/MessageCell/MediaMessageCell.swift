@@ -89,7 +89,7 @@ class MediaMessageCell: MessageCell, MediaMessageProtocol {
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()
       self.mediaTopToNameTopConstraint?.deactivate()
-    } else if viewModel.text != nil {
+    } else if viewModel.text != nil || !viewModel.buttons.isEmpty {
       self.mediaTopToTextViewTopContraint?.update(offset: MediaMetrics.mediaTop)
       self.mediaTopToTextViewTopContraint?.activate()
       self.mediaTopConstraint?.deactivate()

@@ -42,6 +42,7 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
         webPage: message.webPage,
         type: message.contextType(),
         entity: action.bot,
+        buttons: message.buttons,
         action: CHAction.create(botEntry: entry),
         createdAt: Date(),
         id: "support_bot_message_dummy")
