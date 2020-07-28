@@ -72,6 +72,7 @@ class CHTextParserListener: TextBlockParserListener {
       if onlyEmoji && !isInappPush {
         text.addAttributes(
           [.font: font,
+           .kern: self.config.letterSpacing,
            .paragraphStyle: UIFactory.onlyEmojiParagraphStyle,
            .baselineOffset: (UIFactory.onlyEmojiParagraphStyle.minimumLineHeight - font.lineHeight)/4
           ],
@@ -247,6 +248,7 @@ class CHTextParserListener: TextBlockParserListener {
       attributes: [
         .foregroundColor: self.config.textColor,
         .font: self.config.font,
+        .kern: self.config.letterSpacing,
         .paragraphStyle: self.config.style,
         .baselineOffset: (self.config.style.minimumLineHeight - self.config.font.lineHeight)/4
       ])
@@ -385,6 +387,7 @@ class CHTextParserListener: TextBlockParserListener {
       string: plainText,
       attributes: [
         .font: font,
+        .kern: self.config.letterSpacing,
         .foregroundColor: self.config.textColor,
         .paragraphStyle: self.config.style,
         .baselineOffset: (self.config.style.minimumLineHeight - font.lineHeight)/4

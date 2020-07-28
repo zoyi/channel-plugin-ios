@@ -241,7 +241,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     self.messageView.mode = .normal
     let sendImage = CHAssets.getImage(
       named: "send")?.withRenderingMode(.alwaysTemplate)
-    let clipImage = CHAssets.getImage(named: "clip")
+    let clipImage = CHAssets.getImage(named: "clip20")
     self.messageView.setButton(inset: 10, position: .left)
     self.messageView.setButton(inset: 10, position: .right)
     self.messageView.setButton(
