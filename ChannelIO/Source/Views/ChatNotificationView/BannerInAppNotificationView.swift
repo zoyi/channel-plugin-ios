@@ -15,7 +15,6 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     static let bannerMaxWidth = 520.f
     static let bannerTop = 24.f
     static let bannerSide = 8.f
-    static let containerStackHeight = 88.f
     static let mediaTopBottom = 8.f
     static let mediaLeading = 8.f
     static let buttonContainerHeight = 44.f
@@ -135,6 +134,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   private let timeLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
     $0.textColor = .grey500
+    $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue:1000), for: .horizontal)
   }
   
   let notiType: InAppNotificationType = .banner
@@ -223,7 +223,6 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     
     self.upperContentContainerView.snp.makeConstraints { make in
       make.leading.trailing.equalToSuperview()
-      make.height.equalTo(Metric.containerStackHeight)
     }
     
     self.upperContentStackView.snp.makeConstraints { make in
@@ -257,6 +256,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     
     self.userInfoStackView.snp.makeConstraints { make in
       make.leading.equalToSuperview()
+      make.trailing.lessThanOrEqualTo(self.closeClickView.snp.leading)
       make.centerY.equalToSuperview().inset(Metric.headerCenterYInset)
     }
     
@@ -296,7 +296,8 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     }
     
     self.closeClickView.snp.makeConstraints { make in
-      make.top.trailing.bottom.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.centerY.equalToSuperview().inset(Metric.headerCenterYInset)
       make.width.equalTo(Metric.closeClickWidth)
     }
     
@@ -337,14 +338,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       self.firstButtonView
         .signalForClick()
         .bind { _ in
-          if let url = URL(string: first.url) {
-            AppManager.shared.sendClickMarketing(
-              type: viewModel.mkInfo?.type,
-              id: viewModel.mkInfo?.id,
-              userId: PrefStore.getCurrentUserId(),
-              url: first.url
-            )
-            
+          if let url = first.linkURL {
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()
@@ -360,14 +354,8 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       self.secondButtonView
         .signalForClick()
         .bind { _ in
-          if let url = URL(string: second.url) {
-            AppManager.shared.sendClickMarketing(
-              type: viewModel.mkInfo?.type,
-              id: viewModel.mkInfo?.id,
-              userId: PrefStore.getCurrentUserId(),
-              url: second.url
-            )
-            
+          if let url = second.linkURL {
+
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()

@@ -101,7 +101,7 @@ class AttachmentFileInfoView: BaseView {
     self.fileCountLabel.font = isInAppPush
       ? UIFont.systemFont(ofSize: Fonts.inAppCount) : UIFont.systemFont(ofSize: Fonts.smallCount)
     self.fileNameLabel.textColor = isInAppPush ? .grey700 : .grey900
-    self.fileSizeLabel.textColor = isInAppPush ? .grey700 : .grey900
+    self.fileSizeLabel.textColor = isInAppPush ? .grey500 : .grey900
     self.fileCountLabel.textColor = isInAppPush ? .grey700 : .grey900
     self.clipImageView.tintColor = isInAppPush ? .grey700 : .grey900
     self.clipImageView.image = isInAppPush

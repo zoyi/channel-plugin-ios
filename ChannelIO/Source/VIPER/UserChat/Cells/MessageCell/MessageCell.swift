@@ -74,6 +74,9 @@ class MessageCell: BaseTableViewCell {
   var messageBottomConstraint: Constraint?
   var translateHeightConstraint: Constraint?
   var translateTopConstraint: Constraint?
+  
+  var buttonHeightConstraint: Constraint?
+  
   // MARK: Initializing
 
   override func initialize() {
