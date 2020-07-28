@@ -1,7 +1,12 @@
+# 7.1.4
+## Updates
+* Add Button Link in in-app-push and message
+* Add boolean and date change UI on user profile type
+* Remove resource bundle on podspec
+
 # 7.1.3
 ## Bug fixes
 * Fixed issue that inappPush face-type not working correctly
-
 
 # 7.1.2
 ## Bug fixes
