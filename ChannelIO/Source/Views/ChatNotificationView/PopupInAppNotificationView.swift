@@ -21,7 +21,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     static let closeClickWidth = 42.f
     static let buttonHeight = 36.f
     static let buttonContainerHeight = 44.f
-    static let buttonStackSide = 8.f
+    static let buttonStackSide = 12.f
     static let headerViewLeading = 8.f
     static let headerViewHeight = 46.f
     static let headerCenterYInset = -2.f
@@ -103,13 +103,14 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   private let timeLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
     $0.textColor = .grey500
+    $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue:1000), for: .horizontal)
   }
   private let buttonContainerView = UIView().then {
     $0.isHidden = true
   }
   private let buttonStackView = UIStackView().then {
     $0.axis = .horizontal
-    $0.spacing = 8.f
+    $0.spacing = 6.f
     $0.distribution = .fillEqually
   }
   private let firstButtonView = UILabel().then {
@@ -214,6 +215,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     
     self.userInfoStackView.snp.makeConstraints { make in
       make.leading.equalToSuperview()
+      make.trailing.lessThanOrEqualTo(self.closeClickView.snp.leading)
       make.centerY.equalToSuperview().inset(Metric.headerCenterYInset)
     }
     
@@ -239,7 +241,8 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     }
     
     self.closeClickView.snp.makeConstraints { make in
-      make.top.trailing.bottom.equalToSuperview()
+      make.trailing.equalToSuperview()
+      make.centerY.equalToSuperview().inset(Metric.headerCenterYInset)
       make.width.equalTo(Metric.closeClickWidth)
     }
     
@@ -262,6 +265,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     }
     
     self.buttonStackView.snp.makeConstraints { make in
+      make.top.equalToSuperview()
       make.leading.trailing.bottom.equalToSuperview().inset(Metric.buttonStackSide)
     }
     
@@ -275,8 +279,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   }
   
   func configure(with viewModel: InAppNotificationViewModel) {
-    let fileInfoVisibility = viewModel.hasMedia ?
-      !viewModel.hasText : viewModel.files.count > 0
+    let fileInfoVisibility = viewModel.hasMedia ? false : viewModel.files.count > 0
     
     self.avatarView.configure(viewModel.avatar)
     self.nameLabel.text = viewModel.name
@@ -288,6 +291,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     self.mediaView.configure(model: viewModel)
     self.messageView.isHidden = !viewModel.hasText
     self.fileInfoView.isHidden = !fileInfoVisibility
+    self.infoView.isHidden = !viewModel.hasText && !fileInfoVisibility
     self.mediaContainerView.isHidden = !viewModel.hasMedia
     self.mkInfo = viewModel.mkInfo
     
