@@ -306,7 +306,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
       self.firstButtonView
         .signalForClick()
         .bind { _ in
-          if let url = URL(string: first.url) {
+          if let url = first.linkURL {
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()
@@ -322,7 +322,7 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
       self.secondButtonView
         .signalForClick()
         .bind { _ in
-          if let url = URL(string: second.url) {
+          if let url = second.linkURL {
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()
