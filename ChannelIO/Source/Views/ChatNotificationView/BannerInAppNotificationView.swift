@@ -355,6 +355,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
         .signalForClick()
         .bind { _ in
           if let url = second.linkURL {
+
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()
