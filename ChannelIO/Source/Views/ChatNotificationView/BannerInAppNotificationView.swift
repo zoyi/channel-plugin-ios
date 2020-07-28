@@ -338,6 +338,13 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
         .signalForClick()
         .bind { _ in
           if let url = URL(string: first.url) {
+            AppManager.shared.sendClickMarketing(
+              type: viewModel.mkInfo?.type,
+              id: viewModel.mkInfo?.id,
+              userId: PrefStore.getCurrentUserId(),
+              url: first.url
+            )
+            
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()
@@ -354,6 +361,13 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
         .signalForClick()
         .bind { _ in
           if let url = URL(string: second.url) {
+            AppManager.shared.sendClickMarketing(
+              type: viewModel.mkInfo?.type,
+              id: viewModel.mkInfo?.id,
+              userId: PrefStore.getCurrentUserId(),
+              url: second.url
+            )
+            
             self.closeSignal.onNext(nil)
             self.closeSignal.onCompleted()
             url.openWithUniversal()

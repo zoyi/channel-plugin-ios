@@ -18,7 +18,7 @@ enum RestRouter: URLRequestConvertible {
   case CreateMessage(String, ParametersType)
   case CheckVersion
   case CreateSupportBotChat(String, ParametersType)
-  case CampaignClick(String, String)
+  case CampaignClick(String, String, ParametersType)
   case CampaignView(String)
   case GetAppMessengerUri(String)
   case GetPlugin(String)
@@ -30,7 +30,7 @@ enum RestRouter: URLRequestConvertible {
   case GetUserChat(String)
   case GetMessages(String, ParametersType)
   case GetProfileBotSchemas(String)
-  case OneTimeMsgClick(String, String)
+  case OneTimeMsgClick(String, String, ParametersType)
   case OneTimeMsgView(String)
   case ReplySupportBot(String, String, ParametersType)
   case RegisterToken(ParametersType)
@@ -115,7 +115,7 @@ enum RestRouter: URLRequestConvertible {
       return "/front/users/me/tags"
     case .Boot(let pluginKey, _):
       return "/front/elastic/plugins/\(pluginKey)/boot"
-    case .CampaignClick(let campaignId, let userId):
+    case .CampaignClick(let campaignId, let userId, _):
       return "/front/campaigns/\(campaignId)/users/\(userId)/click"
     case .CampaignView(let campaignId):
       return "/front/campaigns/\(campaignId)/view"
@@ -151,7 +151,7 @@ enum RestRouter: URLRequestConvertible {
       return "/front/user-chats/\(userChatId)"
     case .GetProfileBotSchemas(let pluginId):
       return "/front/plugins/\(pluginId)/profile-bot-schemas"
-    case .OneTimeMsgClick(let oneTimeMsgId, let userId):
+    case .OneTimeMsgClick(let oneTimeMsgId, let userId, _):
       return "/front/one-time-msgs/\(oneTimeMsgId)/users/\(userId)/click"
     case .OneTimeMsgView(let oneTimeMsgId):
       return "/front/one-time-msgs/\(oneTimeMsgId)/view"
@@ -285,6 +285,8 @@ enum RestRouter: URLRequestConvertible {
     
     switch self {
     case .GetMessages(_, let params),
+         .CampaignClick(_, _, let params),
+         .OneTimeMsgClick(_, _, let params),
          .CreateMessage(_, let params),
          .CreateUserChat(_, let params),
          .CreateSupportBotChat(_, let params),

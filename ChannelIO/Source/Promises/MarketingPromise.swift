@@ -13,11 +13,18 @@ import SwiftyJSON
 
 
 struct MarketingPromise {
-  static func clickCampaign(id: String, userId: String) -> Observable<Any?> {
-    return Observable.create { (subscriber) in
+  static func clickCampaign(id: String, userId: String, url: String?) -> Observable<Any?> {
+    var params: [String: [String: String]] = [:]
+    if let url = url {
+      params = [
+        "url": ["url" : url]
+      ]
+    }
+      
+    return Observable.create { subscriber in
       let req = AF
-        .request(RestRouter.CampaignClick(id, userId))
-        .responseData { (response) in
+        .request(RestRouter.CampaignClick(id, userId, params as RestRouter.ParametersType))
+        .responseData { response in
           switch response.result {
           case .success(_):
             subscriber.onNext(nil)
@@ -35,10 +42,10 @@ struct MarketingPromise {
   }
   
   static func viewCampaign(id: String) -> Observable<Any?> {
-    return Observable.create { (subscriber) in
+    return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.CampaignView(id))
-        .responseData { (response) in
+        .responseData { response in
           switch response.result {
           case .success(_):
             subscriber.onNext(nil)
@@ -55,11 +62,18 @@ struct MarketingPromise {
     }
   }
   
-  static func clickOneTimeMsg(id: String, userId: String) -> Observable<Any?> {
-    return Observable.create { (subscriber) in
+  static func clickOneTimeMsg(id: String, userId: String, url: String?) -> Observable<Any?> {
+    var params: [String: [String: String]] = [:]
+    if let url = url {
+      params = [
+        "url": ["url" : url]
+      ]
+    }
+    
+    return Observable.create { subscriber in
       let req = AF
-        .request(RestRouter.OneTimeMsgClick(id, userId))
-        .responseData { (response) in
+        .request(RestRouter.OneTimeMsgClick(id, userId, params as RestRouter.ParametersType))
+        .responseData { response in
           switch response.result {
           case .success(_):
             subscriber.onNext(nil)
@@ -77,10 +91,10 @@ struct MarketingPromise {
   }
   
   static func viewOneTimeMsg(id: String) -> Observable<Any?> {
-    return Observable.create { (subscriber) in
+    return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.OneTimeMsgView(id))
-        .responseData { (response) in
+        .responseData { response in
           switch response.result {
           case .success(_):
             subscriber.onNext(nil)
