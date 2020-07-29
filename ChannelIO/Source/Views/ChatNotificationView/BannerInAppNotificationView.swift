@@ -222,7 +222,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     // NOTE: Because of UISV-canvas-connection on nested uistackview issue,
     // we need wrappint uiview on nested stackview
     self.upperContentContainerView.snp.makeConstraints { make in
-      make.top.bottom.leading.trailing.equalToSuperview()
+      make.leading.trailing.equalToSuperview()
     }
     
     self.upperContentStackView.snp.makeConstraints { make in
