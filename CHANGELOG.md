@@ -1,3 +1,9 @@
+# 7.1.5
+## Bug fixes
+* Fixed some layout bug
+* Fixed popup click area properly
+* Fixed chat lastmessage to include buttons
+
 # 7.1.4
 ## Updates
 * Add Button Link in in-app-push and message
