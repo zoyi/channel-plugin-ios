@@ -16,9 +16,9 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     static let closeImageViewLength = 16.f
     static let closeContainerCenterYInset = -2.f
     static let closeContainerLength = 24.f
-    static let closeContainerLeading = 12.f
-    static let closeContainerTrailing = 6.f
-    static let closeClickWidth = 42.f
+    static let closeContainerLeading = 8.f
+    static let closeContainerTrailing = 12.f
+    static let closeClickWidth = 44.f
     static let buttonHeight = 36.f
     static let buttonContainerHeight = 44.f
     static let buttonStackSide = 12.f
@@ -175,13 +175,15 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
         )
       }).disposed(by: self.disposeBag)
 
-    self.containerView.signalForClick()
+    self.containerView
+      .signalForClick()
       .subscribe(onNext: { [weak self] (_) in
         self?.chatSignal.onNext(nil)
         self?.chatSignal.onCompleted()
       }).disposed(by: self.disposeBag)
     
-    self.closeContainerView.signalForClick()
+    self.closeClickView
+      .signalForClick()
       .subscribe(onNext: { [weak self] (_) in
         guard let self = self else { return }
         CHUser.closePopup().subscribe().disposed(by: self.disposeBag)
@@ -246,7 +248,8 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     
     self.closeClickView.snp.makeConstraints { make in
       make.trailing.equalToSuperview()
-      make.centerY.equalToSuperview().inset(Metric.headerCenterYInset)
+      make.top.equalToSuperview()
+      make.bottom.equalToSuperview()
       make.width.equalTo(Metric.closeClickWidth)
     }
     

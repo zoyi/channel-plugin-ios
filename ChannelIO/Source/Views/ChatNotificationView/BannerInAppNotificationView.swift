@@ -32,8 +32,8 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     static let closeContainerCenterYInset = -2.f
     static let closeContainerLength = 24.f
     static let closeContainerLeading = 12.f
-    static let closeContainerTrailing = 6.f
-    static let closeClickWidth = 42.f
+    static let closeContainerTrailing = 8.f
+    static let closeClickWidth = 44.f
     static let buttonHeight = 36.f
   }
   
@@ -198,7 +198,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
         self?.chatSignal.onCompleted()
       }.disposed(by: self.disposeBag)
     
-    self.closeContainerView
+    self.closeClickView
       .signalForClick()
       .bind { [weak self] _ in
         guard let self = self else { return }
@@ -297,7 +297,8 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     
     self.closeClickView.snp.makeConstraints { make in
       make.trailing.equalToSuperview()
-      make.centerY.equalToSuperview().inset(Metric.headerCenterYInset)
+      make.top.equalToSuperview()
+      make.bottom.equalToSuperview()
       make.width.equalTo(Metric.closeClickWidth)
     }
     
