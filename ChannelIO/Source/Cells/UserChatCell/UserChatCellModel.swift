@@ -47,10 +47,14 @@ struct UserChatCellModel: UserChatCellModelType {
       self.lastMessage = msg
     } else if let plainText = userChat.lastMessage?.plainText {
       self.lastMessage = plainText
+    } else if let buttons = userChat.lastMessage?.buttons, buttons.count != 0 {
+      self.lastMessage = buttons.reduce(into: "") {
+        $0 += $0 == "" ? "[\($1.title)]" : ", [\($1.title)]"
+      }
+    } else if let displayText = userChat.lastMessage?.action?.displayText {
+      self.lastMessage = displayText
     } else if let url = userChat.lastMessage?.webPage?.url?.absoluteString {
       self.lastMessage = url
-    } else if let displayText = userChat.lastMessage?.action?.displayText{
-      self.lastMessage = displayText
     }
     
     if let files = userChat.lastMessage?.sortedFiles {
