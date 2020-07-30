@@ -72,7 +72,7 @@ class WebPageMessageCell: MessageCell {
     }
     
     self.webView.isHidden = false
-    self.webView.configure(message: viewModel.message)
+    self.webView.configure(fits: self.frame.width, message: viewModel.message)
     
     if viewModel.showTranslation {
       self.webViewTopToTranslateConstraint?.activate()
