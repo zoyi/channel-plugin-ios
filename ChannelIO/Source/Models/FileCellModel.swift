@@ -24,6 +24,7 @@ struct FileCellModel: FileCellModelType, VideoPlayable, ThumbDisplayable {
   var currSeconds: Double?
   var height: Int
   var width: Int
+  var orientation: Int
   var isPlayable: Bool
   var youtubeId: String?
   var mkInfo: MarketingInfo?
@@ -36,6 +37,7 @@ struct FileCellModel: FileCellModelType, VideoPlayable, ThumbDisplayable {
     self.currSeconds = seconds
     self.height = file.height
     self.width = file.width
+    self.orientation = file.orientation
     self.isPlayable = file.isPlayable
     self.youtubeId = file.youtubeId
     self.mkInfo = mkInfo

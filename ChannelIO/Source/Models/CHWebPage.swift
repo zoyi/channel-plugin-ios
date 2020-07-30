@@ -19,6 +19,7 @@ struct CHWebPage: ThumbDisplayable, VideoPlayable {
   var author: String?
   var width: Int = 0
   var height: Int = 0
+  var orientation: Int = 0
   var bucket: String = ""
   var previewKey: String = ""
 
@@ -60,6 +61,7 @@ extension CHWebPage: Mappable {
     author <- map["author"]
     width <- map["width"]
     height <- map["height"]
+    orientation <- map["orientation"]
     bucket <- map["bucket"]
     previewKey <- map["previewKey"]
   }
@@ -76,6 +78,7 @@ extension CHWebPage: Equatable {
       lhs.author == rhs.author &&
       lhs.width == rhs.width &&
       lhs.height == rhs.height &&
+      lhs.orientation == rhs.orientation &&
       lhs.bucket == rhs.bucket &&
       lhs.previewKey == rhs.previewKey
   }
