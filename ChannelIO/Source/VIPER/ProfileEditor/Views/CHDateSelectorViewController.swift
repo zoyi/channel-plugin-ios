@@ -178,6 +178,8 @@ extension CHDateSelectorView {
   }
   
   func showSelector(onView: UIView, animated: Bool) {
+    CHUtils.getTopNavigation()?.interactivePopGestureRecognizer?.isEnabled = false
+
     self.backgroundView.alpha = 0
     
     onView.addSubview(self)
@@ -192,7 +194,9 @@ extension CHDateSelectorView {
     }
   }
   
-  func removeSelector(animated: Bool) {
+  @objc func removeSelector(animated: Bool) {
+    CHUtils.getTopNavigation()?.interactivePopGestureRecognizer?.isEnabled = true
+
     if !animated {
       self.removeFromSuperview()
       return

@@ -61,9 +61,9 @@ final class CountryCodePickerView : BaseView {
       }
       
       let pickerView = CountryCodePickerView(frame: (controller?.view.frame)!)
-
       pickerView.pickedCode = code
       pickerView.showPicker(onView: (controller?.view)!,animated: true)
+      
       let submitSignal = pickerView.signalForSubmit().subscribe(onNext: { (code, dial) in
         subscriber.onNext((code, dial))
         subscriber.onCompleted()
@@ -95,22 +95,35 @@ final class CountryCodePickerView : BaseView {
 
     self.pickerView.delegate = self
     
-    self.closeButton.signalForClick().subscribe(onNext: { [weak self] (event) in
-      self?.cancelSubject.onNext(nil)
-      self?.cancelSubject.onCompleted()
-        
-      self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBag)
+    self.backgroundView
+      .signalForClick()
+      .bind { [weak self] _ in
+        self?.cancelSubject.onNext(nil)
+        self?.cancelSubject.onCompleted()
+          
+        self?.removePicker(animated: true)
+      }.disposed(by: self.disposeBag)
     
-    self.submitButton.signalForClick().subscribe(onNext: { [weak self] (event) in
-      guard let index = self?.selectedIndex else { return }
-      guard let country = self?.countries[index] else { return }
-      
-      self?.submitSubject.onNext((country.code, country.dial))
-      self?.submitSubject.onCompleted()
+    self.closeButton
+      .signalForClick()
+      .bind { [weak self] event in
+        self?.cancelSubject.onNext(nil)
+        self?.cancelSubject.onCompleted()
         
-      self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBag)
+        self?.removePicker(animated: true)
+      }.disposed(by: self.disposeBag)
+    
+    self.submitButton
+      .signalForClick()
+      .bind { [weak self] event in
+        guard let index = self?.selectedIndex else { return }
+        guard let country = self?.countries[index] else { return }
+        
+        self?.submitSubject.onNext((country.code, country.dial))
+        self?.submitSubject.onCompleted()
+        
+        self?.removePicker(animated: true)
+      }.disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
@@ -165,6 +178,8 @@ final class CountryCodePickerView : BaseView {
 
 extension CountryCodePickerView {
   func showPicker(onView: UIView, animated: Bool) {
+    CHUtils.getTopNavigation()?.interactivePopGestureRecognizer?.isEnabled = false
+
     onView.addSubview(self)
     onView.layoutIfNeeded()
     
@@ -181,6 +196,8 @@ extension CountryCodePickerView {
   }
   
   func removePicker(animated: Bool) {
+    CHUtils.getTopNavigation()?.interactivePopGestureRecognizer?.isEnabled = true
+
     if !animated {
       self.removeFromSuperview()
       return
