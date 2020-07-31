@@ -57,7 +57,7 @@ class ActionButton: UIButton {
       self.backgroundColor = isHighlighted ? selectedColor : UIColor.white
 
       if isHighlighted {
-        self.layer.shadowColor = CHColors.dark50.cgColor
+        self.layer.shadowColor = UIColor.grey500.cgColor
         self.layer.shadowOpacity = 0.8
         self.layer.shadowOffset = CGSize(width: 0, height: 2)
         self.layer.shadowRadius = 4
@@ -68,7 +68,7 @@ class ActionButton: UIButton {
         self.layer.shadowOffset = CGSize(width: 0, height: 0)
         self.layer.shadowRadius = 0
         self.layer.borderWidth = 1
-        self.layer.borderColor = CHColors.dark50.cgColor
+        self.layer.borderColor = UIColor.grey300.cgColor
       }
     }
   }
@@ -85,7 +85,7 @@ class ActionButton: UIButton {
     
     self.text = self.text?.addFont(
       UIFont.systemFont(ofSize: 15),
-      color: CHColors.dark80,
+      color: .grey900,
       style: UIFactory.actionButtonParagraphStyle,
       on: NSRange(location:0, length: button.text?.length ?? 0)
     )
@@ -100,7 +100,7 @@ class ActionButton: UIButton {
  
     self.layer.cornerRadius = 15.f
     self.layer.borderWidth = 1.f
-    self.layer.borderColor = CHColors.dark50.cgColor
+    self.layer.borderColor = UIColor.grey300.cgColor
     
     let size = self.text?.size(
       fits: CGSize(

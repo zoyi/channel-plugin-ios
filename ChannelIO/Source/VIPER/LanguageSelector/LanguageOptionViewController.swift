@@ -125,13 +125,13 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
 
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let view = UIView()
-    view.addBorders(edges: .bottom, color: CHColors.darkTwo, thickness: 0.5)
+    view.addBorders(edges: .bottom, color: .black10, thickness: 0.5)
     return view
   }
 
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
     return UIView().then {
-      $0.backgroundColor = CHColors.darkTwo
+      $0.backgroundColor = .black10
     }
   }
   

@@ -20,7 +20,7 @@ class ChatBotStartView: BaseView {
     $0.layer.borderColor = UIColor.whiteBorder.cgColor
     $0.layer.cornerRadius = 4.f
     $0.dropShadow(
-      with: CHColors.black10,
+      with: .black10,
       opacity: 0.5,
       offset: CGSize(width: 0, height: 2),
       radius: 2

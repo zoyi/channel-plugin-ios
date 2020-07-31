@@ -27,7 +27,7 @@ class SettingView: BaseViewController {
   }
   let versionLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 10)
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
   }
   
   struct Section {
@@ -194,7 +194,7 @@ extension SettingView: UITableViewDataSource, UITableViewDelegate {
     let view = UIView()
     let label = UILabel().then {
       $0.font = UIFont.boldSystemFont(ofSize: 13)
-      $0.textColor = CHColors.blueyGrey
+      $0.textColor = .grey500
     }
     view.addSubview(label)
     label.snp.makeConstraints { (make) in

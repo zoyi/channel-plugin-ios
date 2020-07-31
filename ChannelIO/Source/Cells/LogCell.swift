@@ -17,13 +17,13 @@ final class LogCell : BaseTableViewCell {
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.dark
+    $0.textColor = .grey900
     $0.textAlignment = .center
   }
   
   let timestampLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
     $0.textAlignment = .left
   }
   

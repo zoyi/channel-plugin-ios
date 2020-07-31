@@ -20,7 +20,7 @@ class TranslateView: BaseView {
   }
   let translateLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 10)
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
     $0.textAlignment = .center
     $0.text = CHAssets.localized("ch.show_translate")
   }

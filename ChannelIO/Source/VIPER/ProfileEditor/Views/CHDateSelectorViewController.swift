@@ -25,11 +25,11 @@ class CHDateSelectorView: BaseView {
   }
   
   let backgroundView = UIView().then {
-    $0.backgroundColor = CHColors.black
+    $0.backgroundColor = .black
   }
   
   let containerView = UIView().then {
-    $0.backgroundColor = CHColors.white
+    $0.backgroundColor = .white
   }
   private var datePicker = UIDatePicker().then {
     $0.datePickerMode = .dateAndTime

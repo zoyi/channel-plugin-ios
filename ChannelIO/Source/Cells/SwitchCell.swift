@@ -15,7 +15,7 @@ final class SwitchCell : BaseTableViewCell {
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 16)
-    $0.textColor = CHColors.charcoalGrey
+    $0.textColor = .grey900
     $0.numberOfLines = 1
   }
   

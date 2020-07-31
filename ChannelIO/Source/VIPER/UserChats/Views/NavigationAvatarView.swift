@@ -24,7 +24,7 @@ class NavigationAvatarView: NeverClearView {
     $0.layer.borderWidth = 1
     $0.layer.cornerRadius = 4.5
     $0.layer.borderColor = UIColor.white.cgColor
-    $0.backgroundColor = CHColors.blueyGrey
+    $0.backgroundColor = .grey500
     
   }
 
@@ -63,8 +63,6 @@ class NavigationAvatarView: NeverClearView {
       self.avatarImageView.isHidden = false
     }
     
-    self.onlineView.backgroundColor = avatar.online != nil ?
-      CHColors.shamrockGreen :
-      CHColors.blueyGrey
+    self.onlineView.backgroundColor = avatar.online != nil ? .green400 : .grey500
   }
 }

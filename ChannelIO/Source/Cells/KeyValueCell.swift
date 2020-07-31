@@ -13,7 +13,7 @@ class KeyValueCell: BaseTableViewCell {
  let titleLabel = UILabel()
   let valueLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 17)
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
     $0.numberOfLines = 1
     $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue:500), for: .horizontal)
   }
@@ -55,7 +55,7 @@ class KeyValueCell: BaseTableViewCell {
   func configure(profile: UserProfileItemModel) {
     let config = CHMessageParserConfig(
       font: UIFont.boldSystemFont(ofSize: 13),
-      textColor: CHColors.blueyGrey
+      textColor: .grey500
     )
     self.titleLabel.attributedText = profile.getProfileName(with: config)
     
@@ -83,10 +83,10 @@ class KeyValueCell: BaseTableViewCell {
       else {
         self.valueLabel.text = "\(value)"
       }
-      self.valueLabel.textColor = CHColors.charcoalGrey
+      self.valueLabel.textColor = .grey900
     } else {
       self.valueLabel.text = CHAssets.localized("ch.settings.empty_content")
-      self.valueLabel.textColor = CHColors.blueyGrey
+      self.valueLabel.textColor = .grey500
     }
   }
 }

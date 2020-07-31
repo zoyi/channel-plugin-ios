@@ -37,14 +37,14 @@ final class PhoneActionView: BaseView, Actionable {
   
   let loadIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 22, height: 22)).then {
     $0.type = .circleStrokeSpin
-    $0.color = CHColors.light
+    $0.color = .grey500
     $0.isHidden = true
   }
   
   let countryCodeView = UIView()
   let countryLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 16)
-    $0.textColor = CHColors.dark
+    $0.textColor = .grey900
     $0.textAlignment = .center
     $0.text = ""
   }
@@ -71,7 +71,7 @@ final class PhoneActionView: BaseView, Actionable {
     
     self.layer.cornerRadius = 2.f
     self.layer.borderWidth = 1.f
-    self.layer.borderColor = CHColors.paleGrey20.cgColor
+    self.layer.borderColor = UIColor.grey200.cgColor
     
     self.addSubview(self.phoneField)
     self.addSubview(self.confirmButton)
@@ -207,18 +207,18 @@ extension PhoneActionView {
   }
   
   func setFocus() {
-    self.layer.borderColor = CHColors.brightSkyBlue.cgColor
+    self.layer.borderColor = UIColor.cobalt400.cgColor
     self.confirmButton.isEnabled = true
     self.focusSubject.onNext(true)
   }
   
   func setOutFocus() {
-    self.layer.borderColor = CHColors.paleGrey20.cgColor
+    self.layer.borderColor = UIColor.grey200.cgColor
     self.focusSubject.onNext(false)
   }
   
   func setInvalid() {
-    self.layer.borderColor = CHColors.yellowishOrange.cgColor
+    self.layer.borderColor = UIColor.orange400.cgColor
     self.confirmButton.isEnabled = false
     self.confirmButton.isHidden = false
     self.loadIndicator.isHidden = true

@@ -20,7 +20,7 @@ class UserChatBottomBlockView: BaseView {
   }
   
   let topBorder = UIView().then {
-    $0.backgroundColor = CHColors.dark10
+    $0.backgroundColor = .black5
   }
   
   override func initialize() {

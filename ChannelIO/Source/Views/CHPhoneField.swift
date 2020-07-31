@@ -38,7 +38,7 @@ final class CHPhoneField: BaseView {
   
   let countryLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 18)
-    $0.textColor = CHColors.dark
+    $0.textColor = .grey900
     $0.text = "+" + Constants.defaultDailCode
     $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
@@ -49,7 +49,7 @@ final class CHPhoneField: BaseView {
   }
   
   let topDivider = UIView().then {
-    $0.backgroundColor = CHColors.dark20
+    $0.backgroundColor = .grey300
   }
   
   var field: UITextField {
@@ -57,14 +57,14 @@ final class CHPhoneField: BaseView {
   }
   
   let phoneField = PhoneNumberTextField().then {
-    $0.textColor = CHColors.dark
+    $0.textColor = .grey900
     $0.keyboardType = .phonePad
     $0.clearButtonMode = .whileEditing
     $0.placeholder = CHAssets.localized("ch.settings.edit.phone_number_placeholder")
   }
   
   let bottomDivider = UIView().then {
-    $0.backgroundColor = CHColors.dark20
+    $0.backgroundColor = .grey300
   }
   
   convenience init(text: String = "") {

@@ -37,7 +37,7 @@ class TextMessageView : BaseView {
   }
 
  private struct Color {
-    static let actionLabel = CHColors.blueyGrey
+    static let actionLabel = UIColor.grey500
     static let message = UIColor.grey900
   }
 

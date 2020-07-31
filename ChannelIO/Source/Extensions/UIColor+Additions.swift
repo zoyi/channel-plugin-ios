@@ -13,6 +13,10 @@ internal extension UIColor {
     return UIColor(white: 0.0, alpha: 0.7)
   }
   
+  @nonobjc class var black50: UIColor {
+    return UIColor(white: 0.0, alpha: 0.5)
+  }
+  
   @nonobjc class var black40: UIColor {
     return UIColor(white: 0.0, alpha: 0.4)
   }

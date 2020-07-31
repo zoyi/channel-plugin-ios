@@ -15,7 +15,7 @@ final class TypingIndicatorCell: BaseTableViewCell {
   
   let personCountLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 12)
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
   }
   let typingImageView = SDAnimatedImageView().then {
     $0.contentMode = .scaleAspectFit

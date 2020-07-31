@@ -12,7 +12,7 @@ import SnapKit
 final class LabelCell : BaseTableViewCell {  
   let titleLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 16)
-    $0.textColor = CHColors.charcoalGrey
+    $0.textColor = .grey900
     $0.numberOfLines = 1
   }
   
@@ -24,8 +24,7 @@ final class LabelCell : BaseTableViewCell {
   
   var disabled = false {
     didSet {
-      self.titleLabel.textColor = self.disabled ?
-        CHColors.blueyGrey60 : CHColors.dark
+      self.titleLabel.textColor = self.disabled ? .black20 : .grey900
     }
   }
   
