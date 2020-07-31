@@ -36,6 +36,7 @@ struct CHFile: ThumbDisplayable {
   var duration: Double = 0.0
   var width: Int = 0
   var height: Int = 0
+  var orientation: Int = 0
   var bucket: String = ""
   var key: String = ""
   var previewKey: String = ""
@@ -213,6 +214,7 @@ extension CHFile: Mappable, Hashable {
     duration <- map["duration"]
     width <- map["width"]
     height <- map["height"]
+    orientation <- map["orientation"]
     bucket <- map["bucket"]
     key <- map["key"]
     previewKey <- map["previewKey"]
