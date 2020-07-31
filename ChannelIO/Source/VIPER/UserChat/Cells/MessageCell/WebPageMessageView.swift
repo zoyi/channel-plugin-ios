@@ -26,6 +26,7 @@ final class WebPageMessageView: BaseView {
     static let descMaxLines = 2
     static let webPageMessageViewBottom = 10.f
     static let stackViewSpacing = 2.f
+    static let textSize = 17.f
   }
   
   private struct Fonts {
@@ -79,13 +80,15 @@ final class WebPageMessageView: BaseView {
 
   class func viewHeight(fits width: CGFloat, webpage: CHWebPage) -> CGFloat {
     var height: CGFloat = 0
-    height += webpage.thumbUrl != nil ?
-      Metrics.imageHeight + Metrics.imageViewBottom : Metrics.imageViewBottomWithoutThumb
+    var hasContents = false
+    let imageHeight = webpage.thumbSize.height * width / webpage.thumbSize.width
     
-    height += Metrics.componentInSectionTop
-  
-    if webpage.title != nil {
-      height += 17
+    height += webpage.thumbUrl != nil
+      ? imageHeight : Metrics.imageViewBottomWithoutThumb
+    
+    if webpage.title?.isEmpty == false {
+      height += Metrics.textSize
+      hasContents = true
     }
     
     if let description = webpage.desc {
@@ -93,9 +96,9 @@ final class WebPageMessageView: BaseView {
         - Metrics.sectionBarWidth
         - Metrics.sectionBarTrailing
         - Metrics.sectionBarWidth
-      height += webpage.title != nil ? Metrics.stackViewSpacing : 0
+      height += webpage.title?.isEmpty == false ? Metrics.stackViewSpacing : 0
       let text = description.addLineHeight(
-        height: 17,
+        height: Metrics.textSize,
         font: Fonts.desc,
         color: .grey500
       )
@@ -103,14 +106,19 @@ final class WebPageMessageView: BaseView {
         fits: contentWidth,
         maximumNumberOfLines: Metrics.descMaxLines
       )
+      
+      hasContents = true
     }
     
     if webpage.publisher != nil {
-      height += (webpage.title != nil || webpage.desc != nil) ?
+      height += (webpage.title?.isEmpty == false || webpage.desc?.isEmpty == false) ?
         Metrics.providerTop : 0
       height += Metrics.providerHeight
+      hasContents = true
     }
-    height += Metrics.componentInSectionBottom
+    
+    height += hasContents ? Metrics.componentInSectionTop + Metrics.componentInSectionBottom : 0
+    height += hasContents && webpage.thumbUrl != nil ? Metrics.imageViewBottom : 0
 
     return height
   }
@@ -170,7 +178,7 @@ final class WebPageMessageView: BaseView {
     }
     
     self.titleLabel.snp.makeConstraints { (make) in
-      make.height.equalTo(17.f)
+      make.height.equalTo(Metrics.textSize)
     }
 
     self.providerView.snp.makeConstraints { make in
@@ -178,15 +186,29 @@ final class WebPageMessageView: BaseView {
     }
   }
 
-  func configure(with webPage: CHWebPage, mkInfo: MarketingInfo? = nil) {
-    self.titleLabel.text = webPage.title
-    self.descriptionLabel.attributedText = webPage.desc?.addLineHeight(
-      height: 17,
-      font: Fonts.desc,
-      color: .grey500,
-      lineBreakMode: .byTruncatingTail
-    )
+  func configure(fits width: CGFloat, with webPage: CHWebPage, mkInfo: MarketingInfo? = nil) {
+    var hasContents = false
+    if let title = webPage.title {
+      self.titleLabel.text = title
+      hasContents = true
+    }
     
+    if let desc = webPage.desc {
+      self.descriptionLabel.attributedText = desc.addLineHeight(
+        height: Metrics.textSize,
+        font: Fonts.desc,
+        color: .grey500,
+        lineBreakMode: .byTruncatingTail
+      )
+      hasContents = true
+    }
+    
+    if let publisher = webPage.publisher {
+      self.providerView.configure(publisher: publisher, title: webPage.author)
+    } else {
+      self.providerView.isHidden = true
+    }
+      
     if webPage.isPlayable {
       self.videoView.configure(with: webPage, mkInfo: mkInfo)
       self.videoView.isHidden = false
@@ -197,19 +219,32 @@ final class WebPageMessageView: BaseView {
       self.videoView.isHidden = true
     }
     
-    self.providerView.isHidden = webPage.publisher == nil
-    self.providerView.configure(publisher: webPage.publisher, title: webPage.author)
+    let imageHeight = webPage.thumbSize.height * width / webPage.thumbSize.width
     
     self.imageHeightConstraint?.update(
-      offset: webPage.thumbUrl == nil ? 0 : Metrics.imageHeight
+      offset: webPage.thumbUrl == nil ? 0 : imageHeight
     )
     self.sectionTopConstraints?.update(offset: webPage.thumbUrl != nil ?
       Metrics.imageViewBottom : Metrics.imageViewBottomWithoutThumb
     )
+    
+    self.infoStackView.isHidden = !hasContents
+    self.sectionBar.isHidden = !hasContents
   }
   
-  func configure(message: CHMessage) {
+  func configure(fits width: CGFloat, message: CHMessage) {
     guard let webPage = message.webPage else { return }
-    self.configure(with: webPage, mkInfo: message.mkInfo)
+    let messageWidth: CGFloat
+    switch message.personType {
+    case .user:
+      messageWidth = width
+        - MessageCell.Metric.messageLeftMinMargin
+        - MessageCell.Metric.cellRightPadding
+    default:
+      messageWidth = width
+        - MessageCell.Metric.messageRightMinMargin
+        - MessageCell.Metric.bubbleLeftMargin
+    }
+    self.configure(fits: messageWidth, with: webPage, mkInfo: message.mkInfo)
   }
 }
