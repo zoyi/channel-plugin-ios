@@ -10,13 +10,18 @@ import RxSwift
 import SnapKit
 
 final class CountryCodePickerView : BaseView {
+  private enum Metric {
+    static let pickerHeight = 260.f
+    static let actionViewHeight = 50.f
+    static let horizontalPadding = 10.f
+  }
 
   var countries: [CHCountry] = []
   let disposeBag = DisposeBag()
   var bottomContraint: Constraint?
   var pickedCode = "" {
     didSet {
-      if let index = self.countries.firstIndex(where: { (country) -> Bool in
+      if let index = self.countries.firstIndex(where: { country -> Bool in
         return country.code == self.pickedCode
       }) {
         self.pickerView.selectRow(index, inComponent: 0, animated: false)
@@ -54,22 +59,22 @@ final class CountryCodePickerView : BaseView {
   }
   
   static func presentCodePicker(with code: String) -> Observable<(String?, String?)> {
-    return Observable.create({ (subscriber) in
-      var controller = CHUtils.getTopController()
-      if let navigation = controller?.navigationController {
+    return Observable.create { subscriber in
+      guard var controller = CHUtils.getTopController() else { return Disposables.create() }
+      if let navigation = controller.navigationController {
         controller = navigation
       }
       
-      let pickerView = CountryCodePickerView(frame: (controller?.view.frame)!)
-
+      let pickerView = CountryCodePickerView(frame: controller.view.frame)
       pickerView.pickedCode = code
-      pickerView.showPicker(onView: (controller?.view)!,animated: true)
+      pickerView.showPicker(onView: controller.view, animated: true)
+      
       let submitSignal = pickerView.signalForSubmit().subscribe(onNext: { (code, dial) in
         subscriber.onNext((code, dial))
         subscriber.onCompleted()
       })
       
-      let cancelSignal = pickerView.signalForCancel().subscribe(onNext: { (_) in
+      let cancelSignal = pickerView.signalForCancel().subscribe(onNext: { _ in
         subscriber.onNext((nil, nil))
         subscriber.onCompleted()
       })
@@ -78,7 +83,7 @@ final class CountryCodePickerView : BaseView {
         submitSignal.dispose()
         cancelSignal.dispose()
       }
-    })
+    }
   }
   
   override func initialize() {
@@ -95,59 +100,89 @@ final class CountryCodePickerView : BaseView {
 
     self.pickerView.delegate = self
     
-    self.closeButton.signalForClick().subscribe(onNext: { [weak self] (event) in
-      self?.cancelSubject.onNext(nil)
-      self?.cancelSubject.onCompleted()
-        
-      self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBag)
+    self.backgroundView
+      .signalForClick()
+      .bind { [weak self] _ in
+        self?.cancelSubject.onNext(nil)
+        self?.cancelSubject.onCompleted()
+          
+        self?.removePicker(animated: true)
+      }.disposed(by: self.disposeBag)
     
-    self.submitButton.signalForClick().subscribe(onNext: { [weak self] (event) in
-      guard let index = self?.selectedIndex else { return }
-      guard let country = self?.countries[index] else { return }
-      
-      self?.submitSubject.onNext((country.code, country.dial))
-      self?.submitSubject.onCompleted()
+    self.closeButton
+      .signalForClick()
+      .bind { [weak self] event in
+        self?.cancelSubject.onNext(nil)
+        self?.cancelSubject.onCompleted()
         
-      self?.removePicker(animated: true)
-    }).disposed(by: self.disposeBag)
+        self?.removePicker(animated: true)
+      }.disposed(by: self.disposeBag)
+    
+    self.submitButton
+      .signalForClick()
+      .bind { [weak self] event in
+        guard
+          let index = self?.selectedIndex,
+          let country = self?.countries.get(index: index)
+        else {
+          return
+        }
+        
+        self?.submitSubject.onNext((country.code, country.dial))
+        self?.submitSubject.onCompleted()
+        
+        self?.removePicker(animated: true)
+      }.disposed(by: self.disposeBag)
   }
   
   override func setLayouts() {
-    self.backgroundView.snp.makeConstraints { (make) in
+    self.backgroundView.snp.remakeConstraints { make in
       make.edges.equalToSuperview()
     }
     
-    self.closeButton.snp.remakeConstraints { (make) in
-      make.leading.equalToSuperview().inset(10)
+    self.closeButton.snp.remakeConstraints { make in
+      make.leading.equalToSuperview().inset(Metric.horizontalPadding)
       make.centerY.equalToSuperview()
     }
     
-    self.submitButton.snp.remakeConstraints { (make) in
-      make.trailing.equalToSuperview().inset(10)
+    self.submitButton.snp.makeConstraints { make in
+      make.trailing.equalToSuperview().inset(Metric.horizontalPadding)
       make.centerY.equalToSuperview()
     }
     
-    self.actionView.snp.remakeConstraints { (make) in
-      make.height.equalTo(50)
-      make.top.equalToSuperview()
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
+    self.actionView.snp.makeConstraints { make in
+      make.height.equalTo(Metric.actionViewHeight)
+      make.top.leading.trailing.equalToSuperview()
     }
     
-    self.pickerView.snp.remakeConstraints { [weak self] (make) in
-      make.top.equalTo((self?.actionView.snp.bottom)!)
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
-      make.bottom.equalToSuperview()
-    }
-    
-    self.pickerContainerView.snp.remakeConstraints { [weak self] (make) in
-      make.height.equalTo(260)
-      make.leading.equalToSuperview()
-      make.trailing.equalToSuperview()
+    self.pickerView.snp.makeConstraints { make in
+      make.top.equalTo(self.actionView.snp.bottom)
+      make.leading.trailing.equalToSuperview()
       
-      self?.bottomContraint = make.bottom.equalToSuperview().inset(-260).constraint
+      if #available(iOS 11.0, *) {
+        let bottom = CHUtils.getKeyWindow()?.rootViewController?.view.safeAreaInsets.bottom ?? 0.f
+        make.bottom.equalToSuperview().inset(bottom)
+      } else {
+        make.bottom.equalToSuperview()
+      }
+    }
+    
+    self.pickerContainerView.snp.makeConstraints { [weak self] make in
+      make.leading.trailing.equalToSuperview()
+
+      if #available(iOS 11.0, *) {
+        let bottom = CHUtils.getKeyWindow()?.rootViewController?.view.safeAreaInsets.bottom ?? 0.f
+        self?.bottomContraint = make.bottom
+          .equalToSuperview()
+          .inset(-Metric.pickerHeight - bottom).constraint
+        make.height.equalTo(Metric.pickerHeight + bottom)
+        
+      } else {
+        self?.bottomContraint = make.bottom.equalToSuperview()
+          .inset(-Metric.pickerHeight)
+          .constraint
+        make.height.equalTo(Metric.pickerHeight)
+      }
     }
   }
   
@@ -165,6 +200,8 @@ final class CountryCodePickerView : BaseView {
 
 extension CountryCodePickerView {
   func showPicker(onView: UIView, animated: Bool) {
+    CHUtils.getTopNavigation()?.interactivePopGestureRecognizer?.isEnabled = false
+
     onView.addSubview(self)
     onView.layoutIfNeeded()
     
@@ -173,7 +210,7 @@ extension CountryCodePickerView {
     }
     
     UIView.animate(withDuration: 0.3) {
-      self.pickerContainerView.snp.updateConstraints { (make) in
+      self.pickerContainerView.snp.updateConstraints { make in
         make.bottom.equalToSuperview().inset(0)
       }
       onView.layoutIfNeeded()
@@ -181,18 +218,29 @@ extension CountryCodePickerView {
   }
   
   func removePicker(animated: Bool) {
+    CHUtils.getTopNavigation()?.interactivePopGestureRecognizer?.isEnabled = true
+
     if !animated {
       self.removeFromSuperview()
       return
     }
     
     UIView.animate(withDuration: 0.3, animations: {
-      self.pickerContainerView.snp.updateConstraints { (make) in
-        make.bottom.equalToSuperview().inset(-260)
+      self.pickerContainerView.snp.updateConstraints { make in
+        if #available(iOS 11.0, *) {
+          let bottom = CHUtils
+            .getKeyWindow()?
+            .rootViewController?
+            .view.safeAreaInsets
+            .bottom ?? 0.f
+          make.bottom.equalToSuperview().inset(-Metric.pickerHeight - bottom)
+        } else {
+          make.bottom.equalToSuperview().inset(-Metric.pickerHeight)
+        }
       }
       self.layoutIfNeeded()
-    }) { (completed) in
-      self.removeFromSuperview()
+    }) { [weak self] completed in
+      self?.removeFromSuperview()
     }
   }
 }
@@ -201,9 +249,11 @@ extension CountryCodePickerView {
 
 extension CountryCodePickerView : UIPickerViewDelegate {
   
-  func pickerView(_ pickerView: UIPickerView,
-                  titleForRow row: Int,
-                  forComponent component: Int) -> String? {
+  func pickerView(
+    _ pickerView: UIPickerView,
+    titleForRow row: Int,
+    forComponent component: Int
+  ) -> String? {
     return "\(self.countries[row].name)  +\(self.countries[row].dial)"
   }
   
@@ -220,9 +270,7 @@ extension CountryCodePickerView : UIPickerViewDataSource {
     return 1
   }
   
-  func pickerView(_ pickerView: UIPickerView,
-                  numberOfRowsInComponent component: Int) -> Int {
+  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
     return self.countries.count
   }
-  
 }
