@@ -1,3 +1,7 @@
+# 7.2.0
+## Bug fixes
+* Fixed url encoding fail bug
+
 # 7.1.5
 ## Bug fixes
 * Fixed some layout bug
