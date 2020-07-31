@@ -30,6 +30,7 @@ class CHTextParserListener: TextBlockParserListener {
   var isVariable = false
   var isOnlyEmoji = true
   var isInappPush = false
+  var isEscape = false
   
   var stack: [CHPBlock] = []
   var profiles: [String: Any] = [:]
@@ -135,6 +136,7 @@ class CHTextParserListener: TextBlockParserListener {
       }
 
       let encodedUrl = linkString
+        .removingPercentEncoding?
         .addingPercentEncoding(
           withAllowedCharacters: .urlQueryAllowed
         ) ?? linkString
@@ -290,17 +292,22 @@ class CHTextParserListener: TextBlockParserListener {
     self.stack.append(block)
   }
 
-  func enterEscape(_ ctx: TextBlockParser.EscapeContext) {}
+  func enterEscape(_ ctx: TextBlockParser.EscapeContext) {
+    self.isEscape = true
+  }
+  
   func exitEscape(_ ctx: TextBlockParser.EscapeContext) {
     guard
       let text = self.getText(from: ctx),
       var block = self.stack.popLast() else { return }
     block.merge(with: self.addAttributesForNormalText(text))
     self.stack.append(block)
+    self.isEscape = false
   }
 
   func visitTerminal(_ node: TerminalNode) {
     guard
+      !isEscape,
       var block = self.stack.popLastIf(CHPAttributeValue.self),
       let text = self.getNodeText(from: node),
       self.isVariable == false else { return }
