@@ -210,7 +210,9 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   
   private func initNavigationTitle(with userChat: CHUserChat? = nil) {
     var navigationTitleView: UIView?
-    if let userChat = userChat, let assignee = userChat.assignee {
+    if let userChat = userChat,
+      let assignee = userChat.assignee,
+      !self.channel.shouldShowWorkingTimes {
       let titleView = ChatNavigationFollowingTitleView()
       titleView.configure(host: assignee, plugin: mainStore.state.plugin)
       navigationTitleView = titleView
