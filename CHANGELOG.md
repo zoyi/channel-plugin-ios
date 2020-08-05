@@ -1,5 +1,9 @@
 # 7.2.0
 ## Bug fixes
+* Fixed button hidden bug when popup closed
+
+# 7.2.0
+## Bug fixes
 * Fixed url encoding fail bug
 
 # 7.1.5
