@@ -182,6 +182,9 @@ extension ChannelIO {
       .observeOn(MainScheduler.instance)
       .subscribe { (event) in
         ChannelIO.hideNotification()
+        if ChannelIO.launcherVisible {
+          ChannelIO.launcherView?.show(animated: true)
+        }
       }.disposed(by: disposeBag)
     
     if let mkInfo = push.mkInfo, viewModel.mobileExposureType == .fullScreen {
