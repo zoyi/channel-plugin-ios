@@ -1,4 +1,8 @@
-# 7.2.0
+# 7.2.2
+## Bug fixes
+* Fixed push click bug when app terminated
+
+# 7.2.1
 ## Bug fixes
 * Fixed button hidden bug when popup closed
 
