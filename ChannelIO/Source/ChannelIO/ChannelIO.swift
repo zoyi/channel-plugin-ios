@@ -601,14 +601,7 @@ public final class ChannelIO: NSObject {
     guard let userChatId = userInfo["chatId"] as? String else { return }
     
     //NOTE: if push was received on background, just send ack to the server
-    if !ChannelIO.willBecomeActive {
-      AppManager.shared.sendAck(userChatId: userChatId).subscribe(onNext: { (completed) in
-        completion?()
-      }, onError: { (error) in
-        completion?()
-      }).disposed(by: self.disposeBag)
-      return
-    }
+    AppManager.shared.sendAck(userChatId: userChatId).subscribe().disposed(by: self.disposeBag)
     
     //NOTE: handler when push was clicked by user
     if ChannelIO.isValidStatus {
