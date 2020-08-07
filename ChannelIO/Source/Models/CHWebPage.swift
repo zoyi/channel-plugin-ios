@@ -40,10 +40,8 @@ struct CHWebPage: ThumbDisplayable, VideoPlayable {
 
   var thumbUrl: URL? {
     guard !self.bucket.isEmpty && !self.previewKey.isEmpty else { return nil }
-    let width = Int(self.thumbSize.width)
-    let height = Int(self.thumbSize.height)
     let bucket = self.bucket.replace("bin", withString: "cf")
-    let urlString = "https://" + bucket + "/thumb/" + "\(width)x\(height)/" + self.previewKey
+    let urlString = "https://" + bucket + "/thumb/" + "\(self.width)x\(self.height),cover/" + self.previewKey
     return URL(string: urlString)
   }
 }
