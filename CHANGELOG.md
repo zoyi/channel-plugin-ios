@@ -4,6 +4,7 @@
 
 ## Bug fixes
 * Fixed some launcher window issue
+*Block open pushData when channelId is different from boot channel
 
 # 7.2.2
 ## Bug fixes
