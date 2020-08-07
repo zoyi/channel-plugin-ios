@@ -216,7 +216,9 @@ public final class ChannelIO: NSObject {
           completion?(.success, User(with: mainStore.state.user))
           
           // double boot handling when sdk push click
-          if let userChatId = PrefStore.getPushData()?["chatId"] as? String {
+          if let userChatId = PrefStore.getPushData()?["chatId"] as? String,
+            let channelId = PrefStore.getPushData()?["channelId"] as? String,
+            channelId == PrefStore.getCurrentChannelId() {
             ChannelIO.showUserChat(userChatId: userChatId)
           }
           PrefStore.clearPushData()
