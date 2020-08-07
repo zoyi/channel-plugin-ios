@@ -13,7 +13,8 @@ import SnapKit
 class BannerInAppNotificationView: BaseView, InAppNotification {
   private enum Metric {
     static let bannerMaxWidth = 520.f
-    static let bannerTop = 24.f
+    static let bannerTopWithoutNavi = 24.f
+    static let bannerTopWithNavi = 8.f
     static let bannerSide = 8.f
     static let mediaTopBottom = 8.f
     static let mediaLeading = 8.f
@@ -383,7 +384,10 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       } else {
         make.leading.trailing.equalToSuperview().inset(Metric.bannerSide)
       }
-      make.top.equalToSuperview().inset(Metric.bannerTop)
+      make.top.equalToSuperview().inset(
+        ChannelIO.launcherWindow?.naviHeight != 0
+          ? Metric.bannerTopWithNavi : Metric.bannerTopWithoutNavi
+      )
     }
   }
   

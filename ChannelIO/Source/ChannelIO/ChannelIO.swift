@@ -194,6 +194,7 @@ public final class ChannelIO: NSObject {
           AppManager.shared.registerPushToken()
           AppManager.shared.displayMarketingIfNeeeded()
           
+          ChannelIO.launcherWindow = nil
           if #available(iOS 13.0, *) {
             if ChannelIO.launcherWindow == nil,
               let window = CHUtils
