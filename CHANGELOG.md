@@ -1,3 +1,10 @@
+# 7.2.3
+## Updates
+* Make webpage thumnail image quality better
+
+## Bug fixes
+* Fixed some launcher window issue
+
 # 7.2.2
 ## Bug fixes
 * Fixed push click bug when app terminated
