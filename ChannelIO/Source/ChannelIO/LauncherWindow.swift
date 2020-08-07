@@ -8,6 +8,7 @@
 final class LauncherWindow: UIWindow {
   var launcherView: LauncherView?
   var inAppNotificationView: InAppNotification?
+  var naviHeight = 0.f
 
   private weak var hostKeyWindow: UIWindow?
   
@@ -22,7 +23,9 @@ final class LauncherWindow: UIWindow {
     )
     
     if let viewController = CHUtils.getTopController() {
-      y += viewController.navigationController?.navigationBar.bounds.height ?? 0
+      self.naviHeight = viewController.navigationController?.isNavigationBarHidden == true
+        ? 0 : viewController.navigationController?.navigationBar.bounds.height ?? 0
+      y += self.naviHeight
       bounds = CGRect(
         x: 0, y: y,
         width: defaultSize.width,
@@ -49,7 +52,9 @@ final class LauncherWindow: UIWindow {
     )
     
     if let viewController = CHUtils.getTopController() {
-      y += viewController.navigationController?.navigationBar.bounds.height ?? 0
+      self.naviHeight = viewController.navigationController?.isNavigationBarHidden == true
+        ? 0 : viewController.navigationController?.navigationBar.bounds.height ?? 0
+      y += self.naviHeight
       bounds = CGRect(
         x: 0, y: y,
         width: defaultSize.width,
