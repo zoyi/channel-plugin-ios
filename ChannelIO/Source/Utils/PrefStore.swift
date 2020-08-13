@@ -14,11 +14,13 @@ class PrefStore {
   static let PUSH_OPTION_KEY = "CHPlugin_PushOption"
   static let VISIBLE_CLOSED_USERCHAT_KEY = "CHPlugin_show_closed_userchat"
   static let CHANNEL_PLUGIN_SETTINGS_KEY = "CHPlugin_settings"
+  static let BOOT_CONFIG = "CHBoot_Config"
   static let VISIBLE_TRANSLATION = "CHPlugin_visible_translation"
   static let SESSION_JWT_KEY = "CHPlugin_session_jwt"
   static let VEIL_ID_KEY = "CHPlugin_veil_id"
   static let MEMBER_ID_KEY = "CHPlugin_member_id"
   static let PUSH_DATA = "CHPlugin_push_data"
+  static let TOKEN_STATE = "CHPlugin_token_state"
   
   static var userDefaults: UserDefaults? = nil
   
@@ -104,22 +106,54 @@ class PrefStore {
     }
     return true
   }
-  
+  // TODO: Will deprecated
   static func setChannelPluginSettings(pluginSetting: ChannelPluginSettings) {
     let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: pluginSetting)
     PrefStore.getStorage().set(encodedData, forKey: CHANNEL_PLUGIN_SETTINGS_KEY)
     PrefStore.getStorage().synchronize()
   }
-  
+  // TODO: Will deprecated
   static func getChannelPluginSettings() -> ChannelPluginSettings? {
     if let data = PrefStore.getStorage().object(forKey: CHANNEL_PLUGIN_SETTINGS_KEY) as? Data {
       return NSKeyedUnarchiver.unarchiveObject(with: data) as? ChannelPluginSettings
     }
     return nil
   }
-  
+  // TODO: Will deprecated
   static func clearCurrentChannelPluginSettings() {
     PrefStore.getStorage().removeObject(forKey: CHANNEL_PLUGIN_SETTINGS_KEY)
+    PrefStore.getStorage().synchronize()
+  }
+  
+  static func setBootConfig(bootConfig: BootConfig) {
+    let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: bootConfig)
+    PrefStore.getStorage().set(encodedData, forKey: BOOT_CONFIG)
+    PrefStore.getStorage().synchronize()
+  }
+
+  static func getBootConfig() -> BootConfig? {
+    if let data = PrefStore.getStorage().object(forKey: BOOT_CONFIG) as? Data {
+      return NSKeyedUnarchiver.unarchiveObject(with: data) as? BootConfig
+    }
+    return nil
+  }
+
+  static func clearBootConfig() {
+    PrefStore.getStorage().removeObject(forKey: BOOT_CONFIG)
+    PrefStore.getStorage().synchronize()
+  }
+  
+  static func getTokenState() -> Bool {
+    return PrefStore.getStorage().bool(forKey: TOKEN_STATE)
+  }
+  
+  static func setTokenState(_ isRegster: Bool) {
+    PrefStore.getStorage().set(isRegster, forKey: TOKEN_STATE)
+    PrefStore.getStorage().synchronize()
+  }
+  
+  static func clearTokenState() {
+    PrefStore.getStorage().removeObject(forKey: TOKEN_STATE)
     PrefStore.getStorage().synchronize()
   }
   
@@ -178,7 +212,13 @@ class PrefStore {
     PrefStore.clearCurrentMemberId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()
-    PrefStore.clearSessionJWT()
+    if ChannelIO.isNewVersion {
+      if PrefStore.getTokenState() == false {
+        PrefStore.clearBootConfig()
+      }
+    } else {
+      PrefStore.clearSessionJWT()
+    }
   }
 }
 

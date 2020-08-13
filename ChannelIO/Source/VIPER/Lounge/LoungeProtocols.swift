@@ -74,11 +74,11 @@ protocol LoungeInteractorProtocol: class {
 
 protocol LoungeRouterProtocol: class {
   func pushChatList(from view: UIViewController?)
-  func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?)
+  func pushChat(with chatId: String?, text: String?, isOpenChat: Bool, animated: Bool, from view: UIViewController?)
   func pushSettings(from view: UIViewController?)
   
   func presentBusinessHours(from view: UIViewController?)
   func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   
-  static func createModule(with chatId: String?) -> LoungeView
+  static func createModule(with chatId: String?, text: String?, isOpenChat: Bool) -> LoungeView
 }

@@ -27,6 +27,9 @@ struct UIState: StateType {
  *    - requirePayment: your plan is not eligible to use SDK
  *    - accessDeined: accces to ChannelPlugin server denied
  */
+
+// TODO: Will deprecated
+@available(*, deprecated, renamed: "BootStatus")
 @objc
 public enum ChannelPluginCompletionStatus : Int {
   case success
@@ -39,6 +42,18 @@ public enum ChannelPluginCompletionStatus : Int {
   case unknown
 }
 
+@objc
+public enum BootStatus : Int {
+  case success
+  case notInitialized
+  case networkTimeout
+  case notAvailableVersion
+  case serviceUnderConstruction
+  case requirePayment
+  case accessDenied
+  case unknown
+}
+
 struct BootState: StateType {
-  var status: ChannelPluginCompletionStatus = .notInitialized
+  var status: BootStatus = .notInitialized
 }

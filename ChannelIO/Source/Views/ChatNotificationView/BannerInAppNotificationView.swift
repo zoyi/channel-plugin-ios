@@ -423,7 +423,8 @@ extension BannerInAppNotificationView : UITextViewDelegate {
       case "mailto":
         return true
       default:
-        let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
+        let handled = ChannelIO.isNewVersion ?
+          ChannelIO.delegate?.onUrlClicked?(url: URL) : ChannelIO.delegate?.onClickChatLink?(url: URL)
         if handled == false || handled == nil {
           self.closeSignal.onNext(nil)
           self.closeSignal.onCompleted()

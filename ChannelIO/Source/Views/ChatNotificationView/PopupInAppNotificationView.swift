@@ -375,7 +375,9 @@ extension PopupInAppNotificationView : UITextViewDelegate {
     in characterRange: NSRange,
     interaction: UITextItemInteraction) -> Bool {
     if interaction == .invokeDefaultAction {
-      let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
+      let handled = ChannelIO.isNewVersion
+        ? ChannelIO.delegate?.onUrlClicked?(url: URL)
+        : ChannelIO.delegate?.onClickChatLink?(url: URL)
       if handled == false || handled == nil {
         URL.openWithUniversal()
       }

@@ -19,7 +19,7 @@ struct ChatListIsHidden: Action {}
 // boot state
 
 struct UpdateBootState: Action {
-  public let payload: ChannelPluginCompletionStatus
+  public let payload: BootStatus
 }
 
 struct ReadyToShow: Action {}

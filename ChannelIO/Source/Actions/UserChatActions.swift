@@ -81,8 +81,11 @@ struct UpdateVisibilityOfTranslation: Action {
 struct UserChatActions {
   static func openAgreement() {
     let locale = CHUtils.getLocale() ?? .korean
-    let url = "https://channel.io/" + locale.rawValue +
-      "/terms_user?plugin_key=" + (ChannelIO.settings?.pluginKey ?? "")
+    let url = "https://channel.io/"
+      + locale.rawValue +
+      "/terms_user?plugin_key="
+      + (ChannelIO.isNewVersion ?
+        ChannelIO.bootConfig?.pluginKey ?? "" : ChannelIO.settings?.pluginKey ?? "")
     
     guard let link = URL(string: url) else { return }
     link.open()

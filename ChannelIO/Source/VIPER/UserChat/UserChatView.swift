@@ -454,12 +454,11 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     } else if userChat?.isClosed == true {
       self.hideMessageView()
       self.newChatButton.isHidden = false
-    } else if needToSupportBot && isSupportBotEntry {
+    } else if self.presenter?.isOpenChat == false && (needToSupportBot && isSupportBotEntry) {
       self.hideMessageView()
       self.chatBotStartView.isHidden = false
-    } else if userChat?.isSupporting == true ||
-      userChat?.isSolved == true ||
-      (isSupportBotEntry && userChat == nil) {
+    } else if self.presenter?.isOpenChat == false &&
+      (userChat?.isSupporting == true || userChat?.isSolved == true || (isSupportBotEntry && userChat == nil)) {
       self.hideMessageView()
     } else if !self.channel.allowNewChat && self.messageView.text == "" {
       self.hideMessageView()

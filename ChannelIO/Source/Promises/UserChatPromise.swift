@@ -73,6 +73,9 @@ struct UserChatPromise {
                 subscriber.onError(ChannelError.parseError)
                 break
             }
+            if let id = chatResponse.userChat?.id {
+              ChannelIO.delegate?.onChatCreated?(chatId: id)
+            }
             subscriber.onNext(chatResponse)
             subscriber.onCompleted()
           case .failure(let error):

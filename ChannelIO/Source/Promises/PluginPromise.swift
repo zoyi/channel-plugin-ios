@@ -151,6 +151,8 @@ struct PluginPromise {
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
+            let json = SwiftyJSON.JSON(response.data)
+            print(json)
             subscriber.onError(ChannelError.serverError(
               msg: error.localizedDescription
             ))
@@ -183,18 +185,6 @@ struct PluginPromise {
             subscriber.onCompleted()
           }
         }
-        
-        .responseJSON(completionHandler: { (response) in
-          switch response.result {
-          case .success(_):
-            subscriber.onNext(true)
-            subscriber.onCompleted()
-          case .failure(let error):
-            subscriber.onError(ChannelError.serverError(
-              msg: error.localizedDescription
-            ))
-          }
-        })
       
       return Disposables.create {
         req.cancel()

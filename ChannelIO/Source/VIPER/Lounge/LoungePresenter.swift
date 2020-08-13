@@ -18,6 +18,8 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var needToFetch = false
   var chatId: String?
+  var preloadText: String = ""
+  var isOpenChat: Bool = false
   
   var disposeBag = DisposeBag()
   var notiDisposeBag = DisposeBag()
@@ -26,7 +28,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var loungeCompletion = BehaviorRelay<Bool>(value: false)
   
-  var locale: CHLocaleString? = ChannelIO.settings?.appLocale
+  var locale: CHLocaleString? = ChannelIO.isNewVersion ? ChannelIO.bootConfig?.appLocale : ChannelIO.settings?.appLocale
   
   func viewDidLoad() {
     self.updateHeaders()
@@ -70,17 +72,23 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     }
     
     //handle showUserChat
-    if let chatId = chatId, let view = self.view as? UIViewController {
+    if let chatId = self.chatId, let view = self.view as? UIViewController {
       self.view?.setViewVisible(false)
-      self.router?.pushChat(with: chatId, animated: false, from: view)
+      self.router?.pushChat(with: chatId, text: self.preloadText, isOpenChat: false, animated: false, from: view)
       self.chatId = nil
+      self.isOpenChat = false
+    } else if self.chatId == nil, self.isOpenChat == true, let view = self.view as? UIViewController {
+      self.view?.setViewVisible(false)
+      self.router?.pushChat(with: chatId, text: self.preloadText, isOpenChat: true, animated: false, from: view)
+      self.chatId = nil
+      self.isOpenChat = false
     } else {
       self.view?.setViewVisible(true)
       self.view?.displayReady()
     }
     
-    if self.locale != ChannelIO.settings?.appLocale {
-      self.locale = ChannelIO.settings?.appLocale
+    if self.locale != (ChannelIO.isNewVersion ? ChannelIO.bootConfig?.appLocale : ChannelIO.settings?.appLocale) {
+      self.locale = (ChannelIO.isNewVersion ? ChannelIO.bootConfig?.appLocale : ChannelIO.settings?.appLocale)
       self.view?.reloadContents()
     }
     
@@ -247,7 +255,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnDismiss() {
-    ChannelIO.close(animated: true)
+    ChannelIO.isNewVersion ? ChannelIO.hideMessenger(animated: true) : ChannelIO.close(animated: true)
   }
   
   func didClickOnChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
@@ -255,7 +263,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnNewChat(from view: UIViewController?) {
-    self.pushChat(with: chatId, animated: true, from: view)
+    self.pushChat(with: self.chatId, animated: true, from: view)
   }
   
   func didClickOnSeeMoreChat(from view: UIViewController?) {
@@ -354,7 +362,7 @@ extension LoungePresenter {
       }).disposed(by: self.disposeBag)
   }
   
-  private func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    self.router?.pushChat(with: chatId, animated: animated, from: view)
+  private func pushChat(with chatId: String?, isOpenChat: Bool = false, animated: Bool, from view: UIViewController?) {
+    self.router?.pushChat(with: chatId, text: nil, isOpenChat: isOpenChat, animated: animated, from: view)
   }
 }

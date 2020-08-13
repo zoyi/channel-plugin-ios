@@ -65,6 +65,7 @@ protocol UserChatPresenterProtocol: class {
   var userChatId: String? { get set }
   var shouldRedrawProfileBot: Bool { get set }
   var isProfileFocus: Bool { get set }
+  var isOpenChat: Bool { get set }
   
   func viewDidLoad()
   func prepareDataSource()
@@ -137,7 +138,7 @@ protocol UserChatInteractorProtocol: class {
 }
 
 protocol UserChatRouterProtocol: class {
-  static func createModule(userChatId: String?, text: String) -> UserChatView
+  static func createModule(userChatId: String?, text: String, isOpenChat: Bool) -> UserChatView
   
   func presentVideoPlayer(with url: URL?, from view: UIViewController?)
   func presentImageViewer(

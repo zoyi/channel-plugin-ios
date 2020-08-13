@@ -39,7 +39,7 @@ extension UIViewController {
   func ch_viewWillAppear(_ animated: Bool) {
     self.ch_viewWillAppear(animated)
     guard ChannelIO.isValidStatus else { return }
-    guard ChannelIO.settings?.enabledTrackDefaultEvent == true else { return }
+    guard ChannelIO.isNewVersion ? ChannelIO.bootConfig?.trackDefaultEvent == true : ChannelIO.settings?.enabledTrackDefaultEvent == true else { return }
     guard self.processOnlyIfNeccessary() else { return }
     
     ChannelIO.sendDefaultEvent(.pageView, property: [

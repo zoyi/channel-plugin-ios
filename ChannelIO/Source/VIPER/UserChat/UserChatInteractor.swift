@@ -51,7 +51,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
 
   func readyToPresent() -> Observable<Bool> {
     guard
-      let pluginKey = ChannelIO.settings?.pluginKey,
+      let pluginKey = ChannelIO.isNewVersion ? ChannelIO.bootConfig?.pluginKey : ChannelIO.settings?.pluginKey,
       pluginKey != "" else {
       return .just(false)
     }

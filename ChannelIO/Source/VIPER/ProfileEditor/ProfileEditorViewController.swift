@@ -203,6 +203,7 @@ class ProfileEditorViewController: BaseViewController {
       .subscribe(onNext: { [weak self] (user, error) in
         defer { hud.dismiss() }
         ChannelIO.delegate?.onChangeProfile?(key: key, value: user?.profile?[key])
+        ChannelIO.delegate?.onProfileChanged?(key: key, value: user?.profile?[key])
         mainStore.dispatch(UpdateUser(payload: user))
         if let error = error {
           CHNotification.shared.display(

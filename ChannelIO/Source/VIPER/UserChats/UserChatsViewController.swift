@@ -204,7 +204,7 @@ class UserChatsViewController: BaseViewController {
       tintColor: tintColor,
       style: .plain,
       actionHandler: {
-        ChannelIO.close(animated: true)
+        ChannelIO.isNewVersion ? ChannelIO.hideMessenger(animated: true) : ChannelIO.close(animated: true)
       })
     
     self.navigationItem.leftBarButtonItem = NavigationItem(
@@ -220,7 +220,7 @@ class UserChatsViewController: BaseViewController {
       tintColor: mainStore.state.plugin.textUIColor,
       style: .plain,
       actionHandler: {
-        ChannelIO.close(animated: true)
+        ChannelIO.isNewVersion ? ChannelIO.hideMessenger(animated: true) : ChannelIO.close(animated: true)
       })
     
     let titleView = ChatNavigationTitleView()
@@ -250,11 +250,11 @@ class UserChatsViewController: BaseViewController {
     }
   }
   
-  func showUserChat(userChatId: String? = nil, text:String = "") {
+  func showUserChat(userChatId: String? = nil, text: String = "", isOpenChat: Bool = false) {
     guard !self.isShowingChat else { return }
     self.tableView.isHidden = false
     
-    let controller = UserChatRouter.createModule(userChatId: userChatId, text: text)
+    let controller = UserChatRouter.createModule(userChatId: userChatId, text: text, isOpenChat: isOpenChat)
     self.navigationController?.pushViewController(controller, animated: true)
     self.isShowingChat = false
   }

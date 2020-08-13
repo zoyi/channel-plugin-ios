@@ -60,6 +60,7 @@ class MessageCell: BaseTableViewCell {
   let timestampLabel = UILabel().then {
     $0.font = Font.timestampLabel
     $0.textColor = Color.timestamp
+    $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
   
   let textView = TextMessageView()
@@ -152,6 +153,7 @@ class MessageCell: BaseTableViewCell {
     
     self.timestampLabel.snp.makeConstraints { make in
       make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.cellRightPadding)
       make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }
@@ -263,6 +265,7 @@ extension MessageCell {
     
     self.timestampLabel.snp.remakeConstraints { make in
       make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.cellRightPadding)
       make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }
@@ -289,6 +292,7 @@ extension MessageCell {
     
     self.timestampLabel.snp.remakeConstraints { make in
       make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.cellRightPadding)
       make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }

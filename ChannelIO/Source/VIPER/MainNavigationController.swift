@@ -173,6 +173,7 @@ extension MainNavigationController : UINavigationControllerDelegate {
 extension MainNavigationController : UIAdaptivePresentationControllerDelegate {
   func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
     ChannelIO.delegate?.willHideMessenger?()
+    ChannelIO.delegate?.onHideMessenger?()
     ChannelIO.didDismiss()
   }
 }

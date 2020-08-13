@@ -17,7 +17,11 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
   private var assetsSubject = PublishSubject<[PHAsset]>()
   private var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
   
-  static func createModule(userChatId: String?, text: String = "") -> UserChatView {
+  static func createModule(
+    userChatId: String?,
+    text: String = "",
+    isOpenChat: Bool = false
+  ) -> UserChatView {
     let view = UserChatView()
     
     let presenter = UserChatPresenter()
@@ -29,6 +33,7 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     presenter.view = view
     presenter.userChatId = userChatId
     presenter.preloadText = text
+    presenter.isOpenChat = isOpenChat
     
     view.presenter = presenter
     return view

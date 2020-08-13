@@ -24,7 +24,6 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   
   var needUpdate = false
   var showCompleted = mainStore.state.userChatsState.showCompletedChats
-  var showTranslated: CHLocale? = ChannelIO.settings?.language
   
   func subscribeDataSource() {
     self.needUpdate = true

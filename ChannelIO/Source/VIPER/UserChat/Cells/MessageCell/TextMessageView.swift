@@ -285,7 +285,8 @@ extension TextMessageView : UITextViewDelegate {
       mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
     }
     
-    let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
+    let shouldhandle = ChannelIO.isNewVersion ?
+      ChannelIO.delegate?.onUrlClicked?(url: URL) : ChannelIO.delegate?.onClickChatLink?(url: URL)
     let scheme = URL.scheme ?? ""
     switch scheme {
     case "tel":
@@ -313,7 +314,8 @@ extension TextMessageView : UITextViewDelegate {
       case "mailto":
         return true
       default:
-        let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
+        let handled = ChannelIO.isNewVersion ?
+          ChannelIO.delegate?.onUrlClicked?(url: URL) : ChannelIO.delegate?.onClickChatLink?(url: URL)
         if handled == false || handled == nil {
           URL.openWithUniversal()
         }

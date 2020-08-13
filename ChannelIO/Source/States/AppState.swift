@@ -24,8 +24,16 @@ struct AppState: StateType {
   var countryCodeState: CountryCodeState
   var chatState: ChatState
 }
-
+// TODO: Will deprecated
 @objc public enum CHLocale: Int {
+  case english
+  case korean
+  case japanese
+  // it need becase Objective c can't use optional
+  case device
+}
+
+@objc public enum LanguageOption: Int {
   case english
   case korean
   case japanese

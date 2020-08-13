@@ -39,7 +39,6 @@ protocol SettingInteractorProtocol {
   
   func getChannel() -> Observable<CHChannel>
   func getProfileSchemas() -> Observable<[CHProfileSchema]>
-  func getCurrentLocale() -> CHLocale?
   func getTranslationEnabled() -> Bool
   
   func updateGeneral() -> Observable<(CHChannel, CHPlugin)>

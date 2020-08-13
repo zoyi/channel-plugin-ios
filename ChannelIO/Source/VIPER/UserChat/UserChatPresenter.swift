@@ -41,6 +41,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   var shouldRedrawProfileBot = true
   var isProfileFocus = false
   var preloadText: String = ""
+  var isOpenChat: Bool = false
   
   private var disposeBag = DisposeBag()
   private var fileDisposable: Disposable?
@@ -64,7 +65,13 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         guard let self = self else { return }
-        self.showLocalMessageIfNeed()
+        if self.isOpenChat, self.userChat == nil {
+          self.requestRead()
+          self.view?.display(userChat: self.userChat, channel: mainStore.state.channel)
+          mainStore.dispatch(InsertWelcome())
+        } else {
+          self.showLocalMessageIfNeed()
+        }
         if let queueKey = self.queueKey, let queue = ChatQueueService.shared.find(key: queueKey) {
           self.displayFileStatus(with: queue.items)
           self.observeFileQueue()
@@ -381,6 +388,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           self?.shouldRedrawProfileBot = true
           let updatedValue = message.profileBot?.filter { $0.key == key }.first?.value
           ChannelIO.delegate?.onChangeProfile?(key: key, value: updatedValue)
+          ChannelIO.delegate?.onProfileChanged?(key: key, value: updatedValue)
           mainStore.dispatch(UpdateMessage(payload: message))
           subscriber.onNext(true)
           subscriber.onCompleted()
@@ -470,7 +478,9 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
 
   func didClickOnWeb(with message: CHMessage?, url: URL?, from view: UIViewController?) {
     guard let url = url else { return }
-    let shouldHandle = ChannelIO.delegate?.onClickChatLink?(url: url)
+    let shouldHandle = ChannelIO.isNewVersion
+      ? ChannelIO.delegate?.onUrlClicked?(url: url)
+      : ChannelIO.delegate?.onClickChatLink?(url: url)
     if shouldHandle == false || shouldHandle == nil {
       url.openWithUniversal()
     }
@@ -511,7 +521,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   func didClickOnRightNaviItem(from view: UIViewController?) {
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
-    ChannelIO.close(animated: true)
+    ChannelIO.isNewVersion
+      ? ChannelIO.hideMessenger(animated: true) : ChannelIO.close(animated: true)
   }
   
   func didClickOnNewChat(with text: String, from view: UINavigationController?) {

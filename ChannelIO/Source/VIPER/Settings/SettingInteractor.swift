@@ -20,7 +20,7 @@ class SettingInteractor: SettingInteractorProtocol {
   var showCloseChat: Bool? = nil
   var userUnsubscribed: Bool? = nil
   var showTranslation: Bool? = nil
-  var language: CHLocale? = nil
+  var language: LanguageOption? = nil
   
   var updateSignal = PublishRelay<CHUser>()
   var updateOptionSignal = PublishRelay<Any?>()
@@ -43,10 +43,6 @@ class SettingInteractor: SettingInteractorProtocol {
   
   func getProfileSchemas() -> Observable<[CHProfileSchema]> {
     return PluginPromise.getProfileSchemas(pluginId: mainStore.state.plugin.id)
-  }
-  
-  func getCurrentLocale() -> CHLocale? {
-    return ChannelIO.settings?.language
   }
   
   func getTranslationEnabled() -> Bool {
@@ -93,11 +89,11 @@ extension SettingInteractor: StoreSubscriber {
       self.updateGeneralSignal.accept((state.channel, state.plugin))
     }
     
-    if self.language != ChannelIO.settings?.language ||
+    if self.language != (ChannelIO.bootConfig?.language ?? LanguageOption(rawValue: ChannelIO.settings?.language.rawValue ?? CHLocale.english.rawValue)) ||
       self.showTranslation != state.userChatsState.showTranslation ||
       self.showCloseChat != state.userChatsState.showCompletedChats ||
       self.userUnsubscribed != state.user.unsubscribed {
-      self.language = ChannelIO.settings?.language
+      self.language = ChannelIO.bootConfig?.language ?? LanguageOption(rawValue: ChannelIO.settings?.language.rawValue ?? CHLocale.english.rawValue)
       self.showTranslation = state.userChatsState.showTranslation
       self.showCloseChat = state.userChatsState.showCompletedChats
       self.userUnsubscribed = state.user.unsubscribed

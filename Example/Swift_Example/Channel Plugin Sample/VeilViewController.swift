@@ -33,7 +33,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     super.viewWillDisappear(animated)
     
     if self.isMovingFromParent {
-      ChannelIO.shutdown()
+      ChannelIO.shutdown(deregisterPushToken: false)
     }
   }
   
@@ -45,24 +45,21 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     print("will hide")
   }
   
-  func onReceivePush(event: PushEvent) {
-//    self.customPushView.isHidden = false
-//    self.avatarView.sd_setImage(with: URL(string: event.senderAvatarUrl)!)
-//    self.pushMessageLabel.text  = event.message
-//    self.chatId = event.chatId
-//
-//    let gesture = UITapGestureRecognizer(target: self, action: #selector(didClickOnPush))
-//    gesture.numberOfTapsRequired = 1
-//    self.customPushView.addGestureRecognizer(gesture)
+  func onReceivePushData(event: PushData) {
+    print(event.toJson())
   }
   
   func onChangeBadge(count: Int) {
     print("badge called \(count)")
   }
   
+  func onBadgeChanged(alert: Int) {
+    print("badge called \(alert)")
+  }
+  
   @objc func didClickOnPush() {
     if let chatId = self.chatId {
-      ChannelIO.openChat(with: chatId, animated: true)
+      ChannelIO.openChat(with: chatId, message: nil, animated: true)
     }
   }
   
@@ -79,10 +76,12 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
+      pluginKey = "22cc3e54-681b-4fde-95bf-b03f588e3ffe"
     }
-    let settings = ChannelPluginSettings(pluginKey: pluginKey)
-    settings.debugMode = true
+//    let settings = ChannelPluginSettings(pluginKey: pluginKey)
+//    settings.debugMode = true
+    let bootConfig = BootConfig(pluginKey: pluginKey)
+    bootConfig.stage = .development
 //    settings.stage = .development
 //    settings.launcherConfig = LauncherConfig(
 //      position: .left, xMargin: 100, yMargin: 200
@@ -90,14 +89,18 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     let profile = Profile()
     profile.set(name: "TESTER")
-    
-    ChannelIO.boot(with: settings, profile: profile) { (completion, user) in
-      
+    bootConfig.profile = profile
+    ChannelIO.setDebugMode(with: true)
+    ChannelIO.boot(with: bootConfig) { (completion, user) in
+//      ChannelIO.openChat(with: nil, message: "test", animated: true)
     }
+//    ChannelIO.boot(with: settings, profile: profile) { (completion, user) in
+//
+//    }
   }
 
   @IBAction func onClickShutdown() {
-    ChannelIO.shutdown()
+    ChannelIO.shutdown(deregisterPushToken: true)
   }
   
   @IBAction func onClickShowChat(_ sender: Any) {
@@ -106,10 +109,10 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   @IBAction func onClickShowLauncher(_ sender: Any) {
-    ChannelIO.show(animated: true)
+    ChannelIO.showChannelButton(animated: true)
   }
   
   @IBAction func onClickHideLauncher(_ sender: Any) {
-    ChannelIO.hide(animated: true)
+    ChannelIO.hideChannelButton(animated: true)
   }
 }
