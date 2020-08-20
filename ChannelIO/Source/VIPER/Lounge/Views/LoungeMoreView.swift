@@ -13,12 +13,12 @@ import RxSwift
 class LoungeMoreView: BaseView {
   private let moreLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 12)
-    $0.textColor = CHColors.dark50
+    $0.textColor = .grey500
   }
   
   override func initialize() {
     super.initialize()
-    self.backgroundColor = CHColors.dark10
+    self.backgroundColor = .black5
     self.addSubview(self.moreLabel)
   }
   

@@ -27,7 +27,7 @@ struct CHNotificationConfiguration {
       textColor: .white,
       font: UIFont.boldSystemFont(ofSize: 13),
       numberOfLines: 2,
-      backgroundColor: CHColors.shamrockGreen,
+      backgroundColor: .green400,
       timeout: 2.0,
       alpha: 0.85,
       margin: 44.f,
@@ -41,7 +41,7 @@ struct CHNotificationConfiguration {
       textColor: .white,
       font: UIFont.boldSystemFont(ofSize: 13),
       numberOfLines: 2,
-      backgroundColor: CHColors.yellowishOrange,
+      backgroundColor: .orange400,
       timeout: 0,
       alpha: 1.f,
       margin: 44.f,
@@ -55,7 +55,7 @@ struct CHNotificationConfiguration {
       textColor: .white,
       font: UIFont.boldSystemFont(ofSize: 13),
       numberOfLines: 2,
-      backgroundColor: CHColors.yellowishOrange,
+      backgroundColor: .orange400,
       timeout: 0,
       alpha: 1.f,
       margin: 10.f,
@@ -69,7 +69,7 @@ struct CHNotificationConfiguration {
       textColor: .white,
       font: UIFont.boldSystemFont(ofSize: 13),
       numberOfLines: 2,
-      backgroundColor: CHColors.yellowishOrange,
+      backgroundColor: .orange400,
       timeout: 3,
       alpha: 1.f,
       margin: 2.f,
@@ -153,7 +153,7 @@ private class CHNotificationView: BaseView {
     self.alpha = 0
     self.contentView.layer.cornerRadius = 10.f
 
-    self.layer.shadowColor = CHColors.dark.cgColor
+    self.layer.shadowColor = UIColor.grey900.cgColor
     self.layer.shadowOpacity = 0.4
     self.layer.shadowOffset = CGSize(width: 0, height: 4)
     self.layer.shadowRadius = 4

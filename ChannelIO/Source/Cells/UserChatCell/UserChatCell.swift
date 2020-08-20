@@ -43,10 +43,10 @@ final class UserChatCell: BaseTableViewCell {
   }
 
   struct Color {
-    static let selectionColor = CHColors.snow
-    static let titleLabel = CHColors.charcoalGrey
-    static let messageLabel = CHColors.charcoalGrey
-    static let timestampLabel = CHColors.blueyGrey
+    static let selectionColor = UIColor.grey100
+    static let titleLabel = UIColor.grey900
+    static let messageLabel = UIColor.grey900
+    static let timestampLabel = UIColor.grey500
   }
   
   let bgView = UIView().then {
@@ -144,7 +144,7 @@ final class UserChatCell: BaseTableViewCell {
     self.messageLabel.attributedText = viewModel.lastMessage?.addLineHeight(
       height: Metrics.messageLineHeight,
       font: Font.messageLabel,
-      color: viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel,
+      color: viewModel.isClosed ? .grey500 : Color.messageLabel,
       lineBreakMode: .byTruncatingTail
     )
     self.messageLabel.isHidden = !(viewModel.lastMessage != nil)
@@ -177,7 +177,7 @@ final class UserChatCell: BaseTableViewCell {
     let text = viewModel.lastMessage?.addLineHeight(
       height: Metrics.messageLineHeight,
       font: Font.messageLabel,
-      color: viewModel.isClosed ? CHColors.blueyGrey : Color.messageLabel
+      color: viewModel.isClosed ? .grey500 : Color.messageLabel
     )
     height += text?.height(
       fits: width

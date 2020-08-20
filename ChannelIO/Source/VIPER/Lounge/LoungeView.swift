@@ -28,7 +28,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   var presenter: LoungePresenterProtocol?
   
   let contentView = UIView().then {
-    $0.backgroundColor = CHColors.paleGreyFour
+    $0.backgroundColor = .grey100
   }
   var scrollView = UIScrollView()
   let headerView = LoungeHeaderView()
@@ -51,7 +51,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.view.backgroundColor = CHColors.paleGreyFour
+    self.view.backgroundColor = .grey100
     self.initViews()
     self.initScrollView()
     self.presenter?.viewDidLoad()

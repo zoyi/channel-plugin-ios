@@ -368,7 +368,6 @@
 		6597936B1FA716CB00840F6A /* CHReLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792EE1FA7167B00840F6A /* CHReLogger.swift */; };
 		6597936C1FA716CB00840F6A /* CHAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D41FA7167B00840F6A /* CHAssets.swift */; };
 		6597936D1FA716CB00840F6A /* CHChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D51FA7167B00840F6A /* CHChannel.swift */; };
-		6597936E1FA716CB00840F6A /* CHColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D61FA7167B00840F6A /* CHColors.swift */; };
 		6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D71FA7167B00840F6A /* CHConstants.swift */; };
 		659793701FA716CB00840F6A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D81FA7167B00840F6A /* Profile.swift */; };
 		659793711FA716CB00840F6A /* CHEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659792D91FA7167B00840F6A /* CHEntity.swift */; };
@@ -947,7 +946,6 @@
 		659792D21FA7167B00840F6A /* WSocketState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WSocketState.swift; sourceTree = "<group>"; };
 		659792D41FA7167B00840F6A /* CHAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHAssets.swift; sourceTree = "<group>"; };
 		659792D51FA7167B00840F6A /* CHChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHChannel.swift; sourceTree = "<group>"; };
-		659792D61FA7167B00840F6A /* CHColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHColors.swift; sourceTree = "<group>"; };
 		659792D71FA7167B00840F6A /* CHConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHConstants.swift; sourceTree = "<group>"; };
 		659792D81FA7167B00840F6A /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		659792D91FA7167B00840F6A /* CHEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEntity.swift; sourceTree = "<group>"; };
@@ -1894,7 +1892,6 @@
 				65D358CC21BE4E1F001D6A30 /* CHLink.swift */,
 				659792D41FA7167B00840F6A /* CHAssets.swift */,
 				659792D51FA7167B00840F6A /* CHChannel.swift */,
-				659792D61FA7167B00840F6A /* CHColors.swift */,
 				659792D71FA7167B00840F6A /* CHConstants.swift */,
 				659792D91FA7167B00840F6A /* CHEntity.swift */,
 				659792DA1FA7167B00840F6A /* CHEvent.swift */,
@@ -2602,7 +2599,6 @@
 				655A280120B2699700935C1F /* PhoneActionView.swift in Sources */,
 				65CB992A226ECAB0004F9DC7 /* SettingPresenter.swift in Sources */,
 				6597936D1FA716CB00840F6A /* CHChannel.swift in Sources */,
-				6597936E1FA716CB00840F6A /* CHColors.swift in Sources */,
 				65CB9923226EC05F004F9DC7 /* LoungeRouter.swift in Sources */,
 				3931CB0E23C33469005E8444 /* Data+Extensions.swift in Sources */,
 				6597936F1FA716CB00840F6A /* CHConstants.swift in Sources */,

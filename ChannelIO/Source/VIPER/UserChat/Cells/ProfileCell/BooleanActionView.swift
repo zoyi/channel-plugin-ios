@@ -171,17 +171,17 @@ extension BooleanActionView: Actionable {
   }
   
   func setFocus() {
-    self.layer.borderColor = CHColors.brightSkyBlue.cgColor
+    self.layer.borderColor = UIColor.cobalt400.cgColor
     self.focusSubject.onNext(true)
   }
   
   func setOutFocus() {
-    self.layer.borderColor = CHColors.paleGrey20.cgColor
+    self.layer.borderColor = UIColor.grey200.cgColor
     self.focusSubject.onNext(false)
   }
   
   func setInvalid() {
-    self.layer.borderColor = CHColors.yellowishOrange.cgColor
+    self.layer.borderColor = UIColor.orange400.cgColor
     self.loadIndicator.isHidden = true
   }
 }

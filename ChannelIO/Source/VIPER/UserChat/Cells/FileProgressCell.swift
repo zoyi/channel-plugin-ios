@@ -48,13 +48,13 @@ class FileStatusCell: BaseTableViewCell {
   private var countLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 12)
     $0.textAlignment = .right
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
   }
   
   private var fileNameLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
     $0.textAlignment = .left
-    $0.textColor = CHColors.charcoalGrey
+    $0.textColor = .grey900
   }
   
   private var progressView = UIProgressView().then {

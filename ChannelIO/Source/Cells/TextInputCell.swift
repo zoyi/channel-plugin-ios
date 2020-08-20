@@ -13,7 +13,7 @@ final class TextInputCell: BaseTableViewCell {
   
   let textField = UITextField().then {
     $0.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)
-    $0.textColor = CHColors.dark
+    $0.textColor = .grey900
   }
   
   let editImageView = UIImageView().then {

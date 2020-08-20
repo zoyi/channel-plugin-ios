@@ -40,7 +40,7 @@ class SettingHeaderView: BaseView {
     super.initialize()
     
     self.dropShadow(
-      with: CHColors.black10,
+      with: .black10,
       opacity: 0.5,
       offset: CGSize(width: 0, height: 2),
       radius: 2

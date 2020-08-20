@@ -106,7 +106,7 @@ class RoundLabelBackButton: UIControl {
     
     self.normalColor = tintColor
     self.highlightColor = textColor == .black ?
-      CHColors.black10.withAlphaComponent(0.7) :
+      UIColor.black10.withAlphaComponent(0.7) :
       tintColor?.withAlphaComponent(0.7)
     
     if let text = text, text != "" {

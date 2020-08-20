@@ -109,7 +109,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     
     $0.linkTextAttributes = [
-      .foregroundColor: CHColors.cobalt,
+      .foregroundColor: UIColor.cobalt400,
       .underlineStyle: 0
     ]
   }

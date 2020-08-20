@@ -15,7 +15,7 @@ final class CompleteActionView: BaseView, Actionable {
   
   let contentLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 18)
-    $0.textColor = CHColors.dark
+    $0.textColor = .grey900
   }
   
   let completionImageView = UIImageView().then {

@@ -20,7 +20,7 @@ struct CHButtonFactory {
       $0.setTitle(CHAssets.localized("ch.chat.start_new_chat"), for: .normal)
       
       $0.setTitleColor(textColor, for: .normal)
-      $0.setTitleColor(CHColors.blueyGrey, for: .disabled)
+      $0.setTitleColor(.grey500, for: .disabled)
       $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
       $0.tintColor = textColor
       
@@ -31,7 +31,7 @@ struct CHButtonFactory {
       
       $0.layer.cornerRadius = 23
       
-      $0.layer.shadowColor = CHColors.black10.cgColor
+      $0.layer.shadowColor = UIColor.black10.cgColor
       $0.layer.shadowOpacity = 1
       $0.layer.shadowOffset = CGSize(width: 0, height: 4)
       $0.layer.shadowRadius = 6
@@ -39,8 +39,8 @@ struct CHButtonFactory {
     
     _ = button.rx.isEnabled
       .subscribe(onNext: { (enabled) in
-        button.tintColor = !enabled ? CHColors.blueyGrey : textColor
-        button.backgroundColor = !enabled ? CHColors.paleGrey20 : backgroundColor
+        button.tintColor = !enabled ? .grey500 : textColor
+        button.backgroundColor = !enabled ? .grey200 : backgroundColor
         button.clipsToBounds = !enabled
       })
     
@@ -62,10 +62,10 @@ struct CHButtonFactory {
   
   static func messageAction() -> UIButton {
     return UIButton(type: .system).then {
-      $0.setTitleColor(CHColors.azure, for: .normal)
+      $0.setTitleColor(.cobalt400, for: .normal)
       $0.titleLabel?.numberOfLines = 1
       $0.layer.borderWidth = 3.f
-      $0.layer.borderColor = CHColors.paleGrey.cgColor
+      $0.layer.borderColor = UIColor.grey100.cgColor
       $0.layer.cornerRadius = 12.f
       $0.backgroundColor = .white
     }
@@ -74,8 +74,8 @@ struct CHButtonFactory {
   static func launcher() -> UIButton {
     return UIButton(type: .custom).then {
       $0.layer.cornerRadius = 25.f
-      $0.layer.shadowColor = CHColors.dark20.cgColor
-      $0.layer.shadowOpacity = 0.3
+      $0.layer.shadowColor = UIColor.black.cgColor
+      $0.layer.shadowOpacity = 0.2
       $0.layer.shadowOffset = CGSize(width: 0, height: 3)
       $0.layer.shadowRadius = 5
       //$0.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
@@ -88,7 +88,7 @@ struct CHButtonFactory {
       $0.imageView?.contentMode = .scaleAspectFit
       $0.layer.cornerRadius = 15.f
       $0.clipsToBounds = true
-      $0.setBackgroundColor(color: CHColors.black60, forUIControlState: .normal)
+      $0.setBackgroundColor(color: .black50, forUIControlState: .normal)
     }
   }
   
@@ -100,9 +100,9 @@ struct CHButtonFactory {
       
       $0.layer.cornerRadius = 22.f
 
-      $0.layer.borderColor = CHColors.paleGrey20.cgColor
+      $0.layer.borderColor = UIColor.grey200.cgColor
       $0.layer.borderWidth = 1.f
-      $0.layer.shadowColor = CHColors.dark.cgColor
+      $0.layer.shadowColor = UIColor.grey900.cgColor
       $0.layer.shadowOpacity = 0.2
       $0.layer.shadowOffset = CGSize(width: 0, height: 2)
       $0.layer.shadowRadius = 3

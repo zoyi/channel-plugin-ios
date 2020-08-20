@@ -401,7 +401,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     ))
 
     let layer = CAGradientLayer()
-    layer.colors = [CHColors.paleGrey20.cgColor, CHColors.snow.cgColor]
+    layer.colors = [UIColor.grey200.cgColor, UIColor.grey100.cgColor]
     layer.startPoint = CGPoint(x:0, y:0.5)
     layer.endPoint = CGPoint(x:1, y:0.5)
     

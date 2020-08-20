@@ -32,7 +32,7 @@ extension UINavigationController {
   }
   
   func dropShadow() {
-    self.navigationBar.dropShadow(with: CHColors.black10, opacity: 0.5, offset: CGSize(width:0, height:2), radius: 2)
+    self.navigationBar.dropShadow(with: .black10, opacity: 0.5, offset: CGSize(width:0, height:2), radius: 2)
   }
   
   func removeShadow() {

@@ -45,7 +45,7 @@ final class FileView: BaseView {
   override func initialize() {
     super.initialize()
 
-    self.layer.borderColor = UIColor.dark20.cgColor
+    self.layer.borderColor = UIColor.grey300.cgColor
     self.layer.borderWidth = 1
     self.layer.cornerRadius = 6
 

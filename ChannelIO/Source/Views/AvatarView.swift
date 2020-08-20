@@ -19,8 +19,8 @@ class AvatarView: NeverClearView {
   }
 
   struct Color {
-    static let initialLabel = CHColors.white
-    static let border = CHColors.white.cgColor
+    static let initialLabel = UIColor.white
+    static let border = UIColor.white.cgColor
   }
 
   // MARK: Properties
@@ -34,7 +34,7 @@ class AvatarView: NeverClearView {
     $0.isHidden = true
     $0.layer.borderWidth = 1
     $0.layer.borderColor = UIColor.white.cgColor
-    $0.backgroundColor = CHColors.shamrockGreen
+    $0.backgroundColor = .green400
   }
   
   var avatarSize : CGFloat = 0

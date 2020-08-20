@@ -19,8 +19,8 @@ class MessageCell: BaseTableViewCell {
   }
   
   struct Color {
-    static let username = CHColors.dark
-    static let timestamp = CHColors.blueyGrey
+    static let username = UIColor.grey900
+    static let timestamp = UIColor.grey500
   }
 
   struct Metric {
