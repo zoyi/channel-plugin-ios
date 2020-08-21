@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ChannelIO'
-  s.version          = '7.2.3'
+  s.version          = '7.2.4'
   s.summary          = 'Channel plugin for iOS'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -29,7 +29,12 @@ Pod::Spec.new do |s|
   #  :execution_position => :before_compile
   #}
   s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
-  s.resources = 'ChannelIO/Assets/*'
+  # s.resources = 'ChannelIO/Assets/*'
+  s.resource_bundles = {		
+     'ChannelIO' => [		
+       'ChannelIO/Assets/*'		
+     ]		
+   }
   s.swift_version = '5.0'
 
   s.frameworks = 'CoreTelephony'

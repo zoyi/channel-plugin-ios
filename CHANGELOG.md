@@ -1,3 +1,8 @@
+# 7.2.4
+## Updates
+* Update colors
+* Fixed resource to resource_bundle on podspec file
+
 # 7.2.3
 ## Updates
 * Make webpage thumnail image quality better
