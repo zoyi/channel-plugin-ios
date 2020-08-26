@@ -84,8 +84,8 @@ struct UserChatActions {
     let url = "https://channel.io/"
       + locale.rawValue +
       "/terms_user?plugin_key="
-      + (ChannelIO.isNewVersion ?
-        ChannelIO.bootConfig?.pluginKey ?? "" : ChannelIO.settings?.pluginKey ?? "")
+      + (ChannelIO.isNewVersion
+        ? ChannelIO.bootConfig?.pluginKey ?? "" : ChannelIO.settings?.pluginKey ?? "")
     
     guard let link = URL(string: url) else { return }
     link.open()

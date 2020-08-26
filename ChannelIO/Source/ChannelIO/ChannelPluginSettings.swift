@@ -159,7 +159,7 @@ public class ChannelPluginSettings: NSObject, NSCoding {
     )
     let language = CHLocale(rawValue: aDecoder.decodeInteger(
       forKey: ChannelPluginSettingKey.language)
-      ) ?? .device
+    ) ?? .device
     
     self.init(
       pluginKey: pluginKey,

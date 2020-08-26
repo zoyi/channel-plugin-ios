@@ -615,9 +615,9 @@ public final class ChannelIO: NSObject {
   @objc
   public class func hideChannelButton(animated: Bool) {
     dispatch {
-      ChannelIO.launcherView?.hide(animated: animated, completion: {
+      ChannelIO.launcherView?.hide(animated: animated) {
         ChannelIO.launcherVisible = false
-      })
+      }
     }
   }
   
@@ -685,7 +685,8 @@ public final class ChannelIO: NSObject {
   @available(*, deprecated, renamed: "hideMessenger")
   @objc
   public class func close(animated: Bool, completion: (() -> Void)? = nil) {
-    guard ChannelIO.isValidStatus,
+    guard
+      ChannelIO.isValidStatus,
       mainStore.state.uiState.isChannelVisible,
       ChannelIO.baseNavigation != nil
     else {
@@ -704,7 +705,8 @@ public final class ChannelIO: NSObject {
   
   @objc
   public class func hideMessenger(animated: Bool, completion: (() -> Void)? = nil) {
-    guard ChannelIO.isValidStatus,
+    guard
+      ChannelIO.isValidStatus,
       mainStore.state.uiState.isChannelVisible,
       ChannelIO.baseNavigation != nil
     else {
@@ -986,8 +988,12 @@ public final class ChannelIO: NSObject {
   
   @objc
   public class func storePushNotification(_ userInfo:[AnyHashable : Any]) {
-    guard ChannelIO.isChannelPushNotification(userInfo) else { return }
-    guard let userChatId = userInfo["chatId"] as? String else { return }
+    guard
+      ChannelIO.isChannelPushNotification(userInfo),
+      let userChatId = userInfo["chatId"] as? String
+    else {
+      return
+    }
     
     AppManager.shared
       .sendAck(userChatId: userChatId)
