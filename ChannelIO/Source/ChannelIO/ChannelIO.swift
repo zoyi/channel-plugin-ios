@@ -759,7 +759,7 @@ public final class ChannelIO: NSObject {
     ChannelIO.launcherView?.hide(animated: true)
     ChannelIO.hostTopControllerName = "\(type(of: topController))"
     
-    if chatId == nil || chatId == "" {
+    if chatId.nilOrEmpty {
       ChannelIO.showUserChat(
         userChatId: chatId,
         message: message,

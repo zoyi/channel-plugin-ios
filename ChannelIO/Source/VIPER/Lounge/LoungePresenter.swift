@@ -74,12 +74,26 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     //handle showUserChat
     if let chatId = self.chatId, let view = self.view as? UIViewController {
       self.view?.setViewVisible(false)
-      self.router?.pushChat(with: chatId, text: self.preloadText, isOpenChat: false, animated: false, from: view)
+      self.router?.pushChat(
+        with: chatId,
+        text: self.preloadText,
+        isOpenChat: false,
+        animated: false,
+        from: view
+      )
       self.chatId = nil
       self.isOpenChat = false
-    } else if self.chatId == nil, self.isOpenChat == true, let view = self.view as? UIViewController {
+    } else if self.chatId == nil,
+      self.isOpenChat == true,
+      let view = self.view as? UIViewController {
       self.view?.setViewVisible(false)
-      self.router?.pushChat(with: chatId, text: self.preloadText, isOpenChat: true, animated: false, from: view)
+      self.router?.pushChat(
+        with: chatId,
+        text: self.preloadText,
+        isOpenChat: !self.preloadText.isEmpty,
+        animated: false,
+        from: view
+      )
       self.chatId = nil
       self.isOpenChat = false
     } else {

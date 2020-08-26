@@ -451,7 +451,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     
     if userChat?.isRemoved == true {
       _ = self.navigationController?.popViewController(animated: true)
-    } else if userChat?.isClosed == true {
+    } else if self.presenter?.isOpenChat == false && userChat?.isClosed == true {
       self.hideMessageView()
       self.newChatButton.isHidden = false
     } else if self.presenter?.isOpenChat == false && (needToSupportBot && isSupportBotEntry) {
