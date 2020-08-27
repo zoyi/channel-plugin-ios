@@ -24,6 +24,7 @@ struct MarketingPromise {
     return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.CampaignClick(id, userId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):
@@ -45,6 +46,7 @@ struct MarketingPromise {
     return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.CampaignView(id))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):
@@ -73,6 +75,7 @@ struct MarketingPromise {
     return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.OneTimeMsgClick(id, userId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):
@@ -94,6 +97,7 @@ struct MarketingPromise {
     return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.OneTimeMsgView(id))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):
