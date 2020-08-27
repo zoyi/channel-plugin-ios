@@ -186,7 +186,6 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
       .signalForClick()
       .subscribe(onNext: { [weak self] (_) in
         guard let self = self else { return }
-        CHUser.closePopup().subscribe().disposed(by: self.disposeBag)
         self.closeSignal.onNext(nil)
         self.closeSignal.onCompleted()
       }).disposed(by: self.disposeBag)

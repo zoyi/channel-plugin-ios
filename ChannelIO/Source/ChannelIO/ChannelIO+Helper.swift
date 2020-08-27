@@ -181,6 +181,7 @@ extension ChannelIO {
       .signalForClose()
       .observeOn(MainScheduler.instance)
       .subscribe { (event) in
+        CHUser.closePopup().subscribe().disposed(by: self.disposeBag)
         ChannelIO.hideNotification()
         if ChannelIO.launcherVisible {
           ChannelIO.launcherView?.show(animated: true)

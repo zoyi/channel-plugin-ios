@@ -203,7 +203,6 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       .signalForClick()
       .bind { [weak self] _ in
         guard let self = self else { return }
-        CHUser.closePopup().subscribe().disposed(by: self.disposeBag)
         self.closeSignal.onNext(nil)
         self.closeSignal.onCompleted()
       }.disposed(by: self.disposeBag)
