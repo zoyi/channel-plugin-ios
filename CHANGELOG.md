@@ -1,3 +1,8 @@
+# 7.2.5
+## Updates
+* Add marketing event(view, click) request validation
+* Add close event when button link clicked on popup
+
 # 7.2.4
 ## Updates
 * Update colors
