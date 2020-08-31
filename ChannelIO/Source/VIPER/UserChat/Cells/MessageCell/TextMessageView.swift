@@ -162,20 +162,20 @@ class TextMessageView : BaseView {
     
     if viewModel.buttons.count > 0 {
       self.buttonStack.isHidden = false
-      
+      hasContents = true
+        
       self.backgroundColor = viewModel.bubbleBackgroundColor
-      hasContents = hasContents || self.configureButtonView(
+      self.configureButtonView(
         with: viewModel.buttons.get(index: 0),
         mkInfo: viewModel.message.mkInfo,
         view: self.firstButtonView
       )
       
-      hasContents = hasContents || self.configureButtonView(
+      self.configureButtonView(
         with: viewModel.buttons.get(index: 1),
         mkInfo: viewModel.message.mkInfo,
         view: self.secondButtonView
       )
-      
     } else {
       self.buttonStack.isHidden = true
       self.firstButtonView.isHidden = true
@@ -309,30 +309,30 @@ extension TextMessageView : UITextViewDelegate {
     with button: CHLinkButton?,
     mkInfo: MarketingInfo?,
     view: UILabel
-  ) -> Bool {
-    if let button = button {
-      view.isHidden = false
-      view.text = button.title
-      view.textColor = button.theme?.color ?? .grey900
-      view
-        .signalForClick()
-        .bind { _ in
-          if let mkInfo = mkInfo {
-            AppManager.shared.sendClickMarketing(
-              type: mkInfo.type,
-              id: mkInfo.id,
-              userId: PrefStore.getCurrentUserId(),
-              url: button.linkURL?.absoluteString)
-          }
-          
-          if let url = button.linkURL {
-            url.openWithUniversal()
-          }
-        }.disposed(by: self.disposeBag)
-      return true
-    } else {
+  ) {
+    guard let button = button else {
       view.isHidden = true
-      return false
+      return
     }
+    view.isHidden = false
+    
+    view.text = button.title
+    view.textColor = button.theme?.color ?? .grey900
+    view
+      .signalForClick()
+      .bind { _ in
+        if let mkInfo = mkInfo {
+          AppManager.shared.sendClickMarketing(
+            type: mkInfo.type,
+            id: mkInfo.id,
+            userId: PrefStore.getCurrentUserId(),
+            url: button.linkURL?.absoluteString
+          )
+        }
+        
+        if let url = button.linkURL {
+          url.openWithUniversal()
+        }
+      }.disposed(by: self.disposeBag)
   }
 }
