@@ -1,3 +1,7 @@
+# 7.2.6
+## Bug fixes
+* Fixed button logic properly on messageView
+
 # 7.2.5
 ## Updates
 * Add marketing event(view, click) request validation
