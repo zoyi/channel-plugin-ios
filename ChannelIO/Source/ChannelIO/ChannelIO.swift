@@ -715,6 +715,7 @@ public final class ChannelIO: NSObject {
     }
     
     dispatch {
+      ChannelIO.delegate?.willHideMessenger?()
       ChannelIO.delegate?.onHideMessenger?()
       ChannelIO.baseNavigation?.dismiss(animated: animated) {
         ChannelIO.didDismiss()
