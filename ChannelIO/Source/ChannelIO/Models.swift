@@ -165,6 +165,13 @@ public class ChannelButtonOption: NSObject, NSCoding {
     self.yMargin = yMargin
   }
   
+  init(launcherConfig: LauncherConfig?) {
+    guard let launcherConfig = launcherConfig else { return }
+    self.position = ChannelButtonPosition(rawValue: launcherConfig.position.rawValue) ?? .right
+    self.xMargin = launcherConfig.xMargin
+    self.yMargin = launcherConfig.yMargin
+  }
+  
   required convenience public init(coder aDecoder: NSCoder) {
     let position = ChannelButtonPosition(
       rawValue: aDecoder.decodeInteger(forKey: "position")

@@ -19,7 +19,7 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
   
   static func createModule(
     userChatId: String?,
-    text: String = "",
+    text: String?,
     isOpenChat: Bool = false
   ) -> UserChatView {
     let view = UserChatView()

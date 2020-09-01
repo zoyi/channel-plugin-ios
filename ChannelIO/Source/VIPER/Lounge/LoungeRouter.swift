@@ -133,7 +133,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     presenter.interactor = interactor
     presenter.router = router
     presenter.chatId = chatId
-    presenter.preloadText = text ?? ""
+    presenter.preloadText = text
     presenter.isOpenChat = isOpenChat
     
     router.view = view

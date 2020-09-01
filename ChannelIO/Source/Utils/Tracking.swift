@@ -38,9 +38,12 @@ extension UIViewController {
   @objc
   func ch_viewWillAppear(_ animated: Bool) {
     self.ch_viewWillAppear(animated)
-    guard ChannelIO.isValidStatus else { return }
-    guard ChannelIO.isNewVersion ? ChannelIO.bootConfig?.trackDefaultEvent == true : ChannelIO.settings?.enabledTrackDefaultEvent == true else { return }
-    guard self.processOnlyIfNeccessary() else { return }
+    guard
+      ChannelIO.isValidStatus,
+      ChannelIO.bootConfig?.trackDefaultEvent == true
+    else {
+      return
+    }
     
     ChannelIO.sendDefaultEvent(.pageView, property: [
       TargetKey.url.rawValue: "\(type(of: self))"

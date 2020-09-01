@@ -182,7 +182,7 @@ class CHUtils {
     return String(str[start..<end])
   }
   
-  class func stringToLocale(_ localeString: String) -> CHLocale {
+  class func stringToLanguageOption(_ localeString: String) -> LanguageOption {
     if localeString == "en" {
       return .english
     } else if localeString == "ko" {
@@ -194,9 +194,7 @@ class CHUtils {
   }
   
   class func getLocale() -> CHLocaleString? {
-    if let settings = ChannelIO.settings, let locale = settings.appLocale {
-      return locale
-    } else if let config = ChannelIO.bootConfig, let locale = config.appLocale {
+    if let config = ChannelIO.bootConfig, let locale = config.appLocale {
       return locale
     } else {
       guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
@@ -216,7 +214,7 @@ class CHUtils {
   }
   
   class func getCurrentStage() -> ChannelStage {
-    return ChannelIO.isNewVersion ? ChannelIO.bootConfig?.stage ?? .production : ChannelIO.settings?.stage ?? .production
+    return ChannelIO.bootConfig?.stage ?? .production
   }
   
   class func secondsToComponents(seconds: Int) -> (Int, Int, Int, Int) {

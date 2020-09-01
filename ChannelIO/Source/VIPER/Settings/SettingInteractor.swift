@@ -89,11 +89,11 @@ extension SettingInteractor: StoreSubscriber {
       self.updateGeneralSignal.accept((state.channel, state.plugin))
     }
     
-    if self.language != (ChannelIO.bootConfig?.language ?? LanguageOption(rawValue: ChannelIO.settings?.language.rawValue ?? CHLocale.english.rawValue)) ||
+    if self.language != ChannelIO.bootConfig?.language ||
       self.showTranslation != state.userChatsState.showTranslation ||
       self.showCloseChat != state.userChatsState.showCompletedChats ||
       self.userUnsubscribed != state.user.unsubscribed {
-      self.language = ChannelIO.bootConfig?.language ?? LanguageOption(rawValue: ChannelIO.settings?.language.rawValue ?? CHLocale.english.rawValue)
+      self.language = ChannelIO.bootConfig?.language
       self.showTranslation = state.userChatsState.showTranslation
       self.showCloseChat = state.userChatsState.showCompletedChats
       self.userUnsubscribed = state.user.unsubscribed

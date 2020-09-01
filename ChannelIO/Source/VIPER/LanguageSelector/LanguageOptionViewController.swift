@@ -137,12 +137,7 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let locale = self.locales[indexPath.row]
-    if ChannelIO.isNewVersion {
-      ChannelIO.bootConfig?.language = LanguageOption(rawValue: CHUtils.stringToLocale(locale.rawValue).rawValue) ?? .english
-    } else {
-      ChannelIO.settings?.language = CHUtils.stringToLocale(locale.rawValue)
-    }
-    
+    ChannelIO.bootConfig?.language = CHUtils.stringToLanguageOption(locale.rawValue)
     
     let hud = JGProgressHUD(style: .dark)
     hud.show(in: self.view)

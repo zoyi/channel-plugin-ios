@@ -40,7 +40,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   var userChatId: String?
   var shouldRedrawProfileBot = true
   var isProfileFocus = false
-  var preloadText: String = ""
+  var preloadText: String?
   var isOpenChat: Bool = false
   
   private var disposeBag = DisposeBag()
@@ -58,7 +58,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.observeTypingEvents()
     
     self.prepareChat()
-    self.view?.setPreloadtext(with: self.preloadText)
+    self.view?.setPreloadtext(with: self.preloadText ?? "")
     
     self.interactor?
       .readyToPresent()
@@ -478,10 +478,10 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
 
   func didClickOnWeb(with message: CHMessage?, url: URL?, from view: UIViewController?) {
     guard let url = url else { return }
-    let shouldHandle = ChannelIO.isNewVersion
-      ? ChannelIO.delegate?.onUrlClicked?(url: url)
-      : ChannelIO.delegate?.onClickChatLink?(url: url)
-    if shouldHandle == false || shouldHandle == nil {
+    
+    let shouldHandle = (ChannelIO.delegate?.onUrlClicked?(url: url) ?? false)
+      || (ChannelIO.delegate?.onClickChatLink?(url: url) ?? false)
+    if !shouldHandle {
       url.openWithUniversal()
     }
     if let mkInfo = message?.mkInfo {
@@ -521,8 +521,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   func didClickOnRightNaviItem(from view: UIViewController?) {
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
-    ChannelIO.isNewVersion
-      ? ChannelIO.hideMessenger(animated: true) : ChannelIO.close(animated: true)
+    ChannelIO.hideMessenger(animated: true)
   }
   
   func didClickOnNewChat(with text: String, from view: UINavigationController?) {

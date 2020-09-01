@@ -18,7 +18,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var needToFetch = false
   var chatId: String?
-  var preloadText: String = ""
+  var preloadText: String?
   var isOpenChat: Bool = false
   
   var disposeBag = DisposeBag()
@@ -28,7 +28,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var loungeCompletion = BehaviorRelay<Bool>(value: false)
   
-  var locale: CHLocaleString? = ChannelIO.isNewVersion ? ChannelIO.bootConfig?.appLocale : ChannelIO.settings?.appLocale
+  var locale: CHLocaleString? = ChannelIO.bootConfig?.appLocale
   
   func viewDidLoad() {
     self.updateHeaders()
@@ -90,7 +90,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.router?.pushChat(
         with: chatId,
         text: self.preloadText,
-        isOpenChat: !self.preloadText.isEmpty,
+        isOpenChat: self.preloadText != nil,
         animated: false,
         from: view
       )
@@ -101,8 +101,8 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       self.view?.displayReady()
     }
     
-    if self.locale != (ChannelIO.isNewVersion ? ChannelIO.bootConfig?.appLocale : ChannelIO.settings?.appLocale) {
-      self.locale = (ChannelIO.isNewVersion ? ChannelIO.bootConfig?.appLocale : ChannelIO.settings?.appLocale)
+    if self.locale != ChannelIO.bootConfig?.appLocale {
+      self.locale = ChannelIO.bootConfig?.appLocale
       self.view?.reloadContents()
     }
     
@@ -269,7 +269,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnDismiss() {
-    ChannelIO.isNewVersion ? ChannelIO.hideMessenger(animated: true) : ChannelIO.close(animated: true)
+    ChannelIO.hideMessenger(animated: true)
   }
   
   func didClickOnChat(with chatId: String?, animated: Bool, from view: UIViewController?) {

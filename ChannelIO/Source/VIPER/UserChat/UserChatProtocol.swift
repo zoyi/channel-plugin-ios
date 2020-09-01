@@ -138,7 +138,7 @@ protocol UserChatInteractorProtocol: class {
 }
 
 protocol UserChatRouterProtocol: class {
-  static func createModule(userChatId: String?, text: String, isOpenChat: Bool) -> UserChatView
+  static func createModule(userChatId: String?, text: String?, isOpenChat: Bool) -> UserChatView
   
   func presentVideoPlayer(with url: URL?, from view: UIViewController?)
   func presentImageViewer(

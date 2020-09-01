@@ -12,11 +12,7 @@ import RxSwiftExt
 extension ChannelIO {
   internal class func reset() {
     ChannelIO.launcherView?.hide(animated: false)
-    if ChannelIO.isNewVersion {
-      ChannelIO.hideMessenger(animated: false)
-    } else {
-      ChannelIO.close(animated: false)
-    }
+    ChannelIO.hideMessenger(animated: false)
     ChannelIO.hideNotification()
     ChannelIO.launcherWindow = nil
     ChannelIO.lastPush = nil
@@ -35,71 +31,6 @@ extension ChannelIO {
     let subscriber = CHPluginSubscriber()
     mainStore.subscribe(subscriber)
     ChannelIO.subscriber = subscriber
-  }
-
-  // TODO: Will deprecated
-  @available(*, deprecated, renamed: "bootChannel")
-  internal class func bootChannel(profile: Profile?) -> Observable<BootResponse> {
-    return Observable.create { subscriber in
-      guard let settings = ChannelIO.settings else {
-        subscriber.onError(ChannelError.unknownError)
-        return Disposables.create()
-      }
-      
-      guard settings.pluginKey != "" else {
-        subscriber.onError(ChannelError.parameterError)
-        return Disposables.create()
-      }
-      
-      if let memberId = settings.memberId, memberId != "" {
-        PrefStore.setCurrentMemberId(memberId)
-      } else {
-        PrefStore.clearCurrentMemberId()
-      }
-
-      let params = BootParamBuilder()
-        .with(memberId: settings.memberId)
-        .with(memberHash: settings.memberHash)
-        .with(profile: profile)
-        .with(unsubscribed: settings.unsubscribed)
-        .build()
-      
-      AppManager.shared
-        .boot(pluginKey: settings.pluginKey, params: params)
-        .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
-          dlog("Error while booting channelSDK. Attempting to boot again")
-          return true
-        })
-        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { (result) in
-          guard let result = result else {
-            subscriber.onError(ChannelError.unknownError)
-            return
-          }
-          
-          if result.channel?.canUseSDK == false {
-            subscriber.onError(ChannelError.serviceBlockedError)
-            return
-          }
-          
-          mainStore.dispatch(BootSuccess(payload: result))
-
-          WsService.shared.connect()
-          WsService.shared
-            .ready()
-            .take(1)
-            .subscribe(onNext: { _ in
-              subscriber.onNext(result)
-              subscriber.onCompleted()
-            }).disposed(by: disposeBag)
-        }, onError: { error in
-          subscriber.onError(error)
-        }, onCompleted: {
-          dlog("Check in complete")
-        }).disposed(by: disposeBag)
-      
-      return Disposables.create()
-    }
   }
   
   internal class func bootChannel() -> Observable<BootResponse> {
@@ -286,7 +217,7 @@ extension ChannelIO {
   }
   
   internal class func sendDefaultEvent(_ event: CHDefaultEvent, property: [String: Any]? = nil) {
-    if ChannelIO.settings?.enabledTrackDefaultEvent == true {
+    if ChannelIO.bootConfig?.trackDefaultEvent == true {
       ChannelIO.track(eventName: event.rawValue, eventProperty: property)
     }
   }

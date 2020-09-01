@@ -76,7 +76,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "22cc3e54-681b-4fde-95bf-b03f588e3ffe"
+      pluginKey = "d788f832-1e59-457c-a3ed-32ac8200bec1"
     }
 //    let settings = ChannelPluginSettings(pluginKey: pluginKey)
 //    settings.debugMode = true
@@ -92,7 +92,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     bootConfig.profile = profile
     ChannelIO.setDebugMode(with: true)
     ChannelIO.boot(with: bootConfig) { (completion, user) in
-//      ChannelIO.openChat(with: nil, message: "test", animated: true)
+//      ChannelIO.openChat(with: nil, message: nil, animated: true)
     }
 //    ChannelIO.boot(with: settings, profile: profile) { (completion, user) in
 //

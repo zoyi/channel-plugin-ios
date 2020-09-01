@@ -212,11 +212,9 @@ class PrefStore {
     PrefStore.clearCurrentMemberId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()
-    if ChannelIO.isNewVersion {
-      if PrefStore.getTokenState() == false {
-        PrefStore.clearBootConfig()
-      }
-    } else {
+    
+    if PrefStore.getTokenState() == false {
+      PrefStore.clearBootConfig()
       PrefStore.clearSessionJWT()
     }
   }
