@@ -270,7 +270,7 @@ public final class ChannelIO: NSObject {
           ChannelIO.bootConfig?.appLocale = CHUser.get().systemLanguage
           mainStore.dispatch(ReadyToShow())
           if ChannelIO.launcherVisible {
-            ChannelIO.showChannelButton(animated: true)
+            ChannelIO.showChannelButton()
           }
           completion?(.success, User(with: mainStore.state.user))
         }, onError: { error in
@@ -372,12 +372,12 @@ public final class ChannelIO: NSObject {
   @objc
   public class func show(animated: Bool) {
     dispatch {
-      ChannelIO.showChannelButton(animated: animated)
+      ChannelIO.showChannelButton()
     }
   }
   
   @objc
-  public class func showChannelButton(animated: Bool) {
+  public class func showChannelButton() {
     dispatch {
       ChannelIO.launcherVisible = true
             
@@ -458,14 +458,14 @@ public final class ChannelIO: NSObject {
   @objc
   public class func hide(animated: Bool) {
     dispatch {
-      ChannelIO.hideChannelButton(animated: animated)
+      ChannelIO.hideChannelButton()
     }
   }
   
   @objc
-  public class func hideChannelButton(animated: Bool) {
+  public class func hideChannelButton() {
     dispatch {
-      ChannelIO.launcherView?.hide(animated: animated) {
+      ChannelIO.launcherView?.hide(animated: true) {
         ChannelIO.launcherVisible = false
       }
     }
@@ -481,12 +481,12 @@ public final class ChannelIO: NSObject {
   @objc
   public class func open(animated: Bool) {
     dispatch {
-      ChannelIO.showMessenger(animated: animated)
+      ChannelIO.showMessenger()
     }
   }
   
   @objc
-  public class func showMessenger(animated: Bool) {
+  public class func showMessenger() {
     dispatch {
       guard
         ChannelIO.isValidStatus,
@@ -506,7 +506,7 @@ public final class ChannelIO: NSObject {
       let loungeView = LoungeRouter.createModule()
       let controller = MainNavigationController(rootViewController: loungeView)
       ChannelIO.baseNavigation = controller
-      topController.present(controller, animated: animated, completion: nil)
+      topController.present(controller, animated: true, completion: nil)
     }
   }
 
@@ -520,12 +520,12 @@ public final class ChannelIO: NSObject {
   @objc
   public class func close(animated: Bool, completion: (() -> Void)? = nil) {
     dispatch {
-      ChannelIO.hideMessenger(animated: animated, completion: completion)
+      ChannelIO.hideMessenger(completion: completion)
     }
   }
   
   @objc
-  public class func hideMessenger(animated: Bool, completion: (() -> Void)? = nil) {
+  public class func hideMessenger(completion: (() -> Void)? = nil) {
     guard
       ChannelIO.isValidStatus,
       mainStore.state.uiState.isChannelVisible,
@@ -538,7 +538,7 @@ public final class ChannelIO: NSObject {
     dispatch {
       ChannelIO.delegate?.onHideMessenger?()
       ChannelIO.delegate?.willHideMessenger?()
-      ChannelIO.baseNavigation?.dismiss(animated: animated) {
+      ChannelIO.baseNavigation?.dismiss(animated: true) {
         ChannelIO.didDismiss()
         completion?()
       }
@@ -569,7 +569,7 @@ public final class ChannelIO: NSObject {
   }
   
   @objc
-  public class func openChat(with chatId: String?, message: String?, animated: Bool) {
+  public class func openChat(with chatId: String?, message: String?) {
     guard
       ChannelIO.isValidStatus,
       let topController = CHUtils.getTopController()
@@ -585,11 +585,10 @@ public final class ChannelIO: NSObject {
       ChannelIO.showUserChat(
         userChatId: chatId,
         message: message,
-        isOpenChat: true,
-        animated: animated
+        isOpenChat: true
       )
     } else {
-      ChannelIO.showUserChat(userChatId: chatId, animated: animated)
+      ChannelIO.showUserChat(userChatId: chatId)
     }
   }
   

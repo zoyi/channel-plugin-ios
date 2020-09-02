@@ -12,7 +12,7 @@ import RxSwiftExt
 extension ChannelIO {
   internal class func reset() {
     ChannelIO.launcherView?.hide(animated: false)
-    ChannelIO.hideMessenger(animated: false)
+    ChannelIO.hideMessenger()
     ChannelIO.hideNotification()
     ChannelIO.launcherWindow = nil
     ChannelIO.lastPush = nil
@@ -161,7 +161,7 @@ extension ChannelIO {
           .subscribe(onSuccess: { _ in
             topController.present(controller, animated: animated, completion: nil)
           }, onError: { error in
-            ChannelIO.showMessenger(animated: false)
+            ChannelIO.showMessenger()
           }).disposed(by: self.disposeBag)
       }
     }

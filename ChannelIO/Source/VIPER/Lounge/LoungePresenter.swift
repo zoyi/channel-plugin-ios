@@ -269,7 +269,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnDismiss() {
-    ChannelIO.hideMessenger(animated: true)
+    ChannelIO.hideMessenger()
   }
   
   func didClickOnChat(with chatId: String?, animated: Bool, from view: UIViewController?) {

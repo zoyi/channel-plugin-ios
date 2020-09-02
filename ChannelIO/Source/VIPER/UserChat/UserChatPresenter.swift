@@ -521,7 +521,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   func didClickOnRightNaviItem(from view: UIViewController?) {
     mainStore.dispatch(RemoveMessages(payload: self.userChatId))
-    ChannelIO.hideMessenger(animated: true)
+    ChannelIO.hideMessenger()
   }
   
   func didClickOnNewChat(with text: String, from view: UINavigationController?) {

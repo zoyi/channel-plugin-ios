@@ -204,7 +204,7 @@ class UserChatsViewController: BaseViewController {
       tintColor: tintColor,
       style: .plain,
       actionHandler: {
-        ChannelIO.hideMessenger(animated: true)
+        ChannelIO.hideMessenger()
       })
     
     self.navigationItem.leftBarButtonItem = NavigationItem(
@@ -220,7 +220,7 @@ class UserChatsViewController: BaseViewController {
       tintColor: mainStore.state.plugin.textUIColor,
       style: .plain,
       actionHandler: {
-        ChannelIO.hideMessenger(animated: true)
+        ChannelIO.hideMessenger()
       })
     
     let titleView = ChatNavigationTitleView()

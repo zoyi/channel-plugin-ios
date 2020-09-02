@@ -59,7 +59,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   
   @objc func didClickOnPush() {
     if let chatId = self.chatId {
-      ChannelIO.openChat(with: chatId, message: nil, animated: true)
+      ChannelIO.openChat(with: chatId, message: nil)
     }
   }
   
@@ -109,10 +109,10 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   @IBAction func onClickShowLauncher(_ sender: Any) {
-    ChannelIO.showChannelButton(animated: true)
+    ChannelIO.showChannelButton()
   }
   
   @IBAction func onClickHideLauncher(_ sender: Any) {
-    ChannelIO.hideChannelButton(animated: true)
+    ChannelIO.hideChannelButton()
   }
 }
