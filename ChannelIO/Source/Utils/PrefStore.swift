@@ -20,6 +20,7 @@ class PrefStore {
   static let VEIL_ID_KEY = "CHPlugin_veil_id"
   static let MEMBER_ID_KEY = "CHPlugin_member_id"
   static let PUSH_DATA = "CHPlugin_push_data"
+  static let PLUGIN_ID = "CHPlugin_plugin_id"
   
   static var userDefaults: UserDefaults? = nil
   
@@ -79,6 +80,20 @@ class PrefStore {
 
   static func clearCurrentChannelId() {
     PrefStore.getStorage().removeObject(forKey: CHANNEL_ID_KEY)
+    PrefStore.getStorage().synchronize()
+  }
+  
+  static func getCurrentPluginId() -> String? {
+    return PrefStore.getStorage().string(forKey: PLUGIN_ID)
+  }
+  
+  static func setCurrentPluginId(pluginId: String) {
+    PrefStore.getStorage().set(pluginId, forKey: PLUGIN_ID)
+    PrefStore.getStorage().synchronize()
+  }
+
+  static func clearCurrentPluginId() {
+    PrefStore.getStorage().removeObject(forKey: PLUGIN_ID)
     PrefStore.getStorage().synchronize()
   }
   

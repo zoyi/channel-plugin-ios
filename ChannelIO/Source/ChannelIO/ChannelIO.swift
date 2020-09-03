@@ -701,10 +701,12 @@ public final class ChannelIO: NSObject {
         property["url"] = "\(type(of: controller))"
       }
       
-      CHEvent.send(
-        pluginId: mainStore.state.plugin.id,
-        name: eventName,
-        property: property)
+      CHEvent
+        .send(
+          pluginId: PrefStore.getCurrentPluginId() ?? "",
+          name: eventName,
+          property: property
+        )
         .retry(.delayed(maxCount: 3, time: 3.0)) { error in
           dlog("Error while sending the event \(eventName). Attempting to send again")
           return true

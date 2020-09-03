@@ -11,19 +11,29 @@ import ReSwift
 func pluginReducer(action: Action, plugin: CHPlugin?) -> CHPlugin {
   switch action {
   case let action as GetPlugin:
+    PrefStore.setCurrentPluginId(pluginId: action.plugin.id)
     return action.plugin
     
   case let action as GetTouchSuccess:
-    return action.payload.plugin ?? CHPlugin()
+    let plugin = action.payload.plugin ?? CHPlugin()
+    PrefStore.setCurrentPluginId(pluginId: plugin.id)
+    return plugin
 
   case let action as BootSuccess:
-    return action.payload.plugin ?? CHPlugin()
+    let plugin = action.payload.plugin ?? CHPlugin()
+    PrefStore.setCurrentPluginId(pluginId: plugin.id)
+    return plugin
     
   case let action as UpdateLoungeInfo:
+    PrefStore.setCurrentPluginId(pluginId: action.plugin.id)
     return action.plugin
     
-  case _ as ShutdownSuccess:
+  case let action as ShutdownSuccess:
+    if !action.isSleeping {
+      PrefStore.clearCurrentPluginId()
+    }
     return CHPlugin()
+    
     
   default:
     return plugin ?? CHPlugin()
