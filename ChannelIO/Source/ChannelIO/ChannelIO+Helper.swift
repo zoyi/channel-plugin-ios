@@ -167,8 +167,8 @@ extension ChannelIO {
     }
   }
   
-  internal class func showNotification(pushData: CHPushDisplayable?) {
-    guard let push = pushData, !push.removed else { return }
+  internal class func showNotification(popupData: CHPopupDisplayable?) {
+    guard let popup = popupData, !popup.removed else { return }
     
     if ChannelIO.inAppNotificationView != nil {
       ChannelIO.inAppNotificationView?.removeView(animated: true)
@@ -177,7 +177,7 @@ extension ChannelIO {
     
     var notificationView: InAppNotification?
     var view: UIView?
-    let viewModel = InAppNotificationViewModel(push: push)
+    let viewModel = InAppNotificationViewModel(popup: popup)
     if viewModel.mobileExposureType == .fullScreen {
       ChannelIO.launcherView?.hide(animated: true)
       notificationView = PopupInAppNotificationView()
@@ -195,7 +195,7 @@ extension ChannelIO {
       .observeOn(MainScheduler.instance)
       .subscribe(onNext: { (event) in
         ChannelIO.hideNotification()
-        ChannelIO.showUserChat(userChatId: push.chatId)
+        ChannelIO.showUserChat(userChatId: popup.chatId)
       }).disposed(by: disposeBag)
     
     notificationView?
@@ -208,7 +208,7 @@ extension ChannelIO {
         }
       }.disposed(by: disposeBag)
     
-    if let mkInfo = push.mkInfo, viewModel.mobileExposureType == .fullScreen {
+    if let mkInfo = popup.mkInfo, viewModel.mobileExposureType == .fullScreen {
       mainStore.dispatch(ViewMarketing(type: mkInfo.type, id: mkInfo.id))
     }
     
@@ -226,7 +226,7 @@ extension ChannelIO {
     guard ChannelIO.inAppNotificationView != nil else { return }
     
     dispatch {
-      mainStore.dispatch(RemovePush())
+      mainStore.dispatch(RemovePopup())
       ChannelIO.inAppNotificationView?.removeView(animated: true)
       ChannelIO.inAppNotificationView = nil
     }

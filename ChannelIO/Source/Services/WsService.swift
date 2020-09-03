@@ -464,13 +464,13 @@ fileprivate extension WsService {
       //dlog("socket pushed: \(data)")
       guard let entity = data.get(index: 0) else { return }
       guard let json = JSON(rawValue: entity) else { return }
-      guard let push = Mapper<CHPush>().map(JSONObject: json.object) else { return }
+      guard let popup = Mapper<CHPopup>().map(JSONObject: json.object) else { return }
       
       if mainStore.state.uiState.isChannelVisible {
         return
       }
       
-      mainStore.dispatchOnMain(GetPush(payload: push))
+      mainStore.dispatchOnMain(GetPopup(payload: popup))
     }
   }
 

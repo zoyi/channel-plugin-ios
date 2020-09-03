@@ -142,7 +142,7 @@ struct CHMessage: ModelType {
   }
 }
 
-extension CHMessage: CHPushDisplayable {
+extension CHMessage: CHPopupDisplayable {
   var removed: Bool {
     return self.state == .removed
   }

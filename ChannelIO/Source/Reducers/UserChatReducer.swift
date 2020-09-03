@@ -46,9 +46,9 @@ func userChatsReducer(action: Action, state: UserChatsState?) -> UserChatsState 
     state?.currentUserChatId = ""
     return state?.remove(userChatId: action.payload) ?? UserChatsState()
   
-  case let action as GetPush:
-    if let push = action.payload as? CHPush {
-      return state?.upsert(userChat: push.userChat) ?? UserChatsState()
+  case let action as GetPopup:
+    if let popup = action.payload as? CHPopup {
+      return state?.upsert(userChat: popup.userChat) ?? UserChatsState()
     }
     return state ?? UserChatsState()
   

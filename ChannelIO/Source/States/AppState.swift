@@ -14,7 +14,7 @@ struct AppState: StateType {
   var channel: CHChannel
   var user: CHUser
   var userChatsState: UserChatsState
-  var push: CHPushDisplayable?
+  var popup: CHPopupDisplayable?
   var managersState: ManagersState
   var botsState: BotsState
   var sessionsState: SessionsState

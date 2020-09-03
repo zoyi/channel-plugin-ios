@@ -8,8 +8,8 @@
 
 import ReSwift
 
-struct GetPush : Action {
-  public let payload : CHPushDisplayable?
+struct GetPopup : Action {
+  public let payload : CHPopupDisplayable?
 }
 
-struct RemovePush : Action {}
+struct RemovePopup : Action {}

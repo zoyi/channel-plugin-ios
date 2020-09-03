@@ -45,7 +45,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     print("will hide")
   }
   
-  func onReceivePushData(event: PushData) {
+  func onReceivePopupData(event: PopupData) {
     print(event.toJson())
   }
   

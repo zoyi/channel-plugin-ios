@@ -8,19 +8,19 @@
 
 import ReSwift
 
-func pushReducer(action:Action, push: CHPushDisplayable?) -> CHPushDisplayable? {
+func pushReducer(action:Action, popup: CHPopupDisplayable?) -> CHPopupDisplayable? {
   switch action {
-  case let action as GetPush:
+  case let action as GetPopup:
     //return push only if messenger is not visible
     return action.payload
     
-  case _ as RemovePush:
+  case _ as RemovePopup:
     return nil
     
   case _ as ShutdownSuccess:
     return nil
     
   default:
-    return push ?? nil
+    return popup ?? nil
   }
 }

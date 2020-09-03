@@ -46,7 +46,7 @@ public protocol ChannelPluginDelegate: class {
   @available(*, deprecated, renamed: "onHideMessenger")
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   // TODO: Will deprecated
-  @available(*, deprecated, renamed: "onReceivePushData")
+  @available(*, deprecated, renamed: "onReceivePopupData")
   @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
   // TODO: Will deprecated
   @available(*, deprecated, renamed: "onProfileChanged")
@@ -58,7 +58,7 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func onBadgeChanged(alert: Int) -> Void
   @objc optional func onProfileChanged(key: String, value: Any?) -> Void
   @objc optional func onUrlClicked(url: URL) -> Bool
-  @objc optional func onPushDataReceived(event: PushData) -> Void
+  @objc optional func onPopupDataReceived(event: PopupData) -> Void
 }
 
 @objc
@@ -102,7 +102,7 @@ public final class ChannelIO: NSObject {
   }
 
   internal static var bootConfig: BootConfig?
-  internal static var lastPush: CHPushDisplayable?
+  internal static var lastPush: CHPopupDisplayable?
   
   internal static var hostTopControllerName: String?
   internal static var launcherView: LauncherView? {
@@ -125,7 +125,7 @@ public final class ChannelIO: NSObject {
     func newState(state: AppState) {
       dispatch {
         self.handleBadge(state.user.alert)
-        self.handlePush(push: state.push)
+        self.handlePush(popup: state.popup)
         
         let viewModel = LauncherViewModel(
           plugin: state.plugin,
@@ -136,19 +136,19 @@ public final class ChannelIO: NSObject {
       }
     }
     
-    func handlePush (push: CHPushDisplayable?) {
-      guard let push = push else { return }
+    func handlePush (popup: CHPopupDisplayable?) {
+      guard let popup = popup else { return }
       
       if ChannelIO.baseNavigation == nil
         && (ChannelIO.bootConfig?.hidePopup == false)
-        && !push.isEqual(to: ChannelIO.lastPush) {
-        ChannelIO.showNotification(pushData: push)
+        && !popup.isEqual(to: ChannelIO.lastPush) {
+        ChannelIO.showNotification(popupData: popup)
       }
       
-      if !push.isEqual(to: ChannelIO.lastPush) {
-        ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: push))
-        ChannelIO.delegate?.onPushDataReceived?(event: PushData(with: push))
-        ChannelIO.lastPush = push
+      if !popup.isEqual(to: ChannelIO.lastPush) {
+        ChannelIO.delegate?.onReceivePush?(event: PushEvent(with: popup))
+        ChannelIO.delegate?.onPopupDataReceived?(event: PopupData(with: popup))
+        ChannelIO.lastPush = popup
       }
     }
     
@@ -380,7 +380,7 @@ public final class ChannelIO: NSObject {
       let viewModel = LauncherViewModel(
         plugin: mainStore.state.plugin,
         user: mainStore.state.user,
-        push: mainStore.state.push
+        push: mainStore.state.popup
       )
       
       let xMargin = ChannelIO.bootConfig?.channelButtonOption?.xMargin ?? 24

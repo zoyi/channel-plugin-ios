@@ -97,7 +97,7 @@ class AppManager {
         let userChat = userChatSelector(
           state: mainStore.state,
           userChatId: chatResponse.userChat?.id)
-        mainStore.dispatch(GetPush(payload: userChat?.lastMessage))
+        mainStore.dispatch(GetPopup(payload: userChat?.lastMessage))
       }).disposed(by: self.disposeBag)
   }
   

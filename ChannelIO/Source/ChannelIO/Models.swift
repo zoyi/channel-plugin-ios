@@ -9,7 +9,7 @@
 import Foundation
 
 // TODO: Will deprecated
-@available(*, deprecated, renamed: "PushData")
+@available(*, deprecated, renamed: "PopupData")
 @objc
 public class PushEvent: NSObject {
   @objc public let chatId: String
@@ -17,7 +17,7 @@ public class PushEvent: NSObject {
   @objc public let senderName: String
   @objc public let senderAvatarUrl: String
   
-  init(with pushData: CHPushDisplayable?) {
+  init(with pushData: CHPopupDisplayable?) {
     self.chatId = pushData?.chatId ?? ""
     self.message = pushData?.blocks.reduce("") { $0 + ($1.displayText?.string ?? "") } ?? ""
     self.senderName = pushData?.writer?.name ?? ""
@@ -36,13 +36,13 @@ public class PushEvent: NSObject {
 }
 
 @objc
-public class PushData: NSObject {
+public class PopupData: NSObject {
   @objc public let chatId: String
   @objc public let message: String
   @objc public let name: String
   @objc public let avatarUrl: String
   
-  init(with pushData: CHPushDisplayable?) {
+  init(with pushData: CHPopupDisplayable?) {
     self.chatId = pushData?.chatId ?? ""
     self.message = pushData?.blocks.reduce("") { $0 + ($1.displayText?.string ?? "") } ?? ""
     self.name = pushData?.writer?.name ?? ""
