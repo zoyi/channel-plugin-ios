@@ -10,13 +10,13 @@ import RxSwift
 import RxSwiftExt
 
 extension ChannelIO {
-  internal class func reset() {
+  internal class func reset(isSleeping: Bool) {
     ChannelIO.launcherView?.hide(animated: false)
     ChannelIO.hideMessenger()
     ChannelIO.hideNotification()
     ChannelIO.launcherWindow = nil
     ChannelIO.lastPush = nil
-    mainStore.dispatch(ShutdownSuccess())
+    mainStore.dispatch(ShutdownSuccess(isSleeping: isSleeping))
     WsService.shared.disconnect()
     disposeBag = DisposeBag()
   }
@@ -26,7 +26,7 @@ extension ChannelIO {
       mainStore.unsubscribe(subscriber)
     }
     
-    ChannelIO.reset()
+    ChannelIO.reset(isSleeping: false)
   
     let subscriber = CHPluginSubscriber()
     mainStore.subscribe(subscriber)
@@ -230,6 +230,18 @@ extension ChannelIO {
       ChannelIO.inAppNotificationView?.removeView(animated: true)
       ChannelIO.inAppNotificationView = nil
     }
+  }
+  
+  internal class func registerPushToken() {
+    AppManager.shared.registerPushToken()
+  }
+  
+  internal class func deregisterPushToken() {
+    AppManager.shared
+      .unregisterToken()
+      .observeOn(MainScheduler.instance)
+      .subscribe()
+      .disposed(by: self.disposeBag)
   }
   
   internal class func didDismiss() {

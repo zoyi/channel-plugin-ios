@@ -18,8 +18,8 @@ func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
     }
     return CHChannel()
     
-  case _ as ShutdownSuccess:
-    PrefStore.clearAllLocalData()
+  case let action as ShutdownSuccess:
+    PrefStore.clearAllLocalData(isSleeping: action.isSleeping)
     RestRouter.channelId = ""
     return CHChannel()
     

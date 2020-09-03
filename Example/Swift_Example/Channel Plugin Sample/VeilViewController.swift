@@ -33,7 +33,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     super.viewWillDisappear(animated)
     
     if self.isMovingFromParent {
-      ChannelIO.shutdown(deregisterPushToken: false)
+      ChannelIO.shutdown()
     }
   }
   
@@ -100,7 +100,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
 
   @IBAction func onClickShutdown() {
-    ChannelIO.shutdown(deregisterPushToken: true)
+    ChannelIO.shutdown()
   }
   
   @IBAction func onClickShowChat(_ sender: Any) {

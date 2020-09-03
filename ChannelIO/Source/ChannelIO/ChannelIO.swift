@@ -218,8 +218,8 @@ public final class ChannelIO: NSObject {
       ChannelIO.boot(with: convertedBootConfig) { status, user in
         completion?(ChannelPluginCompletionStatus(rawValue: status.rawValue) ?? .unknown, user)
         if let userChatId = PrefStore.getPushData()?["chatId"] as? String,
-          let channelId = PrefStore.getPushData()?["channelId"] as? String,
-          channelId == PrefStore.getCurrentChannelId() {
+          let personId = PrefStore.getPushData()?["personId"] as? String,
+          personId == PrefStore.getCurrentUserId() {
           ChannelIO.showUserChat(userChatId: userChatId)
         }
         PrefStore.clearPushData()
@@ -310,30 +310,15 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initPushToken(deviceToken: Data) {
     let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-    ChannelIO.pushToken = token
+    ChannelIO.initPushToken(tokenString: token)
   }
   
   @objc
   public class func initPushToken(tokenString: String) {
     ChannelIO.pushToken = tokenString
+    ChannelIO.registerPushToken()
   }
-  
-  @objc
-  public class func registerPushToken() {
-    PrefStore.setTokenState(true)
-    AppManager.shared.registerPushToken()
-  }
-  
-  @objc
-  public class func deregisterPushToken() {
-    PrefStore.setTokenState(false)
-    AppManager.shared
-      .unregisterToken()
-      .observeOn(MainScheduler.instance)
-      .subscribe()
-      .disposed(by: self.disposeBag)
-  }
-  
+
   @objc
   public class func setDebugMode(with debug: Bool) {
     self.isDebugMode = debug
@@ -343,24 +328,25 @@ public final class ChannelIO: NSObject {
    *   Shutdown ChannelIO
    *   Call this method when user terminate session or logout
    */
-  // TODO: Will deprecated
-  @available(*, deprecated, renamed: "shutdown(deregisterPushToken:)")
   @objc
   public class func shutdown() {
-    ChannelIO.shutdown(deregisterPushToken: true)
+    AppManager.shared
+    .unregisterToken()
+    .observeOn(MainScheduler.instance)
+    .subscribe(onNext: { _ in
+      dlog("shutdown success")
+      ChannelIO.reset(isSleeping: false)
+    }, onError: { _ in
+      dlog("shutdown fail")
+      ChannelIO.reset(isSleeping: false)
+    }).disposed(by: self.disposeBag)
   }
   
   @objc
-  public class func shutdown(deregisterPushToken: Bool) {
-    if deregisterPushToken {
-      ChannelIO.deregisterPushToken()
-      ChannelIO.reset()
-    } else {
-      ChannelIO.reset()
-      dlog("shutdown success")
-    }
+  public class func sleep() {
+    ChannelIO.reset(isSleeping: true)
   }
-    
+
   /**
    *   Show channel launcher on application
    *   location of the view can be customized with LauncherConfig property in ChannelPluginSettings
@@ -603,6 +589,8 @@ public final class ChannelIO: NSObject {
     _ profile: [String: Any],
     completion: ((Bool, User?) -> Void)? = nil
   ) {
+    guard ChannelIO.isValidStatus else { return }
+    
     let profile:[String: Any?] = profile.mapValues { (value) -> Any? in
       return value is NSNull ? nil : value
     }
@@ -619,6 +607,8 @@ public final class ChannelIO: NSObject {
     with profile: [String: Any?],
     completion: ((Bool, User?) -> Void)? = nil
   ) {
+    guard ChannelIO.isValidStatus else { return }
+    
     UserPromise
       .updateUser(profile: profile)
       .subscribe(onNext: { user, error in
@@ -636,6 +626,8 @@ public final class ChannelIO: NSObject {
   public class func updateUser(
     param: UpdateUserParam,
     completion: ((User?, Error?) -> Void)? = nil) {
+    guard ChannelIO.isValidStatus else { return }
+    
     CHUser
       .updateUser(param: param)
       .subscribe(onNext: { user, error in
@@ -651,6 +643,8 @@ public final class ChannelIO: NSObject {
   
   @objc
   public class func addTags(_ tags: [String], completion: ((User?, Error?) -> Void)? = nil) {
+    guard ChannelIO.isValidStatus else { return }
+    
     CHUser
       .addTags(tags: tags)
       .subscribe(onNext: { user, error in
@@ -666,6 +660,8 @@ public final class ChannelIO: NSObject {
   
   @objc
   public class func removeTags(_ tags: [String], completion: ((User?, Error?) -> Void)? = nil) {
+    guard ChannelIO.isValidStatus else { return }
+    
     CHUser
       .removeTags(tags: tags)
       .subscribe(onNext: { user, error in
@@ -688,7 +684,6 @@ public final class ChannelIO: NSObject {
   @objc
   public class func track(eventName: String, eventProperty: [String: Any]? = nil) {
     guard
-      ChannelIO.isValidStatus,
       eventName.utf16.count <= 30,
       eventName != ""
     else {
@@ -762,7 +757,7 @@ public final class ChannelIO: NSObject {
     guard
       ChannelIO.isChannelPushNotification(userInfo),
       let userChatId = userInfo["chatId"] as? String,
-      let channelId = userInfo["channelId"] as? String
+      let personId = userInfo["personId"] as? String
     else {
       return
     }
@@ -774,7 +769,7 @@ public final class ChannelIO: NSObject {
       .disposed(by: self.disposeBag)
     
     //NOTE: handler when push was clicked by user
-    if channelId == PrefStore.getCurrentChannelId(),
+    if personId == PrefStore.getCurrentUserId(),
       ChannelIO.isValidStatus {
       ChannelIO.showUserChat(userChatId:userChatId)
       completion?()
@@ -834,8 +829,8 @@ public final class ChannelIO: NSObject {
     guard
       let config = PrefStore.getBootConfig(),
       let userChatId = PrefStore.getPushData()?["chatId"] as? String,
-      let channelId = PrefStore.getPushData()?["channelId"] as? String,
-      channelId == PrefStore.getCurrentChannelId()
+      let personId = PrefStore.getPushData()?["personId"] as? String,
+      personId == PrefStore.getCurrentUserId()
     else {
       PrefStore.clearPushData()
       return

@@ -20,7 +20,6 @@ class PrefStore {
   static let VEIL_ID_KEY = "CHPlugin_veil_id"
   static let MEMBER_ID_KEY = "CHPlugin_member_id"
   static let PUSH_DATA = "CHPlugin_push_data"
-  static let TOKEN_STATE = "CHPlugin_token_state"
   
   static var userDefaults: UserDefaults? = nil
   
@@ -143,20 +142,6 @@ class PrefStore {
     PrefStore.getStorage().synchronize()
   }
   
-  static func getTokenState() -> Bool {
-    return PrefStore.getStorage().bool(forKey: TOKEN_STATE)
-  }
-  
-  static func setTokenState(_ isRegster: Bool) {
-    PrefStore.getStorage().set(isRegster, forKey: TOKEN_STATE)
-    PrefStore.getStorage().synchronize()
-  }
-  
-  static func clearTokenState() {
-    PrefStore.getStorage().removeObject(forKey: TOKEN_STATE)
-    PrefStore.getStorage().synchronize()
-  }
-  
   static func setSessionJWT(_ jwt: String?) {
     if let jwt = jwt {
       PrefStore.getStorage().set(jwt, forKey: SESSION_JWT_KEY)
@@ -207,13 +192,12 @@ class PrefStore {
     PrefStore.getStorage().synchronize()
   }
   
-  static func clearAllLocalData() {
-    PrefStore.clearCurrentUserId()
+  static func clearAllLocalData(isSleeping: Bool) {
     PrefStore.clearCurrentMemberId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()
-    
-    if PrefStore.getTokenState() == false {
+    if !isSleeping {
+      PrefStore.clearCurrentUserId()
       PrefStore.clearBootConfig()
       PrefStore.clearSessionJWT()
     }

@@ -16,7 +16,9 @@ struct BootSuccess: Action {
   public let payload: BootResponse
 }
 
-struct ShutdownSuccess: Action {}
+struct ShutdownSuccess: Action {
+  public let isSleeping: Bool
+}
 
 struct UpdateLoungeInfo: Action {
   public let channel: CHChannel
