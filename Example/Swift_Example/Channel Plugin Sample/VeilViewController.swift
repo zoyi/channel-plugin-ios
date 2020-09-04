@@ -37,15 +37,55 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     }
   }
   
+  func onClickChatLink(url: URL) -> Bool {
+    print("url 1")
+    print(url.absoluteString)
+    return false
+  }
+  
+  func onUrlClicked(url: URL) -> Bool {
+    print("url 2")
+    print(url.absoluteString)
+    return false
+  }
+  
+  func onChangeProfile(key: String, value: Any?) {
+    print("profile 1")
+    print("\(key) is \(value)")
+  }
+  
+  func onProfileChanged(key: String, value: Any?) {
+    print("profile 2")
+    print("\(key) is \(value)")
+  }
+  
+  func onShowMessenger() {
+    print("on show")
+  }
+  
   func willShowMessenger() {
     print("will show")
+  }
+  
+  func onHideMessenger() {
+    print("on hide")
+  }
+  
+  func onChatCreated(chatId: String) {
+    print("create chat : \(chatId)")
   }
   
   func willHideMessenger() {
     print("will hide")
   }
   
-  func onReceivePopupData(event: PopupData) {
+  func onReceivePush(event: PushEvent) {
+    print("event 1: ")
+    print(event.toJson())
+  }
+  
+  func onPopupDataReceived(event: PopupData) {
+    print("event 2: ")
     print(event.toJson())
   }
   
@@ -82,6 +122,10 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
 //    settings.debugMode = true
     let bootConfig = BootConfig(pluginKey: pluginKey)
     bootConfig.stage = .development
+//    bootConfig.hidePopup = true
+//    bootConfig.trackDefaultEvent = false
+//    bootConfig.language = .english
+//    bootConfig.set(unsubscribed: true)
 //    settings.stage = .development
 //    settings.launcherConfig = LauncherConfig(
 //      position: .left, xMargin: 100, yMargin: 200
@@ -92,7 +136,7 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     bootConfig.profile = profile
     ChannelIO.setDebugMode(with: true)
     ChannelIO.boot(with: bootConfig) { (completion, user) in
-//      ChannelIO.openChat(with: nil, message: nil, animated: true)
+//      ChannelIO.openChat(with: "5f51c00bca88425e6d72123123", message: nil)
     }
 //    ChannelIO.boot(with: settings, profile: profile) { (completion, user) in
 //
