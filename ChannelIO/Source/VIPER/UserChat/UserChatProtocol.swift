@@ -47,6 +47,7 @@ protocol UserChatViewProtocol: class {
   func display(errorFiles: [ChatFileQueueItem])
   func hideLodingFile()
   func dismissKeyboard(_ animated: Bool)
+  func popViewController(_ animated: Bool)
   
   func updateNavigation(userChat: CHUserChat?)
   func updateInputBar(state: MessageViewState)

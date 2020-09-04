@@ -207,6 +207,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         self.userChatId = chat.id
         self.userChat = chat
         self.fetchMessages()
+      }, onError: { _ in
+        self.view?.popViewController(false)
       }).disposed(by: self.disposeBag)
     
     self.joinSocket()

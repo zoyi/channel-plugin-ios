@@ -647,6 +647,10 @@ extension UserChatView {
     self.messageView.resignResponder(animated: animated)
   }
   
+  func popViewController(_ animated: Bool) {
+    self.navigationController?.popViewController(animated: animated)
+  }
+  
   @objc internal func keyboardChange(notification: Notification) {
     self.adjustTableViewInsetIfneeded(userChat: self.userChat)
   }
