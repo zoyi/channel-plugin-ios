@@ -46,7 +46,7 @@ public protocol ChannelPluginDelegate: class {
   @available(*, deprecated, renamed: "onHideMessenger")
   @objc optional func willHideMessenger() -> Void /* notify when chat list is about to hide */
   // TODO: Will deprecated
-  @available(*, deprecated, renamed: "onReceivePopupData")
+  @available(*, deprecated, renamed: "onPopupDataReceived")
   @objc optional func onReceivePush(event: PushEvent) -> Void /* notifiy when new push message arrives */
   // TODO: Will deprecated
   @available(*, deprecated, renamed: "onProfileChanged")
