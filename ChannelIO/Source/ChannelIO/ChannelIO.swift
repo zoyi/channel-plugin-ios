@@ -800,25 +800,26 @@ public final class ChannelIO: NSObject {
     _ userInfo:[AnyHashable : Any],
     completion: (() -> Void)? = nil
   ) {
-    guard ChannelIO.isChannelPushNotification(userInfo) else { return }
-    
-    PrefStore.setPushData(userInfo: userInfo)
-    completion?()
-  }
-  
-  @objc
-  public class func storePushNotification(_ userInfo:[AnyHashable : Any]) {
     guard
       ChannelIO.isChannelPushNotification(userInfo),
       let userChatId = userInfo["chatId"] as? String
     else {
       return
     }
-    
+
     AppManager.shared
       .sendAck(userChatId: userChatId)
       .subscribe()
       .disposed(by: self.disposeBag)
+
+    completion?()
+  }
+  
+  @objc
+  public class func storePushNotification(_ userInfo:[AnyHashable : Any]) {
+    guard ChannelIO.isChannelPushNotification(userInfo) else { return }
+
+    PrefStore.setPushData(userInfo: userInfo)
   }
   
   @objc
