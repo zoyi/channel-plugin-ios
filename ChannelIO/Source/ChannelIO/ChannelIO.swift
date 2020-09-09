@@ -506,18 +506,17 @@ public final class ChannelIO: NSObject {
   @objc
   public class func close(animated: Bool, completion: (() -> Void)? = nil) {
     dispatch {
-      ChannelIO.hideMessenger(completion: completion)
+      ChannelIO.hideMessenger()
     }
   }
   
   @objc
-  public class func hideMessenger(completion: (() -> Void)? = nil) {
+  public class func hideMessenger() {
     guard
       ChannelIO.isValidStatus,
       mainStore.state.uiState.isChannelVisible,
       ChannelIO.baseNavigation != nil
     else {
-      completion?()
       return
     }
     
@@ -526,7 +525,6 @@ public final class ChannelIO: NSObject {
       ChannelIO.delegate?.willHideMessenger?()
       ChannelIO.baseNavigation?.dismiss(animated: true) {
         ChannelIO.didDismiss()
-        completion?()
       }
     }
   }
