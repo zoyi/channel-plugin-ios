@@ -43,25 +43,25 @@ public class Profile : NSObject, NSCoding {
   }
   
   @discardableResult
-  @objc public func set(name: String) -> Profile {
+  @objc public func set(name: String?) -> Profile {
     self.name = name
     return self
   }
   
   @discardableResult
-  @objc public func set(avatarUrl: String) -> Profile {
+  @objc public func set(avatarUrl: String?) -> Profile {
     self.avatarUrl = avatarUrl
     return self
   }
   
   @discardableResult
-  @objc public func set(mobileNumber: String) -> Profile {
+  @objc public func set(mobileNumber: String?) -> Profile {
     self.mobileNumber = mobileNumber
     return self
   }
   
   @discardableResult
-  @objc public func set(email: String) -> Profile {
+  @objc public func set(email: String?) -> Profile {
     self.email = email
     return self
   }
