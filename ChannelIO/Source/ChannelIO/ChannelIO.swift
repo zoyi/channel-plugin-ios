@@ -623,53 +623,54 @@ public final class ChannelIO: NSObject {
   @objc
   public class func updateUser(
     param: UpdateUserParam,
-    completion: ((User?, Error?) -> Void)? = nil) {
+    completion: ((Error?, User?) -> Void)? = nil
+  ) {
     guard ChannelIO.isValidStatus else { return }
     
     CHUser
       .updateUser(param: param)
       .subscribe(onNext: { user, error in
         guard let user = user else {
-          completion?(nil, error)
+          completion?(error, nil)
           return
         }
-        completion?(User(with: user), nil)
+        completion?(nil, User(with: user))
       }, onError: { error in
-        completion?(nil, error)
+        completion?(error, nil)
       }).disposed(by: disposeBag)
    }
   
   @objc
-  public class func addTags(_ tags: [String], completion: ((User?, Error?) -> Void)? = nil) {
+  public class func addTags(_ tags: [String], completion: ((Error?, User?) -> Void)? = nil) {
     guard ChannelIO.isValidStatus else { return }
     
     CHUser
       .addTags(tags: tags)
       .subscribe(onNext: { user, error in
         guard let user = user else {
-          completion?(nil, error)
+          completion?(error, nil)
           return
         }
-        completion?(User(with: user), nil)
+        completion?(nil, User(with: user))
       }, onError: { error in
-        completion?(nil, error)
+        completion?(error, nil)
       }).disposed(by: disposeBag)
   }
   
   @objc
-  public class func removeTags(_ tags: [String], completion: ((User?, Error?) -> Void)? = nil) {
+  public class func removeTags(_ tags: [String], completion: ((Error?, User?) -> Void)? = nil) {
     guard ChannelIO.isValidStatus else { return }
     
     CHUser
       .removeTags(tags: tags)
       .subscribe(onNext: { user, error in
         guard let user = user else {
-          completion?(nil, error)
+          completion?(error, nil)
           return
         }
-        completion?(User(with: user), nil)
+        completion?(nil, User(with: user))
       }, onError: { error in
-        completion?(nil, error)
+        completion?(error, nil)
       }).disposed(by: disposeBag)
   }
   
