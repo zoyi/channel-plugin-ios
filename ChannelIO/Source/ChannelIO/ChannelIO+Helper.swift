@@ -244,6 +244,21 @@ extension ChannelIO {
       .disposed(by: self.disposeBag)
   }
   
+  @discardableResult
+  internal class func deletePushTokenIfNeeded(with userInfo:[AnyHashable : Any]?) -> Bool {
+    if let personId = userInfo?["personId"] as? String,
+      let userId = PrefStore.getCurrentUserId(),
+      personId != userId {
+      AppManager.shared
+        .deleteTokenIfNeeded(with: personId)
+        .observeOn(MainScheduler.instance)
+        .subscribe()
+        .disposed(by: self.disposeBag)
+      return true
+    }
+    return false
+  }
+  
   internal class func didDismiss() {
     mainStore.dispatch(ChatListIsHidden())
     if ChannelIO.launcherVisible {

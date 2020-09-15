@@ -78,6 +78,10 @@ class AppManager {
     return PluginPromise.unregisterPushToken()
   }
   
+  func deleteTokenIfNeeded(with userId: String) -> Observable<Any?> {
+    return PluginPromise.deletePushToken(with: userId)
+  }
+  
   func checkVersion() -> Observable<Any?> {
     return PluginPromise.checkVersion()
   }

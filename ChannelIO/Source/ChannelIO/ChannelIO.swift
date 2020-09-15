@@ -768,7 +768,7 @@ public final class ChannelIO: NSObject {
       .sendAck(userChatId: userChatId)
       .subscribe()
       .disposed(by: self.disposeBag)
-    
+
     //NOTE: handler when push was clicked by user
     if personId == PrefStore.getCurrentUserId(),
       ChannelIO.isValidStatus {
@@ -776,6 +776,8 @@ public final class ChannelIO: NSObject {
       completion?()
       return
     }
+    
+    self.deletePushTokenIfNeeded(with: userInfo)
     
     guard let settings = PrefStore.getChannelPluginSettings() else {
       dlog("ChannelPluginSetting is missing")
@@ -805,20 +807,22 @@ public final class ChannelIO: NSObject {
     else {
       return
     }
-
+    
+    self.deletePushTokenIfNeeded(with: userInfo)
+    
     AppManager.shared
       .sendAck(userChatId: userChatId)
       .subscribe()
       .disposed(by: self.disposeBag)
-
     completion?()
   }
   
   @objc
   public class func storePushNotification(_ userInfo:[AnyHashable : Any]) {
     guard ChannelIO.isChannelPushNotification(userInfo) else { return }
-
-    PrefStore.setPushData(userInfo: userInfo)
+    if !self.deletePushTokenIfNeeded(with: userInfo) {
+      PrefStore.setPushData(userInfo: userInfo)
+    }
   }
   
   @objc
@@ -834,6 +838,7 @@ public final class ChannelIO: NSObject {
       let personId = PrefStore.getPushData()?["personId"] as? String,
       personId == PrefStore.getCurrentUserId()
     else {
+      self.deletePushTokenIfNeeded(with: PrefStore.getPushData())
       PrefStore.clearPushData()
       return
     }

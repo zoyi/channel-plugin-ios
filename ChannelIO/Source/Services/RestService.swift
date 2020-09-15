@@ -20,6 +20,7 @@ enum RestRouter: URLRequestConvertible {
   case CreateSupportBotChat(String, ParametersType)
   case CampaignClick(String, String, ParametersType)
   case CampaignView(String)
+  case DeleteToken(String, ParametersType)
   case GetAppMessengerUri(String)
   case GetPlugin(String)
   case GetGeoIP
@@ -99,6 +100,7 @@ enum RestRouter: URLRequestConvertible {
          .SendPushAck:
       return .put
     case .ClosePopup,
+         .DeleteToken,
          .UnregisterToken,
          .RemoveTags,
          .RemoveUserChat:
@@ -131,6 +133,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/users/me/pop-up"
     case .CloseUserChat(let userChatId, _):
       return "/front/user-chats/\(userChatId)/close"
+    case .DeleteToken(let key, _):
+      return "/front/elastic/push-tokens/\(key)/of"
     case .GetAppMessengerUri(let name):
       return "/front/app/\(name)/connect"
     case .GetMessages(let userChatId, _):
@@ -315,6 +319,7 @@ enum RestRouter: URLRequestConvertible {
          .UnregisterToken:
       urlRequest = try encode(addAuthHeaders(request: urlRequest), with: nil)
     case .Boot(_, let params),
+         .DeleteToken(_, let params),
          .TouchUser(_, let params),
          .SendEvent(_, let params):
       urlRequest = try encode(addAuthForSimple(request: urlRequest), with: params)
