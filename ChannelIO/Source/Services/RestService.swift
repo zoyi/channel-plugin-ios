@@ -22,6 +22,7 @@ enum RestRouter: URLRequestConvertible {
   case CampaignView(String)
   case DeleteToken(String, ParametersType)
   case GetAppMessengerUri(String)
+  case GetCampaignSupportBot(String)
   case GetPlugin(String)
   case GetGeoIP
   case GetChannel
@@ -30,6 +31,7 @@ enum RestRouter: URLRequestConvertible {
   case GetUserChats(ParametersType)
   case GetUserChat(String)
   case GetMessages(String, ParametersType)
+  case GetOneTimeMsgSupportBot(String)
   case GetProfileBotSchemas(String)
   case OneTimeMsgClick(String, String, ParametersType)
   case OneTimeMsgView(String)
@@ -78,11 +80,13 @@ enum RestRouter: URLRequestConvertible {
     case .CampaignClick,
          .CheckVersion,
          .GetAppMessengerUri,
+         .GetCampaignSupportBot,
          .GetCountryCodes,
          .GetGeoIP,
          .GetMessages,
          .GetUserChat,
          .GetUserChats,
+         .GetOneTimeMsgSupportBot,
          .GetPlugin,
          .GetProfileBotSchemas,
          .GetChannel,
@@ -137,6 +141,8 @@ enum RestRouter: URLRequestConvertible {
       return "/front/elastic/push-tokens/\(key)/of"
     case .GetAppMessengerUri(let name):
       return "/front/app/\(name)/connect"
+    case .GetCampaignSupportBot(let campaignId):
+      return "/front/one-time-msgs/\(campaignId)/support-bot"
     case .GetMessages(let userChatId, _):
       return "/front/user-chats/\(userChatId)/messages"
     case .GetCountryCodes:
@@ -153,6 +159,8 @@ enum RestRouter: URLRequestConvertible {
       return "/request/geo-ip"
     case .GetUserChat(let userChatId):
       return "/front/user-chats/\(userChatId)"
+    case .GetOneTimeMsgSupportBot(let oneTimeMsgId):
+      return "/front/one-time-msgs/\(oneTimeMsgId)/support-bot"
     case .GetProfileBotSchemas(let pluginId):
       return "/front/plugins/\(pluginId)/profile-bot-schemas"
     case .OneTimeMsgClick(let oneTimeMsgId, let userId, _):

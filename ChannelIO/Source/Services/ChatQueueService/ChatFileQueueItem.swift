@@ -51,7 +51,7 @@ class ChatFileQueueItem: ChatQueueBaseItem {
   func prepare() -> Observable<ChatFileQueueItem> {
     return Observable.create { [weak self] subscriber in
       guard let self = self else {
-        subscriber.onError(ChannelError.unknownError)
+        subscriber.onError(ChannelError.unknownError())
         return Disposables.create()
       }
 
@@ -79,7 +79,7 @@ class ChatFileQueueItem: ChatQueueBaseItem {
 
     return Observable.create { [weak self] subscriber in
       guard let self = self else {
-        subscriber.onError(ChannelError.unknownError)
+        subscriber.onError(ChannelError.unknownError())
         return Disposables.create()
       }
 

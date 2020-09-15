@@ -362,12 +362,23 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   func didClickOnMarketingToSupportBotButton() {
     self.view?.showHUD()
+    
     self.interactor?
-      .startMarketingToSupportBot()
+      .fetchMarketingSupportBot()
+      .retry(.delayed(maxCount: 3, time: 3.0))
+      .flatMap { [weak self] supportBotId -> Observable<CHMessage> in
+        guard
+          let self = self,
+          let interactor = self.interactor
+        else {
+          return .error(ChannelError.notFoundError)
+        }
+        return interactor.startMarketingToSupportBot(with: supportBotId)
+      }
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { _ in
-        self.view?.dismissHUD()
-      }, onError: { [weak self] (error) in
+      .subscribe(onNext: { [weak self] _ in
+        self?.view?.dismissHUD()
+      }, onError: { [weak self] error in
         self?.view?.dismissHUD()
         self?.view?.display(error: error.localizedDescription, visible: true)
       }).disposed(by: self.disposeBag)
@@ -382,11 +393,11 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       return .just(false)
     }
     
-    return Observable.create { (subscriber) in
+    return Observable.create { subscriber in
       let signal = self.interactor?
         .updateProfileItem(with: message, key: key, type: type, value: value)
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (message) in
+        .subscribe(onNext: { [weak self] message in
           self?.shouldRedrawProfileBot = true
           let updatedValue = message.profileBot?.filter { $0.key == key }.first?.value
           ChannelIO.delegate?.onChangeProfile?(key: key, value: updatedValue)
@@ -394,7 +405,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           mainStore.dispatch(UpdateMessage(payload: message))
           subscriber.onNext(true)
           subscriber.onCompleted()
-        }, onError: { (error) in
+        }, onError: { error in
           subscriber.onNext(false)
           subscriber.onError(error)
         })
@@ -470,7 +481,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           if progress < 1 {
             self?.view?.showProgressHUD(progress: progress)
           }
-        }, onError: { [weak self] (error) in
+        }, onError: { [weak self] error in
           self?.view?.dismissHUD()
         }, onCompleted: { [weak self] in
           self?.view?.dismissHUD()
@@ -515,7 +526,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         message.translatedBlocks = blocks.compactMap { transform.transformFromJSON($0.toJSON()) }
         message.translateState = .translated
         mainStore.dispatchOnMain(UpdateMessage(payload: message))
-      }, onError: { (error) in
+      }, onError: { error in
         message.translateState = .failed
         mainStore.dispatchOnMain(UpdateMessage(payload: message))
       }).disposed(by: self.disposeBag)
@@ -541,7 +552,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         interactor
         .createChatIfNeeded()
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { [weak self] (chat) in
+        .subscribe(onNext: { [weak self] chat in
           guard let self = self, let chat = chat else { return }
           self.userChatId = chat.id
           self.userChat = chat
@@ -549,7 +560,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           self.observeFileQueue()
           let files = assets.map { CHFile(asset: $0) }
           self.uploadFile(files: files)
-        }, onError: { [weak self] (error) in
+        }, onError: { [weak self] error in
           self?.view?.display(error: error.localizedDescription, visible: false)
         }).disposed(by: self.disposeBag)
       }).disposed(by: self.disposeBag)
@@ -559,7 +570,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.interactor?
     .createChatIfNeeded()
     .observeOn(MainScheduler.instance)
-    .subscribe(onNext: { [weak self] (chat) in
+    .subscribe(onNext: { [weak self] chat in
       guard let chat = chat else { return }
       self?.userChatId = chat.id
       self?.userChat = chat
@@ -568,7 +579,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       mainStore.dispatch(CreateMessage(payload: message))
       self?.observeFileQueue()
       self?.sendMessage(with: message)
-    }, onError: { [weak self] (error) in
+    }, onError: { [weak self] error in
       self?.view?.display(error: error.localizedDescription, visible: false)
     }).disposed(by: self.disposeBag)
   }
@@ -605,9 +616,9 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.interactor?
       .send(message: message)
       .observeOn(MainScheduler.instance)
-      .subscribe(onNext: { (message) in
+      .subscribe(onNext: { message in
         mainStore.dispatch(CreateMessage(payload: message))
-      }, onError: { [weak self] (error) in
+      }, onError: { [weak self] error in
         self?.view?.display(error: error.localizedDescription, visible: false)
       }).disposed(by: self.disposeBag)
   }
@@ -669,7 +680,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   }
   
   private func clearTyping() {
-    self.timeStorage.forEach { (k, t) in
+    self.timeStorage.forEach { k, t in
       t.invalidate()
     }
     self.typingPersons.removeAll()
@@ -681,7 +692,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     guard let person = params[0] as? CHEntity else { return }
     
     timer.invalidate()
-    if let index = self.typingPersons.firstIndex(where: { (p) in
+    if let index = self.typingPersons.firstIndex(where: { p in
       return p.id == person.id && p.kind == person.kind
     }) {
       self.typingPersons.remove(at: index)
