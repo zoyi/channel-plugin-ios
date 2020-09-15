@@ -71,6 +71,33 @@ struct PluginPromise {
     }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
+  static func deletePushToken(with userId: String) -> Observable<Any?> {
+    return Observable.create { subscriber in
+      let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
+      let params = [
+        "query": [
+          "userId": userId
+        ]
+      ]
+      
+      let req = AF
+        .request(RestRouter.DeleteToken("ios-\(key)", params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
+        .response { response in
+          switch response.result {
+          case .success(_):
+            subscriber.onNext(nil)
+            subscriber.onCompleted()
+          case .failure(let error):
+            subscriber.onError(ChannelError.init(data: response.data, error: error))
+          }
+        }
+      return Disposables.create {
+        req.cancel()
+      }
+    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+  }
+  
   static func checkVersion() -> Observable<Any?> {
     return Observable.create { subscriber in
       let req = AF

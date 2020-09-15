@@ -39,6 +39,14 @@ enum ChannelError: Error {
   init(msg: String) {
     self = .serverError(msg: msg)
   }
+
+  init(data: Data? = nil, error: Error) {
+    if let error = CHUtils.getServerErrorMessage(data: data)?.first {
+      self = .serverError(msg: error)
+    } else {
+      self = .serverError(msg: error.localizedDescription)
+    }
+  }
 }
 
 extension ChannelError: LocalizedError {
