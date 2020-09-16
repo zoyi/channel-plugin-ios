@@ -68,6 +68,7 @@ public final class ChannelIO: NSObject {
   @objc public static var isBooted: Bool {
     return mainStore.state.bootState.status == .success
   }
+  @available(*, deprecated)
   @objc public static var canShowLauncher: Bool {
     return !mainStore.state.channel.shouldHideLauncher && ChannelIO.isValidStatus
   }
