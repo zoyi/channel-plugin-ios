@@ -173,7 +173,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   func isReadyToPresentChat(chatId: String?) -> Single<Any?> {
     return Single<Any?>.create { [weak self] subscriber in
       guard let self = self, let interactor = self.interactor else {
-        subscriber(.error(ChannelError.unknownError))
+        subscriber(.error(ChannelError.unknownError()))
         return Disposables.create()
       }
       

@@ -7,6 +7,7 @@
 //
 
 import ObjectMapper
+import RxSwift
 
 typealias MarketingInfo = (type: CHMarketingType?, id: String?)
 
@@ -42,5 +43,15 @@ extension CHMarketing: Equatable {
       lhs.enableSupportBot == rhs.enableSupportBot &&
       lhs.advertising == rhs.advertising &&
       lhs.exposureType == rhs.exposureType
+  }
+}
+
+extension CHMarketing {
+  func fetchSupportBot() -> Observable<CHSupportBotEntryInfo> {
+    if self.type == .campaign {
+      return MarketingPromise.getCampaignSupportBot(with: id)
+    } else {
+      return MarketingPromise.getOneTimeMsgSupportBot(with: id)
+    }
   }
 }

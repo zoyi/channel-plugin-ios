@@ -50,10 +50,10 @@ extension CHSupportBot {
     )
   }
   
-  static func startFromMarketing(userChatId: String?) -> Observable<CHMessage> {
+  static func startFromMarketing(userChatId: String?, supportBotId: String?) -> Observable<CHMessage> {
     return SupportBotPromise.startMarketingToSupportBot(
       userChatId: userChatId,
-      supportBotId: mainStore.state.botsState.findSupportBot()?.id
+      supportBotId: supportBotId
     )
   }
 }

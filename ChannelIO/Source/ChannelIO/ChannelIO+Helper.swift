@@ -36,7 +36,7 @@ extension ChannelIO {
   internal class func bootChannel() -> Observable<BootResponse> {
     return Observable.create { subscriber in
       guard let config = ChannelIO.bootConfig else {
-        subscriber.onError(ChannelError.unknownError)
+        subscriber.onError(ChannelError.unknownError())
         return Disposables.create()
       }
       
@@ -67,7 +67,7 @@ extension ChannelIO {
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { result in
           guard let result = result else {
-            subscriber.onError(ChannelError.unknownError)
+            subscriber.onError(ChannelError.unknownError())
             return
           }
           

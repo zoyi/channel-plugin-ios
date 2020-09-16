@@ -127,7 +127,8 @@ protocol UserChatInteractorProtocol: class {
   func createChatIfNeeded() -> Observable<CHUserChat?>
   func createSupportBotChatIfNeeded(
     originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
-  func startMarketingToSupportBot() -> Observable<CHMessage>
+  func fetchMarketingSupportBot() -> Observable<String?>
+  func startMarketingToSupportBot(with supportBotId: String?) -> Observable<CHMessage>
   func fetchChat() -> Observable<CHUserChat?>
   func fetchMessages() -> Observable<ChatProcessState>
   func translate(for message: CHMessage) -> Observable<[CHMessageBlock]>

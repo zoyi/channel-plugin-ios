@@ -56,7 +56,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
       return .just(false)
     }
     
-    return Observable.create { (subscriber) in
+    return Observable.create { subscriber in
       let signal = CHPlugin
         .get(with: pluginKey)
         .observeOn(MainScheduler.instance)
@@ -109,7 +109,7 @@ extension UserChatInteractor {
       }
       .flatMap { [weak self] items -> Observable<ChatQueueKey> in
         guard let self = self else {
-          return .error(ChannelError.unknownError)
+          return .error(ChannelError.unknownError())
         }
         
         ChatQueueService.shared.enqueue(items: items)
@@ -122,7 +122,7 @@ extension UserChatInteractor {
       return .just(.messageLoading)
     }
     
-    return Observable.create { (subscribe) in
+    return Observable.create { subscribe in
       self.isFetching = true
       let signal = CHUserChat
         .getMessages(
@@ -150,7 +150,7 @@ extension UserChatInteractor {
   }
   
   func fetchChat() -> Observable<CHUserChat?> {
-    return Observable.create { [weak self] (subscriber) in
+    return Observable.create { [weak self] subscriber in
       self?.nextSeq = nil
       let signal = CHUserChat
         .get(userChatId: self?.userChatId ?? "")
@@ -178,7 +178,7 @@ extension UserChatInteractor {
       return .error(ChannelError.parameterError)
     }
     
-    return Observable.create { [weak self] (subscriber) in
+    return Observable.create { [weak self] subscriber in
       let signal = message
         .send()
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
@@ -301,7 +301,7 @@ extension UserChatInteractor: StoreSubscriber {
 
 extension UserChatInteractor {
   func createSupportBotChatIfNeeded(originId: String? = nil) -> Observable<(CHUserChat?, CHMessage?)> {
-    return Observable.create { [weak self] (subscriber) -> Disposable in
+    return Observable.create { [weak self] subscriber in
       var disposable: Disposable?
       if let chat = self?.userChat, let message = messageSelector(state: mainStore.state, id: originId) {
         subscriber.onNext((chat, message))
@@ -314,17 +314,17 @@ extension UserChatInteractor {
             return true
           })
           .observeOn(MainScheduler.instance)
-          .subscribe(onNext: { (chatResponse) in
+          .subscribe(onNext: { chatResponse in
             guard let chatId = chatResponse.userChat?.id else { return }
             mainStore.dispatch(GetUserChat(payload: chatResponse))
             self?.userChatId = chatId
             subscriber.onNext((chatResponse.userChat, chatResponse.message))
             subscriber.onCompleted()
-          }, onError: { (error) in
+          }, onError: { error in
             subscriber.onError(error)
           })
       } else {
-        subscriber.onError(ChannelError.unknownError)
+        subscriber.onError(ChannelError.unknownError())
       }
       
       return Disposables.create {
@@ -333,10 +333,34 @@ extension UserChatInteractor {
     }
   }
   
-  func startMarketingToSupportBot() -> Observable<CHMessage> {
-    return Observable.create { [weak self] (subscriber) -> Disposable in
+  func fetchMarketingSupportBot() -> Observable<String?> {
+    return Observable.create { [weak self] subscriber in
+      let signal = self?
+        .userChat?
+        .lastMessage?
+        .marketing?
+        .fetchSupportBot()
+        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { supportBotEntryInfo in
+          subscriber.onNext(supportBotEntryInfo.supportBot?.id ?? mainStore.state.botsState.findSupportBot()?.id)
+          subscriber.onCompleted()
+        }, onError: { error in
+          subscriber.onError(error)
+        })
+      
+      return Disposables.create {
+        signal?.dispose()
+      }
+    }
+  }
+  
+  func startMarketingToSupportBot(with supportBotId: String?) -> Observable<CHMessage> {
+    return Observable.create { [weak self] subscriber in
       let signal = CHSupportBot
-        .startFromMarketing(userChatId: self?.userChat?.id)
+        .startFromMarketing(
+          userChatId: self?.userChat?.id,
+          supportBotId: supportBotId
+        )
         .retry(.delayed(maxCount: 3, time: 3.0))
         .observeOn(MainScheduler.instance)
         .subscribe(onNext: { (message) in
@@ -358,7 +382,7 @@ extension UserChatInteractor {
       return .just(self.userChat)
     }
     
-    return Observable.create { [weak self] (subscriber) in
+    return Observable.create { [weak self] subscriber in
       if let userChat = self?.userChat {
         subscriber.onNext(userChat)
         return Disposables.create()
