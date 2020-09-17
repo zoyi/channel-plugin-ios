@@ -6,7 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import Alamofire
 import ObjectMapper
 import RxSwift
 import SwiftyJSON

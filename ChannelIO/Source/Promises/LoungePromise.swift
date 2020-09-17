@@ -5,7 +5,6 @@
 //  Created by Jam on 2019/11/21.
 //
 
-import Alamofire
 import RxSwift
 import SwiftyJSON
 import ObjectMapper

@@ -5,12 +5,10 @@
 //  Created by Jam on 2019/12/04.
 //
 
-import Alamofire
-
-enum CDNService: URLConvertible {
+enum CDNService: AF_URLConvertible {
   case UploadFile(String, String)
 
-  typealias ParametersType = Parameters
+  typealias ParametersType = AF_Parameters
 
   static let queue = DispatchQueue(label: "com.zoyi.channel.cdn", qos: .background, attributes: .concurrent)
 
@@ -18,7 +16,7 @@ enum CDNService: URLConvertible {
     return CHUtils.getCurrentStage().cdnEndPoint
   }
 
-  var method: HTTPMethod {
+  var method: AF_HTTPMethod {
     switch self {
     case .UploadFile:
       return .post
@@ -32,20 +30,20 @@ enum CDNService: URLConvertible {
     }
   }
 
-  var authHeaders: HTTPHeaders {
-    var headers: [HTTPHeader] = []
+  var authHeaders: AF_HTTPHeaders {
+    var headers: [AF_HTTPHeader] = []
 
     if let jwt = PrefStore.getSessionJWT() {
-      headers.append(HTTPHeader(name: "x-session", value: jwt))
+      headers.append(AF_HTTPHeader(name: "x-session", value: jwt))
     }
 
     if let locale = CHUtils.getLocale() {
-      headers.append(HTTPHeader(name: "Accept-language", value: locale.rawValue))
+      headers.append(AF_HTTPHeader(name: "Accept-language", value: locale.rawValue))
     }
 
-    headers.append(HTTPHeader(name: "Accept", value: "application/json"))
-    headers.append(HTTPHeader(name: "User-Agent", value: CHUtils.generateUserAgent()))
-    return HTTPHeaders(headers)
+    headers.append(AF_HTTPHeader(name: "Accept", value: "application/json"))
+    headers.append(AF_HTTPHeader(name: "User-Agent", value: CHUtils.generateUserAgent()))
+    return AF_HTTPHeaders(headers)
   }
 
   func asURL() throws -> URL {

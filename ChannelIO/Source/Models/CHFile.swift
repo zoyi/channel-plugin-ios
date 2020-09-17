@@ -6,7 +6,6 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import Alamofire
 import Foundation
 import MobileCoreServices
 import ObjectMapper
@@ -282,7 +281,7 @@ extension CHFile {
         return Disposables.create()
       }
       
-      let destination: DownloadRequest.Destination = { _, response in
+      let destination: AF_DownloadRequest.Destination = { _, response in
         let documentsURL:URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let fileURL:URL = documentsURL.appendingPathComponent(response.suggestedFilename!)
         

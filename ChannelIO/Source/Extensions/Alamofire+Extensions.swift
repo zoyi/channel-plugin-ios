@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import Alamofire
 
-extension DataRequest {
+extension AF_DataRequest {
   
   /// Adds a handler to be called once the request has finished.
   ///
@@ -21,7 +20,7 @@ extension DataRequest {
   public func asyncResponse(
     queue: DispatchQueue? = nil,
     options: JSONSerialization.ReadingOptions = .allowFragments,
-    completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
+    completionHandler: @escaping (AF_AFDataResponse<Data>) -> Void) -> Self {
     return response(
       queue: queue == nil ? RestRouter.queue : queue!,
       responseSerializer: DataResponseSerializer(),

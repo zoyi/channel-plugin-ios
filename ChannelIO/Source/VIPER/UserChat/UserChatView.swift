@@ -11,7 +11,6 @@ import ReSwift
 import RxSwift
 import JGProgressHUD
 import SnapKit
-import Alamofire
 
 class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal struct Constants {

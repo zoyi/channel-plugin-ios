@@ -43,7 +43,7 @@ Pod::Spec.new do |s|
   s.dependency 'ObjectMapper', '~> 4.2'
   s.dependency 'NVActivityIndicatorView', '~> 4.7'
   s.dependency 'CHDwifft'
-  s.dependency 'Alamofire', '~> 5.2'
+  # s.dependency 'Alamofire', '~> 5.2'
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
   s.dependency 'MGSwipeTableCell'
   s.dependency 'JGProgressHUD'

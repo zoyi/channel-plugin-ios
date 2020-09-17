@@ -1,30 +1,26 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 
 target 'ChannelIO' do
   use_frameworks!
-  
-  pod 'Reusable', '~> 4.0'
-  pod 'SnapKit', '~> 4.0'
-  pod 'SwiftyJSON', '~> 4.0'
-  pod 'ReSwift', '~> 4.0'
-  pod 'RxSwift', '~> 4.0'
-  pod 'RxCocoa', '~> 4.0'
-  pod 'ObjectMapper', '~> 3.3'
-  pod 'NVActivityIndicatorView', '~> 4.4.0'
+
+  pod 'Reusable', '~> 4.1'
+  pod 'SnapKit', '~> 5.0'
+  pod 'SwiftyJSON', '~> 5.0'
+  pod 'ReSwift', '~> 5.0'
+  pod 'RxSwift', '~> 5.1'
+  pod 'RxCocoa', '~> 5.1'
+  pod 'ObjectMapper', '~> 4.2'
+  pod 'NVActivityIndicatorView', '~> 4.7'
   pod 'CHDwifft'
-  pod 'Alamofire', '~> 4.8.0'
-  pod 'Socket.IO-Client-Swift', '~> 13.1.0'
-  pod 'CHSlackTextViewController'
-  pod 'TLPhotoPicker', '~> 1.8.3'
+  # pod 'Alamofire', '~> 5.2'
+  pod 'Socket.IO-Client-Swift', '~> 15.0.0' 
   pod 'MGSwipeTableCell'
-  pod 'M13ProgressSuite'
-  pod 'Lightbox', '2.3.0'
-  pod 'SVProgressHUD'
-  pod 'CRToast'
-  pod 'PhoneNumberKit', '~> 2.5.0'
-  pod 'CHNavBar'
-  pod 'SDWebImage', '~> 4.4.2'
-  pod 'SDWebImage/GIF'
+  pod 'JGProgressHUD'
+  pod 'PhoneNumberKit', '~> 3.1'
+  pod 'SDWebImage', '~> 5.8'
+  pod 'SDWebImageWebPCoder'
+  pod 'RxSwiftExt', '~> 5.2'
+  pod 'TLPhotoPicker'
 
   target 'ChannelIOTests' do
     inherit! :search_paths

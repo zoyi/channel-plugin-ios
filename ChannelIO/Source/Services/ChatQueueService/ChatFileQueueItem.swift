@@ -5,7 +5,6 @@
 //  Created by Jam on 2019/12/05.
 //
 
-import Alamofire
 import Photos
 import RxSwift
 

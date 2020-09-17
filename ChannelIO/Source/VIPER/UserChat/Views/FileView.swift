@@ -5,7 +5,6 @@
 //  Created by Jam on 2019/12/16.
 //
 
-import Alamofire
 import NVActivityIndicatorView
 import UIKit
 

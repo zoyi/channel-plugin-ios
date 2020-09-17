@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Alamofire
 import RxSwift
 import ObjectMapper
 import SwiftyJSON

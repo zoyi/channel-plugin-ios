@@ -11,7 +11,6 @@ import ReSwift
 import RxSwift
 import UserNotifications
 import SDWebImageWebPCoder
-import Alamofire
 
 internal let mainStore = Store<AppState>(
   reducer: appReducer,
