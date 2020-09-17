@@ -132,14 +132,14 @@
 		39C3E7142512FF9D001CEA9A /* AF_Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6EF2512FF9D001CEA9A /* AF_Combine.swift */; };
 		39C3E7152512FF9D001CEA9A /* AF_ResponseSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6F02512FF9D001CEA9A /* AF_ResponseSerialization.swift */; };
 		39C3E7182512FF9D001CEA9A /* AF_SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6F32512FF9D001CEA9A /* AF_SessionDelegate.swift */; };
-		39C3E71F25133FF7001CEA9A /* Dwifft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71A25133FF7001CEA9A /* Dwifft.swift */; };
-		39C3E72025133FF7001CEA9A /* Dwifft+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71B25133FF7001CEA9A /* Dwifft+UIKit.swift */; };
-		39C3E72225133FF7001CEA9A /* SectionedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71D25133FF7001CEA9A /* SectionedValues.swift */; };
-		39C3E72A25137C84001CEA9A /* NibOwnerLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72525137C84001CEA9A /* NibOwnerLoadable.swift */; };
-		39C3E72B25137C84001CEA9A /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72625137C84001CEA9A /* Reusable.swift */; };
-		39C3E72C25137C84001CEA9A /* UICollectionView+Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72725137C84001CEA9A /* UICollectionView+Reusable.swift */; };
-		39C3E72D25137C84001CEA9A /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72825137C84001CEA9A /* NibLoadable.swift */; };
-		39C3E72E25137C84001CEA9A /* UITableView+Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72925137C84001CEA9A /* UITableView+Reusable.swift */; };
+		39C3E71F25133FF7001CEA9A /* Dwifft_Dwifft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71A25133FF7001CEA9A /* Dwifft_Dwifft.swift */; };
+		39C3E72025133FF7001CEA9A /* Dwifft_Dwifft+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71B25133FF7001CEA9A /* Dwifft_Dwifft+UIKit.swift */; };
+		39C3E72225133FF7001CEA9A /* Dwifft_SectionedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71D25133FF7001CEA9A /* Dwifft_SectionedValues.swift */; };
+		39C3E72A25137C84001CEA9A /* Reusable_NibOwnerLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72525137C84001CEA9A /* Reusable_NibOwnerLoadable.swift */; };
+		39C3E72B25137C84001CEA9A /* Reusable_Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72625137C84001CEA9A /* Reusable_Reusable.swift */; };
+		39C3E72C25137C84001CEA9A /* Reusable_UICollectionView+Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72725137C84001CEA9A /* Reusable_UICollectionView+Reusable.swift */; };
+		39C3E72D25137C84001CEA9A /* Reusable_NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72825137C84001CEA9A /* Reusable_NibLoadable.swift */; };
+		39C3E72E25137C84001CEA9A /* Reusable_UITableView+Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72925137C84001CEA9A /* Reusable_UITableView+Reusable.swift */; };
 		39C3E7582513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7312513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift */; };
 		39C3E7592513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7322513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift */; };
 		39C3E75A2513803C001CEA9A /* Snapkit_ConstraintDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7332513803C001CEA9A /* Snapkit_ConstraintDescription.swift */; };
@@ -761,14 +761,14 @@
 		39C3E6EF2512FF9D001CEA9A /* AF_Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_Combine.swift; sourceTree = "<group>"; };
 		39C3E6F02512FF9D001CEA9A /* AF_ResponseSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_ResponseSerialization.swift; sourceTree = "<group>"; };
 		39C3E6F32512FF9D001CEA9A /* AF_SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_SessionDelegate.swift; sourceTree = "<group>"; };
-		39C3E71A25133FF7001CEA9A /* Dwifft.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dwifft.swift; sourceTree = "<group>"; };
-		39C3E71B25133FF7001CEA9A /* Dwifft+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dwifft+UIKit.swift"; sourceTree = "<group>"; };
-		39C3E71D25133FF7001CEA9A /* SectionedValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionedValues.swift; sourceTree = "<group>"; };
-		39C3E72525137C84001CEA9A /* NibOwnerLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibOwnerLoadable.swift; sourceTree = "<group>"; };
-		39C3E72625137C84001CEA9A /* Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
-		39C3E72725137C84001CEA9A /* UICollectionView+Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Reusable.swift"; sourceTree = "<group>"; };
-		39C3E72825137C84001CEA9A /* NibLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
-		39C3E72925137C84001CEA9A /* UITableView+Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableView+Reusable.swift"; sourceTree = "<group>"; };
+		39C3E71A25133FF7001CEA9A /* Dwifft_Dwifft.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dwifft_Dwifft.swift; sourceTree = "<group>"; };
+		39C3E71B25133FF7001CEA9A /* Dwifft_Dwifft+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dwifft_Dwifft+UIKit.swift"; sourceTree = "<group>"; };
+		39C3E71D25133FF7001CEA9A /* Dwifft_SectionedValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dwifft_SectionedValues.swift; sourceTree = "<group>"; };
+		39C3E72525137C84001CEA9A /* Reusable_NibOwnerLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable_NibOwnerLoadable.swift; sourceTree = "<group>"; };
+		39C3E72625137C84001CEA9A /* Reusable_Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable_Reusable.swift; sourceTree = "<group>"; };
+		39C3E72725137C84001CEA9A /* Reusable_UICollectionView+Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Reusable_UICollectionView+Reusable.swift"; sourceTree = "<group>"; };
+		39C3E72825137C84001CEA9A /* Reusable_NibLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable_NibLoadable.swift; sourceTree = "<group>"; };
+		39C3E72925137C84001CEA9A /* Reusable_UITableView+Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Reusable_UITableView+Reusable.swift"; sourceTree = "<group>"; };
 		39C3E7312513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMultiplierTarget.swift; sourceTree = "<group>"; };
 		39C3E7322513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_LayoutConstraintItem.swift; sourceTree = "<group>"; };
 		39C3E7332513803C001CEA9A /* Snapkit_ConstraintDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintDescription.swift; sourceTree = "<group>"; };
@@ -1567,9 +1567,9 @@
 		39C3E71925133FF7001CEA9A /* Dwifft */ = {
 			isa = PBXGroup;
 			children = (
-				39C3E71A25133FF7001CEA9A /* Dwifft.swift */,
-				39C3E71B25133FF7001CEA9A /* Dwifft+UIKit.swift */,
-				39C3E71D25133FF7001CEA9A /* SectionedValues.swift */,
+				39C3E71A25133FF7001CEA9A /* Dwifft_Dwifft.swift */,
+				39C3E71B25133FF7001CEA9A /* Dwifft_Dwifft+UIKit.swift */,
+				39C3E71D25133FF7001CEA9A /* Dwifft_SectionedValues.swift */,
 			);
 			path = Dwifft;
 			sourceTree = "<group>";
@@ -1577,11 +1577,11 @@
 		39C3E72425137C5F001CEA9A /* Reusable */ = {
 			isa = PBXGroup;
 			children = (
-				39C3E72825137C84001CEA9A /* NibLoadable.swift */,
-				39C3E72525137C84001CEA9A /* NibOwnerLoadable.swift */,
-				39C3E72625137C84001CEA9A /* Reusable.swift */,
-				39C3E72725137C84001CEA9A /* UICollectionView+Reusable.swift */,
-				39C3E72925137C84001CEA9A /* UITableView+Reusable.swift */,
+				39C3E72825137C84001CEA9A /* Reusable_NibLoadable.swift */,
+				39C3E72525137C84001CEA9A /* Reusable_NibOwnerLoadable.swift */,
+				39C3E72625137C84001CEA9A /* Reusable_Reusable.swift */,
+				39C3E72725137C84001CEA9A /* Reusable_UICollectionView+Reusable.swift */,
+				39C3E72925137C84001CEA9A /* Reusable_UITableView+Reusable.swift */,
 			);
 			path = Reusable;
 			sourceTree = "<group>";
@@ -2812,7 +2812,7 @@
 				39F4B9DA23C42CC00043B25A /* ParseInfo.swift in Sources */,
 				39C3E6F72512FF9D001CEA9A /* AF_ParameterEncoder.swift in Sources */,
 				650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */,
-				39C3E72B25137C84001CEA9A /* Reusable.swift in Sources */,
+				39C3E72B25137C84001CEA9A /* Reusable_Reusable.swift in Sources */,
 				39F4B9F523C42CC00043B25A /* AtomTransition.swift in Sources */,
 				3931CAF723C333C3005E8444 /* FileProgressCell.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
@@ -2998,8 +2998,8 @@
 				65AA7AE71FD64CCF00D2A8B1 /* BotReducer.swift in Sources */,
 				6590FA912068C84E0054B353 /* UserChatPresenter.swift in Sources */,
 				39F4B9D123C42CC00043B25A /* BaseErrorListener.swift in Sources */,
-				39C3E72025133FF7001CEA9A /* Dwifft+UIKit.swift in Sources */,
-				39C3E72D25137C84001CEA9A /* NibLoadable.swift in Sources */,
+				39C3E72025133FF7001CEA9A /* Dwifft_Dwifft+UIKit.swift in Sources */,
+				39C3E72D25137C84001CEA9A /* Reusable_NibLoadable.swift in Sources */,
 				39C3E6FD2512FF9D001CEA9A /* AF_DispatchQueue+Alamofire.swift in Sources */,
 				39C3E76E2513803C001CEA9A /* Snapkit_ConstraintConstantTarget.swift in Sources */,
 				39F4B9DB23C42CC00043B25A /* LookaheadEventInfo.swift in Sources */,
@@ -3153,7 +3153,7 @@
 				39F4B99423C42CC00043B25A /* Interval.swift in Sources */,
 				39F4B99D23C42CC00043B25A /* ParseTreeWalker.swift in Sources */,
 				659793991FA716CB00840F6A /* PersonSelector.swift in Sources */,
-				39C3E72E25137C84001CEA9A /* UITableView+Reusable.swift in Sources */,
+				39C3E72E25137C84001CEA9A /* Reusable_UITableView+Reusable.swift in Sources */,
 				39F4B9A223C42CC00043B25A /* ParseTree.swift in Sources */,
 				65BC640C229273B2000F8508 /* ChannelPromise.swift in Sources */,
 				6597939A1FA716CB00840F6A /* UserChatSelector.swift in Sources */,
@@ -3196,7 +3196,7 @@
 				39F4B99C23C42CC00043B25A /* ParseTreeVisitor.swift in Sources */,
 				39F4B9DC23C42CC00043B25A /* ATNConfigSet.swift in Sources */,
 				653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */,
-				39C3E72225133FF7001CEA9A /* SectionedValues.swift in Sources */,
+				39C3E72225133FF7001CEA9A /* Dwifft_SectionedValues.swift in Sources */,
 				659793A31FA716CB00840F6A /* Badge.swift in Sources */,
 				659793A41FA716CB00840F6A /* BaseButton.swift in Sources */,
 				659793A51FA716CB00840F6A /* BaseTableViewCell.swift in Sources */,
@@ -3224,7 +3224,7 @@
 				39F4B9EE23C42CC00043B25A /* EpsilonTransition.swift in Sources */,
 				6512BA0E2271772000757CB2 /* NavigationAvatarView.swift in Sources */,
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
-				39C3E71F25133FF7001CEA9A /* Dwifft.swift in Sources */,
+				39C3E71F25133FF7001CEA9A /* Dwifft_Dwifft.swift in Sources */,
 				9C0951D423D54A3C00DE5799 /* CHPAttributes.swift in Sources */,
 				9C0951D123D54A3C00DE5799 /* CHCodeParser.swift in Sources */,
 				39F4B9B723C42CC00043B25A /* VocabularySingle.swift in Sources */,
@@ -3240,7 +3240,7 @@
 				3931CB1023C334F1005E8444 /* AssetManager.swift in Sources */,
 				39C3E77C2513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift in Sources */,
 				39A7E9E323EAA0D400BB021A /* CHAppMessenger.swift in Sources */,
-				39C3E72C25137C84001CEA9A /* UICollectionView+Reusable.swift in Sources */,
+				39C3E72C25137C84001CEA9A /* Reusable_UICollectionView+Reusable.swift in Sources */,
 				39C3E6F62512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift in Sources */,
 				39F4B9A423C42CC00043B25A /* TokenTagToken.swift in Sources */,
 				22AE76B220E341CB00C18355 /* Mute.swift in Sources */,
@@ -3337,7 +3337,7 @@
 				659793471FA7168A00840F6A /* MessagesState.swift in Sources */,
 				39F4BA1A23C42CC10043B25A /* DiagnosticErrorListener.swift in Sources */,
 				22E213B0233935C8002B3EF4 /* NSMutableAttributedString+Extensions.swift in Sources */,
-				39C3E72A25137C84001CEA9A /* NibOwnerLoadable.swift in Sources */,
+				39C3E72A25137C84001CEA9A /* Reusable_NibOwnerLoadable.swift in Sources */,
 				39F4B9D823C42CC00043B25A /* PredictionContext.swift in Sources */,
 				39C3E7072512FF9D001CEA9A /* AF_MultipartUpload.swift in Sources */,
 				65CB1430206A02F200E456B5 /* SwitchCell.swift in Sources */,
