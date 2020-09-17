@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SnapKit
 
 final class UserChatCell: BaseTableViewCell {
   struct Constants {

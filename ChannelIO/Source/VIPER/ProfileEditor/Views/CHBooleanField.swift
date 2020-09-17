@@ -8,7 +8,6 @@
 
 import RxSwift
 import RxCocoa
-import SnapKit
 
 final class CHBooleanField: BaseView {
   private enum Metrics {

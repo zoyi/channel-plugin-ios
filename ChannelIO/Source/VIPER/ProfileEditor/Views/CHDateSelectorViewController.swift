@@ -7,7 +7,6 @@
 //
 
 import RxSwift
-import SnapKit
 
 class CHDateSelectorView: BaseView {
   private enum Metrics {

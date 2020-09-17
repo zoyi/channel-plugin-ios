@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import SnapKit
 import PhoneNumberKit
 import NVActivityIndicatorView
 

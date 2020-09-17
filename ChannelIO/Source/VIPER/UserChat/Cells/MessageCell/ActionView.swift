@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import RxSwift
-import SnapKit
 
 enum ActionAlignment {
   case left

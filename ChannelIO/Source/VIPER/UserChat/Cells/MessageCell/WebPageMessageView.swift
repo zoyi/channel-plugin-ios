@@ -8,7 +8,6 @@
 
 import Foundation
 import SDWebImage
-import SnapKit
 
 final class WebPageMessageView: BaseView {
   private struct Metrics {

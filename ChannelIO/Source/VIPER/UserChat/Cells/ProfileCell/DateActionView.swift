@@ -7,7 +7,6 @@
 //
 
 import RxSwift
-import SnapKit
 import RxCocoa
 import NVActivityIndicatorView
 

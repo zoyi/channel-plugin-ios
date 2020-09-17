@@ -1,6 +1,5 @@
 import Foundation
 import RxSwift
-import SnapKit
 
 enum InAppNotificationType: String {
   case fullScreen

@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 import ReSwift
-import SnapKit
 
 class MessageCell: BaseTableViewCell {
   weak var presenter: UserChatPresenterProtocol?

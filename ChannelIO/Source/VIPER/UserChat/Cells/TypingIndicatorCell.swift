@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
 import SDWebImage
 
 final class TypingIndicatorCell: BaseTableViewCell {  

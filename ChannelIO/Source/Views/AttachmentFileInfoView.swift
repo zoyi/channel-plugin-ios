@@ -6,8 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import SnapKit
-
 class AttachmentFileInfoView: BaseView {
   private struct Metrics {
     static let containerHeight = 18.f

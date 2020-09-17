@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import SnapKit
 
 class BannerInAppNotificationView: BaseView, InAppNotification {
   private enum Metric {

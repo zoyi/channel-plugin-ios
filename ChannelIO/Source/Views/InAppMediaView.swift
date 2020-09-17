@@ -7,7 +7,6 @@
 //
 
 import SDWebImage
-import SnapKit
 import RxSwift
 
 class InAppMediaView: BaseView {

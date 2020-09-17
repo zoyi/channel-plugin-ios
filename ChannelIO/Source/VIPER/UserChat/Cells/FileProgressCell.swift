@@ -5,10 +5,8 @@
 //  Created by Jam on 2019/12/06.
 //
 
-import SnapKit
 import RxCocoa
 import RxSwift
-
 
 class FileStatusCell: BaseTableViewCell {
   private struct Constants {

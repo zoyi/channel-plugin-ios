@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
 
 class LiveTypingAvatarsView: BaseView {
   let firstAvatarView = AvatarView().then {

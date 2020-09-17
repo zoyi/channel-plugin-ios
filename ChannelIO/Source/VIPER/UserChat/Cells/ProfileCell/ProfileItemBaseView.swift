@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
 import RxSwift
 
 class ProfileItemBaseView: BaseView {

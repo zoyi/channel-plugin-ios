@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import SnapKit
 import UIKit
 
 enum AlertType {

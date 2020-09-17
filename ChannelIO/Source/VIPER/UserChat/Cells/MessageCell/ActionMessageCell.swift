@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import SnapKit
 
 class ActionMessageCell: MessageCell {
   private let actionView = ActionView()

@@ -8,7 +8,6 @@
 
 import UIKit
 import SDWebImage
-import SnapKit
 
 class AvatarView: NeverClearView {
 

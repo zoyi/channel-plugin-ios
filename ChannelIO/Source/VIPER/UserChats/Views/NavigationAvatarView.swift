@@ -8,7 +8,6 @@
 
 import UIKit
 import SDWebImage
-import SnapKit
 
 class NavigationAvatarView: NeverClearView {
   

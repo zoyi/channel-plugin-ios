@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SnapKit
 import RxSwift
 
 class LoungeMoreView: BaseView {

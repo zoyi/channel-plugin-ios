@@ -11,7 +11,6 @@ import ReSwift
 import RxSwift
 import RxCocoa
 import RxSwiftExt
-import SnapKit
 import JGProgressHUD
 import MGSwipeTableCell
 

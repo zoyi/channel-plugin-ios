@@ -8,7 +8,6 @@
 
 import UIKit
 import RxSwift
-import SnapKit
 
 protocol MediaMessageProtocol {
   var mediaCollectionView: MediaCollectionView { get set }

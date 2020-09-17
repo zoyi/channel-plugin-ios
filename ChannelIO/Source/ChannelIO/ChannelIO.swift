@@ -6,7 +6,6 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import SnapKit
 import ReSwift
 import RxSwift
 import UserNotifications

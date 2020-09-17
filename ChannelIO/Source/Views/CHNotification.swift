@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import RxCocoa
-import SnapKit
 
 struct CHNotificationConfiguration {
   var textColor: UIColor

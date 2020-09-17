@@ -7,7 +7,6 @@
 //
 
 import RxSwift
-import SnapKit
 
 final class CountryCodePickerView : BaseView {
   private enum Metric {

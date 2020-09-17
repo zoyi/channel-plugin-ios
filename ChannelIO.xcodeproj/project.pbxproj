@@ -140,6 +140,43 @@
 		39C3E72C25137C84001CEA9A /* UICollectionView+Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72725137C84001CEA9A /* UICollectionView+Reusable.swift */; };
 		39C3E72D25137C84001CEA9A /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72825137C84001CEA9A /* NibLoadable.swift */; };
 		39C3E72E25137C84001CEA9A /* UITableView+Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E72925137C84001CEA9A /* UITableView+Reusable.swift */; };
+		39C3E7582513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7312513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift */; };
+		39C3E7592513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7322513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift */; };
+		39C3E75A2513803C001CEA9A /* Snapkit_ConstraintDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7332513803C001CEA9A /* Snapkit_ConstraintDescription.swift */; };
+		39C3E75B2513803C001CEA9A /* Snapkit_ConstraintMakerPriortizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7342513803C001CEA9A /* Snapkit_ConstraintMakerPriortizable.swift */; };
+		39C3E75C2513803C001CEA9A /* Snapkit_ConstraintAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7352513803C001CEA9A /* Snapkit_ConstraintAttributes.swift */; };
+		39C3E75D2513803C001CEA9A /* Snapkit_ConstraintViewDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7362513803C001CEA9A /* Snapkit_ConstraintViewDSL.swift */; };
+		39C3E75E2513803C001CEA9A /* Snapkit_ConstraintPriorityTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7372513803C001CEA9A /* Snapkit_ConstraintPriorityTarget.swift */; };
+		39C3E75F2513803C001CEA9A /* Snapkit_ConstraintInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7382513803C001CEA9A /* Snapkit_ConstraintInsets.swift */; };
+		39C3E7602513803C001CEA9A /* Snapkit_ConstraintMakerFinalizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7392513803C001CEA9A /* Snapkit_ConstraintMakerFinalizable.swift */; };
+		39C3E7612513803C001CEA9A /* Snapkit_ConstraintDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E73A2513803C001CEA9A /* Snapkit_ConstraintDSL.swift */; };
+		39C3E7622513803C001CEA9A /* Snapkit_ConstraintMakerExtendable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E73B2513803C001CEA9A /* Snapkit_ConstraintMakerExtendable.swift */; };
+		39C3E7632513803C001CEA9A /* Snapkit_ConstraintPriority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E73C2513803C001CEA9A /* Snapkit_ConstraintPriority.swift */; };
+		39C3E7642513803C001CEA9A /* Snapkit_ConstraintInsetTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E73D2513803C001CEA9A /* Snapkit_ConstraintInsetTarget.swift */; };
+		39C3E7652513803C001CEA9A /* Snapkit_ConstraintDirectionalInsetTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E73E2513803C001CEA9A /* Snapkit_ConstraintDirectionalInsetTarget.swift */; };
+		39C3E7672513803C001CEA9A /* Snapkit_ConstraintMakerRelatable+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7402513803C001CEA9A /* Snapkit_ConstraintMakerRelatable+Extensions.swift */; };
+		39C3E7682513803C001CEA9A /* Snapkit_ConstraintConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7412513803C001CEA9A /* Snapkit_ConstraintConfig.swift */; };
+		39C3E7692513803C001CEA9A /* Snapkit_UILayoutSupport+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7422513803C001CEA9A /* Snapkit_UILayoutSupport+Extensions.swift */; };
+		39C3E76A2513803C001CEA9A /* Snapkit_ConstraintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7432513803C001CEA9A /* Snapkit_ConstraintView.swift */; };
+		39C3E76B2513803C001CEA9A /* Snapkit_ConstraintLayoutGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7442513803C001CEA9A /* Snapkit_ConstraintLayoutGuide.swift */; };
+		39C3E76C2513803C001CEA9A /* Snapkit_ConstraintLayoutSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7452513803C001CEA9A /* Snapkit_ConstraintLayoutSupport.swift */; };
+		39C3E76D2513803C001CEA9A /* Snapkit_Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7462513803C001CEA9A /* Snapkit_Typealiases.swift */; };
+		39C3E76E2513803C001CEA9A /* Snapkit_ConstraintConstantTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7472513803C001CEA9A /* Snapkit_ConstraintConstantTarget.swift */; };
+		39C3E76F2513803C001CEA9A /* Snapkit_ConstraintOffsetTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7482513803C001CEA9A /* Snapkit_ConstraintOffsetTarget.swift */; };
+		39C3E7702513803C001CEA9A /* Snapkit_ConstraintMakerEditable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7492513803C001CEA9A /* Snapkit_ConstraintMakerEditable.swift */; };
+		39C3E7712513803C001CEA9A /* Snapkit_ConstraintMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E74A2513803C001CEA9A /* Snapkit_ConstraintMaker.swift */; };
+		39C3E7722513803C001CEA9A /* Snapkit_ConstraintRelation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E74B2513803C001CEA9A /* Snapkit_ConstraintRelation.swift */; };
+		39C3E7732513803C001CEA9A /* Snapkit_ConstraintLayoutGuideDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E74C2513803C001CEA9A /* Snapkit_ConstraintLayoutGuideDSL.swift */; };
+		39C3E7742513803C001CEA9A /* Snapkit_ConstraintView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E74D2513803C001CEA9A /* Snapkit_ConstraintView+Extensions.swift */; };
+		39C3E7752513803C001CEA9A /* Snapkit_ConstraintItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E74E2513803C001CEA9A /* Snapkit_ConstraintItem.swift */; };
+		39C3E7762513803C001CEA9A /* Snapkit_Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E74F2513803C001CEA9A /* Snapkit_Constraint.swift */; };
+		39C3E7772513803C001CEA9A /* Snapkit_Debugging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7502513803C001CEA9A /* Snapkit_Debugging.swift */; };
+		39C3E7782513803C001CEA9A /* Snapkit_ConstraintRelatableTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7512513803C001CEA9A /* Snapkit_ConstraintRelatableTarget.swift */; };
+		39C3E77A2513803C001CEA9A /* Snapkit_LayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7532513803C001CEA9A /* Snapkit_LayoutConstraint.swift */; };
+		39C3E77B2513803C001CEA9A /* Snapkit_ConstraintLayoutGuide+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7542513803C001CEA9A /* Snapkit_ConstraintLayoutGuide+Extensions.swift */; };
+		39C3E77C2513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7552513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift */; };
+		39C3E77D2513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7562513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift */; };
+		39C3E77E2513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */; };
 		39F4B98623C42CC00043B25A /* TokenStreamRewriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */; };
 		39F4B98723C42CC00043B25A /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */; };
 		39F4B98823C42CC00043B25A /* TokenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E823C42CBF0043B25A /* TokenExtension.swift */; };
@@ -732,6 +769,43 @@
 		39C3E72725137C84001CEA9A /* UICollectionView+Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Reusable.swift"; sourceTree = "<group>"; };
 		39C3E72825137C84001CEA9A /* NibLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
 		39C3E72925137C84001CEA9A /* UITableView+Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableView+Reusable.swift"; sourceTree = "<group>"; };
+		39C3E7312513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMultiplierTarget.swift; sourceTree = "<group>"; };
+		39C3E7322513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_LayoutConstraintItem.swift; sourceTree = "<group>"; };
+		39C3E7332513803C001CEA9A /* Snapkit_ConstraintDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintDescription.swift; sourceTree = "<group>"; };
+		39C3E7342513803C001CEA9A /* Snapkit_ConstraintMakerPriortizable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMakerPriortizable.swift; sourceTree = "<group>"; };
+		39C3E7352513803C001CEA9A /* Snapkit_ConstraintAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintAttributes.swift; sourceTree = "<group>"; };
+		39C3E7362513803C001CEA9A /* Snapkit_ConstraintViewDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintViewDSL.swift; sourceTree = "<group>"; };
+		39C3E7372513803C001CEA9A /* Snapkit_ConstraintPriorityTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintPriorityTarget.swift; sourceTree = "<group>"; };
+		39C3E7382513803C001CEA9A /* Snapkit_ConstraintInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintInsets.swift; sourceTree = "<group>"; };
+		39C3E7392513803C001CEA9A /* Snapkit_ConstraintMakerFinalizable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMakerFinalizable.swift; sourceTree = "<group>"; };
+		39C3E73A2513803C001CEA9A /* Snapkit_ConstraintDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintDSL.swift; sourceTree = "<group>"; };
+		39C3E73B2513803C001CEA9A /* Snapkit_ConstraintMakerExtendable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMakerExtendable.swift; sourceTree = "<group>"; };
+		39C3E73C2513803C001CEA9A /* Snapkit_ConstraintPriority.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintPriority.swift; sourceTree = "<group>"; };
+		39C3E73D2513803C001CEA9A /* Snapkit_ConstraintInsetTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintInsetTarget.swift; sourceTree = "<group>"; };
+		39C3E73E2513803C001CEA9A /* Snapkit_ConstraintDirectionalInsetTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintDirectionalInsetTarget.swift; sourceTree = "<group>"; };
+		39C3E7402513803C001CEA9A /* Snapkit_ConstraintMakerRelatable+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Snapkit_ConstraintMakerRelatable+Extensions.swift"; sourceTree = "<group>"; };
+		39C3E7412513803C001CEA9A /* Snapkit_ConstraintConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintConfig.swift; sourceTree = "<group>"; };
+		39C3E7422513803C001CEA9A /* Snapkit_UILayoutSupport+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Snapkit_UILayoutSupport+Extensions.swift"; sourceTree = "<group>"; };
+		39C3E7432513803C001CEA9A /* Snapkit_ConstraintView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintView.swift; sourceTree = "<group>"; };
+		39C3E7442513803C001CEA9A /* Snapkit_ConstraintLayoutGuide.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintLayoutGuide.swift; sourceTree = "<group>"; };
+		39C3E7452513803C001CEA9A /* Snapkit_ConstraintLayoutSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintLayoutSupport.swift; sourceTree = "<group>"; };
+		39C3E7462513803C001CEA9A /* Snapkit_Typealiases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_Typealiases.swift; sourceTree = "<group>"; };
+		39C3E7472513803C001CEA9A /* Snapkit_ConstraintConstantTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintConstantTarget.swift; sourceTree = "<group>"; };
+		39C3E7482513803C001CEA9A /* Snapkit_ConstraintOffsetTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintOffsetTarget.swift; sourceTree = "<group>"; };
+		39C3E7492513803C001CEA9A /* Snapkit_ConstraintMakerEditable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMakerEditable.swift; sourceTree = "<group>"; };
+		39C3E74A2513803C001CEA9A /* Snapkit_ConstraintMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMaker.swift; sourceTree = "<group>"; };
+		39C3E74B2513803C001CEA9A /* Snapkit_ConstraintRelation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintRelation.swift; sourceTree = "<group>"; };
+		39C3E74C2513803C001CEA9A /* Snapkit_ConstraintLayoutGuideDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintLayoutGuideDSL.swift; sourceTree = "<group>"; };
+		39C3E74D2513803C001CEA9A /* Snapkit_ConstraintView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Snapkit_ConstraintView+Extensions.swift"; sourceTree = "<group>"; };
+		39C3E74E2513803C001CEA9A /* Snapkit_ConstraintItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintItem.swift; sourceTree = "<group>"; };
+		39C3E74F2513803C001CEA9A /* Snapkit_Constraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_Constraint.swift; sourceTree = "<group>"; };
+		39C3E7502513803C001CEA9A /* Snapkit_Debugging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_Debugging.swift; sourceTree = "<group>"; };
+		39C3E7512513803C001CEA9A /* Snapkit_ConstraintRelatableTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintRelatableTarget.swift; sourceTree = "<group>"; };
+		39C3E7532513803C001CEA9A /* Snapkit_LayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_LayoutConstraint.swift; sourceTree = "<group>"; };
+		39C3E7542513803C001CEA9A /* Snapkit_ConstraintLayoutGuide+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Snapkit_ConstraintLayoutGuide+Extensions.swift"; sourceTree = "<group>"; };
+		39C3E7552513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintDirectionalInsets.swift; sourceTree = "<group>"; };
+		39C3E7562513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintLayoutSupportDSL.swift; sourceTree = "<group>"; };
+		39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMakerRelatable.swift; sourceTree = "<group>"; };
 		39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenStreamRewriter.swift; sourceTree = "<group>"; };
 		39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		39F4B8E823C42CBF0043B25A /* TokenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenExtension.swift; sourceTree = "<group>"; };
@@ -1385,6 +1459,7 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C3E72F25138032001CEA9A /* Snapkit */,
 				39C3E72425137C5F001CEA9A /* Reusable */,
 				39C3E71925133FF7001CEA9A /* Dwifft */,
 				39C3E635251207D7001CEA9A /* Alamofire */,
@@ -1509,6 +1584,58 @@
 				39C3E72925137C84001CEA9A /* UITableView+Reusable.swift */,
 			);
 			path = Reusable;
+			sourceTree = "<group>";
+		};
+		39C3E72F25138032001CEA9A /* Snapkit */ = {
+			isa = PBXGroup;
+			children = (
+				39C3E7302513803C001CEA9A /* Source */,
+			);
+			path = Snapkit;
+			sourceTree = "<group>";
+		};
+		39C3E7302513803C001CEA9A /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				39C3E7312513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift */,
+				39C3E7322513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift */,
+				39C3E7332513803C001CEA9A /* Snapkit_ConstraintDescription.swift */,
+				39C3E7342513803C001CEA9A /* Snapkit_ConstraintMakerPriortizable.swift */,
+				39C3E7352513803C001CEA9A /* Snapkit_ConstraintAttributes.swift */,
+				39C3E7362513803C001CEA9A /* Snapkit_ConstraintViewDSL.swift */,
+				39C3E7372513803C001CEA9A /* Snapkit_ConstraintPriorityTarget.swift */,
+				39C3E7382513803C001CEA9A /* Snapkit_ConstraintInsets.swift */,
+				39C3E7392513803C001CEA9A /* Snapkit_ConstraintMakerFinalizable.swift */,
+				39C3E73A2513803C001CEA9A /* Snapkit_ConstraintDSL.swift */,
+				39C3E73B2513803C001CEA9A /* Snapkit_ConstraintMakerExtendable.swift */,
+				39C3E73C2513803C001CEA9A /* Snapkit_ConstraintPriority.swift */,
+				39C3E73D2513803C001CEA9A /* Snapkit_ConstraintInsetTarget.swift */,
+				39C3E73E2513803C001CEA9A /* Snapkit_ConstraintDirectionalInsetTarget.swift */,
+				39C3E7402513803C001CEA9A /* Snapkit_ConstraintMakerRelatable+Extensions.swift */,
+				39C3E7412513803C001CEA9A /* Snapkit_ConstraintConfig.swift */,
+				39C3E7422513803C001CEA9A /* Snapkit_UILayoutSupport+Extensions.swift */,
+				39C3E7432513803C001CEA9A /* Snapkit_ConstraintView.swift */,
+				39C3E7442513803C001CEA9A /* Snapkit_ConstraintLayoutGuide.swift */,
+				39C3E7452513803C001CEA9A /* Snapkit_ConstraintLayoutSupport.swift */,
+				39C3E7462513803C001CEA9A /* Snapkit_Typealiases.swift */,
+				39C3E7472513803C001CEA9A /* Snapkit_ConstraintConstantTarget.swift */,
+				39C3E7482513803C001CEA9A /* Snapkit_ConstraintOffsetTarget.swift */,
+				39C3E7492513803C001CEA9A /* Snapkit_ConstraintMakerEditable.swift */,
+				39C3E74A2513803C001CEA9A /* Snapkit_ConstraintMaker.swift */,
+				39C3E74B2513803C001CEA9A /* Snapkit_ConstraintRelation.swift */,
+				39C3E74C2513803C001CEA9A /* Snapkit_ConstraintLayoutGuideDSL.swift */,
+				39C3E74D2513803C001CEA9A /* Snapkit_ConstraintView+Extensions.swift */,
+				39C3E74E2513803C001CEA9A /* Snapkit_ConstraintItem.swift */,
+				39C3E74F2513803C001CEA9A /* Snapkit_Constraint.swift */,
+				39C3E7502513803C001CEA9A /* Snapkit_Debugging.swift */,
+				39C3E7512513803C001CEA9A /* Snapkit_ConstraintRelatableTarget.swift */,
+				39C3E7532513803C001CEA9A /* Snapkit_LayoutConstraint.swift */,
+				39C3E7542513803C001CEA9A /* Snapkit_ConstraintLayoutGuide+Extensions.swift */,
+				39C3E7552513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift */,
+				39C3E7562513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift */,
+				39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		39F4B8E023C42CBF0043B25A /* ANTLR */ = {
@@ -2689,6 +2816,7 @@
 				39F4B9F523C42CC00043B25A /* AtomTransition.swift in Sources */,
 				3931CAF723C333C3005E8444 /* FileProgressCell.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
+				39C3E76A2513803C001CEA9A /* Snapkit_ConstraintView.swift in Sources */,
 				6597934E1FA716CB00840F6A /* PluginActions.swift in Sources */,
 				6597934F1FA716CB00840F6A /* PopupActions.swift in Sources */,
 				39F4BA0323C42CC10043B25A /* BasicBlockStartState.swift in Sources */,
@@ -2705,6 +2833,7 @@
 				39F4BA0B23C42CC10043B25A /* ATNDeserializationOptions.swift in Sources */,
 				39C3E7182512FF9D001CEA9A /* AF_SessionDelegate.swift in Sources */,
 				39F4B9EB23C42CC00043B25A /* LL1Analyzer.swift in Sources */,
+				39C3E7672513803C001CEA9A /* Snapkit_ConstraintMakerRelatable+Extensions.swift in Sources */,
 				9C0951E123D5657400DE5799 /* UIFactory.swift in Sources */,
 				3931CAF523C333C3005E8444 /* MediaCollectionViewCell.swift in Sources */,
 				65AA7AE31FD64C9500D2A8B1 /* CHBot.swift in Sources */,
@@ -2737,10 +2866,12 @@
 				CF52018D24C8139B0010A9AC /* CHDateField.swift in Sources */,
 				22F094F62176E8A00035C777 /* Then.swift in Sources */,
 				655A280420B2699700935C1F /* CompleteActionView.swift in Sources */,
+				39C3E7782513803C001CEA9A /* Snapkit_ConstraintRelatableTarget.swift in Sources */,
 				39F4BA1523C42CC10043B25A /* StarLoopEntryState.swift in Sources */,
 				CF52019324C963620010A9AC /* ProfileDateView.swift in Sources */,
 				6597935D1FA716CB00840F6A /* Array+Extensions.swift in Sources */,
 				39F4B9D023C42CC00043B25A /* IntStream.swift in Sources */,
+				39C3E7582513803C001CEA9A /* Snapkit_ConstraintMultiplierTarget.swift in Sources */,
 				39C3E70E2512FF9D001CEA9A /* AF_Response.swift in Sources */,
 				39C3E7032512FF9D001CEA9A /* AF_RedirectHandler.swift in Sources */,
 				655A280220B2699700935C1F /* ProfilePhoneView.swift in Sources */,
@@ -2767,6 +2898,7 @@
 				659793641FA716CB00840F6A /* UIImage+Extensions.swift in Sources */,
 				39F4B9CF23C42CC00043B25A /* CommonToken.swift in Sources */,
 				39F4B9CE23C42CC00043B25A /* NoViableAltException.swift in Sources */,
+				39C3E75A2513803C001CEA9A /* Snapkit_ConstraintDescription.swift in Sources */,
 				39F4B9F123C42CC00043B25A /* PredictionContextCache.swift in Sources */,
 				9C0951BF23D54A0700DE5799 /* TextBlockParserListener.swift in Sources */,
 				22E2138923392E7C002B3EF4 /* InAppNotification.swift in Sources */,
@@ -2776,6 +2908,7 @@
 				659793661FA716CB00840F6A /* UITableView+Extensions.swift in Sources */,
 				39F4B9B323C42CC00043B25A /* InterpreterRuleContext.swift in Sources */,
 				9C0951D323D54A3C00DE5799 /* CHBulletParser.swift in Sources */,
+				39C3E75E2513803C001CEA9A /* Snapkit_ConstraintPriorityTarget.swift in Sources */,
 				659793671FA716CB00840F6A /* UIView+RACSupport.swift in Sources */,
 				6593788420B26ABC00230248 /* Notifications.swift in Sources */,
 				39F4B99F23C42CC00043B25A /* Tree.swift in Sources */,
@@ -2800,6 +2933,7 @@
 				6556A29A1FA7318A00B80F4E /* ChannelIO.swift in Sources */,
 				39F4B9D923C42CC00043B25A /* DecisionState.swift in Sources */,
 				2266C0C821C1267300A71398 /* CHButtonFactory.swift in Sources */,
+				39C3E76D2513803C001CEA9A /* Snapkit_Typealiases.swift in Sources */,
 				655A280120B2699700935C1F /* PhoneActionView.swift in Sources */,
 				65CB992A226ECAB0004F9DC7 /* SettingPresenter.swift in Sources */,
 				6597936D1FA716CB00840F6A /* CHChannel.swift in Sources */,
@@ -2815,6 +2949,7 @@
 				3910AC24237AC172000549B5 /* ChatState.swift in Sources */,
 				39F4B9C823C42CC00043B25A /* TokenFactory.swift in Sources */,
 				39C3E7022512FF9D001CEA9A /* AF_AFError.swift in Sources */,
+				39C3E7612513803C001CEA9A /* Snapkit_ConstraintDSL.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
 				6512BA362271AA0300757CB2 /* LoungeExternalAppsView.swift in Sources */,
 				6512BA03226EDA2700757CB2 /* SettingHeaderView.swift in Sources */,
@@ -2826,6 +2961,7 @@
 				39F4B9D523C42CC00043B25A /* ContextSensitivityInfo.swift in Sources */,
 				659793721FA716CB00840F6A /* CHEvent.swift in Sources */,
 				6512BA3C2277EBE200757CB2 /* LoungeHeaderViewModel.swift in Sources */,
+				39C3E7692513803C001CEA9A /* Snapkit_UILayoutSupport+Extensions.swift in Sources */,
 				659793731FA716CB00840F6A /* CHFile.swift in Sources */,
 				659793751FA716CB00840F6A /* CHi18n.swift in Sources */,
 				9C0951D623D54A3C00DE5799 /* CHMessageParser.swift in Sources */,
@@ -2833,6 +2969,7 @@
 				657AF3ED21783119001EAA7A /* TargetType.swift in Sources */,
 				39F4B9B623C42CC00043B25A /* ListTokenSource.swift in Sources */,
 				39F4B98E23C42CC00043B25A /* DoubleKeyMap.swift in Sources */,
+				39C3E7682513803C001CEA9A /* Snapkit_ConstraintConfig.swift in Sources */,
 				659C9228229FBDEA005A3EB1 /* LoungeMainHeaderView.swift in Sources */,
 				65CB992C226ECABE004F9DC7 /* SettingInteractor.swift in Sources */,
 				39F4B9FD23C42CC10043B25A /* LexerActionExecutor.swift in Sources */,
@@ -2864,6 +3001,7 @@
 				39C3E72025133FF7001CEA9A /* Dwifft+UIKit.swift in Sources */,
 				39C3E72D25137C84001CEA9A /* NibLoadable.swift in Sources */,
 				39C3E6FD2512FF9D001CEA9A /* AF_DispatchQueue+Alamofire.swift in Sources */,
+				39C3E76E2513803C001CEA9A /* Snapkit_ConstraintConstantTarget.swift in Sources */,
 				39F4B9DB23C42CC00043B25A /* LookaheadEventInfo.swift in Sources */,
 				39C3E70B2512FF9D001CEA9A /* AF_Validation.swift in Sources */,
 				9C0951D723D54A3C00DE5799 /* CHTextParserListener.swift in Sources */,
@@ -2873,6 +3011,7 @@
 				6597937A1FA716CB00840F6A /* CHPlugin.swift in Sources */,
 				39F4B9A623C42CC00043B25A /* TagChunk.swift in Sources */,
 				CF52018F24C813BF0010A9AC /* CHBooleanSelectCell.swift in Sources */,
+				39C3E7722513803C001CEA9A /* Snapkit_ConstraintRelation.swift in Sources */,
 				39F4B9BC23C42CC00043B25A /* DFAState.swift in Sources */,
 				657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */,
 				2252145A224CFB5B00F2C9CE /* PHAsset+Extensions.swift in Sources */,
@@ -2885,12 +3024,14 @@
 				39F4B9CD23C42CC00043B25A /* InputMismatchException.swift in Sources */,
 				39F4B99E23C42CC00043B25A /* AbstractParseTreeVisitor.swift in Sources */,
 				39C3E7142512FF9D001CEA9A /* AF_Combine.swift in Sources */,
+				39C3E7732513803C001CEA9A /* Snapkit_ConstraintLayoutGuideDSL.swift in Sources */,
 				39F4BA0223C42CC10043B25A /* RuleStartState.swift in Sources */,
 				6597937C1FA716CB00840F6A /* CHPush.swift in Sources */,
 				39F4B9D423C42CC00043B25A /* Parser.swift in Sources */,
 				39F4B9F023C42CC00043B25A /* BasicState.swift in Sources */,
 				656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */,
 				39F4B99A23C42CC00043B25A /* ErrorNode.swift in Sources */,
+				39C3E76F2513803C001CEA9A /* Snapkit_ConstraintOffsetTarget.swift in Sources */,
 				6597937E1FA716CB00840F6A /* CHSession.swift in Sources */,
 				39F4B9F723C42CC10043B25A /* LexerMoreAction.swift in Sources */,
 				65CB1428206A02F200E456B5 /* MessageCell.swift in Sources */,
@@ -2899,6 +3040,7 @@
 				659793801FA716CB00840F6A /* CHUserChat.swift in Sources */,
 				22E2138B23392E7C002B3EF4 /* PopupInAppNotificationView.swift in Sources */,
 				659793821FA716CB00840F6A /* CHWebPage.swift in Sources */,
+				39C3E7752513803C001CEA9A /* Snapkit_ConstraintItem.swift in Sources */,
 				655A280320B2699700935C1F /* ProfileItemBaseView.swift in Sources */,
 				39F4B9C223C42CC00043B25A /* TokenStream.swift in Sources */,
 				655A280520B2699700935C1F /* ProfileTextView.swift in Sources */,
@@ -2906,6 +3048,7 @@
 				39F4B9BB23C42CC00043B25A /* LexerDFASerializer.swift in Sources */,
 				65EAE11320EF468500D501FC /* TranslateView.swift in Sources */,
 				39F4B9DE23C42CC00043B25A /* LexerModeAction.swift in Sources */,
+				39C3E7642513803C001CEA9A /* Snapkit_ConstraintInsetTarget.swift in Sources */,
 				39F4B98823C42CC00043B25A /* TokenExtension.swift in Sources */,
 				659793841FA716CB00840F6A /* ModelType.swift in Sources */,
 				65121330224DF47F00737089 /* FullScreenSlideshowViewController.swift in Sources */,
@@ -2923,6 +3066,7 @@
 				39F4BA0A23C42CC10043B25A /* ATNType.swift in Sources */,
 				39F4B9B123C42CC00043B25A /* CommonTokenStream.swift in Sources */,
 				39F4B9BD23C42CC00043B25A /* DFA.swift in Sources */,
+				39C3E7632513803C001CEA9A /* Snapkit_ConstraintPriority.swift in Sources */,
 				3931CAE423C3335D005E8444 /* CHClip.swift in Sources */,
 				39F4BA0723C42CC10043B25A /* RangeTransition.swift in Sources */,
 				659793871FA716CB00840F6A /* UserPromise.swift in Sources */,
@@ -2957,8 +3101,10 @@
 				39F4BA1323C42CC10043B25A /* ArrayPredictionContext.swift in Sources */,
 				6597938D1FA716CB00840F6A /* ChannelReducer.swift in Sources */,
 				39C3E6F52512FF9D001CEA9A /* AF_RequestInterceptor.swift in Sources */,
+				39C3E7772513803C001CEA9A /* Snapkit_Debugging.swift in Sources */,
 				6597938E1FA716CB00840F6A /* UserReducer.swift in Sources */,
 				65CB9919226EBA19004F9DC7 /* LoungeProtocols.swift in Sources */,
+				39C3E7742513803C001CEA9A /* Snapkit_ConstraintView+Extensions.swift in Sources */,
 				39F4B9AE23C42CC00043B25A /* Lexer.swift in Sources */,
 				39F4B9C523C42CC00043B25A /* WritableToken.swift in Sources */,
 				3931CB0823C33432005E8444 /* ChatQueuableItem.swift in Sources */,
@@ -2976,6 +3122,7 @@
 				222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */,
 				39F4B9FC23C42CC10043B25A /* ATNDeserializer.swift in Sources */,
 				3931CB5423C34693005E8444 /* AlignedCollectionViewFlowLayout.swift in Sources */,
+				39C3E7622513803C001CEA9A /* Snapkit_ConstraintMakerExtendable.swift in Sources */,
 				65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */,
 				659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */,
 				6512132E224DF47F00737089 /* UIImageView+Tools.swift in Sources */,
@@ -2985,14 +3132,19 @@
 				657AF3F3217845D7001EAA7A /* CHTargetCondition.swift in Sources */,
 				22342CC91FBEF50800425666 /* CountryCodeState.swift in Sources */,
 				659793961FA716CB00840F6A /* UserChatReducer.swift in Sources */,
+				39C3E76B2513803C001CEA9A /* Snapkit_ConstraintLayoutGuide.swift in Sources */,
 				3931CB0523C33432005E8444 /* ChatQueueService.swift in Sources */,
 				659793971FA716CB00840F6A /* WSocketReducer.swift in Sources */,
 				9CF1098623FA7E5800D42D03 /* Middlewares.swift in Sources */,
 				39F4B9C723C42CC00043B25A /* Recognizer.swift in Sources */,
 				39F4B9F623C42CC00043B25A /* BlockStartState.swift in Sources */,
 				39F4BA1023C42CC10043B25A /* ATN.swift in Sources */,
+				39C3E75F2513803C001CEA9A /* Snapkit_ConstraintInsets.swift in Sources */,
 				659793981FA716CB00840F6A /* MessagesSelector.swift in Sources */,
 				65D358CD21BE4E1F001D6A30 /* CHLink.swift in Sources */,
+				39C3E76C2513803C001CEA9A /* Snapkit_ConstraintLayoutSupport.swift in Sources */,
+				39C3E75D2513803C001CEA9A /* Snapkit_ConstraintViewDSL.swift in Sources */,
+				39C3E75B2513803C001CEA9A /* Snapkit_ConstraintMakerPriortizable.swift in Sources */,
 				39F4B98923C42CC00043B25A /* UUIDExtension.swift in Sources */,
 				3931CB0323C33432005E8444 /* CDNService.swift in Sources */,
 				39F4B9F423C42CC00043B25A /* ATNState.swift in Sources */,
@@ -3008,18 +3160,23 @@
 				6597939B1FA716CB00840F6A /* RestService.swift in Sources */,
 				39F4BA0823C42CC10043B25A /* Transition.swift in Sources */,
 				65CB142C206A02F200E456B5 /* WebPageMessageView.swift in Sources */,
+				39C3E7762513803C001CEA9A /* Snapkit_Constraint.swift in Sources */,
 				6597939C1FA716CB00840F6A /* WsService.swift in Sources */,
 				6597939D1FA716CB00840F6A /* CHUtils.swift in Sources */,
 				39C3E7092512FF9D001CEA9A /* AF_URLConvertible+URLRequestConvertible.swift in Sources */,
+				39C3E77A2513803C001CEA9A /* Snapkit_LayoutConstraint.swift in Sources */,
 				39F4B9B523C42CC00043B25A /* CommonTokenFactory.swift in Sources */,
 				6597939E1FA716CB00840F6A /* CustomQueryEncoding.swift in Sources */,
 				656FBFB320CE16980062C6A9 /* ActionView.swift in Sources */,
 				6597939F1FA716CB00840F6A /* CustomTransform.swift in Sources */,
 				659793A01FA716CB00840F6A /* LocalMessageFactory.swift in Sources */,
+				39C3E77E2513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift in Sources */,
 				659793A11FA716CB00840F6A /* PrefStore.swift in Sources */,
 				39F4BA0423C42CC10043B25A /* WildcardTransition.swift in Sources */,
+				39C3E7702513803C001CEA9A /* Snapkit_ConstraintMakerEditable.swift in Sources */,
 				659793A21FA716CB00840F6A /* AvatarView.swift in Sources */,
 				39F4B99123C42CC00043B25A /* Mutex.swift in Sources */,
+				39C3E7652513803C001CEA9A /* Snapkit_ConstraintDirectionalInsetTarget.swift in Sources */,
 				3931CB5223C3441A005E8444 /* LauncherWindow.swift in Sources */,
 				22E213B2233935F6002B3EF4 /* ShowCompletedChatsSelector.swift in Sources */,
 				39F4B9DD23C42CC00043B25A /* StarLoopbackState.swift in Sources */,
@@ -3027,6 +3184,7 @@
 				22A917E1234BC42C00674083 /* CHMessageViewDelegate.swift in Sources */,
 				3910AC29237AC218000549B5 /* ChatAction.swift in Sources */,
 				39F4B9ED23C42CC00043B25A /* SemanticContext.swift in Sources */,
+				39C3E7592513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift in Sources */,
 				9C0951D523D54A3C00DE5799 /* CHPModels.swift in Sources */,
 				22F0ED9220B53C55008924C1 /* Models.swift in Sources */,
 				39F4B9CB23C42CC00043B25A /* ANTLRFileStream.swift in Sources */,
@@ -3048,6 +3206,7 @@
 				65AA7AE51FD64CC100D2A8B1 /* BotsState.swift in Sources */,
 				39F4B9E323C42CC00043B25A /* RuleStopState.swift in Sources */,
 				39F4B98B23C42CC00043B25A /* CharacterExtension.swift in Sources */,
+				39C3E7712513803C001CEA9A /* Snapkit_ConstraintMaker.swift in Sources */,
 				39F4B9B823C42CC00043B25A /* DefaultErrorStrategy.swift in Sources */,
 				655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */,
 				659793A61FA716CB00840F6A /* BaseView.swift in Sources */,
@@ -3070,6 +3229,7 @@
 				9C0951D123D54A3C00DE5799 /* CHCodeParser.swift in Sources */,
 				39F4B9B723C42CC00043B25A /* VocabularySingle.swift in Sources */,
 				6512BA6922812C0100757CB2 /* SimpleNavigationTitleView.swift in Sources */,
+				39C3E75C2513803C001CEA9A /* Snapkit_ConstraintAttributes.swift in Sources */,
 				39F4B99323C42CC00043B25A /* IntervalSet.swift in Sources */,
 				65121331224DF47F00737089 /* ImageSlideshowItem.swift in Sources */,
 				65BC6408229262D6000F8508 /* ChannelAvailabilityChecker.swift in Sources */,
@@ -3078,6 +3238,7 @@
 				39A328C623C4780D0029AFEE /* YoutubePlayerUtils.swift in Sources */,
 				39F4B9A023C42CC00043B25A /* SyntaxTree.swift in Sources */,
 				3931CB1023C334F1005E8444 /* AssetManager.swift in Sources */,
+				39C3E77C2513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift in Sources */,
 				39A7E9E323EAA0D400BB021A /* CHAppMessenger.swift in Sources */,
 				39C3E72C25137C84001CEA9A /* UICollectionView+Reusable.swift in Sources */,
 				39C3E6F62512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift in Sources */,
@@ -3089,6 +3250,7 @@
 				39F4B98F23C42CC00043B25A /* IntSet.swift in Sources */,
 				3931CAEB23C3338C005E8444 /* VideoPlayerView.swift in Sources */,
 				39F4B9E223C42CC00043B25A /* ActionTransition.swift in Sources */,
+				39C3E77D2513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift in Sources */,
 				6512BA07226EFFA000757CB2 /* SettingHeaderViewModel.swift in Sources */,
 				39F4B98A23C42CC00043B25A /* IntStreamExtension.swift in Sources */,
 				39F4B99723C42CC00043B25A /* BitSet.swift in Sources */,
@@ -3139,6 +3301,7 @@
 				65CB9928226ECAA6004F9DC7 /* SettingView.swift in Sources */,
 				39F4B99223C42CC00043B25A /* CommonUtil.swift in Sources */,
 				39F4BA0123C42CC10043B25A /* DefaultATNConfig.swift in Sources */,
+				39C3E77B2513803C001CEA9A /* Snapkit_ConstraintLayoutGuide+Extensions.swift in Sources */,
 				65CB992E226ECAD5004F9DC7 /* SettingRouter.swift in Sources */,
 				659793451FA7168400840F6A /* AppState.swift in Sources */,
 				39F4B9F323C42CC00043B25A /* LexerAction.swift in Sources */,
@@ -3155,6 +3318,7 @@
 				659793491FA7169100840F6A /* SessionsState.swift in Sources */,
 				6597934C1FA7169900840F6A /* WSocketState.swift in Sources */,
 				39F4B99023C42CC00043B25A /* Stack.swift in Sources */,
+				39C3E7602513803C001CEA9A /* Snapkit_ConstraintMakerFinalizable.swift in Sources */,
 				65CD481821F9BDBF001F0113 /* TableViewAnimator.swift in Sources */,
 				659793461FA7168700840F6A /* ManagersState.swift in Sources */,
 				659C922A229FBDF6005A3EB1 /* LoungeMainFooterView.swift in Sources */,

@@ -10,7 +10,6 @@ import UIKit
 import ReSwift
 import RxSwift
 import JGProgressHUD
-import SnapKit
 
 class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal struct Constants {

@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import ReSwift
-import SnapKit
 
 final class LauncherView : BaseView {
   // MARK: Constant

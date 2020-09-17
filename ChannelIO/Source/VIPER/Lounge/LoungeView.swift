@@ -8,7 +8,6 @@
 
 import UIKit
 import RxSwift
-import SnapKit
 import JGProgressHUD
 
 class LoungeView: BaseViewController, LoungeViewProtocol {

@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
 
 class ProfilePhoneView: ProfileItemBaseView, ProfileContentProtocol {
   let phoneView = PhoneActionView()

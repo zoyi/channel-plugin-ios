@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import JGProgressHUD
-import SnapKit
 
 class ProfileEditorViewController: BaseViewController {
   private enum Metrics {
