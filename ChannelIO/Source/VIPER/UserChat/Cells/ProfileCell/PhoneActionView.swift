@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import PhoneNumberKit
-import NVActivityIndicatorView
 
 final class PhoneActionView: BaseView, Actionable {
   //MARK: Constants

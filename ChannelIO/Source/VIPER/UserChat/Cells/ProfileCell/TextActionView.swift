@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import RxCocoa
-import NVActivityIndicatorView
 
 final class TextActionView: BaseView, Actionable {
   private let submitSubject = PublishSubject<Any?>()

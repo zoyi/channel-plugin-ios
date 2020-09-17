@@ -8,7 +8,6 @@
 
 import RxSwift
 import RxCocoa
-import NVActivityIndicatorView
 
 final class BooleanActionView: BaseView {
   private enum Metric {
