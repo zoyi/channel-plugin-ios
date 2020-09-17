@@ -132,6 +132,9 @@
 		39C3E7142512FF9D001CEA9A /* AF_Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6EF2512FF9D001CEA9A /* AF_Combine.swift */; };
 		39C3E7152512FF9D001CEA9A /* AF_ResponseSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6F02512FF9D001CEA9A /* AF_ResponseSerialization.swift */; };
 		39C3E7182512FF9D001CEA9A /* AF_SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6F32512FF9D001CEA9A /* AF_SessionDelegate.swift */; };
+		39C3E71F25133FF7001CEA9A /* Dwifft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71A25133FF7001CEA9A /* Dwifft.swift */; };
+		39C3E72025133FF7001CEA9A /* Dwifft+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71B25133FF7001CEA9A /* Dwifft+UIKit.swift */; };
+		39C3E72225133FF7001CEA9A /* SectionedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E71D25133FF7001CEA9A /* SectionedValues.swift */; };
 		39F4B98623C42CC00043B25A /* TokenStreamRewriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */; };
 		39F4B98723C42CC00043B25A /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */; };
 		39F4B98823C42CC00043B25A /* TokenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E823C42CBF0043B25A /* TokenExtension.swift */; };
@@ -716,6 +719,9 @@
 		39C3E6EF2512FF9D001CEA9A /* AF_Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_Combine.swift; sourceTree = "<group>"; };
 		39C3E6F02512FF9D001CEA9A /* AF_ResponseSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_ResponseSerialization.swift; sourceTree = "<group>"; };
 		39C3E6F32512FF9D001CEA9A /* AF_SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_SessionDelegate.swift; sourceTree = "<group>"; };
+		39C3E71A25133FF7001CEA9A /* Dwifft.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dwifft.swift; sourceTree = "<group>"; };
+		39C3E71B25133FF7001CEA9A /* Dwifft+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dwifft+UIKit.swift"; sourceTree = "<group>"; };
+		39C3E71D25133FF7001CEA9A /* SectionedValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionedValues.swift; sourceTree = "<group>"; };
 		39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenStreamRewriter.swift; sourceTree = "<group>"; };
 		39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		39F4B8E823C42CBF0043B25A /* TokenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenExtension.swift; sourceTree = "<group>"; };
@@ -1369,6 +1375,7 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C3E71925133FF7001CEA9A /* Dwifft */,
 				39C3E635251207D7001CEA9A /* Alamofire */,
 				39F4B8E023C42CBF0043B25A /* ANTLR */,
 				6586DBB3224DEA8000C018DC /* ImageViewer */,
@@ -1469,6 +1476,16 @@
 				39C3E6F32512FF9D001CEA9A /* AF_SessionDelegate.swift */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		39C3E71925133FF7001CEA9A /* Dwifft */ = {
+			isa = PBXGroup;
+			children = (
+				39C3E71A25133FF7001CEA9A /* Dwifft.swift */,
+				39C3E71B25133FF7001CEA9A /* Dwifft+UIKit.swift */,
+				39C3E71D25133FF7001CEA9A /* SectionedValues.swift */,
+			);
+			path = Dwifft;
 			sourceTree = "<group>";
 		};
 		39F4B8E023C42CBF0043B25A /* ANTLR */ = {
@@ -2820,6 +2837,7 @@
 				65AA7AE71FD64CCF00D2A8B1 /* BotReducer.swift in Sources */,
 				6590FA912068C84E0054B353 /* UserChatPresenter.swift in Sources */,
 				39F4B9D123C42CC00043B25A /* BaseErrorListener.swift in Sources */,
+				39C3E72025133FF7001CEA9A /* Dwifft+UIKit.swift in Sources */,
 				39C3E6FD2512FF9D001CEA9A /* AF_DispatchQueue+Alamofire.swift in Sources */,
 				39F4B9DB23C42CC00043B25A /* LookaheadEventInfo.swift in Sources */,
 				39C3E70B2512FF9D001CEA9A /* AF_Validation.swift in Sources */,
@@ -2994,6 +3012,7 @@
 				39F4B99C23C42CC00043B25A /* ParseTreeVisitor.swift in Sources */,
 				39F4B9DC23C42CC00043B25A /* ATNConfigSet.swift in Sources */,
 				653A6C15206C893F0048163D /* ChannelPluginSettings.swift in Sources */,
+				39C3E72225133FF7001CEA9A /* SectionedValues.swift in Sources */,
 				659793A31FA716CB00840F6A /* Badge.swift in Sources */,
 				659793A41FA716CB00840F6A /* BaseButton.swift in Sources */,
 				659793A51FA716CB00840F6A /* BaseTableViewCell.swift in Sources */,
@@ -3020,6 +3039,7 @@
 				39F4B9EE23C42CC00043B25A /* EpsilonTransition.swift in Sources */,
 				6512BA0E2271772000757CB2 /* NavigationAvatarView.swift in Sources */,
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
+				39C3E71F25133FF7001CEA9A /* Dwifft.swift in Sources */,
 				9C0951D423D54A3C00DE5799 /* CHPAttributes.swift in Sources */,
 				9C0951D123D54A3C00DE5799 /* CHCodeParser.swift in Sources */,
 				39F4B9B723C42CC00043B25A /* VocabularySingle.swift in Sources */,
