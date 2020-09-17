@@ -34,7 +34,7 @@ Pod::Spec.new do |s|
 
   s.frameworks = 'CoreTelephony'
  
-  s.dependency 'Reusable', '~> 4.1'
+  # s.dependency 'Reusable', '~> 4.1'
   s.dependency 'SnapKit', '~> 5.0'
   s.dependency 'SwiftyJSON', '~> 5.0'
   s.dependency 'ReSwift', '~> 5.0'

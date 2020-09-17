@@ -3,7 +3,7 @@ platform :ios, '10.0'
 target 'ChannelIO' do
   use_frameworks!
 
-  pod 'Reusable', '~> 4.1'
+  # pod 'Reusable', '~> 4.1'
   pod 'SnapKit', '~> 5.0'
   pod 'SwiftyJSON', '~> 5.0'
   pod 'ReSwift', '~> 5.0'

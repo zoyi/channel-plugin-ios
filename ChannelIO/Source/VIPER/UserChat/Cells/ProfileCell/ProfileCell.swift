@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Reusable
 import SnapKit
 import RxSwift
 

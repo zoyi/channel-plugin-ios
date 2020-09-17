@@ -5,7 +5,6 @@
 //  Created by Jam on 2019/12/16.
 //
 
-import Reusable
 import UIKit
 
 class BaseCollectionViewCell: UICollectionViewCell, Reusable {
