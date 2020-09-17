@@ -40,7 +40,7 @@ Pod::Spec.new do |s|
   s.dependency 'ReSwift', '~> 5.0'
   s.dependency 'RxSwift', '~> 5.1'
   s.dependency 'RxCocoa', '~> 5.1'
-  s.dependency 'ObjectMapper', '~> 4.2'
+  # s.dependency 'ObjectMapper', '~> 4.2'
   s.dependency 'NVActivityIndicatorView', '~> 4.7'
   # s.dependency 'CHDwifft'
   # s.dependency 'Alamofire', '~> 5.2'

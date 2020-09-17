@@ -8,7 +8,6 @@
 
 import RxSwift
 import Foundation
-import ObjectMapper
 
 struct CHPlugin: ModelType {
   var id = ""
@@ -51,10 +50,10 @@ struct CHPlugin: ModelType {
   }
 }
 
-extension CHPlugin: Mappable {
-  init?(map: Map) { }
+extension CHPlugin: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id                    <- map["id"]
     color                 <- map["color"]
     gradientColor         <- map["gradientColor"]

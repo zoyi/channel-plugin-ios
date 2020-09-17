@@ -6,7 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
 import RxSwift
 
 struct MarketingPromise {
@@ -68,7 +67,7 @@ struct MarketingPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let supportBot = Mapper<CHSupportBotEntryInfo>().map(JSONObject: json) else {
+            guard let supportBot = ObjectMapper_Mapper<CHSupportBotEntryInfo>().map(JSONObject: json) else {
               subscriber.onError(ChannelError.parseError)
               break
             }
@@ -143,7 +142,7 @@ struct MarketingPromise {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
             guard
-              let supportBot = Mapper<CHSupportBotEntryInfo>().map(JSONObject: json.object)
+              let supportBot = ObjectMapper_Mapper<CHSupportBotEntryInfo>().map(JSONObject: json.object)
             else {
               subscriber.onError(ChannelError.parseError)
               break

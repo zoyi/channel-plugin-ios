@@ -9,7 +9,7 @@ target 'ChannelIO' do
   pod 'ReSwift', '~> 5.0'
   pod 'RxSwift', '~> 5.1'
   pod 'RxCocoa', '~> 5.1'
-  pod 'ObjectMapper', '~> 4.2'
+  # pod 'ObjectMapper', '~> 4.2'
   pod 'NVActivityIndicatorView', '~> 4.7'
   # pod 'CHDwifft'
   # pod 'Alamofire', '~> 5.2'

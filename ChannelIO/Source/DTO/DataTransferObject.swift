@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct ChatResponse {
   var userChat: CHUserChat? = nil
@@ -17,10 +16,10 @@ struct ChatResponse {
   var bot: CHBot?
 }
 
-extension ChatResponse : Mappable {
-  init?(map: Map) { }
+extension ChatResponse : ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     userChat          <- map["userChat"]
     session           <- map["session"]
     managers          <- map["managers"]
@@ -39,10 +38,10 @@ struct LoungeResponse {
   var appMessengers: [CHAppMessenger] = []
 }
 
-extension LoungeResponse : Mappable {
-  init?(map: Map) {}
+extension LoungeResponse : ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     channel                 <- map["channel"]
     plugin                  <- map["plugin"]
     bot                     <- map["bot"]
@@ -57,9 +56,9 @@ struct UriResponse {
   var uri: String?
 }
 
-extension UriResponse: Mappable {
-  init?(map: Map) {}
-  mutating func mapping(map: Map) {
+extension UriResponse: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
+  mutating func mapping(map: ObjectMapper_Map) {
     uri         <- map["uri"]
   }
 }
@@ -73,10 +72,10 @@ struct UserChatsResponse {
   var bots: [CHBot]?
 }
 
-extension UserChatsResponse : Mappable {
-  init?(map: Map) {}
+extension UserChatsResponse : ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     sessions          <- map["sessions"]
     next              <- map["next"]
     userChats         <- map["userChats"]
@@ -95,10 +94,10 @@ struct GeoIPInfo {
   var latitude: CGFloat = 0.0
 }
 
-extension GeoIPInfo : Mappable {
-  init?(map:Map) { }
+extension GeoIPInfo : ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map:Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     ip        <- map["ip"]
     country   <- map["country"]
     city      <- map["city"]
@@ -114,23 +113,23 @@ struct CHCountry: Codable {
   var dial = ""
 }
 
-extension CHCountry: Mappable {
-  init?(map: Map) { }
+extension CHCountry: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     name       <- map["name"]
     code       <- map["code"]
     dial       <- (map["callingCode"], StringTransform())
   }
 }
 
-struct CHErrorResponse: Mappable {
+struct CHErrorResponse: ObjectMapper_Mappable {
   var message: String!
   var field: String?
   
-  init?(map: Map) { }
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     message <- map["message"]
     field <- map["field"]
   }

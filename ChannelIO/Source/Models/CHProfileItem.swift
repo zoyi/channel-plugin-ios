@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ObjectMapper
 
 struct CHProfileItem {
   var id            : String = ""
@@ -19,10 +18,10 @@ struct CHProfileItem {
   var fieldType     : ProfileInputType = .text
 }
 
-extension CHProfileItem: Mappable {
-  init?(map: Map) { }
+extension CHProfileItem: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id              <- map["id"]
     key             <- map["key"]
     type            <- map["type"]

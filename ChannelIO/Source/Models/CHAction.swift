@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 enum ActionType: String {
   case select
@@ -31,10 +30,10 @@ struct CHAction {
   }
 }
 
-extension CHAction: Mappable {
-  init?(map: Map) { }
+extension CHAction: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     type        <- map["type"]
     buttons     <- map["buttons"]
     closed      <- map["closed"]
@@ -54,10 +53,10 @@ struct CHActionButton {
   var text: NSAttributedString? = nil
 }
 
-extension CHActionButton: Mappable {
-  init?(map: Map) { }
+extension CHActionButton: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     key <- map["key"]
     
     let rawText = map["text"].currentValue as? String ?? ""
@@ -75,10 +74,10 @@ struct CHSubmit {
   var key: String = ""
 }
 
-extension CHSubmit: Mappable {
-  init?(map: Map) { }
+extension CHSubmit: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id        <- map["id"]
     key       <- map["key"]
   }

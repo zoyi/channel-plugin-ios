@@ -7,7 +7,6 @@
 //
 
 import RxSwift
-import ObjectMapper
 
 struct AppMessengerPromise {
   static func getUri(with name: String) -> Observable<UriResponse> {
@@ -19,7 +18,7 @@ struct AppMessengerPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let uri = Mapper<UriResponse>().map(JSONObject: json.object) else {
+            guard let uri = ObjectMapper_Mapper<UriResponse>().map(JSONObject: json.object) else {
               subscriber.onError(ChannelError.parseError)
               return
             }

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import RxSwift
 
 enum ReviewType: String {
@@ -101,8 +100,8 @@ struct CHUserChat: ModelType {
   }
 }
 
-extension CHUserChat: Mappable {
-  init?(map: Map) {}
+extension CHUserChat: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
   
   init(chatId: String, lastMessageId: String) {
     self.id = chatId
@@ -112,7 +111,7 @@ extension CHUserChat: Mappable {
     self.updatedAt = Date()
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id                <- map["id"]
     userId            <- map["userId"]
     name              <- map["name"]

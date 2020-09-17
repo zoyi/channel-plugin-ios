@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ObjectMapper
 
 struct UserChatPromise {
   static func getChats(
@@ -32,7 +31,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let userChatsResponse = Mapper<UserChatsResponse>()
+            guard let userChatsResponse = ObjectMapper_Mapper<UserChatsResponse>()
               .map(JSONObject: json.object) else {
               subscriber.onError(ChannelError.parseError)
               return
@@ -66,7 +65,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let chatResponse = Mapper<ChatResponse>()
+            guard let chatResponse = ObjectMapper_Mapper<ChatResponse>()
               .map(JSONObject: json.object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
@@ -95,7 +94,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let chatResponse = Mapper<ChatResponse>()
+            guard let chatResponse = ObjectMapper_Mapper<ChatResponse>()
               .map(JSONObject: json.object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
@@ -135,7 +134,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let userChat = Mapper<CHUserChat>()
+            guard let userChat = ObjectMapper_Mapper<CHUserChat>()
               .map(JSONObject: json["userChat"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
@@ -181,7 +180,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["userChat"].object) else {
+            guard let userChat = ObjectMapper_Mapper<CHUserChat>().map(JSONObject: json["userChat"].object) else {
               subscriber.onError(ChannelError.parseError)
               break
             }
@@ -249,19 +248,19 @@ struct UserChatPromise {
             let json = SwiftyJSON_JSON(data)
 
             guard let messages: Array<CHMessage> =
-              Mapper<CHMessage>().mapArray(JSONObject: json["messages"].object) else {
+              ObjectMapper_Mapper<CHMessage>().mapArray(JSONObject: json["messages"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
             }
 
             guard let managers: Array<CHManager> =
-              Mapper<CHManager>().mapArray(JSONObject: json["managers"].object) else {
+              ObjectMapper_Mapper<CHManager>().mapArray(JSONObject: json["managers"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
             }
             
             guard let bots: Array<CHBot> =
-              Mapper<CHBot>().mapArray(JSONObject: json["bots"].object) else {
+              ObjectMapper_Mapper<CHBot>().mapArray(JSONObject: json["bots"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
             }
@@ -330,7 +329,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let message = Mapper<CHMessage>()
+            guard let message = ObjectMapper_Mapper<CHMessage>()
               .map(JSONObject: json["message"].object) else {
               subscriber.onError(ChannelError.parseError)
               break
@@ -373,7 +372,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let message = Mapper<CHMessage>()
+            guard let message = ObjectMapper_Mapper<CHMessage>()
               .map(JSONObject: json["message"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
@@ -430,7 +429,7 @@ struct UserChatPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            let blocks = Mapper<CHMessageBlock>()
+            let blocks = ObjectMapper_Mapper<CHMessageBlock>()
               .mapArray(JSONObject: json["blocks"].object) ?? []
 
             subscriber.onNext(blocks)

@@ -7,17 +7,16 @@
 //
 
 import Foundation
-import ObjectMapper
 
-struct CHError: Mappable {
+struct CHError: ObjectMapper_Mappable {
   var message: String = ""
   var field: String?
 
-  init?(map: Map) {
+  init?(map: ObjectMapper_Map) {
     // initialize CHError
   }
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     message <- map["message"]
     field <- map["field"]
   }

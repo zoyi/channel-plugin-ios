@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import RxSwift
 
 struct CHChannel: CHEntity {
@@ -191,10 +190,10 @@ extension CHChannel: Equatable {
   }
 }
 
-extension CHChannel: Mappable {
-  init?(map: Map) {}
+extension CHChannel: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id                      <- map["id"]
     avatarUrl               <- map["avatarUrl"]
     initial                 <- map["initial"]
@@ -240,10 +239,10 @@ extension TimeRange : ExpressibleByArrayLiteral {
   }
 }
 
-extension TimeRange : Mappable, Equatable {
-  init?(map: Map) { }
+extension TimeRange : ObjectMapper_Mappable, Equatable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     dayOfWeeks <- map["dayOfWeeks"]
     from <- map["from"]
     to <- map["to"]

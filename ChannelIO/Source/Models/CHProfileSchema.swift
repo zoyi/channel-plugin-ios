@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 enum ProfileSchemaType: String {
   case string
@@ -28,10 +27,10 @@ struct CHProfileSchema {
   var updatedAt: Date? = nil
 }
 
-extension CHProfileSchema: Mappable {
-  init?(map: Map) { }
+extension CHProfileSchema: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id                <- map["id"]
     channelId         <- map["channelId"]
     key               <- map["key"]

@@ -6,7 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
 import RxSwift
 
 enum AssetEndPointType: String {
@@ -21,10 +20,10 @@ struct CHAppMessenger: ModelType {
   var name: String = ""
 }
 
-extension CHAppMessenger: Mappable {
-  init?(map: Map) {}
+extension CHAppMessenger: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id                <- map["id"]
     iconKey           <- map["iconKey"]
     name              <- map["name"]

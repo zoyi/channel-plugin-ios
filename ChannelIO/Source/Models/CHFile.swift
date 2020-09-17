@@ -8,7 +8,6 @@
 
 import Foundation
 import MobileCoreServices
-import ObjectMapper
 import Photos
 import RxSwift
 
@@ -201,10 +200,10 @@ struct CHFile: ThumbDisplayable {
   }
 }
 
-extension CHFile: Mappable, Hashable {
-  init?(map: Map) {}
+extension CHFile: ObjectMapper_Mappable, Hashable {
+  init?(map: ObjectMapper_Map) {}
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     type <- map["type"]
     id <- map["id"]
     name <- map["name"]

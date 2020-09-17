@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ObjectMapper
 
 struct EventPromise {
   static func sendEvent(
@@ -35,7 +34,7 @@ struct EventPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let event = Mapper<CHEvent>()
+            guard let event = ObjectMapper_Mapper<CHEvent>()
               .map(JSONObject: json["event"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 return

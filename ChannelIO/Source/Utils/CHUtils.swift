@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import AVKit
 
 class CHUtils {
@@ -326,7 +325,7 @@ class CHUtils {
     let json = SwiftyJSON_JSON(data)
     
     guard
-      let errors: [CHError] = Mapper<CHError>().mapArray(JSONObject: json["errors"].object) else {
+      let errors: [CHError] = ObjectMapper_Mapper<CHError>().mapArray(JSONObject: json["errors"].object) else {
       return nil
     }
     

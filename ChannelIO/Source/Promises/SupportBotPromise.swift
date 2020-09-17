@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ObjectMapper
 
 struct SupportBotPromise {  
   static func createSupportBotUserChat(
@@ -29,7 +28,7 @@ struct SupportBotPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let chatResponse = Mapper<ChatResponse>()
+            guard let chatResponse = ObjectMapper_Mapper<ChatResponse>()
               .map(JSONObject: json.object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
@@ -84,7 +83,7 @@ struct SupportBotPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let message = Mapper<CHMessage>()
+            guard let message = ObjectMapper_Mapper<CHMessage>()
               .map(JSONObject: json["message"].object) else {
               subscriber.onError(ChannelError.parseError)
               break
@@ -118,7 +117,7 @@ struct SupportBotPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let message = Mapper<CHMessage>()
+            guard let message = ObjectMapper_Mapper<CHMessage>()
               .map(JSONObject: json["message"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break

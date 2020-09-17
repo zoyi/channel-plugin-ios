@@ -178,6 +178,30 @@
 		39C3E77D2513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7562513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift */; };
 		39C3E77E2513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */; };
 		39C3E78225138995001CEA9A /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78025138995001CEA9A /* SwiftyJSON.swift */; };
+		39C3E7A125139108001CEA9A /* ObjectMapper_Mappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78725139107001CEA9A /* ObjectMapper_Mappable.swift */; };
+		39C3E7A225139108001CEA9A /* ObjectMapper_CustomDateFormatTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78825139107001CEA9A /* ObjectMapper_CustomDateFormatTransform.swift */; };
+		39C3E7A325139108001CEA9A /* ObjectMapper_HexColorTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78925139107001CEA9A /* ObjectMapper_HexColorTransform.swift */; };
+		39C3E7A525139108001CEA9A /* ObjectMapper_ISO8601DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78B25139107001CEA9A /* ObjectMapper_ISO8601DateTransform.swift */; };
+		39C3E7A625139108001CEA9A /* ObjectMapper_URLTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78C25139107001CEA9A /* ObjectMapper_URLTransform.swift */; };
+		39C3E7A725139108001CEA9A /* ObjectMapper_NSDecimalNumberTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78D25139107001CEA9A /* ObjectMapper_NSDecimalNumberTransform.swift */; };
+		39C3E7A825139108001CEA9A /* ObjectMapper_Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78E25139107001CEA9A /* ObjectMapper_Operators.swift */; };
+		39C3E7A925139108001CEA9A /* ObjectMapper_EnumOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78F25139107001CEA9A /* ObjectMapper_EnumOperators.swift */; };
+		39C3E7AA25139108001CEA9A /* ObjectMapper_EnumTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79025139107001CEA9A /* ObjectMapper_EnumTransform.swift */; };
+		39C3E7AB25139108001CEA9A /* ObjectMapper_DataTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79125139107001CEA9A /* ObjectMapper_DataTransform.swift */; };
+		39C3E7AC25139108001CEA9A /* ObjectMapper_Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79225139107001CEA9A /* ObjectMapper_Mapper.swift */; };
+		39C3E7AD25139108001CEA9A /* ObjectMapper_Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79325139107001CEA9A /* ObjectMapper_Map.swift */; };
+		39C3E7AE25139108001CEA9A /* ObjectMapper_FromJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79425139107001CEA9A /* ObjectMapper_FromJSON.swift */; };
+		39C3E7AF25139108001CEA9A /* ObjectMapper_DictionaryTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79525139107001CEA9A /* ObjectMapper_DictionaryTransform.swift */; };
+		39C3E7B025139108001CEA9A /* ObjectMapper_TransformOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79625139107001CEA9A /* ObjectMapper_TransformOperators.swift */; };
+		39C3E7B125139108001CEA9A /* ObjectMapper_CodableTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79725139107001CEA9A /* ObjectMapper_CodableTransform.swift */; };
+		39C3E7B225139108001CEA9A /* ObjectMapper_ImmutableMappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79825139107001CEA9A /* ObjectMapper_ImmutableMappable.swift */; };
+		39C3E7B325139108001CEA9A /* ObjectMapper_IntegerOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79925139107001CEA9A /* ObjectMapper_IntegerOperators.swift */; };
+		39C3E7B425139108001CEA9A /* ObjectMapper_TransformType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79A25139107001CEA9A /* ObjectMapper_TransformType.swift */; };
+		39C3E7B525139108001CEA9A /* ObjectMapper_MapError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79B25139107001CEA9A /* ObjectMapper_MapError.swift */; };
+		39C3E7B625139108001CEA9A /* ObjectMapper_DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79C25139107001CEA9A /* ObjectMapper_DateTransform.swift */; };
+		39C3E7B725139108001CEA9A /* ObjectMapper_DateFormatterTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79D25139107001CEA9A /* ObjectMapper_DateFormatterTransform.swift */; };
+		39C3E7B925139108001CEA9A /* ObjectMapper_ToJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E79F25139107001CEA9A /* ObjectMapper_ToJSON.swift */; };
+		39C3E7BA25139108001CEA9A /* ObjectMapper_TransformOf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7A025139107001CEA9A /* ObjectMapper_TransformOf.swift */; };
 		39F4B98623C42CC00043B25A /* TokenStreamRewriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */; };
 		39F4B98723C42CC00043B25A /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */; };
 		39F4B98823C42CC00043B25A /* TokenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E823C42CBF0043B25A /* TokenExtension.swift */; };
@@ -808,6 +832,30 @@
 		39C3E7562513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintLayoutSupportDSL.swift; sourceTree = "<group>"; };
 		39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMakerRelatable.swift; sourceTree = "<group>"; };
 		39C3E78025138995001CEA9A /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
+		39C3E78725139107001CEA9A /* ObjectMapper_Mappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_Mappable.swift; sourceTree = "<group>"; };
+		39C3E78825139107001CEA9A /* ObjectMapper_CustomDateFormatTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_CustomDateFormatTransform.swift; sourceTree = "<group>"; };
+		39C3E78925139107001CEA9A /* ObjectMapper_HexColorTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_HexColorTransform.swift; sourceTree = "<group>"; };
+		39C3E78B25139107001CEA9A /* ObjectMapper_ISO8601DateTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_ISO8601DateTransform.swift; sourceTree = "<group>"; };
+		39C3E78C25139107001CEA9A /* ObjectMapper_URLTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_URLTransform.swift; sourceTree = "<group>"; };
+		39C3E78D25139107001CEA9A /* ObjectMapper_NSDecimalNumberTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_NSDecimalNumberTransform.swift; sourceTree = "<group>"; };
+		39C3E78E25139107001CEA9A /* ObjectMapper_Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_Operators.swift; sourceTree = "<group>"; };
+		39C3E78F25139107001CEA9A /* ObjectMapper_EnumOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_EnumOperators.swift; sourceTree = "<group>"; };
+		39C3E79025139107001CEA9A /* ObjectMapper_EnumTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_EnumTransform.swift; sourceTree = "<group>"; };
+		39C3E79125139107001CEA9A /* ObjectMapper_DataTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_DataTransform.swift; sourceTree = "<group>"; };
+		39C3E79225139107001CEA9A /* ObjectMapper_Mapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_Mapper.swift; sourceTree = "<group>"; };
+		39C3E79325139107001CEA9A /* ObjectMapper_Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_Map.swift; sourceTree = "<group>"; };
+		39C3E79425139107001CEA9A /* ObjectMapper_FromJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_FromJSON.swift; sourceTree = "<group>"; };
+		39C3E79525139107001CEA9A /* ObjectMapper_DictionaryTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_DictionaryTransform.swift; sourceTree = "<group>"; };
+		39C3E79625139107001CEA9A /* ObjectMapper_TransformOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_TransformOperators.swift; sourceTree = "<group>"; };
+		39C3E79725139107001CEA9A /* ObjectMapper_CodableTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_CodableTransform.swift; sourceTree = "<group>"; };
+		39C3E79825139107001CEA9A /* ObjectMapper_ImmutableMappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_ImmutableMappable.swift; sourceTree = "<group>"; };
+		39C3E79925139107001CEA9A /* ObjectMapper_IntegerOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_IntegerOperators.swift; sourceTree = "<group>"; };
+		39C3E79A25139107001CEA9A /* ObjectMapper_TransformType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_TransformType.swift; sourceTree = "<group>"; };
+		39C3E79B25139107001CEA9A /* ObjectMapper_MapError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_MapError.swift; sourceTree = "<group>"; };
+		39C3E79C25139107001CEA9A /* ObjectMapper_DateTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_DateTransform.swift; sourceTree = "<group>"; };
+		39C3E79D25139107001CEA9A /* ObjectMapper_DateFormatterTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_DateFormatterTransform.swift; sourceTree = "<group>"; };
+		39C3E79F25139107001CEA9A /* ObjectMapper_ToJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_ToJSON.swift; sourceTree = "<group>"; };
+		39C3E7A025139107001CEA9A /* ObjectMapper_TransformOf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapper_TransformOf.swift; sourceTree = "<group>"; };
 		39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenStreamRewriter.swift; sourceTree = "<group>"; };
 		39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		39F4B8E823C42CBF0043B25A /* TokenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenExtension.swift; sourceTree = "<group>"; };
@@ -1461,6 +1509,7 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C3E785251390FA001CEA9A /* ObjectMapper */,
 				39C3E77F25138995001CEA9A /* SwiftyJSON */,
 				39C3E72F25138032001CEA9A /* Snapkit */,
 				39C3E72425137C5F001CEA9A /* Reusable */,
@@ -1647,6 +1696,45 @@
 				39C3E78025138995001CEA9A /* SwiftyJSON.swift */,
 			);
 			path = SwiftyJSON;
+			sourceTree = "<group>";
+		};
+		39C3E785251390FA001CEA9A /* ObjectMapper */ = {
+			isa = PBXGroup;
+			children = (
+				39C3E78625139107001CEA9A /* Sources */,
+			);
+			path = ObjectMapper;
+			sourceTree = "<group>";
+		};
+		39C3E78625139107001CEA9A /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				39C3E78725139107001CEA9A /* ObjectMapper_Mappable.swift */,
+				39C3E78825139107001CEA9A /* ObjectMapper_CustomDateFormatTransform.swift */,
+				39C3E78925139107001CEA9A /* ObjectMapper_HexColorTransform.swift */,
+				39C3E78B25139107001CEA9A /* ObjectMapper_ISO8601DateTransform.swift */,
+				39C3E78C25139107001CEA9A /* ObjectMapper_URLTransform.swift */,
+				39C3E78D25139107001CEA9A /* ObjectMapper_NSDecimalNumberTransform.swift */,
+				39C3E78E25139107001CEA9A /* ObjectMapper_Operators.swift */,
+				39C3E78F25139107001CEA9A /* ObjectMapper_EnumOperators.swift */,
+				39C3E79025139107001CEA9A /* ObjectMapper_EnumTransform.swift */,
+				39C3E79125139107001CEA9A /* ObjectMapper_DataTransform.swift */,
+				39C3E79225139107001CEA9A /* ObjectMapper_Mapper.swift */,
+				39C3E79325139107001CEA9A /* ObjectMapper_Map.swift */,
+				39C3E79425139107001CEA9A /* ObjectMapper_FromJSON.swift */,
+				39C3E79525139107001CEA9A /* ObjectMapper_DictionaryTransform.swift */,
+				39C3E79625139107001CEA9A /* ObjectMapper_TransformOperators.swift */,
+				39C3E79725139107001CEA9A /* ObjectMapper_CodableTransform.swift */,
+				39C3E79825139107001CEA9A /* ObjectMapper_ImmutableMappable.swift */,
+				39C3E79925139107001CEA9A /* ObjectMapper_IntegerOperators.swift */,
+				39C3E79A25139107001CEA9A /* ObjectMapper_TransformType.swift */,
+				39C3E79B25139107001CEA9A /* ObjectMapper_MapError.swift */,
+				39C3E79C25139107001CEA9A /* ObjectMapper_DateTransform.swift */,
+				39C3E79D25139107001CEA9A /* ObjectMapper_DateFormatterTransform.swift */,
+				39C3E79F25139107001CEA9A /* ObjectMapper_ToJSON.swift */,
+				39C3E7A025139107001CEA9A /* ObjectMapper_TransformOf.swift */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		39F4B8E023C42CBF0043B25A /* ANTLR */ = {
@@ -2826,6 +2914,7 @@
 				39C3E72B25137C84001CEA9A /* Reusable_Reusable.swift in Sources */,
 				39F4B9F523C42CC00043B25A /* AtomTransition.swift in Sources */,
 				3931CAF723C333C3005E8444 /* FileProgressCell.swift in Sources */,
+				39C3E7AE25139108001CEA9A /* ObjectMapper_FromJSON.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
 				39C3E76A2513803C001CEA9A /* Snapkit_ConstraintView.swift in Sources */,
 				6597934E1FA716CB00840F6A /* PluginActions.swift in Sources */,
@@ -2841,6 +2930,7 @@
 				22A917E3234BC42C00674083 /* CHMessageViewController.swift in Sources */,
 				659793541FA716CB00840F6A /* WSocketActions.swift in Sources */,
 				659793551FA716CB00840F6A /* BaseNavigationController.swift in Sources */,
+				39C3E7B525139108001CEA9A /* ObjectMapper_MapError.swift in Sources */,
 				39F4BA0B23C42CC10043B25A /* ATNDeserializationOptions.swift in Sources */,
 				39C3E7182512FF9D001CEA9A /* AF_SessionDelegate.swift in Sources */,
 				39F4B9EB23C42CC00043B25A /* LL1Analyzer.swift in Sources */,
@@ -2858,6 +2948,7 @@
 				9CF1098523FA7E5800D42D03 /* MiddlewareModel.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
 				659793581FA716CB00840F6A /* MainNavigationController.swift in Sources */,
+				39C3E7A225139108001CEA9A /* ObjectMapper_CustomDateFormatTransform.swift in Sources */,
 				3974A0DC24C6C0AE00167157 /* CHMessageButton.swift in Sources */,
 				39F4B9A323C42CC00043B25A /* TextChunk.swift in Sources */,
 				6590FA932068C85A0054B353 /* UserChatView.swift in Sources */,
@@ -2892,6 +2983,7 @@
 				39F4B9C123C42CC00043B25A /* ANTLRErrorStrategy.swift in Sources */,
 				9C0951D223D54A3C00DE5799 /* CHMessageParserConfig.swift in Sources */,
 				659793611FA716CB00840F6A /* String+Utils.swift in Sources */,
+				39C3E7B325139108001CEA9A /* ObjectMapper_IntegerOperators.swift in Sources */,
 				22A7BB7820CED8440098DB8B /* LiveTypingAvatarsView.swift in Sources */,
 				65CB1429206A02F200E456B5 /* MessageCellModel.swift in Sources */,
 				659793621FA716CB00840F6A /* UIButton+Extensions.swift in Sources */,
@@ -2948,6 +3040,7 @@
 				655A280120B2699700935C1F /* PhoneActionView.swift in Sources */,
 				65CB992A226ECAB0004F9DC7 /* SettingPresenter.swift in Sources */,
 				6597936D1FA716CB00840F6A /* CHChannel.swift in Sources */,
+				39C3E7AB25139108001CEA9A /* ObjectMapper_DataTransform.swift in Sources */,
 				6597936E1FA716CB00840F6A /* CHColors.swift in Sources */,
 				65CB9923226EC05F004F9DC7 /* LoungeRouter.swift in Sources */,
 				3931CB0E23C33469005E8444 /* Data+Extensions.swift in Sources */,
@@ -2973,6 +3066,7 @@
 				659793721FA716CB00840F6A /* CHEvent.swift in Sources */,
 				6512BA3C2277EBE200757CB2 /* LoungeHeaderViewModel.swift in Sources */,
 				39C3E7692513803C001CEA9A /* Snapkit_UILayoutSupport+Extensions.swift in Sources */,
+				39C3E7A525139108001CEA9A /* ObjectMapper_ISO8601DateTransform.swift in Sources */,
 				659793731FA716CB00840F6A /* CHFile.swift in Sources */,
 				659793751FA716CB00840F6A /* CHi18n.swift in Sources */,
 				9C0951D623D54A3C00DE5799 /* CHMessageParser.swift in Sources */,
@@ -3023,16 +3117,19 @@
 				6597937A1FA716CB00840F6A /* CHPlugin.swift in Sources */,
 				39F4B9A623C42CC00043B25A /* TagChunk.swift in Sources */,
 				CF52018F24C813BF0010A9AC /* CHBooleanSelectCell.swift in Sources */,
+				39C3E7A725139108001CEA9A /* ObjectMapper_NSDecimalNumberTransform.swift in Sources */,
 				39C3E7722513803C001CEA9A /* Snapkit_ConstraintRelation.swift in Sources */,
 				39F4B9BC23C42CC00043B25A /* DFAState.swift in Sources */,
 				657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */,
 				2252145A224CFB5B00F2C9CE /* PHAsset+Extensions.swift in Sources */,
 				6597937B1FA716CB00840F6A /* CHImageMeta.swift in Sources */,
 				22A917E2234BC42C00674083 /* CHMessageViewController+MessageViewDelegate.swift in Sources */,
+				39C3E7BA25139108001CEA9A /* ObjectMapper_TransformOf.swift in Sources */,
 				39F4B9BF23C42CC00043B25A /* RuntimeMetaData.swift in Sources */,
 				65121333224DF47F00737089 /* InputSource.swift in Sources */,
 				9C0951EA23D5778B00DE5799 /* UserChatView+DataSource.swift in Sources */,
 				39F4B9FA23C42CC10043B25A /* AbstractPredicateTransition.swift in Sources */,
+				39C3E7B425139108001CEA9A /* ObjectMapper_TransformType.swift in Sources */,
 				39F4B9CD23C42CC00043B25A /* InputMismatchException.swift in Sources */,
 				39F4B99E23C42CC00043B25A /* AbstractParseTreeVisitor.swift in Sources */,
 				39C3E7142512FF9D001CEA9A /* AF_Combine.swift in Sources */,
@@ -3047,6 +3144,7 @@
 				6597937E1FA716CB00840F6A /* CHSession.swift in Sources */,
 				39F4B9F723C42CC10043B25A /* LexerMoreAction.swift in Sources */,
 				65CB1428206A02F200E456B5 /* MessageCell.swift in Sources */,
+				39C3E7B125139108001CEA9A /* ObjectMapper_CodableTransform.swift in Sources */,
 				6597937F1FA716CB00840F6A /* CHUser.swift in Sources */,
 				CF52019724C965D00010A9AC /* BooleanActionView.swift in Sources */,
 				659793801FA716CB00840F6A /* CHUserChat.swift in Sources */,
@@ -3070,6 +3168,7 @@
 				39C3E6F82512FF9D001CEA9A /* AF_URLSessionConfiguration+Alamofire.swift in Sources */,
 				39F4B99B23C42CC00043B25A /* TerminalNode.swift in Sources */,
 				9CCB5FB5237E9B350030ED66 /* DataTransferObject.swift in Sources */,
+				39C3E7B925139108001CEA9A /* ObjectMapper_ToJSON.swift in Sources */,
 				657AF3EB2178302A001EAA7A /* TargetEvaluatorService.swift in Sources */,
 				221EBD7622B0D8E700066E0A /* LoungeMoreView.swift in Sources */,
 				222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */,
@@ -3083,6 +3182,8 @@
 				39F4BA0723C42CC10043B25A /* RangeTransition.swift in Sources */,
 				659793871FA716CB00840F6A /* UserPromise.swift in Sources */,
 				3931CB0C23C33469005E8444 /* Int+Extension.swift in Sources */,
+				39C3E7B225139108001CEA9A /* ObjectMapper_ImmutableMappable.swift in Sources */,
+				39C3E7AF25139108001CEA9A /* ObjectMapper_DictionaryTransform.swift in Sources */,
 				3931CAEC23C3338C005E8444 /* MediaCollectionView.swift in Sources */,
 				39C3E7102512FF9D001CEA9A /* AF_Result+Alamofire.swift in Sources */,
 				39F4B9FE23C42CC10043B25A /* DecisionEventInfo.swift in Sources */,
@@ -3131,6 +3232,7 @@
 				39F4B9B923C42CC00043B25A /* ParserInterpreter.swift in Sources */,
 				39F4B9DF23C42CC00043B25A /* LexerActionType.swift in Sources */,
 				659793921FA716CB00840F6A /* PopupReducer.swift in Sources */,
+				39C3E7AC25139108001CEA9A /* ObjectMapper_Mapper.swift in Sources */,
 				222086BA1FBAB28D002CFA88 /* CHTypingEntity.swift in Sources */,
 				39F4B9FC23C42CC10043B25A /* ATNDeserializer.swift in Sources */,
 				3931CB5423C34693005E8444 /* AlignedCollectionViewFlowLayout.swift in Sources */,
@@ -3141,6 +3243,7 @@
 				3931CB0D23C33469005E8444 /* Character+Extensions.swift in Sources */,
 				3964D97B2410F910005B1282 /* AlertView.swift in Sources */,
 				659793951FA716CB00840F6A /* UIReducer.swift in Sources */,
+				39C3E7A925139108001CEA9A /* ObjectMapper_EnumOperators.swift in Sources */,
 				657AF3F3217845D7001EAA7A /* CHTargetCondition.swift in Sources */,
 				22342CC91FBEF50800425666 /* CountryCodeState.swift in Sources */,
 				659793961FA716CB00840F6A /* UserChatReducer.swift in Sources */,
@@ -3154,6 +3257,7 @@
 				39C3E75F2513803C001CEA9A /* Snapkit_ConstraintInsets.swift in Sources */,
 				659793981FA716CB00840F6A /* MessagesSelector.swift in Sources */,
 				65D358CD21BE4E1F001D6A30 /* CHLink.swift in Sources */,
+				39C3E7B725139108001CEA9A /* ObjectMapper_DateFormatterTransform.swift in Sources */,
 				39C3E76C2513803C001CEA9A /* Snapkit_ConstraintLayoutSupport.swift in Sources */,
 				39C3E75D2513803C001CEA9A /* Snapkit_ConstraintViewDSL.swift in Sources */,
 				39C3E75B2513803C001CEA9A /* Snapkit_ConstraintMakerPriortizable.swift in Sources */,
@@ -3233,6 +3337,7 @@
 				39F4BA0C23C42CC10043B25A /* PrecedencePredicateTransition.swift in Sources */,
 				659793B51FA716CB00840F6A /* NewMessageBannerView.swift in Sources */,
 				3931CAE523C3335D005E8444 /* FileCellModel.swift in Sources */,
+				39C3E7B025139108001CEA9A /* ObjectMapper_TransformOperators.swift in Sources */,
 				39F4B9EE23C42CC00043B25A /* EpsilonTransition.swift in Sources */,
 				6512BA0E2271772000757CB2 /* NavigationAvatarView.swift in Sources */,
 				655A280620B2699700935C1F /* ProfileExtendableView.swift in Sources */,
@@ -3270,6 +3375,7 @@
 				39F4B98623C42CC00043B25A /* TokenStreamRewriter.swift in Sources */,
 				9C0951C023D54A0700DE5799 /* TextBlockLexer.swift in Sources */,
 				39F4BA1123C42CC10043B25A /* LexerTypeAction.swift in Sources */,
+				39C3E7AA25139108001CEA9A /* ObjectMapper_EnumTransform.swift in Sources */,
 				6512BA05226EF15A00757CB2 /* KeyValueCell.swift in Sources */,
 				659793BD1FA716CB00840F6A /* CHPhoneField.swift in Sources */,
 				22A917E4234BC42C00674083 /* CHMessageTextView.swift in Sources */,
@@ -3284,6 +3390,7 @@
 				659793BF1FA716CB00840F6A /* CountryCodePickerView.swift in Sources */,
 				39C3E7112512FF9D001CEA9A /* AF_Request.swift in Sources */,
 				6517FC37229CF05C00B64DB4 /* FluidButton.swift in Sources */,
+				39C3E7A325139108001CEA9A /* ObjectMapper_HexColorTransform.swift in Sources */,
 				659793C31FA716CB00840F6A /* ErrorToastView.swift in Sources */,
 				39F4B9B223C42CC00043B25A /* LexerNoViableAltException.swift in Sources */,
 				659793C41FA716CB00840F6A /* LauncherView.swift in Sources */,
@@ -3296,8 +3403,10 @@
 				39F4B9E923C42CC00043B25A /* LexerCustomAction.swift in Sources */,
 				39F4B9EF23C42CC00043B25A /* LookupATNConfig.swift in Sources */,
 				39F4B99923C42CC00043B25A /* ANTLRException.swift in Sources */,
+				39C3E7A825139108001CEA9A /* ObjectMapper_Operators.swift in Sources */,
 				65C0FFDA2003099F005FD3F2 /* WatermarkView.swift in Sources */,
 				659793C71FA716CB00840F6A /* NavigationItem.swift in Sources */,
+				39C3E7B625139108001CEA9A /* ObjectMapper_DateTransform.swift in Sources */,
 				223DDE45228C1F46005B9905 /* CHNotification.swift in Sources */,
 				39C3E6FF2512FF9D001CEA9A /* AF_Protected.swift in Sources */,
 				65121337224DF50E00737089 /* SDWebImageSource.swift in Sources */,
@@ -3312,6 +3421,7 @@
 				3931CAF923C333FC005E8444 /* GradientView.swift in Sources */,
 				65CB9928226ECAA6004F9DC7 /* SettingView.swift in Sources */,
 				39F4B99223C42CC00043B25A /* CommonUtil.swift in Sources */,
+				39C3E7A125139108001CEA9A /* ObjectMapper_Mappable.swift in Sources */,
 				39F4BA0123C42CC10043B25A /* DefaultATNConfig.swift in Sources */,
 				39C3E77B2513803C001CEA9A /* Snapkit_ConstraintLayoutGuide+Extensions.swift in Sources */,
 				65CB992E226ECAD5004F9DC7 /* SettingRouter.swift in Sources */,
@@ -3321,6 +3431,7 @@
 				39F4B9E023C42CC00043B25A /* LexerATNConfig.swift in Sources */,
 				39F4B9AA23C42CC00043B25A /* RuleTagToken.swift in Sources */,
 				39C3E6F92512FF9D001CEA9A /* AF_Session.swift in Sources */,
+				39C3E7A625139108001CEA9A /* ObjectMapper_URLTransform.swift in Sources */,
 				39C3E70D2512FF9D001CEA9A /* AF_AuthenticationInterceptor.swift in Sources */,
 				65CB1432206A02F200E456B5 /* TypingIndicatorCell.swift in Sources */,
 				39F4B9BE23C42CC00043B25A /* RuleContext.swift in Sources */,
@@ -3343,6 +3454,7 @@
 				39F4B9D723C42CC00043B25A /* LexerPushModeAction.swift in Sources */,
 				398205D423C5C99E008814B4 /* AttachmentFileInfoView.swift in Sources */,
 				39F4B9FB23C42CC10043B25A /* AmbiguityInfo.swift in Sources */,
+				39C3E7AD25139108001CEA9A /* ObjectMapper_Map.swift in Sources */,
 				39F4BA1C23C42CC10043B25A /* ANTLRInputStream.swift in Sources */,
 				223726071FBEEF370097F22B /* CountryCodeReducer.swift in Sources */,
 				39C3E70F2512FF9D001CEA9A /* AF_Alamofire.swift in Sources */,

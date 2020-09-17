@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import RxSwift
 
 struct CHUser: CHEntity {
@@ -34,8 +33,8 @@ struct CHUser: CHEntity {
   var unsubscribed: Bool = false
   }
 
-extension CHUser: Mappable {
-  init?(map: Map) { }
+extension CHUser: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
 
   init(id: String,
        name: String,
@@ -49,7 +48,7 @@ extension CHUser: Mappable {
     self.profile = profile
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id              <- map["id"]
     memberId        <- map["memberId"]
     veilId          <- map["veilId"]

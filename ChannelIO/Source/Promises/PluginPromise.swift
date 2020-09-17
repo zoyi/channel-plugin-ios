@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ObjectMapper
 
 struct PluginPromise {
   static func registerPushToken(token: String) -> Observable<Any?> {
@@ -141,12 +140,12 @@ struct PluginPromise {
           switch response.result{
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let plugin = Mapper<CHPlugin>()
+            guard let plugin = ObjectMapper_Mapper<CHPlugin>()
               .map(JSONObject: json["plugin"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 return
               }
-            let bot = Mapper<CHBot>()
+            let bot = ObjectMapper_Mapper<CHBot>()
               .map(JSONObject: json["bot"].object)
             subscriber.onNext((plugin, bot))
             subscriber.onCompleted()
@@ -171,13 +170,11 @@ struct PluginPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            let result = Mapper<BootResponse>().map(JSONObject: json.object)
+            let result = ObjectMapper_Mapper<BootResponse>().map(JSONObject: json.object)
             
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
-            let json = SwiftyJSON_JSON(response.data)
-            print(json)
             subscriber.onError(ChannelError.serverError(
               msg: error.localizedDescription
             ))
@@ -226,7 +223,7 @@ struct PluginPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            let profiles = Mapper<CHProfileSchema>()
+            let profiles = ObjectMapper_Mapper<CHProfileSchema>()
               .mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
             subscriber.onNext(profiles)
             subscriber.onCompleted()

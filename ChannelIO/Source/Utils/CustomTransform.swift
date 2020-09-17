@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import ObjectMapper
 
-class CustomDateTransform: TransformType {
+class CustomDateTransform: ObjectMapper_TransformType {
   public typealias Object = Date
   public typealias JSON = Double
 
@@ -31,7 +30,7 @@ class CustomDateTransform: TransformType {
   }
 }
 
-struct StringTransform: TransformType {
+struct StringTransform: ObjectMapper_TransformType {
   func transformFromJSON(_ value: Any?) -> String? {
     return value.flatMap(String.init(describing:))
   }
@@ -41,7 +40,7 @@ struct StringTransform: TransformType {
   }
 }
 
-class CustomURLTransform: TransformType {
+class CustomURLTransform: ObjectMapper_TransformType {
   public typealias Object = URL
   public typealias JSON = String
 
@@ -60,7 +59,7 @@ class CustomURLTransform: TransformType {
   }
 }
 
-class CustomBlockTransform: TransformType {
+class CustomBlockTransform: ObjectMapper_TransformType {
   static var emojiMap = CHUtils.emojiMap()
   var parser: CHMessageParser
 
@@ -74,7 +73,7 @@ class CustomBlockTransform: TransformType {
   }
 
   open func transformFromJSON(_ value: Any?) -> CHMessageBlock? {
-    if var block = Mapper<CHMessageBlock>().map(JSONObject: value) {
+    if var block = ObjectMapper_Mapper<CHMessageBlock>().map(JSONObject: value) {
       let text = self.parser.parse(block: block)
       block.displayText = text
       block.isOnlyEmoji = self.parser.listener?.isOnlyEmoji ?? false

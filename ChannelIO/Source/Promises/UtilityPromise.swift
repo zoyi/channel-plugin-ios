@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ObjectMapper
 
 struct UtilityPromise {
   static func getGeoIP() -> Observable<GeoIPInfo> {
@@ -20,7 +19,7 @@ struct UtilityPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
-            guard let geoData: GeoIPInfo = Mapper<GeoIPInfo>()
+            guard let geoData: GeoIPInfo = ObjectMapper_Mapper<GeoIPInfo>()
               .map(JSONObject: json["geoIp"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
@@ -55,7 +54,7 @@ struct UtilityPromise {
           switch response.result {
           case .success(let data):
             let json:SwiftyJSON_JSON = SwiftyJSON_JSON(data)
-            guard let countries =  Mapper<CHCountry>()
+            guard let countries =  ObjectMapper_Mapper<CHCountry>()
               .mapArray(JSONObject: json.object) else {
                 subscriber.onNext([])
                 subscriber.onCompleted()

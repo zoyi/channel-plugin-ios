@@ -8,7 +8,6 @@
 
 import Foundation
 import SocketIO
-import ObjectMapper
 
 struct CHTypingEntity: SocketData {
   var action = ""
@@ -45,10 +44,10 @@ struct CHTypingEntity: SocketData {
   }
 }
 
-extension CHTypingEntity: Mappable {
-  init?(map: Map) { }
+extension CHTypingEntity: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     action          <- map["action"]
     chatId          <- map["channelId"]
     chatType        <- map["chatType"]

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import RxSwift
 import MobileCoreServices
 import AVFoundation
@@ -165,7 +164,7 @@ extension CHMessage: CHPopupDisplayable {
   }
 }
 
-extension CHMessage: Mappable {
+extension CHMessage: ObjectMapper_Mappable {
   init(
     chatId: String,
     blocks: [CHMessageBlock],
@@ -324,11 +323,11 @@ extension CHMessage: Mappable {
     self.progress = 0
   }
   
-  init?(map: Map) {
+  init?(map: ObjectMapper_Map) {
     self.createdAt = Date()
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id          <- map["id"]
     channelId   <- map["channelId"]
     chatType    <- map["chatType"]

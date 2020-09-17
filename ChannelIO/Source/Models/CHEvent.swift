@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import RxSwift
 
 enum CHDefaultEvent: String {
@@ -39,13 +38,13 @@ extension CHEvent {
   }
 }
 
-extension CHEvent: Mappable {
-  init?(map: Map) {
+extension CHEvent: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {
     self.createdAt = Date()
     self.expireAt = Date()
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id              <- map["id"]
     channelId       <- map["channelId"]
     userId          <- map["userId"]

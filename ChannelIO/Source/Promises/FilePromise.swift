@@ -5,7 +5,6 @@
 //  Created by Jam on 2019/12/04.
 //
 
-import ObjectMapper
 import RxSwift
 
 struct FilePromise {

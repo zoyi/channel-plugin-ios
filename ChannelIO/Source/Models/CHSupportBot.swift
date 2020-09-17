@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import RxSwift
 
 protocol CHEvaluatable {
@@ -21,10 +20,10 @@ struct CHSupportBot: CHEvaluatable {
   var target: [[CHTargetCondition]]? = nil
 }
 
-extension CHSupportBot: Mappable {
-  init?(map: Map) { }
+extension CHSupportBot: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id            <- map["id"]
     channelId     <- map["channelId"]
     pluginId      <- map["pluginId"]
@@ -63,10 +62,10 @@ struct CHSupportBotStep {
   var message: CHMessage?
 }
 
-extension CHSupportBotStep: Mappable {
-  init?(map: Map) { }
+extension CHSupportBotStep: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id            <- map["id"]
     message       <- map["message"]
   }
@@ -89,10 +88,10 @@ struct CHSupportBotEntryInfo {
   }
 }
 
-extension CHSupportBotEntryInfo: Mappable {
-  init?(map: Map) { }
+extension CHSupportBotEntryInfo: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     supportBot      <- map["supportBot"]
     step            <- map["step"]
     buttons         <- map["buttons"]

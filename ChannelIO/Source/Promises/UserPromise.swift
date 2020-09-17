@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ObjectMapper
 
 struct UserPromise {
   static func touch(pluginId: String) -> Observable<BootResponse> {
@@ -29,7 +28,7 @@ struct UserPromise {
           switch response.result {
           case .success(let data):
             let json:SwiftyJSON_JSON = SwiftyJSON_JSON(data)
-            guard let result = Mapper<BootResponse>().map(JSONObject: json.object) else {
+            guard let result = ObjectMapper_Mapper<BootResponse>().map(JSONObject: json.object) else {
               subscriber.onError(ChannelError.parseError)
               return
             }
@@ -86,7 +85,7 @@ struct UserPromise {
           switch response.result {
           case .success(let data):
             let json:SwiftyJSON_JSON = SwiftyJSON_JSON(data)
-            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
+            guard let user = ObjectMapper_Mapper<CHUser>().map(JSONObject: json["user"].object) else {
               subscriber.onError(ChannelError.parseError)
               return
             }
@@ -116,7 +115,7 @@ struct UserPromise {
           switch response.result {
           case .success(let data):
             let json:SwiftyJSON_JSON = SwiftyJSON_JSON(data)
-            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
+            guard let user = ObjectMapper_Mapper<CHUser>().map(JSONObject: json["user"].object) else {
               subscriber.onError(ChannelError.parseError)
               return
             }
@@ -150,7 +149,7 @@ struct UserPromise {
           switch response.result {
           case .success(let data):
             let json:SwiftyJSON_JSON = SwiftyJSON_JSON(data)
-            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
+            guard let user = ObjectMapper_Mapper<CHUser>().map(JSONObject: json["user"].object) else {
               subscriber.onError(ChannelError.parseError)
               return
             }
@@ -184,7 +183,7 @@ struct UserPromise {
           switch response.result {
           case .success(let data):
             let json:SwiftyJSON_JSON = SwiftyJSON_JSON(data)
-            guard let user = Mapper<CHUser>().map(JSONObject: json["user"].object) else {
+            guard let user = ObjectMapper_Mapper<CHUser>().map(JSONObject: json["user"].object) else {
               subscriber.onError(ChannelError.parseError)
               return
             }
