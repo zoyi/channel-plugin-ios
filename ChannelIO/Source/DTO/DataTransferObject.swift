@@ -8,7 +8,6 @@
 
 import Foundation
 import ObjectMapper
-import SwiftyJSON
 
 struct ChatResponse {
   var userChat: CHUserChat? = nil

@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import ObjectMapper
-import SwiftyJSON
 
 struct PluginPromise {
   static func registerPushToken(token: String) -> Observable<Any?> {
@@ -28,8 +27,8 @@ struct PluginPromise {
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
-            let json = JSON(data)
-            if json["pushToken"] == JSON.null {
+            let json = SwiftyJSON_JSON(data)
+            if json["pushToken"] == SwiftyJSON_JSON.null {
               subscriber.onError(ChannelError.parseError)
               return
             }
@@ -105,7 +104,7 @@ struct PluginPromise {
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
-            let json = JSON(data)
+            let json = SwiftyJSON_JSON(data)
             let minVersion = json["minCompatibleVersion"].string ?? ""
             
             guard let version = CHUtils.getSdkVersion() else {
@@ -141,7 +140,7 @@ struct PluginPromise {
         .responseJSON(completionHandler: { response in
           switch response.result{
           case .success(let data):
-            let json = JSON(data)
+            let json = SwiftyJSON_JSON(data)
             guard let plugin = Mapper<CHPlugin>()
               .map(JSONObject: json["plugin"].object) else {
                 subscriber.onError(ChannelError.parseError)
@@ -171,13 +170,13 @@ struct PluginPromise {
         .responseJSON { response in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let json = SwiftyJSON_JSON(data)
             let result = Mapper<BootResponse>().map(JSONObject: json.object)
             
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
-            let json = SwiftyJSON.JSON(response.data)
+            let json = SwiftyJSON_JSON(response.data)
             print(json)
             subscriber.onError(ChannelError.serverError(
               msg: error.localizedDescription
@@ -226,7 +225,7 @@ struct PluginPromise {
         .responseJSON(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let json = SwiftyJSON_JSON(data)
             let profiles = Mapper<CHProfileSchema>()
               .mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
             subscriber.onNext(profiles)

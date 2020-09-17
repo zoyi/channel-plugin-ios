@@ -177,6 +177,7 @@
 		39C3E77C2513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7552513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift */; };
 		39C3E77D2513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7562513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift */; };
 		39C3E77E2513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */; };
+		39C3E78225138995001CEA9A /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E78025138995001CEA9A /* SwiftyJSON.swift */; };
 		39F4B98623C42CC00043B25A /* TokenStreamRewriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */; };
 		39F4B98723C42CC00043B25A /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */; };
 		39F4B98823C42CC00043B25A /* TokenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4B8E823C42CBF0043B25A /* TokenExtension.swift */; };
@@ -806,6 +807,7 @@
 		39C3E7552513803C001CEA9A /* Snapkit_ConstraintDirectionalInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintDirectionalInsets.swift; sourceTree = "<group>"; };
 		39C3E7562513803C001CEA9A /* Snapkit_ConstraintLayoutSupportDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintLayoutSupportDSL.swift; sourceTree = "<group>"; };
 		39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapkit_ConstraintMakerRelatable.swift; sourceTree = "<group>"; };
+		39C3E78025138995001CEA9A /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		39F4B8E423C42CBF0043B25A /* TokenStreamRewriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenStreamRewriter.swift; sourceTree = "<group>"; };
 		39F4B8E723C42CBF0043B25A /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		39F4B8E823C42CBF0043B25A /* TokenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenExtension.swift; sourceTree = "<group>"; };
@@ -1459,6 +1461,7 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C3E77F25138995001CEA9A /* SwiftyJSON */,
 				39C3E72F25138032001CEA9A /* Snapkit */,
 				39C3E72425137C5F001CEA9A /* Reusable */,
 				39C3E71925133FF7001CEA9A /* Dwifft */,
@@ -1636,6 +1639,14 @@
 				39C3E7572513803C001CEA9A /* Snapkit_ConstraintMakerRelatable.swift */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		39C3E77F25138995001CEA9A /* SwiftyJSON */ = {
+			isa = PBXGroup;
+			children = (
+				39C3E78025138995001CEA9A /* SwiftyJSON.swift */,
+			);
+			path = SwiftyJSON;
 			sourceTree = "<group>";
 		};
 		39F4B8E023C42CBF0043B25A /* ANTLR */ = {
@@ -3001,6 +3012,7 @@
 				39C3E72025133FF7001CEA9A /* Dwifft_Dwifft+UIKit.swift in Sources */,
 				39C3E72D25137C84001CEA9A /* Reusable_NibLoadable.swift in Sources */,
 				39C3E6FD2512FF9D001CEA9A /* AF_DispatchQueue+Alamofire.swift in Sources */,
+				39C3E78225138995001CEA9A /* SwiftyJSON.swift in Sources */,
 				39C3E76E2513803C001CEA9A /* Snapkit_ConstraintConstantTarget.swift in Sources */,
 				39F4B9DB23C42CC00043B25A /* LookaheadEventInfo.swift in Sources */,
 				39C3E70B2512FF9D001CEA9A /* AF_Validation.swift in Sources */,

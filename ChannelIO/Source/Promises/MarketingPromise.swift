@@ -8,8 +8,6 @@
 
 import ObjectMapper
 import RxSwift
-import SwiftyJSON
-
 
 struct MarketingPromise {
   static func clickCampaign(id: String, userId: String, url: String?) -> Observable<Any?> {
@@ -69,7 +67,7 @@ struct MarketingPromise {
         .responseData { response in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let json = SwiftyJSON_JSON(data)
             guard let supportBot = Mapper<CHSupportBotEntryInfo>().map(JSONObject: json) else {
               subscriber.onError(ChannelError.parseError)
               break
@@ -143,7 +141,7 @@ struct MarketingPromise {
         .responseData { response in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let json = SwiftyJSON_JSON(data)
             guard
               let supportBot = Mapper<CHSupportBotEntryInfo>().map(JSONObject: json.object)
             else {

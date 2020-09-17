@@ -7,7 +7,6 @@
 //
 
 import RxSwift
-import SwiftyJSON
 import ObjectMapper
 
 struct AppMessengerPromise {
@@ -19,7 +18,7 @@ struct AppMessengerPromise {
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let json = SwiftyJSON_JSON(data)
             guard let uri = Mapper<UriResponse>().map(JSONObject: json.object) else {
               subscriber.onError(ChannelError.parseError)
               return

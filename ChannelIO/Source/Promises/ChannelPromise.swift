@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import ObjectMapper
-import SwiftyJSON
 
 struct ChannelPromise {
   static func getChannel() -> Observable<CHChannel> {
@@ -20,7 +19,7 @@ struct ChannelPromise {
         .responseJSON(completionHandler: { response in
           switch response.result{
           case .success(let data):
-            let json = JSON(data)
+            let json = SwiftyJSON_JSON(data)
             guard let channel = Mapper<CHChannel>()
               .map(JSONObject: json["channel"].object) else {
                 subscriber.onError(ChannelError.parseError)

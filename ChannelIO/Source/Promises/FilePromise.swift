@@ -7,7 +7,6 @@
 
 import ObjectMapper
 import RxSwift
-import SwiftyJSON
 
 struct FilePromise {
   static func uploadFile(
@@ -25,7 +24,7 @@ struct FilePromise {
         .asyncResponse { response in
           switch response.result {
           case .success(let data):
-            let result = SwiftyJSON.JSON(data).dictionaryObject
+            let result = SwiftyJSON_JSON(data).dictionaryObject
             subscriber.onNext((result, 1))
             subscriber.onCompleted()
           case .failure(let error):

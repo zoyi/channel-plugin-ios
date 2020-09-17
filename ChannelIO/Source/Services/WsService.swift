@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 import RxSwift
 import ReSwift
 import SocketIO
@@ -319,7 +318,7 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.create.value) { [weak self] (data, ack) in
       dlog("socket on created")
       guard let data = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: data) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: data) else { return }
       guard var type = WsServiceType(string: json["type"].stringValue) else { return }
       type = WsServiceType.Create.union(type)
       
@@ -357,7 +356,7 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.update.value) { [weak self] (data, ack) in
       dlog("socket on update")
       guard let data = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: data) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: data) else { return }
       guard var type = WsServiceType(string: json["type"].stringValue) else { return }
       type = WsServiceType.Update.union(type)
       
@@ -408,7 +407,7 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.delete.value) { [weak self] (data, ack) in
       dlog("socket on delete")
       guard let data = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: data) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: data) else { return }
       guard var type = WsServiceType(string: json["type"].stringValue) else { return }
       type = WsServiceType.Delete.union(type)
       
@@ -453,7 +452,7 @@ fileprivate extension WsService {
   func onTyping() {
     self.socket?.on(CHSocketResponse.typing.value) {  [weak self] (data, ack) in
       guard let entity = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: entity) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: entity) else { return }
       guard let typing = Mapper<CHTypingEntity>().map(JSONObject: json.object) else { return }
       self?.typingSubject.onNext(typing)
     }
@@ -463,7 +462,7 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.push.value) { (data, ack) in
       //dlog("socket pushed: \(data)")
       guard let entity = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: entity) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: entity) else { return }
       guard let popup = Mapper<CHPopup>().map(JSONObject: json.object) else { return }
       
       if mainStore.state.uiState.isChannelVisible {

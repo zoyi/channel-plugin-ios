@@ -6,7 +6,6 @@
 //
 
 import RxSwift
-import SwiftyJSON
 import ObjectMapper
 
 struct LoungePromise {
@@ -22,7 +21,7 @@ struct LoungePromise {
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let json = SwiftyJSON_JSON(data)
             guard let info = Mapper<LoungeResponse>().map(JSONObject: json.object) else {
               subscriber.onError(ChannelError.parseError)
               return
