@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import PhoneNumberKit
 
 final class PhoneActionView: BaseView, Actionable {
   //MARK: Constants
@@ -52,7 +51,7 @@ final class PhoneActionView: BaseView, Actionable {
     $0.image = CHAssets.getImage(named: "dropdownTriangle")
   }
   
-  let phoneField = PhoneNumberTextField().then {
+  let phoneField = PhoneNumberKit_PhoneNumberTextField().then {
     $0.keyboardType = .phonePad
     $0.placeholder = CHAssets.localized("ch.profile_form.placeholder")
   }

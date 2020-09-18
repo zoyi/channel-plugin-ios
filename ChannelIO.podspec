@@ -47,7 +47,7 @@ Pod::Spec.new do |s|
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
   s.dependency 'MGSwipeTableCell'
   s.dependency 'JGProgressHUD'
-  s.dependency 'PhoneNumberKit', '~> 3.1'
+  # s.dependency 'PhoneNumberKit', '~> 3.1'
   s.dependency 'SDWebImage', '~> 5.8'
   s.dependency 'SDWebImageWebPCoder'
   s.dependency 'RxSwiftExt', '~> 5.2'

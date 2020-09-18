@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import PhoneNumberKit
 import RxSwift
 import RxCocoa
 
@@ -56,7 +55,7 @@ final class CHPhoneField: BaseView {
     return self.phoneField
   }
   
-  let phoneField = PhoneNumberTextField().then {
+  let phoneField = PhoneNumberKit_PhoneNumberTextField().then {
     $0.textColor = CHColors.dark
     $0.keyboardType = .phonePad
     $0.clearButtonMode = .whileEditing
@@ -76,7 +75,7 @@ final class CHPhoneField: BaseView {
       self.number = "\(phoneNumber.nationalNumber)"
       self.dial = "\(phoneNumber.countryCode)"
     } catch {
-      let partialFormatter = PartialFormatter()
+      let partialFormatter = PhoneNumberKit_PartialFormatter()
       if let dial = partialFormatter
         .formatPartial(text)
         .split(separator: " ").get(index: 0)?

@@ -16,7 +16,7 @@ target 'ChannelIO' do
   pod 'Socket.IO-Client-Swift', '~> 15.0.0' 
   pod 'MGSwipeTableCell'
   pod 'JGProgressHUD'
-  pod 'PhoneNumberKit', '~> 3.1'
+  # pod 'PhoneNumberKit', '~> 3.1'
   pod 'SDWebImage', '~> 5.8'
   pod 'SDWebImageWebPCoder'
   pod 'RxSwiftExt', '~> 5.2'
