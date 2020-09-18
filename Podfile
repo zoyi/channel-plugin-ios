@@ -20,7 +20,7 @@ target 'ChannelIO' do
   pod 'SDWebImage', '~> 5.8'
   pod 'SDWebImageWebPCoder'
   pod 'RxSwiftExt', '~> 5.2'
-  pod 'TLPhotoPicker'
+  # pod 'TLPhotoPicker'
 
   target 'ChannelIOTests' do
     inherit! :search_paths

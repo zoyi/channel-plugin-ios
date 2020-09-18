@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 import Photos
-import TLPhotoPicker
 import MobileCoreServices
 import AVKit
 
