@@ -142,7 +142,7 @@ enum RestRouter: URLRequestConvertible {
     case .GetAppMessengerUri(let name):
       return "/front/app/\(name)/connect"
     case .GetCampaignSupportBot(let campaignId):
-      return "/front/one-time-msgs/\(campaignId)/support-bot"
+      return "/front/campaigns/\(campaignId)/support-bot"
     case .GetMessages(let userChatId, _):
       return "/front/user-chats/\(userChatId)/messages"
     case .GetCountryCodes:

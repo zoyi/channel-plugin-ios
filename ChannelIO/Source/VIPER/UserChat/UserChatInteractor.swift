@@ -341,8 +341,8 @@ extension UserChatInteractor {
         .marketing?
         .fetchSupportBot()
         .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { supportBotEntryInfo in
-          subscriber.onNext(supportBotEntryInfo.supportBot?.id ?? mainStore.state.botsState.findSupportBot()?.id)
+        .subscribe(onNext: { supportBot in
+          subscriber.onNext(supportBot?.id ?? mainStore.state.botsState.findSupportBot()?.id)
           subscriber.onCompleted()
         }, onError: { error in
           subscriber.onError(error)

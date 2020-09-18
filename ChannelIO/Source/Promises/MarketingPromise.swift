@@ -62,7 +62,7 @@ struct MarketingPromise {
     }
   }
   
-  static func getCampaignSupportBot(with campaignId: String) -> Observable<CHSupportBotEntryInfo> {
+  static func getCampaignSupportBot(with campaignId: String) -> Observable<CHSupportBot?> {
     return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.GetCampaignSupportBot(campaignId))
@@ -71,8 +71,10 @@ struct MarketingPromise {
           switch response.result {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
-            guard let supportBot = Mapper<CHSupportBotEntryInfo>().map(JSONObject: json) else {
-              subscriber.onError(ChannelError.parseError)
+            guard
+              let supportBot = Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
+            else {
+              subscriber.onNext(nil)
               break
             }
             subscriber.onNext(supportBot)
@@ -136,7 +138,7 @@ struct MarketingPromise {
     }
   }
   
-  static func getOneTimeMsgSupportBot(with oneTimeMsgId: String) -> Observable<CHSupportBotEntryInfo> {
+  static func getOneTimeMsgSupportBot(with oneTimeMsgId: String) -> Observable<CHSupportBot?> {
     return Observable.create { subscriber in
       let req = AF
         .request(RestRouter.GetOneTimeMsgSupportBot(oneTimeMsgId))
@@ -146,9 +148,9 @@ struct MarketingPromise {
           case .success(let data):
             let json = SwiftyJSON.JSON(data)
             guard
-              let supportBot = Mapper<CHSupportBotEntryInfo>().map(JSONObject: json.object)
+              let supportBot = Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
             else {
-              subscriber.onError(ChannelError.parseError)
+              subscriber.onNext(nil)
               break
             }
             subscriber.onNext(supportBot)

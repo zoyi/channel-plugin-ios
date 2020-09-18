@@ -47,7 +47,7 @@ extension CHMarketing: Equatable {
 }
 
 extension CHMarketing {
-  func fetchSupportBot() -> Observable<CHSupportBotEntryInfo> {
+  func fetchSupportBot() -> Observable<CHSupportBot?> {
     if self.type == .campaign {
       return MarketingPromise.getCampaignSupportBot(with: id)
     } else {
