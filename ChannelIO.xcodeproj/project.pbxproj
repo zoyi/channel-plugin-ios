@@ -121,6 +121,31 @@
 		39C31C662518BC0600239DD5 /* _ChannelIO_MGSwipeTableCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31C612518BC0600239DD5 /* _ChannelIO_MGSwipeTableCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		39C31C692518C75600239DD5 /* _ChannelIO_MGSwipeTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31C5F2518BC0600239DD5 /* _ChannelIO_MGSwipeTableCell.m */; };
 		39C31C6A2518C75900239DD5 /* _ChannelIO_MGSwipeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31C622518BC0600239DD5 /* _ChannelIO_MGSwipeButton.m */; };
+		39C31CCC2519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CB32519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.m */; };
+		39C31CCD2519B2C000239DD5 /* _ChannelIO_JGProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CB42519B2C000239DD5 /* _ChannelIO_JGProgressHUD.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CCE2519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CB52519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CCF2519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CB62519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.m */; };
+		39C31CD02519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CB72519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.m */; };
+		39C31CD12519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CB82519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.m */; };
+		39C31CD22519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CB92519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CD32519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CBA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CD42519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CBB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.m */; };
+		39C31CD52519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CBC2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CD62519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CBD2519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CD72519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CBE2519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.m */; };
+		39C31CD82519B2C000239DD5 /* _ChannelIO_JGProgressHUD-Defines.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CBF2519B2C000239DD5 /* _ChannelIO_JGProgressHUD-Defines.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CD92519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CC02519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CDA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CC12519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.m */; };
+		39C31CDB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CC22519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.m */; };
+		39C31CDC2519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CC32519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CDD2519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CC42519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CDE2519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CC52519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CDF2519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CC62519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.m */; };
+		39C31CE02519B2C000239DD5 /* _ChannelIO_JGProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CC72519B2C000239DD5 /* _ChannelIO_JGProgressHUD.m */; };
+		39C31CE12519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CC82519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39C31CE22519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CC92519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.m */; };
+		39C31CE32519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C31CCA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.m */; };
+		39C31CE42519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C31CCB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		39C3E6F42512FF9D001CEA9A /* AF_MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6CF2512FF9D001CEA9A /* AF_MultipartFormData.swift */; };
 		39C3E6F52512FF9D001CEA9A /* AF_RequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6D02512FF9D001CEA9A /* AF_RequestInterceptor.swift */; };
 		39C3E6F62512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6D12512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift */; };
@@ -850,6 +875,31 @@
 		39C31C602518BC0600239DD5 /* _ChannelIO_MGSwipeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_MGSwipeButton.h; sourceTree = "<group>"; };
 		39C31C612518BC0600239DD5 /* _ChannelIO_MGSwipeTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_MGSwipeTableCell.h; sourceTree = "<group>"; };
 		39C31C622518BC0600239DD5 /* _ChannelIO_MGSwipeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_MGSwipeButton.m; sourceTree = "<group>"; };
+		39C31CB32519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDImageIndicatorView.m; sourceTree = "<group>"; };
+		39C31CB42519B2C000239DD5 /* _ChannelIO_JGProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUD.h; sourceTree = "<group>"; };
+		39C31CB52519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDFadeAnimation.h; sourceTree = "<group>"; };
+		39C31CB62519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDAnimation.m; sourceTree = "<group>"; };
+		39C31CB72519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDPieIndicatorView.m; sourceTree = "<group>"; };
+		39C31CB82519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDFadeZoomAnimation.m; sourceTree = "<group>"; };
+		39C31CB92519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDErrorIndicatorView.h; sourceTree = "<group>"; };
+		39C31CBA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDRingIndicatorView.h; sourceTree = "<group>"; };
+		39C31CBB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDIndeterminateIndicatorView.m; sourceTree = "<group>"; };
+		39C31CBC2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDIndicatorView.h; sourceTree = "<group>"; };
+		39C31CBD2519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDShadow.h; sourceTree = "<group>"; };
+		39C31CBE2519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDSuccessIndicatorView.m; sourceTree = "<group>"; };
+		39C31CBF2519B2C000239DD5 /* _ChannelIO_JGProgressHUD-Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "_ChannelIO_JGProgressHUD-Defines.h"; sourceTree = "<group>"; };
+		39C31CC02519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDImageIndicatorView.h; sourceTree = "<group>"; };
+		39C31CC12519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDRingIndicatorView.m; sourceTree = "<group>"; };
+		39C31CC22519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDErrorIndicatorView.m; sourceTree = "<group>"; };
+		39C31CC32519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDPieIndicatorView.h; sourceTree = "<group>"; };
+		39C31CC42519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDFadeZoomAnimation.h; sourceTree = "<group>"; };
+		39C31CC52519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDAnimation.h; sourceTree = "<group>"; };
+		39C31CC62519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDFadeAnimation.m; sourceTree = "<group>"; };
+		39C31CC72519B2C000239DD5 /* _ChannelIO_JGProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUD.m; sourceTree = "<group>"; };
+		39C31CC82519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDSuccessIndicatorView.h; sourceTree = "<group>"; };
+		39C31CC92519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDShadow.m; sourceTree = "<group>"; };
+		39C31CCA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _ChannelIO_JGProgressHUDIndicatorView.m; sourceTree = "<group>"; };
+		39C31CCB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _ChannelIO_JGProgressHUDIndeterminateIndicatorView.h; sourceTree = "<group>"; };
 		39C3E6CF2512FF9D001CEA9A /* AF_MultipartFormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_MultipartFormData.swift; sourceTree = "<group>"; };
 		39C3E6D02512FF9D001CEA9A /* AF_RequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_RequestInterceptor.swift; sourceTree = "<group>"; };
 		39C3E6D12512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_NetworkReachabilityManager.swift; sourceTree = "<group>"; };
@@ -1642,6 +1692,7 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C31CB22519B2C000239DD5 /* JGProgressHUD */,
 				39C31C5E2518BC0600239DD5 /* MGSwipeTableCell */,
 				39C319A82514872800239DD5 /* TLPhotoPicker */,
 				39C3E80F2513BF52001CEA9A /* PhoneNumberKit */,
@@ -1738,6 +1789,38 @@
 				39C31C622518BC0600239DD5 /* _ChannelIO_MGSwipeButton.m */,
 			);
 			path = MGSwipeTableCell;
+			sourceTree = "<group>";
+		};
+		39C31CB22519B2C000239DD5 /* JGProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				39C31CB32519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.m */,
+				39C31CB42519B2C000239DD5 /* _ChannelIO_JGProgressHUD.h */,
+				39C31CB52519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.h */,
+				39C31CB62519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.m */,
+				39C31CB72519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.m */,
+				39C31CB82519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.m */,
+				39C31CB92519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.h */,
+				39C31CBA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.h */,
+				39C31CBB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.m */,
+				39C31CBC2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.h */,
+				39C31CBD2519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.h */,
+				39C31CBE2519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.m */,
+				39C31CBF2519B2C000239DD5 /* _ChannelIO_JGProgressHUD-Defines.h */,
+				39C31CC02519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.h */,
+				39C31CC12519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.m */,
+				39C31CC22519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.m */,
+				39C31CC32519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.h */,
+				39C31CC42519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.h */,
+				39C31CC52519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.h */,
+				39C31CC62519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.m */,
+				39C31CC72519B2C000239DD5 /* _ChannelIO_JGProgressHUD.m */,
+				39C31CC82519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.h */,
+				39C31CC92519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.m */,
+				39C31CCA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.m */,
+				39C31CCB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.h */,
+			);
+			path = JGProgressHUD;
 			sourceTree = "<group>";
 		};
 		39C3E635251207D7001CEA9A /* Alamofire */ = {
@@ -2916,6 +2999,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				22A917E5234BC42C00674083 /* CHMessageViewController.h in Headers */,
+				39C31CDD2519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.h in Headers */,
+				39C31CCD2519B2C000239DD5 /* _ChannelIO_JGProgressHUD.h in Headers */,
+				39C31CD62519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.h in Headers */,
+				39C31CE42519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.h in Headers */,
+				39C31CD92519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.h in Headers */,
+				39C31CD52519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.h in Headers */,
+				39C31CCE2519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.h in Headers */,
+				39C31CD22519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.h in Headers */,
+				39C31CE12519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.h in Headers */,
+				39C31CD32519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.h in Headers */,
+				39C31CDE2519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.h in Headers */,
+				39C31CD82519B2C000239DD5 /* _ChannelIO_JGProgressHUD-Defines.h in Headers */,
+				39C31CDC2519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.h in Headers */,
 				2263481D209DB5C00072801B /* ChannelIO.h in Headers */,
 				39C31C652518BC0600239DD5 /* _ChannelIO_MGSwipeButton.h in Headers */,
 				39C31C662518BC0600239DD5 /* _ChannelIO_MGSwipeTableCell.h in Headers */,
@@ -3155,10 +3251,13 @@
 				39C3E6F72512FF9D001CEA9A /* AF_ParameterEncoder.swift in Sources */,
 				650C48D2219E5F1B00713AD9 /* Tracking.swift in Sources */,
 				39C3E72B25137C84001CEA9A /* Reusable_Reusable.swift in Sources */,
+				39C31CE22519B2C000239DD5 /* _ChannelIO_JGProgressHUDShadow.m in Sources */,
 				39F4B9F523C42CC00043B25A /* AtomTransition.swift in Sources */,
+				39C31CD02519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.m in Sources */,
 				3931CAF723C333C3005E8444 /* FileProgressCell.swift in Sources */,
 				39C3E7AE25139108001CEA9A /* ObjectMapper_FromJSON.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
+				39C31CE02519B2C000239DD5 /* _ChannelIO_JGProgressHUD.m in Sources */,
 				39C3E76A2513803C001CEA9A /* Snapkit_ConstraintView.swift in Sources */,
 				6597934E1FA716CB00840F6A /* PluginActions.swift in Sources */,
 				6597934F1FA716CB00840F6A /* PopupActions.swift in Sources */,
@@ -3193,6 +3292,7 @@
 				9CF1098523FA7E5800D42D03 /* MiddlewareModel.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
 				39C3E83A2513BF52001CEA9A /* PhoneNumberKit_PhoneNumberKit.swift in Sources */,
+				39C31CCF2519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.m in Sources */,
 				659793581FA716CB00840F6A /* MainNavigationController.swift in Sources */,
 				39C3E7A225139108001CEA9A /* ObjectMapper_CustomDateFormatTransform.swift in Sources */,
 				39C3E7FE2513B858001CEA9A /* NVActivityIndicatorAnimationBallPulse.swift in Sources */,
@@ -3316,6 +3416,7 @@
 				3910AC24237AC172000549B5 /* ChatState.swift in Sources */,
 				39C3E7FB2513B858001CEA9A /* NVActivityIndicatorAnimationBallClipRotatePulse.swift in Sources */,
 				39F4B9C823C42CC00043B25A /* TokenFactory.swift in Sources */,
+				39C31CD12519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeZoomAnimation.m in Sources */,
 				39C3E7022512FF9D001CEA9A /* AF_AFError.swift in Sources */,
 				39C3E7612513803C001CEA9A /* Snapkit_ConstraintDSL.swift in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
@@ -3383,6 +3484,7 @@
 				39C3E6FE2512FF9D001CEA9A /* AF_RetryPolicy.swift in Sources */,
 				6512132F224DF47F00737089 /* ZoomAnimatedTransitioning.swift in Sources */,
 				6597937A1FA716CB00840F6A /* CHPlugin.swift in Sources */,
+				39C31CDB2519B2C000239DD5 /* _ChannelIO_JGProgressHUDErrorIndicatorView.m in Sources */,
 				39C3E7FD2513B858001CEA9A /* NVActivityIndicatorAnimationBallRotateChase.swift in Sources */,
 				39F4B9A623C42CC00043B25A /* TagChunk.swift in Sources */,
 				CF52018F24C813BF0010A9AC /* CHBooleanSelectCell.swift in Sources */,
@@ -3392,6 +3494,7 @@
 				39F4B9BC23C42CC00043B25A /* DFAState.swift in Sources */,
 				657AF3F521784606001EAA7A /* CHSupportBot.swift in Sources */,
 				2252145A224CFB5B00F2C9CE /* PHAsset+Extensions.swift in Sources */,
+				39C31CD42519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndeterminateIndicatorView.m in Sources */,
 				6597937B1FA716CB00840F6A /* CHImageMeta.swift in Sources */,
 				22A917E2234BC42C00674083 /* CHMessageViewController+MessageViewDelegate.swift in Sources */,
 				39C3E7BA25139108001CEA9A /* ObjectMapper_TransformOf.swift in Sources */,
@@ -3449,6 +3552,8 @@
 				39F4BA0A23C42CC10043B25A /* ATNType.swift in Sources */,
 				39F4B9B123C42CC00043B25A /* CommonTokenStream.swift in Sources */,
 				39F4B9BD23C42CC00043B25A /* DFA.swift in Sources */,
+				39C31CCC2519B2C000239DD5 /* _ChannelIO_JGProgressHUDImageIndicatorView.m in Sources */,
+				39C31CE32519B2C000239DD5 /* _ChannelIO_JGProgressHUDIndicatorView.m in Sources */,
 				39C3E7632513803C001CEA9A /* Snapkit_ConstraintPriority.swift in Sources */,
 				3931CAE423C3335D005E8444 /* CHClip.swift in Sources */,
 				39F4BA0723C42CC10043B25A /* RangeTransition.swift in Sources */,
@@ -3468,6 +3573,7 @@
 				22D879FC2270208B00CC1DDB /* CHEditTextField.swift in Sources */,
 				65CB142A206A02F200E456B5 /* TextMessageView.swift in Sources */,
 				9C0951C323D54A0700DE5799 /* TextBlockParserParserATN.swift in Sources */,
+				39C31CD72519B2C000239DD5 /* _ChannelIO_JGProgressHUDSuccessIndicatorView.m in Sources */,
 				22F094F72176E8A00035C777 /* HexColors.swift in Sources */,
 				39F4B9F823C42CC10043B25A /* ATNConfig.swift in Sources */,
 				65CB1423206A02F200E456B5 /* LogCell.swift in Sources */,
@@ -3609,6 +3715,8 @@
 				39C3E7F72513B858001CEA9A /* NVActivityIndicatorAnimationBallZigZag.swift in Sources */,
 				39F4B98B23C42CC00043B25A /* CharacterExtension.swift in Sources */,
 				39C3E7712513803C001CEA9A /* Snapkit_ConstraintMaker.swift in Sources */,
+				39C31CDF2519B2C000239DD5 /* _ChannelIO_JGProgressHUDFadeAnimation.m in Sources */,
+				39C31CDA2519B2C000239DD5 /* _ChannelIO_JGProgressHUDRingIndicatorView.m in Sources */,
 				39C3E8022513B858001CEA9A /* NVActivityIndicatorAnimationTriangleSkewSpin.swift in Sources */,
 				39F4B9B823C42CC00043B25A /* DefaultErrorStrategy.swift in Sources */,
 				655A27FE20B2699700935C1F /* ProfileCell.swift in Sources */,

@@ -8,7 +8,6 @@
 
 import UIKit
 import RxSwift
-import JGProgressHUD
 
 class LanguageOptionViewController: BaseViewController {
   private let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
@@ -137,7 +136,7 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     let locale = self.locales[indexPath.row]
     ChannelIO.bootConfig?.language = CHUtils.stringToLanguageOption(locale.rawValue)
     
-    let hud = JGProgressHUD(style: .dark)
+    let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
     hud.show(in: self.view)
     
     CHUser

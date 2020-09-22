@@ -1,4 +1,4 @@
-//
+
 //  ProfileEditorViewController.swift
 //  ChannelIO
 //
@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import JGProgressHUD
 
 class ProfileEditorViewController: BaseViewController {
   private enum Metrics {
@@ -179,7 +178,7 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func updateUserInfo() {
-    let hud = JGProgressHUD(style: .dark)
+    let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
     hud.textLabel.text = CHAssets.localized("ch.loader.updating")
     hud.show(in: self.view)
     

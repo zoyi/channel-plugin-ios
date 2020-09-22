@@ -8,7 +8,6 @@
 
 import UIKit
 import RxSwift
-import JGProgressHUD
 
 class LoungeView: BaseViewController, LoungeViewProtocol {
   struct Metrics {
@@ -39,7 +38,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     $0.alpha = 1
   }
   
-  private let hud = JGProgressHUD(style: .dark)
+  private let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
   
   var disposeBag = DisposeBag()
   

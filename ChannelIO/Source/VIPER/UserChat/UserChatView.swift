@@ -9,7 +9,6 @@
 import UIKit
 import ReSwift
 import RxSwift
-import JGProgressHUD
 
 class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal struct Constants {
@@ -100,12 +99,12 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal var loadingFile: ChatFileQueueItem?
   internal var waitingFileCount: Int = 0
   
-  let progressHud = JGProgressHUD(style: .dark).then {
-    $0.indicatorView = JGProgressHUDPieIndicatorView()
+  let progressHud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark).then {
+    $0.indicatorView = _ChannelIO_JGProgressHUDPieIndicatorView()
     $0.progress = 0
   }
   
-  private let hud = JGProgressHUD(style: .dark)
+  private let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
 
   let disposeBag = DisposeBag()
 

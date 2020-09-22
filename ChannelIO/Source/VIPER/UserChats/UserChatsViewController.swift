@@ -11,7 +11,6 @@ import ReSwift
 import RxSwift
 import RxCocoa
 import RxSwiftExt
-import JGProgressHUD
 
 //TODO: refactoring VIPER
 class UserChatsViewController: BaseViewController {
@@ -388,7 +387,7 @@ extension UserChatsViewController {
     isInit: Bool = false,
     showIndicator: Bool = false,
     isReload: Bool = false) {
-    let hud = JGProgressHUD(style: .dark)
+    let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
     if showIndicator {
       hud.show(in: self.view)
     }

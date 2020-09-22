@@ -9,7 +9,6 @@
 import RxSwift
 import RxSwiftExt
 import RxCocoa
-import JGProgressHUD
 
 class LoungePresenter: NSObject, LoungePresenterProtocol {
   weak var view: LoungeViewProtocol?

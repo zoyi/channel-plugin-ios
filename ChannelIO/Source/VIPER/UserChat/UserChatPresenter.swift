@@ -1,4 +1,4 @@
-//
+
 //  UserChatPresenter.swift
 //  CHPlugin
 //
@@ -9,7 +9,6 @@
 import RxSwift
 import ReSwift
 import UIKit
-import JGProgressHUD
 import Photos
 import AVKit
 

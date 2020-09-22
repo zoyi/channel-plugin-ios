@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import RxSwiftExt
-import JGProgressHUD
 import MessageUI
 
 class LoungeRouter: NSObject, LoungeRouterProtocol {

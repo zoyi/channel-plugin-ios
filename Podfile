@@ -15,7 +15,7 @@ target 'ChannelIO' do
   # pod 'Alamofire', '~> 5.2'
   pod 'Socket.IO-Client-Swift', '~> 15.0.0' 
   # pod 'MGSwipeTableCell'
-  pod 'JGProgressHUD'
+  # pod 'JGProgressHUD'
   # pod 'PhoneNumberKit', '~> 3.1'
   pod 'SDWebImage', '~> 5.8'
   pod 'SDWebImageWebPCoder'
