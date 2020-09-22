@@ -462,6 +462,35 @@
 		39C32537251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3252A251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift */; };
 		39C32538251A4CC200239DD5 /* _ChannelIO_Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3252B251A4CC200239DD5 /* _ChannelIO_Store.swift */; };
 		39C32539251A4CC200239DD5 /* _ChannelIO_Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3252C251A4CC200239DD5 /* _ChannelIO_Coding.swift */; };
+		39C325C1251A67C500239DD5 /* _ChannelIO_Starscream_Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325A3251A67C500239DD5 /* _ChannelIO_Starscream_Compression.swift */; };
+		39C325C2251A67C500239DD5 /* _ChannelIO_Starscream_WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325A4251A67C500239DD5 /* _ChannelIO_Starscream_WebSocket.swift */; };
+		39C325C3251A67C500239DD5 /* _ChannelIO_Starscream_SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325A5251A67C500239DD5 /* _ChannelIO_Starscream_SSLSecurity.swift */; };
+		39C325C4251A67C500239DD5 /* _ChannelIO_Starscream_SSLClientCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325A6251A67C500239DD5 /* _ChannelIO_Starscream_SSLClientCertificate.swift */; };
+		39C325C5251A67C500239DD5 /* _ChannelIO_SocketEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325A8251A67C500239DD5 /* _ChannelIO_SocketEngine.swift */; };
+		39C325C6251A67C500239DD5 /* _ChannelIO_SocketEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325A9251A67C500239DD5 /* _ChannelIO_SocketEngineClient.swift */; };
+		39C325C7251A67C500239DD5 /* _ChannelIO_SocketEnginePacketType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325AA251A67C500239DD5 /* _ChannelIO_SocketEnginePacketType.swift */; };
+		39C325C8251A67C500239DD5 /* _ChannelIO_SocketStringReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325AB251A67C500239DD5 /* _ChannelIO_SocketStringReader.swift */; };
+		39C325C9251A67C500239DD5 /* _ChannelIO_SocketIOClientOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325AC251A67C500239DD5 /* _ChannelIO_SocketIOClientOption.swift */; };
+		39C325CA251A67C500239DD5 /* _ChannelIO_SocketAckEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325AD251A67C500239DD5 /* _ChannelIO_SocketAckEmitter.swift */; };
+		39C325CB251A67C500239DD5 /* _ChannelIO_SocketManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325AE251A67C500239DD5 /* _ChannelIO_SocketManagerSpec.swift */; };
+		39C325CC251A67C500239DD5 /* _ChannelIO_SocketLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325AF251A67C500239DD5 /* _ChannelIO_SocketLogger.swift */; };
+		39C325CD251A67C500239DD5 /* _ChannelIO_SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B0251A67C500239DD5 /* _ChannelIO_SocketTypes.swift */; };
+		39C325CE251A67C500239DD5 /* _ChannelIO_SocketIOStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B1251A67C500239DD5 /* _ChannelIO_SocketIOStatus.swift */; };
+		39C325CF251A67C500239DD5 /* _ChannelIO_SocketExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B2251A67C500239DD5 /* _ChannelIO_SocketExtensions.swift */; };
+		39C325D0251A67C500239DD5 /* _ChannelIO_SocketEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B3251A67C500239DD5 /* _ChannelIO_SocketEventHandler.swift */; };
+		39C325D1251A67C500239DD5 /* _ChannelIO_SocketEnginePollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B4251A67C500239DD5 /* _ChannelIO_SocketEnginePollable.swift */; };
+		39C325D2251A67C500239DD5 /* _ChannelIO_SocketAckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B5251A67C500239DD5 /* _ChannelIO_SocketAckManager.swift */; };
+		39C325D3251A67C500239DD5 /* _ChannelIO_SocketIOClientConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B6251A67C500239DD5 /* _ChannelIO_SocketIOClientConfiguration.swift */; };
+		39C325D4251A67C500239DD5 /* _ChannelIO_SocketEngineWebsocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B7251A67C500239DD5 /* _ChannelIO_SocketEngineWebsocket.swift */; };
+		39C325D5251A67C500239DD5 /* _ChannelIO_SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B8251A67C500239DD5 /* _ChannelIO_SocketManager.swift */; };
+		39C325D6251A67C500239DD5 /* _ChannelIO_SocketIOClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325B9251A67C500239DD5 /* _ChannelIO_SocketIOClient.swift */; };
+		39C325D7251A67C500239DD5 /* _ChannelIO_SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325BA251A67C500239DD5 /* _ChannelIO_SSLSecurity.swift */; };
+		39C325D8251A67C500239DD5 /* _ChannelIO_SocketEngineSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325BB251A67C500239DD5 /* _ChannelIO_SocketEngineSpec.swift */; };
+		39C325D9251A67C500239DD5 /* _ChannelIO_SocketAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325BC251A67C500239DD5 /* _ChannelIO_SocketAnyEvent.swift */; };
+		39C325DA251A67C500239DD5 /* _ChannelIO_SocketParsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325BD251A67C500239DD5 /* _ChannelIO_SocketParsable.swift */; };
+		39C325DB251A67C500239DD5 /* _ChannelIO_SocketIOClientSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325BE251A67C500239DD5 /* _ChannelIO_SocketIOClientSpec.swift */; };
+		39C325DC251A67C500239DD5 /* _ChannelIO_SocketPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325BF251A67C500239DD5 /* _ChannelIO_SocketPacket.swift */; };
+		39C325DD251A67C500239DD5 /* _ChannelIO_SocketRawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C325C0251A67C500239DD5 /* _ChannelIO_SocketRawView.swift */; };
 		39C3E6F42512FF9D001CEA9A /* AF_MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6CF2512FF9D001CEA9A /* AF_MultipartFormData.swift */; };
 		39C3E6F52512FF9D001CEA9A /* AF_RequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6D02512FF9D001CEA9A /* AF_RequestInterceptor.swift */; };
 		39C3E6F62512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6D12512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift */; };
@@ -1532,6 +1561,35 @@
 		39C3252A251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_DispatchingStoreType.swift; sourceTree = "<group>"; };
 		39C3252B251A4CC200239DD5 /* _ChannelIO_Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Store.swift; sourceTree = "<group>"; };
 		39C3252C251A4CC200239DD5 /* _ChannelIO_Coding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Coding.swift; sourceTree = "<group>"; };
+		39C325A3251A67C500239DD5 /* _ChannelIO_Starscream_Compression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Starscream_Compression.swift; sourceTree = "<group>"; };
+		39C325A4251A67C500239DD5 /* _ChannelIO_Starscream_WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Starscream_WebSocket.swift; sourceTree = "<group>"; };
+		39C325A5251A67C500239DD5 /* _ChannelIO_Starscream_SSLSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Starscream_SSLSecurity.swift; sourceTree = "<group>"; };
+		39C325A6251A67C500239DD5 /* _ChannelIO_Starscream_SSLClientCertificate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Starscream_SSLClientCertificate.swift; sourceTree = "<group>"; };
+		39C325A8251A67C500239DD5 /* _ChannelIO_SocketEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketEngine.swift; sourceTree = "<group>"; };
+		39C325A9251A67C500239DD5 /* _ChannelIO_SocketEngineClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketEngineClient.swift; sourceTree = "<group>"; };
+		39C325AA251A67C500239DD5 /* _ChannelIO_SocketEnginePacketType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketEnginePacketType.swift; sourceTree = "<group>"; };
+		39C325AB251A67C500239DD5 /* _ChannelIO_SocketStringReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketStringReader.swift; sourceTree = "<group>"; };
+		39C325AC251A67C500239DD5 /* _ChannelIO_SocketIOClientOption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketIOClientOption.swift; sourceTree = "<group>"; };
+		39C325AD251A67C500239DD5 /* _ChannelIO_SocketAckEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketAckEmitter.swift; sourceTree = "<group>"; };
+		39C325AE251A67C500239DD5 /* _ChannelIO_SocketManagerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketManagerSpec.swift; sourceTree = "<group>"; };
+		39C325AF251A67C500239DD5 /* _ChannelIO_SocketLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketLogger.swift; sourceTree = "<group>"; };
+		39C325B0251A67C500239DD5 /* _ChannelIO_SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketTypes.swift; sourceTree = "<group>"; };
+		39C325B1251A67C500239DD5 /* _ChannelIO_SocketIOStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketIOStatus.swift; sourceTree = "<group>"; };
+		39C325B2251A67C500239DD5 /* _ChannelIO_SocketExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketExtensions.swift; sourceTree = "<group>"; };
+		39C325B3251A67C500239DD5 /* _ChannelIO_SocketEventHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketEventHandler.swift; sourceTree = "<group>"; };
+		39C325B4251A67C500239DD5 /* _ChannelIO_SocketEnginePollable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketEnginePollable.swift; sourceTree = "<group>"; };
+		39C325B5251A67C500239DD5 /* _ChannelIO_SocketAckManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketAckManager.swift; sourceTree = "<group>"; };
+		39C325B6251A67C500239DD5 /* _ChannelIO_SocketIOClientConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketIOClientConfiguration.swift; sourceTree = "<group>"; };
+		39C325B7251A67C500239DD5 /* _ChannelIO_SocketEngineWebsocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketEngineWebsocket.swift; sourceTree = "<group>"; };
+		39C325B8251A67C500239DD5 /* _ChannelIO_SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketManager.swift; sourceTree = "<group>"; };
+		39C325B9251A67C500239DD5 /* _ChannelIO_SocketIOClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketIOClient.swift; sourceTree = "<group>"; };
+		39C325BA251A67C500239DD5 /* _ChannelIO_SSLSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SSLSecurity.swift; sourceTree = "<group>"; };
+		39C325BB251A67C500239DD5 /* _ChannelIO_SocketEngineSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketEngineSpec.swift; sourceTree = "<group>"; };
+		39C325BC251A67C500239DD5 /* _ChannelIO_SocketAnyEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketAnyEvent.swift; sourceTree = "<group>"; };
+		39C325BD251A67C500239DD5 /* _ChannelIO_SocketParsable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketParsable.swift; sourceTree = "<group>"; };
+		39C325BE251A67C500239DD5 /* _ChannelIO_SocketIOClientSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketIOClientSpec.swift; sourceTree = "<group>"; };
+		39C325BF251A67C500239DD5 /* _ChannelIO_SocketPacket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketPacket.swift; sourceTree = "<group>"; };
+		39C325C0251A67C500239DD5 /* _ChannelIO_SocketRawView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_SocketRawView.swift; sourceTree = "<group>"; };
 		39C3E6CF2512FF9D001CEA9A /* AF_MultipartFormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_MultipartFormData.swift; sourceTree = "<group>"; };
 		39C3E6D02512FF9D001CEA9A /* AF_RequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_RequestInterceptor.swift; sourceTree = "<group>"; };
 		39C3E6D12512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_NetworkReachabilityManager.swift; sourceTree = "<group>"; };
@@ -2324,6 +2382,8 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C325A7251A67C500239DD5 /* SocketIO */,
+				39C325A2251A67C500239DD5 /* Starscream */,
 				39C3251F251A4CC200239DD5 /* ReSwift */,
 				39C323A3251A431000239DD5 /* SDWebImageWebPCoder */,
 				39C31F27251A115100239DD5 /* SDWebImage */,
@@ -2793,6 +2853,49 @@
 				39C3252C251A4CC200239DD5 /* _ChannelIO_Coding.swift */,
 			);
 			path = ReSwift;
+			sourceTree = "<group>";
+		};
+		39C325A2251A67C500239DD5 /* Starscream */ = {
+			isa = PBXGroup;
+			children = (
+				39C325A3251A67C500239DD5 /* _ChannelIO_Starscream_Compression.swift */,
+				39C325A4251A67C500239DD5 /* _ChannelIO_Starscream_WebSocket.swift */,
+				39C325A5251A67C500239DD5 /* _ChannelIO_Starscream_SSLSecurity.swift */,
+				39C325A6251A67C500239DD5 /* _ChannelIO_Starscream_SSLClientCertificate.swift */,
+			);
+			path = Starscream;
+			sourceTree = "<group>";
+		};
+		39C325A7251A67C500239DD5 /* SocketIO */ = {
+			isa = PBXGroup;
+			children = (
+				39C325A8251A67C500239DD5 /* _ChannelIO_SocketEngine.swift */,
+				39C325A9251A67C500239DD5 /* _ChannelIO_SocketEngineClient.swift */,
+				39C325AA251A67C500239DD5 /* _ChannelIO_SocketEnginePacketType.swift */,
+				39C325AB251A67C500239DD5 /* _ChannelIO_SocketStringReader.swift */,
+				39C325AC251A67C500239DD5 /* _ChannelIO_SocketIOClientOption.swift */,
+				39C325AD251A67C500239DD5 /* _ChannelIO_SocketAckEmitter.swift */,
+				39C325AE251A67C500239DD5 /* _ChannelIO_SocketManagerSpec.swift */,
+				39C325AF251A67C500239DD5 /* _ChannelIO_SocketLogger.swift */,
+				39C325B0251A67C500239DD5 /* _ChannelIO_SocketTypes.swift */,
+				39C325B1251A67C500239DD5 /* _ChannelIO_SocketIOStatus.swift */,
+				39C325B2251A67C500239DD5 /* _ChannelIO_SocketExtensions.swift */,
+				39C325B3251A67C500239DD5 /* _ChannelIO_SocketEventHandler.swift */,
+				39C325B4251A67C500239DD5 /* _ChannelIO_SocketEnginePollable.swift */,
+				39C325B5251A67C500239DD5 /* _ChannelIO_SocketAckManager.swift */,
+				39C325B6251A67C500239DD5 /* _ChannelIO_SocketIOClientConfiguration.swift */,
+				39C325B7251A67C500239DD5 /* _ChannelIO_SocketEngineWebsocket.swift */,
+				39C325B8251A67C500239DD5 /* _ChannelIO_SocketManager.swift */,
+				39C325B9251A67C500239DD5 /* _ChannelIO_SocketIOClient.swift */,
+				39C325BA251A67C500239DD5 /* _ChannelIO_SSLSecurity.swift */,
+				39C325BB251A67C500239DD5 /* _ChannelIO_SocketEngineSpec.swift */,
+				39C325BC251A67C500239DD5 /* _ChannelIO_SocketAnyEvent.swift */,
+				39C325BD251A67C500239DD5 /* _ChannelIO_SocketParsable.swift */,
+				39C325BE251A67C500239DD5 /* _ChannelIO_SocketIOClientSpec.swift */,
+				39C325BF251A67C500239DD5 /* _ChannelIO_SocketPacket.swift */,
+				39C325C0251A67C500239DD5 /* _ChannelIO_SocketRawView.swift */,
+			);
+			path = SocketIO;
 			sourceTree = "<group>";
 		};
 		39C3E635251207D7001CEA9A /* Alamofire */ = {
@@ -4377,10 +4480,12 @@
 				659793551FA716CB00840F6A /* BaseNavigationController.swift in Sources */,
 				39C3E7B525139108001CEA9A /* ObjectMapper_MapError.swift in Sources */,
 				39F4BA0B23C42CC10043B25A /* ATNDeserializationOptions.swift in Sources */,
+				39C325D4251A67C500239DD5 /* _ChannelIO_SocketEngineWebsocket.swift in Sources */,
 				39C32003251A115300239DD5 /* _ChannelIO_UIImage+Metadata.m in Sources */,
 				39C3E7182512FF9D001CEA9A /* AF_SessionDelegate.swift in Sources */,
 				39F4B9EB23C42CC00043B25A /* LL1Analyzer.swift in Sources */,
 				39C3E7672513803C001CEA9A /* Snapkit_ConstraintMakerRelatable+Extensions.swift in Sources */,
+				39C325C2251A67C500239DD5 /* _ChannelIO_Starscream_WebSocket.swift in Sources */,
 				39C32474251A431100239DD5 /* alpha_processing.c in Sources */,
 				39C324BE251A431100239DD5 /* enc_sse2.c in Sources */,
 				9C0951E123D5657400DE5799 /* UIFactory.swift in Sources */,
@@ -4484,9 +4589,11 @@
 				659793641FA716CB00840F6A /* UIImage+Extensions.swift in Sources */,
 				39F4B9CF23C42CC00043B25A /* CommonToken.swift in Sources */,
 				39F4B9CE23C42CC00043B25A /* NoViableAltException.swift in Sources */,
+				39C325D7251A67C500239DD5 /* _ChannelIO_SSLSecurity.swift in Sources */,
 				39C3E75A2513803C001CEA9A /* Snapkit_ConstraintDescription.swift in Sources */,
 				39C31FB7251A115200239DD5 /* _ChannelIO_SDImageCoderHelper.m in Sources */,
 				39F4B9F123C42CC00043B25A /* PredictionContextCache.swift in Sources */,
+				39C325C9251A67C500239DD5 /* _ChannelIO_SocketIOClientOption.swift in Sources */,
 				39C324D9251A431100239DD5 /* dec_clip_tables.c in Sources */,
 				39C324C1251A431100239DD5 /* lossless_enc_neon.c in Sources */,
 				39C3E8082513B858001CEA9A /* NVActivityIndicatorAnimationBallPulseSync.swift in Sources */,
@@ -4539,7 +4646,9 @@
 				2266C0C821C1267300A71398 /* CHButtonFactory.swift in Sources */,
 				39C32033251A115300239DD5 /* _ChannelIO_SDImageGIFCoder.m in Sources */,
 				39C3E76D2513803C001CEA9A /* Snapkit_Typealiases.swift in Sources */,
+				39C325D0251A67C500239DD5 /* _ChannelIO_SocketEventHandler.swift in Sources */,
 				39C32481251A431100239DD5 /* filters_neon.c in Sources */,
+				39C325D3251A67C500239DD5 /* _ChannelIO_SocketIOClientConfiguration.swift in Sources */,
 				39C3E7EE2513B858001CEA9A /* NVActivityIndicatorAnimationBallGridPulse.swift in Sources */,
 				655A280120B2699700935C1F /* PhoneActionView.swift in Sources */,
 				39C3E8282513BF52001CEA9A /* PhoneNumberKit_Constants.swift in Sources */,
@@ -4565,6 +4674,7 @@
 				39C3E7022512FF9D001CEA9A /* AF_AFError.swift in Sources */,
 				39C3E7612513803C001CEA9A /* Snapkit_ConstraintDSL.swift in Sources */,
 				39C3247C251A431100239DD5 /* cost_neon.c in Sources */,
+				39C325CE251A67C500239DD5 /* _ChannelIO_SocketIOStatus.swift in Sources */,
 				39C324D4251A431100239DD5 /* near_lossless_enc.c in Sources */,
 				659793711FA716CB00840F6A /* CHEntity.swift in Sources */,
 				6512BA362271AA0300757CB2 /* LoungeExternalAppsView.swift in Sources */,
@@ -4606,6 +4716,7 @@
 				39C324B6251A431100239DD5 /* enc_neon.c in Sources */,
 				657DB87022827C1F0023D550 /* CAGradientLayer+Extensions.swift in Sources */,
 				22A20FB91FE22A54006C81F3 /* BotActions.swift in Sources */,
+				39C325CA251A67C500239DD5 /* _ChannelIO_SocketAckEmitter.swift in Sources */,
 				39F4B9E523C42CC00043B25A /* NotSetTransition.swift in Sources */,
 				9CF1098823FA7F1200D42D03 /* MarketingActions.swift in Sources */,
 				39C32004251A115300239DD5 /* _ChannelIO_UIView+WebCache.m in Sources */,
@@ -4683,6 +4794,7 @@
 				39F4B9F023C42CC00043B25A /* BasicState.swift in Sources */,
 				39C3E8002513B858001CEA9A /* NVActivityIndicatorAnimationCircleStrokeSpin.swift in Sources */,
 				656C984C1FC6A2EC0064F53E /* NavigationTitleView.swift in Sources */,
+				39C325C6251A67C500239DD5 /* _ChannelIO_SocketEngineClient.swift in Sources */,
 				39C32467251A431100239DD5 /* upsampling_neon.c in Sources */,
 				39F4B99A23C42CC00043B25A /* ErrorNode.swift in Sources */,
 				39C3E76F2513803C001CEA9A /* Snapkit_ConstraintOffsetTarget.swift in Sources */,
@@ -4741,11 +4853,14 @@
 				39C32447251A431100239DD5 /* upsampling.c in Sources */,
 				39C3E7632513803C001CEA9A /* Snapkit_ConstraintPriority.swift in Sources */,
 				39C3201C251A115300239DD5 /* _ChannelIO_SDWebImageOptionsProcessor.m in Sources */,
+				39C325D8251A67C500239DD5 /* _ChannelIO_SocketEngineSpec.swift in Sources */,
 				3931CAE423C3335D005E8444 /* CHClip.swift in Sources */,
 				39C31FDA251A115200239DD5 /* _ChannelIO_SDAnimatedImagePlayer.m in Sources */,
 				39F4BA0723C42CC10043B25A /* RangeTransition.swift in Sources */,
+				39C325D6251A67C500239DD5 /* _ChannelIO_SocketIOClient.swift in Sources */,
 				659793871FA716CB00840F6A /* UserPromise.swift in Sources */,
 				3931CB0C23C33469005E8444 /* Int+Extension.swift in Sources */,
+				39C325DA251A67C500239DD5 /* _ChannelIO_SocketParsable.swift in Sources */,
 				39C3E83C2513BF52001CEA9A /* PhoneNumberKit_PhoneNumberParser.swift in Sources */,
 				39C3E7B225139108001CEA9A /* ObjectMapper_ImmutableMappable.swift in Sources */,
 				39C3E7AF25139108001CEA9A /* ObjectMapper_DictionaryTransform.swift in Sources */,
@@ -4782,6 +4897,7 @@
 				39C324B0251A431100239DD5 /* upsampling_msa.c in Sources */,
 				22E2138A23392E7C002B3EF4 /* InAppNotificationViewModel.swift in Sources */,
 				39F4B9C423C42CC00043B25A /* ProxyErrorListener.swift in Sources */,
+				39C325C3251A67C500239DD5 /* _ChannelIO_Starscream_SSLSecurity.swift in Sources */,
 				39F4BA1723C42CC10043B25A /* ATNSimulator.swift in Sources */,
 				39F4BA1423C42CC10043B25A /* PlusBlockStartState.swift in Sources */,
 				39C3E82D2513BF52001CEA9A /* PhoneNumberKit_MetadataTypes.swift in Sources */,
@@ -4800,14 +4916,17 @@
 				6597938E1FA716CB00840F6A /* UserReducer.swift in Sources */,
 				65CB9919226EBA19004F9DC7 /* LoungeProtocols.swift in Sources */,
 				39C3E7742513803C001CEA9A /* Snapkit_ConstraintView+Extensions.swift in Sources */,
+				39C325DB251A67C500239DD5 /* _ChannelIO_SocketIOClientSpec.swift in Sources */,
 				39C324D0251A431100239DD5 /* vp8_dec.c in Sources */,
 				39C32010251A115300239DD5 /* _ChannelIO_SDWebImagePrefetcher.m in Sources */,
 				39F4B9AE23C42CC00043B25A /* Lexer.swift in Sources */,
 				39F4B9C523C42CC00043B25A /* WritableToken.swift in Sources */,
 				3931CB0823C33432005E8444 /* ChatQueuableItem.swift in Sources */,
+				39C325D1251A67C500239DD5 /* _ChannelIO_SocketEnginePollable.swift in Sources */,
 				39C3E7EB2513B858001CEA9A /* NVActivityIndicatorShape.swift in Sources */,
 				39F4B9AC23C42CC00043B25A /* RuleNode.swift in Sources */,
 				65CB9934226ECF81004F9DC7 /* UserProfileItemModel.swift in Sources */,
+				39C325C1251A67C500239DD5 /* _ChannelIO_Starscream_Compression.swift in Sources */,
 				22E2138C23392E7C002B3EF4 /* BannerInAppNotificationView.swift in Sources */,
 				6597938F1FA716CB00840F6A /* ManagersReducer.swift in Sources */,
 				659793901FA716CB00840F6A /* MessagesReducer.swift in Sources */,
@@ -4816,6 +4935,7 @@
 				65CB9926226ECA9D004F9DC7 /* SettingProtocol.swift in Sources */,
 				655A280020B2699700935C1F /* TextActionView.swift in Sources */,
 				39C31FC2251A115200239DD5 /* _ChannelIO_SDAnimatedImageView.m in Sources */,
+				39C325D5251A67C500239DD5 /* _ChannelIO_SocketManager.swift in Sources */,
 				39C31FC6251A115200239DD5 /* _ChannelIO_SDWebImageError.m in Sources */,
 				39F4B9B923C42CC00043B25A /* ParserInterpreter.swift in Sources */,
 				39C32479251A431100239DD5 /* tree_enc.c in Sources */,
@@ -4832,6 +4952,7 @@
 				65CB1434206A02F200E456B5 /* UserChatCellModel.swift in Sources */,
 				659793941FA716CB00840F6A /* SessionsReducer.swift in Sources */,
 				39C324D6251A431100239DD5 /* cost_mips_dsp_r2.c in Sources */,
+				39C325C7251A67C500239DD5 /* _ChannelIO_SocketEnginePacketType.swift in Sources */,
 				39C32025251A115300239DD5 /* _ChannelIO_SDAsyncBlockOperation.m in Sources */,
 				6512132E224DF47F00737089 /* UIImageView+Tools.swift in Sources */,
 				3931CB0D23C33469005E8444 /* Character+Extensions.swift in Sources */,
@@ -4865,6 +4986,7 @@
 				39C324B3251A431100239DD5 /* anim_encode.c in Sources */,
 				39C3E75B2513803C001CEA9A /* Snapkit_ConstraintMakerPriortizable.swift in Sources */,
 				39C3248A251A431100239DD5 /* lossless_neon.c in Sources */,
+				39C325D9251A67C500239DD5 /* _ChannelIO_SocketAnyEvent.swift in Sources */,
 				39F4B98923C42CC00043B25A /* UUIDExtension.swift in Sources */,
 				3931CB0323C33432005E8444 /* CDNService.swift in Sources */,
 				39F4B9F423C42CC00043B25A /* ATNState.swift in Sources */,
@@ -4911,6 +5033,7 @@
 				39C324B4251A431100239DD5 /* lossless_enc_sse2.c in Sources */,
 				22E213B2233935F6002B3EF4 /* ShowCompletedChatsSelector.swift in Sources */,
 				39C32498251A431100239DD5 /* syntax_enc.c in Sources */,
+				39C325D2251A67C500239DD5 /* _ChannelIO_SocketAckManager.swift in Sources */,
 				39F4B9DD23C42CC00043B25A /* StarLoopbackState.swift in Sources */,
 				65CB991D226EC040004F9DC7 /* LoungeView.swift in Sources */,
 				22A917E1234BC42C00674083 /* CHMessageViewDelegate.swift in Sources */,
@@ -4919,6 +5042,7 @@
 				3910AC29237AC218000549B5 /* ChatAction.swift in Sources */,
 				39F4B9ED23C42CC00043B25A /* SemanticContext.swift in Sources */,
 				39C3E7592513803C001CEA9A /* Snapkit_LayoutConstraintItem.swift in Sources */,
+				39C325C5251A67C500239DD5 /* _ChannelIO_SocketEngine.swift in Sources */,
 				9C0951D523D54A3C00DE5799 /* CHPModels.swift in Sources */,
 				39C3E82E2513BF52001CEA9A /* PhoneNumberKit_MetadataParsing.swift in Sources */,
 				22F0ED9220B53C55008924C1 /* Models.swift in Sources */,
@@ -4940,6 +5064,7 @@
 				39C3E72225133FF7001CEA9A /* Dwifft_SectionedValues.swift in Sources */,
 				659793A31FA716CB00840F6A /* Badge.swift in Sources */,
 				659793A41FA716CB00840F6A /* BaseButton.swift in Sources */,
+				39C325DD251A67C500239DD5 /* _ChannelIO_SocketRawView.swift in Sources */,
 				659793A51FA716CB00840F6A /* BaseTableViewCell.swift in Sources */,
 				39F4BA0D23C42CC10043B25A /* StarBlockStartState.swift in Sources */,
 				22B21863228D9AA000E39FEB /* DateUtils.swift in Sources */,
@@ -4970,6 +5095,7 @@
 				39C31FDB251A115200239DD5 /* _ChannelIO_UIImage+GIF.m in Sources */,
 				39C3246D251A431100239DD5 /* yuv_neon.c in Sources */,
 				65121332224DF47F00737089 /* PageIndicator.swift in Sources */,
+				39C325CB251A67C500239DD5 /* _ChannelIO_SocketManagerSpec.swift in Sources */,
 				9C4D68F523ED598C0072280E /* UIFont+Traits.swift in Sources */,
 				659793A71FA716CB00840F6A /* NeverClearView.swift in Sources */,
 				39F4BA0C23C42CC10043B25A /* PrecedencePredicateTransition.swift in Sources */,
@@ -5029,6 +5155,7 @@
 				39C319C62514874600239DD5 /* TLAssetsCollection.swift in Sources */,
 				659793BD1FA716CB00840F6A /* CHPhoneField.swift in Sources */,
 				22A917E4234BC42C00674083 /* CHMessageTextView.swift in Sources */,
+				39C325DC251A67C500239DD5 /* _ChannelIO_SocketPacket.swift in Sources */,
 				39F4B9B023C42CC00043B25A /* ANTLRErrorListener.swift in Sources */,
 				39C324D1251A431100239DD5 /* filters_utils.c in Sources */,
 				39F4B98D23C42CC00043B25A /* MultiMap.swift in Sources */,
@@ -5046,6 +5173,7 @@
 				39C3E80D2513B858001CEA9A /* NVActivityIndicatorAnimationBallPulseRise.swift in Sources */,
 				6517FC37229CF05C00B64DB4 /* FluidButton.swift in Sources */,
 				39C3E7A325139108001CEA9A /* ObjectMapper_HexColorTransform.swift in Sources */,
+				39C325CC251A67C500239DD5 /* _ChannelIO_SocketLogger.swift in Sources */,
 				659793C31FA716CB00840F6A /* ErrorToastView.swift in Sources */,
 				39C324D2251A431100239DD5 /* quant_enc.c in Sources */,
 				39C31FF1251A115200239DD5 /* _ChannelIO_SDWebImageDownloaderOperation.m in Sources */,
@@ -5088,6 +5216,7 @@
 				39C3E7002512FF9D001CEA9A /* AF_ParameterEncoding.swift in Sources */,
 				65CB14072069E41900E456B5 /* UserChatRouter.swift in Sources */,
 				39C32446251A431100239DD5 /* iterator_enc.c in Sources */,
+				39C325CD251A67C500239DD5 /* _ChannelIO_SocketTypes.swift in Sources */,
 				6556A29C1FA821D300B80F4E /* CHError.swift in Sources */,
 				9C0951C223D54A0700DE5799 /* TextBlockParserBaseListener.swift in Sources */,
 				39C3252E251A4CC200239DD5 /* _ChannelIO_Action.swift in Sources */,
@@ -5097,6 +5226,7 @@
 				3931CAF923C333FC005E8444 /* GradientView.swift in Sources */,
 				65CB9928226ECAA6004F9DC7 /* SettingView.swift in Sources */,
 				39F4B99223C42CC00043B25A /* CommonUtil.swift in Sources */,
+				39C325C8251A67C500239DD5 /* _ChannelIO_SocketStringReader.swift in Sources */,
 				39C3E7A125139108001CEA9A /* ObjectMapper_Mappable.swift in Sources */,
 				39F4BA0123C42CC10043B25A /* DefaultATNConfig.swift in Sources */,
 				39C3E77B2513803C001CEA9A /* Snapkit_ConstraintLayoutGuide+Extensions.swift in Sources */,
@@ -5114,6 +5244,7 @@
 				39C3E8032513B858001CEA9A /* NVActivityIndicatorAnimationBallGridBeat.swift in Sources */,
 				39C3E7A625139108001CEA9A /* ObjectMapper_URLTransform.swift in Sources */,
 				39C324DF251A431100239DD5 /* lossless_enc_mips32.c in Sources */,
+				39C325C4251A67C500239DD5 /* _ChannelIO_Starscream_SSLClientCertificate.swift in Sources */,
 				39C3E70D2512FF9D001CEA9A /* AF_AuthenticationInterceptor.swift in Sources */,
 				65CB1432206A02F200E456B5 /* TypingIndicatorCell.swift in Sources */,
 				39C324AC251A431100239DD5 /* utils.c in Sources */,
@@ -5164,6 +5295,7 @@
 				9C0951BC23D54A0700DE5799 /* TextBlockParser.swift in Sources */,
 				39C324A9251A431100239DD5 /* lossless.c in Sources */,
 				39C32488251A431100239DD5 /* alpha_dec.c in Sources */,
+				39C325CF251A67C500239DD5 /* _ChannelIO_SocketExtensions.swift in Sources */,
 				39C32494251A431100239DD5 /* frame_enc.c in Sources */,
 				39F4B9BA23C42CC00043B25A /* DFASerializer.swift in Sources */,
 				39C324BC251A431100239DD5 /* histogram_enc.c in Sources */,

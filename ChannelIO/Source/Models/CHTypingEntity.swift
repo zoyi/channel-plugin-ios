@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import SocketIO
 
-struct CHTypingEntity: SocketData {
+struct CHTypingEntity: SocketIO_SocketData {
   var action = ""
   var chatId = ""
   var chatType: ChatType?
@@ -25,7 +24,7 @@ struct CHTypingEntity: SocketData {
     self.personType = personType
   }
   
-  func socketRepresentation() -> SocketData {
+  func socketRepresentation() -> SocketIO_SocketData {
     return [
       "action": self.action,
       "chatId": self.chatId,

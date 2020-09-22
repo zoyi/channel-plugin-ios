@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import SocketIO
 
 struct SocketCommand {
   static let join = "join"
@@ -104,8 +103,8 @@ class WsService {
   let errorSubject = PublishSubject<Any?>()
   
   //MARK: Private properties
-  fileprivate var socket: SocketIOClient?
-  fileprivate var manager: SocketManager?
+  fileprivate var socket: SocketIO_SocketIOClient?
+  fileprivate var manager: SocketIO_SocketManager?
   
   var baseUrl = ""
   
@@ -165,7 +164,7 @@ class WsService {
 
     self.disconnect()
     
-    self.manager = SocketManager(
+    self.manager = SocketIO_SocketManager(
       socketURL: URL(string: CHUtils.getCurrentStage().socketEndPoint)!,
       config: [
         .log(false),

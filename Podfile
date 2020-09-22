@@ -13,7 +13,7 @@ target 'ChannelIO' do
   # pod 'NVActivityIndicatorView', '~> 4.7'
   # pod 'CHDwifft'
   # pod 'Alamofire', '~> 5.2'
-  pod 'Socket.IO-Client-Swift', '~> 15.0.0' 
+  # pod 'Socket.IO-Client-Swift', '~> 15.0.0' 
   # pod 'MGSwipeTableCell'
   # pod 'JGProgressHUD'
   # pod 'PhoneNumberKit', '~> 3.1'
