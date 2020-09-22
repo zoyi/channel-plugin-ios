@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ReSwift
 import RxSwift
 import RxCocoa
 
@@ -83,7 +82,7 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
   }
 }
 
-extension LoungeInteractor: StoreSubscriber {
+extension LoungeInteractor: ReSwift_StoreSubscriber {
   func newState(state: AppState) {
     let userChats = userChatsSelector(
       state: mainStore.state,

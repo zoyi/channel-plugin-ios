@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
   # s.dependency 'Reusable', '~> 4.1'
   # s.dependency 'SnapKit', '~> 5.0'
   # s.dependency 'SwiftyJSON', '~> 5.0'
-  s.dependency 'ReSwift', '~> 5.0'
+  # s.dependency 'ReSwift', '~> 5.0'
   s.dependency 'RxSwift', '~> 5.1'
   s.dependency 'RxCocoa', '~> 5.1'
   # s.dependency 'ObjectMapper', '~> 4.2'

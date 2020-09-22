@@ -6,10 +6,8 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct GetPopup : Action {
+struct GetPopup : ReSwift_Action {
   public let payload : CHPopupDisplayable?
 }
 
-struct RemovePopup : Action {}
+struct RemovePopup : ReSwift_Action {}

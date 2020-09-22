@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ReSwift
 
 final class LauncherView : BaseView {
   // MARK: Constant

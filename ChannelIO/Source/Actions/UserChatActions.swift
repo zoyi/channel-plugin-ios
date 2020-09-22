@@ -6,24 +6,22 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct FetchedUserChatPrep: Action {
+struct FetchedUserChatPrep: ReSwift_Action {
   public let followers: [CHManager]
   public let plugin: CHPlugin
   public let bot: CHBot?
   public let supportBotEntry: CHSupportBotEntryInfo
 }
 
-struct GetUserChats: Action {
+struct GetUserChats: ReSwift_Action {
   public let payload: UserChatsResponse
 }
 
-struct FailedGetUserChats: Action {
+struct FailedGetUserChats: ReSwift_Action {
   public let error: Error
 }
 
-struct GetMessages: Action {
+struct GetMessages: ReSwift_Action {
   public let payload: [String: Any]
 }
 
@@ -31,50 +29,50 @@ struct GetMessages: Action {
 //  public let error: Error
 //}
 
-struct RemoveMessages: Action {
+struct RemoveMessages: ReSwift_Action {
   public let payload: String?
 }
 
-struct GetUserChat: Action {
+struct GetUserChat: ReSwift_Action {
   public let payload: ChatResponse
 }
 
-struct CreateUserChat: Action {
+struct CreateUserChat: ReSwift_Action {
   public let payload: CHUserChat
 }
 
-struct UpdateUserChat: Action {
+struct UpdateUserChat: ReSwift_Action {
   public let payload: CHUserChat
 }
 
-struct DeleteUserChat: Action {
+struct DeleteUserChat: ReSwift_Action {
   public let payload: CHUserChat
 }
 
-struct DeleteUserChats: Action {
+struct DeleteUserChats: ReSwift_Action {
   public let payload: [CHUserChat]
 }
 
-struct DeleteUserChatsAll: Action {}
+struct DeleteUserChatsAll: ReSwift_Action {}
 
-struct JoinedUserChat: Action {
+struct JoinedUserChat: ReSwift_Action {
   public let payload: String
 }
 
-struct LeavedUserChat: Action {
+struct LeavedUserChat: ReSwift_Action {
   public let payload: String
 }
 
 //Update user
-struct UpdateUser: Action {
+struct UpdateUser: ReSwift_Action {
   public let payload: CHUser?
 }
 
-struct UpdateVisibilityOfCompletedChats: Action {
+struct UpdateVisibilityOfCompletedChats: ReSwift_Action {
   public let show: Bool? 
 }
 
-struct UpdateVisibilityOfTranslation: Action {
+struct UpdateVisibilityOfTranslation: ReSwift_Action {
   public let show: Bool?
 }
 

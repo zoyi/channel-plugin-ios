@@ -8,7 +8,6 @@
 
 import UIKit
 import RxSwift
-import ReSwift
 
 class MessageCell: BaseTableViewCell {
   weak var presenter: UserChatPresenterProtocol?

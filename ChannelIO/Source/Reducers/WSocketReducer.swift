@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func socketReducer(action: Action, state: WSocketState?) -> WSocketState {
+func socketReducer(action: ReSwift_Action, state: WSocketState?) -> WSocketState {
   var state = state
   switch action {
   case _ as SocketConnected:

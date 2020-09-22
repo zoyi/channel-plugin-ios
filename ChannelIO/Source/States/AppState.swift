@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct AppState: StateType {
+struct AppState: ReSwift_StateType {
   var bootState: BootState
   var plugin: CHPlugin
   var channel: CHChannel

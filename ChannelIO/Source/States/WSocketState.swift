@@ -6,8 +6,6 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
 enum WebSocketState {
   case none //initial
   case joined
@@ -18,6 +16,6 @@ enum WebSocketState {
   case reconnecting
 }
 
-struct WSocketState: StateType {
+struct WSocketState: ReSwift_StateType {
   var state: WebSocketState = .none
 }

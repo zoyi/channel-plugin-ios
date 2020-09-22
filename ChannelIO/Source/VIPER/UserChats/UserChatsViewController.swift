@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ReSwift
 import RxSwift
 import RxCocoa
 import RxSwiftExt
@@ -263,7 +262,7 @@ class UserChatsViewController: BaseViewController {
 
 // MARK: - StoreSubscriber
 
-extension UserChatsViewController: StoreSubscriber {
+extension UserChatsViewController: ReSwift_StoreSubscriber {
   func newState(state: AppState) {
     self.userChats = userChatsSelector(
       state: state,

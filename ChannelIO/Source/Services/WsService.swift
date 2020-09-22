@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import ReSwift
 import SocketIO
 
 struct SocketCommand {

@@ -6,7 +6,7 @@ target 'ChannelIO' do
   # pod 'Reusable', '~> 4.1'
   # pod 'SnapKit', '~> 5.0'
   # pod 'SwiftyJSON', '~> 5.0'
-  pod 'ReSwift', '~> 5.0'
+  # pod 'ReSwift', '~> 5.0'
   pod 'RxSwift', '~> 5.1'
   pod 'RxCocoa', '~> 5.1'
   # pod 'ObjectMapper', '~> 4.2'

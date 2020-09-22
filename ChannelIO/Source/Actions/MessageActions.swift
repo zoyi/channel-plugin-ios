@@ -6,21 +6,19 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct CreateMessage: Action {
+struct CreateMessage: ReSwift_Action {
   public let payload: CHMessage?
 }
 
-struct UpdateMessage: Action {
+struct UpdateMessage: ReSwift_Action {
   public let payload: CHMessage
 }
 
-struct DeleteMessage: Action {
+struct DeleteMessage: ReSwift_Action {
   public let payload: CHMessage
 }
 
 // local message action
 
-struct InsertWelcome : Action {}
-struct InsertSupportBotEntry: Action {}
+struct InsertWelcome : ReSwift_Action {}
+struct InsertSupportBotEntry: ReSwift_Action {}

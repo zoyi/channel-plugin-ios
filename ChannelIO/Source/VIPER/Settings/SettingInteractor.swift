@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ReSwift
 import RxSwift
 import RxCocoa
 
@@ -80,7 +79,7 @@ class SettingInteractor: SettingInteractorProtocol {
   }
 }
 
-extension SettingInteractor: StoreSubscriber {
+extension SettingInteractor: ReSwift_StoreSubscriber {
   func newState(state: AppState) {
     if self.channel != state.channel ||
       self.plugin != state.plugin {

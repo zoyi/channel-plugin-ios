@@ -6,20 +6,18 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
+struct ShowProfile: ReSwift_Action {}
 
-struct ShowProfile: Action {}
+struct HideProfile: ReSwift_Action {}
 
-struct HideProfile: Action {}
+struct ChatListIsVisible: ReSwift_Action {}
 
-struct ChatListIsVisible: Action {}
-
-struct ChatListIsHidden: Action {}
+struct ChatListIsHidden: ReSwift_Action {}
 
 // boot state
 
-struct UpdateBootState: Action {
+struct UpdateBootState: ReSwift_Action {
   public let payload: BootStatus
 }
 
-struct ReadyToShow: Action {}
+struct ReadyToShow: ReSwift_Action {}

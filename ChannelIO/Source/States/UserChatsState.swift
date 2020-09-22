@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct UserChatsState: StateType {
+struct UserChatsState: ReSwift_StateType {
   var userChats: [String:CHUserChat] = [:]
   var nextSeq: String? = nil
   var currentUserChatId = ""

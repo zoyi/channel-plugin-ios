@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ReSwift
 import RxSwift
 import RxCocoa
 
@@ -104,7 +103,7 @@ class MainNavigationController: BaseNavigationController {
 
 // MARK: - StoreSubscriber
 
-extension MainNavigationController: StoreSubscriber {
+extension MainNavigationController: ReSwift_StoreSubscriber {
   func newState(state: CHPlugin) {
     if !self.useDefault {
       // Bar Color

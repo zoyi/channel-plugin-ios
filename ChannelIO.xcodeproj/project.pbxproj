@@ -449,6 +449,19 @@
 		39C324E5251A431100239DD5 /* yuv_mips32.c in Sources */ = {isa = PBXBuildFile; fileRef = 39C32443251A431100239DD5 /* yuv_mips32.c */; };
 		39C324E6251A431100239DD5 /* upsampling_mips_dsp_r2.c in Sources */ = {isa = PBXBuildFile; fileRef = 39C32444251A431100239DD5 /* upsampling_mips_dsp_r2.c */; };
 		39C324E7251A431100239DD5 /* dec_msa.c in Sources */ = {isa = PBXBuildFile; fileRef = 39C32445251A431100239DD5 /* dec_msa.c */; };
+		39C3252D251A4CC200239DD5 /* _ChannelIO_Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32520251A4CC200239DD5 /* _ChannelIO_Middleware.swift */; };
+		39C3252E251A4CC200239DD5 /* _ChannelIO_Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32521251A4CC200239DD5 /* _ChannelIO_Action.swift */; };
+		39C3252F251A4CC200239DD5 /* _ChannelIO_Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32522251A4CC200239DD5 /* _ChannelIO_Assertions.swift */; };
+		39C32530251A4CC200239DD5 /* _ChannelIO_State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32523251A4CC200239DD5 /* _ChannelIO_State.swift */; };
+		39C32531251A4CC200239DD5 /* _ChannelIO_Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32524251A4CC200239DD5 /* _ChannelIO_Reducer.swift */; };
+		39C32532251A4CC200239DD5 /* _ChannelIO_StoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32525251A4CC200239DD5 /* _ChannelIO_StoreType.swift */; };
+		39C32533251A4CC200239DD5 /* _ChannelIO_AtomicBool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32526251A4CC200239DD5 /* _ChannelIO_AtomicBool.swift */; };
+		39C32534251A4CC200239DD5 /* _ChannelIO_TypeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32527251A4CC200239DD5 /* _ChannelIO_TypeHelper.swift */; };
+		39C32535251A4CC200239DD5 /* _ChannelIO_StoreSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32528251A4CC200239DD5 /* _ChannelIO_StoreSubscriber.swift */; };
+		39C32536251A4CC200239DD5 /* _ChannelIO_Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C32529251A4CC200239DD5 /* _ChannelIO_Subscription.swift */; };
+		39C32537251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3252A251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift */; };
+		39C32538251A4CC200239DD5 /* _ChannelIO_Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3252B251A4CC200239DD5 /* _ChannelIO_Store.swift */; };
+		39C32539251A4CC200239DD5 /* _ChannelIO_Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3252C251A4CC200239DD5 /* _ChannelIO_Coding.swift */; };
 		39C3E6F42512FF9D001CEA9A /* AF_MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6CF2512FF9D001CEA9A /* AF_MultipartFormData.swift */; };
 		39C3E6F52512FF9D001CEA9A /* AF_RequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6D02512FF9D001CEA9A /* AF_RequestInterceptor.swift */; };
 		39C3E6F62512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3E6D12512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift */; };
@@ -1506,6 +1519,19 @@
 		39C32443251A431100239DD5 /* yuv_mips32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = yuv_mips32.c; sourceTree = "<group>"; };
 		39C32444251A431100239DD5 /* upsampling_mips_dsp_r2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = upsampling_mips_dsp_r2.c; sourceTree = "<group>"; };
 		39C32445251A431100239DD5 /* dec_msa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dec_msa.c; sourceTree = "<group>"; };
+		39C32520251A4CC200239DD5 /* _ChannelIO_Middleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Middleware.swift; sourceTree = "<group>"; };
+		39C32521251A4CC200239DD5 /* _ChannelIO_Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Action.swift; sourceTree = "<group>"; };
+		39C32522251A4CC200239DD5 /* _ChannelIO_Assertions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Assertions.swift; sourceTree = "<group>"; };
+		39C32523251A4CC200239DD5 /* _ChannelIO_State.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_State.swift; sourceTree = "<group>"; };
+		39C32524251A4CC200239DD5 /* _ChannelIO_Reducer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Reducer.swift; sourceTree = "<group>"; };
+		39C32525251A4CC200239DD5 /* _ChannelIO_StoreType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_StoreType.swift; sourceTree = "<group>"; };
+		39C32526251A4CC200239DD5 /* _ChannelIO_AtomicBool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_AtomicBool.swift; sourceTree = "<group>"; };
+		39C32527251A4CC200239DD5 /* _ChannelIO_TypeHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_TypeHelper.swift; sourceTree = "<group>"; };
+		39C32528251A4CC200239DD5 /* _ChannelIO_StoreSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_StoreSubscriber.swift; sourceTree = "<group>"; };
+		39C32529251A4CC200239DD5 /* _ChannelIO_Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Subscription.swift; sourceTree = "<group>"; };
+		39C3252A251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_DispatchingStoreType.swift; sourceTree = "<group>"; };
+		39C3252B251A4CC200239DD5 /* _ChannelIO_Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Store.swift; sourceTree = "<group>"; };
+		39C3252C251A4CC200239DD5 /* _ChannelIO_Coding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _ChannelIO_Coding.swift; sourceTree = "<group>"; };
 		39C3E6CF2512FF9D001CEA9A /* AF_MultipartFormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_MultipartFormData.swift; sourceTree = "<group>"; };
 		39C3E6D02512FF9D001CEA9A /* AF_RequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_RequestInterceptor.swift; sourceTree = "<group>"; };
 		39C3E6D12512FF9D001CEA9A /* AF_NetworkReachabilityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AF_NetworkReachabilityManager.swift; sourceTree = "<group>"; };
@@ -2298,6 +2324,7 @@
 		22F094F32176E8A00035C777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C3251F251A4CC200239DD5 /* ReSwift */,
 				39C323A3251A431000239DD5 /* SDWebImageWebPCoder */,
 				39C31F27251A115100239DD5 /* SDWebImage */,
 				39C31CB22519B2C000239DD5 /* JGProgressHUD */,
@@ -2746,6 +2773,26 @@
 				39C32445251A431100239DD5 /* dec_msa.c */,
 			);
 			path = SDWebImageWebPCoder;
+			sourceTree = "<group>";
+		};
+		39C3251F251A4CC200239DD5 /* ReSwift */ = {
+			isa = PBXGroup;
+			children = (
+				39C32520251A4CC200239DD5 /* _ChannelIO_Middleware.swift */,
+				39C32521251A4CC200239DD5 /* _ChannelIO_Action.swift */,
+				39C32522251A4CC200239DD5 /* _ChannelIO_Assertions.swift */,
+				39C32523251A4CC200239DD5 /* _ChannelIO_State.swift */,
+				39C32524251A4CC200239DD5 /* _ChannelIO_Reducer.swift */,
+				39C32525251A4CC200239DD5 /* _ChannelIO_StoreType.swift */,
+				39C32526251A4CC200239DD5 /* _ChannelIO_AtomicBool.swift */,
+				39C32527251A4CC200239DD5 /* _ChannelIO_TypeHelper.swift */,
+				39C32528251A4CC200239DD5 /* _ChannelIO_StoreSubscriber.swift */,
+				39C32529251A4CC200239DD5 /* _ChannelIO_Subscription.swift */,
+				39C3252A251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift */,
+				39C3252B251A4CC200239DD5 /* _ChannelIO_Store.swift */,
+				39C3252C251A4CC200239DD5 /* _ChannelIO_Coding.swift */,
+			);
+			path = ReSwift;
 			sourceTree = "<group>";
 		};
 		39C3E635251207D7001CEA9A /* Alamofire */ = {
@@ -4304,6 +4351,7 @@
 				39C31CD02519B2C000239DD5 /* _ChannelIO_JGProgressHUDPieIndicatorView.m in Sources */,
 				3931CAF723C333C3005E8444 /* FileProgressCell.swift in Sources */,
 				39C32018251A115300239DD5 /* _ChannelIO_SDImageLoadersManager.m in Sources */,
+				39C32533251A4CC200239DD5 /* _ChannelIO_AtomicBool.swift in Sources */,
 				39C324DA251A431100239DD5 /* lossless_msa.c in Sources */,
 				39C3E7AE25139108001CEA9A /* ObjectMapper_FromJSON.swift in Sources */,
 				6597934D1FA716CB00840F6A /* MessageActions.swift in Sources */,
@@ -4319,6 +4367,7 @@
 				39F4B9D223C42CC00043B25A /* ConsoleErrorListener.swift in Sources */,
 				659793531FA716CB00840F6A /* UserChatActions.swift in Sources */,
 				39F4BA0023C42CC10043B25A /* LookupDictionary.swift in Sources */,
+				39C32532251A4CC200239DD5 /* _ChannelIO_StoreType.swift in Sources */,
 				39C324DE251A431100239DD5 /* picture_enc.c in Sources */,
 				65CB142B206A02F200E456B5 /* WebPageMessageCell.swift in Sources */,
 				3931CAF023C333AF005E8444 /* LoungePromise.swift in Sources */,
@@ -4352,6 +4401,7 @@
 				65CB991F226EC04A004F9DC7 /* LoungePresenter.swift in Sources */,
 				9CF1098523FA7E5800D42D03 /* MiddlewareModel.swift in Sources */,
 				659793571FA716CB00840F6A /* BaseViewController.swift in Sources */,
+				39C32538251A4CC200239DD5 /* _ChannelIO_Store.swift in Sources */,
 				39C3E83A2513BF52001CEA9A /* PhoneNumberKit_PhoneNumberKit.swift in Sources */,
 				39C31CCF2519B2C000239DD5 /* _ChannelIO_JGProgressHUDAnimation.m in Sources */,
 				659793581FA716CB00840F6A /* MainNavigationController.swift in Sources */,
@@ -4388,6 +4438,7 @@
 				39C3E8052513B858001CEA9A /* NVActivityIndicatorAnimationLineScale.swift in Sources */,
 				CF52019324C963620010A9AC /* ProfileDateView.swift in Sources */,
 				6597935D1FA716CB00840F6A /* Array+Extensions.swift in Sources */,
+				39C32535251A4CC200239DD5 /* _ChannelIO_StoreSubscriber.swift in Sources */,
 				39C324E1251A431100239DD5 /* backward_references_cost_enc.c in Sources */,
 				39C324AA251A431100239DD5 /* ssim.c in Sources */,
 				39F4B9D023C42CC00043B25A /* IntStream.swift in Sources */,
@@ -4408,6 +4459,7 @@
 				39C3248B251A431100239DD5 /* lossless_enc_msa.c in Sources */,
 				39C319C02514874500239DD5 /* TLAssetPreviewViewController.swift in Sources */,
 				39F4B9C123C42CC00043B25A /* ANTLRErrorStrategy.swift in Sources */,
+				39C32534251A4CC200239DD5 /* _ChannelIO_TypeHelper.swift in Sources */,
 				9C0951D223D54A3C00DE5799 /* CHMessageParserConfig.swift in Sources */,
 				39C3245E251A431100239DD5 /* demux.c in Sources */,
 				659793611FA716CB00840F6A /* String+Utils.swift in Sources */,
@@ -4519,6 +4571,7 @@
 				6512BA03226EDA2700757CB2 /* SettingHeaderView.swift in Sources */,
 				3931CB0723C33432005E8444 /* ChatFileQueueItem.swift in Sources */,
 				39C31FE4251A115200239DD5 /* _ChannelIO_UIImage+ForceDecode.m in Sources */,
+				39C3252D251A4CC200239DD5 /* _ChannelIO_Middleware.swift in Sources */,
 				654BFF4B1FD93CC80028D364 /* ReSwift+Extensions.swift in Sources */,
 				CF52018924C813790010A9AC /* CHFieldProtocols.swift in Sources */,
 				6512BA3E2277EBF800757CB2 /* LoungeExternalSourceViewModel.swift in Sources */,
@@ -4619,6 +4672,7 @@
 				39C3E7B425139108001CEA9A /* ObjectMapper_TransformType.swift in Sources */,
 				39F4B9CD23C42CC00043B25A /* InputMismatchException.swift in Sources */,
 				39F4B99E23C42CC00043B25A /* AbstractParseTreeVisitor.swift in Sources */,
+				39C32531251A4CC200239DD5 /* _ChannelIO_Reducer.swift in Sources */,
 				39C3E7142512FF9D001CEA9A /* AF_Combine.swift in Sources */,
 				39C3E7732513803C001CEA9A /* Snapkit_ConstraintLayoutGuideDSL.swift in Sources */,
 				39C324E7251A431100239DD5 /* dec_msa.c in Sources */,
@@ -4639,6 +4693,7 @@
 				39C324BF251A431100239DD5 /* idec_dec.c in Sources */,
 				39C324A8251A431100239DD5 /* dec.c in Sources */,
 				6597937F1FA716CB00840F6A /* CHUser.swift in Sources */,
+				39C32536251A4CC200239DD5 /* _ChannelIO_Subscription.swift in Sources */,
 				39C324B1251A431100239DD5 /* picture_tools_enc.c in Sources */,
 				39C324B9251A431100239DD5 /* webp_enc.c in Sources */,
 				CF52019724C965D00010A9AC /* BooleanActionView.swift in Sources */,
@@ -4718,6 +4773,7 @@
 				39C31FBC251A115200239DD5 /* _ChannelIO_SDMemoryCache.m in Sources */,
 				39C3E80A2513B858001CEA9A /* NVActivityIndicatorAnimationBallSpinFadeLoader.swift in Sources */,
 				6597938B1FA716CB00840F6A /* UtilityPromise.swift in Sources */,
+				39C32530251A4CC200239DD5 /* _ChannelIO_State.swift in Sources */,
 				39C3E70A2512FF9D001CEA9A /* AF_RequestTaskMap.swift in Sources */,
 				39C31FC5251A115200239DD5 /* _ChannelIO_SDImageLoader.m in Sources */,
 				39C3E6F42512FF9D001CEA9A /* AF_MultipartFormData.swift in Sources */,
@@ -5034,6 +5090,7 @@
 				39C32446251A431100239DD5 /* iterator_enc.c in Sources */,
 				6556A29C1FA821D300B80F4E /* CHError.swift in Sources */,
 				9C0951C223D54A0700DE5799 /* TextBlockParserBaseListener.swift in Sources */,
+				39C3252E251A4CC200239DD5 /* _ChannelIO_Action.swift in Sources */,
 				659793D01FA716CB00840F6A /* UserChatsEmptyView.swift in Sources */,
 				39F4B9AB23C42CC00043B25A /* ParseTreeListener.swift in Sources */,
 				65A22F1A212EA3FB00EAD15F /* ParamBuilder.swift in Sources */,
@@ -5051,6 +5108,7 @@
 				39C3E8372513BF52001CEA9A /* PhoneNumberKit_MetadataManager.swift in Sources */,
 				39C3E7152512FF9D001CEA9A /* AF_ResponseSerialization.swift in Sources */,
 				39F4B9E023C42CC00043B25A /* LexerATNConfig.swift in Sources */,
+				39C32539251A4CC200239DD5 /* _ChannelIO_Coding.swift in Sources */,
 				39F4B9AA23C42CC00043B25A /* RuleTagToken.swift in Sources */,
 				39C3E6F92512FF9D001CEA9A /* AF_Session.swift in Sources */,
 				39C3E8032513B858001CEA9A /* NVActivityIndicatorAnimationBallGridBeat.swift in Sources */,
@@ -5081,6 +5139,7 @@
 				39F4B9A923C42CC00043B25A /* Chunk.swift in Sources */,
 				39C31FCB251A115200239DD5 /* _ChannelIO_UIImage+ExtendedCacheData.m in Sources */,
 				39C3246C251A431100239DD5 /* cpu.c in Sources */,
+				39C32537251A4CC200239DD5 /* _ChannelIO_DispatchingStoreType.swift in Sources */,
 				39C3E7132512FF9D001CEA9A /* AF_EventMonitor.swift in Sources */,
 				39C3249F251A431100239DD5 /* predictor_enc.c in Sources */,
 				39F4BA0E23C42CC10043B25A /* PredicateTransition.swift in Sources */,
@@ -5100,6 +5159,7 @@
 				39C3E72A25137C84001CEA9A /* Reusable_NibOwnerLoadable.swift in Sources */,
 				39F4B9D823C42CC00043B25A /* PredictionContext.swift in Sources */,
 				39C3E7072512FF9D001CEA9A /* AF_MultipartUpload.swift in Sources */,
+				39C3252F251A4CC200239DD5 /* _ChannelIO_Assertions.swift in Sources */,
 				65CB1430206A02F200E456B5 /* SwitchCell.swift in Sources */,
 				9C0951BC23D54A0700DE5799 /* TextBlockParser.swift in Sources */,
 				39C324A9251A431100239DD5 /* lossless.c in Sources */,

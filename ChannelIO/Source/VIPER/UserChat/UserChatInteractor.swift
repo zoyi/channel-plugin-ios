@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import ReSwift
 import Photos
 
 class UserChatInteractor: NSObject, UserChatInteractorProtocol {
@@ -269,7 +268,7 @@ extension UserChatInteractor {
   }
 }
 
-extension UserChatInteractor: StoreSubscriber {
+extension UserChatInteractor: ReSwift_StoreSubscriber {
   func newState(state: ChatState) {
     let messages = messagesSelector(state: mainStore.state, userChatId: self.userChatId)
     self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)

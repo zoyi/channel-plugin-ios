@@ -7,7 +7,6 @@
 //
 
 import RxSwift
-import ReSwift
 import UIKit
 import Photos
 import AVKit

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import ReSwift
 
 func showCompletedChatsSelector(state: AppState) -> Bool {
   return state.userChatsState.showCompletedChats

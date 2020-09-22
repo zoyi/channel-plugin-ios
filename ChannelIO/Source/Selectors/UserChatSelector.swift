@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ReSwift
 
 func userChatsSelector(state: AppState, showCompleted:Bool = false, limit: Int? = nil) -> [CHUserChat] {
   var userChats = state.userChatsState.userChats.values.sorted { (c1, c2) -> Bool in

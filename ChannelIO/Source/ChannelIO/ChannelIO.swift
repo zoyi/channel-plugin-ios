@@ -6,11 +6,10 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
 import RxSwift
 import UserNotifications
 
-internal let mainStore = Store<AppState>(
+internal let mainStore = ReSwift_Store<AppState>(
   reducer: appReducer,
   state: nil,
   middleware: [
@@ -118,7 +117,7 @@ public final class ChannelIO: NSObject {
   internal static var isDebugMode: Bool = false
   
   // MARK: StoreSubscriber
-  class CHPluginSubscriber : StoreSubscriber {
+  class CHPluginSubscriber : ReSwift_StoreSubscriber {
     //refactor into two selectors
     func newState(state: AppState) {
       dispatch {

@@ -6,21 +6,19 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct GetTouchSuccess: Action {
+struct GetTouchSuccess: ReSwift_Action {
   public let payload: BootResponse
 }
 
-struct BootSuccess: Action {
+struct BootSuccess: ReSwift_Action {
   public let payload: BootResponse
 }
 
-struct ShutdownSuccess: Action {
+struct ShutdownSuccess: ReSwift_Action {
   public let isSleeping: Bool
 }
 
-struct UpdateLoungeInfo: Action {
+struct UpdateLoungeInfo: ReSwift_Action {
   public let channel: CHChannel
   public let plugin: CHPlugin
   public let bot: CHBot?
@@ -29,15 +27,15 @@ struct UpdateLoungeInfo: Action {
   public let userChats: UserChatsResponse
 }
 
-struct GetPlugin: Action {
+struct GetPlugin: ReSwift_Action {
   public let plugin: CHPlugin
   public let bot: CHBot?
 }
 
-struct UpdateChannel: Action {
+struct UpdateChannel: ReSwift_Action {
   public let payload: CHChannel
 }
 
-struct UpdateLocale: Action {
+struct UpdateLocale: ReSwift_Action {
   public let payload: CHLocaleString
 }

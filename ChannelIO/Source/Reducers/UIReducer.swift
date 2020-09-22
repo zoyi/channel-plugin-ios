@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func uiReducer(action: Action, state: UIState?) -> UIState {
+func uiReducer(action: ReSwift_Action, state: UIState?) -> UIState {
   var state = state
   switch action {
   case _ as ShowProfile:
@@ -32,7 +30,7 @@ func uiReducer(action: Action, state: UIState?) -> UIState {
   }
 }
 
-func bootReducer(action: Action, state: BootState?) -> BootState {
+func bootReducer(action: ReSwift_Action, state: BootState?) -> BootState {
   var state = state
   switch action {
   case let action as UpdateBootState:

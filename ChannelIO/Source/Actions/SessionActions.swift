@@ -6,28 +6,26 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct CreateSession: Action {
+struct CreateSession: ReSwift_Action {
   public let payload: CHSession?
 }
 
-struct UpdateSession: Action {
+struct UpdateSession: ReSwift_Action {
   public let payload: CHSession?
 }
 
-struct DeleteSession: Action {
+struct DeleteSession: ReSwift_Action {
   public let payload: CHSession?
 }
 
-struct UpdateManager: Action {
+struct UpdateManager: ReSwift_Action {
   public let payload: CHManager
 }
 
-struct UpdateFollowingManagers: Action {
+struct UpdateFollowingManagers: ReSwift_Action {
   public let payload: [CHManager]
 }
 
-struct ReadSession: Action {
+struct ReadSession: ReSwift_Action {
   public let payload: CHSession?
 }
