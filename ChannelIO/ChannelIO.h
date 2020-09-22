@@ -131,6 +131,17 @@
 #if __has_include("_ChannelIO_UIColor+SDHexString.h")
 #import "_ChannelIO_UIColor+SDHexString.h"
 #endif
+// SDWebImageWebPCoder
+#import "_ChannelIO_SDImageWebPCoder.h"
+#import "_ChannelIO_UIImage+WebP.h"
+// webplib
+#import "_ChannelIO_decode.h"
+#import "_ChannelIO_encode.h"
+#import "_ChannelIO_demux.h"
+#import "_ChannelIO_mux.h"
+#import "_ChannelIO_mux_types.h"
+#import "_ChannelIO_types.h"
+#import "_ChannelIO_format_constants.h"
 
 //! Project version number for CHPlugin.
 FOUNDATION_EXPORT double CHPluginVersionNumber;
