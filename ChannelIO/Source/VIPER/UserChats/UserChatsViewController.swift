@@ -12,7 +12,6 @@ import RxSwift
 import RxCocoa
 import RxSwiftExt
 import JGProgressHUD
-import MGSwipeTableCell
 
 //TODO: refactoring VIPER
 class UserChatsViewController: BaseViewController {
@@ -335,7 +334,7 @@ extension UserChatsViewController: UITableViewDataSource {
     let userChat = self.userChats[indexPath.row]
     let viewModel = UserChatCellModel(userChat: userChat)
     cell.configure(viewModel)
-    let button = MGSwipeButton(
+    let button = _ChannelIO_MGSwipeButton(
       title: CHAssets.localized("ch.chat.delete"),
       backgroundColor: CHColors.warmPink,
       insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10)
@@ -346,7 +345,7 @@ extension UserChatsViewController: UITableViewDataSource {
     cell.rightButtons = [
       button
     ]
-    cell.rightSwipeSettings.transition = .drag
+    cell.rightSwipeSettings.transition = .MGSwipeTransitionDrag
     cell.tintColor = CHColors.warmPink
     cell.delegate = self
     return cell
@@ -439,11 +438,11 @@ extension UserChatsViewController {
   }
 }
 
-extension UserChatsViewController : MGSwipeTableCellDelegate {
+extension UserChatsViewController : _ChannelIO_MGSwipeTableCellDelegate {
   func swipeTableCell(
-    _ cell: MGSwipeTableCell,
+    _ cell: _ChannelIO_MGSwipeTableCell,
     tappedButtonAt index: Int,
-    direction: MGSwipeDirection,
+    direction: _ChannelIO_MGSwipeDirection,
     fromExpansion: Bool) -> Bool {
     
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }

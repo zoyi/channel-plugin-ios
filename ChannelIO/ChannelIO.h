@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "_ChannelIO_MGSwipeButton.h"
+#import "_ChannelIO_MGSwipeTableCell.h"
 
 //! Project version number for CHPlugin.
 FOUNDATION_EXPORT double CHPluginVersionNumber;

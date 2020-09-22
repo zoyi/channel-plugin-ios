@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   #  :script => '${PODS_TARGET_SRCROOT}/Assets/setup.sh',
   #  :execution_position => :before_compile
   #}
-  s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
+  s.source_files = 'ChannelIO/Source/**/*.{swift,h,m}'
   s.resources = 'ChannelIO/Assets/*'
   s.swift_version = '5.0'
 
@@ -45,7 +45,7 @@ Pod::Spec.new do |s|
   # s.dependency 'CHDwifft'
   # s.dependency 'Alamofire', '~> 5.2'
   s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
-  s.dependency 'MGSwipeTableCell'
+  # s.dependency 'MGSwipeTableCell'
   s.dependency 'JGProgressHUD'
   # s.dependency 'PhoneNumberKit', '~> 3.1'
   s.dependency 'SDWebImage', '~> 5.8'

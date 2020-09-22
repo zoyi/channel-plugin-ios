@@ -1,17 +1,7 @@
 github "ReactiveX/RxSwift" ~> 5.1
 github "RxSwiftCommunity/RxSwiftExt" ~> 5.1.0
-github "AliSoftware/Reusable" ~> 4.1.0
-github "SnapKit/SnapKit" ~> 5.0.0
-github "SwiftyJSON/SwiftyJSON" ~> 5.0
 github "ReSwift/ReSwift" ~> 5.0
-github "tristanhimmelman/ObjectMapper" ~> 4.2
-github "ninjaprox/NVActivityIndicatorView" ~> 4.7.0
-github "zoyi/Dwifft"
-github "Alamofire/Alamofire" ~> 5.2
 github "socketio/socket.io-client-swift" ~> 15.0.0
-github "MortimerGoro/MGSwipeTableCell" ~> 1.6.8
 github "JonasGessner/JGProgressHUD"
-github "marmelroy/PhoneNumberKit" ~> 3.1
 github "rs/SDWebImage" ~> 5.8
-github "tilltue/TLPhotoPicker" ~> 2.0.0
 github "SDWebImage/SDWebImageWebPCoder"

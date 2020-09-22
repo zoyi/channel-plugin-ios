@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import MGSwipeTableCell
 
 class LoungeMainView: BaseView {
   private struct Constants {
@@ -271,7 +270,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       let model = self.activeChats[indexPath.row]
       cell.configure(model)
       
-      let button = MGSwipeButton(
+      let button = _ChannelIO_MGSwipeButton(
         title: CHAssets.localized("ch.chat.delete"),
         backgroundColor: CHColors.warmPink,
         insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10)
@@ -282,7 +281,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       cell.rightButtons = [
         button
       ]
-      cell.rightSwipeSettings.transition = .drag
+      cell.rightSwipeSettings.transition = .MGSwipeTransitionDrag
       cell.tintColor = CHColors.warmPink
       cell.delegate = self
       return cell
@@ -310,11 +309,11 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
 }
 
-extension LoungeMainView: MGSwipeTableCellDelegate {
+extension LoungeMainView: _ChannelIO_MGSwipeTableCellDelegate {
   func swipeTableCell(
-    _ cell: MGSwipeTableCell,
+    _ cell: _ChannelIO_MGSwipeTableCell,
     tappedButtonAt index: Int,
-    direction: MGSwipeDirection,
+    direction: _ChannelIO_MGSwipeDirection,
     fromExpansion: Bool) -> Bool {
     
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
