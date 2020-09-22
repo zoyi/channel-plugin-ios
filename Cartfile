@@ -2,5 +2,4 @@ github "ReactiveX/RxSwift" ~> 5.1
 github "RxSwiftCommunity/RxSwiftExt" ~> 5.1.0
 github "ReSwift/ReSwift" ~> 5.0
 github "socketio/socket.io-client-swift" ~> 15.0.0
-github "rs/SDWebImage" ~> 5.8
 github "SDWebImage/SDWebImageWebPCoder"

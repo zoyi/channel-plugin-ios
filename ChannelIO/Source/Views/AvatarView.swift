@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SDWebImage
 
 class AvatarView: NeverClearView {
 
@@ -23,7 +22,7 @@ class AvatarView: NeverClearView {
   }
 
   // MARK: Properties
-  let avatarImageView = SDAnimatedImageView().then {
+  let avatarImageView = _ChannelIO_SDAnimatedImageView().then {
     $0.clipsToBounds = true
     $0.backgroundColor = UIColor.white
     $0.contentMode = .scaleAspectFill

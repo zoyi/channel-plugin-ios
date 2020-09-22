@@ -7,7 +7,6 @@
 //
 import AVKit
 import RxSwift
-import SDWebImage
 import UIKit
 
 class InAppVideoPlayerView: BaseView {

@@ -9,7 +9,7 @@
 import ReSwift
 import RxSwift
 import UserNotifications
-import SDWebImageWebPCoder
+//import SDWebImageWebPCoder
 
 internal let mainStore = Store<AppState>(
   reducer: appReducer,
@@ -172,8 +172,8 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
-    let coder = SDImageWebPCoder.shared
-    SDImageCodersManager.shared.addCoder(coder)
+//    let coder = SDImageWebPCoder.shared
+//    SDImageCodersManager.shared.addCoder(coder)
   }
   
   @available(iOS 13.0, *)

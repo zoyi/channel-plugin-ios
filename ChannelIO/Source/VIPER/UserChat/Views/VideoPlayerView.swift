@@ -7,7 +7,6 @@
 
 import AVKit
 import RxSwift
-import SDWebImage
 import UIKit
 
 protocol VideoPlayerDelegate: class {
@@ -20,7 +19,7 @@ class VideoPlayerView: BaseView {
   }
   
   private let containerView = UIView()
-  private let imageView = SDAnimatedImageView().then {
+  private let imageView = _ChannelIO_SDAnimatedImageView().then {
     $0.clipsToBounds = true
     $0.layer.cornerRadius = 6.f
     $0.layer.borderColor = UIColor.grey300.cgColor
@@ -28,7 +27,7 @@ class VideoPlayerView: BaseView {
     $0.backgroundColor = .white
     $0.contentMode = .scaleAspectFit
 
-    $0.sd_imageIndicator = SDWebImageActivityIndicator.white
+    $0._ChannelIO_sd_imageIndicator = _ChannelIO_SDWebImageActivityIndicator.white
   }
   private let playButton = UIImageView().then {
     $0.image = CHAssets.getImage(named: "buttonPlay")

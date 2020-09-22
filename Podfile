@@ -17,7 +17,7 @@ target 'ChannelIO' do
   # pod 'MGSwipeTableCell'
   # pod 'JGProgressHUD'
   # pod 'PhoneNumberKit', '~> 3.1'
-  pod 'SDWebImage', '~> 5.8'
+  # pod 'SDWebImage', '~> 5.8'
   pod 'SDWebImageWebPCoder'
   pod 'RxSwiftExt', '~> 5.2'
   # pod 'TLPhotoPicker'

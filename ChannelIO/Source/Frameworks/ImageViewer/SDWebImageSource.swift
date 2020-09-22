@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SDWebImage
 
 class SDWebImageSource: NSObject, InputSource {
   public var url: URL
@@ -30,7 +29,7 @@ class SDWebImageSource: NSObject, InputSource {
   }
   
   public func load(to imageView: UIImageView, with callback: @escaping (UIImage?) -> Void) {
-    imageView.sd_setImage(with: self.url, completed: { [weak self] (image, error, cacheType, url) in
+    imageView._ChannelIO_sd_setImage(with: self.url, completed: { [weak self] (image, error, cacheType, url) in
       if let image = image {
         callback(image)
       } else {

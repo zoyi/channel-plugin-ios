@@ -6,15 +6,14 @@
 //
 
 import RxSwift
-import SDWebImage
 import UIKit
 
 class MediaCollectionViewCell: BaseCollectionViewCell {
   let containerView = UIView()
-  let imageView = SDAnimatedImageView().then {
+  let imageView = _ChannelIO_SDAnimatedImageView().then {
     $0.backgroundColor = .white
     $0.contentMode = .scaleAspectFit
-    $0.sd_imageIndicator = SDWebImageActivityIndicator.white
+    $0._ChannelIO_sd_imageIndicator = _ChannelIO_SDWebImageActivityIndicator.white
   }
 
   let videoView = VideoPlayerView().then {

@@ -6,7 +6,6 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import SDWebImage
 import RxSwift
 
 class InAppMediaView: BaseView {
@@ -27,12 +26,12 @@ class InAppMediaView: BaseView {
     $0.alignment = .center
   }
   
-  private let imageView = SDAnimatedImageView().then {
+  private let imageView = _ChannelIO_SDAnimatedImageView().then {
     $0.backgroundColor = .dark20
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
 
-    $0.sd_imageIndicator = SDWebImageActivityIndicator.white
+    $0._ChannelIO_sd_imageIndicator = _ChannelIO_SDWebImageActivityIndicator.white
   }
 
   private let multiIndicatorView = UIImageView().then {
