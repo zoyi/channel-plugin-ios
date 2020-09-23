@@ -6,9 +6,24 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		39C32C18251BB61000239DD5 /* Aggregate */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 39C32C19251BB61000239DD5 /* Build configuration list for PBXAggregateTarget "Aggregate" */;
+			buildPhases = (
+				39C32C1C251BB62A00239DD5 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Aggregate;
+			productName = Aggregate;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		1469AF9B1E2F6CF9000A8675 /* UserChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1469AF9A1E2F6CF8000A8675 /* UserChatTests.swift */; };
 		14DFAC681E4A189D00130119 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14DFAC671E4A189D00130119 /* Images.xcassets */; };
+		1B3D16C3CA526AFD5535CF83 /* Pods_ChannelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17E4F5B28C880A543C455FF1 /* Pods_ChannelIO.framework */; };
 		1EB593C7903EF4FF65193DA3 /* Pods_ChannelIOTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE123458F362A953DBFAD09B /* Pods_ChannelIOTests.framework */; };
 		221EBD7622B0D8E700066E0A /* LoungeMoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221EBD7522B0D8E700066E0A /* LoungeMoreView.swift */; };
 		222086B81FBAAD37002CFA88 /* CHAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222086B71FBAAD37002CFA88 /* CHAnimations.swift */; };
@@ -1447,6 +1462,7 @@
 		22F0ED9120B53C55008924C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		22F838BB2176EA2D004709F9 /* CGFloatLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatLiteral.swift; sourceTree = "<group>"; };
 		22F9CF1C2355517A0013197E /* APITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITests.swift; sourceTree = "<group>"; };
+		25A3F5E8F293F9FB6BDEF6A4 /* Pods-ChannelIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIO.debug.xcconfig"; path = "Target Support Files/Pods-ChannelIO/Pods-ChannelIO.debug.xcconfig"; sourceTree = "<group>"; };
 		3910AC23237AC172000549B5 /* ChatState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatState.swift; sourceTree = "<group>"; };
 		3910AC25237AC1A1000549B5 /* ChatReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatReducer.swift; sourceTree = "<group>"; };
 		3910AC28237AC218000549B5 /* ChatAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAction.swift; sourceTree = "<group>"; };
@@ -2499,6 +2515,7 @@
 		39F4B98123C42CC00043B25A /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		39F4B98223C42CC00043B25A /* ANTLRInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ANTLRInputStream.swift; sourceTree = "<group>"; };
 		39F4B98323C42CC00043B25A /* ParserRuleContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserRuleContext.swift; sourceTree = "<group>"; };
+		4E671A04078E59A2512E94E3 /* Pods-ChannelIOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIOTests.debug.xcconfig"; path = "Target Support Files/Pods-ChannelIOTests/Pods-ChannelIOTests.debug.xcconfig"; sourceTree = "<group>"; };
 		650C48D1219E5F1B00713AD9 /* Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracking.swift; sourceTree = "<group>"; };
 		650D7C311E716DBF007DE358 /* countryInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = countryInfo.json; path = Assets/countryInfo.json; sourceTree = "<group>"; };
 		650D7C341E724AD7007DE358 /* LocalMessageFactorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalMessageFactorTests.swift; sourceTree = "<group>"; };
@@ -2731,6 +2748,7 @@
 		65D986D2228ABAD400D1D23A /* TLPhotoPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TLPhotoPicker.framework; path = Carthage/Build/iOS/TLPhotoPicker.framework; sourceTree = "<group>"; };
 		65EAE11220EF468500D501FC /* TranslateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateView.swift; sourceTree = "<group>"; };
 		65FB143B2298044F00393AA2 /* UserChatBottomBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatBottomBlockView.swift; sourceTree = "<group>"; };
+		986099CD2CF7448FFDD9ADA9 /* Pods-ChannelIOTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIOTests.release.xcconfig"; path = "Target Support Files/Pods-ChannelIOTests/Pods-ChannelIOTests.release.xcconfig"; sourceTree = "<group>"; };
 		9C0951AF23D54A0600DE5799 /* TextBlockParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextBlockParser.swift; sourceTree = "<group>"; };
 		9C0951B023D54A0600DE5799 /* TextBlockParser.tokens */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextBlockParser.tokens; sourceTree = "<group>"; };
 		9C0951B123D54A0600DE5799 /* TextBlockLexer.tokens */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextBlockLexer.tokens; sourceTree = "<group>"; };
@@ -2776,6 +2794,7 @@
 		CF52019424C963760010A9AC /* ProfileBooleanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBooleanView.swift; sourceTree = "<group>"; };
 		CF52019624C965D00010A9AC /* BooleanActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooleanActionView.swift; sourceTree = "<group>"; };
 		CF52019824C968480010A9AC /* DateActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateActionView.swift; sourceTree = "<group>"; };
+		DD1217E6753EED1F759D01CE /* Pods-ChannelIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChannelIO.release.xcconfig"; path = "Target Support Files/Pods-ChannelIO/Pods-ChannelIO.release.xcconfig"; sourceTree = "<group>"; };
 		FE123458F362A953DBFAD09B /* Pods_ChannelIOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChannelIOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -2784,6 +2803,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B3D16C3CA526AFD5535CF83 /* Pods_ChannelIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2862,6 +2882,7 @@
 				14D2AA811E24AE07006FEE22 /* ChannelIOTests */,
 				14D2AA751E24AE06006FEE22 /* Products */,
 				143D7E321E24DBE40095961F /* Frameworks */,
+				18DD7FB8C340C8F8DB26E0C1 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2919,6 +2940,18 @@
 				14D2AA841E24AE07006FEE22 /* Info.plist */,
 			);
 			path = ChannelIOTests;
+			sourceTree = "<group>";
+		};
+		18DD7FB8C340C8F8DB26E0C1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				25A3F5E8F293F9FB6BDEF6A4 /* Pods-ChannelIO.debug.xcconfig */,
+				DD1217E6753EED1F759D01CE /* Pods-ChannelIO.release.xcconfig */,
+				4E671A04078E59A2512E94E3 /* Pods-ChannelIOTests.debug.xcconfig */,
+				986099CD2CF7448FFDD9ADA9 /* Pods-ChannelIOTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		225B05F61E4ED68F001DE109 /* Services */ = {
@@ -5139,6 +5172,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 14D2AA881E24AE07006FEE22 /* Build configuration list for PBXNativeTarget "ChannelIO" */;
 			buildPhases = (
+				36A1E6FB02268C44F7A9091B /* [CP] Check Pods Manifest.lock */,
 				22E03E9B21B3C2860009F48E /* Check Localization */,
 				22E03E9C21B3C2E30009F48E /* Download emoji set */,
 				14D2AA6F1E24AE06006FEE22 /* Sources */,
@@ -5196,6 +5230,11 @@
 						DevelopmentTeam = 8278Q64QFC;
 						ProvisioningStyle = Automatic;
 					};
+					39C32C18251BB61000239DD5 = {
+						CreatedOnToolsVersion = 11.7;
+						DevelopmentTeam = 8278Q64QFC;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 14D2AA6E1E24AE06006FEE22 /* Build configuration list for PBXProject "ChannelIO" */;
@@ -5215,6 +5254,7 @@
 			targets = (
 				14D2AA731E24AE06006FEE22 /* ChannelIO */,
 				14D2AA7C1E24AE07006FEE22 /* ChannelIOTests */,
+				39C32C18251BB61000239DD5 /* Aggregate */,
 			);
 		};
 /* End PBXProject section */
@@ -5314,6 +5354,28 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n${SRCROOT}/ChannelIO/Scripts/emoji.sh\n";
 		};
+		36A1E6FB02268C44F7A9091B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ChannelIO-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		394C5AF723C6F0AA00E17BE7 /* Download file types and image assets */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -5331,6 +5393,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/bin/python ${SRCROOT}/ChannelIO/Scripts/file_assets_image_down.py\n";
+		};
+		39C32C1C251BB62A00239DD5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nfor V in ${BUILD_VARIANTS}; do\n    for A in ${ARCHS}; do\n        unset SWIFT_RESPONSE_FILE_PATH_${V}_${A}\n    done\ndone\n\n\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\nOUTPUT_FOLDER=${PROJECT_DIR}\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Step 1. Build Device and Simulator versions. This also include the full bitcode generation of framework\n\n\nxcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" -UseModernBuildSystem=NO clean build\n\nxcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" -UseModernBuildSystem=NO clean build\n\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy Swift modules (from iphonesimulator build) to the copied framework directory\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${OUTPUT_FOLDER}\"\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${OUTPUT_FOLDER}\"\n";
 		};
 		E9C2A45BC62A89A6B0A86ACF /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6695,6 +6774,7 @@
 		};
 		14D2AA891E24AE07006FEE22 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 25A3F5E8F293F9FB6BDEF6A4 /* Pods-ChannelIO.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -6740,6 +6820,7 @@
 		};
 		14D2AA8A1E24AE07006FEE22 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD1217E6753EED1F759D01CE /* Pods-ChannelIO.release.xcconfig */;
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -6784,6 +6865,7 @@
 		};
 		14D2AA8C1E24AE07006FEE22 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4E671A04078E59A2512E94E3 /* Pods-ChannelIOTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = 8278Q64QFC;
@@ -6804,6 +6886,7 @@
 		};
 		14D2AA8D1E24AE07006FEE22 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 986099CD2CF7448FFDD9ADA9 /* Pods-ChannelIOTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = 8278Q64QFC;
@@ -6819,6 +6902,24 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zoyi.channel.plugin.ChannelIOTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		39C32C1A251BB61000239DD5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8278Q64QFC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		39C32C1B251BB61000239DD5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8278Q64QFC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -6848,6 +6949,15 @@
 			buildConfigurations = (
 				14D2AA8C1E24AE07006FEE22 /* Debug */,
 				14D2AA8D1E24AE07006FEE22 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		39C32C19251BB61000239DD5 /* Build configuration list for PBXAggregateTarget "Aggregate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39C32C1A251BB61000239DD5 /* Debug */,
+				39C32C1B251BB61000239DD5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
