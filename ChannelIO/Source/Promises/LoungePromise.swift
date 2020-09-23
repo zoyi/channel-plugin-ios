@@ -5,11 +5,11 @@
 //  Created by Jam on 2019/11/21.
 //
 
-import RxSwift
+//import RxSwift
 
 struct LoungePromise {
-  static func getLounge(pluginId: String, url: String) -> Observable<LoungeResponse> {
-    return Observable.create { subscriber in
+  static func getLounge(pluginId: String, url: String) -> _RXSwift_Observable<LoungeResponse> {
+    return _RXSwift_Observable.create { subscriber in
       let params = [
         "url": ["url": url]
       ]
@@ -34,9 +34,9 @@ struct LoungePromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos: .background))
   }
 }

@@ -6,8 +6,8 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 final class CHDateField: BaseView {
   private enum Metric {
@@ -29,8 +29,8 @@ final class CHDateField: BaseView {
     $0.backgroundColor = UIColor.grey300
   }
   
-  private let validSubject = PublishRelay<Bool>()
-  private let changeSubject = PublishRelay<String>()
+  private let validSubject = _RXRelay_PublishRelay<Bool>()
+  private let changeSubject = _RXRelay_PublishRelay<String>()
 
   private var date: Date? {
     didSet {
@@ -41,7 +41,7 @@ final class CHDateField: BaseView {
     }
   }
 
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
 
   convenience init(date: Date?) {
     self.init(frame: CGRect.zero)
@@ -58,7 +58,7 @@ final class CHDateField: BaseView {
     
     self.field
       .signalForClick()
-      .flatMap { [weak self] _ -> Observable<(Date?)> in
+      .flatMap { [weak self] _ -> _RXSwift_Observable<(Date?)> in
         return CHDateSelectorView.create(with: self?.date)
       }
       .bind { [weak self] date in
@@ -110,11 +110,11 @@ extension CHDateField: CHFieldDelegate {
     self.field.text = value
   }
   
-  func isValid() -> Observable<Bool> {
+  func isValid() -> _RXSwift_Observable<Bool> {
     return self.validSubject.asObservable()
   }
   
-  func hasChanged() -> Observable<String> {
+  func hasChanged() -> _RXSwift_Observable<String> {
     return self.changeSubject.asObservable()
   }
 }

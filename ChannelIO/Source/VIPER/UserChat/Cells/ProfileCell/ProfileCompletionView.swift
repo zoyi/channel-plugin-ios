@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 import UIKit
 
 class ProfileCompletionView: ProfileItemBaseView, ProfileContentProtocol {

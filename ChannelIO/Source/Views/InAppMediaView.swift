@@ -6,7 +6,7 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 
 class InAppMediaView: BaseView {
   private struct Metrics {
@@ -72,7 +72,7 @@ class InAppMediaView: BaseView {
   private var youtubeHeightConstraint: Constraint?
   private var multiIndicatorConstraint: Constraint?
   
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
 
   override func initialize() {
     super.initialize()

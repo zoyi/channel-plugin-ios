@@ -7,11 +7,11 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct PluginPromise {
-  static func registerPushToken(token: String) -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func registerPushToken(token: String) -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let params = [
         "body": [
@@ -41,14 +41,14 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func unregisterPushToken() -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func unregisterPushToken() -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
 
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let req = AF
@@ -62,14 +62,14 @@ struct PluginPromise {
             subscriber.onCompleted()
           }
         }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func deletePushToken(with userId: String) -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func deletePushToken(with userId: String) -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let params = [
         "query": [
@@ -89,14 +89,14 @@ struct PluginPromise {
             subscriber.onError(ChannelError.init(data: response.data, error: error))
           }
         }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func checkVersion() -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func checkVersion() -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.CheckVersion)
         .validate(statusCode: 200..<300)
@@ -125,14 +125,14 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
 
-  static func getPlugin(pluginKey: String) -> Observable<(CHPlugin, CHBot?)> {
-    return Observable.create { (subscriber) in
+  static func getPlugin(pluginKey: String) -> _RXSwift_Observable<(CHPlugin, CHBot?)> {
+    return _RXSwift_Observable.create { (subscriber) in
       let req = AF
         .request(RestRouter.GetPlugin(pluginKey))
         .validate(statusCode: 200..<300)
@@ -155,14 +155,14 @@ struct PluginPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
-    return Observable.create { (subscriber) in
+  static func boot(pluginKey: String, params: CHParam) -> _RXSwift_Observable<BootResponse?> {
+    return _RXSwift_Observable.create { (subscriber) in
       let req = AF
         .request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
@@ -181,17 +181,17 @@ struct PluginPromise {
           }
         }
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func sendPushAck(chatId: String?) -> Observable<Bool?> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func sendPushAck(chatId: String?) -> _RXSwift_Observable<Bool?> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       guard let chatId = chatId else {
         subscriber.onNext(nil)
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       let req = AF
@@ -208,14 +208,14 @@ struct PluginPromise {
           }
         }
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
   }
   
-  static func getProfileSchemas(pluginId: String) -> Observable<[CHProfileSchema]> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func getProfileSchemas(pluginId: String) -> _RXSwift_Observable<[CHProfileSchema]> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       let req = AF
         .request(RestRouter.GetProfileBotSchemas(pluginId))
         .validate(statusCode: 200..<300)
@@ -233,7 +233,7 @@ struct PluginPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

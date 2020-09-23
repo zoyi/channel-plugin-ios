@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 import UIKit
 
 
@@ -27,8 +27,8 @@ final class CHEditTextField : BaseView {
     $0.backgroundColor = CHColors.dark20
   }
   
-  private let changeSubject = PublishRelay<String>()
-  private let validSubject = PublishRelay<Bool>()
+  private let changeSubject = _RXRelay_PublishRelay<String>()
+  private let validSubject = _RXRelay_PublishRelay<Bool>()
   var fieldType: EditFieldType = .text
   
   convenience init(text: String = "", type: EditFieldType = .text, placeholder: String) {
@@ -91,7 +91,7 @@ extension CHEditTextField: CHFieldDelegate {
     self.field.text = value
   }
   
-  func isValid() -> Observable<Bool> {
+  func isValid() -> _RXSwift_Observable<Bool> {
     return self.validSubject.asObservable()
   }
   
@@ -102,7 +102,7 @@ extension CHEditTextField: CHFieldDelegate {
     }
   }
   
-  func hasChanged() -> Observable<String> {
+  func hasChanged() -> _RXSwift_Observable<String> {
     return self.changeSubject.asObservable()
   }
 }

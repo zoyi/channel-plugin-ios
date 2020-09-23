@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 final class SwitchCell : BaseTableViewCell {
   
@@ -19,7 +19,7 @@ final class SwitchCell : BaseTableViewCell {
   }
   
   let onOffSwitch = UISwitch()
-  var switchSignal = PublishRelay<Bool>()
+  var switchSignal = _RXRelay_PublishRelay<Bool>()
   
   override func initialize() {
     super.initialize()
@@ -54,8 +54,8 @@ final class SwitchCell : BaseTableViewCell {
     self.onOffSwitch.isOn = isOn
   }
   
-  func switched() -> Observable<Bool> {
-    self.switchSignal = PublishRelay<Bool>()
+  func switched() -> _RXSwift_Observable<Bool> {
+    self.switchSignal = _RXRelay_PublishRelay<Bool>()
     return self.switchSignal.asObservable()
   }
   

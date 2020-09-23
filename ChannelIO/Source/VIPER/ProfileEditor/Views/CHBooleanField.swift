@@ -6,8 +6,8 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 final class CHBooleanField: BaseView {
   private enum Metrics {
@@ -29,8 +29,8 @@ final class CHBooleanField: BaseView {
     $0.register(cellType: CHBooleanSelectCell.self)
   }
 
-  private let validSubject = PublishRelay<Bool>()
-  private let changeSubject = PublishRelay<String>()
+  private let validSubject = _RXRelay_PublishRelay<Bool>()
+  private let changeSubject = _RXRelay_PublishRelay<String>()
   
   private var selectedPosition: Int = 2
 
@@ -97,11 +97,11 @@ extension CHBooleanField: CHFieldDelegate {
     }
   }
   
-  func isValid() -> Observable<Bool> {
+  func isValid() -> _RXSwift_Observable<Bool> {
     return self.validSubject.asObservable()
   }
   
-  func hasChanged() -> Observable<String> {
+  func hasChanged() -> _RXSwift_Observable<String> {
     return self.changeSubject.asObservable()
   }
 }

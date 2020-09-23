@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 enum CHDefaultEvent: String {
   case boot = "Boot"
@@ -29,7 +29,7 @@ extension CHEvent {
   static func send(
     pluginId: String,
     name: String,
-    property: [String: Any?]? = nil) -> Observable<CHEvent> {
+    property: [String: Any?]? = nil) -> _RXSwift_Observable<CHEvent> {
     return EventPromise.sendEvent(
       pluginId: pluginId,
       name: name,

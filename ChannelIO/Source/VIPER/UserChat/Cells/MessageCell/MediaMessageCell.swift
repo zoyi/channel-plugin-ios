@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RxSwift
+//import RxSwift
 
 protocol MediaMessageProtocol {
   var mediaCollectionView: MediaCollectionView { get set }

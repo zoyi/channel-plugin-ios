@@ -7,11 +7,11 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct ChannelPromise {
-  static func getChannel() -> Observable<CHChannel> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func getChannel() -> _RXSwift_Observable<CHChannel> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       let req = AF
         .request(RestRouter.GetChannel)
         .validate(statusCode: 200..<300)
@@ -33,7 +33,7 @@ struct ChannelPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

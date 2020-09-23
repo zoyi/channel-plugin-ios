@@ -7,13 +7,13 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class LoungeMainFooterView: BaseView {
   private let newChatButton = CHButtonFactory.newChat()
-  private var disposeBag = DisposeBag()
-  private var newSignal = PublishRelay<Any?>()
+  private var disposeBag = _RXSwift_DisposeBag()
+  private var newSignal = _RXRelay_PublishRelay<Any?>()
   
   override func initialize() {
     super.initialize()
@@ -29,8 +29,8 @@ class LoungeMainFooterView: BaseView {
     }
   }
   
-  func newChatSignal() -> Observable<Any?> {
-    self.newSignal = PublishRelay<Any?>()
+  func newChatSignal() -> _RXSwift_Observable<Any?> {
+    self.newSignal = _RXRelay_PublishRelay<Any?>()
     self.newChatButton.signalForClick()
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)

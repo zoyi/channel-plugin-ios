@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 final class CHPhoneField: BaseView {
   
@@ -28,11 +28,11 @@ final class CHPhoneField: BaseView {
     static let arrowImageSize = CGSize(width: 9, height: 8)
   }
   
-  private let changeSubject = PublishRelay<String>()
-  private let validSubject = PublishRelay<Bool>()
+  private let changeSubject = _RXRelay_PublishRelay<String>()
+  private let validSubject = _RXRelay_PublishRelay<Bool>()
   
   var countries: [CHCountry] = []
-  var disposeBeg = DisposeBag()
+  var disposeBeg = _RXSwift_DisposeBag()
   let countryCodeView = UIView()
   
   let countryLabel = UILabel().then {
@@ -90,8 +90,8 @@ final class CHPhoneField: BaseView {
     self.countryLabel.text = "+" + self.dial
     
     UtilityPromise.getCountryCodes()
-      .observeOn(MainScheduler.instance)
-      .flatMap { [weak self] (countries) -> Observable<GeoIPInfo> in
+      .observeOn(_RXSwift_MainScheduler.instance)
+      .flatMap { [weak self] (countries) -> _RXSwift_Observable<GeoIPInfo> in
         self?.countries = countries
         if let code = self?.getCountryCode(dial: self?.dial) {
           self?.phoneField.partialFormatter.defaultRegion = code
@@ -99,7 +99,7 @@ final class CHPhoneField: BaseView {
         }
         return UtilityPromise.getGeoIP()
       }
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext:{ [weak self] (geoInfo) in
         if let dial =  self?.getCountryDialCode(countryCode: geoInfo.country), text == "" {
           self?.dial = dial
@@ -210,7 +210,7 @@ extension CHPhoneField : CHFieldDelegate {
     self.phoneField.text = value
   }
   
-  func isValid() -> Observable<Bool> {
+  func isValid() -> _RXSwift_Observable<Bool> {
     return self.validSubject.asObservable()
   }
   
@@ -221,7 +221,7 @@ extension CHPhoneField : CHFieldDelegate {
     }
   }
   
-  func hasChanged() -> Observable<String> {
+  func hasChanged() -> _RXSwift_Observable<String> {
     return self.changeSubject.asObservable()
   }
 }

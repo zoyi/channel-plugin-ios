@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 struct CHView {
   static func gradientImageView(

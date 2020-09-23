@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class LoungeExternalAppsView: BaseView {
   private struct Metrics {
@@ -24,10 +24,10 @@ class LoungeExternalAppsView: BaseView {
   private var refreshButton: UIButton?
   
   private var models: [LoungeExternalSourceModel] = []
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
   
-  var refreshSignal = PublishRelay<Any?>()
-  var clickSignal = PublishRelay<LoungeExternalSourceModel>()
+  var refreshSignal = _RXRelay_PublishRelay<Any?>()
+  var clickSignal = _RXRelay_PublishRelay<LoungeExternalSourceModel>()
   
   override func initialize() {
     super.initialize()

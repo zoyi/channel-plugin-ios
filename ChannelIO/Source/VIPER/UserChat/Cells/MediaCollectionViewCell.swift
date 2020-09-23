@@ -5,7 +5,7 @@
 //  Created by Jam on 2019/12/16.
 //
 
-import RxSwift
+//import RxSwift
 import UIKit
 
 class MediaCollectionViewCell: BaseCollectionViewCell {
@@ -20,7 +20,7 @@ class MediaCollectionViewCell: BaseCollectionViewCell {
     $0.isHidden = true
   }
 
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
   private var model: FileCellModel?
 
   override func initialize() {

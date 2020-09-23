@@ -142,6 +142,11 @@
 #import "_ChannelIO_mux_types.h"
 #import "_ChannelIO_types.h"
 #import "_ChannelIO_format_constants.h"
+// Rx
+#import "_RXCocoa__RX.h"
+#import "_RXCocoa__RXDelegateProxy.h"
+#import "_RXCocoa__RXKVOObserver.h"
+#import "_RXCocoa__RXObjCRuntime.h"
 
 //! Project version number for CHPlugin.
 FOUNDATION_EXPORT double CHPluginVersionNumber;

@@ -6,7 +6,7 @@
 //
 
 import AVKit
-import RxSwift
+//import RxSwift
 import UIKit
 
 protocol VideoPlayerDelegate: class {
@@ -51,13 +51,13 @@ class VideoPlayerView: BaseView {
     "autoplay": 0
   ]
   
-  private var playSignal = PublishSubject<(Bool, Double)>()
+  private var playSignal = _RXSwift_PublishSubject<(Bool, Double)>()
   private var url: URL?
   private var currSeconds: Double? = 0.0
 
   var mkInfo: MarketingInfo?
-  var disposeBag = DisposeBag()
-  var disposable: Disposable?
+  var disposeBag = _RXSwift_DisposeBag()
+  var disposable: _RXSwift_Disposable?
   
   weak var delegate: VideoPlayerDelegate?
 
@@ -203,8 +203,8 @@ class VideoPlayerView: BaseView {
     self.disposable?.dispose()
   }
 
-  func signalForPlay() -> Observable<(Bool, Double)> {
-    self.playSignal = PublishSubject<(Bool, Double)>()
+  func signalForPlay() -> _RXSwift_Observable<(Bool, Double)> {
+    self.playSignal = _RXSwift_PublishSubject<(Bool, Double)>()
     return self.playSignal.asObservable()
   }
 

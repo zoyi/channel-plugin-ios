@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct CHChannel: CHEntity {
   // ModelType
@@ -165,7 +165,7 @@ extension CHChannel {
 }
 
 extension CHChannel {
-  static func get() -> Observable<CHChannel> {
+  static func get() -> _RXSwift_Observable<CHChannel> {
     return ChannelPromise.getChannel()
   }
 }

@@ -7,14 +7,14 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct EventPromise {
   static func sendEvent(
     pluginId: String,
     name: String,
-    property: [String: Any?]? = nil) -> Observable<CHEvent> {
-    return Observable.create { subscriber in
+    property: [String: Any?]? = nil) -> _RXSwift_Observable<CHEvent> {
+    return _RXSwift_Observable.create { subscriber in
       var params = [
         "url": [String:String]()
       ]
@@ -48,7 +48,7 @@ struct EventPromise {
           }
         })
       
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
 }

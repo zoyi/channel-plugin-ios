@@ -6,8 +6,8 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 final class BooleanActionView: BaseView {
   private enum Metric {
@@ -18,8 +18,8 @@ final class BooleanActionView: BaseView {
     static let dividerWidth = 1.f
   }
   
-  private let submitSubject = PublishSubject<Any?>()
-  private let focusSubject = PublishSubject<Bool>()
+  private let submitSubject = _RXSwift_PublishSubject<Any?>()
+  private let focusSubject = _RXSwift_PublishSubject<Bool>()
   
   private let yesBackground = UIView()
   
@@ -50,7 +50,7 @@ final class BooleanActionView: BaseView {
   private var yesLoadIndicatorConstraint: Constraint?
   private var noLoadIndicatorConstraint: Constraint?
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   var selectedValue: Bool? {
     didSet {
       self.yesBackground.layer.backgroundColor = UIColor.white.cgColor
@@ -140,15 +140,15 @@ final class BooleanActionView: BaseView {
 }
 
 extension BooleanActionView: Actionable {
-  func signalForAction() -> Observable<Any?> {
+  func signalForAction() -> _RXSwift_Observable<Any?> {
     return self.submitSubject
   }
   
-  func signalForText() -> Observable<String?>? {
+  func signalForText() -> _RXSwift_Observable<String?>? {
     return nil
   }
   
-  func signalForFocus() -> Observable<Bool> {
+  func signalForFocus() -> _RXSwift_Observable<Bool> {
     return self.focusSubject
   }
   

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 final class LauncherView : BaseView {
   // MARK: Constant
@@ -28,7 +28,7 @@ final class LauncherView : BaseView {
     $0.layer.shadowOffset = CGSize(width: 0, height: 1)
     $0.layer.shadowRadius = 2
   }
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   let buttonView = CHButtonFactory.launcher()
   
   //refactor this as general button

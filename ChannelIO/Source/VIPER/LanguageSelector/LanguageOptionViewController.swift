@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RxSwift
+//import RxSwift
 
 class LanguageOptionViewController: BaseViewController {
   private let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
@@ -21,7 +21,7 @@ class LanguageOptionViewController: BaseViewController {
   ]
   
   let currentLocale: CHLocaleString? = CHUtils.getLocale()
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -141,7 +141,7 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     
     CHUser
       .updateLanguage(with: locale.rawValue)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user, error) in
         defer { hud.dismiss() }
         

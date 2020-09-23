@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class LoungeMainView: BaseView {
   private struct Constants {
@@ -47,7 +47,7 @@ class LoungeMainView: BaseView {
   
   private var activeChats: [UserChatCellModel] = []
   private var inactiveChats: [UserChatCellModel] = []
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
   
   private var shouldShowWelcome: Bool {
     return self.activeChats.count == 0 && welcomeModel != nil
@@ -72,10 +72,10 @@ class LoungeMainView: BaseView {
   
   private var tableViewBottomConstraint: Constraint? = nil
   
-  var chatSignal = PublishRelay<UserChatCellModel>()
-  var newSignal = PublishRelay<Any?>()
-  var moreSignal = PublishRelay<Any?>()
-  var refreshSignal = PublishRelay<Any?>()
+  var chatSignal = _RXRelay_PublishRelay<UserChatCellModel>()
+  var newSignal = _RXRelay_PublishRelay<Any?>()
+  var moreSignal = _RXRelay_PublishRelay<Any?>()
+  var refreshSignal = _RXRelay_PublishRelay<Any?>()
   
   var viewHeight: CGFloat {
     if let model = self.welcomeModel, self.shouldShowWelcome {
@@ -193,15 +193,15 @@ class LoungeMainView: BaseView {
 }
 
 extension LoungeMainView {
-  func signalForMore() -> Observable<Any?> {
+  func signalForMore() -> _RXSwift_Observable<Any?> {
     return self.moreSignal.asObservable()
   }
   
-  func signalForChat() -> Observable<UserChatCellModel> {
+  func signalForChat() -> _RXSwift_Observable<UserChatCellModel> {
     return self.chatSignal.asObservable()
   }
   
-  func signalForNew() -> Observable<Any?> {
+  func signalForNew() -> _RXSwift_Observable<Any?> {
     return self.newSignal.asObservable()
   }
 }

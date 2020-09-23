@@ -5,7 +5,7 @@
 //  Created by Jam on 2019/12/05.
 //
 
-import RxSwift
+//import RxSwift
 
 class ChatQueueBaseItem: ChatQueuable {
   private var type: String = ChatType.userChat.rawValue
@@ -24,7 +24,7 @@ class ChatQueueBaseItem: ChatQueuable {
     set { internalStatus = newValue.rawValue }
   }
 
-  func request() -> Observable<ChatQueuable> {
+  func request() -> _RXSwift_Observable<ChatQueuable> {
     fatalError("ChatQueueBaseItem has to be overrided")
   }
 }

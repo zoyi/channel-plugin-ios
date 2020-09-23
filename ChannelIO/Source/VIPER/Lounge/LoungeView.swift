@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RxSwift
+//import RxSwift
 
 class LoungeView: BaseViewController, LoungeViewProtocol {
   struct Metrics {
@@ -40,7 +40,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
   
   private let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
   
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
   var scrollTopConstraint: Constraint?
   var mainHeightConstraint: Constraint?
@@ -56,7 +56,7 @@ class LoungeView: BaseViewController, LoungeViewProtocol {
     
     NotificationCenter.default
       .rx.notification(Notification.Name.Channel.enterForeground)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         if self?.isVisible() == true {
           self?.presenter?.prepare(fetch: true)

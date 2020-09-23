@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RxSwift
+//import RxSwift
 
 class MessageCell: BaseTableViewCell {
   weak var presenter: UserChatPresenterProtocol?
@@ -87,7 +87,7 @@ class MessageCell: BaseTableViewCell {
     self.contentView.addSubview(self.resendButton)
     
     self.resendButton.signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.presenter?.didClickOnRetry(
           for: self?.viewModel?.message,
@@ -97,7 +97,7 @@ class MessageCell: BaseTableViewCell {
       }).disposed(by :self.disposeBag)
     
     self.translateView.signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.presenter?.didClickOnTranslate(for: self?.viewModel?.message)
       }).disposed(by: self.disposeBag)

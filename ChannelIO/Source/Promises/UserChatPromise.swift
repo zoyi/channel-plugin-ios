@@ -7,14 +7,14 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct UserChatPromise {
   static func getChats(
     since: String? = nil,
     limit: Int,
-    showCompleted: Bool = false) -> Observable<UserChatsResponse> {
-    return Observable.create { subscriber in
+    showCompleted: Bool = false) -> _RXSwift_Observable<UserChatsResponse> {
+    return _RXSwift_Observable.create { subscriber in
       var params = ["query": [
           "limit": limit,
           "includeClosed": showCompleted
@@ -45,12 +45,12 @@ struct UserChatPromise {
             ))
           }
         })
-      return Disposables.create()
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+      return _RXSwift_Disposables.create()
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func createChat(pluginId: String, url: String) -> Observable<ChatResponse> {
-    return Observable.create { subscriber in
+  static func createChat(pluginId: String, url: String) -> _RXSwift_Observable<ChatResponse> {
+    return _RXSwift_Observable.create { subscriber in
       let params = [
         "url": ["url" : url]
       ]
@@ -81,12 +81,12 @@ struct UserChatPromise {
             ))
           }
         })
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
   
-  static func getChat(userChatId: String) -> Observable<ChatResponse> {
-    return Observable.create { subscriber in
+  static func getChat(userChatId: String) -> _RXSwift_Observable<ChatResponse> {
+    return _RXSwift_Observable.create { subscriber in
       AF
         .request(RestRouter.GetUserChat(userChatId))
         .validate(statusCode: 200..<300)
@@ -109,15 +109,15 @@ struct UserChatPromise {
           }
           
         })
-      return Disposables.create()
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+      return _RXSwift_Disposables.create()
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func close(
     userChatId: String,
     actionId: String,
-    requestId: String) -> Observable<CHUserChat> {
-    return Observable.create { subscriber in
+    requestId: String) -> _RXSwift_Observable<CHUserChat> {
+    return _RXSwift_Observable.create { subscriber in
       let params = [
         "query":[
           "actionId": actionId,
@@ -148,7 +148,7 @@ struct UserChatPromise {
             ))
           }
       }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
@@ -158,8 +158,8 @@ struct UserChatPromise {
     userChatId: String,
     actionId: String,
     rating: ReviewType,
-    requestId: String) -> Observable<CHUserChat> {
-    return Observable.create { subscriber in
+    requestId: String) -> _RXSwift_Observable<CHUserChat> {
+    return _RXSwift_Observable.create { subscriber in
       let params = [
         "url":[
           "review": rating.rawValue,
@@ -194,14 +194,14 @@ struct UserChatPromise {
             ))
           }
       }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
   }
 
-  static func remove(userChatId: String) -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func remove(userChatId: String) -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.RemoveUserChat(userChatId))
         .validate(statusCode: 200..<300)
@@ -216,18 +216,18 @@ struct UserChatPromise {
             ))
           }
         }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func getMessages(
     userChatId: String,
     since: String?,
     limit: Int,
-    sortOrder: String) -> Observable<[String: Any]> {
-    return Observable.create { subscriber in
+    sortOrder: String) -> _RXSwift_Observable<[String: Any]> {
+    return _RXSwift_Observable.create { subscriber in
       var params = [
         "query": [
           "limit": limit,
@@ -282,10 +282,10 @@ struct UserChatPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func createMessage(
@@ -295,8 +295,8 @@ struct UserChatPromise {
     files: [CHFile]? = nil,
     fileDictionary: [String:Any]? = nil,
     submit: CHSubmit? = nil,
-    mutable: Bool? = nil) -> Observable<CHMessage> {
-    return Observable.create { subscriber in
+    mutable: Bool? = nil) -> _RXSwift_Observable<CHMessage> {
+    return _RXSwift_Observable.create { subscriber in
       var params = [
         "query": [String: Any](),
         "body": [String: Any]()
@@ -343,18 +343,18 @@ struct UserChatPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
 
   static func updateMessageProfile(
     userChatId: String,
     messageId: String,
     key: String,
-    value: Any) -> Observable<CHMessage> {
-    return Observable.create { subscriber in
+    value: Any) -> _RXSwift_Observable<CHMessage> {
+    return _RXSwift_Observable.create { subscriber in
       let params = [
         "body": [
           key: value
@@ -384,14 +384,14 @@ struct UserChatPromise {
             subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
 
-  static func setMessageRead(userChatId: String) -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func setMessageRead(userChatId: String) -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let req = AF.request(RestRouter.SetMessagesRead(userChatId))
         .validate(statusCode: 200..<300)
         .responseJSON (completionHandler: { (response) in
@@ -403,17 +403,17 @@ struct UserChatPromise {
             subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
   static func translate(
     userChatId: String,
     messageId: String,
-    language: String) -> Observable<[CHMessageBlock]> {
-    return Observable.create { (subscriber) in
+    language: String) -> _RXSwift_Observable<[CHMessageBlock]> {
+    return _RXSwift_Observable.create { (subscriber) in
       let params = [
         "query": [
           "language": language
@@ -438,9 +438,9 @@ struct UserChatPromise {
             subscriber.onError(ChannelError.serverError(msg: error.localizedDescription))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
 }

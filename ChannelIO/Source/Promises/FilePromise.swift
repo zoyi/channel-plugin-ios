@@ -5,14 +5,14 @@
 //  Created by Jam on 2019/12/04.
 //
 
-import RxSwift
+//import RxSwift
 
 struct FilePromise {
   static func uploadFile(
     channelId: String,
     filename: String,
-    data: Data) -> Observable<([String:Any]?, Double)> {
-    return Observable.create { subscriber in
+    data: Data) -> _RXSwift_Observable<([String:Any]?, Double)> {
+    return _RXSwift_Observable.create { subscriber in
       let url = CDNService.UploadFile(channelId, filename)
       let req = AF
         .upload(data, to: url, method: url.method, headers: url.authHeaders)
@@ -32,7 +32,7 @@ struct FilePromise {
             ))
           }
         }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

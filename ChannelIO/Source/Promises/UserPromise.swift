@@ -7,11 +7,11 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct UserPromise {
-  static func touch(pluginId: String) -> Observable<BootResponse> {
-    return Observable.create { subscriber in
+  static func touch(pluginId: String) -> _RXSwift_Observable<BootResponse> {
+    return _RXSwift_Observable.create { subscriber in
       
       var params = [
         "url": [String:String]()
@@ -41,7 +41,7 @@ struct UserPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
@@ -52,8 +52,8 @@ struct UserPromise {
     profileOnce: [String: Any?]? = nil,
     tags: [String]? = nil,
     unsubscribed: Bool? = nil,
-    language: String? = nil) -> Observable<(CHUser?, ChannelError?)> {
-    return Observable.create { (subscriber) -> Disposable in
+    language: String? = nil) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       var params = [
         "body": [String: Any]()
       ]
@@ -101,14 +101,14 @@ struct UserPromise {
           }
         })
 
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
   }
   
-  static func updateUser(param: UpdateUserParam) -> Observable<(CHUser?, ChannelError?)> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func updateUser(param: UpdateUserParam) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       let req = AF.request(RestRouter.UpdateUser(param as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
@@ -131,14 +131,14 @@ struct UserPromise {
           }
         })
 
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
   }
   
-  static func addTags(tags: [String]?) -> Observable<(CHUser?, ChannelError?)> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func addTags(tags: [String]?) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       let params = [
         "query": ["tags": tags]
       ]
@@ -165,14 +165,14 @@ struct UserPromise {
           }
         })
 
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
   }
   
-  static func removeTags(tags: [String]?) -> Observable<(CHUser?, ChannelError?)> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func removeTags(tags: [String]?) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       let params = [
         "query": ["tags": tags]
       ]
@@ -199,14 +199,14 @@ struct UserPromise {
           }
         })
 
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
   }
   
-  static func closePopup() -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func closePopup() -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.ClosePopup)
         .validate(statusCode: 200..<300)
@@ -222,7 +222,7 @@ struct UserPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

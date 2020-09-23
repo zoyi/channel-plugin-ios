@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 class ActionMessageCell: MessageCell {
   private let actionView = ActionView()
@@ -24,7 +24,7 @@ class ActionMessageCell: MessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
         self?.presenter?.didClickOnActionButton(
           originId: self?.messageId,
@@ -94,7 +94,7 @@ class ActionWebMessageCell: WebPageMessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
         self?.presenter?.didClickOnActionButton(
           originId: self?.messageId,
@@ -161,7 +161,7 @@ class ActionMediaMessageCell: MediaMessageCell {
     self.contentView.addSubview(self.actionView)
     
     self.actionView.observeAction()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (key, value) in
         self?.presenter?.didClickOnActionButton(
           originId: self?.messageId,

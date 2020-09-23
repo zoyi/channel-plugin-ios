@@ -6,6 +6,6 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 
 typealias Middleware = SimpleMiddleware<AppState>

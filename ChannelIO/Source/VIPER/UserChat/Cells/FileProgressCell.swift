@@ -5,8 +5,8 @@
 //  Created by Jam on 2019/12/06.
 //
 
-import RxCocoa
-import RxSwift
+//import RxCocoa
+//import RxSwift
 
 class FileStatusCell: BaseTableViewCell {
   private struct Constants {
@@ -74,8 +74,8 @@ class FileStatusCell: BaseTableViewCell {
   
   private var isProgressShimmering = false
   
-  private var removeSignal = PublishRelay<Any?>()
-  private var retrySignal = PublishRelay<Any?>()
+  private var removeSignal = _RXRelay_PublishRelay<Any?>()
+  private var retrySignal = _RXRelay_PublishRelay<Any?>()
 
   override func initialize() {
     super.initialize()
@@ -152,7 +152,7 @@ class FileStatusCell: BaseTableViewCell {
       self.thumbImageView.image = UIImage(data: data)
     } else {
       item.file?.image
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] image in
           self?.thumbImageView.image = image == nil ?
             CHAssets.getImage(named: item.dbFileType) : image
@@ -177,8 +177,8 @@ class FileStatusCell: BaseTableViewCell {
     self.displayCount(with: count)
   }
   
-  func signalForRemove() -> PublishRelay<Any?> {
-    self.removeSignal = PublishRelay<Any?>()
+  func signalForRemove() -> _RXRelay_PublishRelay<Any?> {
+    self.removeSignal = _RXRelay_PublishRelay<Any?>()
     self.removebutton
       .signalForClick()
       .bind(to: self.removeSignal)
@@ -186,8 +186,8 @@ class FileStatusCell: BaseTableViewCell {
     return self.removeSignal
   }
 
-  func signalForRetry() -> PublishRelay<Any?> {
-    self.retrySignal = PublishRelay<Any?>()
+  func signalForRetry() -> _RXRelay_PublishRelay<Any?> {
+    self.retrySignal = _RXRelay_PublishRelay<Any?>()
     self.errorButton
       .signalForClick()
       .bind(to: self.retrySignal)

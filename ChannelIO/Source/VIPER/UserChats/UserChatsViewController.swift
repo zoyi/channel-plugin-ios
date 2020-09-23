@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
-import RxSwiftExt
+//import RxSwift
+//import RxCocoa
+//import RxSwiftExt
 
 //TODO: refactoring VIPER
 class UserChatsViewController: BaseViewController {
@@ -31,9 +31,9 @@ class UserChatsViewController: BaseViewController {
   var channel: CHChannel? = nil
   var plugin: CHPlugin? = nil
   
-  var disposeBag = DisposeBag()
-  var notiDisposeBag = DisposeBag()
-  var errorSignal = PublishRelay<Any?>()
+  var disposeBag = _RXSwift_DisposeBag()
+  var notiDisposeBag = _RXSwift_DisposeBag()
+  var errorSignal = _RXRelay_PublishRelay<Any?>()
   
   let tableView = UITableView().then {
     $0.clipsToBounds = false
@@ -117,7 +117,7 @@ class UserChatsViewController: BaseViewController {
       }).disposed(by: self.notiDisposeBag)
     
     WsService.shared.error()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (_) in
         CHNotification.shared.display(
           message: CHAssets.localized("ch.toast.unstable_internet"),
@@ -126,14 +126,14 @@ class UserChatsViewController: BaseViewController {
       }).disposed(by: self.notiDisposeBag)
     
     WsService.shared.ready()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (_) in
         CHNotification.shared.dismiss()
       }).disposed(by: self.notiDisposeBag)
   }
   
   func removeObservers() {
-    self.notiDisposeBag = DisposeBag()
+    self.notiDisposeBag = _RXSwift_DisposeBag()
   }
   
   func initActions() {
@@ -401,7 +401,7 @@ extension UserChatsViewController {
         dlog("Error while fetching chat data. Attempting to fetch again")
         return true
       })
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (data) in
         self?.didLoad = true
         
@@ -419,8 +419,8 @@ extension UserChatsViewController {
       }).disposed(by: self.disposeBag)
   }
   
-  func deleteUserChat(userChat: CHUserChat) -> Observable<CHUserChat> {
-    return Observable.create { subscribe in
+  func deleteUserChat(userChat: CHUserChat) -> _RXSwift_Observable<CHUserChat> {
+    return _RXSwift_Observable.create { subscribe in
       let observe = userChat.remove()
         .subscribe(onNext: { (_) in
           subscribe.onNext(userChat)
@@ -429,7 +429,7 @@ extension UserChatsViewController {
           subscribe.onError(error)
         })
       
-      return Disposables.create() {
+      return _RXSwift_Disposables.create() {
         observe.dispose()
       }
     }
@@ -446,7 +446,7 @@ extension UserChatsViewController : _ChannelIO_MGSwipeTableCellDelegate {
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }
     
     self.deleteUserChat(userChat: self.userChats[indexPath.row])
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (userChat) in
         mainStore.dispatch(DeleteUserChat(payload: userChat))
       }, onError: { (error) in

@@ -38,8 +38,8 @@ Pod::Spec.new do |s|
   # s.dependency 'SnapKit', '~> 5.0'
   # s.dependency 'SwiftyJSON', '~> 5.0'
   # s.dependency 'ReSwift', '~> 5.0'
-  s.dependency 'RxSwift', '~> 5.1'
-  s.dependency 'RxCocoa', '~> 5.1'
+  # s.dependency 'RxSwift', '~> 5.1'
+  # s.dependency 'RxCocoa', '~> 5.1'
   # s.dependency 'ObjectMapper', '~> 4.2'
   # s.dependency 'NVActivityIndicatorView', '~> 4.7'
   # s.dependency 'CHDwifft'
@@ -50,6 +50,6 @@ Pod::Spec.new do |s|
   # s.dependency 'PhoneNumberKit', '~> 3.1'
   # s.dependency 'SDWebImage', '~> 5.8'
   # s.dependency 'SDWebImageWebPCoder'
-  s.dependency 'RxSwiftExt', '~> 5.2'
+  # s.dependency 'RxSwiftExt', '~> 5.2'
   # s.dependency 'TLPhotoPicker'
 end

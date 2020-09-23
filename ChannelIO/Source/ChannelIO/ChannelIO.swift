@@ -6,7 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 import UserNotifications
 
 internal let mainStore = ReSwift_Store<AppState>(
@@ -89,7 +89,7 @@ public final class ChannelIO: NSObject {
   }
   internal static var subscriber : CHPluginSubscriber?
 
-  internal static var disposeBag = DisposeBag()
+  internal static var disposeBag = _RXSwift_DisposeBag()
   internal static var pushToken: String?
   internal static var currentAlertCount: Int?
 
@@ -245,7 +245,7 @@ public final class ChannelIO: NSObject {
         .flatMap { event in
           return ChannelIO.bootChannel()
         }
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { _ in
           PrefStore.setBootConfig(bootConfig: config)
           ChannelIO.registerPushToken()
@@ -329,7 +329,7 @@ public final class ChannelIO: NSObject {
   public class func shutdown() {
     AppManager.shared
     .unregisterToken()
-    .observeOn(MainScheduler.instance)
+    .observeOn(_RXSwift_MainScheduler.instance)
     .subscribe(onNext: { _ in
       dlog("shutdown success")
       ChannelIO.reset(isSleeping: false)

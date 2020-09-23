@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 final class PhoneActionView: BaseView, Actionable {
   //MARK: Constants
@@ -25,8 +25,8 @@ final class PhoneActionView: BaseView, Actionable {
   }
 
   //MARK: Properties
-  private let submitSubject = PublishSubject<Any?>()
-  private let focusSubject = PublishSubject<Bool>()
+  private let submitSubject = _RXSwift_PublishSubject<Any?>()
+  private let focusSubject = _RXSwift_PublishSubject<Bool>()
   let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
     $0.setImage(CHAssets.getImage(named: "sendError")?.withRenderingMode(.alwaysOriginal), for: .disabled)
@@ -60,7 +60,7 @@ final class PhoneActionView: BaseView, Actionable {
   var userGeoInfo: GeoIPInfo?
   var currentCountryCode: String = ""
   
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   //MARK: Init
   
   override func initialize() {
@@ -95,8 +95,8 @@ final class PhoneActionView: BaseView, Actionable {
       self?.setFocus()
     }).disposed(by: self.disposeBag)
     
-    UtilityPromise.getCountryCodes().observeOn(MainScheduler.instance)
-      .flatMap { (countries) -> Observable<GeoIPInfo> in
+    UtilityPromise.getCountryCodes().observeOn(_RXSwift_MainScheduler.instance)
+      .flatMap { (countries) -> _RXSwift_Observable<GeoIPInfo> in
         mainStore.dispatch(GetCountryCodes(payload: countries))
         return UtilityPromise.getGeoIP()
       }.subscribe(onNext: { [weak self] (geoInfo) in
@@ -228,15 +228,15 @@ extension PhoneActionView {
     }
   }
   
-  func signalForAction() -> Observable<Any?> {
+  func signalForAction() -> _RXSwift_Observable<Any?> {
     return self.submitSubject.asObserver()
   }
   
-  func signalForText() -> Observable<String?>? {
+  func signalForText() -> _RXSwift_Observable<String?>? {
     return self.phoneField.rx.text.asObservable()
   }
   
-  func signalForFocus() -> Observable<Bool> {
+  func signalForFocus() -> _RXSwift_Observable<Bool> {
     return self.focusSubject
   }
 }

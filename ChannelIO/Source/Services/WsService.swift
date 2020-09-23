@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct SocketCommand {
   static let join = "join"
@@ -95,12 +95,12 @@ struct WsServiceType: OptionSet {
 class WsService {
   //MARK: Share Singleton Instance
   static let shared = WsService()
-  let eventSubject = PublishSubject<(WsServiceType, Any?)>()
-  let readySubject = PublishSubject<String>()
-  let typingSubject = PublishSubject<CHTypingEntity>()
-  let joinSubject = PublishSubject<String>()
-  let messageOnCreateSubject = PublishSubject<CHMessage>()
-  let errorSubject = PublishSubject<Any?>()
+  let eventSubject = _RXSwift_PublishSubject<(WsServiceType, Any?)>()
+  let readySubject = _RXSwift_PublishSubject<String>()
+  let typingSubject = _RXSwift_PublishSubject<CHTypingEntity>()
+  let joinSubject = _RXSwift_PublishSubject<String>()
+  let messageOnCreateSubject = _RXSwift_PublishSubject<CHMessage>()
+  let errorSubject = _RXSwift_PublishSubject<Any?>()
   
   //MARK: Private properties
   fileprivate var socket: SocketIO_SocketIOClient?
@@ -133,27 +133,27 @@ class WsService {
   //MARK: Signals 
   
   //TODO: update to <String, Any?> to receive data
-  func listen() -> PublishSubject<(WsServiceType, Any?)> {
+  func listen() -> _RXSwift_PublishSubject<(WsServiceType, Any?)> {
     return self.eventSubject
   }
   
-  func ready() -> PublishSubject<String> {
+  func ready() -> _RXSwift_PublishSubject<String> {
     return self.readySubject
   }
   
-  func typing() -> PublishSubject<CHTypingEntity> {
+  func typing() -> _RXSwift_PublishSubject<CHTypingEntity> {
     return self.typingSubject
   }
   
-  func mOnCreate() -> PublishSubject<CHMessage> {
+  func mOnCreate() -> _RXSwift_PublishSubject<CHMessage> {
     return self.messageOnCreateSubject
   }
   
-  func observeJoin() -> PublishSubject<String> {
+  func observeJoin() -> _RXSwift_PublishSubject<String> {
     return self.joinSubject
   }
   
-  func error() -> Observable<Any?> {
+  func error() -> _RXSwift_Observable<Any?> {
     return self.errorSubject.asObserver()
   }
   

@@ -7,8 +7,8 @@ target 'ChannelIO' do
   # pod 'SnapKit', '~> 5.0'
   # pod 'SwiftyJSON', '~> 5.0'
   # pod 'ReSwift', '~> 5.0'
-  pod 'RxSwift', '~> 5.1'
-  pod 'RxCocoa', '~> 5.1'
+  # pod 'RxSwift', '~> 5.1'
+  # pod 'RxCocoa', '~> 5.1'
   # pod 'ObjectMapper', '~> 4.2'
   # pod 'NVActivityIndicatorView', '~> 4.7'
   # pod 'CHDwifft'
@@ -19,7 +19,7 @@ target 'ChannelIO' do
   # pod 'PhoneNumberKit', '~> 3.1'
   # pod 'SDWebImage', '~> 5.8'
   # pod 'SDWebImageWebPCoder'
-  pod 'RxSwiftExt', '~> 5.2'
+  # pod 'RxSwiftExt', '~> 5.2'
   # pod 'TLPhotoPicker'
 
   target 'ChannelIOTests' do

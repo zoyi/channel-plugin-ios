@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 protocol CHNavigationDelegate: class {
   func willPopViewController(willShow controller:UIViewController)
@@ -16,7 +16,7 @@ protocol CHNavigationDelegate: class {
 }
 
 class MainNavigationController: BaseNavigationController {
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   
   // MARK: Properties
   weak var chDelegate: CHNavigationDelegate? = nil
@@ -54,7 +54,7 @@ class MainNavigationController: BaseNavigationController {
     }
     
     self.navigationBar.rx.observeWeakly(CGRect.self, "frame")
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (frame) in
         guard let self = self else { return }
         let plugin = mainStore.state.plugin

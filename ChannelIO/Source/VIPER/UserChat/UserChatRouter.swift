@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import RxSwift
+//import RxSwift
 import Photos
 import MobileCoreServices
 import AVKit
 
 class UserChatRouter: NSObject, UserChatRouterProtocol {
-  private var assetsSubject = PublishSubject<[PHAsset]>()
+  private var assetsSubject = _RXSwift_PublishSubject<[PHAsset]>()
   private var viewerTransitionDelegate: ZoomAnimatedTransitioningDelegate? = nil
   
   static func createModule(
@@ -106,8 +106,8 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     })
   }
   
-  func showOptionActionSheet(from view: UIViewController?) -> PublishSubject<[PHAsset]> {
-    self.assetsSubject = PublishSubject<[PHAsset]>()
+  func showOptionActionSheet(from view: UIViewController?) -> _RXSwift_PublishSubject<[PHAsset]> {
+    self.assetsSubject = _RXSwift_PublishSubject<[PHAsset]>()
     
     let alertView = UIAlertController(
       title:nil,
@@ -237,8 +237,8 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
     }
   }
   
-  func showRetryActionSheet(from view: UIView?) -> Observable<Bool?> {
-    return Observable.create { (subscriber) in
+  func showRetryActionSheet(from view: UIView?) -> _RXSwift_Observable<Bool?> {
+    return _RXSwift_Observable.create { (subscriber) in
       let alertView = UIAlertController(
         title:nil,
         message:nil,
@@ -267,7 +267,7 @@ class UserChatRouter: NSObject, UserChatRouterProtocol {
       )
       
       CHUtils.getTopController()?.present(alertView, animated: true, completion: nil)
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
 }

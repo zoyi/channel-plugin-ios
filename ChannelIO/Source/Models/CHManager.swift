@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct CHManager: CHEntity {
   // ModelType

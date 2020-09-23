@@ -6,11 +6,11 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 
 struct AppMessengerPromise {
-  static func getUri(with name: String) -> Observable<UriResponse> {
-    return Observable.create { subscriber in
+  static func getUri(with name: String) -> _RXSwift_Observable<UriResponse> {
+    return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.GetAppMessengerUri(name))
         .validate(statusCode: 200..<300)
@@ -31,9 +31,9 @@ struct AppMessengerPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos: .background))
   }
 }

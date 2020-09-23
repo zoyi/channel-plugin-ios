@@ -6,7 +6,7 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 
 enum AssetEndPointType: String {
   case production = "https://cf.channel.io"
@@ -47,7 +47,7 @@ extension CHAppMessenger {
     return URL(string: url + "/" + keyUrl)
   }
   
-  static func getUri(with name: String) -> Observable<UriResponse> {
+  static func getUri(with name: String) -> _RXSwift_Observable<UriResponse> {
     return AppMessengerPromise.getUri(with: name)
   }
 }

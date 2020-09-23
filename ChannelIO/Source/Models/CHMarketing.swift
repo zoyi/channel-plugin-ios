@@ -6,7 +6,7 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 
 typealias MarketingInfo = (type: CHMarketingType?, id: String?)
 
@@ -46,7 +46,7 @@ extension CHMarketing: Equatable {
 }
 
 extension CHMarketing {
-  func fetchSupportBot() -> Observable<CHSupportBotEntryInfo> {
+  func fetchSupportBot() -> _RXSwift_Observable<CHSupportBotEntryInfo> {
     if self.type == .campaign {
       return MarketingPromise.getCampaignSupportBot(with: id)
     } else {

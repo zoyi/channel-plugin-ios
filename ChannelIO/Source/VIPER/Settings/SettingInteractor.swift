@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class SettingInteractor: SettingInteractorProtocol {
   weak var presenter: SettingPresenterProtocol?
@@ -21,12 +21,12 @@ class SettingInteractor: SettingInteractorProtocol {
   var showTranslation: Bool? = nil
   var language: LanguageOption? = nil
   
-  var updateSignal = PublishRelay<CHUser>()
-  var updateOptionSignal = PublishRelay<Any?>()
-  var updateGeneralSignal = PublishRelay<(CHChannel, CHPlugin)>()
+  var updateSignal = _RXRelay_PublishRelay<CHUser>()
+  var updateOptionSignal = _RXRelay_PublishRelay<Any?>()
+  var updateGeneralSignal = _RXRelay_PublishRelay<(CHChannel, CHPlugin)>()
   
   private var isUpdatingUnsubscribed = false
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   
   func subscribeDataSource() {
     mainStore.subscribe(self)
@@ -36,11 +36,11 @@ class SettingInteractor: SettingInteractorProtocol {
     mainStore.unsubscribe(self)
   }
   
-  func getChannel() -> Observable<CHChannel> {
+  func getChannel() -> _RXSwift_Observable<CHChannel> {
     return CHChannel.get()
   }
   
-  func getProfileSchemas() -> Observable<[CHProfileSchema]> {
+  func getProfileSchemas() -> _RXSwift_Observable<[CHProfileSchema]> {
     return PluginPromise.getProfileSchemas(pluginId: mainStore.state.plugin.id)
   }
   
@@ -48,7 +48,7 @@ class SettingInteractor: SettingInteractorProtocol {
     return mainStore.state.userChatsState.showTranslation
   }
   
-  func updateUser() -> Observable<CHUser> {
+  func updateUser() -> _RXSwift_Observable<CHUser> {
     return self.updateSignal.asObservable()
   }
   
@@ -56,7 +56,7 @@ class SettingInteractor: SettingInteractorProtocol {
     self.isUpdatingUnsubscribed = true
     CHUser
     .updateUnsubscribed(with: unsubscribed)
-    .observeOn(MainScheduler.instance)
+    .observeOn(_RXSwift_MainScheduler.instance)
     .subscribe(onNext: { (user, error) in
       mainStore.dispatch(UpdateUser(payload: user))
       self.isUpdatingUnsubscribed = false
@@ -70,11 +70,11 @@ class SettingInteractor: SettingInteractorProtocol {
     }).disposed(by: self.disposeBag)
   }
   
-  func updateOptions() -> Observable<Any?> {
+  func updateOptions() -> _RXSwift_Observable<Any?> {
     return self.updateOptionSignal.asObservable()
   }
   
-  func updateGeneral() -> Observable<(CHChannel, CHPlugin)> {
+  func updateGeneral() -> _RXSwift_Observable<(CHChannel, CHPlugin)> {
     return self.updateGeneralSignal.asObservable()
   }
 }

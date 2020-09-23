@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import RxSwift
+//import RxSwift
 
 protocol Actionable: class {
-  func signalForAction() -> Observable<Any?>
-  func signalForText() -> Observable<String?>?
-  func signalForFocus() -> Observable<Bool>
+  func signalForAction() -> _RXSwift_Observable<Any?>
+  func signalForText() -> _RXSwift_Observable<String?>?
+  func signalForFocus() -> _RXSwift_Observable<Bool>
   func setLoading()
   func setFocus()
   func setOutFocus()

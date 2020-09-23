@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import RxSwift
+//import RxSwift
 
 class SettingHeaderView: BaseView {
   let bgLayer = CAGradientLayer().then {

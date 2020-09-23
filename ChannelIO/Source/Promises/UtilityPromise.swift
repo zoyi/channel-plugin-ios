@@ -7,11 +7,11 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 struct UtilityPromise {
-  static func getGeoIP() -> Observable<GeoIPInfo> {
-    return Observable.create { subscriber in
+  static func getGeoIP() -> _RXSwift_Observable<GeoIPInfo> {
+    return _RXSwift_Observable.create { subscriber in
       AF
         .request(RestRouter.GetGeoIP)
         .validate(statusCode: 200..<300)
@@ -34,17 +34,17 @@ struct UtilityPromise {
           }
           
         })
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
   
-  static func getCountryCodes() -> Observable<[CHCountry]> {
-    return Observable.create { subscriber in
+  static func getCountryCodes() -> _RXSwift_Observable<[CHCountry]> {
+    return _RXSwift_Observable.create { subscriber in
       if mainStore.state.countryCodeState.codes.count != 0 {
         let countries = mainStore.state.countryCodeState.codes
         subscriber.onNext(countries)
         subscriber.onCompleted()
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       AF
@@ -68,7 +68,7 @@ struct UtilityPromise {
           }
           
         })
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
 }

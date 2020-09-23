@@ -5,7 +5,7 @@
 //  Created by Jam on 2019/12/05.
 //
 
-import RxSwift
+//import RxSwift
 
 struct ChatQueueKey: Hashable {
   var chatType: ChatType
@@ -30,7 +30,7 @@ protocol ChatQueueProtocol {
   var maxItems: Int { get set }
 
   var items: [ChatQueuable] { get set }
-  var signals: [String: Disposable?] { get set }
+  var signals: [String: _RXSwift_Disposable?] { get set }
 
   func find(reqId: String) -> ChatQueuable?
   func enqueue(item: ChatQueuable?)
@@ -40,12 +40,12 @@ protocol ChatQueueProtocol {
   func cancelAll()
   func removeAll()
 
-  func signalForStatus() -> Observable<ChatQueueStatus>
-  func signalForProgress() -> Observable<ChatQueuable>
-  func signalForError() -> Observable<ChatQueuable>
-  func signalForCompletion() -> Observable<ChatQueuable>
-  func signalForProgress(reqId: String) -> Observable<ChatQueuable>
-  func signalForCompletion(reqId: String) -> Observable<ChatQueuable>
+  func signalForStatus() -> _RXSwift_Observable<ChatQueueStatus>
+  func signalForProgress() -> _RXSwift_Observable<ChatQueuable>
+  func signalForError() -> _RXSwift_Observable<ChatQueuable>
+  func signalForCompletion() -> _RXSwift_Observable<ChatQueuable>
+  func signalForProgress(reqId: String) -> _RXSwift_Observable<ChatQueuable>
+  func signalForCompletion(reqId: String) -> _RXSwift_Observable<ChatQueuable>
 }
 
 class ChatQueue: ChatQueueProtocol {
@@ -54,14 +54,14 @@ class ChatQueue: ChatQueueProtocol {
   var chatId: String
   var maxItems: Int
   var items: [ChatQueuable] = []
-  var signals: [String: Disposable?] = [:]
+  var signals: [String: _RXSwift_Disposable?] = [:]
 
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
 
-  private var progressSignal = PublishSubject<ChatQueuable>()
-  private var completionSignal = PublishSubject<ChatQueuable>()
-  private var errorSignal = PublishSubject<ChatQueuable>()
-  private var statusSignal = PublishSubject<ChatQueueStatus>()
+  private var progressSignal = _RXSwift_PublishSubject<ChatQueuable>()
+  private var completionSignal = _RXSwift_PublishSubject<ChatQueuable>()
+  private var errorSignal = _RXSwift_PublishSubject<ChatQueuable>()
+  private var statusSignal = _RXSwift_PublishSubject<ChatQueueStatus>()
 
   init(type: ChatType, id: String, maxItems: Int = 20, items: [ChatQueuable] = []) {
     self.chatType = type
@@ -88,7 +88,7 @@ class ChatQueue: ChatQueueProtocol {
     guard let item = item else { return false }
     let disposal = item
       .request()
-      .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+      .subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos: .background))
       .subscribe(onNext: { [weak self] updatedItem in
         guard let self = self else { return }
         self.progressSignal.onNext(updatedItem)
@@ -157,30 +157,30 @@ class ChatQueue: ChatQueueProtocol {
     }
   }
 
-  func signalForProgress() -> Observable<ChatQueuable> {
+  func signalForProgress() -> _RXSwift_Observable<ChatQueuable> {
     return self.progressSignal.asObservable()
   }
 
-  func signalForCompletion() -> Observable<ChatQueuable> {
+  func signalForCompletion() -> _RXSwift_Observable<ChatQueuable> {
     return self.completionSignal.asObservable()
   }
 
-  func signalForError() -> Observable<ChatQueuable> {
+  func signalForError() -> _RXSwift_Observable<ChatQueuable> {
     return self.errorSignal.asObservable()
   }
 
-  func signalForStatus() -> Observable<ChatQueueStatus> {
+  func signalForStatus() -> _RXSwift_Observable<ChatQueueStatus> {
     return self.statusSignal.asObservable()
   }
 
-  func signalForProgress(reqId: String) -> Observable<ChatQueuable> {
+  func signalForProgress(reqId: String) -> _RXSwift_Observable<ChatQueuable> {
     guard self.signals[reqId] != nil else {
       return .error(ChannelError.notFoundError)
     }
     return self.progressSignal.filter { $0.id == reqId }
   }
 
-  func signalForCompletion(reqId: String) -> Observable<ChatQueuable> {
+  func signalForCompletion(reqId: String) -> _RXSwift_Observable<ChatQueuable> {
     guard self.signals[reqId] != nil else {
       return .error(ChannelError.notFoundError)
     }

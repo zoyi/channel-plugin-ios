@@ -6,7 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 import Foundation
 
 struct CHPlugin: ModelType {
@@ -67,7 +67,7 @@ extension CHPlugin: ObjectMapper_Mappable {
 }
 
 extension CHPlugin {
-  static func get(with key: String) -> Observable<(CHPlugin, CHBot?)> {
+  static func get(with key: String) -> _RXSwift_Observable<(CHPlugin, CHBot?)> {
     return PluginPromise.getPlugin(pluginKey: key)
   }
 }
