@@ -125,14 +125,14 @@
         func _RXCocoa_rxCocoaErrorForTarget(_ target: AnyObject) -> _RXCocoa_RxCocoaObjCRuntimeError {
             let error = self as NSError
             
-            if error.domain == RXObjCRuntimeErrorDomain {
-                let errorCode = RXObjCRuntimeError(rawValue: error.code) ?? .unknown
+            if error.domain == _RXCocoa_RXObjCRuntimeErrorDomain {
+                let errorCode = _RXCocoa_RXObjCRuntimeError(rawValue: error.code) ??  .unknown
                 
                 switch errorCode {
                 case .unknown:
                     return .unknown(target: target)
                 case .objectMessagesAlreadyBeingIntercepted:
-                    let isKVO = (error.userInfo[RXObjCRuntimeErrorIsKVOKey] as? NSNumber)?.boolValue ?? false
+                    let isKVO = (error.userInfo[_RXCocoa_RXObjCRuntimeErrorIsKVOKey] as? NSNumber)?.boolValue ?? false
                     return .objectMessagesAlreadyBeingIntercepted(target: target, interceptionMechanism: isKVO ? .kvo : .unknown)
                 case .selectorNotImplemented:
                     return .selectorNotImplemented(target: target)

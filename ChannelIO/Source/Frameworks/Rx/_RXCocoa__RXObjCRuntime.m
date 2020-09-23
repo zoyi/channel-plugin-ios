@@ -23,7 +23,7 @@
 
 #define NSErrorParam NSError *__autoreleasing __nullable * __nullable
 
-@class RXObjCRuntime;
+@class _RXCocoa_RXObjCRuntime;
 
 BOOL RXAbortOnThreadingHazard = NO;
 
@@ -34,7 +34,7 @@ typedef unsigned short      rx_ushort;
 typedef unsigned int        rx_uint;
 typedef unsigned long       rx_ulong;
 typedef id (^rx_block)(id);
-typedef BOOL (^RXInterceptWithOptimizedObserver)(RXObjCRuntime * __nonnull self, Class __nonnull class, SEL __nonnull selector, NSErrorParam error);
+typedef BOOL (^RXInterceptWithOptimizedObserver)(_RXCocoa_RXObjCRuntime * __nonnull self, Class __nonnull class, SEL __nonnull selector, NSErrorParam error);
 
 static CFTypeID  defaultTypeID;
 static SEL       deallocSelector;
@@ -95,8 +95,8 @@ static supported_type_t supported_types[] = {
     { .encoding = @encode(const char*)},
 };
 
-NSString * __nonnull const RXObjCRuntimeErrorDomain   = @"RXObjCRuntimeErrorDomain";
-NSString * __nonnull const RXObjCRuntimeErrorIsKVOKey = @"RXObjCRuntimeErrorIsKVOKey";
+NSString * __nonnull const _RXCocoa_RXObjCRuntimeErrorDomain   = @"RXObjCRuntimeErrorDomain";
+NSString * __nonnull const _RXCocoa_RXObjCRuntimeErrorIsKVOKey = @"RXObjCRuntimeErrorIsKVOKey";
 
 BOOL RX_return_type_is_supported(const char *type) {
     if (type == nil) {
@@ -125,19 +125,19 @@ static BOOL RX_method_has_supported_return_type(Method method) {
     return RX_return_type_is_supported(methodSignature.methodReturnType);
 }
 
-SEL __nonnull RX_selector(SEL __nonnull selector) {
+SEL __nonnull _RXCocoa_RX_selector(SEL __nonnull selector) {
     NSString *selectorString = NSStringFromSelector(selector);
     return NSSelectorFromString([RX_PREFIX stringByAppendingString:selectorString]);
 }
 
 #endif
 
-BOOL RX_is_method_signature_void(NSMethodSignature * __nonnull methodSignature) {
+BOOL _RXCocoa_RX_is_method_signature_void(NSMethodSignature * __nonnull methodSignature) {
     const char *methodReturnType = methodSignature.methodReturnType;
     return strcmp(methodReturnType, @encode(void)) == 0;
 }
 
-BOOL RX_is_method_with_description_void(struct objc_method_description method) {
+BOOL _RXCocoa_RX_is_method_with_description_void(struct objc_method_description method) {
     return strncmp(method.types, @encode(void), 1) == 0;
 }
 
@@ -189,7 +189,7 @@ id __nonnull RX_extract_argument_at_index(NSInvocation * __nonnull invocation, N
     }
 }
 
-NSArray *RX_extract_arguments(NSInvocation *invocation) {
+NSArray *_RXCocoa_RX_extract_arguments(NSInvocation *invocation) {
     NSUInteger numberOfArguments = invocation.methodSignature.numberOfArguments;
     NSUInteger numberOfVisibleArguments = numberOfArguments - HIDDEN_ARGUMENT_COUNT;
     
@@ -204,23 +204,23 @@ NSArray *RX_extract_arguments(NSInvocation *invocation) {
     return arguments;
 }
 
-IMP __nonnull RX_default_target_implementation(void) {
+IMP __nonnull _RXCocoa_RX_default_target_implementation(void) {
     return _objc_msgForward;
 }
 
 #if !DISABLE_SWIZZLING
 
-void * __nonnull RX_reference_from_selector(SEL __nonnull selector) {
+void * __nonnull _RXCocoa_RX_reference_from_selector(SEL __nonnull selector) {
     return selector;
 }
 
 static BOOL RX_forward_invocation(id __nonnull __unsafe_unretained self, NSInvocation *invocation) {
-    SEL originalSelector = RX_selector(invocation.selector);
+    SEL originalSelector = _RXCocoa_RX_selector(invocation.selector);
 
-    id<RXMessageSentObserver> messageSentObserver = objc_getAssociatedObject(self, originalSelector);
+    id<_RXCocoa_RXMessageSentObserver> messageSentObserver = objc_getAssociatedObject(self, originalSelector);
 
     if (messageSentObserver != nil) {
-        NSArray *arguments = RX_extract_arguments(invocation);
+        NSArray *arguments = _RXCocoa_RX_extract_arguments(invocation);
         [messageSentObserver messageSentWithArguments:arguments];
     }
 
@@ -229,7 +229,7 @@ static BOOL RX_forward_invocation(id __nonnull __unsafe_unretained self, NSInvoc
         [invocation invokeWithTarget:self];
 
         if (messageSentObserver != nil) {
-            NSArray *arguments = RX_extract_arguments(invocation);
+            NSArray *arguments = _RXCocoa_RX_extract_arguments(invocation);
             [messageSentObserver methodInvokedWithArguments:arguments];
         }
 
@@ -270,7 +270,7 @@ static NSString * __nonnull RX_method_encoding(Method __nonnull method) {
     return encoding;
 }
 
-@interface RXObjCRuntime: NSObject
+@interface _RXCocoa_RXObjCRuntime: NSObject
 
 @property (nonatomic, assign) pthread_mutex_t lock;
 
@@ -280,9 +280,9 @@ static NSString * __nonnull RX_method_encoding(Method __nonnull method) {
 @property (nonatomic, strong) NSMutableDictionary<NSValue *, Class> *dynamicSubclassByRealClass;
 @property (nonatomic, strong) NSMutableDictionary<NSValue *, NSMutableDictionary<NSValue*, NSValue *>*> *interceptorIMPbySelectorsByClass;
 
-+(RXObjCRuntime*)instance;
++(_RXCocoa_RXObjCRuntime*)instance;
 
--(void)performLocked:(void (^)(RXObjCRuntime* __nonnull))action;
+-(void)performLocked:(void (^)(_RXCocoa_RXObjCRuntime* __nonnull))action;
 -(IMP __nullable)ensurePrepared:(id __nonnull)target forObserving:(SEL __nonnull)selector error:(NSErrorParam)error;
 -(BOOL)ensureSwizzledSelector:(SEL __nonnull)selector
                       ofClass:(Class __nonnull)class
@@ -299,7 +299,7 @@ replacementImplementationGenerator:(IMP (^)(IMP originalImplementation))replacem
  All API methods perform work on locked instance of `RXObjCRuntime`. In that way it's easy to prove
  that every action is properly locked.
  */
-IMP __nullable RX_ensure_observing(id __nonnull target, SEL __nonnull selector, NSErrorParam error) {
+IMP __nullable _RXCocoa_RX_ensure_observing(id __nonnull target, SEL __nonnull selector, NSErrorParam error) {
     __block IMP targetImplementation = nil;
     // Target is the second object that needs to be synchronized to TRY to make sure other swizzling framework
     // won't do something in parallel.
@@ -313,7 +313,7 @@ IMP __nullable RX_ensure_observing(id __nonnull target, SEL __nonnull selector, 
         // It's like trying to figure out how to communicate with aliens without actually communicating,
         // save for the fact that aliens are people, programmers, authors of swizzling libraries.
         @synchronized([target class]) {
-            [[RXObjCRuntime instance] performLocked:^(RXObjCRuntime * __nonnull self) {
+            [[_RXCocoa_RXObjCRuntime instance] performLocked:^(_RXCocoa_RXObjCRuntime * __nonnull self) {
                 targetImplementation = [self ensurePrepared:target
                                                forObserving:selector
                                                       error:error];
@@ -339,13 +339,13 @@ IMP __nullable RX_ensure_observing(id __nonnull target, SEL __nonnull selector, 
     }
 
 #define DEALLOCATING_BODY(...)                                                        \
-    id<RXDeallocatingObserver> observer = objc_getAssociatedObject(self, rxSelector); \
+    id<_RXCocoa_RXDeallocatingObserver> observer = objc_getAssociatedObject(self, rxSelector); \
     if (observer != nil && observer.targetImplementation == thisIMP) {                \
         [observer deallocating];                                                      \
     }
 
 #define OBSERVE_BODY(...)                                                              \
-    id<RXMessageSentObserver> observer = objc_getAssociatedObject(self, rxSelector);   \
+    id<_RXCocoa_RXMessageSentObserver> observer = objc_getAssociatedObject(self, rxSelector);   \
                                                                                        \
     if (observer != nil && observer.targetImplementation == thisIMP) {                 \
         [observer messageSentWithArguments:@[COMMA_DELIMITED_ARGUMENTS(__VA_ARGS__)]]; \
@@ -393,16 +393,16 @@ IMP __nullable RX_ensure_observing(id __nonnull target, SEL __nonnull selector, 
     RX_CAT2(RX_CAT2(example_, return_value), RX_FOREACH(_, SEPARATE_BY_SPACE, SELECTOR_PART, ## __VA_ARGS__))
 
 #define SWIZZLE_OBSERVE_METHOD(return_value, ...)                                                                                                       \
-    @interface RXObjCRuntime (GENERATE_METHOD_IDENTIFIER(return_value, ## __VA_ARGS__))                                                                 \
+    @interface _RXCocoa_RXObjCRuntime (GENERATE_METHOD_IDENTIFIER(return_value, ## __VA_ARGS__))                                                                 \
     @end                                                                                                                                                \
                                                                                                                                                         \
-    @implementation RXObjCRuntime(GENERATE_METHOD_IDENTIFIER(return_value, ## __VA_ARGS__))                                                             \
+    @implementation _RXCocoa_RXObjCRuntime(GENERATE_METHOD_IDENTIFIER(return_value, ## __VA_ARGS__))                                                             \
     BUILD_EXAMPLE_METHOD(return_value, ## __VA_ARGS__)                                                                                                  \
     SWIZZLE_METHOD(return_value, GENERATE_OBSERVE_METHOD_DECLARATION(return_value, ## __VA_ARGS__), OBSERVE_BODY, OBSERVE_INVOKED_BODY, ## __VA_ARGS__) \
                                                                                                                                                         \
     +(void)load {                                                                                                                                       \
        __unused SEL exampleSelector = @selector(BUILD_EXAMPLE_METHOD_SELECTOR(return_value, ## __VA_ARGS__));                                           \
-       [self registerOptimizedObserver:^BOOL(RXObjCRuntime * __nonnull self, Class __nonnull class,                                                     \
+       [self registerOptimizedObserver:^BOOL(_RXCocoa_RXObjCRuntime * __nonnull self, Class __nonnull class,                                                     \
             SEL __nonnull selector, NSErrorParam error) {                                                                                               \
             return [self GENERATE_METHOD_IDENTIFIER(return_value, ## __VA_ARGS__):class selector:selector error:error];                                 \
        } encodedAs:exampleSelector];                                                                                                                    \
@@ -424,7 +424,7 @@ IMP __nullable RX_ensure_observing(id __nonnull target, SEL __nonnull selector, 
 
 #define SWIZZLE_METHOD(return_value, method_prototype, body, invoked_body, ...)                                          \
 method_prototype                                                                                                         \
-    __unused SEL rxSelector = RX_selector(selector);                                                                     \
+    __unused SEL rxSelector = _RXCocoa_RX_selector(selector);                                                                     \
     IMP (^newImplementationGenerator)(void) = ^() {                                                                          \
         __block IMP thisIMP = nil;                                                                                       \
         id newImplementation = ^return_value(__unsafe_unretained id self DECLARE_ARGUMENTS(__VA_ARGS__)) {               \
@@ -472,12 +472,12 @@ method_prototype                                                                
  }                                                                                                                       \
 
 
-@interface RXObjCRuntime (InfrastructureMethods)
+@interface _RXCocoa_RXObjCRuntime (InfrastructureMethods)
 @end
 
 // MARK: Infrastructure Methods
 
-@implementation RXObjCRuntime (InfrastructureMethods)
+@implementation _RXCocoa_RXObjCRuntime (InfrastructureMethods)
 
 SWIZZLE_INFRASTRUCTURE_METHOD(
     void,
@@ -554,18 +554,18 @@ SWIZZLE_OBSERVE_METHOD(void, id, SEL)
 
 // MARK: RXObjCRuntime
 
-@implementation RXObjCRuntime
+@implementation _RXCocoa_RXObjCRuntime
 
-static RXObjCRuntime *_instance = nil;
+static _RXCocoa_RXObjCRuntime *_instance = nil;
 static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimizedObserversByMethodEncoding = nil;
 
-+(RXObjCRuntime*)instance {
++(_RXCocoa_RXObjCRuntime*)instance {
     return _instance;
 }
 
 +(void)initialize {
-    _instance = [[RXObjCRuntime alloc] init];
-    defaultTypeID = CFGetTypeID((CFTypeRef)RXObjCRuntime.class); // just need a reference of some object not from CF
+    _instance = [[_RXCocoa_RXObjCRuntime alloc] init];
+    defaultTypeID = CFGetTypeID((CFTypeRef)_RXCocoa_RXObjCRuntime.class); // just need a reference of some object not from CF
     deallocSelector = NSSelectorFromString(@"dealloc");
     NSAssert(_instance != nil, @"Failed to initialize swizzling");
 }
@@ -589,7 +589,7 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     return self;
 }
 
--(void)performLocked:(void (^)(RXObjCRuntime* __nonnull))action {
+-(void)performLocked:(void (^)(_RXCocoa_RXObjCRuntime* __nonnull))action {
     pthread_mutex_lock(&_lock);
     action(self);
     pthread_mutex_unlock(&_lock);
@@ -616,8 +616,8 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
 -(IMP __nullable)ensurePrepared:(id __nonnull)target forObserving:(SEL __nonnull)selector error:(NSErrorParam)error {
     Method instanceMethod = class_getInstanceMethod([target class], selector);
     if (instanceMethod == nil) {
-        RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                           code:RXObjCRuntimeErrorSelectorNotImplemented
+        RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                           code:_RXCocoa_RXObjCRuntimeErrorSelectorNotImplemented
                                        userInfo:nil], nil);
     }
 
@@ -625,8 +625,8 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     ||  selector == @selector(forwardingTargetForSelector:)
     ||  selector == @selector(methodSignatureForSelector:)
     ||  selector == @selector(respondsToSelector:)) {
-        RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                           code:RXObjCRuntimeErrorObservingPerformanceSensitiveMessages
+        RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                           code:_RXCocoa_RXObjCRuntimeErrorObservingPerformanceSensitiveMessages
                                        userInfo:nil], nil);
     }
 
@@ -662,8 +662,8 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
         RXInterceptWithOptimizedObserver optimizedIntercept = optimizedObserversByMethodEncoding[methodEncoding];
 
         if (!RX_method_has_supported_return_type(instanceMethod)) {
-            RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                               code:RXObjCRuntimeErrorObservingMessagesWithUnsupportedReturnType
+            RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                               code:_RXCocoa_RXObjCRuntimeErrorObservingMessagesWithUnsupportedReturnType
                                            userInfo:nil], nil);
         }
 
@@ -686,7 +686,7 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
         // default fallback to observing by forwarding messages
         else {
             if ([self forwardingSelector:selector forClass:swizzlingImplementorClass]) {
-                return RX_default_target_implementation();
+                return _RXCocoa_RX_default_target_implementation();
             }
 
             if (![self observeByForwardingMessages:swizzlingImplementorClass
@@ -697,13 +697,13 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
             }
 
             if ([self forwardingSelector:selector forClass:swizzlingImplementorClass]) {
-                return RX_default_target_implementation();
+                return _RXCocoa_RX_default_target_implementation();
             }
         }
     }
 
-    RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                       code:RXObjCRuntimeErrorUnknown
+    RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                       code:_RXCocoa_RXObjCRuntimeErrorUnknown
                                    userInfo:nil], nil);
 }
 
@@ -724,8 +724,8 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     BOOL isThisTollFreeFoundationClass = CFGetTypeID((CFTypeRef)target) != defaultTypeID;
 
     if (isThisTollFreeFoundationClass) {
-        RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                           code:RXObjCRuntimeErrorCantInterceptCoreFoundationTollFreeBridgedObjects
+        RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                           code:_RXCocoa_RXObjCRuntimeErrorCantInterceptCoreFoundationTollFreeBridgedObjects
                                        userInfo:nil], nil);
     }
 
@@ -757,10 +757,10 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     if ([target class] != object_getClass(target)) {
         BOOL isKVO = [target respondsToSelector:NSSelectorFromString(@"_isKVOA")];
 
-        RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                           code:RXObjCRuntimeErrorObjectMessagesAlreadyBeingIntercepted
+        RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                           code:_RXCocoa_RXObjCRuntimeErrorObjectMessagesAlreadyBeingIntercepted
                                        userInfo:@{
-                                                  RXObjCRuntimeErrorIsKVOKey : @(isKVO)
+                                                  _RXCocoa_RXObjCRuntimeErrorIsKVOKey : @(isKVO)
                                                   }], nil);
     }
 
@@ -773,8 +773,8 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     Class previousClass = object_setClass(target, dynamicFakeSubclass);
     if (previousClass != wannaBeClass) {
         THREADING_HAZARD(wannaBeClass);
-        RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                           code:RXObjCRuntimeErrorThreadingCollisionWithOtherInterceptionMechanism
+        RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                           code:_RXCocoa_RXObjCRuntimeErrorThreadingCollisionWithOtherInterceptionMechanism
                                        userInfo:nil], nil);
     }
 
@@ -813,7 +813,7 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
 #if TRACE_RESOURCES
     atomic_fetch_add(&numberOfForwardedMethods, 1);
 #endif
-    SEL rxSelector = RX_selector(selector);
+    SEL rxSelector = _RXCocoa_RX_selector(selector);
 
     Method instanceMethod = class_getInstanceMethod(swizzlingImplementorClass, selector);
     ALWAYS(instanceMethod != nil, @"Instance method is nil");
@@ -826,22 +826,22 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     IMP implementation = method_getImplementation(instanceMethod);
 
     if (implementation == nil) {
-        RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                           code:RXObjCRuntimeErrorSelectorNotImplemented
+        RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                           code:_RXCocoa_RXObjCRuntimeErrorSelectorNotImplemented
                                        userInfo:nil], NO);
     }
 
     if (!class_addMethod(swizzlingImplementorClass, rxSelector, implementation, methodEncoding)) {
-        RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                           code:RXObjCRuntimeErrorSavingOriginalForwardingMethodFailed
+        RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                           code:_RXCocoa_RXObjCRuntimeErrorSavingOriginalForwardingMethodFailed
                                        userInfo:nil], NO);
     }
 
     if (!class_addMethod(swizzlingImplementorClass, selector, _objc_msgForward, methodEncoding)) {
         if (implementation != method_setImplementation(instanceMethod, _objc_msgForward)) {
             THREADING_HAZARD(swizzlingImplementorClass);
-            RX_THROW_ERROR([NSError errorWithDomain:RXObjCRuntimeErrorDomain
-                                               code:RXObjCRuntimeErrorReplacingMethodWithForwardingImplementation
+            RX_THROW_ERROR([NSError errorWithDomain:_RXCocoa_RXObjCRuntimeErrorDomain
+                                               code:_RXCocoa_RXObjCRuntimeErrorReplacingMethodWithForwardingImplementation
                                            userInfo:nil], NO);
         }
     }

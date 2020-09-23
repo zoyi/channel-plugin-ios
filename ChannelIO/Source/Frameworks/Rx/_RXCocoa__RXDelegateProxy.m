@@ -30,7 +30,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
 
     for (unsigned int i = 0; i < protocolMethodCount; ++i) {
         struct objc_method_description method = pMethods[i];
-        if (RX_is_method_with_description_void(method)) {
+        if (_RXCocoa_RX_is_method_with_description_void(method)) {
             [selectors addObject:SEL_VALUE(method.name)];
         }
     }
@@ -115,10 +115,10 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
 }
 
 -(void)forwardInvocation:(NSInvocation *)anInvocation {
-    BOOL isVoid = RX_is_method_signature_void(anInvocation.methodSignature);
+    BOOL isVoid = _RXCocoa_RX_is_method_signature_void(anInvocation.methodSignature);
     NSArray *arguments = nil;
     if (isVoid) {
-        arguments = RX_extract_arguments(anInvocation);
+        arguments = _RXCocoa_RX_extract_arguments(anInvocation);
         [self _sentMessage:anInvocation.selector withArguments:arguments];
     }
     

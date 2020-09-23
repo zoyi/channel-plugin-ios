@@ -531,7 +531,6 @@
 		39C32B02251BA90800239DD5 /* _RXCocoa_RxTableViewDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C329D5251BA90300239DD5 /* _RXCocoa_RxTableViewDelegateProxy.swift */; };
 		39C32B03251BA90800239DD5 /* _RXCocoa_ObservableConvertibleType+Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C329D6251BA90300239DD5 /* _RXCocoa_ObservableConvertibleType+Signal.swift */; };
 		39C32B04251BA90800239DD5 /* _RXRelay_BehaviorRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C329D7251BA90300239DD5 /* _RXRelay_BehaviorRelay.swift */; };
-		39C32B05251BA90800239DD5 /* _RXCocoa__RxCocoaRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 39C329D8251BA90300239DD5 /* _RXCocoa__RxCocoaRuntime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		39C32B06251BA90800239DD5 /* _RXCocoa_UIBarButtonItem+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C329D9251BA90300239DD5 /* _RXCocoa_UIBarButtonItem+Rx.swift */; };
 		39C32B07251BA90800239DD5 /* _RXSwift_Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C329DA251BA90300239DD5 /* _RXSwift_Buffer.swift */; };
 		39C32B08251BA90800239DD5 /* _RXSwift_PrimitiveSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C329DB251BA90300239DD5 /* _RXSwift_PrimitiveSequence.swift */; };
@@ -1931,7 +1930,6 @@
 		39C329D5251BA90300239DD5 /* _RXCocoa_RxTableViewDelegateProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _RXCocoa_RxTableViewDelegateProxy.swift; sourceTree = "<group>"; };
 		39C329D6251BA90300239DD5 /* _RXCocoa_ObservableConvertibleType+Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "_RXCocoa_ObservableConvertibleType+Signal.swift"; sourceTree = "<group>"; };
 		39C329D7251BA90300239DD5 /* _RXRelay_BehaviorRelay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _RXRelay_BehaviorRelay.swift; sourceTree = "<group>"; };
-		39C329D8251BA90300239DD5 /* _RXCocoa__RxCocoaRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _RXCocoa__RxCocoaRuntime.h; sourceTree = "<group>"; };
 		39C329D9251BA90300239DD5 /* _RXCocoa_UIBarButtonItem+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "_RXCocoa_UIBarButtonItem+Rx.swift"; sourceTree = "<group>"; };
 		39C329DA251BA90300239DD5 /* _RXSwift_Buffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _RXSwift_Buffer.swift; sourceTree = "<group>"; };
 		39C329DB251BA90300239DD5 /* _RXSwift_PrimitiveSequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _RXSwift_PrimitiveSequence.swift; sourceTree = "<group>"; };
@@ -2950,7 +2948,6 @@
 				4E671A04078E59A2512E94E3 /* Pods-ChannelIOTests.debug.xcconfig */,
 				986099CD2CF7448FFDD9ADA9 /* Pods-ChannelIOTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -3561,7 +3558,6 @@
 				39C329D5251BA90300239DD5 /* _RXCocoa_RxTableViewDelegateProxy.swift */,
 				39C329D6251BA90300239DD5 /* _RXCocoa_ObservableConvertibleType+Signal.swift */,
 				39C329D7251BA90300239DD5 /* _RXRelay_BehaviorRelay.swift */,
-				39C329D8251BA90300239DD5 /* _RXCocoa__RxCocoaRuntime.h */,
 				39C329D9251BA90300239DD5 /* _RXCocoa_UIBarButtonItem+Rx.swift */,
 				39C329DA251BA90300239DD5 /* _RXSwift_Buffer.swift */,
 				39C329DB251BA90300239DD5 /* _RXSwift_PrimitiveSequence.swift */,
@@ -5053,7 +5049,6 @@
 				39C31FFC251A115300239DD5 /* _ChannelIO_SDMemoryCache.h in Headers */,
 				39C31FD6251A115200239DD5 /* _ChannelIO_UIImage+Metadata.h in Headers */,
 				39C32016251A115300239DD5 /* _ChannelIO_SDWebImageError.h in Headers */,
-				39C32B05251BA90800239DD5 /* _RXCocoa__RxCocoaRuntime.h in Headers */,
 				39C31FBF251A115200239DD5 /* _ChannelIO_SDWebImageOptionsProcessor.h in Headers */,
 				39C3244A251A431100239DD5 /* _ChannelIO_SDImageWebPCoder.h in Headers */,
 				39C32487251A431100239DD5 /* mips_macro.h in Headers */,

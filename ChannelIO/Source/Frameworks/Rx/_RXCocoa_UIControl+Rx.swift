@@ -14,11 +14,11 @@ import UIKit
 extension _RXSwift_Reactive where Base: UIControl {
     
     /// Bindable sink for `enabled` property.
-//    var isEnabled: _RXCocoa_Binder<Bool> {
-//        return _RXCocoa_Binder(self.base) { control, value in
-//            control.isEnabled = value
-//        }
-//    }
+    var isEnabled: _RXCocoa_Binder<Bool> {
+        return _RXCocoa_Binder(self.base) { control, value in
+            control.isEnabled = value
+        }
+    }
 
     /// Bindable sink for `selected` property.
     var isSelected: _RXCocoa_Binder<Bool> {

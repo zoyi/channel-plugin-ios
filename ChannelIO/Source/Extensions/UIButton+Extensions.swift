@@ -83,15 +83,15 @@ extension _RXSwift_Reactive where Base: UIControl {
     return boolObservable
   }
   
-  var isEnabled: _RXSwift_Observable<Bool> {
+  var isEnable: _RXSwift_Observable<Bool> {
     let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isEnabled))
-    
+
     let boolObservable = anyObservable
       .flatMap { _RXSwift_Observable.from(optional: $0.first as? Bool) }
       .startWith(self.base.isEnabled)
       .distinctUntilChanged()
       .share()
-    
+
     return boolObservable
   }
 }

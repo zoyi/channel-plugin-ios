@@ -203,8 +203,8 @@ extension _RXSwift_Reactive where Base: AnyObject {
     }
 
     private func registerMessageInterceptor<T: MessageInterceptorSubject>(_ selector: Selector) throws -> T {
-        let rxSelector = RX_selector(selector)
-        let selectorReference = RX_reference_from_selector(rxSelector)
+        let rxSelector = _RXCocoa_RX_selector(selector)
+        let selectorReference = _RXCocoa_RX_reference_from_selector(rxSelector)
 
         let subject: T
         if let existingSubject = objc_getAssociatedObject(self.base, selectorReference) as? T {
@@ -225,7 +225,7 @@ extension _RXSwift_Reactive where Base: AnyObject {
         }
 
         var error: NSError?
-        let targetImplementation = RX_ensure_observing(self.base, selector, &error)
+        let targetImplementation = _RXCocoa_RX_ensure_observing(self.base, selector, &error)
         if targetImplementation == nil {
             throw error?._RXCocoa_rxCocoaErrorForTarget(self.base) ?? _RXCocoa_RxCocoaError.unknown
         }
@@ -253,15 +253,15 @@ extension _RXSwift_Reactive where Base: AnyObject {
 
     private final class DeallocatingProxy
         : MessageInterceptorSubject
-        , RXDeallocatingObserver {
+        , _RXCocoa_RXDeallocatingObserver {
         typealias Element = ()
 
         let messageSent = _RXSwift_ReplaySubject<()>.create(bufferSize: 1)
 
-        @objc var targetImplementation: IMP = RX_default_target_implementation()
+        @objc var targetImplementation: IMP = _RXCocoa_RX_default_target_implementation()
 
         var isActive: Bool {
-            return self.targetImplementation != RX_default_target_implementation()
+            return self.targetImplementation != _RXCocoa_RX_default_target_implementation()
         }
 
         init() {
@@ -278,16 +278,16 @@ extension _RXSwift_Reactive where Base: AnyObject {
 
     private final class MessageSentProxy
         : MessageInterceptorSubject
-        , RXMessageSentObserver {
+        , _RXCocoa_RXMessageSentObserver {
         typealias Element = [AnyObject]
 
         let messageSent = _RXSwift_PublishSubject<[Any]>()
         let methodInvoked = _RXSwift_PublishSubject<[Any]>()
 
-        @objc var targetImplementation: IMP = RX_default_target_implementation()
+        @objc var targetImplementation: IMP = _RXCocoa_RX_default_target_implementation()
 
         var isActive: Bool {
-            return self.targetImplementation != RX_default_target_implementation()
+            return self.targetImplementation != _RXCocoa_RX_default_target_implementation()
         }
 
         init() {
