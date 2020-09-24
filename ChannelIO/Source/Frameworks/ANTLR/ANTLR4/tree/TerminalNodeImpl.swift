@@ -4,64 +4,64 @@
  */
 
 
-public class TerminalNodeImpl: TerminalNode {
-    public var symbol: Token
-    public weak var parent: ParseTree?
+class TerminalNodeImpl: TerminalNode {
+    var symbol: Token
+    weak var parent: ParseTree?
 
-    public init(_ symbol: Token) {
+    init(_ symbol: Token) {
         self.symbol = symbol
     }
 
 
-    public func getChild(_ i: Int) -> Tree? {
+    func getChild(_ i: Int) -> Tree? {
         return nil
     }
 
-    open subscript(index: Int) -> ParseTree {
+    subscript(index: Int) -> ParseTree {
         preconditionFailure("Index out of range (TerminalNode never has children)")
     }
 
-    public func getSymbol() -> Token? {
+    func getSymbol() -> Token? {
         return symbol
     }
 
-    public func getParent() -> Tree? {
+    func getParent() -> Tree? {
         return parent
     }
 
-    public func setParent(_ parent: RuleContext) {
+    func setParent(_ parent: RuleContext) {
         self.parent = parent
     }
 
-    public func getPayload() -> AnyObject {
+    func getPayload() -> AnyObject {
         return symbol
     }
 
-    public func getSourceInterval() -> Interval {
+    func getSourceInterval() -> Interval {
         //if   symbol == nil   { return Interval.INVALID; }
 
         let tokenIndex: Int = symbol.getTokenIndex()
         return Interval(tokenIndex, tokenIndex)
     }
 
-    public func getChildCount() -> Int {
+    func getChildCount() -> Int {
         return 0
     }
 
 
-    public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+    func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
         return visitor.visitTerminal(self)
     }
 
-    public func getText() -> String {
+    func getText() -> String {
         return (symbol.getText())!
     }
 
-    public func toStringTree(_ parser: Parser) -> String {
+    func toStringTree(_ parser: Parser) -> String {
         return description
     }
 
-    public var description: String {
+    var description: String {
         //TODO: symbol == nil?
         //if    symbol == nil   {return "<nil>"; }
         if symbol.getType() == CommonToken.EOF {
@@ -70,11 +70,11 @@ public class TerminalNodeImpl: TerminalNode {
         return symbol.getText()!
     }
 
-    public var debugDescription: String {
+    var debugDescription: String {
         return description
     }
 
-    public func toStringTree() -> String {
+    func toStringTree() -> String {
         return description
     }
 }

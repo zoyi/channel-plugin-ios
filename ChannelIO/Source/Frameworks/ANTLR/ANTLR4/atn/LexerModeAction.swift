@@ -14,14 +14,14 @@
 /// -  4.2
 /// 
 
-public final class LexerModeAction: LexerAction, CustomStringConvertible {
+final class LexerModeAction: LexerAction, CustomStringConvertible {
     fileprivate let mode: Int
 
     /// 
     /// Constructs a new `mode` action with the specified mode value.
     /// - parameter mode: The mode value to pass to _org.antlr.v4.runtime.Lexer#mode_.
     /// 
-    public init(_ mode: Int) {
+    init(_ mode: Int) {
         self.mode = mode
     }
 
@@ -30,7 +30,7 @@ public final class LexerModeAction: LexerAction, CustomStringConvertible {
     /// 
     /// - returns: The lexer mode for this `mode` command.
     /// 
-    public func getMode() -> Int {
+    func getMode() -> Int {
         return mode
     }
 
@@ -39,7 +39,7 @@ public final class LexerModeAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns _org.antlr.v4.runtime.atn.LexerActionType#MODE_.
     /// 
 
-    public override func getActionType() -> LexerActionType {
+    override func getActionType() -> LexerActionType {
         return LexerActionType.mode
     }
 
@@ -48,7 +48,7 @@ public final class LexerModeAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns `false`.
     /// 
 
-    public override func isPositionDependent() -> Bool {
+    override func isPositionDependent() -> Bool {
         return false
     }
 
@@ -59,20 +59,20 @@ public final class LexerModeAction: LexerAction, CustomStringConvertible {
     /// value provided by _#getMode_.
     /// 
     override
-    public func execute(_ lexer: Lexer) {
+    func execute(_ lexer: Lexer) {
         lexer.mode(mode)
     }
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(mode)
     }
 
-    public var description: String {
+    var description: String {
         return "mode(\(mode))"
     }
 }
 
-public func ==(lhs: LexerModeAction, rhs: LexerModeAction) -> Bool {
+func ==(lhs: LexerModeAction, rhs: LexerModeAction) -> Bool {
     if lhs === rhs {
         return true
     }

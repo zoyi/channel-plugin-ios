@@ -13,10 +13,10 @@
 /// -  4.3
 /// 
 
-public class ParseInfo {
+class ParseInfo {
     internal let atnSimulator: ProfilingATNSimulator
 
-    public init(_ atnSimulator: ProfilingATNSimulator) {
+    init(_ atnSimulator: ProfilingATNSimulator) {
         self.atnSimulator = atnSimulator
     }
 
@@ -27,7 +27,7 @@ public class ParseInfo {
     /// - returns: An array of _org.antlr.v4.runtime.atn.DecisionInfo_ instances, indexed by decision
     /// number.
     /// 
-    public func getDecisionInfo() -> [DecisionInfo] {
+    func getDecisionInfo() -> [DecisionInfo] {
         return atnSimulator.getDecisionInfo()
     }
 
@@ -39,7 +39,7 @@ public class ParseInfo {
     /// - returns: A list of decision numbers which required one or more
     /// full-context predictions during parsing.
     /// 
-    public func getLLDecisions() -> Array<Int> {
+    func getLLDecisions() -> Array<Int> {
         let decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
         var LL: Array<Int> = Array<Int>()
         let length = decisions.count
@@ -58,7 +58,7 @@ public class ParseInfo {
     /// during parsing. This value is the sum of
     /// _org.antlr.v4.runtime.atn.DecisionInfo#timeInPrediction_ for all decisions.
     /// 
-    public func getTotalTimeInPrediction() -> Int64 {
+    func getTotalTimeInPrediction() -> Int64 {
         let decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
         var t: Int64 = 0
         let length = decisions.count
@@ -73,7 +73,7 @@ public class ParseInfo {
     /// made during parsing. This value is the sum of
     /// _org.antlr.v4.runtime.atn.DecisionInfo#SLL_TotalLook_ for all decisions.
     /// 
-    public func getTotalSLLLookaheadOps() -> Int64 {
+    func getTotalSLLLookaheadOps() -> Int64 {
         let decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
         var k: Int64 = 0
         let length = decisions.count
@@ -88,7 +88,7 @@ public class ParseInfo {
     /// made during parsing. This value is the sum of
     /// _org.antlr.v4.runtime.atn.DecisionInfo#LL_TotalLook_ for all decisions.
     /// 
-    public func getTotalLLLookaheadOps() -> Int64 {
+    func getTotalLLLookaheadOps() -> Int64 {
         let decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
         var k: Int64 = 0
         let length = decisions.count
@@ -102,7 +102,7 @@ public class ParseInfo {
     /// Gets the total number of ATN lookahead operations for SLL prediction
     /// across all decisions made during parsing.
     /// 
-    public func getTotalSLLATNLookaheadOps() -> Int64 {
+    func getTotalSLLATNLookaheadOps() -> Int64 {
         let decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
         var k: Int64 = 0
         let length = decisions.count
@@ -116,7 +116,7 @@ public class ParseInfo {
     /// Gets the total number of ATN lookahead operations for LL prediction
     /// across all decisions made during parsing.
     /// 
-    public func getTotalLLATNLookaheadOps() -> Int64 {
+    func getTotalLLATNLookaheadOps() -> Int64 {
         let decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
         var k: Int64 = 0
         let length = decisions.count
@@ -134,7 +134,7 @@ public class ParseInfo {
     /// This value is the sum of _#getTotalSLLATNLookaheadOps_ and
     /// _#getTotalLLATNLookaheadOps_.
     /// 
-    public func getTotalATNLookaheadOps() -> Int64 {
+    func getTotalATNLookaheadOps() -> Int64 {
         let decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
         var k: Int64 = 0
         let length = decisions.count
@@ -149,7 +149,7 @@ public class ParseInfo {
     /// Gets the total number of DFA states stored in the DFA cache for all
     /// decisions in the ATN.
     /// 
-    public func getDFASize() -> Int {
+    func getDFASize() -> Int {
         var n: Int = 0
         let decisionToDFA: [DFA] = atnSimulator.decisionToDFA
         let length = decisionToDFA.count
@@ -163,7 +163,7 @@ public class ParseInfo {
     /// Gets the total number of DFA states stored in the DFA cache for a
     /// particular decision.
     /// 
-    public func getDFASize(_ decision: Int) -> Int {
+    func getDFASize(_ decision: Int) -> Int {
         let decisionToDFA: DFA = atnSimulator.decisionToDFA[decision]
         return decisionToDFA.states.count
     }

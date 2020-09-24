@@ -6,21 +6,21 @@
 
 /// A set of utility routines useful for all kinds of ANTLR trees.
 
-public class Trees {
+class Trees {
     /*
-    public class func getPS(t: Tree, _ ruleNames: Array<String>,
+    class func getPS(t: Tree, _ ruleNames: Array<String>,
     _ fontName: String, _ fontSize: Int) -> String {
     let psgen: TreePostScriptGenerator =
     TreePostScriptGenerator(ruleNames, t, fontName, fontSize)
     return psgen.getPS()
     }
 
-    public class func getPS(t: Tree, _ ruleNames: Array<String>) -> String {
+    class func getPS(t: Tree, _ ruleNames: Array<String>) -> String {
     return getPS(t, ruleNames, "Helvetica", 11)
     }
     //TODO: write to file
 
-    public class func writePS(t: Tree, _ ruleNames: Array<String>,
+    class func writePS(t: Tree, _ ruleNames: Array<String>,
     _ fileName: String,
     _ fontName: String, _ fontSize: Int)
     throws {
@@ -35,7 +35,7 @@ public class Trees {
     }
     }
 
-    public class func writePS(t: Tree, _ ruleNames: Array<String>, _ fileName: String)
+    class func writePS(t: Tree, _ ruleNames: Array<String>, _ fileName: String)
     throws {
     writePS(t, ruleNames, fileName, "Helvetica", 11)
     }
@@ -44,7 +44,7 @@ public class Trees {
     /// node payloads to get the text for the nodes.  Detect
     /// parse trees and extract data appropriately.
     /// 
-    public static func toStringTree(_ t: Tree) -> String {
+    static func toStringTree(_ t: Tree) -> String {
         let rulsName: Array<String>? = nil
         return toStringTree(t, rulsName)
     }
@@ -53,7 +53,7 @@ public class Trees {
     /// node payloads to get the text for the nodes.  Detect
     /// parse trees and extract data appropriately.
     /// 
-    public static func toStringTree(_ t: Tree, _ recog: Parser?) -> String {
+    static func toStringTree(_ t: Tree, _ recog: Parser?) -> String {
         let ruleNames: [String]? = recog != nil ? recog!.getRuleNames() : nil
         let ruleNamesList: Array<String>? = ruleNames ?? nil
         return toStringTree(t, ruleNamesList)
@@ -63,7 +63,7 @@ public class Trees {
     /// node payloads to get the text for the nodes.  Detect
     /// parse trees and extract data appropriately.
     /// 
-    public static func toStringTree(_ t: Tree, _ ruleNames: Array<String>?) -> String {
+    static func toStringTree(_ t: Tree, _ ruleNames: Array<String>?) -> String {
         let s = Utils.escapeWhitespace(getNodeText(t, ruleNames), false)
         if t.getChildCount() == 0 {
             return s
@@ -80,13 +80,13 @@ public class Trees {
         return buf
     }
 
-    public static func getNodeText(_ t: Tree, _ recog: Parser?) -> String {
+    static func getNodeText(_ t: Tree, _ recog: Parser?) -> String {
         let ruleNames: [String]? = recog != nil ? recog!.getRuleNames() : nil
         let ruleNamesList: Array<String>? = ruleNames ?? nil
         return getNodeText(t, ruleNamesList)
     }
 
-    public static func getNodeText(_ t: Tree, _ ruleNames: Array<String>?) -> String {
+    static func getNodeText(_ t: Tree, _ ruleNames: Array<String>?) -> String {
         if ruleNames != nil {
             if let ruleNode = t as? RuleNode {
                 let ruleIndex: Int = ruleNode.getRuleContext().getRuleIndex()
@@ -118,7 +118,7 @@ public class Trees {
     }
 
     /// Return ordered list of all children of this node
-    public static func getChildren(_ t: Tree) -> Array<Tree> {
+    static func getChildren(_ t: Tree) -> Array<Tree> {
         var kids: Array<Tree> = Array<Tree>()
         let length = t.getChildCount()
         for i in 0..<length {
@@ -131,7 +131,7 @@ public class Trees {
     /// list is the root and the last is the parent of this node.
     /// 
 
-    public static func getAncestors(_ t: Tree) -> Array<Tree> {
+    static func getAncestors(_ t: Tree) -> Array<Tree> {
         var ancestors: Array<Tree> = Array<Tree>()
         if t.getParent() == nil {
 
@@ -148,21 +148,21 @@ public class Trees {
         return ancestors
     }
 
-    public static func findAllTokenNodes(_ t: ParseTree, _ ttype: Int) -> Array<ParseTree> {
+    static func findAllTokenNodes(_ t: ParseTree, _ ttype: Int) -> Array<ParseTree> {
         return findAllNodes(t, ttype, true)
     }
 
-    public static func findAllRuleNodes(_ t: ParseTree, _ ruleIndex: Int) -> Array<ParseTree> {
+    static func findAllRuleNodes(_ t: ParseTree, _ ruleIndex: Int) -> Array<ParseTree> {
         return findAllNodes(t, ruleIndex, false)
     }
 
-    public static func findAllNodes(_ t: ParseTree, _ index: Int, _ findTokens: Bool) -> Array<ParseTree> {
+    static func findAllNodes(_ t: ParseTree, _ index: Int, _ findTokens: Bool) -> Array<ParseTree> {
         var nodes: Array<ParseTree> = Array<ParseTree>()
         _findAllNodes(t, index, findTokens, &nodes)
         return nodes
     }
 
-    public static func _findAllNodes(_ t: ParseTree,
+    static func _findAllNodes(_ t: ParseTree,
                                     _ index: Int, _ findTokens: Bool, _ nodes: inout Array<ParseTree>) {
         // check this node (the root) first
         if let tnode = t as? TerminalNode , findTokens {
@@ -183,7 +183,7 @@ public class Trees {
         }
     }
 
-    public static func descendants(_ t: ParseTree) -> Array<ParseTree> {
+    static func descendants(_ t: ParseTree) -> Array<ParseTree> {
         var nodes: Array<ParseTree> = Array<ParseTree>()
         nodes.append(t)
 
@@ -205,7 +205,7 @@ public class Trees {
     /// 
     /// - Since: 4.5.1
     /// 
-    public static func getRootOfSubtreeEnclosingRegion(_ t: ParseTree,
+    static func getRootOfSubtreeEnclosingRegion(_ t: ParseTree,
                                                       _ startTokenIndex: Int,
                                                       _ stopTokenIndex: Int) -> ParserRuleContext? {
         let n: Int = t.getChildCount()

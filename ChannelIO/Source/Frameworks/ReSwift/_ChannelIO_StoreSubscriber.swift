@@ -19,7 +19,7 @@ protocol ReSwift_StoreSubscriber: ReSwift_AnyStoreSubscriber {
 
 extension ReSwift_StoreSubscriber {
     // swiftlint:disable:next identifier_name
-    public func _newState(state: Any) {
+    func _newState(state: Any) {
         if let typedState = state as? StoreSubscriberStateType {
             newState(state: typedState)
         }

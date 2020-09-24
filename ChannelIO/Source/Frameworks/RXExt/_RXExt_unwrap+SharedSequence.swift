@@ -16,7 +16,7 @@ extension _RXSwift_SharedSequence {
      - returns: A SharedSequence of non-optional elements
      */
 
-    public func unwrap<Result>() -> _RXSwift_SharedSequence<SharingStrategy, Result> where Element == Result? {
+    func unwrap<Result>() -> _RXSwift_SharedSequence<SharingStrategy, Result> where Element == Result? {
         return self.filter { $0 != nil }.map { $0! }
     }
 }

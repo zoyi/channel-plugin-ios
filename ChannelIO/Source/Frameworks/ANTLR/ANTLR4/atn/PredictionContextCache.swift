@@ -11,10 +11,10 @@
 /// can be used for both lexers and parsers.
 /// 
 
-public final class PredictionContextCache {
+final class PredictionContextCache {
     private var cache = [PredictionContext: PredictionContext]()
 
-    public init() {
+    init() {
     }
 
     ///
@@ -23,7 +23,7 @@ public final class PredictionContextCache {
     /// Protect shared cache from unsafe thread access.
     /// 
     @discardableResult
-    public func add(_ ctx: PredictionContext) -> PredictionContext {
+    func add(_ ctx: PredictionContext) -> PredictionContext {
         if ctx === PredictionContext.EMPTY {
             return PredictionContext.EMPTY
         }
@@ -35,11 +35,11 @@ public final class PredictionContextCache {
         return ctx
     }
 
-    public func get(_ ctx: PredictionContext) -> PredictionContext? {
+    func get(_ ctx: PredictionContext) -> PredictionContext? {
         return cache[ctx]
     }
 
-    public func size() -> Int {
+    func size() -> Int {
         return cache.count
     }
 }

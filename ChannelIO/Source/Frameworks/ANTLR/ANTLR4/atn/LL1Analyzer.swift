@@ -5,16 +5,16 @@
 /// 
 
 
-public class LL1Analyzer {
+class LL1Analyzer {
     /// 
     /// Special value added to the lookahead sets to indicate that we hit
     /// a predicate during analysis if `seeThruPreds==false`.
     /// 
-    public let HIT_PRED: Int = CommonToken.INVALID_TYPE
+    let HIT_PRED: Int = CommonToken.INVALID_TYPE
 
-    public let atn: ATN
+    let atn: ATN
 
-    public init(_ atn: ATN) {
+    init(_ atn: ATN) {
         self.atn = atn
     }
 
@@ -28,7 +28,7 @@ public class LL1Analyzer {
     /// - parameter s: the ATN state
     /// - returns: the expected symbols for each outgoing transition of `s`.
     /// 
-    public func getDecisionLookahead(_ s: ATNState?) -> [IntervalSet?]? {
+    func getDecisionLookahead(_ s: ATNState?) -> [IntervalSet?]? {
         
         guard let s = s else {
              return nil
@@ -66,7 +66,7 @@ public class LL1Analyzer {
     /// - returns: The set of tokens that can follow `s` in the ATN in the
     /// specified `ctx`.
     /// 
-    public func LOOK(_ s: ATNState, _ ctx: RuleContext?) -> IntervalSet {
+    func LOOK(_ s: ATNState, _ ctx: RuleContext?) -> IntervalSet {
         return LOOK(s, nil, ctx)
     }
 
@@ -89,7 +89,7 @@ public class LL1Analyzer {
     /// specified `ctx`.
     /// 
 
-    public func LOOK(_ s: ATNState, _ stopState: ATNState?, _ ctx: RuleContext?) -> IntervalSet {
+    func LOOK(_ s: ATNState, _ stopState: ATNState?, _ ctx: RuleContext?) -> IntervalSet {
         let r = IntervalSet()
         let seeThruPreds = true // ignore preds; get all lookahead
         let lookContext = ctx != nil ? PredictionContext.fromRuleContext(s.atn!, ctx) : nil

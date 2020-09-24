@@ -47,7 +47,7 @@ struct AF_DataResponsePublisher<Value>: Publisher {
     ///   - request:    `DataRequest` for which to publish the response.
     ///   - queue:      `DispatchQueue` on which the `DataResponse` value will be published. `.main` by default.
     ///   - serializer: `ResponseSerializer` used to produce the published `DataResponse`.
-    init<Serializer: ResponseSerializer>(_ request: AF_DataRequest, queue: DispatchQueue, serializer: Serializer)
+    init<Serializer: AF_ResponseSerializer>(_ request: AF_DataRequest, queue: DispatchQueue, serializer: Serializer)
         where Value == Serializer.SerializedObject {
         self.request = request
         responseHandler = { request.response(queue: queue, responseSerializer: serializer, completionHandler: $0) }
@@ -59,7 +59,7 @@ struct AF_DataResponsePublisher<Value>: Publisher {
     ///   - request:    `DataRequest` for which to publish the response.
     ///   - queue:      `DispatchQueue` on which the `DataResponse` value will be published. `.main` by default.
     ///   - serializer: `DataResponseSerializerProtocol` used to produce the published `DataResponse`.
-    init<Serializer: DataResponseSerializerProtocol>(_ request: AF_DataRequest,
+    init<Serializer: AF_DataResponseSerializerProtocol>(_ request: AF_DataRequest,
                                                             queue: DispatchQueue,
                                                             serializer: Serializer)
         where Value == Serializer.SerializedObject {
@@ -140,7 +140,7 @@ extension AF_DataRequest {
     ///
     /// - Returns:      The `DataResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    func publishResponse<Serializer: ResponseSerializer, T>(using serializer: Serializer, on queue: DispatchQueue = .main) -> AF_DataResponsePublisher<T>
+    func publishResponse<Serializer: AF_ResponseSerializer, T>(using serializer: Serializer, on queue: DispatchQueue = .main) -> AF_DataResponsePublisher<T>
         where Serializer.SerializedObject == T {
         AF_DataResponsePublisher(self, queue: queue, serializer: serializer)
     }
@@ -159,10 +159,10 @@ extension AF_DataRequest {
     /// - Returns:               The `DataResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
     func publishData(queue: DispatchQueue = .main,
-                            preprocessor: DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor,
-                            emptyResponseCodes: Set<Int> = DataResponseSerializer.defaultEmptyResponseCodes,
-                            emptyRequestMethods: Set<AF_HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods) -> AF_DataResponsePublisher<Data> {
-        publishResponse(using: DataResponseSerializer(dataPreprocessor: preprocessor,
+                            preprocessor: AF_DataPreprocessor = AF_DataResponseSerializer.defaultDataPreprocessor,
+                            emptyResponseCodes: Set<Int> = AF_DataResponseSerializer.defaultEmptyResponseCodes,
+                            emptyRequestMethods: Set<AF_HTTPMethod> = AF_DataResponseSerializer.defaultEmptyRequestMethods) -> AF_DataResponsePublisher<Data> {
+        publishResponse(using: AF_DataResponseSerializer(dataPreprocessor: preprocessor,
                                                       emptyResponseCodes: emptyResponseCodes,
                                                       emptyRequestMethods: emptyRequestMethods),
                         on: queue)
@@ -186,7 +186,7 @@ extension AF_DataRequest {
     /// - Returns:               The `DataResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
     func publishString(queue: DispatchQueue = .main,
-                              preprocessor: DataPreprocessor = AF_StringResponseSerializer.defaultDataPreprocessor,
+                              preprocessor: AF_DataPreprocessor = AF_StringResponseSerializer.defaultDataPreprocessor,
                               encoding: String.Encoding? = nil,
                               emptyResponseCodes: Set<Int> = AF_StringResponseSerializer.defaultEmptyResponseCodes,
                               emptyRequestMethods: Set<AF_HTTPMethod> = AF_StringResponseSerializer.defaultEmptyRequestMethods) -> AF_DataResponsePublisher<String> {
@@ -215,7 +215,7 @@ extension AF_DataRequest {
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
     func publishDecodable<T: Decodable>(type: T.Type = T.self,
                                                queue: DispatchQueue = .main,
-                                               preprocessor: DataPreprocessor = AF_DecodableResponseSerializer<T>.defaultDataPreprocessor,
+                                               preprocessor: AF_DataPreprocessor = AF_DecodableResponseSerializer<T>.defaultDataPreprocessor,
                                                decoder: AF_DataDecoder = JSONDecoder(),
                                                emptyResponseCodes: Set<Int> = AF_DecodableResponseSerializer<T>.defaultEmptyResponseCodes,
                                                emptyResponseMethods: Set<AF_HTTPMethod> = AF_DecodableResponseSerializer<T>.defaultEmptyRequestMethods) -> AF_DataResponsePublisher<T> {
@@ -376,7 +376,7 @@ extension AF_DataStreamRequest {
     func publishDecodable<T: Decodable>(type: T.Type = T.self,
                                                queue: DispatchQueue = .main,
                                                decoder: AF_DataDecoder = JSONDecoder(),
-                                               preprocessor: DataPreprocessor = PassthroughPreprocessor()) -> AF_DataStreamPublisher<T> {
+                                               preprocessor: AF_DataPreprocessor = AF_PassthroughPreprocessor()) -> AF_DataStreamPublisher<T> {
         publishStream(using: AF_DecodableStreamSerializer(decoder: decoder,
                                                        dataPreprocessor: preprocessor),
                       on: queue)
@@ -400,7 +400,7 @@ struct AF_DownloadResponsePublisher<Value>: Publisher {
     ///   - request:    `DownloadRequest` for which to publish the response.
     ///   - queue:      `DispatchQueue` on which the `DownloadResponse` value will be published. `.main` by default.
     ///   - serializer: `ResponseSerializer` used to produce the published `DownloadResponse`.
-    init<Serializer: ResponseSerializer>(_ request: AF_DownloadRequest, queue: DispatchQueue, serializer: Serializer)
+    init<Serializer: AF_ResponseSerializer>(_ request: AF_DownloadRequest, queue: DispatchQueue, serializer: Serializer)
         where Value == Serializer.SerializedObject {
         self.request = request
         responseHandler = { request.response(queue: queue, responseSerializer: serializer, completionHandler: $0) }
@@ -413,7 +413,7 @@ struct AF_DownloadResponsePublisher<Value>: Publisher {
     ///   - queue:      `DispatchQueue` on which the `DataResponse` value will be published. `.main` by default.
     ///   - serializer: `DownloadResponseSerializerProtocol` used to produce the published `DownloadResponse`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    init<Serializer: DownloadResponseSerializerProtocol>(_ request: AF_DownloadRequest,
+    init<Serializer: AF_DownloadResponseSerializerProtocol>(_ request: AF_DownloadRequest,
                                                                 queue: DispatchQueue,
                                                                 serializer: Serializer)
         where Value == Serializer.SerializedObject {
@@ -484,7 +484,7 @@ extension AF_DownloadRequest {
     ///
     /// - Returns:      The `DownloadResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    func publishResponse<Serializer: ResponseSerializer, T>(using serializer: Serializer, on queue: DispatchQueue = .main) -> AF_DownloadResponsePublisher<T>
+    func publishResponse<Serializer: AF_ResponseSerializer, T>(using serializer: Serializer, on queue: DispatchQueue = .main) -> AF_DownloadResponsePublisher<T>
         where Serializer.SerializedObject == T {
         AF_DownloadResponsePublisher(self, queue: queue, serializer: serializer)
     }
@@ -498,7 +498,7 @@ extension AF_DownloadRequest {
     ///
     /// - Returns:      The `DownloadResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    func publishResponse<Serializer: DownloadResponseSerializerProtocol, T>(using serializer: Serializer, on queue: DispatchQueue = .main) -> AF_DownloadResponsePublisher<T>
+    func publishResponse<Serializer: AF_DownloadResponseSerializerProtocol, T>(using serializer: Serializer, on queue: DispatchQueue = .main) -> AF_DownloadResponsePublisher<T>
         where Serializer.SerializedObject == T {
         AF_DownloadResponsePublisher(self, queue: queue, serializer: serializer)
     }
@@ -517,10 +517,10 @@ extension AF_DownloadRequest {
     /// - Returns:               The `DownloadResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
     func publishData(queue: DispatchQueue = .main,
-                            preprocessor: DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor,
-                            emptyResponseCodes: Set<Int> = DataResponseSerializer.defaultEmptyResponseCodes,
-                            emptyRequestMethods: Set<AF_HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods) -> AF_DownloadResponsePublisher<Data> {
-        publishResponse(using: DataResponseSerializer(dataPreprocessor: preprocessor,
+                            preprocessor: AF_DataPreprocessor = AF_DataResponseSerializer.defaultDataPreprocessor,
+                            emptyResponseCodes: Set<Int> = AF_DataResponseSerializer.defaultEmptyResponseCodes,
+                            emptyRequestMethods: Set<AF_HTTPMethod> = AF_DataResponseSerializer.defaultEmptyRequestMethods) -> AF_DownloadResponsePublisher<Data> {
+        publishResponse(using: AF_DataResponseSerializer(dataPreprocessor: preprocessor,
                                                       emptyResponseCodes: emptyResponseCodes,
                                                       emptyRequestMethods: emptyRequestMethods),
                         on: queue)
@@ -544,7 +544,7 @@ extension AF_DownloadRequest {
     /// - Returns:               The `DownloadResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
     func publishString(queue: DispatchQueue = .main,
-                              preprocessor: DataPreprocessor = AF_StringResponseSerializer.defaultDataPreprocessor,
+                              preprocessor: AF_DataPreprocessor = AF_StringResponseSerializer.defaultDataPreprocessor,
                               encoding: String.Encoding? = nil,
                               emptyResponseCodes: Set<Int> = AF_StringResponseSerializer.defaultEmptyResponseCodes,
                               emptyRequestMethods: Set<AF_HTTPMethod> = AF_StringResponseSerializer.defaultEmptyRequestMethods) -> AF_DownloadResponsePublisher<String> {
@@ -573,7 +573,7 @@ extension AF_DownloadRequest {
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
     func publishDecodable<T: Decodable>(type: T.Type = T.self,
                                                queue: DispatchQueue = .main,
-                                               preprocessor: DataPreprocessor = AF_DecodableResponseSerializer<T>.defaultDataPreprocessor,
+                                               preprocessor: AF_DataPreprocessor = AF_DecodableResponseSerializer<T>.defaultDataPreprocessor,
                                                decoder: AF_DataDecoder = JSONDecoder(),
                                                emptyResponseCodes: Set<Int> = AF_DecodableResponseSerializer<T>.defaultEmptyResponseCodes,
                                                emptyResponseMethods: Set<AF_HTTPMethod> = AF_DecodableResponseSerializer<T>.defaultEmptyRequestMethods) -> AF_DownloadResponsePublisher<T> {

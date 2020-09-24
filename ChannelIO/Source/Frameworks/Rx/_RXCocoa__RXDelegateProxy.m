@@ -18,7 +18,7 @@
 
 @end
 
-static NSMutableDictionary *voidSelectorsPerClass = nil;
+static NSMutableDictionary *_RXCocoa_voidSelectorsPerClass = nil;
 
 @implementation _RXCocoa__RXDelegateProxy
 
@@ -51,8 +51,8 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
 
 +(void)initialize {
     @synchronized (_RXCocoa__RXDelegateProxy.class) {
-        if (voidSelectorsPerClass == nil) {
-            voidSelectorsPerClass = [[NSMutableDictionary alloc] init];
+        if (_RXCocoa_voidSelectorsPerClass == nil) {
+            _RXCocoa_voidSelectorsPerClass = [[NSMutableDictionary alloc] init];
         }
 
         NSMutableSet *voidSelectors = [NSMutableSet set];
@@ -84,7 +84,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
 #endif
         }
         
-        voidSelectorsPerClass[CLASS_VALUE(self)] = voidSelectors;
+        _RXCocoa_voidSelectorsPerClass[CLASS_VALUE(self)] = voidSelectors;
     }
 }
 
@@ -108,7 +108,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
 
 -(BOOL)voidDelegateMethodsContain:(SEL)selector {
     @synchronized(_RXCocoa__RXDelegateProxy.class) {
-        NSSet *voidSelectors = voidSelectorsPerClass[CLASS_VALUE(self.class)];
+        NSSet *voidSelectors = _RXCocoa_voidSelectorsPerClass[CLASS_VALUE(self.class)];
         NSAssert(voidSelectors != nil, @"Set of allowed methods not initialized");
         return [voidSelectors containsObject:SEL_VALUE(selector)];
     }

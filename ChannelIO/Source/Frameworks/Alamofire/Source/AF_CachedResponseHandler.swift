@@ -25,7 +25,7 @@
 import Foundation
 
 /// A type that handles whether the data task should store the HTTP response in the cache.
-public protocol CachedResponseHandler {
+protocol AF_CachedResponseHandler {
     /// Determines whether the HTTP response should be stored in the cache.
     ///
     /// The `completion` closure should be passed one of three possible options:
@@ -47,9 +47,9 @@ public protocol CachedResponseHandler {
 
 /// `ResponseCacher` is a convenience `CachedResponseHandler` making it easy to cache, not cache, or modify a cached
 /// response.
-public struct ResponseCacher {
+struct AF_ResponseCacher {
     /// Defines the behavior of the `ResponseCacher` type.
-    public enum Behavior {
+    enum Behavior {
         /// Stores the cached response in the cache.
         case cache
         /// Prevents the cached response from being stored in the cache.
@@ -59,23 +59,23 @@ public struct ResponseCacher {
     }
 
     /// Returns a `ResponseCacher` with a follow `Behavior`.
-    public static let cache = ResponseCacher(behavior: .cache)
+    static let cache = AF_ResponseCacher(behavior: .cache)
     /// Returns a `ResponseCacher` with a do not follow `Behavior`.
-    public static let doNotCache = ResponseCacher(behavior: .doNotCache)
+    static let doNotCache = AF_ResponseCacher(behavior: .doNotCache)
 
     /// The `Behavior` of the `ResponseCacher`.
-    public let behavior: Behavior
+    let behavior: Behavior
 
     /// Creates a `ResponseCacher` instance from the `Behavior`.
     ///
     /// - Parameter behavior: The `Behavior`.
-    public init(behavior: Behavior) {
+    init(behavior: Behavior) {
         self.behavior = behavior
     }
 }
 
-extension ResponseCacher: CachedResponseHandler {
-    public func dataTask(_ task: URLSessionDataTask,
+extension AF_ResponseCacher: AF_CachedResponseHandler {
+    func dataTask(_ task: URLSessionDataTask,
                          willCacheResponse response: CachedURLResponse,
                          completion: @escaping (CachedURLResponse?) -> Void) {
         switch behavior {

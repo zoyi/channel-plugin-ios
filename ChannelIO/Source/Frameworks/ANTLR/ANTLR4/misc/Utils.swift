@@ -7,9 +7,9 @@
 
 import Foundation
 
-public class Utils {
+class Utils {
 
-    public static func escapeWhitespace(_ s: String, _ escapeSpaces: Bool) -> String {
+    static func escapeWhitespace(_ s: String, _ escapeSpaces: Bool) -> String {
         var buf = ""
         for c in s {
             if c == " " && escapeSpaces {
@@ -32,7 +32,7 @@ public class Utils {
     }
 
 
-    public static func toMap(_ keys: [String]) -> [String: Int] {
+    static func toMap(_ keys: [String]) -> [String: Int] {
         var m = [String: Int]()
         for (index, v) in keys.enumerated() {
             m[v] = index
@@ -40,12 +40,12 @@ public class Utils {
         return m
     }
 
-    public static func bitLeftShift(_ n: Int) -> Int64 {
+    static func bitLeftShift(_ n: Int) -> Int64 {
        return (Int64(1) << Int64(n % 64))
     }
 
 
-    public static func testBitLeftShiftArray(_ nArray: [Int],_ bitsShift: Int) -> Bool {
+    static func testBitLeftShiftArray(_ nArray: [Int],_ bitsShift: Int) -> Bool {
         let test: Bool = (((nArray[0] - bitsShift) & ~0x3f) == 0)
 
         var temp: Int64 =  Int64(nArray[0] - bitsShift)

@@ -53,7 +53,7 @@ _Atomic static int32_t numberOfForwardedMethods = 0;
 #define ALWAYS_WITH_INFO(condition, message) NSAssert((condition), @"%@ [%@] > %@", NSStringFromClass(class), NSStringFromSelector(selector), (message))
 #define C_ALWAYS(condition, message) NSCAssert((condition), @"%@ [%@] > %@", NSStringFromClass(class), NSStringFromSelector(selector), (message))
 
-#define RX_PREFIX @"_RX_namespace_"
+#define RX_PREFIX @"_RXCocoa__RX_namespace_"
 
 #define RX_ARG_id(value)           ((value) ?: [NSNull null])
 #define RX_ARG_char(value)         [NSNumber numberWithChar:value]
@@ -989,7 +989,7 @@ replacementImplementationGenerator:(IMP (^)(IMP originalImplementation))replacem
 
 NSInteger RX_number_of_dynamic_subclasses() {
     __block NSInteger count = 0;
-    [[RXObjCRuntime instance] performLocked:^(RXObjCRuntime * __nonnull self) {
+    [[_RXCocoa_RXObjCRuntime instance] performLocked:^(_RXCocoa_RXObjCRuntime * __nonnull self) {
         count = self.dynamicSubclassByRealClass.count;
     }];
 
@@ -998,7 +998,7 @@ NSInteger RX_number_of_dynamic_subclasses() {
 
 NSInteger RX_number_of_forwarding_enabled_classes() {
     __block NSInteger count = 0;
-    [[RXObjCRuntime instance] performLocked:^(RXObjCRuntime * __nonnull self) {
+    [[_RXCocoa_RXObjCRuntime instance] performLocked:^(_RXCocoa_RXObjCRuntime * __nonnull self) {
         count = self.classesThatSupportObservingByForwarding.count;
     }];
 
@@ -1007,7 +1007,7 @@ NSInteger RX_number_of_forwarding_enabled_classes() {
 
 NSInteger RX_number_of_intercepting_classes() {
     __block NSInteger count = 0;
-    [[RXObjCRuntime instance] performLocked:^(RXObjCRuntime * __nonnull self) {
+    [[_RXCocoa_RXObjCRuntime instance] performLocked:^( _RXCocoa_RXObjCRuntime * __nonnull self) {
         count = self.interceptorIMPbySelectorsByClass.count;
     }];
 

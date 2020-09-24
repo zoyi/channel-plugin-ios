@@ -18,7 +18,7 @@ private struct NopDisposable : _RXSwift_Disposable {
     }
     
     /// Does nothing.
-    public func dispose() {
+    func dispose() {
     }
 }
 
@@ -26,7 +26,7 @@ extension _RXSwift_Disposables {
     /**
      Creates a disposable that does nothing on disposal.
      */
-    static public func create() -> _RXSwift_Disposable {
+    static func create() -> _RXSwift_Disposable {
         return NopDisposable.noOp
     }
 }

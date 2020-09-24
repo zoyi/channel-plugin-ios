@@ -7,17 +7,17 @@
 
 import Foundation
 
-open class ATNSimulator {
+class ATNSimulator {
     ///
     /// Must distinguish between missing edge and edge we know leads nowhere
     /// 
-    public static let ERROR: DFAState = {
+    static let ERROR: DFAState = {
         let error = DFAState(ATNConfigSet())
         error.stateNumber = Int.max
         return error
     }()
 
-    public let atn: ATN
+    let atn: ATN
 
     /// 
     /// The context cache maps all PredictionContext objects that are equals()
@@ -42,14 +42,14 @@ open class ATNSimulator {
     /// 
     internal let sharedContextCache: PredictionContextCache
 
-    public init(_ atn: ATN,
+    init(_ atn: ATN,
                 _ sharedContextCache: PredictionContextCache) {
 
         self.atn = atn
         self.sharedContextCache = sharedContextCache
     }
 
-    open func reset() {
+    func reset() {
         fatalError(#function + " must be overridden")
     }
 
@@ -64,15 +64,15 @@ open class ATNSimulator {
     /// 
     /// - since: 4.3
     /// 
-    open func clearDFA() throws {
+    func clearDFA() throws {
         throw ANTLRError.unsupportedOperation(msg: "This ATN simulator does not support clearing the DFA. ")
     }
 
-    open func getSharedContextCache() -> PredictionContextCache {
+    func getSharedContextCache() -> PredictionContextCache {
         return sharedContextCache
     }
 
-    open func getCachedContext(_ context: PredictionContext) -> PredictionContext {
+    func getCachedContext(_ context: PredictionContext) -> PredictionContext {
         //TODO: synced (sharedContextCache!)
         //synced (sharedContextCache!) {
         var visited = [PredictionContext: PredictionContext]()
@@ -81,7 +81,7 @@ open class ATNSimulator {
                 &visited)
     }
 
-    public static func edgeFactory(_ atn: ATN,
+    static func edgeFactory(_ atn: ATN,
                                   _ type: Int, _ src: Int, _ trg: Int,
                                   _ arg1: Int, _ arg2: Int, _ arg3: Int,
                                   _ sets: Array<IntervalSet>) throws -> Transition {

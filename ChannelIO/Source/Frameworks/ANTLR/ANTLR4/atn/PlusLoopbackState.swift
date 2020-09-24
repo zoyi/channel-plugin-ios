@@ -11,10 +11,10 @@
 /// one to the loop back to start of the block and one to exit.
 /// 
 
-public final class PlusLoopbackState: DecisionState {
+final class PlusLoopbackState: DecisionState {
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.PLUS_LOOP_BACK
     }
 }

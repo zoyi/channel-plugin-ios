@@ -19,17 +19,17 @@
 /// -  4.3
 /// 
 
-public class DecisionInfo: CustomStringConvertible {
+class DecisionInfo: CustomStringConvertible {
     /// 
     /// The decision number, which is an index into _org.antlr.v4.runtime.atn.ATN#decisionToState_.
     /// 
-    public private(set) final var decision: Int
+    private(set) final var decision: Int
 
     /// 
     /// The total number of times _org.antlr.v4.runtime.atn.ParserATNSimulator#adaptivePredict_ was
     /// invoked for this decision.
     /// 
-    public var invocations: Int64 = 0
+    var invocations: Int64 = 0
 
     /// 
     /// The total time spent in _org.antlr.v4.runtime.atn.ParserATNSimulator#adaptivePredict_ for
@@ -45,7 +45,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// call _org.antlr.v4.runtime.atn.ATNSimulator#clearDFA_ to reset the DFA cache to its initial
     /// state before starting the profiling measurement pass.
     /// 
-    public var timeInPrediction: Int64 = 0
+    var timeInPrediction: Int64 = 0
 
     /// 
     /// The sum of the lookahead required for SLL prediction for this decision.
@@ -53,34 +53,34 @@ public class DecisionInfo: CustomStringConvertible {
     /// reasons even when _org.antlr.v4.runtime.atn.PredictionMode#LL_ or
     /// _org.antlr.v4.runtime.atn.PredictionMode#LL_EXACT_AMBIG_DETECTION_ is used.
     /// 
-    public var SLL_TotalLook: Int64 = 0
+    var SLL_TotalLook: Int64 = 0
 
     /// 
     /// Gets the minimum lookahead required for any single SLL prediction to
     /// complete for this decision, by reaching a unique prediction, reaching an
     /// SLL conflict state, or encountering a syntax error.
     /// 
-    public var SLL_MinLook: Int64 = 0
+    var SLL_MinLook: Int64 = 0
 
     /// 
     /// Gets the maximum lookahead required for any single SLL prediction to
     /// complete for this decision, by reaching a unique prediction, reaching an
     /// SLL conflict state, or encountering a syntax error.
     /// 
-    public var SLL_MaxLook: Int64 = 0
+    var SLL_MaxLook: Int64 = 0
 
     /// 
     /// Gets the _org.antlr.v4.runtime.atn.LookaheadEventInfo_ associated with the event where the
     /// _#SLL_MaxLook_ value was set.
     /// 
-    public var SLL_MaxLookEvent: LookaheadEventInfo!
+    var SLL_MaxLookEvent: LookaheadEventInfo!
 
     /// 
     /// The sum of the lookahead required for LL prediction for this decision.
     /// Note that LL prediction is only used when SLL prediction reaches a
     /// conflict state.
     /// 
-    public var LL_TotalLook: Int64 = 0
+    var LL_TotalLook: Int64 = 0
 
     /// 
     /// Gets the minimum lookahead required for any single LL prediction to
@@ -89,7 +89,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// _org.antlr.v4.runtime.atn.PredictionMode#LL_, an ambiguity state (for
     /// _org.antlr.v4.runtime.atn.PredictionMode#LL_EXACT_AMBIG_DETECTION_, or a syntax error.
     /// 
-    public var LL_MinLook: Int64 = 0
+    var LL_MinLook: Int64 = 0
 
     /// 
     /// Gets the maximum lookahead required for any single LL prediction to
@@ -98,13 +98,13 @@ public class DecisionInfo: CustomStringConvertible {
     /// _org.antlr.v4.runtime.atn.PredictionMode#LL_, an ambiguity state (for
     /// _org.antlr.v4.runtime.atn.PredictionMode#LL_EXACT_AMBIG_DETECTION_, or a syntax error.
     /// 
-    public var LL_MaxLook: Int64 = 0
+    var LL_MaxLook: Int64 = 0
 
     /// 
     /// Gets the _org.antlr.v4.runtime.atn.LookaheadEventInfo_ associated with the event where the
     /// _#LL_MaxLook_ value was set.
     /// 
-    public var LL_MaxLookEvent: LookaheadEventInfo!
+    var LL_MaxLookEvent: LookaheadEventInfo!
 
     /// 
     /// A collection of _org.antlr.v4.runtime.atn.ContextSensitivityInfo_ instances describing the
@@ -112,7 +112,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// 
     /// - seealso: org.antlr.v4.runtime.atn.ContextSensitivityInfo
     /// 
-    public final var contextSensitivities: Array<ContextSensitivityInfo> = Array<ContextSensitivityInfo>()
+    final var contextSensitivities: Array<ContextSensitivityInfo> = Array<ContextSensitivityInfo>()
 
     /// 
     /// A collection of _org.antlr.v4.runtime.atn.ErrorInfo_ instances describing the parse errors
@@ -121,7 +121,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// 
     /// - seealso: org.antlr.v4.runtime.atn.ErrorInfo
     /// 
-    public final var errors: Array<ErrorInfo> = Array<ErrorInfo>()
+    final var errors: Array<ErrorInfo> = Array<ErrorInfo>()
 
     /// 
     /// A collection of _org.antlr.v4.runtime.atn.AmbiguityInfo_ instances describing the
@@ -129,7 +129,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// 
     /// - seealso: org.antlr.v4.runtime.atn.AmbiguityInfo
     /// 
-    public final var ambiguities: Array<AmbiguityInfo> = Array<AmbiguityInfo>()
+    final var ambiguities: Array<AmbiguityInfo> = Array<AmbiguityInfo>()
 
     /// 
     /// A collection of _org.antlr.v4.runtime.atn.PredicateEvalInfo_ instances describing the
@@ -138,7 +138,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// 
     /// - seealso: org.antlr.v4.runtime.atn.PredicateEvalInfo
     /// 
-    public final var predicateEvals: Array<PredicateEvalInfo> = Array<PredicateEvalInfo>()
+    final var predicateEvals: Array<PredicateEvalInfo> = Array<PredicateEvalInfo>()
 
     /// 
     /// The total number of ATN transitions required during SLL prediction for
@@ -156,7 +156,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#computeTargetState
     /// - seealso: org.antlr.v4.runtime.atn.LexerATNSimulator#computeTargetState
     /// 
-    public var SLL_ATNTransitions: Int64 = 0
+    var SLL_ATNTransitions: Int64 = 0
 
     /// 
     /// The total number of DFA transitions required during SLL prediction for
@@ -168,7 +168,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#getExistingTargetState
     /// - seealso: org.antlr.v4.runtime.atn.LexerATNSimulator#getExistingTargetState
     /// 
-    public var SLL_DFATransitions: Int64 = 0
+    var SLL_DFATransitions: Int64 = 0
 
     /// 
     /// Gets the total number of times SLL prediction completed in a conflict
@@ -181,7 +181,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// this decision, _org.antlr.v4.runtime.atn.PredictionMode#SLL_ would produce the same overall
     /// parsing result as _org.antlr.v4.runtime.atn.PredictionMode#LL_.
     /// 
-    public var LL_Fallback: Int64 = 0
+    var LL_Fallback: Int64 = 0
 
     /// 
     /// The total number of ATN transitions required during LL prediction for
@@ -199,7 +199,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#computeTargetState
     /// - seealso: org.antlr.v4.runtime.atn.LexerATNSimulator#computeTargetState
     /// 
-    public var LL_ATNTransitions: Int64 = 0
+    var LL_ATNTransitions: Int64 = 0
 
     /// 
     /// The total number of DFA transitions required during LL prediction for
@@ -211,7 +211,7 @@ public class DecisionInfo: CustomStringConvertible {
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#getExistingTargetState
     /// - seealso: org.antlr.v4.runtime.atn.LexerATNSimulator#getExistingTargetState
     /// 
-    public var LL_DFATransitions: Int64 = 0
+    var LL_DFATransitions: Int64 = 0
 
     /// 
     /// Constructs a new instance of the _org.antlr.v4.runtime.atn.DecisionInfo_ class to contain
@@ -219,12 +219,12 @@ public class DecisionInfo: CustomStringConvertible {
     /// 
     /// - parameter decision: The decision number
     /// 
-    public init(_ decision: Int) {
+    init(_ decision: Int) {
         self.decision = decision
     }
 
 
-    public var description: String {
+    var description: String {
         var desc = ""
 
         desc += "{"

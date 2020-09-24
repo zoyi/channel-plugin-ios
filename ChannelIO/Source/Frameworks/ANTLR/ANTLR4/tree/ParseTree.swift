@@ -11,7 +11,7 @@
 /// 
 /// The payload is either a _org.antlr.v4.runtime.Token_ or a _org.antlr.v4.runtime.RuleContext_ object.
 ///
-public protocol ParseTree: SyntaxTree, CustomStringConvertible, CustomDebugStringConvertible {
+protocol ParseTree: SyntaxTree, CustomStringConvertible, CustomDebugStringConvertible {
     /// Set the parent for this leaf node.
     func setParent(_ parent: RuleContext)
 

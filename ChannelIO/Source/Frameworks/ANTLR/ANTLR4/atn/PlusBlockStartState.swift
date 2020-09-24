@@ -13,11 +13,11 @@
 /// real decision-making note for `A+`.
 /// 
 
-public final class PlusBlockStartState: BlockStartState {
-    public var loopBackState: PlusLoopbackState?
+final class PlusBlockStartState: BlockStartState {
+    var loopBackState: PlusLoopbackState?
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.PLUS_BLOCK_START
     }
 }

@@ -1,6 +1,6 @@
 // Generated from TextBlockParser.g4 by ANTLR 4.7.1
 
-open class TextBlockParser: Parser {
+class TextBlockParser: Parser {
 	internal static var _decisionToDFA: [DFA] = {
           var decisionToDFA = [DFA]()
           let length = TextBlockParser._ATN.getNumberOfDecisions()
@@ -70,7 +70,7 @@ open class TextBlockParser: Parser {
 		_interp = ParserATNSimulator(self, TextBlockParser._ATN, TextBlockParser._decisionToDFA, TextBlockParser._sharedContextCache)
 	}
 
-	public class BlockContext: ParserRuleContext {
+	class BlockContext: ParserRuleContext {
 			open
 			func EOF() -> TerminalNode? {
 				return getToken(TextBlockParser.Tokens.EOF.rawValue, 0)
@@ -109,7 +109,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func block() throws -> BlockContext {
+	 func block() throws -> BlockContext {
 		var _localctx = BlockContext(_ctx, getState())
 		try enterRule(_localctx, 0, TextBlockParser.RULE_block)
 		var _la: Int = 0
@@ -169,7 +169,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class TagContext: ParserRuleContext {
+	class TagContext: ParserRuleContext {
 			open
 			func LT() -> [TerminalNode] {
 				return getTokens(TextBlockParser.Tokens.LT.rawValue)
@@ -240,7 +240,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func tag() throws -> TagContext {
+	 func tag() throws -> TagContext {
 		var _localctx = TagContext(_ctx, getState())
 		try enterRule(_localctx, 2, TextBlockParser.RULE_tag)
 		var _la: Int = 0
@@ -322,7 +322,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class AttributeContext: ParserRuleContext {
+	class AttributeContext: ParserRuleContext {
 			open
 			func TAG_NAME() -> TerminalNode? {
 				return getToken(TextBlockParser.Tokens.TAG_NAME.rawValue, 0)
@@ -361,7 +361,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func attribute() throws -> AttributeContext {
+	 func attribute() throws -> AttributeContext {
 		var _localctx = AttributeContext(_ctx, getState())
 		try enterRule(_localctx, 4, TextBlockParser.RULE_attribute)
 		defer {
@@ -388,7 +388,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class AttrValueContext: ParserRuleContext {
+	class AttrValueContext: ParserRuleContext {
 			open
 			func escape() -> [EscapeContext] {
 				return getRuleContexts(EscapeContext.self)
@@ -447,7 +447,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func attrValue() throws -> AttrValueContext {
+	 func attrValue() throws -> AttrValueContext {
 		var _localctx = AttrValueContext(_ctx, getState())
 		try enterRule(_localctx, 6, TextBlockParser.RULE_attrValue)
 		var _la: Int = 0
@@ -518,7 +518,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class ContentContext: ParserRuleContext {
+	class ContentContext: ParserRuleContext {
 			open
 			func escape() -> [EscapeContext] {
 				return getRuleContexts(EscapeContext.self)
@@ -569,7 +569,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func content() throws -> ContentContext {
+	 func content() throws -> ContentContext {
 		var _localctx = ContentContext(_ctx, getState())
 		try enterRule(_localctx, 8, TextBlockParser.RULE_content)
 		defer {
@@ -634,7 +634,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class EmojiContext: ParserRuleContext {
+	class EmojiContext: ParserRuleContext {
 			open
 			func EMOJI() -> TerminalNode? {
 				return getToken(TextBlockParser.Tokens.EMOJI.rawValue, 0)
@@ -657,7 +657,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func emoji() throws -> EmojiContext {
+	 func emoji() throws -> EmojiContext {
 		var _localctx = EmojiContext(_ctx, getState())
 		try enterRule(_localctx, 10, TextBlockParser.RULE_emoji)
 		defer {
@@ -676,7 +676,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class VariableContext: ParserRuleContext {
+	class VariableContext: ParserRuleContext {
 			open
 			func VAR_NAME() -> TerminalNode? {
 				return getToken(TextBlockParser.Tokens.VAR_NAME.rawValue, 0)
@@ -719,7 +719,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func variable() throws -> VariableContext {
+	 func variable() throws -> VariableContext {
 		var _localctx = VariableContext(_ctx, getState())
 		try enterRule(_localctx, 12, TextBlockParser.RULE_variable)
 		var _la: Int = 0
@@ -767,7 +767,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class VariableFallbackContext: ParserRuleContext {
+	class VariableFallbackContext: ParserRuleContext {
 			open
 			func escape() -> [EscapeContext] {
 				return getRuleContexts(EscapeContext.self)
@@ -826,7 +826,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func variableFallback() throws -> VariableFallbackContext {
+	 func variableFallback() throws -> VariableFallbackContext {
 		var _localctx = VariableFallbackContext(_ctx, getState())
 		try enterRule(_localctx, 14, TextBlockParser.RULE_variableFallback)
 		var _la: Int = 0
@@ -897,7 +897,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class PlainContext: ParserRuleContext {
+	class PlainContext: ParserRuleContext {
 			open
 			func CHAR() -> [TerminalNode] {
 				return getTokens(TextBlockParser.Tokens.CHAR.rawValue)
@@ -940,7 +940,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func plain() throws -> PlainContext {
+	 func plain() throws -> PlainContext {
 		var _localctx = PlainContext(_ctx, getState())
 		try enterRule(_localctx, 16, TextBlockParser.RULE_plain)
 		var _la: Int = 0
@@ -989,7 +989,7 @@ open class TextBlockParser: Parser {
 		return _localctx
 	}
 
-	public class EscapeContext: ParserRuleContext {
+	class EscapeContext: ParserRuleContext {
 			open
 			func ESCAPED() -> TerminalNode? {
 				return getToken(TextBlockParser.Tokens.ESCAPED.rawValue, 0)
@@ -1020,7 +1020,7 @@ open class TextBlockParser: Parser {
 		}
 	}
 	@discardableResult
-	 open func escape() throws -> EscapeContext {
+	 func escape() throws -> EscapeContext {
 		var _localctx = EscapeContext(_ctx, getState())
 		try enterRule(_localctx, 18, TextBlockParser.RULE_escape)
 		var _la: Int = 0

@@ -58,7 +58,7 @@ class AF_SessionDelegate: NSObject {
 protocol AF_SessionStateProvider: AnyObject {
     var serverTrustManager: AF_ServerTrustManager? { get }
     var redirectHandler: AF_RedirectHandler? { get }
-    var cachedResponseHandler: CachedResponseHandler? { get }
+    var cachedResponseHandler: AF_CachedResponseHandler? { get }
 
     func request(for task: URLSessionTask) -> AF_Request?
     func didGatherMetricsForTask(_ task: URLSessionTask)

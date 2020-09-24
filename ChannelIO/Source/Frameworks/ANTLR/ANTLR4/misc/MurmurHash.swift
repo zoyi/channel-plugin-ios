@@ -11,7 +11,7 @@
 /// - Author: Sam Harwell
 /// 
 
-public final class MurmurHash {
+final class MurmurHash {
 
     private static let DEFAULT_SEED: UInt32 = 0
 
@@ -27,7 +27,7 @@ public final class MurmurHash {
     /// 
     /// - Returns: the intermediate hash value
     /// 
-    public static func initialize() -> UInt32 {
+    static func initialize() -> UInt32 {
         return initialize(DEFAULT_SEED)
     }
 
@@ -37,7 +37,7 @@ public final class MurmurHash {
     /// - Parameter seed: the seed
     /// - Returns: the intermediate hash value
     /// 
-    public static func initialize(_ seed: UInt32) -> UInt32 {
+    static func initialize(_ seed: UInt32) -> UInt32 {
         return seed
     }
 
@@ -56,7 +56,7 @@ public final class MurmurHash {
     /// - Parameter value: the value to add to the current hash
     /// - Returns: the updated intermediate hash value
     /// 
-    public static func update2(_ hashIn: UInt32, _ value: Int) -> UInt32 {
+    static func update2(_ hashIn: UInt32, _ value: Int) -> UInt32 {
         return updateInternal(hashIn, UInt32(truncatingIfNeeded: value))
     }
 
@@ -78,7 +78,7 @@ public final class MurmurHash {
     /// - Parameter value: the value to add to the current hash
     /// - Returns: the updated intermediate hash value
     /// 
-    public static func update<T:Hashable>(_ hash: UInt32, _ value: T?) -> UInt32 {
+    static func update<T:Hashable>(_ hash: UInt32, _ value: T?) -> UInt32 {
         return update2(hash, value != nil ? value!.hashValue : 0)
     }
 
@@ -90,7 +90,7 @@ public final class MurmurHash {
     /// - Parameter numberOfWords: the number of UInt32 values added to the hash
     /// - Returns: the final hash result
     /// 
-    public static func finish(_ hashin: UInt32, _ numberOfWords: Int) -> Int {
+    static func finish(_ hashin: UInt32, _ numberOfWords: Int) -> Int {
         return Int(finish(hashin, byteCount: (numberOfWords &* 4)))
     }
 
@@ -116,7 +116,7 @@ public final class MurmurHash {
     /// - Parameter seed: the seed for the MurmurHash algorithm
     /// - Returns: the hash code of the data
     /// 
-    public static func hashCode<T:Hashable>(_ data: [T], _ seed: Int) -> Int {
+    static func hashCode<T:Hashable>(_ data: [T], _ seed: Int) -> Int {
         var hash = initialize(UInt32(truncatingIfNeeded: seed))
         for value in data {
             hash = update(hash, value)
@@ -137,7 +137,7 @@ public final class MurmurHash {
     /// test patterns (see MurmurHashTests.swift) and the example code on
     /// Wikipedia.
     ///
-    public static func hashString(_ s: String, _ seed: UInt32) -> UInt32 {
+    static func hashString(_ s: String, _ seed: UInt32) -> UInt32 {
         let bytes = Array(s.utf8)
         return hashBytesLittleEndian(bytes, seed)
     }

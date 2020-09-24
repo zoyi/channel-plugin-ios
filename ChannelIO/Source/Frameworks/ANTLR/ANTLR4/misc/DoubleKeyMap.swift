@@ -11,11 +11,11 @@
 /// This nested hash table saves creating a single key each time we access
 /// map; avoids mem creation.
 ///
-public struct DoubleKeyMap<Key1: Hashable, Key2: Hashable, Value> {
+struct DoubleKeyMap<Key1: Hashable, Key2: Hashable, Value> {
     private var data = [Key1: [Key2: Value]]()
 
     @discardableResult
-    public mutating func put(_ k1: Key1, _ k2: Key2, _ v: Value) -> Value? {
+    mutating func put(_ k1: Key1, _ k2: Key2, _ v: Value) -> Value? {
 
         let prev: Value?
         if var data2 = data[k1] {
@@ -33,14 +33,14 @@ public struct DoubleKeyMap<Key1: Hashable, Key2: Hashable, Value> {
         return prev
     }
 
-    public func get(_ k1: Key1, _ k2: Key2) -> Value? {
+    func get(_ k1: Key1, _ k2: Key2) -> Value? {
         if let data2 = data[k1] {
             return data2[k2]
         }
         return nil
     }
 
-    public func get(_ k1: Key1) -> [Key2: Value]? {
+    func get(_ k1: Key1) -> [Key2: Value]? {
         return data[k1]
     }
 }

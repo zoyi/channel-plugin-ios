@@ -5,40 +5,40 @@
 /// 
 
 
-public class EmptyPredictionContext: SingletonPredictionContext {
-    public init() {
+class EmptyPredictionContext: SingletonPredictionContext {
+    init() {
         super.init(nil, PredictionContext.EMPTY_RETURN_STATE)
     }
 
     override
-    public func isEmpty() -> Bool {
+    func isEmpty() -> Bool {
         return true
     }
 
     override
-    public func size() -> Int {
+    func size() -> Int {
         return 1
     }
 
     override
-    public func getParent(_ index: Int) -> PredictionContext? {
+    func getParent(_ index: Int) -> PredictionContext? {
         return nil
     }
 
     override
-    public func getReturnState(_ index: Int) -> Int {
+    func getReturnState(_ index: Int) -> Int {
         return returnState
     }
 
 
     override
-    public var description: String {
+    var description: String {
         return "$"
     }
 }
 
 
-public func ==(lhs: EmptyPredictionContext, rhs: EmptyPredictionContext) -> Bool {
+func ==(lhs: EmptyPredictionContext, rhs: EmptyPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }

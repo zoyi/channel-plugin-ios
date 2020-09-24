@@ -65,23 +65,23 @@
 /// 
 /// 
 /// 
-public class ATNState: Hashable, CustomStringConvertible {
+class ATNState: Hashable, CustomStringConvertible {
     // constants for serialization
-    public static let INVALID_TYPE: Int = 0
-    public static let BASIC: Int = 1
-    public static let RULE_START: Int = 2
-    public static let BLOCK_START: Int = 3
-    public static let PLUS_BLOCK_START: Int = 4
-    public static let STAR_BLOCK_START: Int = 5
-    public static let TOKEN_START: Int = 6
-    public static let RULE_STOP: Int = 7
-    public static let BLOCK_END: Int = 8
-    public static let STAR_LOOP_BACK: Int = 9
-    public static let STAR_LOOP_ENTRY: Int = 10
-    public static let PLUS_LOOP_BACK: Int = 11
-    public static let LOOP_END: Int = 12
+    static let INVALID_TYPE: Int = 0
+    static let BASIC: Int = 1
+    static let RULE_START: Int = 2
+    static let BLOCK_START: Int = 3
+    static let PLUS_BLOCK_START: Int = 4
+    static let STAR_BLOCK_START: Int = 5
+    static let TOKEN_START: Int = 6
+    static let RULE_STOP: Int = 7
+    static let BLOCK_END: Int = 8
+    static let STAR_LOOP_BACK: Int = 9
+    static let STAR_LOOP_ENTRY: Int = 10
+    static let PLUS_LOOP_BACK: Int = 11
+    static let LOOP_END: Int = 12
 
-    public static let serializationNames: Array<String> =
+    static let serializationNames: Array<String> =
 
     ["INVALID",
         "BASIC",
@@ -98,19 +98,19 @@ public class ATNState: Hashable, CustomStringConvertible {
         "LOOP_END"]
 
 
-    public static let INVALID_STATE_NUMBER: Int = -1
+    static let INVALID_STATE_NUMBER: Int = -1
 
     /// 
     /// Which ATN are we in?
     /// 
-    public final var atn: ATN? = nil
+    final var atn: ATN? = nil
 
-    public internal(set) final var stateNumber: Int = INVALID_STATE_NUMBER
+    internal(set) final var stateNumber: Int = INVALID_STATE_NUMBER
 
-    public internal(set) final var ruleIndex: Int?
+    internal(set) final var ruleIndex: Int?
     // at runtime, we don't have Rule objects
 
-    public private(set) final var epsilonOnlyTransitions: Bool = false
+    private(set) final var epsilonOnlyTransitions: Bool = false
 
     /// 
     /// Track the transitions emanating from this ATN state.
@@ -120,31 +120,31 @@ public class ATNState: Hashable, CustomStringConvertible {
     /// 
     /// Used to cache lookahead during parsing, not used during construction
     /// 
-    public internal(set) final var nextTokenWithinRule: IntervalSet?
+    internal(set) final var nextTokenWithinRule: IntervalSet?
 
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(stateNumber)
     }
 
-    public func isNonGreedyExitState() -> Bool {
+    func isNonGreedyExitState() -> Bool {
         return false
     }
 
 
-    public var description: String {
+    var description: String {
         //return "MyClass \(string)"
         return String(stateNumber)
     }
-    public final func getTransitions() -> [Transition] {
+    final func getTransitions() -> [Transition] {
         return transitions
     }
 
-    public final func getNumberOfTransitions() -> Int {
+    final func getNumberOfTransitions() -> Int {
         return transitions.count
     }
 
-    public final func addTransition(_ e: Transition) {
+    final func addTransition(_ e: Transition) {
         if transitions.isEmpty {
             epsilonOnlyTransitions = e.isEpsilon()
         }
@@ -174,33 +174,33 @@ public class ATNState: Hashable, CustomStringConvertible {
         }
     }
 
-    public final func transition(_ i: Int) -> Transition {
+    final func transition(_ i: Int) -> Transition {
         return transitions[i]
     }
 
-    public final func setTransition(_ i: Int, _ e: Transition) {
+    final func setTransition(_ i: Int, _ e: Transition) {
         transitions[i] = e
     }
 
-    public final func removeTransition(_ index: Int) -> Transition {
+    final func removeTransition(_ index: Int) -> Transition {
 
         return transitions.remove(at: index)
     }
 
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         fatalError(#function + " must be overridden")
     }
 
-    public final func onlyHasEpsilonTransitions() -> Bool {
+    final func onlyHasEpsilonTransitions() -> Bool {
         return epsilonOnlyTransitions
     }
 
-    public final func setRuleIndex(_ ruleIndex: Int) {
+    final func setRuleIndex(_ ruleIndex: Int) {
         self.ruleIndex = ruleIndex
     }
 }
 
-public func ==(lhs: ATNState, rhs: ATNState) -> Bool {
+func ==(lhs: ATNState, rhs: ATNState) -> Bool {
     if lhs === rhs {
         return true
     }

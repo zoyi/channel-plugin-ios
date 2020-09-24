@@ -11,7 +11,7 @@
 
 import Foundation
 
-public class ProfilingATNSimulator: ParserATNSimulator {
+class ProfilingATNSimulator: ParserATNSimulator {
     private(set) var decisions: [DecisionInfo]
     internal var numDecisions: Int = 0
 
@@ -35,7 +35,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     /// 
     internal var conflictingAltResolvedBySLL: Int = 0
 
-    public init(_ parser: Parser) {
+    init(_ parser: Parser) {
         decisions = [DecisionInfo]()
 
         super.init(parser,
@@ -52,7 +52,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    public func adaptivePredict(_ input: TokenStream, _ decision: Int,_ outerContext: ParserRuleContext?) throws -> Int {
+    func adaptivePredict(_ input: TokenStream, _ decision: Int,_ outerContext: ParserRuleContext?) throws -> Int {
         var outerContext = outerContext
         self._sllStopIndex = -1
         self._llStopIndex = -1
@@ -214,7 +214,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
 
-    public func getDecisionInfo() -> [DecisionInfo] {
+    func getDecisionInfo() -> [DecisionInfo] {
         return decisions
     }
 }

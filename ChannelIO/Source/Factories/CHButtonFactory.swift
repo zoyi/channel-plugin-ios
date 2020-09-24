@@ -37,13 +37,13 @@ struct CHButtonFactory {
       $0.layer.shadowRadius = 6
     }
     
-    _ = button.rx.isEnable
+    _ = button.rx.isEnabled
       .subscribe(onNext: { (enabled) in
         button.tintColor = !enabled ? CHColors.blueyGrey : textColor
         button.backgroundColor = !enabled ? CHColors.paleGrey20 : backgroundColor
         button.clipsToBounds = !enabled
       })
-    
+
     _ = button.rx.isHighlighted
       .subscribe(onNext: { (highlight) in
         if highlight {

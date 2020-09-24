@@ -19,7 +19,7 @@
 /// See TestParserInterpreter for examples.
 /// 
 
-public class ParserInterpreter: Parser {
+class ParserInterpreter: Parser {
     internal let grammarFileName: String
     internal let atn: ATN
     /// This identifies StarLoopEntryState's that begin the (...)*
@@ -53,7 +53,7 @@ public class ParserInterpreter: Parser {
     /// 
     /// - Parameter old: The interpreter to copy
     /// 
-    public init(_ old: ParserInterpreter) throws {
+    init(_ old: ParserInterpreter) throws {
 
         self.atn = old.atn
         self.grammarFileName = old.grammarFileName
@@ -67,7 +67,7 @@ public class ParserInterpreter: Parser {
                 sharedContextCache))
     }
 
-    public init(_ grammarFileName: String, _ vocabulary: Vocabulary,
+    init(_ grammarFileName: String, _ vocabulary: Vocabulary,
                 _ ruleNames: Array<String>, _ atn: ATN, _ input: TokenStream) throws {
 
         self.grammarFileName = grammarFileName
@@ -97,27 +97,27 @@ public class ParserInterpreter: Parser {
     }
 
     override
-    public func getATN() -> ATN {
+    func getATN() -> ATN {
         return atn
     }
 
     override
-    public func getVocabulary() -> Vocabulary {
+    func getVocabulary() -> Vocabulary {
         return vocabulary
     }
 
     override
-    public func getRuleNames() -> [String] {
+    func getRuleNames() -> [String] {
         return ruleNames
     }
 
     override
-    public func getGrammarFileName() -> String {
+    func getGrammarFileName() -> String {
         return grammarFileName
     }
 
     /// Begin parsing at startRuleIndex
-    public func parse(_ startRuleIndex: Int) throws -> ParserRuleContext {
+    func parse(_ startRuleIndex: Int) throws -> ParserRuleContext {
         let startRuleStartState = atn.ruleToStartState[startRuleIndex]
 
         let rootContext = InterpreterRuleContext(nil, ATNState.INVALID_STATE_NUMBER, startRuleIndex)
@@ -164,7 +164,7 @@ public class ParserInterpreter: Parser {
     }
 
     override
-    public func enterRecursionRule(_ localctx: ParserRuleContext, _ state: Int, _ ruleIndex: Int, _ precedence: Int) throws {
+    func enterRecursionRule(_ localctx: ParserRuleContext, _ state: Int, _ ruleIndex: Int, _ precedence: Int) throws {
         let pair: (ParserRuleContext?, Int) = (_ctx, localctx.invokingState)
         _parentContextStack.push(pair)
         try super.enterRecursionRule(localctx, state, ruleIndex, precedence)
@@ -312,7 +312,7 @@ public class ParserInterpreter: Parser {
     /// 
     /// - Since: 4.5.1
     /// 
-    public func addDecisionOverride(_ decision: Int, _ tokenIndex: Int, _ forcedAlt: Int) {
+    func addDecisionOverride(_ decision: Int, _ tokenIndex: Int, _ forcedAlt: Int) {
         overrideDecision = decision
         overrideDecisionInputIndex = tokenIndex
         overrideDecisionAlt = forcedAlt

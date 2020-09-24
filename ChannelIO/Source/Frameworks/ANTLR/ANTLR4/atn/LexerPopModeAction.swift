@@ -16,11 +16,11 @@
 /// -  4.2
 /// 
 
-public final class LexerPopModeAction: LexerAction, CustomStringConvertible {
+final class LexerPopModeAction: LexerAction, CustomStringConvertible {
     /// 
     /// Provides a singleton instance of this parameterless lexer action.
     /// 
-    public static let INSTANCE: LexerPopModeAction = LexerPopModeAction()
+    static let INSTANCE: LexerPopModeAction = LexerPopModeAction()
 
     /// 
     /// Constructs the singleton instance of the lexer `popMode` command.
@@ -33,7 +33,7 @@ public final class LexerPopModeAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns _org.antlr.v4.runtime.atn.LexerActionType#popMode_.
     /// 
     override
-    public func getActionType() -> LexerActionType {
+    func getActionType() -> LexerActionType {
         return LexerActionType.popMode
     }
 
@@ -42,7 +42,7 @@ public final class LexerPopModeAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns `false`.
     /// 
 
-    public override func isPositionDependent() -> Bool {
+    override func isPositionDependent() -> Bool {
         return false
     }
 
@@ -52,20 +52,20 @@ public final class LexerPopModeAction: LexerAction, CustomStringConvertible {
     /// This action is implemented by calling _org.antlr.v4.runtime.Lexer#popMode_.
     /// 
 
-    public override func execute(_ lexer: Lexer) throws {
+    override func execute(_ lexer: Lexer) throws {
         try lexer.popMode()
     }
 
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
 
-    public var description: String {
+    var description: String {
         return "popMode"
     }
 }
 
-public func ==(lhs: LexerPopModeAction, rhs: LexerPopModeAction) -> Bool {
+func ==(lhs: LexerPopModeAction, rhs: LexerPopModeAction) -> Bool {
     return lhs === rhs
 }

@@ -14,13 +14,13 @@
 /// multiple ATN configurations into a single DFA state.
 /// 
 
-public final class PredicateTransition: AbstractPredicateTransition, CustomStringConvertible {
-    public let ruleIndex: Int
-    public let predIndex: Int
-    public let isCtxDependent: Bool
+final class PredicateTransition: AbstractPredicateTransition, CustomStringConvertible {
+    let ruleIndex: Int
+    let predIndex: Int
+    let isCtxDependent: Bool
     // e.g., $i ref in pred
 
-    public init(_ target: ATNState, _ ruleIndex: Int, _ predIndex: Int, _ isCtxDependent: Bool) {
+    init(_ target: ATNState, _ ruleIndex: Int, _ predIndex: Int, _ isCtxDependent: Bool) {
 
         self.ruleIndex = ruleIndex
         self.predIndex = predIndex
@@ -29,25 +29,25 @@ public final class PredicateTransition: AbstractPredicateTransition, CustomStrin
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return PredicateTransition.PREDICATE
     }
 
     override
-    public func isEpsilon() -> Bool {
+    func isEpsilon() -> Bool {
         return true
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return false
     }
 
-    public func getPredicate() -> SemanticContext.Predicate {
+    func getPredicate() -> SemanticContext.Predicate {
         return SemanticContext.Predicate(ruleIndex, predIndex, isCtxDependent)
     }
 
-    public var description: String {
+    var description: String {
         return "pred_\(ruleIndex):\(predIndex)"
     }
 }

@@ -8,7 +8,7 @@
 /// the error handling strategy (to create missing tokens).  Notifying the parser
 /// of a new factory means that it notifies it's token source and error strategy.
 /// 
-public protocol TokenFactory {
+protocol TokenFactory {
 
     //typealias Symbol
     /// This is the method used to create tokens in the lexer and in the
@@ -30,17 +30,17 @@ public protocol TokenFactory {
  TokenSourceAndStream shared across many tokens.  The references here are weak
  to avoid retain cycles.
  */
-public class TokenSourceAndStream {
+class TokenSourceAndStream {
     ///
     /// An empty TokenSourceAndStream which is used as the default value of
     /// _#source_ for tokens that do not have a source.
     ///
-    public static let EMPTY = TokenSourceAndStream()
+    static let EMPTY = TokenSourceAndStream()
 
-    public weak var tokenSource: TokenSource?
-    public weak var stream: CharStream?
+    weak var tokenSource: TokenSource?
+    weak var stream: CharStream?
 
-    public init(_ tokenSource: TokenSource? = nil, _ stream: CharStream? = nil) {
+    init(_ tokenSource: TokenSource? = nil, _ stream: CharStream? = nil) {
         self.tokenSource = tokenSource
         self.stream = stream
     }

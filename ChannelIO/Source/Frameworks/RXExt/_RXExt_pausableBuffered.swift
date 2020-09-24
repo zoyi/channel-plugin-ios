@@ -26,7 +26,7 @@ extension _RXSwift_ObservableType {
      - parameter flushOnError: If `true` buffered elements will be flushed when the source errors. Default `true`.
      - returns: The observable sequence which is paused and resumed based upon the pauser observable sequence.
      */
-    public func pausableBuffered<Pauser: _RXSwift_ObservableType> (_ pauser: Pauser, limit: Int? = 1, flushOnCompleted: Bool = true, flushOnError: Bool = true) -> _RXSwift_Observable<Element> where Pauser.Element == Bool {
+    func pausableBuffered<Pauser: _RXSwift_ObservableType> (_ pauser: Pauser, limit: Int? = 1, flushOnCompleted: Bool = true, flushOnError: Bool = true) -> _RXSwift_Observable<Element> where Pauser.Element == Bool {
 
         return _RXSwift_Observable<Element>.create { observer in
             var buffer: [Element] = []

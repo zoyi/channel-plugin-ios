@@ -70,20 +70,20 @@ extension UIButton {
   }
 }
 
-extension _RXSwift_Reactive where Base: UIControl {
+extension _RXSwift_Reactive where Base: UIButton {
   var isHighlighted: _RXSwift_Observable<Bool> {
     let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isHighlighted))
-    
+
     let boolObservable = anyObservable
       .flatMap { _RXSwift_Observable.from(optional: $0.first as? Bool) }
       .startWith(self.base.isHighlighted)
       .distinctUntilChanged()
       .share()
-    
+
     return boolObservable
   }
   
-  var isEnable: _RXSwift_Observable<Bool> {
+  var isEnabled: _RXSwift_Observable<Bool> {
     let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isEnabled))
 
     let boolObservable = anyObservable

@@ -40,11 +40,11 @@ protocol PageIndicatorView: class {
 }
 
 extension UIPageControl: PageIndicatorView {
-    public var view: UIView {
+    var view: UIView {
         return self
     }
 
-    public var page: Int {
+    var page: Int {
         get {
             return currentPage
         }
@@ -53,7 +53,7 @@ extension UIPageControl: PageIndicatorView {
         }
     }
 
-    open override func sizeToFit() {
+  open override func sizeToFit() {
         var frame = self.frame
         frame.size = size(forNumberOfPages: numberOfPages)
         frame.size.height = 30
@@ -63,7 +63,7 @@ extension UIPageControl: PageIndicatorView {
 
 /// Page indicator that shows page in numeric style, eg. "5/21"
 class LabelPageIndicator: UIView, PageIndicatorView {
-    public var view: UIView {
+    var view: UIView {
         return self
     }
   
@@ -73,26 +73,26 @@ class LabelPageIndicator: UIView, PageIndicatorView {
       $0.layer.cornerRadius = 14
       $0.alpha = 0.7
     }
-    public var numberOfPages: Int = 0 {
+    var numberOfPages: Int = 0 {
         didSet {
             updateLabel()
         }
     }
 
-    public var page: Int = 0 {
+    var page: Int = 0 {
         didSet {
             updateLabel()
         }
     }
 
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(self.backgroundView)
         self.addSubview(self.label)
         initialize()
     }
 
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.addSubview(self.backgroundView)
         self.addSubview(self.label)
@@ -110,7 +110,7 @@ class LabelPageIndicator: UIView, PageIndicatorView {
         self.label.sizeToFit()
     }
 
-    public override func sizeToFit() {
+    override func sizeToFit() {
         let maximumString = String(repeating: "8", count: numberOfPages) as NSString
         var size = maximumString.size(withAttributes: [.font: self.label.font!])
         size.width += 30
@@ -118,7 +118,7 @@ class LabelPageIndicator: UIView, PageIndicatorView {
         self.frame.size = size
     }
   
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         self.backgroundView.frame = self.bounds
         self.label.center = self.backgroundView.center
     }
@@ -127,11 +127,11 @@ class LabelPageIndicator: UIView, PageIndicatorView {
 
 /// Describes the configuration of the page indicator position
 struct PageIndicatorPosition {
-  public enum Horizontal {
+  enum Horizontal {
     case left(padding: CGFloat), center, right(padding: CGFloat)
   }
   
-  public enum Vertical {
+  enum Vertical {
     case top, bottom, under, customTop(padding: CGFloat), customBottom(padding: CGFloat), customUnder(padding: CGFloat)
   }
   
@@ -146,7 +146,7 @@ struct PageIndicatorPosition {
   /// - Parameters:
   ///   - horizontal: horizontal position of the page indicator
   ///   - vertical: vertical position of the page indicator
-  public init(horizontal: Horizontal = .center, vertical: Vertical = .bottom) {
+  init(horizontal: Horizontal = .center, vertical: Vertical = .bottom) {
     self.horizontal = horizontal
     self.vertical = vertical
   }

@@ -10,7 +10,7 @@
 /// in the various paths when the error. Reported by reportNoViableAlternative()
 /// 
 
-public class NoViableAltException: RecognitionException {
+class NoViableAltException: RecognitionException {
     /// Which configurations did we try at input.index() that couldn't match input.LT(1)?
 
     private let deadEndConfigs: ATNConfigSet?
@@ -22,7 +22,7 @@ public class NoViableAltException: RecognitionException {
     /// 
     private let startToken: Token
 
-    public convenience init(_ recognizer: Parser) {
+    convenience init(_ recognizer: Parser) {
         // LL(1) error
         let token = try! recognizer.getCurrentToken()
         self.init(recognizer,
@@ -33,7 +33,7 @@ public class NoViableAltException: RecognitionException {
                 recognizer._ctx)
     }
 
-    public init(_ recognizer: Parser?,
+    init(_ recognizer: Parser?,
                 _ input: IntStream,
                 _ startToken: Token,
                 _ offendingToken: Token?,
@@ -50,12 +50,12 @@ public class NoViableAltException: RecognitionException {
     }
 
 
-    public func getStartToken() -> Token {
+    func getStartToken() -> Token {
         return startToken
     }
 
 
-    public func getDeadEndConfigs() -> ATNConfigSet? {
+    func getDeadEndConfigs() -> ATNConfigSet? {
         return deadEndConfigs
     }
 

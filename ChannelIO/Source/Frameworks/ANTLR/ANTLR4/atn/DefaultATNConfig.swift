@@ -12,12 +12,12 @@
 //
 
 import Foundation
-//public struct DefaultATNConfig: ATNConfig {
-//    public var state: ATNState
-//    public var alt: Int
-//    public var context: PredictionContext?
-//    public var semanticContext: SemanticContext
-//    public var hashValue: Int {
+//struct DefaultATNConfig: ATNConfig {
+//    var state: ATNState
+//    var alt: Int
+//    var context: PredictionContext?
+//    var semanticContext: SemanticContext
+//    var hashValue: Int {
 //
 //        var hashCode: Int = 7
 //        hashCode = 31 * hashCode + state.stateNumber
@@ -30,7 +30,7 @@ import Foundation
 //
 //}
 //
-//public func ==(lhs: DefaultATNConfig, rhs: DefaultATNConfig) -> Bool {
+//func ==(lhs: DefaultATNConfig, rhs: DefaultATNConfig) -> Bool {
 //
 //    if lhs === rhs {
 //        return true
@@ -44,10 +44,10 @@ import Foundation
 //    return same
 //
 //}
-//public class DefaultATNConfig: ATNConfig {
+//class DefaultATNConfig: ATNConfig {
 //
 //    override
-//    public var hashValue: Int {
+//    var hashValue: Int {
 //
 //        var hashCode: Int = 7
 //        hashCode = 31 * hashCode + state.stateNumber
@@ -60,7 +60,7 @@ import Foundation
 //
 //}
 //
-//public func ==(lhs: DefaultATNConfig, rhs: DefaultATNConfig) -> Bool {
+//func ==(lhs: DefaultATNConfig, rhs: DefaultATNConfig) -> Bool {
 //
 //    if lhs === rhs {
 //        return true

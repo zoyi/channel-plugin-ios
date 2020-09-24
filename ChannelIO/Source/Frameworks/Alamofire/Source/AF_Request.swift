@@ -91,7 +91,7 @@ class AF_Request {
         /// `RedirectHandler` provided for to handle request redirection.
         var redirectHandler: AF_RedirectHandler?
         /// `CachedResponseHandler` provided to handle response caching.
-        var cachedResponseHandler: CachedResponseHandler?
+        var cachedResponseHandler: AF_CachedResponseHandler?
         /// Closure called when the `Request` is able to create a cURL description of itself.
         var cURLHandler: ((String) -> Void)?
         /// Response serialization closures that handle response parsing.
@@ -167,7 +167,7 @@ class AF_Request {
     // MARK: Cached Response Handling
 
     /// `CachedResponseHandler` set on the instance.
-    private(set) var cachedResponseHandler: CachedResponseHandler? {
+    private(set) var cachedResponseHandler: AF_CachedResponseHandler? {
         get { mutableState.cachedResponseHandler }
         set { mutableState.cachedResponseHandler = newValue }
     }
@@ -803,7 +803,7 @@ class AF_Request {
     ///
     /// - Returns:           The instance.
     @discardableResult
-    func cacheResponse(using handler: CachedResponseHandler) -> Self {
+    func cacheResponse(using handler: AF_CachedResponseHandler) -> Self {
         $mutableState.write { mutableState in
             precondition(mutableState.cachedResponseHandler == nil, "Cached response handler has already been set.")
             mutableState.cachedResponseHandler = handler

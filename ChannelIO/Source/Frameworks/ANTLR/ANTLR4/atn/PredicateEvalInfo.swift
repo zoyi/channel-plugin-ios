@@ -15,22 +15,22 @@
 /// -  4.3
 /// 
 
-public class PredicateEvalInfo: DecisionEventInfo {
+class PredicateEvalInfo: DecisionEventInfo {
     /// 
     /// The semantic context which was evaluated.
     /// 
-    public private(set) var semctx: SemanticContext
+    private(set) var semctx: SemanticContext
     /// 
     /// The alternative number for the decision which is guarded by the semantic
     /// context _#semctx_. Note that other ATN
     /// configurations may predict the same alternative which are guarded by
     /// other semantic contexts and/or _org.antlr.v4.runtime.atn.SemanticContext#NONE_.
     /// 
-    public private(set) var predictedAlt: Int
+    private(set) var predictedAlt: Int
     /// 
     /// The result of evaluating the semantic context _#semctx_.
     /// 
-    public private(set) var evalResult: Bool
+    private(set) var evalResult: Bool
 
     /// 
     /// Constructs a new instance of the _org.antlr.v4.runtime.atn.PredicateEvalInfo_ class with the
@@ -54,7 +54,7 @@ public class PredicateEvalInfo: DecisionEventInfo {
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#evalSemanticContext(org.antlr.v4.runtime.atn.SemanticContext, org.antlr.v4.runtime.ParserRuleContext, int, boolean)
     /// - seealso: org.antlr.v4.runtime.atn.SemanticContext#eval(org.antlr.v4.runtime.Recognizer, org.antlr.v4.runtime.RuleContext)
     /// 
-    public init(_ decision: Int,
+    init(_ decision: Int,
                 _ input: TokenStream,
                 _ startIndex: Int,
                 _ stopIndex: Int,

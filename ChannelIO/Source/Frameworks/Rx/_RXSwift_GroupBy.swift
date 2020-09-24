@@ -15,7 +15,7 @@ extension _RXSwift_ObservableType {
      - parameter keySelector: A function to extract the key for each element.
      - returns: A sequence of observable groups, each of which corresponds to a unique key value, containing all elements that share that same key value.
      */
-    public func groupBy<Key: Hashable>(keySelector: @escaping (Element) throws -> Key)
+    func groupBy<Key: Hashable>(keySelector: @escaping (Element) throws -> Key)
         -> _RXSwift_Observable<GroupedObservable<Key, Element>> {
         return GroupBy(source: self.asObservable(), selector: keySelector)
     }
@@ -30,7 +30,7 @@ final private class GroupedObservableImpl<Element>: _RXSwift_Observable<Element>
         self._refCount = refCount
     }
 
-    override public func subscribe<Observer: _RXSwift_ObserverType>(_ observer: Observer) -> _RXSwift_Disposable where Observer.Element == Element {
+    override func subscribe<Observer: _RXSwift_ObserverType>(_ observer: Observer) -> _RXSwift_Disposable where Observer.Element == Element {
         let release = self._refCount.retain()
         let subscription = self._subject.subscribe(observer)
         return _RXSwift_Disposables.create(release, subscription)

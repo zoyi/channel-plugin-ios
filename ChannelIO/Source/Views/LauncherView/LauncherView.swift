@@ -56,6 +56,8 @@ final class LauncherView : BaseView {
     self.addSubview(self.badgeView)
     self.buttonView.layer.insertSublayer(self.buttonGradientLayer, at: 0)
     
+    
+    
     self.buttonView.rx.isHighlighted
       .subscribe(onNext: { [weak self] (selected) in
         self?.buttonLayerView.alpha = selected ? 0.5 : 0

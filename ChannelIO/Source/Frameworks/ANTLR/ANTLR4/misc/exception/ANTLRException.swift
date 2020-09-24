@@ -14,7 +14,7 @@
 
 import Foundation
 
-public enum ANTLRException: Error {
+enum ANTLRException: Error {
     case parseCancellation(e: RecognitionException)
     case recognition(e: RecognitionException)
 }

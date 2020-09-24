@@ -10,12 +10,12 @@
 /// "dup" of ParserInterpreter
 /// 
 
-open class LexerATNSimulator: ATNSimulator {
-    public static let debug = false
-    public let dfa_debug = false
+class LexerATNSimulator: ATNSimulator {
+    static let debug = false
+    let dfa_debug = false
 
-    public static let MIN_DFA_EDGE = 0
-    public static let MAX_DFA_EDGE = 127  // forces unicode to stay in ATN
+    static let MIN_DFA_EDGE = 0
+    static let MAX_DFA_EDGE = 127  // forces unicode to stay in ATN
 
     /// 
     /// When we hit an accept state in either the DFA or the ATN, we
@@ -62,14 +62,14 @@ open class LexerATNSimulator: ATNSimulator {
     /// 
     /// line number 1..n within the input
     /// 
-    public var line = 1
+    var line = 1
 
     /// 
     /// The index of the character relative to the beginning of the line 0..n-1
     /// 
-    public var charPositionInLine = 0
+    var charPositionInLine = 0
 
-    public private(set) final var decisionToDFA: [DFA]
+    private(set) final var decisionToDFA: [DFA]
     
     internal var mode = Lexer.DEFAULT_MODE
     
@@ -89,14 +89,14 @@ open class LexerATNSimulator: ATNSimulator {
 
     internal final var prevAccept = SimState()
 
-    public static var match_calls = 0
+    static var match_calls = 0
 
-    public convenience init(_ atn: ATN, _ decisionToDFA: [DFA],
+    convenience init(_ atn: ATN, _ decisionToDFA: [DFA],
         _ sharedContextCache: PredictionContextCache) {
             self.init(nil, atn, decisionToDFA, sharedContextCache)
     }
 
-    public init(_ recog: Lexer?, _ atn: ATN,
+    init(_ recog: Lexer?, _ atn: ATN,
         _ decisionToDFA: [DFA],
         _ sharedContextCache: PredictionContextCache) {
 
@@ -105,14 +105,14 @@ open class LexerATNSimulator: ATNSimulator {
             super.init(atn, sharedContextCache)
     }
 
-    open func copyState(_ simulator: LexerATNSimulator) {
+    func copyState(_ simulator: LexerATNSimulator) {
         self.charPositionInLine = simulator.charPositionInLine
         self.line = simulator.line
         self.mode = simulator.mode
         self.startIndex = simulator.startIndex
     }
 
-    open func match(_ input: CharStream, _ mode: Int) throws -> Int {
+    func match(_ input: CharStream, _ mode: Int) throws -> Int {
         LexerATNSimulator.match_calls += 1
 
         self.mode = mode
@@ -134,7 +134,7 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
     override
-    open func reset() {
+    func reset() {
         prevAccept.reset()
         startIndex = -1
         line = 1
@@ -143,7 +143,7 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
     override
-    open func clearDFA() {
+    func clearDFA() {
         for d in 0..<decisionToDFA.count {
             decisionToDFA[d] = DFA(atn.getDecisionState(d)!, d)
         }
@@ -724,7 +724,7 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
 
-    public final func getDFA(_ mode: Int) -> DFA {
+    final func getDFA(_ mode: Int) -> DFA {
         return decisionToDFA[mode]
     }
 
@@ -732,28 +732,28 @@ open class LexerATNSimulator: ATNSimulator {
     /// Get the text matched so far for the current token.
     /// 
 
-    public func getText(_ input: CharStream) -> String {
+    func getText(_ input: CharStream) -> String {
         // index is first lookahead char, don't include.
         return try! input.getText(Interval.of(startIndex, input.index() - 1))
     }
 
-    public func getLine() -> Int {
+    func getLine() -> Int {
         return line
     }
 
-    public func setLine(_ line: Int) {
+    func setLine(_ line: Int) {
         self.line = line
     }
 
-    public func getCharPositionInLine() -> Int {
+    func getCharPositionInLine() -> Int {
         return charPositionInLine
     }
 
-    public func setCharPositionInLine(_ charPositionInLine: Int) {
+    func setCharPositionInLine(_ charPositionInLine: Int) {
         self.charPositionInLine = charPositionInLine
     }
 
-    public func consume(_ input: CharStream) throws {
+    func consume(_ input: CharStream) throws {
         let curChar = try input.LA(1)
         if String(Character(integerLiteral: curChar)) == "\n" {
             line += 1
@@ -765,7 +765,7 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
 
-    public func getTokenName(_ t: Int) -> String {
+    func getTokenName(_ t: Int) -> String {
         if t == -1 {
             return "EOF"
         }

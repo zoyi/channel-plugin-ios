@@ -11,7 +11,7 @@
 /// chunks where the tag corresponds to a parser rule.
 /// 
 
-public class RuleTagToken: Token, CustomStringConvertible {
+class RuleTagToken: Token, CustomStringConvertible {
     /// 
     /// This is the backing field for _#getRuleName_.
     /// 
@@ -26,7 +26,7 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// 
     private let label: String?
 
-    public var visited = false
+    var visited = false
 
     /// 
     /// Constructs a new instance of _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ with the specified rule
@@ -38,7 +38,7 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// - Throws: ANTLRError.illegalArgument if `ruleName` is `null`
     /// or empty.
     /// 
-    public convenience init(_ ruleName: String, _ bypassTokenType: Int) {
+    convenience init(_ ruleName: String, _ bypassTokenType: Int) {
         self.init(ruleName, bypassTokenType, nil)
     }
 
@@ -54,7 +54,7 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// - Throws: ANTLRError.illegalArgument if `ruleName` is `null`
     /// or empty.
     /// 
-    public init(_ ruleName: String, _ bypassTokenType: Int, _ label: String?) {
+    init(_ ruleName: String, _ bypassTokenType: Int, _ label: String?) {
         self.ruleName = ruleName
         self.bypassTokenType = bypassTokenType
         self.label = label
@@ -65,7 +65,7 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// 
     /// - Returns: The name of the parser rule associated with this rule tag.
     /// 
-    public final func getRuleName() -> String {
+    final func getRuleName() -> String {
         return ruleName
     }
 
@@ -75,14 +75,14 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// - Returns: The name of the label associated with the rule tag, or
     /// `null` if this is an unlabeled rule tag.
     /// 
-    public final func getLabel() -> String? {
+    final func getLabel() -> String? {
         return label
     }
 
     /// 
     /// Rule tag tokens are always placed on the _#DEFAULT_CHANNEL_.
     /// 
-    public func getChannel() -> Int {
+    func getChannel() -> Int {
         return RuleTagToken.DEFAULT_CHANNEL
     }
 
@@ -90,7 +90,7 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// This method returns the rule tag formatted with `<` and `>`
     /// delimiters.
     /// 
-    public func getText() -> String? {
+    func getText() -> String? {
         if let label = label {
             return "<\(label):\(ruleName)>"
         }
@@ -101,21 +101,21 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// Rule tag tokens have types assigned according to the rule bypass
     /// transitions created during ATN deserialization.
     /// 
-    public func getType() -> Int {
+    func getType() -> Int {
         return bypassTokenType
     }
 
     /// 
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ always returns 0.
     /// 
-    public func getLine() -> Int {
+    func getLine() -> Int {
         return 0
     }
 
     /// 
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ always returns -1.
     /// 
-    public func getCharPositionInLine() -> Int {
+    func getCharPositionInLine() -> Int {
         return -1
     }
 
@@ -124,39 +124,39 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// 
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ always returns -1.
     /// 
-    public func getTokenIndex() -> Int {
+    func getTokenIndex() -> Int {
         return -1
     }
 
     /// 
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ always returns -1.
     /// 
-    public func getStartIndex() -> Int {
+    func getStartIndex() -> Int {
         return -1
     }
 
     /// 
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ always returns -1.
     /// 
-    public func getStopIndex() -> Int {
+    func getStopIndex() -> Int {
         return -1
     }
 
     /// 
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ always returns `null`.
     /// 
-    public func getTokenSource() -> TokenSource? {
+    func getTokenSource() -> TokenSource? {
         return nil
     }
 
     ///
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ always returns `null`.
     /// 
-    public func getInputStream() -> CharStream? {
+    func getInputStream() -> CharStream? {
         return nil
     }
 
-    public func getTokenSourceAndStream() -> TokenSourceAndStream {
+    func getTokenSourceAndStream() -> TokenSourceAndStream {
         return TokenSourceAndStream.EMPTY
     }
 
@@ -164,7 +164,7 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.RuleTagToken_ returns a string of the form
     /// `ruleName:bypassTokenType`.
     /// 
-    public var description: String {
+    var description: String {
         return ruleName + ":" + String(bypassTokenType)
     }
 

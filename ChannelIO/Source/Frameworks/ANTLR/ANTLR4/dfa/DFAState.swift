@@ -31,27 +31,27 @@
 /// meaning that state was reached via a different set of rule invocations.
 /// 
 
-public final class DFAState: Hashable, CustomStringConvertible {
-    public internal(set) var stateNumber = -1
+final class DFAState: Hashable, CustomStringConvertible {
+    internal(set) var stateNumber = -1
 
-    public internal(set) var configs: ATNConfigSet
+    internal(set) var configs: ATNConfigSet
 
     /// 
     /// `edges[symbol]` points to target of symbol. Shift up by 1 so (-1)
     /// _org.antlr.v4.runtime.Token#EOF_ maps to `edges[0]`.
     ///
-    public internal(set) var edges: [DFAState?]!
+    internal(set) var edges: [DFAState?]!
 
-    public internal(set) var isAcceptState = false
+    internal(set) var isAcceptState = false
 
     /// 
     /// if accept state, what ttype do we match or alt do we predict?
     /// This is set to _org.antlr.v4.runtime.atn.ATN#INVALID_ALT_NUMBER_ when _#predicates_`!=null` or
     /// _#requiresFullContext_.
     /// 
-    public internal(set) var prediction = 0
+    internal(set) var prediction = 0
 
-    public internal(set) var lexerActionExecutor: LexerActionExecutor?
+    internal(set) var lexerActionExecutor: LexerActionExecutor?
 
     /// 
     /// Indicates that this state was created during SLL prediction that
@@ -59,7 +59,7 @@ public final class DFAState: Hashable, CustomStringConvertible {
     /// _org.antlr.v4.runtime.atn.ParserATNSimulator#execATN_ invocations immediately jumped doing
     /// full context prediction if this field is true.
     /// 
-    public internal(set) var requiresFullContext = false
+    internal(set) var requiresFullContext = false
 
     /// 
     /// During SLL parsing, this is a list of predicates associated with the
@@ -75,28 +75,28 @@ public final class DFAState: Hashable, CustomStringConvertible {
     /// This list is computed by _org.antlr.v4.runtime.atn.ParserATNSimulator#predicateDFAState_.
     /// 
 
-    public internal(set) var predicates: [PredPrediction]?
+    internal(set) var predicates: [PredPrediction]?
 
     /// 
     /// Map a predicate to a predicted alternative.
     /// 
 
-    public final class PredPrediction: CustomStringConvertible {
-        public let pred: SemanticContext
+    final class PredPrediction: CustomStringConvertible {
+        let pred: SemanticContext
         // never null; at least SemanticContext.NONE
-        public let alt: Int
+        let alt: Int
 
-        public init(_ pred: SemanticContext, _ alt: Int) {
+        init(_ pred: SemanticContext, _ alt: Int) {
             self.alt = alt
             self.pred = pred
         }
 
-        public var description: String {
+        var description: String {
             return "(\(pred),\(alt))"
         }
     }
 
-    public init(_ configs: ATNConfigSet) {
+    init(_ configs: ATNConfigSet) {
         self.configs = configs
     }
 
@@ -104,16 +104,16 @@ public final class DFAState: Hashable, CustomStringConvertible {
     /// Get the set of all alts mentioned by all ATN configurations in this
     /// DFA state.
     /// 
-    public func getAltSet() -> Set<Int>? {
+    func getAltSet() -> Set<Int>? {
         return configs.getAltSet()
     }
 
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(configs)
     }
 
-    public var description: String {
+    var description: String {
         var buf = "\(stateNumber):\(configs)"
         if isAcceptState {
             buf += "=>"
@@ -141,7 +141,7 @@ public final class DFAState: Hashable, CustomStringConvertible {
 /// exists that has this exact set of ATN configurations. The
 /// _#stateNumber_ is irrelevant.
 ///
-public func ==(lhs: DFAState, rhs: DFAState) -> Bool {
+func ==(lhs: DFAState, rhs: DFAState) -> Bool {
     if lhs === rhs {
         return true
     }

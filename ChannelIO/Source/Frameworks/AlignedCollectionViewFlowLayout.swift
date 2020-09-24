@@ -31,14 +31,14 @@
 protocol Alignment {}
 
 /// Defines an alignment for UI elements.
-public enum HorizontalAlignment: Alignment {
+enum HorizontalAlignment: Alignment {
     case left
     case justified
     case right
 }
 
 /// Defines a vertical alignment for UI elements.
-public enum VerticalAlignment: Alignment {
+enum VerticalAlignment: Alignment {
     case top
     case center
     case bottom
@@ -61,17 +61,17 @@ private struct AlignmentAxis<A: Alignment> {
 /// over the horizontal and vertical alignment of the cells.
 /// You can use it to align the cells like words in a left- or right-aligned text
 /// and you can specify how the cells are vertically aligned in their row.
-open class AlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+class AlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     // MARK: - 🔶 Properties
     
     /// Determines how the cells are horizontally aligned in a row.
     /// - Note: The default is `.justified`.
-    public var horizontalAlignment: HorizontalAlignment = .justified
+    var horizontalAlignment: HorizontalAlignment = .justified
     
     /// Determines how the cells are vertically aligned in a row.
     /// - Note: The default is `.center`.
-    public var verticalAlignment: VerticalAlignment = .center
+    var verticalAlignment: VerticalAlignment = .center
     
     /// The vertical axis with respect to which the cells are horizontally aligned.
     /// For a `justified` alignment the alignment axis is not defined and this value is `nil`.
@@ -107,20 +107,20 @@ open class AlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
     ///                          (Default: `.justified`)
     ///   - verticalAlignment:   Specified how the cells are vertically aligned in a row. --
     ///                          (Default: `.center`)
-    public init(horizontalAlignment: HorizontalAlignment = .justified, verticalAlignment: VerticalAlignment = .center) {
+    init(horizontalAlignment: HorizontalAlignment = .justified, verticalAlignment: VerticalAlignment = .center) {
         super.init()
         self.horizontalAlignment = horizontalAlignment
         self.verticalAlignment = verticalAlignment
     }
     
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     
     // MARK: - 🅾️ Overrides
     
-    override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         
         // 💡 IDEA:
         // The approach for computing a cell's frame is to create a rectangle that covers the current line.
@@ -164,7 +164,7 @@ open class AlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
         return layoutAttributes
     }
     
-    override open func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         // We may not change the original layout attributes or UICollectionViewFlowLayout might complain.
         let layoutAttributesObjects = copy(super.layoutAttributesForElements(in: rect))
         layoutAttributesObjects?.forEach({ (layoutAttributes) in

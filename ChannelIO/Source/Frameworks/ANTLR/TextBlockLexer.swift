@@ -1,6 +1,6 @@
 // Generated from TextBlockLexer.g4 by ANTLR 4.7.1
 
-open class TextBlockLexer: Lexer {
+class TextBlockLexer: Lexer {
 	internal static var _decisionToDFA: [DFA] = {
           var decisionToDFA = [DFA]()
           let length = TextBlockLexer._ATN.getNumberOfDecisions()

@@ -5,13 +5,13 @@
 /// 
 
 
-public final class RuleStartState: ATNState {
-    public var stopState: RuleStopState?
-    public var isPrecedenceRule: Bool = false
+final class RuleStartState: ATNState {
+    var stopState: RuleStopState?
+    var isPrecedenceRule: Bool = false
     //Synonymous with rule being left recursive; consider renaming.
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.RULE_START
     }
 }

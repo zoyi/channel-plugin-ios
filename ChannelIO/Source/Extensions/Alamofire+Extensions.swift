@@ -23,7 +23,7 @@ extension AF_DataRequest {
     completionHandler: @escaping (AF_AFDataResponse<Data>) -> Void) -> Self {
     return response(
       queue: queue == nil ? RestRouter.queue : queue!,
-      responseSerializer: DataResponseSerializer(),
+      responseSerializer: AF_DataResponseSerializer(),
       completionHandler: completionHandler
     )
   }

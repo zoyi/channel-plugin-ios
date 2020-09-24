@@ -19,7 +19,7 @@ extension _RXSwift_ObservableType {
      - parameter scheduler: Scheduler on which to run the generator loop.
      - returns: The generated sequence.
      */
-    public static func generate(initialState: Element, condition: @escaping (Element) throws -> Bool, scheduler: _RXSwift_ImmediateSchedulerType = _RXSwift_CurrentThreadScheduler.instance, iterate: @escaping (Element) throws -> Element) -> _RXSwift_Observable<Element> {
+    static func generate(initialState: Element, condition: @escaping (Element) throws -> Bool, scheduler: _RXSwift_ImmediateSchedulerType = _RXSwift_CurrentThreadScheduler.instance, iterate: @escaping (Element) throws -> Element) -> _RXSwift_Observable<Element> {
         return Generate(initialState: initialState, condition: condition, iterate: iterate, resultSelector: { $0 }, scheduler: scheduler)
     }
 }

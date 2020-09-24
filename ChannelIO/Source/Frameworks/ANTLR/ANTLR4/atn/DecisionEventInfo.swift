@@ -22,44 +22,44 @@
 /// -  4.3
 /// 
 
-public class DecisionEventInfo {
+class DecisionEventInfo {
     /// 
     /// The invoked decision number which this event is related to.
     /// 
     /// - seealso: org.antlr.v4.runtime.atn.ATN#decisionToState
     /// 
-    public let decision: Int
+    let decision: Int
 
     /// 
     /// The configuration set containing additional information relevant to the
     /// prediction state when the current event occurred, or `null` if no
     /// additional information is relevant or available.
     /// 
-    public let configs: ATNConfigSet?
+    let configs: ATNConfigSet?
 
     /// 
     /// The input token stream which is being parsed.
     /// 
-    public let input: TokenStream
+    let input: TokenStream
 
     /// 
     /// The token index in the input stream at which the current prediction was
     /// originally invoked.
     /// 
-    public let startIndex: Int
+    let startIndex: Int
 
     /// 
     /// The token index in the input stream at which the current event occurred.
     /// 
-    public let stopIndex: Int
+    let stopIndex: Int
 
     /// 
     /// `true` if the current event occurred during LL prediction;
     /// otherwise, `false` if the input occurred during SLL prediction.
     /// 
-    public let fullCtx: Bool
+    let fullCtx: Bool
 
-    public init(_ decision: Int,
+    init(_ decision: Int,
                 _ configs: ATNConfigSet?,
                 _ input: TokenStream,
                 _ startIndex: Int,

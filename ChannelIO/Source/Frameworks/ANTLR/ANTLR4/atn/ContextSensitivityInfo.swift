@@ -24,7 +24,7 @@
 /// -  4.3
 /// 
 
-public class ContextSensitivityInfo: DecisionEventInfo {
+class ContextSensitivityInfo: DecisionEventInfo {
     /// 
     /// Constructs a new instance of the _org.antlr.v4.runtime.atn.ContextSensitivityInfo_ class
     /// with the specified detailed context sensitivity information.
@@ -37,7 +37,7 @@ public class ContextSensitivityInfo: DecisionEventInfo {
     /// - parameter stopIndex: The index at which the context sensitivity was
     /// identified during full-context prediction
     /// 
-    public init(_ decision: Int,
+    init(_ decision: Int,
                 _ configs: ATNConfigSet,
                 _ input: TokenStream, _ startIndex: Int, _ stopIndex: Int) {
         super.init(decision, configs, input, startIndex, stopIndex, true)

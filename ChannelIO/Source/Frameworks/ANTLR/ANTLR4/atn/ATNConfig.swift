@@ -14,7 +14,7 @@
 /// 
 
 
-public class ATNConfig: Hashable, CustomStringConvertible {
+class ATNConfig: Hashable, CustomStringConvertible {
     /// 
     /// This field stores the bit mask for implementing the
     /// _#isPrecedenceFilterSuppressed_ property as a bit within the
@@ -25,19 +25,19 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     /// 
     /// The ATN state associated with this configuration
     /// 
-    public final let state: ATNState
+    final let state: ATNState
 
     /// 
     /// What alt (or lexer rule) is predicted by this configuration
     /// 
-    public final let alt: Int
+    final let alt: Int
 
     /// 
     /// The stack of invoking states leading to the rule/states associated
     /// with this config.  We track only those contexts pushed during
     /// execution of the ATN simulator.
     /// 
-    public internal(set) final var context: PredictionContext?
+    internal(set) final var context: PredictionContext?
 
     /// 
     /// We cannot execute predicates dependent upon local context unless
@@ -62,11 +62,11 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     /// _org.antlr.v4.runtime.atn.ATNConfigSet#add(org.antlr.v4.runtime.atn.ATNConfig, DoubleKeyMap)_ method are
     /// __completely__ unaffected by the change.
     /// 
-    public internal(set) final var reachesIntoOuterContext: Int = 0
+    internal(set) final var reachesIntoOuterContext: Int = 0
 
-    public final let semanticContext: SemanticContext
+    final let semanticContext: SemanticContext
 
-    public init(_ state: ATNState,
+    init(_ state: ATNState,
                 _ alt: Int,
                 _ context: PredictionContext?,
                 _ semanticContext: SemanticContext = SemanticContext.NONE) {
@@ -76,26 +76,26 @@ public class ATNConfig: Hashable, CustomStringConvertible {
         self.semanticContext = semanticContext
     }
 
-    public convenience init(_ c: ATNConfig, _ state: ATNState) {
+    convenience init(_ c: ATNConfig, _ state: ATNState) {
         self.init(c, state, c.context, c.semanticContext)
     }
 
-    public convenience init(_ c: ATNConfig, _ state: ATNState,
+    convenience init(_ c: ATNConfig, _ state: ATNState,
                             _ semanticContext: SemanticContext) {
         self.init(c, state, c.context, semanticContext)
     }
 
-    public convenience init(_ c: ATNConfig,
+    convenience init(_ c: ATNConfig,
                             _ semanticContext: SemanticContext) {
         self.init(c, c.state, c.context, semanticContext)
     }
 
-    public convenience init(_ c: ATNConfig, _ state: ATNState,
+    convenience init(_ c: ATNConfig, _ state: ATNState,
                             _ context: PredictionContext?) {
         self.init(c, state, context, c.semanticContext)
     }
 
-    public init(_ c: ATNConfig, _ state: ATNState,
+    init(_ c: ATNConfig, _ state: ATNState,
                 _ context: PredictionContext?,
                 _ semanticContext: SemanticContext) {
         self.state = state
@@ -110,15 +110,15 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     /// as it existed prior to the introduction of the
     /// _#isPrecedenceFilterSuppressed_ method.
     /// 
-    public final func getOuterContextDepth() -> Int {
+    final func getOuterContextDepth() -> Int {
         return reachesIntoOuterContext & ~SUPPRESS_PRECEDENCE_FILTER
     }
 
-    public final func isPrecedenceFilterSuppressed() -> Bool {
+    final func isPrecedenceFilterSuppressed() -> Bool {
         return (reachesIntoOuterContext & SUPPRESS_PRECEDENCE_FILTER) != 0
     }
 
-    public final func setPrecedenceFilterSuppressed(_ value: Bool) {
+    final func setPrecedenceFilterSuppressed(_ value: Bool) {
         if value {
             self.reachesIntoOuterContext |= 0x40000000
         } else {
@@ -126,18 +126,18 @@ public class ATNConfig: Hashable, CustomStringConvertible {
         }
     }
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(state.stateNumber)
         hasher.combine(alt)
         hasher.combine(context)
         hasher.combine(semanticContext)
     }
 
-    public var description: String {
+    var description: String {
         //return "MyClass \(string)"
         return toString(nil, true)
     }
-    public func toString<T>(_ recog: Recognizer<T>?, _ showAlt: Bool) -> String {
+    func toString<T>(_ recog: Recognizer<T>?, _ showAlt: Bool) -> String {
         var buf = "(\(state)"
         if showAlt {
             buf += ",\(alt)"
@@ -162,7 +162,7 @@ public class ATNConfig: Hashable, CustomStringConvertible {
 /// the same state, they predict the same alternative, and
 /// syntactic/semantic contexts are the same.
 ///
-public func ==(lhs: ATNConfig, rhs: ATNConfig) -> Bool {
+func ==(lhs: ATNConfig, rhs: ATNConfig) -> Bool {
 
     if lhs === rhs {
         return true

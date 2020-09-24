@@ -60,7 +60,7 @@ class AF_Session {
     /// `RedirectHandler` instance used to provide customization for request redirection.
     let redirectHandler: AF_RedirectHandler?
     /// `CachedResponseHandler` instance used to provide customization of cached response handling.
-    let cachedResponseHandler: CachedResponseHandler?
+    let cachedResponseHandler: AF_CachedResponseHandler?
     /// `CompositeEventMonitor` used to compose Alamofire's `defaultEventMonitors` and any passed `EventMonitor`s.
     let eventMonitor: AF_CompositeEventMonitor
     /// `EventMonitor`s included in all instances. `[AlamofireNotifications()]` by default.
@@ -114,7 +114,7 @@ class AF_Session {
                 interceptor: AF_RequestInterceptor? = nil,
                 serverTrustManager: AF_ServerTrustManager? = nil,
                 redirectHandler: AF_RedirectHandler? = nil,
-                cachedResponseHandler: CachedResponseHandler? = nil,
+                cachedResponseHandler: AF_CachedResponseHandler? = nil,
                 eventMonitors: [AF_EventMonitor] = []) {
         precondition(session.configuration.identifier == nil,
                      "Alamofire does not support background URLSessionConfigurations.")
@@ -179,7 +179,7 @@ class AF_Session {
                             interceptor: AF_RequestInterceptor? = nil,
                             serverTrustManager: AF_ServerTrustManager? = nil,
                             redirectHandler: AF_RedirectHandler? = nil,
-                            cachedResponseHandler: CachedResponseHandler? = nil,
+                            cachedResponseHandler: AF_CachedResponseHandler? = nil,
                             eventMonitors: [AF_EventMonitor] = []) {
         precondition(configuration.identifier == nil, "Alamofire does not support background URLSessionConfigurations.")
 
