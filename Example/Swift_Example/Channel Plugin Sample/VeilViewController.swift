@@ -93,8 +93,8 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     print("badge called \(count)")
   }
   
-  func onBadgeChanged(alert: Int) {
-    print("badge called \(alert)")
+  func onBadgeChanged(count: Int) {
+    print("badge called \(count)")
   }
   
   @objc func didClickOnPush() {
