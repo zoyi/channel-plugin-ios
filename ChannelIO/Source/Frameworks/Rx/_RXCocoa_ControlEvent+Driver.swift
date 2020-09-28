@@ -17,7 +17,7 @@ extension _RXCocoa_ControlEvent {
             #if DEBUG
                 _RXCocoa_rxFatalError("Somehow driver received error from a source that shouldn't fail.")
             #else
-                return Driver.empty()
+                return _RXCocoa_Driver.empty()
             #endif
         }
     }

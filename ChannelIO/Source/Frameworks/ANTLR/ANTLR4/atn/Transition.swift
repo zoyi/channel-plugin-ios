@@ -73,7 +73,7 @@ class Transition {
     /// The target of this transition.
     /// 
 
-    internal(set) final var target: ATNState
+  final var target: ATNState
 
     init(_ target: ATNState) {
 

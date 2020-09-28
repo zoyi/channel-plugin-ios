@@ -42,7 +42,7 @@ final class ATNConfigSet: Hashable, CustomStringConvertible {
 
     // TODO: these fields make me pretty uncomfortable but nice to pack up info together, saves recomputation
     // TODO: can we track conflicts as they are added to save scanning configs later?
-    internal(set) var uniqueAlt = 0
+  var uniqueAlt = 0
     //TODO no default
     /// 
     /// Currently this is only used when we detect SLL conflict; this does
@@ -54,9 +54,9 @@ final class ATNConfigSet: Hashable, CustomStringConvertible {
 
     // Used in parser and lexer. In lexer, it indicates we hit a pred
     // while computing a closure operation.  Don't make a DFA state from this.
-    internal(set) var hasSemanticContext = false
+  var hasSemanticContext = false
     //TODO no default
-    internal(set) var dipsIntoOuterContext = false
+  var dipsIntoOuterContext = false
     //TODO no default
 
     /// 

@@ -22,10 +22,10 @@ static NSString * _ChannelIO_kSDCGImagePropertyWebPUnclampedDelayTime = @"Unclam
     // Xcode 12
     if (@available(iOS 14, tvOS 14, macOS 11, watchOS 7, *)) {
         // Use SDK instead of raw value
-        _ChannelIO_kSDCGImagePropertyWebPDictionary = (__bridge NSString *)_ChannelIO_kCGImagePropertyWebPDictionary;
-        _ChannelIO_kSDCGImagePropertyWebPLoopCount = (__bridge NSString *)_ChannelIO_kCGImagePropertyWebPLoopCount;
-        _ChannelIO_kSDCGImagePropertyWebPDelayTime = (__bridge NSString *)_ChannelIO_kCGImagePropertyWebPDelayTime;
-        _ChannelIO_kSDCGImagePropertyWebPUnclampedDelayTime = (__bridge NSString *)_ChannelIO_kCGImagePropertyWebPUnclampedDelayTime;
+      _ChannelIO_kSDCGImagePropertyWebPDictionary = (__bridge NSString *)kCGImagePropertyWebPDictionary;
+      _ChannelIO_kSDCGImagePropertyWebPLoopCount = (__bridge NSString *)kCGImagePropertyWebPLoopCount;
+      _ChannelIO_kSDCGImagePropertyWebPDelayTime = (__bridge NSString *)kCGImagePropertyWebPDelayTime;
+      _ChannelIO_kSDCGImagePropertyWebPUnclampedDelayTime = (__bridge NSString *)kCGImagePropertyWebPUnclampedDelayTime;
     }
 #endif
 }

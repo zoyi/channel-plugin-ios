@@ -112,7 +112,7 @@ class ReSwift_Store<State: ReSwift_StateType>: ReSwift_StoreType {
 
     func subscribe<S: ReSwift_StoreSubscriber>(_ subscriber: S)
         where S.StoreSubscriberStateType == State {
-            _ = subscribe(subscriber, transform: nil)
+      subscribe(subscriber, transform: nil)
     }
 
     func subscribe<SelectedState, S: ReSwift_StoreSubscriber>(
@@ -236,9 +236,9 @@ extension ReSwift_Store where State: Equatable {
     func subscribe<S: ReSwift_StoreSubscriber>(_ subscriber: S)
         where S.StoreSubscriberStateType == State {
             guard subscriptionsAutomaticallySkipRepeats else {
-                _ = subscribe(subscriber, transform: nil)
+              subscribe(subscriber, transform: nil)
                 return
             }
-            _ = subscribe(subscriber, transform: { $0.skipRepeats() })
+      subscribe(subscriber, transform: { $0.skipRepeats() })
     }
 }

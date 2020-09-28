@@ -105,9 +105,9 @@ class ATNState: Hashable, CustomStringConvertible {
     /// 
     final var atn: ATN? = nil
 
-    internal(set) final var stateNumber: Int = INVALID_STATE_NUMBER
+  final var stateNumber: Int = INVALID_STATE_NUMBER
 
-    internal(set) final var ruleIndex: Int?
+  final var ruleIndex: Int?
     // at runtime, we don't have Rule objects
 
     private(set) final var epsilonOnlyTransitions: Bool = false
@@ -120,7 +120,7 @@ class ATNState: Hashable, CustomStringConvertible {
     /// 
     /// Used to cache lookahead during parsing, not used during construction
     /// 
-    internal(set) final var nextTokenWithinRule: IntervalSet?
+  final var nextTokenWithinRule: IntervalSet?
 
 
     func hash(into hasher: inout Hasher) {

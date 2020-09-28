@@ -17,7 +17,7 @@ extension _RXCocoa_ControlEvent {
             #if DEBUG
                 _RXCocoa_rxFatalError("Somehow signal received error from a source that shouldn't fail.")
             #else
-                return Signal.empty()
+                return _RXCocoa_Signal.empty()
             #endif
         }
     }

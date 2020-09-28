@@ -110,7 +110,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func block() throws -> BlockContext {
-		var _localctx = BlockContext(_ctx, getState())
+    let _localctx = BlockContext(_ctx, getState())
 		try enterRule(_localctx, 0, TextBlockParser.RULE_block)
 		var _la: Int = 0
 		defer {
@@ -241,7 +241,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func tag() throws -> TagContext {
-		var _localctx = TagContext(_ctx, getState())
+    let _localctx = TagContext(_ctx, getState())
 		try enterRule(_localctx, 2, TextBlockParser.RULE_tag)
 		var _la: Int = 0
 		defer {
@@ -362,7 +362,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func attribute() throws -> AttributeContext {
-		var _localctx = AttributeContext(_ctx, getState())
+    let _localctx = AttributeContext(_ctx, getState())
 		try enterRule(_localctx, 4, TextBlockParser.RULE_attribute)
 		defer {
 	    		try! exitRule()
@@ -448,7 +448,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func attrValue() throws -> AttrValueContext {
-		var _localctx = AttrValueContext(_ctx, getState())
+    let _localctx = AttrValueContext(_ctx, getState())
 		try enterRule(_localctx, 6, TextBlockParser.RULE_attrValue)
 		var _la: Int = 0
 		defer {
@@ -570,7 +570,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func content() throws -> ContentContext {
-		var _localctx = ContentContext(_ctx, getState())
+    let _localctx = ContentContext(_ctx, getState())
 		try enterRule(_localctx, 8, TextBlockParser.RULE_content)
 		defer {
 	    		try! exitRule()
@@ -658,7 +658,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func emoji() throws -> EmojiContext {
-		var _localctx = EmojiContext(_ctx, getState())
+    let _localctx = EmojiContext(_ctx, getState())
 		try enterRule(_localctx, 10, TextBlockParser.RULE_emoji)
 		defer {
 	    		try! exitRule()
@@ -720,7 +720,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func variable() throws -> VariableContext {
-		var _localctx = VariableContext(_ctx, getState())
+    let _localctx = VariableContext(_ctx, getState())
 		try enterRule(_localctx, 12, TextBlockParser.RULE_variable)
 		var _la: Int = 0
 		defer {
@@ -827,7 +827,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func variableFallback() throws -> VariableFallbackContext {
-		var _localctx = VariableFallbackContext(_ctx, getState())
+    let _localctx = VariableFallbackContext(_ctx, getState())
 		try enterRule(_localctx, 14, TextBlockParser.RULE_variableFallback)
 		var _la: Int = 0
 		defer {
@@ -941,7 +941,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func plain() throws -> PlainContext {
-		var _localctx = PlainContext(_ctx, getState())
+    let _localctx = PlainContext(_ctx, getState())
 		try enterRule(_localctx, 16, TextBlockParser.RULE_plain)
 		var _la: Int = 0
 		defer {
@@ -1021,7 +1021,7 @@ class TextBlockParser: Parser {
 	}
 	@discardableResult
 	 func escape() throws -> EscapeContext {
-		var _localctx = EscapeContext(_ctx, getState())
+    let _localctx = EscapeContext(_ctx, getState())
 		try enterRule(_localctx, 18, TextBlockParser.RULE_escape)
 		var _la: Int = 0
 		defer {

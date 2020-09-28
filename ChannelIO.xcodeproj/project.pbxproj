@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 39C32C19251BB61000239DD5 /* Build configuration list for PBXAggregateTarget "Aggregate" */;
 			buildPhases = (
-				39C32C1C251BB62A00239DD5 /* ShellScript */,
+				39163E2B251F4B4A009BDA25 /* ShellScript */,
 			);
 			dependencies = (
 			);
@@ -5371,6 +5371,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		39163E2B251F4B4A009BDA25 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nfor V in ${BUILD_VARIANTS}; do\n    for A in ${ARCHS}; do\n        unset SWIFT_RESPONSE_FILE_PATH_${V}_${A}\n    done\ndone\n\n\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\nOUTPUT_FOLDER=${PROJECT_DIR}\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Step 1. Build Device and Simulator versions. This also include the full bitcode generation of framework\n\n\nxcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" -UseModernBuildSystem=NO clean build\n\nxcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" -UseModernBuildSystem=NO clean build\n\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy Swift modules (from iphonesimulator build) to the copied framework directory\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${OUTPUT_FOLDER}\"\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${OUTPUT_FOLDER}\"\n";
+		};
 		394C5AF723C6F0AA00E17BE7 /* Download file types and image assets */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -5388,23 +5405,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/bin/python ${SRCROOT}/ChannelIO/Scripts/file_assets_image_down.py\n";
-		};
-		39C32C1C251BB62A00239DD5 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "for V in ${BUILD_VARIANTS}; do\n    for A in ${ARCHS}; do\n        unset SWIFT_RESPONSE_FILE_PATH_${V}_${A}\n    done\ndone\n\n#!/bin/sh\n\n######################\n# Globals\n######################\n\n# Avilable Platforms/Architectures \n# macosx | iphoneos | iphonesimulator | appletvos | appletvsimulator | watchos | watchsimulator\nDEVICE_ARCH=\"iphoneos\"\nDEVICE_SIM_ARCH=\"iphonesimulator\"\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\nDEVICE_LIBRARY_PATH=${BUILD_DIR}/${CONFIGURATION}-${DEVICE_ARCH}/${FRAMEWORK_NAME}.framework\nSIMULATOR_LIBRARY_PATH=${BUILD_DIR}/${CONFIGURATION}-${DEVICE_SIM_ARCH}/${FRAMEWORK_NAME}.framework\nUNIVERSAL_LIBRARY_DIR=${BUILD_DIR}/${CONFIGURATION}-Universal\nSUCCESS=true\nEXIT_MESSAGE=$?\nROW_STRING=\"\\n##################################################################\\n\"\n\nechoPaths() \n{\n    echo \"${ROW_STRING}\"\n    echo \"DEVICE_LIBRARY_PATH: ${DEVICE_LIBRARY_PATH}\"\n    echo \"SIMULATOR_LIBRARY_PATH: ${SIMULATOR_LIBRARY_PATH}\"\n    echo \"UNIVERSAL_LIBRARY_DIR: ${UNIVERSAL_LIBRARY_DIR}\"\n    echo \"${ROW_STRING}\"\n}\n\ncheckSuccess()\n{\n    if [[ -z $EXIT_MESSAGE ]]; then\n        SUCCESS=false\n        exitWithMessage\n        exit 1\n    fi\n}\n\nexitWithMessage() \n{\n    echo \"${ROW_STRING}\"\n\n    if [ \"$SUCCESS\" = true ] ; then\n        echo \"\\n\\n\\n 🏁 Completed with Success! 🙂\"\n    else\n        echo \"\\n\\n\\n 😱 Completed with Errors! Please check line above for details:\"\n        echo \"${EXIT_MESSAGE}\"\n    fi\n\n    open /tmp/${FRAMEWORK_NAME}_archive.log\n    echo \"\\n 🔍 For more details you can always check the /tmp/${FRAMEWORK_NAME}_archive.log file. 📝 \\n\\n\\n\"\n    echo \"${ROW_STRING}\"\n}\n\n######################\n######################\n######################\n\n\n\n######################\n# Starting the logging\n######################\n\nexec > /tmp/${FRAMEWORK_NAME}_archive.log 2>&1\necho \"\\n ⏱ Starting the Universal Framework work... \\n\\n\\n\"\n\n######################\n# Echo the PATHS\n######################\n\nechoPaths\n\n######################\n# Make sure the output directory exists\n######################\n\nmkdir -p \"${UNIVERSAL_LIBRARY_DIR}\"\n\n######################\n# Step 1: Build Frameworks\n######################\n\necho \"${ROW_STRING}\"\necho \"\\n\\n\\n 🚀 Step 1-1: Building for ${DEVICE_SIM_ARCH}\"\necho \"${ROW_STRING}\"\n\nEXIT_MESSAGE=\"$(xcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -workspace \"${WORKSPACE_PATH}\" -scheme \"${TARGET_NAME}\" -configuration ${CONFIGURATION} -sdk ${DEVICE_SIM_ARCH} ONLY_DEVICE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" -UseModernBuildSystem=NO clean build)\"\n\ncheckSuccess\n\necho \"${ROW_STRING}\"\necho \"\\n\\n\\n 🚀 Step 1-2: Building for ${DEVICE_ARCH} \\n\\n\\n\"\n\nEXIT_MESSAGE=\"$(xcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -workspace \"${WORKSPACE_PATH}\" -scheme \"${TARGET_NAME}\" ONLY_DEVICE_ARCH=NO -configuration ${CONFIGURATION} -sdk ${DEVICE_ARCH}  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" -UseModernBuildSystem=NO clean build)\"\n\ncheckSuccess\n\n\n######################\n# Step 2. Copy the frameworks\n######################\n\necho \"${ROW_STRING}\"\necho \"\\n\\n\\n 📦 Step 2: Copy the framework structure for ${DEVICE_ARCH}\"\necho \"${ROW_STRING}\"\n\ncp -R \"${DEVICE_LIBRARY_PATH}\" \"${UNIVERSAL_LIBRARY_DIR}/\"\n\n\n\n######################\n# Step 3. Create the universal binary\n######################\n\necho \"${ROW_STRING}\"\necho \"\\n\\n\\n 🛠 Step 3: The LIPO Step\"\necho \"${ROW_STRING}\"\n\nlipo -create \"${SIMULATOR_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -output \"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\"\n\n\n\n######################\n# Step 4. Copy the Swiftmodules. \n# This step is necessary only if your project is Swift. For the Swift framework, Swiftmodule needs to be copied in the universal framework. \n######################\necho \"${ROW_STRING}\"\necho \"\\n\\n\\n 📦 Step 4: Copy the Swiftmodules\"\necho \"${ROW_STRING}\"\n\n\nif [ -d \"${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\n\ncp -f ${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\n\nelse \n    echo \"ℹ️ Couldn't any Swift module file for SIMULATOR!\"\nfi\n\n\nif [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\n\ncp -f ${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\n\nelse \n    echo \"ℹ️ Couldn't any Swift module file for DEVICE!\"\nfi\n\n\n\n######################\n# Step 5. Remove the existing copy of the Universal framework and copy the framework to the project's directory\n######################\n\necho \"${ROW_STRING}\"\necho \"\\n\\n\\n 🚛 Step 5 Copying in the project directory\"\necho \"${ROW_STRING}\"\n\nrm -rf \"${PROJECT_DIR}/${FRAMEWORK_NAME}.framework\"\n\nyes | cp -Rf \"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\" \"${PROJECT_DIR}\"\n\n\n######################\n# Step 6. Open the project's directory\n######################\n\necho \"${ROW_STRING}\"\nopen \"${PROJECT_DIR}\"\necho \"${ROW_STRING}\"\n\n\n\n######################\n# Step 7. Open the log file on Console application\n######################\n\nexitWithMessage\n";
 		};
 		E9C2A45BC62A89A6B0A86ACF /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6701,6 +6701,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -6758,6 +6759,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6776,12 +6778,14 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 8278Q64QFC;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;
 				DYLIB_CURRENT_VERSION = 1.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arn64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -6794,7 +6798,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MARKETING_VERSION = 7.2.3;
 				MODULEMAP_PRIVATE_FILE = "";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -6803,13 +6807,15 @@
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zoyi.channel.plugin.ChannelIO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Frameworks/Starscream-8.0.3/Source/Combined/zlib";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -6822,12 +6828,14 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 8278Q64QFC;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;
 				DYLIB_CURRENT_VERSION = 1.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -6848,13 +6856,15 @@
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zoyi.channel.plugin.ChannelIO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PROD;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Frameworks/Starscream-8.0.3/Source/Combined/zlib";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -6904,8 +6914,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 8278Q64QFC;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -6913,8 +6926,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 8278Q64QFC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
