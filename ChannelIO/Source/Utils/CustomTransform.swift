@@ -9,12 +9,12 @@
 import Foundation
 
 class CustomDateTransform: ObjectMapper_TransformType {
-  public typealias Object = Date
-  public typealias JSON = Double
+  typealias Object = Date
+  typealias JSON = Double
 
-  public init() {}
+  init() {}
   
-  open func transformFromJSON(_ value: Any?) -> Date? {
+  func transformFromJSON(_ value: Any?) -> Date? {
     if let timeInt = value as? Double {
       return Date(timeIntervalSince1970: TimeInterval(timeInt / 1000))
     }
@@ -22,7 +22,7 @@ class CustomDateTransform: ObjectMapper_TransformType {
     return nil
   }
 
-  open func transformToJSON(_ value: Date?) -> Double? {
+  func transformToJSON(_ value: Date?) -> Double? {
     if let date = value {
       return Double(date.timeIntervalSince1970 * 1000)
     }
@@ -41,12 +41,12 @@ struct StringTransform: ObjectMapper_TransformType {
 }
 
 class CustomURLTransform: ObjectMapper_TransformType {
-  public typealias Object = URL
-  public typealias JSON = String
+  typealias Object = URL
+  typealias JSON = String
 
-  public init() {}
+  init() {}
   
-  open func transformFromJSON(_ value: Any?) -> URL? {
+  func transformFromJSON(_ value: Any?) -> URL? {
     guard let url = value as? String else {
       return nil
     }
@@ -54,7 +54,7 @@ class CustomURLTransform: ObjectMapper_TransformType {
     return URL(string: url)
   }
 
-  open func transformToJSON(_ value: URL?) -> String? {
+  func transformToJSON(_ value: URL?) -> String? {
     return nil
   }
 }
@@ -63,7 +63,7 @@ class CustomBlockTransform: ObjectMapper_TransformType {
   static var emojiMap = CHUtils.emojiMap()
   var parser: CHMessageParser
 
-  public init(config: CHMessageParserConfig, isInappPush: Bool = false) {
+  init(config: CHMessageParserConfig, isInappPush: Bool = false) {
     self.parser = CHMessageParser(
       config: config,
       emojiMap: CustomBlockTransform.emojiMap,
@@ -72,7 +72,7 @@ class CustomBlockTransform: ObjectMapper_TransformType {
     )
   }
 
-  open func transformFromJSON(_ value: Any?) -> CHMessageBlock? {
+  func transformFromJSON(_ value: Any?) -> CHMessageBlock? {
     if var block = ObjectMapper_Mapper<CHMessageBlock>().map(JSONObject: value) {
       let text = self.parser.parse(block: block)
       block.displayText = text
@@ -84,7 +84,7 @@ class CustomBlockTransform: ObjectMapper_TransformType {
   }
 
   //not support. cannot parse back to original form
-  open func transformToJSON(_ value: CHMessageBlock?) -> Any? {
+  func transformToJSON(_ value: CHMessageBlock?) -> Any? {
     return nil
   }
 }

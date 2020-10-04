@@ -7,5 +7,5 @@
 //
 
 struct GetCountryCodes: ReSwift_Action {
-  public let payload: [CHCountry]
+  let payload: [CHCountry]
 }

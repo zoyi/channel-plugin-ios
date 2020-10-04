@@ -17,7 +17,7 @@ extension AF_DataRequest {
   ///
   /// - returns: The request.
   @discardableResult
-  public func asyncResponse(
+  func asyncResponse(
     queue: DispatchQueue? = nil,
     options: JSONSerialization.ReadingOptions = .allowFragments,
     completionHandler: @escaping (AF_AFDataResponse<Data>) -> Void) -> Self {

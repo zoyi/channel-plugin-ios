@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable class GradientView: BaseView {
   private var gradientLayer: CAGradientLayer?
 
-  public enum GradientAxis {
+  enum GradientAxis {
     case horizontal
     case vertical
   }

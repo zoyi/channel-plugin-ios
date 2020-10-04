@@ -7,15 +7,15 @@
 //
 
 struct CreateMessage: ReSwift_Action {
-  public let payload: CHMessage?
+  let payload: CHMessage?
 }
 
 struct UpdateMessage: ReSwift_Action {
-  public let payload: CHMessage
+  let payload: CHMessage
 }
 
 struct DeleteMessage: ReSwift_Action {
-  public let payload: CHMessage
+  let payload: CHMessage
 }
 
 // local message action

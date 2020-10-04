@@ -7,7 +7,7 @@
 //
 
 struct GetBot: ReSwift_Action {
-  public let payload: CHBot?
+  let payload: CHBot?
 }
 
 struct BotRequest {

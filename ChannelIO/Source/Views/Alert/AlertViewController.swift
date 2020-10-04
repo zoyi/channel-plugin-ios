@@ -221,7 +221,7 @@ class AlertViewController: BaseViewController {
     }
   }
 
-  public func addAction(_ actionModel: AlertAction) {
+  func addAction(_ actionModel: AlertAction) {
     self.alertView.addAction(
       actionTitle: actionModel.title,
       type: actionModel.type,

@@ -12,34 +12,34 @@ import AudioToolbox
 
 class Mute: NSObject {
   
-  public typealias MuteNotificationCompletion = ((_ mute: Bool) -> Void)
+  typealias MuteNotificationCompletion = ((_ mute: Bool) -> Void)
   
   // MARK: Properties
   /// Shared instance
-  public static let shared = Mute()
+  static let shared = Mute()
   
   /// Sound ID for mute sound
   private let soundUrl = Mute.muteSoundUrl
   
   /// Should notify every second or only when changes?
   /// True will notify every second of the state, false only when it changes
-  public var alwaysNotify = true
+  var alwaysNotify = true
   
   /// Notification handler to be triggered when mute status changes
   /// Triggered every second if alwaysNotify=true, otherwise only when it switches state
-  public var notify: MuteNotificationCompletion?
+  var notify: MuteNotificationCompletion?
   
   /// Currently playing? used when returning from the background (if went to background and foreground really quickly)
-  public private(set) var isPlaying = false
+  private(set) var isPlaying = false
   
   /// Current mute state
-  public private(set) var isMute = false
+  private(set) var isMute = false
   
   /// Sound is scheduled
   private var isScheduled = false
   
   /// State of detection - paused when in background
-  public var isPaused = false {
+  var isPaused = false {
     didSet {
       if !self.isPaused && oldValue && !self.isPlaying {
         self.schedulePlaySound()
@@ -48,7 +48,7 @@ class Mute: NSObject {
   }
   
   /// How frequently to check (seconds), minimum = 0.5
-  public var checkInterval = 1.0 {
+  var checkInterval = 1.0 {
     didSet {
       if self.checkInterval < 0.5 {
         print("MUTE: checkInterval cannot be less than 0.5s, setting to 0.5")
@@ -136,7 +136,7 @@ class Mute: NSObject {
   
   // MARK: Methods
   /// Schedueles mute sound to be played in 1 second
-  public func schedulePlaySound() {
+  func schedulePlaySound() {
     /// Don't schedule a new one if we already have one queued
     if self.isScheduled { return }
     

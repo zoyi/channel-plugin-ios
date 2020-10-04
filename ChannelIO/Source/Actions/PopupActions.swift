@@ -7,7 +7,7 @@
 //
 
 struct GetPopup : ReSwift_Action {
-  public let payload : CHPopupDisplayable?
+  let payload : CHPopupDisplayable?
 }
 
 struct RemovePopup : ReSwift_Action {}

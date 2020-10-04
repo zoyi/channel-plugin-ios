@@ -13,7 +13,7 @@
 
 class AbstractPredicateTransition: Transition {
 
-    /*public  override init(_ target : ATNState) {
+    /*override init(_ target : ATNState) {
         super.init(target);
     }*/
 

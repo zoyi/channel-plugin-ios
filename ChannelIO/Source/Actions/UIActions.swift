@@ -17,7 +17,7 @@ struct ChatListIsHidden: ReSwift_Action {}
 // boot state
 
 struct UpdateBootState: ReSwift_Action {
-  public let payload: BootStatus
+  let payload: BootStatus
 }
 
 struct ReadyToShow: ReSwift_Action {}

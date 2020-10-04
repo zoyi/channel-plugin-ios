@@ -7,35 +7,35 @@
 //
 
 struct GetTouchSuccess: ReSwift_Action {
-  public let payload: BootResponse
+  let payload: BootResponse
 }
 
 struct BootSuccess: ReSwift_Action {
-  public let payload: BootResponse
+  let payload: BootResponse
 }
 
 struct ShutdownSuccess: ReSwift_Action {
-  public let isSleeping: Bool
+  let isSleeping: Bool
 }
 
 struct UpdateLoungeInfo: ReSwift_Action {
-  public let channel: CHChannel
-  public let plugin: CHPlugin
-  public let bot: CHBot?
-  public let operators: [CHManager]
-  public let supportBotEntryInfo: CHSupportBotEntryInfo?
-  public let userChats: UserChatsResponse
+  let channel: CHChannel
+  let plugin: CHPlugin
+  let bot: CHBot?
+  let operators: [CHManager]
+  let supportBotEntryInfo: CHSupportBotEntryInfo?
+  let userChats: UserChatsResponse
 }
 
 struct GetPlugin: ReSwift_Action {
-  public let plugin: CHPlugin
-  public let bot: CHBot?
+  let plugin: CHPlugin
+  let bot: CHBot?
 }
 
 struct UpdateChannel: ReSwift_Action {
-  public let payload: CHChannel
+  let payload: CHChannel
 }
 
 struct UpdateLocale: ReSwift_Action {
-  public let payload: CHLocaleString
+  let payload: CHLocaleString
 }

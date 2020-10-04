@@ -281,7 +281,7 @@ final class ATNConfigSet: Hashable, CustomStringConvertible {
 
     /// 
     /// override
-    /// public <T> func toArray(a : [T]) -> [T] {
+    /// <T> func toArray(a : [T]) -> [T] {
     /// return configLookup.toArray(a);
     /// 
     private func configHash(_ stateNumber: Int,_ context: PredictionContext?) -> Int{

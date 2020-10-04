@@ -9,11 +9,11 @@
 import Foundation
 
 struct ViewMarketing: ReSwift_Action {
-  public let type: CHMarketingType?
-  public let id: String?
+  let type: CHMarketingType?
+  let id: String?
 }
 
 struct ClickMarketing: ReSwift_Action {
-  public let type: CHMarketingType?
-  public let id: String?
+  let type: CHMarketingType?
+  let id: String?
 }

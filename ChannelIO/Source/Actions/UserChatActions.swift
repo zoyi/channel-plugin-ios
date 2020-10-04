@@ -7,73 +7,73 @@
 //
 
 struct FetchedUserChatPrep: ReSwift_Action {
-  public let followers: [CHManager]
-  public let plugin: CHPlugin
-  public let bot: CHBot?
-  public let supportBotEntry: CHSupportBotEntryInfo
+  let followers: [CHManager]
+  let plugin: CHPlugin
+  let bot: CHBot?
+  let supportBotEntry: CHSupportBotEntryInfo
 }
 
 struct GetUserChats: ReSwift_Action {
-  public let payload: UserChatsResponse
+  let payload: UserChatsResponse
 }
 
 struct FailedGetUserChats: ReSwift_Action {
-  public let error: Error
+  let error: Error
 }
 
 struct GetMessages: ReSwift_Action {
-  public let payload: [String: Any]
+  let payload: [String: Any]
 }
 
 //struct FailedGetMessages: Action {
-//  public let error: Error
+//  let error: Error
 //}
 
 struct RemoveMessages: ReSwift_Action {
-  public let payload: String?
+  let payload: String?
 }
 
 struct GetUserChat: ReSwift_Action {
-  public let payload: ChatResponse
+  let payload: ChatResponse
 }
 
 struct CreateUserChat: ReSwift_Action {
-  public let payload: CHUserChat
+  let payload: CHUserChat
 }
 
 struct UpdateUserChat: ReSwift_Action {
-  public let payload: CHUserChat
+  let payload: CHUserChat
 }
 
 struct DeleteUserChat: ReSwift_Action {
-  public let payload: CHUserChat
+  let payload: CHUserChat
 }
 
 struct DeleteUserChats: ReSwift_Action {
-  public let payload: [CHUserChat]
+  let payload: [CHUserChat]
 }
 
 struct DeleteUserChatsAll: ReSwift_Action {}
 
 struct JoinedUserChat: ReSwift_Action {
-  public let payload: String
+  let payload: String
 }
 
 struct LeavedUserChat: ReSwift_Action {
-  public let payload: String
+  let payload: String
 }
 
 //Update user
 struct UpdateUser: ReSwift_Action {
-  public let payload: CHUser?
+  let payload: CHUser?
 }
 
 struct UpdateVisibilityOfCompletedChats: ReSwift_Action {
-  public let show: Bool? 
+  let show: Bool?
 }
 
 struct UpdateVisibilityOfTranslation: ReSwift_Action {
-  public let show: Bool?
+  let show: Bool?
 }
 
 struct UserChatActions {

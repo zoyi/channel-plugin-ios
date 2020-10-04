@@ -7,25 +7,25 @@
 //
 
 struct CreateSession: ReSwift_Action {
-  public let payload: CHSession?
+  let payload: CHSession?
 }
 
 struct UpdateSession: ReSwift_Action {
-  public let payload: CHSession?
+  let payload: CHSession?
 }
 
 struct DeleteSession: ReSwift_Action {
-  public let payload: CHSession?
+  let payload: CHSession?
 }
 
 struct UpdateManager: ReSwift_Action {
-  public let payload: CHManager
+  let payload: CHManager
 }
 
 struct UpdateFollowingManagers: ReSwift_Action {
-  public let payload: [CHManager]
+  let payload: [CHManager]
 }
 
 struct ReadSession: ReSwift_Action {
-  public let payload: CHSession?
+  let payload: CHSession?
 }
