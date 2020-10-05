@@ -58,7 +58,7 @@ struct MarketingPromise {
     }
   }
   
-  static func getCampaignSupportBot(with campaignId: String) -> _RXSwift_Observable<CHSupportBotEntryInfo> {
+  static func getCampaignSupportBot(with campaignId: String) -> _RXSwift_Observable<CHSupportBot?> {
     return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.GetCampaignSupportBot(campaignId))
@@ -66,9 +66,12 @@ struct MarketingPromise {
         .responseData { response in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON_JSON(data)
-            guard let supportBot = ObjectMapper_Mapper<CHSupportBotEntryInfo>().map(JSONObject: json) else {
-              subscriber.onError(ChannelError.parseError)
+            let json = SwiftyJSON.JSON(data)
+            guard
+              let supportBot = ObjectMapper_Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
+            else {
+              subscriber.onNext(nil)
+              subscriber.onCompleted()
               break
             }
             subscriber.onNext(supportBot)
@@ -132,7 +135,7 @@ struct MarketingPromise {
     }
   }
   
-  static func getOneTimeMsgSupportBot(with oneTimeMsgId: String) -> _RXSwift_Observable<CHSupportBotEntryInfo> {
+  static func getOneTimeMsgSupportBot(with oneTimeMsgId: String) -> _RXSwift_Observable<CHSupportBot?> {
     return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.GetOneTimeMsgSupportBot(oneTimeMsgId))
@@ -142,9 +145,10 @@ struct MarketingPromise {
           case .success(let data):
             let json = SwiftyJSON_JSON(data)
             guard
-              let supportBot = ObjectMapper_Mapper<CHSupportBotEntryInfo>().map(JSONObject: json.object)
+              let supportBot = ObjectMapper_Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
             else {
-              subscriber.onError(ChannelError.parseError)
+              subscriber.onNext(nil)
+              subscriber.onCompleted()
               break
             }
             subscriber.onNext(supportBot)
