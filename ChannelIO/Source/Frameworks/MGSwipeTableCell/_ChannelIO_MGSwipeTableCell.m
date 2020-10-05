@@ -7,11 +7,11 @@
 
 #pragma mark Input Overlay Helper Class
 /** Used to capture table input while swipe buttons are visible*/
-@interface MGSwipeTableInputOverlay : UIView
+@interface _ChannelIO_MGSwipeTableInputOverlay : UIView
 @property (nonatomic, weak) _ChannelIO_MGSwipeTableCell * currentCell;
 @end
 
-@implementation MGSwipeTableInputOverlay
+@implementation _ChannelIO_MGSwipeTableInputOverlay
 
 -(id) initWithFrame:(CGRect)frame
 {
@@ -49,12 +49,12 @@
 
 #pragma mark Button Container View and transitions
 
-@interface MGSwipeButtonsView : UIView
+@interface _ChannelIO_MGSwipeButtonsView : UIView
 @property (nonatomic, weak) _ChannelIO_MGSwipeTableCell * cell;
 @property (nonatomic, strong) UIColor * backgroundColorCopy;
 @end
 
-@implementation MGSwipeButtonsView
+@implementation _ChannelIO_MGSwipeButtonsView
 {
     NSArray * _buttons;
     UIView * _container;
@@ -498,7 +498,7 @@
 }
 @end
 
-@interface MGSwipeAnimationData : NSObject
+@interface _ChannelIO_MGSwipeAnimationData : NSObject
 @property (nonatomic, assign) CGFloat from;
 @property (nonatomic, assign) CGFloat to;
 @property (nonatomic, assign) CFTimeInterval duration;
@@ -507,7 +507,7 @@
 
 @end
 
-@implementation MGSwipeAnimationData
+@implementation _ChannelIO_MGSwipeAnimationData
 @end
 
 
@@ -612,20 +612,20 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
     UIView * _swipeOverlay;
     UIImageView * _swipeView;
     UIView * _swipeContentView;
-    MGSwipeButtonsView * _leftView;
-    MGSwipeButtonsView * _rightView;
+  _ChannelIO_MGSwipeButtonsView * _leftView;
+  _ChannelIO_MGSwipeButtonsView * _rightView;
     bool _allowSwipeRightToLeft;
     bool _allowSwipeLeftToRight;
-    __weak MGSwipeButtonsView * _activeExpansion;
+    __weak _ChannelIO_MGSwipeButtonsView * _activeExpansion;
 
-    MGSwipeTableInputOverlay * _tableInputOverlay;
+  _ChannelIO_MGSwipeTableInputOverlay * _tableInputOverlay;
     bool _overlayEnabled;
     UITableViewCellSelectionStyle _previusSelectionStyle;
     NSMutableSet * _previusHiddenViews;
     UITableViewCellAccessoryType _previusAccessoryType;
     BOOL _triggerStateChanges;
     
-    MGSwipeAnimationData * _animationData;
+  _ChannelIO_MGSwipeAnimationData * _animationData;
     void (^_animationCompletion)(BOOL finished);
     CADisplayLink * _displayLink;
     _ChannelIO_MGSwipeState _firstSwipeState;
@@ -673,7 +673,7 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
         _leftExpansion = [[_ChannelIO_MGSwipeExpansionSettings alloc] init];
         _rightExpansion = [[_ChannelIO_MGSwipeExpansionSettings alloc] init];
     }
-    _animationData = [[MGSwipeAnimationData alloc] init];
+    _animationData = [[_ChannelIO_MGSwipeAnimationData alloc] init];
     _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panHandler:)];
     [self addGestureRecognizer:_panRecognizer];
     _panRecognizer.delegate = self;
@@ -829,7 +829,7 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
     [self fetchButtonsIfNeeded];
     if (!_leftView && _leftButtons.count > 0) {
         _leftSwipeSettings.allowsButtonsWithDifferentWidth = _leftSwipeSettings.allowsButtonsWithDifferentWidth || _allowsButtonsWithDifferentWidth;
-        _leftView = [[MGSwipeButtonsView alloc] initWithButtons:_leftButtons direction:MGSwipeDirectionLeftToRight swipeSettings:_leftSwipeSettings safeInset:safeInsets.left];
+        _leftView = [[_ChannelIO_MGSwipeButtonsView alloc] initWithButtons:_leftButtons direction:MGSwipeDirectionLeftToRight swipeSettings:_leftSwipeSettings safeInset:safeInsets.left];
         _leftView.cell = self;
         _leftView.frame = CGRectMake(-_leftView.bounds.size.width + safeInsets.left * ([self isRTLLocale] ? 1 : -1),
                                      _leftSwipeSettings.topMargin,
@@ -840,7 +840,7 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
     }
     if (!_rightView && _rightButtons.count > 0) {
         _rightSwipeSettings.allowsButtonsWithDifferentWidth = _rightSwipeSettings.allowsButtonsWithDifferentWidth || _allowsButtonsWithDifferentWidth;
-        _rightView = [[MGSwipeButtonsView alloc] initWithButtons:_rightButtons direction:MGSwipeDirectionRightToLeft swipeSettings:_rightSwipeSettings safeInset:safeInsets.right];
+        _rightView = [[_ChannelIO_MGSwipeButtonsView alloc] initWithButtons:_rightButtons direction:MGSwipeDirectionRightToLeft swipeSettings:_rightSwipeSettings safeInset:safeInsets.right];
         _rightView.cell = self;
         _rightView.frame = CGRectMake(_swipeOverlay.bounds.size.width + safeInsets.right * ([self isRTLLocale] ? 1 : -1),
                                       _rightSwipeSettings.topMargin,
@@ -890,7 +890,7 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
         if (_tableInputOverlay) {
             [_tableInputOverlay removeFromSuperview];
         }
-        _tableInputOverlay = [[MGSwipeTableInputOverlay alloc] initWithFrame:table.bounds];
+        _tableInputOverlay = [[_ChannelIO_MGSwipeTableInputOverlay alloc] initWithFrame:table.bounds];
         _tableInputOverlay.currentCell = self;
         [table addSubview:_tableInputOverlay];
     }
@@ -1118,7 +1118,7 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
 - (void)setSwipeOffset:(CGFloat) newOffset;
 {
     CGFloat sign = newOffset > 0 ? 1.0 : -1.0;
-    MGSwipeButtonsView * activeButtons = sign < 0 ? _rightView : _leftView;
+  _ChannelIO_MGSwipeButtonsView * activeButtons = sign < 0 ? _rightView : _leftView;
     _ChannelIO_MGSwipeSettings * activeSettings = sign < 0 ? _rightSwipeSettings : _leftSwipeSettings;
   
     if(activeSettings.enableSwipeBounces) {
@@ -1160,12 +1160,12 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
     _swipeView.transform = CGAffineTransformMakeTranslation(safeInset + (onlyButtons ? 0 : _swipeOffset), 0);
     
     //animate existing buttons
-    MGSwipeButtonsView* but[2] = {_leftView, _rightView};
+  _ChannelIO_MGSwipeButtonsView* but[2] = {_leftView, _rightView};
     _ChannelIO_MGSwipeSettings* settings[2] = {_leftSwipeSettings, _rightSwipeSettings};
     _ChannelIO_MGSwipeExpansionSettings * expansions[2] = {_leftExpansion, _rightExpansion};
     
     for (int i = 0; i< 2; ++i) {
-        MGSwipeButtonsView * view = but[i];
+      _ChannelIO_MGSwipeButtonsView * view = but[i];
         if (!view) continue;
 
         //buttons view position
@@ -1233,7 +1233,7 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
         UIView * buttonsView = direction == MGSwipeDirectionLeftToRight ? _leftView : _rightView;
         
         if (buttonsView) {
-            __weak MGSwipeButtonsView * expansionView = direction == MGSwipeDirectionLeftToRight ? _leftView : _rightView;
+            __weak _ChannelIO_MGSwipeButtonsView * expansionView = direction == MGSwipeDirectionLeftToRight ? _leftView : _rightView;
             __weak _ChannelIO_MGSwipeTableCell * weakself = self;
             [self setSwipeOffset:buttonsView.bounds.size.width * s * expSetting.threshold * 2 animation:expSetting.triggerAnimation completion:^(BOOL finished){
                 [expansionView endExpansionAnimated:YES];
@@ -1385,7 +1385,7 @@ static inline CGFloat mgEaseInOutBounce(CGFloat t, CGFloat b, CGFloat c) {
         self.swipeOffset = [self filterSwipe:offset];
     }
     else {
-        __weak MGSwipeButtonsView * expansion = _activeExpansion;
+        __weak _ChannelIO_MGSwipeButtonsView * expansion = _activeExpansion;
         if (expansion) {
             __weak UIView * expandedButton = [expansion getExpandedButton];
             _ChannelIO_MGSwipeExpansionSettings * expSettings = _swipeOffset > 0 ? _leftExpansion : _rightExpansion;
