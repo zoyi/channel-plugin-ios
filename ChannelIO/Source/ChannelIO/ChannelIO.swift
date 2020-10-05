@@ -51,7 +51,7 @@ public protocol ChannelPluginDelegate: class {
   @objc optional func onShowMessenger() -> Void
   @objc optional func onHideMessenger() -> Void
   @objc optional func onChatCreated(chatId: String) -> Void
-  @objc optional func onBadgeChanged(alert: Int) -> Void
+  @objc optional func onBadgeChanged(count: Int) -> Void
   @objc optional func onProfileChanged(key: String, value: Any?) -> Void
   @objc optional func onUrlClicked(url: URL) -> Bool
   @objc optional func onPopupDataReceived(event: PopupData) -> Void
@@ -154,7 +154,7 @@ public final class ChannelIO: NSObject {
       
       if let curr = ChannelIO.currentAlertCount, curr != count {
         ChannelIO.delegate?.onChangeBadge?(count: count)
-        ChannelIO.delegate?.onBadgeChanged?(alert: count)
+        ChannelIO.delegate?.onBadgeChanged?(count: count)
       }
       ChannelIO.currentAlertCount = count
     }
