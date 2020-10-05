@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
-import RxSwift
+//import RxSwift
 
 protocol CHEvaluatable {
   var target: [[CHTargetCondition]]? { get set }
@@ -21,10 +20,10 @@ struct CHSupportBot: CHEvaluatable {
   var target: [[CHTargetCondition]]? = nil
 }
 
-extension CHSupportBot: Mappable {
-  init?(map: Map) { }
+extension CHSupportBot: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id            <- map["id"]
     channelId     <- map["channelId"]
     pluginId      <- map["pluginId"]
@@ -33,7 +32,7 @@ extension CHSupportBot: Mappable {
 }
 
 extension CHSupportBot {
-  static func reply(with message: CHMessage, actionId: String? = nil) -> Observable<CHMessage> {
+  static func reply(with message: CHMessage, actionId: String? = nil) -> _RXSwift_Observable<CHMessage> {
     let actionId = actionId ?? message.id
     
     return SupportBotPromise.replySupportBot(
@@ -43,17 +42,17 @@ extension CHSupportBot {
       requestId: message.requestId)
   }
   
-  static func create(with botId: String) -> Observable<ChatResponse> {
+  static func create(with botId: String) -> _RXSwift_Observable<ChatResponse> {
     return SupportBotPromise.createSupportBotUserChat(
       supportBotId: botId,
       url: ChannelIO.hostTopControllerName ?? ""
     )
   }
   
-  static func startFromMarketing(userChatId: String?) -> Observable<CHMessage> {
+  static func startFromMarketing(userChatId: String?, supportBotId: String?) -> _RXSwift_Observable<CHMessage> {
     return SupportBotPromise.startMarketingToSupportBot(
       userChatId: userChatId,
-      supportBotId: mainStore.state.botsState.findSupportBot()?.id
+      supportBotId: supportBotId
     )
   }
 }
@@ -63,10 +62,10 @@ struct CHSupportBotStep {
   var message: CHMessage?
 }
 
-extension CHSupportBotStep: Mappable {
-  init?(map: Map) { }
+extension CHSupportBotStep: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id            <- map["id"]
     message       <- map["message"]
   }
@@ -89,10 +88,10 @@ struct CHSupportBotEntryInfo {
   }
 }
 
-extension CHSupportBotEntryInfo: Mappable {
-  init?(map: Map) { }
+extension CHSupportBotEntryInfo: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     supportBot      <- map["supportBot"]
     step            <- map["step"]
     buttons         <- map["buttons"]

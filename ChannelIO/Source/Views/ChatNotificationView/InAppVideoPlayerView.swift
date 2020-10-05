@@ -6,8 +6,7 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 import AVKit
-import RxSwift
-import SDWebImage
+//import RxSwift
 import UIKit
 
 class InAppVideoPlayerView: BaseView {
@@ -27,7 +26,7 @@ class InAppVideoPlayerView: BaseView {
     $0.progress = 0
   }
   
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
 
   override func initialize() {
     super.initialize()

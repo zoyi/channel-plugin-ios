@@ -7,25 +7,25 @@
 
 import Foundation
 
-public class PredictionContext: Hashable, CustomStringConvertible {
+class PredictionContext: Hashable, CustomStringConvertible {
     /// 
     /// Represents `$` in local context prediction, which means wildcard.
     /// `+x = *`.
     /// 
-    public static let EMPTY = EmptyPredictionContext()
+    static let EMPTY = EmptyPredictionContext()
 
     /// 
     /// Represents `$` in an array in full context mode, when `$`
     /// doesn't mean wildcard: `$ + x = [$,x]`. Here,
     /// `$` = _#EMPTY_RETURN_STATE_.
     /// 
-    public static let EMPTY_RETURN_STATE = Int(Int32.max)
+    static let EMPTY_RETURN_STATE = Int(Int32.max)
 
     private static let INITIAL_HASH = UInt32(1)
 
-    public static var globalNodeCount = 0
+    static var globalNodeCount = 0
 
-    public final let id: Int = {
+    final let id: Int = {
         let oldGlobalNodeCount = globalNodeCount
         globalNodeCount += 1
         return oldGlobalNodeCount
@@ -52,7 +52,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// }
     /// 
     /// 
-    public let cachedHashCode: Int
+    let cachedHashCode: Int
 
     init(_ cachedHashCode: Int) {
         self.cachedHashCode = cachedHashCode
@@ -62,7 +62,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// Convert a _org.antlr.v4.runtime.RuleContext_ tree to a _org.antlr.v4.runtime.atn.PredictionContext_ graph.
     /// Return _#EMPTY_ if `outerContext` is empty or null.
     /// 
-    public static func fromRuleContext(_ atn: ATN, _ outerContext: RuleContext?) -> PredictionContext {
+    static func fromRuleContext(_ atn: ATN, _ outerContext: RuleContext?) -> PredictionContext {
         let _outerContext = outerContext ?? RuleContext.EMPTY
 
         // if we are in RuleContext of start rule, s, then PredictionContext
@@ -79,17 +79,17 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         return SingletonPredictionContext.create(parent, transition.followState.stateNumber)
     }
 
-    public func size() -> Int {
+    func size() -> Int {
         fatalError(#function + " must be overridden")
     }
 
 
-    public func getParent(_ index: Int) -> PredictionContext? {
+    func getParent(_ index: Int) -> PredictionContext? {
         fatalError(#function + " must be overridden")
     }
 
 
-    public func getReturnState(_ index: Int) -> Int {
+    func getReturnState(_ index: Int) -> Int {
         fatalError(#function + " must be overridden")
     }
 
@@ -97,15 +97,15 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// 
     /// This means only the _#EMPTY_ context is in set.
     /// 
-    public func isEmpty() -> Bool {
+    func isEmpty() -> Bool {
         return self === PredictionContext.EMPTY
     }
 
-    public func hasEmptyPath() -> Bool {
+    func hasEmptyPath() -> Bool {
         return getReturnState(size() - 1) == PredictionContext.EMPTY_RETURN_STATE
     }
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(cachedHashCode)
     }
 
@@ -136,7 +136,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
     // dispatch
-    public static func merge(
+    static func merge(
         _ a: PredictionContext,
         _ b: PredictionContext,
         _ rootIsWildcard: Bool,
@@ -205,7 +205,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// otherwise false to indicate a full-context merge
     /// - parameter mergeCache:
     /// 
-    public static func mergeSingletons(
+    static func mergeSingletons(
         _ a: SingletonPredictionContext,
         _ b: SingletonPredictionContext,
         _ rootIsWildcard: Bool,
@@ -333,7 +333,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// - parameter rootIsWildcard: `true` if this is a local-context merge,
     /// otherwise false to indicate a full-context merge
     /// 
-    public static func mergeRoot(_ a: SingletonPredictionContext,
+    static func mergeRoot(_ a: SingletonPredictionContext,
         _ b: SingletonPredictionContext,
         _ rootIsWildcard: Bool) -> PredictionContext? {
             if rootIsWildcard {
@@ -384,7 +384,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// _org.antlr.v4.runtime.atn.SingletonPredictionContext_.
     /// 
     /// 
-    public static func mergeArrays(
+    static func mergeArrays(
         _ a: ArrayPredictionContext,
         _ b: ArrayPredictionContext,
         _ rootIsWildcard: Bool,
@@ -514,7 +514,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             return M
     }
 
-    public static func toDOTString(_ context: PredictionContext?) -> String {
+    static func toDOTString(_ context: PredictionContext?) -> String {
         if context == nil {
             return ""
         }
@@ -577,7 +577,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
     // From Sam
-    public static func getCachedContext(
+    static func getCachedContext(
         _ context: PredictionContext,
         _ contextCache: PredictionContextCache,
         _ visited: inout [PredictionContext: PredictionContext]) -> PredictionContext {
@@ -646,7 +646,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
 
     // ter's recursive version of Sam's getAllNodes()
-    public static func getAllContextNodes(_ context: PredictionContext) -> [PredictionContext] {
+    static func getAllContextNodes(_ context: PredictionContext) -> [PredictionContext] {
         var nodes = [PredictionContext]()
         var visited = [PredictionContext: PredictionContext]()
         getAllContextNodes_(context, &nodes, &visited)
@@ -667,17 +667,17 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         }
     }
 
-    public func toString<T>(_ recog: Recognizer<T>) -> String {
+    func toString<T>(_ recog: Recognizer<T>) -> String {
         return String(describing: PredictionContext.self)
         //		return toString(recog, ParserRuleContext.EMPTY);
     }
 
-    public func toStrings<T>(_ recognizer: Recognizer<T>, _ currentState: Int) -> [String] {
+    func toStrings<T>(_ recognizer: Recognizer<T>, _ currentState: Int) -> [String] {
         return toStrings(recognizer, PredictionContext.EMPTY, currentState)
     }
 
     // FROM SAM
-    public func toStrings<T>(_ recognizer: Recognizer<T>?, _ stop: PredictionContext, _ currentState: Int) -> [String] {
+    func toStrings<T>(_ recognizer: Recognizer<T>?, _ stop: PredictionContext, _ currentState: Int) -> [String] {
         var result = [String]()
         var perm = 0
         outer: while true {
@@ -744,13 +744,13 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         return result
     }
 
-    public var description: String {
+    var description: String {
         return String(describing: PredictionContext.self) + "@" + String(Unmanaged.passUnretained(self).toOpaque().hashValue)
     }
 }
 
 
-public func ==(lhs: RuleContext, rhs: ParserRuleContext) -> Bool {
+func ==(lhs: RuleContext, rhs: ParserRuleContext) -> Bool {
     if let lhs = lhs as? ParserRuleContext {
         return lhs === rhs
     }
@@ -759,7 +759,7 @@ public func ==(lhs: RuleContext, rhs: ParserRuleContext) -> Bool {
     }
 }
 
-public func ==(lhs: PredictionContext, rhs: PredictionContext) -> Bool {
+func ==(lhs: PredictionContext, rhs: PredictionContext) -> Bool {
 
     if lhs === rhs {
         return true
@@ -779,22 +779,22 @@ public func ==(lhs: PredictionContext, rhs: PredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: ArrayPredictionContext, rhs: SingletonPredictionContext) -> Bool {
+func ==(lhs: ArrayPredictionContext, rhs: SingletonPredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: SingletonPredictionContext, rhs: ArrayPredictionContext) -> Bool {
+func ==(lhs: SingletonPredictionContext, rhs: ArrayPredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: SingletonPredictionContext, rhs: EmptyPredictionContext) -> Bool {
+func ==(lhs: SingletonPredictionContext, rhs: EmptyPredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: EmptyPredictionContext, rhs: ArrayPredictionContext) -> Bool {
+func ==(lhs: EmptyPredictionContext, rhs: ArrayPredictionContext) -> Bool {
     return lhs === rhs
 }
 
-public func ==(lhs: EmptyPredictionContext, rhs: SingletonPredictionContext) -> Bool {
+func ==(lhs: EmptyPredictionContext, rhs: SingletonPredictionContext) -> Bool {
     return lhs === rhs
 }

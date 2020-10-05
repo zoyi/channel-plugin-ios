@@ -11,12 +11,12 @@
 /// Disambiguating predicate evaluation occurs when we test a predicate during
 /// prediction.
 /// 
-public class FailedPredicateException: RecognitionException {
+class FailedPredicateException: RecognitionException {
 	private let ruleIndex: Int
 	private let predicateIndex: Int
 	private let predicate: String?
 
-	public init(_ recognizer: Parser, _ predicate: String? = nil, _ message: String? = nil) {
+	init(_ recognizer: Parser, _ predicate: String? = nil, _ message: String? = nil) {
 		let s = recognizer.getInterpreter().atn.states[recognizer.getState()]!
 
 		let trans = s.transition(0) as! AbstractPredicateTransition
@@ -37,15 +37,15 @@ public class FailedPredicateException: RecognitionException {
         }
 	}
 
-	public func getRuleIndex() -> Int {
+	func getRuleIndex() -> Int {
 		return ruleIndex
 	}
 
-	public func getPredIndex() -> Int {
+	func getPredIndex() -> Int {
 		return predicateIndex
 	}
 
-	public func getPredicate() -> String? {
+	func getPredicate() -> String? {
 		return predicate
 	}
 

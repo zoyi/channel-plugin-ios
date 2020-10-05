@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
+func channelReducer(action: ReSwift_Action, channel: CHChannel?) -> CHChannel {
   switch action {
     
   case let action as BootSuccess:
@@ -18,8 +16,8 @@ func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
     }
     return CHChannel()
     
-  case _ as ShutdownSuccess:
-    PrefStore.clearAllLocalData()
+  case let action as ShutdownSuccess:
+    PrefStore.clearAllLocalData(isSleeping: action.isSleeping)
     RestRouter.channelId = ""
     return CHChannel()
     

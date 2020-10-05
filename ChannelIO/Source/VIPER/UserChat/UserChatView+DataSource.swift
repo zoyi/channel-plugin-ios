@@ -6,7 +6,7 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 import UIKit
 
 // MARK: - UITableView
@@ -130,7 +130,7 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
       cell.configure(item: loadingFile, count: self.waitingFileCount)
     }
     cell.signalForRemove()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe { [weak self] _ in
         guard let item = self?.loadingFile else { return }
         self?.presenter?.didClickOnRemoveFile(with: item)
@@ -144,14 +144,14 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
     let cell: FileStatusCell = tableView.dequeueReusableCell(for: indexPath)
     cell.configure(item: self.errorFiles[indexPath.row], count: 0)
     cell.signalForRemove()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe { [weak self] _ in
         guard let item = self?.errorFiles[indexPath.row] else { return }
         self?.presenter?.didClickOnRemoveFile(with: item)
       }.disposed(by: self.disposeBag)
     
     cell.signalForRetry()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe { [weak self] _ in
         guard let item = self?.errorFiles[indexPath.row] else { return }
         self?.presenter?.didClickOnRetryFile(with: item)
@@ -209,7 +209,7 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
         let cell: ActionWebMessageCell = tableView.dequeueReusableCell(for: indexPath)
         cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
         cell.webView.signalForClick()
-          .observeOn(MainScheduler.instance)
+          .observeOn(_RXSwift_MainScheduler.instance)
           .subscribe{ [weak self] _ in
             self?.presenter?.didClickOnWeb(with: message, url: message.webPage?.url, from: self)
           }.disposed(by: self.disposeBag)
@@ -218,7 +218,7 @@ extension UserChatView : UITableViewDataSource, UITableViewDelegate {
       let cell: WebPageMessageCell = tableView.dequeueReusableCell(for: indexPath)
       cell.configure(viewModel, dataSource: self, presenter: self.presenter, row: indexPath.row)
       cell.webView.signalForClick()
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe{ [weak self] _ in
           self?.presenter?.didClickOnWeb(with: message, url: message.webPage?.url, from: self)
         }.disposed(by: self.disposeBag)
@@ -338,7 +338,7 @@ extension UserChatView: UICollectionViewDelegate,
       
       cell.videoView
         .signalForPlay()
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] play, seconds in
           if play, self?.currentPlayingVideo != cell.videoView {
             self?.currentPlayingVideo?.pause()

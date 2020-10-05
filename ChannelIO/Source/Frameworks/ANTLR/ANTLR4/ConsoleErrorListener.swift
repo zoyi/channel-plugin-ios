@@ -10,11 +10,11 @@
 /// -  Sam Harwell
 /// 
 
-public class ConsoleErrorListener: BaseErrorListener {
+class ConsoleErrorListener: BaseErrorListener {
     /// 
     /// Provides a default instance of _org.antlr.v4.runtime.ConsoleErrorListener_.
     /// 
-    public static let INSTANCE: ConsoleErrorListener = ConsoleErrorListener()
+    static let INSTANCE: ConsoleErrorListener = ConsoleErrorListener()
 
     /// 
     /// 
@@ -25,7 +25,7 @@ public class ConsoleErrorListener: BaseErrorListener {
     /// line __line__:__charPositionInLine__ __msg__
     /// 
     /// 
-    override public func syntaxError<T>(_ recognizer: Recognizer<T>,
+    override func syntaxError<T>(_ recognizer: Recognizer<T>,
                                         _ offendingSymbol: AnyObject?,
                                         _ line: Int,
                                         _ charPositionInLine: Int,

@@ -6,10 +6,9 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import RxSwiftExt
-import RxCocoa
-import JGProgressHUD
+//import RxSwift
+//import RxSwiftExt
+//import RxCocoa
 
 class LoungePresenter: NSObject, LoungePresenterProtocol {
   weak var view: LoungeViewProtocol?
@@ -18,15 +17,17 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   
   var needToFetch = false
   var chatId: String?
+  var preloadText: String?
+  var isOpenChat: Bool = false
   
-  var disposeBag = DisposeBag()
-  var notiDisposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
+  var notiDisposeBag = _RXSwift_DisposeBag()
   
-  var errorSignal = PublishSubject<Any?>()
+  var errorSignal = _RXSwift_PublishSubject<Any?>()
   
-  var loungeCompletion = BehaviorRelay<Bool>(value: false)
+  var loungeCompletion = _RXRelay_BehaviorRelay<Bool>(value: false)
   
-  var locale: CHLocaleString? = ChannelIO.settings?.appLocale
+  var locale: CHLocaleString? = ChannelIO.bootConfig?.appLocale
   
   func viewDidLoad() {
     self.updateHeaders()
@@ -39,12 +40,12 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       }).disposed(by: self.disposeBag)
     
     WsService.shared.error()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .bind(to: self.errorSignal)
       .disposed(by: self.disposeBag)
     
     self.errorSignal
-      .debounce(.seconds(1), scheduler: MainScheduler.instance)
+      .debounce(.seconds(1), scheduler: _RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (_) in
         CHNotification.shared.display(
           message: CHAssets.localized("ch.toast.unstable_internet"),
@@ -70,17 +71,37 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
     }
     
     //handle showUserChat
-    if let chatId = chatId, let view = self.view as? UIViewController {
+    if let chatId = self.chatId, let view = self.view as? UIViewController {
       self.view?.setViewVisible(false)
-      self.router?.pushChat(with: chatId, animated: false, from: view)
+      self.router?.pushChat(
+        with: chatId,
+        text: self.preloadText,
+        isOpenChat: false,
+        animated: false,
+        from: view
+      )
       self.chatId = nil
+      self.isOpenChat = false
+    } else if self.chatId == nil,
+      self.isOpenChat == true,
+      let view = self.view as? UIViewController {
+      self.view?.setViewVisible(false)
+      self.router?.pushChat(
+        with: chatId,
+        text: self.preloadText,
+        isOpenChat: self.preloadText != nil,
+        animated: false,
+        from: view
+      )
+      self.chatId = nil
+      self.isOpenChat = false
     } else {
       self.view?.setViewVisible(true)
       self.view?.displayReady()
     }
     
-    if self.locale != ChannelIO.settings?.appLocale {
-      self.locale = ChannelIO.settings?.appLocale
+    if self.locale != ChannelIO.bootConfig?.appLocale {
+      self.locale = ChannelIO.bootConfig?.appLocale
       self.view?.reloadContents()
     }
     
@@ -89,14 +110,14 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func cleanup() {
-    self.notiDisposeBag = DisposeBag()
+    self.notiDisposeBag = _RXSwift_DisposeBag()
     self.interactor?.unsubscribeDataSource()
   }
   
   func initObservers() {
     ChannelAvailabilityChecker.shared.updateSignal
-      .observeOn(MainScheduler.instance)
-      .flatMap { [weak self] (_) -> Observable<CHChannel> in
+      .observeOn(_RXSwift_MainScheduler.instance)
+      .flatMap { [weak self] (_) -> _RXSwift_Observable<CHChannel> in
         return self?.interactor?.getChannel() ?? .empty()
       }
       .subscribe(onNext: { [weak self] (channel) in
@@ -115,15 +136,15 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       }).disposed(by: self.notiDisposeBag)
     
     self.interactor?.updateGeneralInfo()
-      .observeOn(MainScheduler.instance)
-      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
+      .debounce(.milliseconds(500), scheduler: _RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, plugin) in
         self?.updateHeaders()
       }).disposed(by: self.disposeBag)
     
     self.interactor?.updateChats()
-      .observeOn(MainScheduler.instance)
-      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
+      .debounce(.milliseconds(500), scheduler: _RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chats) in
         if self?.loungeCompletion.value == true {
           self?.updateMainContent()
@@ -148,21 +169,21 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
       welcomeModel: welcomeModel)
   }
   
-  func isReadyToPresentChat(chatId: String?) -> Single<Any?> {
-    return Single<Any?>.create { [weak self] subscriber in
+  func isReadyToPresentChat(chatId: String?) -> _RXSwift_Single<Any?> {
+    return _RXSwift_Single<Any?>.create { [weak self] subscriber in
       guard let self = self, let interactor = self.interactor else {
-        subscriber(.error(ChannelError.unknownError))
-        return Disposables.create()
+        subscriber(.error(ChannelError.unknownError()))
+        return _RXSwift_Disposables.create()
       }
       
       guard chatId != nil else {
         subscriber(.success(nil))
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       self.view?.showHUD()
       
-      let signal = Observable
+      let signal = _RXSwift_Observable
         .zip(
           interactor.getLounge(),
           interactor.getChats()
@@ -170,7 +191,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           return true
         })
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (info, chatData) in
           guard
             let channel = info.channel,
@@ -199,25 +220,25 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           self.view?.dismissHUD()
         })
       
-      return Disposables.create{
+      return _RXSwift_Disposables.create{
         signal.dispose()
       }
     }
   }
   
-  func fetchChatIfNeeded(chatId: String? = nil) -> Observable<ChatResponse?> {
-    return Observable.create { subscriber in
+  func fetchChatIfNeeded(chatId: String? = nil) -> _RXSwift_Observable<ChatResponse?> {
+    return _RXSwift_Observable.create { subscriber in
       let chat = userChatSelector(state: mainStore.state, userChatId: chatId)
       guard let chatId = chatId else {
         subscriber.onNext(nil)
         subscriber.onCompleted()
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       guard chat == nil else {
         subscriber.onNext(nil)
         subscriber.onCompleted()
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       let signal = CHUserChat.get(userChatId: chatId)
@@ -232,7 +253,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
           subscriber.onError(error)
         })
      
-     return Disposables.create {
+     return _RXSwift_Disposables.create {
        signal.dispose()
      }
     }
@@ -247,7 +268,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnDismiss() {
-    ChannelIO.close(animated: true)
+    ChannelIO.hideMessenger()
   }
   
   func didClickOnChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
@@ -255,7 +276,7 @@ class LoungePresenter: NSObject, LoungePresenterProtocol {
   }
   
   func didClickOnNewChat(from view: UIViewController?) {
-    self.pushChat(with: chatId, animated: true, from: view)
+    self.pushChat(with: self.chatId, animated: true, from: view)
   }
   
   func didClickOnSeeMoreChat(from view: UIViewController?) {
@@ -299,7 +320,7 @@ extension LoungePresenter {
   private func fetchLoungeData() {
     guard let interactor = self.interactor else { return }
     
-    Observable
+    _RXSwift_Observable
       .zip(
         interactor.getLounge(),
         interactor.getChats()
@@ -308,7 +329,7 @@ extension LoungePresenter {
         dlog("Error while fetching data... retrying.. in 3 seconds")
         return true
       })
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (info, chatData) in
         guard
           let channel = info.channel,
@@ -354,7 +375,7 @@ extension LoungePresenter {
       }).disposed(by: self.disposeBag)
   }
   
-  private func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
-    self.router?.pushChat(with: chatId, animated: animated, from: view)
+  private func pushChat(with chatId: String?, isOpenChat: Bool = false, animated: Bool, from view: UIViewController?) {
+    self.router?.pushChat(with: chatId, text: nil, isOpenChat: isOpenChat, animated: animated, from: view)
   }
 }

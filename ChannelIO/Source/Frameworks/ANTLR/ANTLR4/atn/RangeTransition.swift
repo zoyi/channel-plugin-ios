@@ -5,11 +5,11 @@
 /// 
 
 
-public final class RangeTransition: Transition, CustomStringConvertible {
-    public let from: Int
-    public let to: Int
+final class RangeTransition: Transition, CustomStringConvertible {
+    let from: Int
+    let to: Int
 
-    public init(_ target: ATNState, _ from: Int, _ to: Int) {
+    init(_ target: ATNState, _ from: Int, _ to: Int) {
 
         self.from = from
         self.to = to
@@ -17,21 +17,21 @@ public final class RangeTransition: Transition, CustomStringConvertible {
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.RANGE
     }
 
     override
-    public func labelIntervalSet() -> IntervalSet? {
+    func labelIntervalSet() -> IntervalSet? {
         return IntervalSet.of(from, to)
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return symbol >= from && symbol <= to
     }
 
-    public var description: String {
+    var description: String {
         return "'" + String(from) + "'..'" + String(to) + "'"
 
     }

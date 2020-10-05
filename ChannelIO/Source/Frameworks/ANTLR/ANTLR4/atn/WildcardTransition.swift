@@ -5,22 +5,22 @@
 /// 
 
 
-final public class WildcardTransition: Transition, CustomStringConvertible {
-    public override init(_ target: ATNState) {
+final class WildcardTransition: Transition, CustomStringConvertible {
+    override init(_ target: ATNState) {
         super.init(target)
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.WILDCARD
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return symbol >= minVocabSymbol && symbol <= maxVocabSymbol
     }
 
-    public var description: String {
+    var description: String {
 
         return "."
     }

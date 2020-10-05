@@ -10,32 +10,32 @@
 /// A transition containing a set of values.
 /// 
 
-public class SetTransition: Transition, CustomStringConvertible {
-    public let set: IntervalSet
+class SetTransition: Transition, CustomStringConvertible {
+    let set: IntervalSet
 
     // TODO (sam): should we really allow null here?
-    public init(_ target: ATNState, _ set: IntervalSet) {
+    init(_ target: ATNState, _ set: IntervalSet) {
 
         self.set = set
         super.init(target)
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.SET
     }
 
     override
-    public func labelIntervalSet() -> IntervalSet? {
+    func labelIntervalSet() -> IntervalSet? {
         return set
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return set.contains(symbol)
     }
 
-    public var description: String {
+    var description: String {
         return set.description
     }
 

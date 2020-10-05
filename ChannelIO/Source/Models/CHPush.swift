@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import ObjectMapper
 
-protocol CHPushDisplayable {
+protocol CHPopupDisplayable {
   var writer: CHEntity? { get }
   var sortedFiles: [CHFile] { get }
   var webPage: CHWebPage? { get }
@@ -23,8 +22,8 @@ protocol CHPushDisplayable {
   var buttons: [CHLinkButton] { get }
 }
 
-extension CHPushDisplayable {
-  func isEqual(to other: CHPushDisplayable?) -> Bool {
+extension CHPopupDisplayable {
+  func isEqual(to other: CHPopupDisplayable?) -> Bool {
     let isSameWriter = self.writer != nil ?
       writer!.isEqual(to: other?.writer) : other?.writer == nil
     return isSameWriter &&
@@ -42,7 +41,7 @@ extension CHPushDisplayable {
   }
 }
 
-struct CHPush: CHPushDisplayable {
+struct CHPopup: CHPopupDisplayable {
   var type = ""
   var message: CHMessage?
   var user: CHUser?
@@ -96,10 +95,10 @@ struct CHPush: CHPushDisplayable {
   }
 }
 
-extension CHPush : Mappable {
-  init?(map: Map) { }
+extension CHPopup : ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     message   <- map["entity"]
     manager   <- map["refers.manager"]
     bot       <- map["refers.bot"]
@@ -109,8 +108,8 @@ extension CHPush : Mappable {
   }
 }
 
-extension CHPush: Equatable {
-  static func == (lhs:CHPush, rhs:CHPush) -> Bool {
+extension CHPopup: Equatable {
+  static func == (lhs:CHPopup, rhs:CHPopup) -> Bool {
     return lhs.type == rhs.type &&
       lhs.message == rhs.message &&
       lhs.bot == rhs.bot &&

@@ -28,6 +28,7 @@ Pod::Spec.new do |s|
   #  :script => '${PODS_TARGET_SRCROOT}/Assets/setup.sh',
   #  :execution_position => :before_compile
   #}
+
   s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
   # s.resources = 'ChannelIO/Assets/*'
   s.resource_bundles = {		
@@ -35,26 +36,27 @@ Pod::Spec.new do |s|
        'ChannelIO/Assets/*'		
      ]		
    }
+
   s.swift_version = '5.0'
 
   s.frameworks = 'CoreTelephony'
  
-  s.dependency 'Reusable', '~> 4.1'
-  s.dependency 'SnapKit', '~> 5.0'
-  s.dependency 'SwiftyJSON', '~> 5.0'
-  s.dependency 'ReSwift', '~> 5.0'
-  s.dependency 'RxSwift', '~> 5.1'
-  s.dependency 'RxCocoa', '~> 5.1'
-  s.dependency 'ObjectMapper', '~> 4.2'
-  s.dependency 'NVActivityIndicatorView', '~> 4.7'
-  s.dependency 'CHDwifft'
-  s.dependency 'Alamofire', '~> 5.2'
-  s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
-  s.dependency 'MGSwipeTableCell'
-  s.dependency 'JGProgressHUD'
-  s.dependency 'PhoneNumberKit', '~> 3.1'
-  s.dependency 'SDWebImage', '~> 5.8'
-  s.dependency 'SDWebImageWebPCoder'
-  s.dependency 'RxSwiftExt', '~> 5.2'
-  s.dependency 'TLPhotoPicker'
+  # s.dependency 'Reusable', '~> 4.1'
+  # s.dependency 'SnapKit', '~> 5.0'
+  # s.dependency 'SwiftyJSON', '~> 5.0'
+  # s.dependency 'ReSwift', '~> 5.0'
+  # s.dependency 'RxSwift', '~> 5.1'
+  # s.dependency 'RxCocoa', '~> 5.1'
+  # s.dependency 'ObjectMapper', '~> 4.2'
+  # s.dependency 'NVActivityIndicatorView', '~> 4.7'
+  # s.dependency 'CHDwifft'
+  # s.dependency 'Alamofire', '~> 5.2'
+  # s.dependency 'Socket.IO-Client-Swift', '~> 15.0.0' 
+  # s.dependency 'MGSwipeTableCell'
+  # s.dependency 'JGProgressHUD'
+  # s.dependency 'PhoneNumberKit', '~> 3.1'
+  # s.dependency 'SDWebImage', '~> 5.8'
+  # s.dependency 'SDWebImageWebPCoder'
+  # s.dependency 'RxSwiftExt', '~> 5.2'
+  # s.dependency 'TLPhotoPicker'
 end

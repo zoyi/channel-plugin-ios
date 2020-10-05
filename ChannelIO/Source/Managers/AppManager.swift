@@ -7,18 +7,18 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 class AppManager {
   static let shared = AppManager()
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   
-  private var viewSignal = PublishSubject<(CHMarketingType?, String?)>()
-  private var clickSignal = PublishSubject<(CHMarketingType?, String?, String?, String?)>()
+  private var viewSignal = _RXSwift_PublishSubject<(CHMarketingType?, String?)>()
+  private var clickSignal = _RXSwift_PublishSubject<(CHMarketingType?, String?, String?, String?)>()
   
   private init() {
     self.viewSignal
-      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .debounce(.milliseconds(500), scheduler: _RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (type, id) in
         guard let type = type, let id = id else { return }
         switch type {
@@ -36,7 +36,7 @@ class AppManager {
       }).disposed(by: self.disposeBag)
     
     self.clickSignal
-      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .debounce(.milliseconds(500), scheduler: _RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (type, id, userId, url) in
         guard let type = type, let id = id, let userId = userId else { return }
         switch type {
@@ -54,7 +54,7 @@ class AppManager {
       }).disposed(by: self.disposeBag)
   }
   
-  func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
+  func boot(pluginKey: String, params: CHParam) -> _RXSwift_Observable<BootResponse?> {
     return PluginPromise.boot(pluginKey: pluginKey, params: params)
   }
   
@@ -70,19 +70,23 @@ class AppManager {
       }).disposed(by: disposeBag)
   }
   
-  func sendAck(userChatId: String) -> Observable<Bool?> {
+  func sendAck(userChatId: String) -> _RXSwift_Observable<Bool?> {
     return PluginPromise.sendPushAck(chatId: userChatId)
   }
   
-  func unregisterToken() -> Observable<Any?> {
+  func unregisterToken() -> _RXSwift_Observable<Any?> {
     return PluginPromise.unregisterPushToken()
   }
   
-  func checkVersion() -> Observable<Any?> {
+  func deleteTokenIfNeeded(with userId: String) -> _RXSwift_Observable<Any?> {
+    return PluginPromise.deletePushToken(with: userId)
+  }
+  
+  func checkVersion() -> _RXSwift_Observable<Any?> {
     return PluginPromise.checkVersion()
   }
   
-  func touch() -> Observable<BootResponse> {
+  func touch() -> _RXSwift_Observable<BootResponse> {
     return UserPromise.touch(pluginId: mainStore.state.plugin.id)
   }
   
@@ -91,13 +95,13 @@ class AppManager {
     
     CHUserChat
       .get(userChatId: chatId)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (chatResponse) in
         mainStore.dispatch(GetUserChat(payload: chatResponse))
         let userChat = userChatSelector(
           state: mainStore.state,
           userChatId: chatResponse.userChat?.id)
-        mainStore.dispatch(GetPush(payload: userChat?.lastMessage))
+        mainStore.dispatch(GetPopup(payload: userChat?.lastMessage))
       }).disposed(by: self.disposeBag)
   }
   

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SnapKit
 
 class TranslateView: BaseView {
   let translateLoader = UIActivityIndicatorView().then {

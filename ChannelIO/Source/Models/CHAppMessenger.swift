@@ -6,8 +6,7 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
-import RxSwift
+//import RxSwift
 
 enum AssetEndPointType: String {
   case production = "https://cf.channel.io"
@@ -21,10 +20,10 @@ struct CHAppMessenger: ModelType {
   var name: String = ""
 }
 
-extension CHAppMessenger: Mappable {
-  init?(map: Map) {}
+extension CHAppMessenger: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id                <- map["id"]
     iconKey           <- map["iconKey"]
     name              <- map["name"]
@@ -48,7 +47,7 @@ extension CHAppMessenger {
     return URL(string: url + "/" + keyUrl)
   }
   
-  static func getUri(with name: String) -> Observable<UriResponse> {
+  static func getUri(with name: String) -> _RXSwift_Observable<UriResponse> {
     return AppMessengerPromise.getUri(with: name)
   }
 }

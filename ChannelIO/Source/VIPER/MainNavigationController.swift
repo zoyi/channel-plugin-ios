@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import ReSwift
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 protocol CHNavigationDelegate: class {
   func willPopViewController(willShow controller:UIViewController)
@@ -17,7 +16,7 @@ protocol CHNavigationDelegate: class {
 }
 
 class MainNavigationController: BaseNavigationController {
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   
   // MARK: Properties
   weak var chDelegate: CHNavigationDelegate? = nil
@@ -55,7 +54,7 @@ class MainNavigationController: BaseNavigationController {
     }
     
     self.navigationBar.rx.observeWeakly(CGRect.self, "frame")
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (frame) in
         guard let self = self else { return }
         let plugin = mainStore.state.plugin
@@ -104,7 +103,7 @@ class MainNavigationController: BaseNavigationController {
 
 // MARK: - StoreSubscriber
 
-extension MainNavigationController: StoreSubscriber {
+extension MainNavigationController: ReSwift_StoreSubscriber {
   func newState(state: CHPlugin) {
     if !self.useDefault {
       // Bar Color
@@ -173,6 +172,7 @@ extension MainNavigationController : UINavigationControllerDelegate {
 extension MainNavigationController : UIAdaptivePresentationControllerDelegate {
   func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
     ChannelIO.delegate?.willHideMessenger?()
+    ChannelIO.delegate?.onHideMessenger?()
     ChannelIO.didDismiss()
   }
 }

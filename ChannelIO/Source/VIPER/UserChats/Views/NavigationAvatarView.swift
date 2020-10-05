@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import SDWebImage
-import SnapKit
 
 class NavigationAvatarView: NeverClearView {
   
@@ -56,7 +54,7 @@ class NavigationAvatarView: NeverClearView {
     
     if let url = avatar.avatarUrl, url != "" {
       if url.contains("http") {
-        self.avatarImageView.sd_setImage(with: URL(string:url))
+        self.avatarImageView._ChannelIO_sd_setImage(with: URL(string:url))
       } else {
         self.avatarImageView.image = CHAssets.getImage(named: url)
       }

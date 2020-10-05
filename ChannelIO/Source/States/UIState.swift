@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct UIState: StateType {
+struct UIState: ReSwift_StateType {
   var isChannelVisible: Bool = false
   var launcherIsHidden: Bool = true
   var profileIsHidden: Bool = true
@@ -27,6 +25,9 @@ struct UIState: StateType {
  *    - requirePayment: your plan is not eligible to use SDK
  *    - accessDeined: accces to ChannelPlugin server denied
  */
+
+// TODO: Will deprecated
+@available(*, deprecated, renamed: "BootStatus")
 @objc
 public enum ChannelPluginCompletionStatus : Int {
   case success
@@ -39,6 +40,18 @@ public enum ChannelPluginCompletionStatus : Int {
   case unknown
 }
 
-struct BootState: StateType {
-  var status: ChannelPluginCompletionStatus = .notInitialized
+@objc
+public enum BootStatus : Int {
+  case success
+  case notInitialized
+  case networkTimeout
+  case notAvailableVersion
+  case serviceUnderConstruction
+  case requirePayment
+  case accessDenied
+  case unknown
+}
+
+struct BootState: ReSwift_StateType {
+  var status: BootStatus = .notInitialized
 }

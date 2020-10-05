@@ -9,7 +9,7 @@
 /// An _org.antlr.v4.runtime.IntStream_ whose symbols are _org.antlr.v4.runtime.Token_ instances.
 /// 
 
-public protocol TokenStream: IntStream {
+protocol TokenStream: IntStream {
     /// 
     /// Get the _org.antlr.v4.runtime.Token_ instance associated with the value returned by
     /// _#LA LA(k)_. This method has the same pre- and post-conditions as

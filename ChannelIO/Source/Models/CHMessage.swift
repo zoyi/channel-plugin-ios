@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
-import RxSwift
+//import RxSwift
 import MobileCoreServices
 import AVFoundation
 import Photos
@@ -142,7 +141,7 @@ struct CHMessage: ModelType {
   }
 }
 
-extension CHMessage: CHPushDisplayable {
+extension CHMessage: CHPopupDisplayable {
   var removed: Bool {
     return self.state == .removed
   }
@@ -165,7 +164,7 @@ extension CHMessage: CHPushDisplayable {
   }
 }
 
-extension CHMessage: Mappable {
+extension CHMessage: ObjectMapper_Mappable {
   init(
     chatId: String,
     blocks: [CHMessageBlock],
@@ -324,11 +323,11 @@ extension CHMessage: Mappable {
     self.progress = 0
   }
   
-  init?(map: Map) {
+  init?(map: ObjectMapper_Map) {
     self.createdAt = Date()
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id          <- map["id"]
     channelId   <- map["channelId"]
     chatType    <- map["chatType"]
@@ -458,7 +457,7 @@ extension CHMessage {
     return self.entity?.id == me.id
   }
   
-  func updateProfile(with key: String, value: Any) -> Observable<CHMessage> {
+  func updateProfile(with key: String, value: Any) -> _RXSwift_Observable<CHMessage> {
     return UserChatPromise.updateMessageProfile(
       userChatId: self.chatId,
       messageId: self.id,
@@ -467,8 +466,8 @@ extension CHMessage {
     )
   }
   
-  func send() -> Observable<CHMessage> {
-    return Observable.create { subscriber in
+  func send() -> _RXSwift_Observable<CHMessage> {
+    return _RXSwift_Observable.create { subscriber in
       let disposable = UserChatPromise.createMessage(
         userChatId: self.chatId,
         message: self.plainText,
@@ -477,20 +476,20 @@ extension CHMessage {
         fileDictionary: self.fileDictionary,
         submit: self.submit,
         mutable: self.mutable)
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (message) in
           subscriber.onNext(message)
         }, onError: { (error) in
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         disposable.dispose()
       }
     }
   }
   
-  func translate(to language: String) -> Observable<[CHMessageBlock]> {
+  func translate(to language: String) -> _RXSwift_Observable<[CHMessageBlock]> {
     return UserChatPromise.translate(
       userChatId: self.chatId,
       messageId: self.id,

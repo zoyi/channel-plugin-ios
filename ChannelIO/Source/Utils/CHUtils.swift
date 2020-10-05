@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
-import ObjectMapper
 import AVKit
 
 class CHUtils {
@@ -182,7 +180,7 @@ class CHUtils {
     return String(str[start..<end])
   }
   
-  class func stringToLocale(_ localeString: String) -> CHLocale {
+  class func stringToLanguageOption(_ localeString: String) -> LanguageOption {
     if localeString == "en" {
       return .english
     } else if localeString == "ko" {
@@ -194,7 +192,7 @@ class CHUtils {
   }
   
   class func getLocale() -> CHLocaleString? {
-    if let settings = ChannelIO.settings, let locale = settings.appLocale {
+    if let config = ChannelIO.bootConfig, let locale = config.appLocale {
       return locale
     } else {
       guard let str = NSLocale.preferredLanguages.get(index: 0) else { return nil }
@@ -214,7 +212,7 @@ class CHUtils {
   }
   
   class func getCurrentStage() -> ChannelStage {
-    return ChannelIO.settings?.stage ?? .production
+    return ChannelIO.bootConfig?.stage ?? .production
   }
   
   class func secondsToComponents(seconds: Int) -> (Int, Int, Int, Int) {
@@ -324,10 +322,10 @@ class CHUtils {
   class func getServerErrorMessage(data: Data?) -> [String]? {
     guard let data = data else { return nil }
     
-    let json = SwiftyJSON.JSON(data)
+    let json = SwiftyJSON_JSON(data)
     
     guard
-      let errors: [CHError] = Mapper<CHError>().mapArray(JSONObject: json["errors"].object) else {
+      let errors: [CHError] = ObjectMapper_Mapper<CHError>().mapArray(JSONObject: json["errors"].object) else {
       return nil
     }
     

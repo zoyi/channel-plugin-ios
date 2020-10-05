@@ -7,11 +7,7 @@
 //
 
 import Foundation
-import SwiftyJSON
-import RxSwift
-import ReSwift
-import SocketIO
-import ObjectMapper
+//import RxSwift
 
 struct SocketCommand {
   static let join = "join"
@@ -99,16 +95,16 @@ struct WsServiceType: OptionSet {
 class WsService {
   //MARK: Share Singleton Instance
   static let shared = WsService()
-  let eventSubject = PublishSubject<(WsServiceType, Any?)>()
-  let readySubject = PublishSubject<String>()
-  let typingSubject = PublishSubject<CHTypingEntity>()
-  let joinSubject = PublishSubject<String>()
-  let messageOnCreateSubject = PublishSubject<CHMessage>()
-  let errorSubject = PublishSubject<Any?>()
+  let eventSubject = _RXSwift_PublishSubject<(WsServiceType, Any?)>()
+  let readySubject = _RXSwift_PublishSubject<String>()
+  let typingSubject = _RXSwift_PublishSubject<CHTypingEntity>()
+  let joinSubject = _RXSwift_PublishSubject<String>()
+  let messageOnCreateSubject = _RXSwift_PublishSubject<CHMessage>()
+  let errorSubject = _RXSwift_PublishSubject<Any?>()
   
   //MARK: Private properties
-  fileprivate var socket: SocketIOClient?
-  fileprivate var manager: SocketManager?
+  fileprivate var socket: SocketIO_SocketIOClient?
+  fileprivate var manager: SocketIO_SocketManager?
   
   var baseUrl = ""
   
@@ -137,27 +133,27 @@ class WsService {
   //MARK: Signals 
   
   //TODO: update to <String, Any?> to receive data
-  func listen() -> PublishSubject<(WsServiceType, Any?)> {
+  func listen() -> _RXSwift_PublishSubject<(WsServiceType, Any?)> {
     return self.eventSubject
   }
   
-  func ready() -> PublishSubject<String> {
+  func ready() -> _RXSwift_PublishSubject<String> {
     return self.readySubject
   }
   
-  func typing() -> PublishSubject<CHTypingEntity> {
+  func typing() -> _RXSwift_PublishSubject<CHTypingEntity> {
     return self.typingSubject
   }
   
-  func mOnCreate() -> PublishSubject<CHMessage> {
+  func mOnCreate() -> _RXSwift_PublishSubject<CHMessage> {
     return self.messageOnCreateSubject
   }
   
-  func observeJoin() -> PublishSubject<String> {
+  func observeJoin() -> _RXSwift_PublishSubject<String> {
     return self.joinSubject
   }
   
-  func error() -> Observable<Any?> {
+  func error() -> _RXSwift_Observable<Any?> {
     return self.errorSubject.asObserver()
   }
   
@@ -168,7 +164,7 @@ class WsService {
 
     self.disconnect()
     
-    self.manager = SocketManager(
+    self.manager = SocketIO_SocketManager(
       socketURL: URL(string: CHUtils.getCurrentStage().socketEndPoint)!,
       config: [
         .log(false),
@@ -319,27 +315,27 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.create.value) { [weak self] (data, ack) in
       dlog("socket on created")
       guard let data = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: data) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: data) else { return }
       guard var type = WsServiceType(string: json["type"].stringValue) else { return }
       type = WsServiceType.Create.union(type)
       
       switch type {
       case WsServiceType.CreateSession:
-        guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
-        if let manager = Mapper<CHManager>().map(JSONObject: json["refers"]["manager"].object) {
+        guard let session = ObjectMapper_Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
+        if let manager = ObjectMapper_Mapper<CHManager>().map(JSONObject: json["refers"]["manager"].object) {
           mainStore.dispatchOnMain(UpdateManager(payload: manager))
         }
         
         mainStore.dispatchOnMain(CreateSession(payload: session))
         self?.eventSubject.onNext((type, session))
       case WsServiceType.CreateUserChat:
-        guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["entity"].object) else { return }
+        guard let userChat = ObjectMapper_Mapper<CHUserChat>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(CreateUserChat(payload: userChat))
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.CreateMessage:
-        guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
+        guard let message = ObjectMapper_Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
         
-        if let bot = Mapper<CHBot>()
+        if let bot = ObjectMapper_Mapper<CHBot>()
           .map(JSONObject: json["refers"]["bot"].object) {
           mainStore.dispatchOnMain(GetBot(payload: bot))
         }
@@ -357,28 +353,28 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.update.value) { [weak self] (data, ack) in
       dlog("socket on update")
       guard let data = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: data) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: data) else { return }
       guard var type = WsServiceType(string: json["type"].stringValue) else { return }
       type = WsServiceType.Update.union(type)
       
       switch type {
       case WsServiceType.UpdateChannel:
-        guard let channel = Mapper<CHChannel>().map(JSONObject: json["entity"].object) else { return }
+        guard let channel = ObjectMapper_Mapper<CHChannel>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateChannel(payload: channel))
         self?.eventSubject.onNext((type, channel))
       case WsServiceType.UpdateSession:
-        guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
+        guard let session = ObjectMapper_Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateSession(payload: session))
         self?.eventSubject.onNext((type, session))
         break
       case WsServiceType.UpdateUserChat:
-        guard let userChat = Mapper<CHUserChat>()
+        guard let userChat = ObjectMapper_Mapper<CHUserChat>()
           .map(JSONObject: json["entity"].object) else { return }
-        if let lastMessage = Mapper<CHMessage>()
+        if let lastMessage = ObjectMapper_Mapper<CHMessage>()
           .map(JSONObject: json["refers"]["message"].object) {
           mainStore.dispatchOnMain(UpdateMessage(payload: lastMessage))
         }
-        if let manager = Mapper<CHManager>()
+        if let manager = ObjectMapper_Mapper<CHManager>()
           .map(JSONObject: json["refers"]["manager"].object) {
           mainStore.dispatchOnMain(UpdateManager(payload: manager))
         }
@@ -386,16 +382,16 @@ fileprivate extension WsService {
         mainStore.dispatchOnMain(UpdateUserChat(payload: userChat))
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.UpdateMessage:
-        guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
+        guard let message = ObjectMapper_Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
         self?.messageOnCreateSubject.onNext(message)
         mainStore.dispatchOnMain(UpdateMessage(payload: message))
         self?.eventSubject.onNext((type, message))
       case WsServiceType.UpdateUser:
-        guard let user = Mapper<CHUser>().map(JSONObject: json["entity"].object) else { return }
+        guard let user = ObjectMapper_Mapper<CHUser>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateUser(payload: user))
         self?.eventSubject.onNext((type, user))
       case WsServiceType.UpdateManager:
-        guard let manager = Mapper<CHManager>().map(JSONObject: json["entity"].object) else { return }
+        guard let manager = ObjectMapper_Mapper<CHManager>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(UpdateManager(payload: manager))
         self?.eventSubject.onNext((type, manager))
       default:
@@ -408,21 +404,21 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.delete.value) { [weak self] (data, ack) in
       dlog("socket on delete")
       guard let data = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: data) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: data) else { return }
       guard var type = WsServiceType(string: json["type"].stringValue) else { return }
       type = WsServiceType.Delete.union(type)
       
       switch type {
       case WsServiceType.DeleteSession:
-        guard let session = Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
+        guard let session = ObjectMapper_Mapper<CHSession>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteSession(payload: session))
         self?.eventSubject.onNext((type, session))
       case WsServiceType.DeleteUserChat:
-        guard let userChat = Mapper<CHUserChat>().map(JSONObject: json["entity"].object) else { return }
+        guard let userChat = ObjectMapper_Mapper<CHUserChat>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteUserChat(payload: userChat))
         self?.eventSubject.onNext((type, userChat))
       case WsServiceType.DeleteMessage:
-        guard let message = Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
+        guard let message = ObjectMapper_Mapper<CHMessage>().map(JSONObject: json["entity"].object) else { return }
         mainStore.dispatchOnMain(DeleteMessage(payload: message))
         self?.eventSubject.onNext((type, message))
       default:
@@ -453,8 +449,8 @@ fileprivate extension WsService {
   func onTyping() {
     self.socket?.on(CHSocketResponse.typing.value) {  [weak self] (data, ack) in
       guard let entity = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: entity) else { return }
-      guard let typing = Mapper<CHTypingEntity>().map(JSONObject: json.object) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: entity) else { return }
+      guard let typing = ObjectMapper_Mapper<CHTypingEntity>().map(JSONObject: json.object) else { return }
       self?.typingSubject.onNext(typing)
     }
   }
@@ -463,14 +459,14 @@ fileprivate extension WsService {
     self.socket?.on(CHSocketResponse.push.value) { (data, ack) in
       //dlog("socket pushed: \(data)")
       guard let entity = data.get(index: 0) else { return }
-      guard let json = JSON(rawValue: entity) else { return }
-      guard let push = Mapper<CHPush>().map(JSONObject: json.object) else { return }
+      guard let json = SwiftyJSON_JSON(rawValue: entity) else { return }
+      guard let popup = ObjectMapper_Mapper<CHPopup>().map(JSONObject: json.object) else { return }
       
       if mainStore.state.uiState.isChannelVisible {
         return
       }
       
-      mainStore.dispatchOnMain(GetPush(payload: push))
+      mainStore.dispatchOnMain(GetPopup(payload: popup))
     }
   }
 

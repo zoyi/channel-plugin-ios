@@ -6,10 +6,8 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import SnapKit
-import RxCocoa
-import NVActivityIndicatorView
+//import RxSwift
+//import RxCocoa
 
 final class DateActionView: BaseView {
   private enum Metric {
@@ -20,8 +18,8 @@ final class DateActionView: BaseView {
     static let borderWidth = 1.f
     static let horizontalPadding = 10.f
   }
-  private let submitSubject = PublishSubject<Any?>()
-  private let focusSubject = PublishSubject<Bool>()
+  private let submitSubject = _RXSwift_PublishSubject<Any?>()
+  private let focusSubject = _RXSwift_PublishSubject<Bool>()
   
   private let selectButton = UIImageView().then {
     $0.image = CHAssets.getImage(named: "triangleDown")?.tint(with: .grey700)
@@ -48,7 +46,7 @@ final class DateActionView: BaseView {
     }
   }
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   var didFocus = false
   
   override func initialize() {
@@ -123,15 +121,15 @@ final class DateActionView: BaseView {
 }
 
 extension DateActionView: Actionable {
-  func signalForAction() -> Observable<Any?> {
+  func signalForAction() -> _RXSwift_Observable<Any?> {
     return self.submitSubject.asObserver()
   }
   
-  func signalForText() -> Observable<String?>? {
+  func signalForText() -> _RXSwift_Observable<String?>? {
     return self.textField.rx.text.asObservable()
   }
   
-  func signalForFocus() -> Observable<Bool> {
+  func signalForFocus() -> _RXSwift_Observable<Bool> {
     return self.focusSubject
   }
   

@@ -6,12 +6,10 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import Alamofire
 import Foundation
 import MobileCoreServices
-import ObjectMapper
 import Photos
-import RxSwift
+//import RxSwift
 
 enum FileType: String {
   case video
@@ -73,8 +71,8 @@ struct CHFile: ThumbDisplayable {
     self.name = name
   }
 
-  func getData() -> Observable<(Data?, String?)> {
-    return Observable.create { subscriber in
+  func getData() -> _RXSwift_Observable<(Data?, String?)> {
+    return _RXSwift_Observable.create { subscriber in
       if let rawData = self.rawData {
         subscriber.onNext((rawData, self.name))
         subscriber.onCompleted()
@@ -114,7 +112,7 @@ struct CHFile: ThumbDisplayable {
         subscriber.onCompleted()
       }
       
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
 
@@ -180,11 +178,11 @@ struct CHFile: ThumbDisplayable {
     return self.rawData != nil || self.asset != nil || self.imageData != nil
   }
   
-  var image: Observable<UIImage?> {
+  var image: _RXSwift_Observable<UIImage?> {
     guard self.type == .video || self.type == .image else { return .just(nil) }
     guard let asset = self.asset else { return .just(nil) }
 
-    return Observable.create { subscriber in
+    return _RXSwift_Observable.create { subscriber in
       if self.type == .video {
         asset.fetchAVAsset { asset, _ in
           let image = CHUtils.getThumbnail(of: asset)
@@ -197,15 +195,15 @@ struct CHFile: ThumbDisplayable {
           subscriber.onCompleted()
         }
       }
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
 }
 
-extension CHFile: Mappable, Hashable {
-  init?(map: Map) {}
+extension CHFile: ObjectMapper_Mappable, Hashable {
+  init?(map: ObjectMapper_Map) {}
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     type <- map["type"]
     id <- map["id"]
     name <- map["name"]
@@ -261,7 +259,7 @@ extension CHFile {
   static func upload(
     channelId: String,
     filename: String,
-    data: Data) -> Observable<([String:Any]?, Double)> {
+    data: Data) -> _RXSwift_Observable<([String:Any]?, Double)> {
     return FilePromise.uploadFile(
       channelId: channelId,
       filename: filename,
@@ -269,20 +267,20 @@ extension CHFile {
     )
   }
   
-  func download() -> Observable<(URL?, Float)> {
-    return Observable.create { (subscriber) in
+  func download() -> _RXSwift_Observable<(URL?, Float)> {
+    return _RXSwift_Observable.create { (subscriber) in
       guard let url = self.url else {
         subscriber.onError(ChannelError.notFoundError)
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       if self.isDownloaded {
         subscriber.onNext((self.urlInDocumentsDirectory, 100))
         subscriber.onCompleted()
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
-      let destination: DownloadRequest.Destination = { _, response in
+      let destination: AF_DownloadRequest.Destination = { _, response in
         let documentsURL:URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let fileURL:URL = documentsURL.appendingPathComponent(response.suggestedFilename!)
         
@@ -309,7 +307,7 @@ extension CHFile {
           subscriber.onNext((fileURL, 1))
           subscriber.onCompleted()
       }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

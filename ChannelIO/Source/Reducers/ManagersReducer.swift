@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func managersReducer(action: Action, state: ManagersState?) -> ManagersState {
+func managersReducer(action: ReSwift_Action, state: ManagersState?) -> ManagersState {
   var state = state
   switch action {
   case let action as GetUserChats:
@@ -24,9 +22,9 @@ func managersReducer(action: Action, state: ManagersState?) -> ManagersState {
   case let action as UpdateFollowingManagers:
     return state?.upsertFollowing(managers: action.payload) ?? ManagersState()
     
-  case let action as GetPush:
-    if let push = action.payload as? CHPush {
-      return state?.upsert(manager: push.manager) ?? ManagersState()
+  case let action as GetPopup:
+    if let popup = action.payload as? CHPopup {
+      return state?.upsert(manager: popup.manager) ?? ManagersState()
     }
     return state ?? ManagersState()
     

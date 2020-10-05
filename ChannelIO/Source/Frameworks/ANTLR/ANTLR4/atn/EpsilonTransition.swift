@@ -5,15 +5,15 @@
 /// 
 
 
-public final class EpsilonTransition: Transition, CustomStringConvertible {
+final class EpsilonTransition: Transition, CustomStringConvertible {
 
     private let outermostPrecedenceReturnInside: Int
 
-    public convenience override init(_ target: ATNState) {
+    convenience override init(_ target: ATNState) {
         self.init(target, -1)
     }
 
-    public init(_ target: ATNState, _ outermostPrecedenceReturn: Int) {
+    init(_ target: ATNState, _ outermostPrecedenceReturn: Int) {
 
         self.outermostPrecedenceReturnInside = outermostPrecedenceReturn
         super.init(target)
@@ -27,27 +27,27 @@ public final class EpsilonTransition: Transition, CustomStringConvertible {
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#applyPrecedenceFilter(org.antlr.v4.runtime.atn.ATNConfigSet)
     /// -  4.4.1
     /// 
-    public func outermostPrecedenceReturn() -> Int {
+    func outermostPrecedenceReturn() -> Int {
         return outermostPrecedenceReturnInside
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.EPSILON
     }
 
     override
-    public func isEpsilon() -> Bool {
+    func isEpsilon() -> Bool {
         return true
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return false
     }
 
 
-    public var description: String {
+    var description: String {
         return "epsilon"
     }
 }

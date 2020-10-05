@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 protocol SettingViewProtocol: class {
   var presenter: SettingPresenterProtocol? { get set }
@@ -37,14 +37,13 @@ protocol SettingInteractorProtocol {
   func subscribeDataSource()
   func unsubscribeDataSource()
   
-  func getChannel() -> Observable<CHChannel>
-  func getProfileSchemas() -> Observable<[CHProfileSchema]>
-  func getCurrentLocale() -> CHLocale?
+  func getChannel() -> _RXSwift_Observable<CHChannel>
+  func getProfileSchemas() -> _RXSwift_Observable<[CHProfileSchema]>
   func getTranslationEnabled() -> Bool
   
-  func updateGeneral() -> Observable<(CHChannel, CHPlugin)>
-  func updateUser() -> Observable<CHUser>
-  func updateOptions() -> Observable<Any?>
+  func updateGeneral() -> _RXSwift_Observable<(CHChannel, CHPlugin)>
+  func updateUser() -> _RXSwift_Observable<CHUser>
+  func updateOptions() -> _RXSwift_Observable<Any?>
   func updateUserUnsubscribed(with unsubscribed: Bool)
 }
 

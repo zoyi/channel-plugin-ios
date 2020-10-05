@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 class SettingPresenter: NSObject, SettingPresenterProtocol {
   weak var view: SettingViewProtocol?
@@ -16,7 +16,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
   
   var schemas: [CHProfileSchema] = []
   
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
   func viewDidLoad() {
     if let version = CHUtils.getSdkVersion() {
@@ -24,15 +24,15 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
     }
     
     self.interactor?.updateGeneral()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (channel, plugin) in
         let headerModel = SettingHeaderViewModel(channel: channel, plugin: plugin)
         self?.view?.displayHeader(with: headerModel)
       }).disposed(by: self.disposeBag)
     
     self.interactor?.updateOptions()
-      .debounce(.seconds(1), scheduler: MainScheduler.instance)
-      .observeOn(MainScheduler.instance)
+      .debounce(.seconds(1), scheduler: _RXSwift_MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         let settingOptions = SettingOptionModel.generate(
           options: [.language, .closeChatVisibility, .translation, .marketingUnsubscribed])
@@ -40,7 +40,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
       }).disposed(by: self.disposeBag)
     
     self.interactor?.updateUser()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user) in
         let profiles = mainStore.state.user.profile
         let models = UserProfileItemModel.generate(
@@ -51,7 +51,7 @@ class SettingPresenter: NSObject, SettingPresenterProtocol {
       }).disposed(by: self.disposeBag)
     
     self.interactor?.getProfileSchemas()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (schemas) in
         let profiles = mainStore.state.user.profile
         let models = UserProfileItemModel.generate(

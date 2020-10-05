@@ -6,8 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import SnapKit
-
 final class CHBooleanSelectCell: BaseTableViewCell {
   private enum Metrics {
     static var fontSize = 17.f

@@ -6,8 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
-
 enum LinkButtonTheme: String {
   case blue
   case green
@@ -45,10 +43,10 @@ struct CHLinkButton {
   }
 }
 
-extension CHLinkButton: Mappable {
-  init?(map: Map) { }
+extension CHLinkButton: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     title <- map["title"]
     theme <- map["theme"]
     url <- map["url"]

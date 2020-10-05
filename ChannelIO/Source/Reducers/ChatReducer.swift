@@ -6,9 +6,7 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func ChatReducer(action: Action, state: ChatState?) -> ChatState {
+func ChatReducer(action: ReSwift_Action, state: ChatState?) -> ChatState {
   var state = state
   switch action {
   case _ as ClearChat:

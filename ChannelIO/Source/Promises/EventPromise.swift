@@ -7,17 +7,14 @@
 //
 
 import Foundation
-import Alamofire
-import SwiftyJSON
-import RxSwift
-import ObjectMapper
+//import RxSwift
 
 struct EventPromise {
   static func sendEvent(
     pluginId: String,
     name: String,
-    property: [String: Any?]? = nil) -> Observable<CHEvent> {
-    return Observable.create { subscriber in
+    property: [String: Any?]? = nil) -> _RXSwift_Observable<CHEvent> {
+    return _RXSwift_Observable.create { subscriber in
       var params = [
         "url": [String:String]()
       ]
@@ -36,8 +33,8 @@ struct EventPromise {
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json = JSON(data)
-            guard let event = Mapper<CHEvent>()
+            let json = SwiftyJSON_JSON(data)
+            guard let event = ObjectMapper_Mapper<CHEvent>()
               .map(JSONObject: json["event"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 return
@@ -51,7 +48,7 @@ struct EventPromise {
           }
         })
       
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
 }

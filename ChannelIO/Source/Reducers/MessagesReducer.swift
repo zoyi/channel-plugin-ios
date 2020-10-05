@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
+func messagesReducer(action: ReSwift_Action, state: MessagesState?) -> MessagesState {
   var state = state
   switch action {
   case let action as GetUserChats:
@@ -82,9 +80,9 @@ func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
     )
     return state?.upsert(messages: [msg.first!]) ?? MessagesState()
     
-  case let action as GetPush:
-    if let push = action.payload as? CHPush {
-      return state?.insert(message: push.message) ?? MessagesState()
+  case let action as GetPopup:
+    if let popup = action.payload as? CHPopup {
+      return state?.insert(message: popup.message) ?? MessagesState()
     }
     return state ?? MessagesState()
     

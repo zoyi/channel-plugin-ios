@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct CHTargetCondition {
   var key: TargetKey?
@@ -16,10 +15,10 @@ struct CHTargetCondition {
   var subKey: TargetSubKey?
 }
 
-extension CHTargetCondition: Mappable {
-  init?(map: Map) { }
+extension CHTargetCondition: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     key     <- map["key"]
     value   <- map["value"]
     op      <- map["operator"]

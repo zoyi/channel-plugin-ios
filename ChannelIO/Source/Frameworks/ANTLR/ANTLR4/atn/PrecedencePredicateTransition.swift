@@ -11,35 +11,35 @@
 /// -  Sam Harwell
 /// 
 
-public final class PrecedencePredicateTransition: AbstractPredicateTransition, CustomStringConvertible {
-    public let precedence: Int
+final class PrecedencePredicateTransition: AbstractPredicateTransition, CustomStringConvertible {
+    let precedence: Int
 
-    public init(_ target: ATNState, _ precedence: Int) {
+    init(_ target: ATNState, _ precedence: Int) {
 
         self.precedence = precedence
         super.init(target)
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.PRECEDENCE
     }
 
     override
-    public func isEpsilon() -> Bool {
+    func isEpsilon() -> Bool {
         return true
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return false
     }
 
-    public func getPredicate() -> SemanticContext.PrecedencePredicate {
+    func getPredicate() -> SemanticContext.PrecedencePredicate {
         return SemanticContext.PrecedencePredicate(precedence)
     }
 
-    public var description: String {
+    var description: String {
         return "\(precedence)  >= _p"
     }
 }

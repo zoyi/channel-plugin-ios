@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
 
 final class LogCell : BaseTableViewCell {
   let container = UIView().then {

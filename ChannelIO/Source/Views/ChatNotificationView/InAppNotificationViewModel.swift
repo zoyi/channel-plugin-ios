@@ -35,26 +35,26 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
   var mkInfo: MarketingInfo?
   var buttons: [CHLinkButton] = []
   
-  init(push: CHPushDisplayable) {
-    let writer = push.writer
+  init(popup: CHPopupDisplayable) {
+    let writer = popup.writer
       ?? defaultBotSelector(state: mainStore.state)
       ?? mainStore.state.channel
     self.name = writer.name
     self.avatar = writer
-    self.files = push.sortedFiles
-    self.webPage = push.webPage
-    self.buttons = push.buttons
-    self.timestamp = push.readableCreatedAt
-    self.mobileExposureType = push.mobileExposureType ?? .banner
+    self.files = popup.sortedFiles
+    self.webPage = popup.webPage
+    self.buttons = popup.buttons
+    self.timestamp = popup.readableCreatedAt
+    self.mobileExposureType = popup.mobileExposureType ?? .banner
     
-    let mediaFileCount = push.sortedFiles
+    let mediaFileCount = popup.sortedFiles
       .filter { $0.type == .video || $0.type == .image }
       .count
     self.hasMedia = mediaFileCount > 0 ||
-      push.webPage?.thumbUrl != nil ||
-      push.webPage?.youtubeId != nil
+      popup.webPage?.thumbUrl != nil ||
+      popup.webPage?.youtubeId != nil
 
-    if let logMessage = push.logMessage {
+    if let logMessage = popup.logMessage {
       let attributedText = NSMutableAttributedString(string: logMessage)
       let font = UIFont.systemFont(ofSize: 15)
       attributedText.addAttributes(
@@ -66,16 +66,16 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
         ],
         range: NSRange(location: 0, length: logMessage.count))
       self.message = attributedText
-    } else if push.blocks.count != 0 {
+    } else if popup.blocks.count != 0 {
       let config = CHMessageParserConfig(
         font: UIFont.systemFont(ofSize: 15.f),
         style: UIFactory.pushParagraphStyle,
         letterSpacing: -0.1
       )
       let transformer = CustomBlockTransform(config: config, isInappPush: true)
-      let result = transformer.parser.parse(blocks: push.blocks)
+      let result = transformer.parser.parse(blocks: popup.blocks)
       self.message = result
-    } else if let webPage = push.webPage {
+    } else if let webPage = popup.webPage {
       let text = webPage.title ?? webPage.url?.absoluteString ?? ""
       let attributedText = NSMutableAttributedString(string: text)
       let font = UIFont.systemFont(ofSize: 15.f)
@@ -91,6 +91,6 @@ struct InAppNotificationViewModel: InAppNotificationViewModelType {
     }
     
     self.hasText = self.message != nil && self.message?.string != ""
-    self.mkInfo = push.mkInfo
+    self.mkInfo = popup.mkInfo
   }
 }

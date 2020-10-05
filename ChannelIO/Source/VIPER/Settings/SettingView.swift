@@ -6,7 +6,7 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 
 class SettingView: BaseViewController {
   var presenter: SettingPresenterProtocol?
@@ -38,7 +38,7 @@ class SettingView: BaseViewController {
   var options: [SettingOptionModel] = []
   var profiles: [UserProfileItemModel] = []
   
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
   override func viewDidLoad() {
     super.viewDidLoad()

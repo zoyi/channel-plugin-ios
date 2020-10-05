@@ -4,7 +4,7 @@
  */
 
 
-public class UnbufferedTokenStream: TokenStream {
+class UnbufferedTokenStream: TokenStream {
     internal var tokenSource: TokenSource
 
     /// 
@@ -59,13 +59,13 @@ public class UnbufferedTokenStream: TokenStream {
     internal var currentTokenIndex = 0
 
 
-    public init(_ tokenSource: TokenSource) throws {
+    init(_ tokenSource: TokenSource) throws {
         self.tokenSource = tokenSource
         try fill(1) // prime the pump
     }
 
 
-    public func get(_ i: Int) throws -> Token {
+    func get(_ i: Int) throws -> Token {
         // get absolute index
         let bufferStartIndex = getBufferStartIndex()
         if i < bufferStartIndex || i >= bufferStartIndex + n {
@@ -75,7 +75,7 @@ public class UnbufferedTokenStream: TokenStream {
     }
 
 
-    public func LT(_ i: Int) throws -> Token? {
+    func LT(_ i: Int) throws -> Token? {
         if i == -1 {
             return lastToken
         }
@@ -96,32 +96,32 @@ public class UnbufferedTokenStream: TokenStream {
     }
 
 
-    public func LA(_ i: Int) throws -> Int {
+    func LA(_ i: Int) throws -> Int {
         return try LT(i)!.getType()
     }
 
 
-    public func getTokenSource() -> TokenSource {
+    func getTokenSource() -> TokenSource {
         return tokenSource
     }
 
 
-    public func getText() -> String {
+    func getText() -> String {
         return ""
     }
 
 
-    public func getText(_ ctx: RuleContext) throws -> String {
+    func getText(_ ctx: RuleContext) throws -> String {
         return try getText(ctx.getSourceInterval())
     }
 
 
-    public func getText(_ start: Token?, _ stop: Token?) throws -> String {
+    func getText(_ start: Token?, _ stop: Token?) throws -> String {
         return try getText(Interval.of(start!.getTokenIndex(), stop!.getTokenIndex()))
     }
 
 
-    public func consume() throws {
+    func consume() throws {
         //Token.EOF
         if try  LA(1) == CommonToken.EOF {
             throw ANTLRError.illegalState(msg: "cannot consume EOF")
@@ -194,7 +194,7 @@ public class UnbufferedTokenStream: TokenStream {
     /// `release()` is called in the wrong order.
     /// 
 
-    public func mark() -> Int {
+    func mark() -> Int {
         if numMarkers == 0 {
             lastTokenBufferStart = lastToken
         }
@@ -205,7 +205,7 @@ public class UnbufferedTokenStream: TokenStream {
     }
 
 
-    public func release(_ marker: Int) throws {
+    func release(_ marker: Int) throws {
         let expectedMark = -numMarkers
         if marker != expectedMark {
             throw ANTLRError.illegalState(msg: "release() called with an invalid marker.")
@@ -227,12 +227,12 @@ public class UnbufferedTokenStream: TokenStream {
     }
 
 
-    public func index() -> Int {
+    func index() -> Int {
         return currentTokenIndex
     }
 
 
-    public func seek(_ index: Int) throws {
+    func seek(_ index: Int) throws {
         var index = index
         // seek to absolute index
         if index == currentTokenIndex {
@@ -264,17 +264,17 @@ public class UnbufferedTokenStream: TokenStream {
     }
 
 
-    public func size() -> Int {
+    func size() -> Int {
         fatalError("Unbuffered stream cannot know its size")
     }
 
 
-    public func getSourceName() -> String {
+    func getSourceName() -> String {
         return tokenSource.getSourceName()
     }
 
 
-    public func getText(_ interval: Interval) throws -> String {
+    func getText(_ interval: Interval) throws -> String {
         let bufferStartIndex = getBufferStartIndex()
         let bufferStopIndex = bufferStartIndex + tokens.count - 1
 

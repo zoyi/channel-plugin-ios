@@ -7,8 +7,7 @@
 //
 
 import UIKit
-import SnapKit
-import RxSwift
+//import RxSwift
 
 class ChatNavigationTitleView : BaseView {
   let titleLabel = UILabel().then {
@@ -27,7 +26,7 @@ class ChatNavigationTitleView : BaseView {
     $0.alpha = 0.7
   }
 
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
 
   override func initialize() {
     super.initialize()
@@ -120,7 +119,7 @@ class ChatNavigationFollowingTitleView : BaseView {
     $0.font = UIFont.boldSystemFont(ofSize: 17)
   }
   
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()

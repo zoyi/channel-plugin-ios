@@ -52,13 +52,13 @@ class ImageSource: NSObject, InputSource {
 
     /// Initializes a new Image Source with UIImage
     /// - parameter image: Image to be loaded
-    public init(image: UIImage) {
+    init(image: UIImage) {
         self.image = image
     }
 
     /// Initializes a new Image Source with an image name from the main bundle
     /// - parameter imageString: name of the file in the application's main bundle
-    public init?(imageString: String) {
+    init?(imageString: String) {
         if let image = UIImage(named: imageString) {
             self.image = image
             super.init()
@@ -67,7 +67,7 @@ class ImageSource: NSObject, InputSource {
         }
     }
 
-    public func load(to imageView: UIImageView, with callback: @escaping (UIImage?) -> Void) {
+    func load(to imageView: UIImageView, with callback: @escaping (UIImage?) -> Void) {
         imageView.image = image
         callback(image)
     }

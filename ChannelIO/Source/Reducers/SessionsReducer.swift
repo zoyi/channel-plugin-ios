@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func sessionsReducer(action: Action, state: SessionsState?) -> SessionsState {
+func sessionsReducer(action: ReSwift_Action, state: SessionsState?) -> SessionsState {
   var state = state
   switch action {
   case let action as GetUserChats:

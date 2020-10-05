@@ -23,7 +23,7 @@
 /// 
 /// TODO: what to do about lexers
 /// 
-public protocol ANTLRErrorStrategy {
+protocol ANTLRErrorStrategy {
     /// 
     /// Reset the error handler state for the specified `recognizer`.
     /// - parameter recognizer: the parser instance

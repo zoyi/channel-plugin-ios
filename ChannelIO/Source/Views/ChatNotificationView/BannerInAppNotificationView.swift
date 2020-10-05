@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import RxSwift
-import SnapKit
+//import RxSwift
 
 class BannerInAppNotificationView: BaseView, InAppNotification {
   private enum Metric {
@@ -138,9 +137,9 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
   
   let notiType: InAppNotificationType = .banner
   private var mkInfo: MarketingInfo?
-  private var chatSignal = PublishSubject<Any?>()
-  private var closeSignal = PublishSubject<Any?>()
-  private let disposeBag = DisposeBag()
+  private var chatSignal = _RXSwift_PublishSubject<Any?>()
+  private var closeSignal = _RXSwift_PublishSubject<Any?>()
+  private let disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -179,7 +178,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.messageView.delegate = self
     
     self.rx.observeWeakly(CGRect.self, "bounds")
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (bounds) in
         self?.layer.applySketchShadow(
           color: .black20, alpha: 1, x: 0, y: 4, blur: 20, spread: 0
@@ -369,13 +368,13 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     }
   }
   
-  func signalForChat() -> Observable<Any?> {
-    self.chatSignal = PublishSubject<Any?>()
+  func signalForChat() -> _RXSwift_Observable<Any?> {
+    self.chatSignal = _RXSwift_PublishSubject<Any?>()
     return self.chatSignal.asObservable()
   }
   
-  func signalForClose() -> Observable<Any?> {
-    self.closeSignal = PublishSubject<Any?>()
+  func signalForClose() -> _RXSwift_Observable<Any?> {
+    self.closeSignal = _RXSwift_PublishSubject<Any?>()
     return self.closeSignal.asObservable()
   }
   
@@ -401,8 +400,9 @@ extension BannerInAppNotificationView : UITextViewDelegate {
       case "mailto":
         return true
       default:
-        let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
-        if handled == false || handled == nil {
+        let handled = (ChannelIO.delegate?.onUrlClicked?(url: URL) ?? false)
+          || (ChannelIO.delegate?.onClickChatLink?(url: URL) ?? false)
+        if !handled {
           self.closeSignal.onNext(nil)
           self.closeSignal.onCompleted()
           URL.openWithUniversal()

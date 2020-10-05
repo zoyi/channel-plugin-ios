@@ -7,22 +7,19 @@
 //
 
 import Foundation
-import RxSwift
-import Alamofire
-import ObjectMapper
-import SwiftyJSON
+//import RxSwift
 
 struct ChannelPromise {
-  static func getChannel() -> Observable<CHChannel> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func getChannel() -> _RXSwift_Observable<CHChannel> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       let req = AF
         .request(RestRouter.GetChannel)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result{
           case .success(let data):
-            let json = JSON(data)
-            guard let channel = Mapper<CHChannel>()
+            let json = SwiftyJSON_JSON(data)
+            guard let channel = ObjectMapper_Mapper<CHChannel>()
               .map(JSONObject: json["channel"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 return
@@ -36,7 +33,7 @@ struct ChannelPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

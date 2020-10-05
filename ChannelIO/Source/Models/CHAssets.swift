@@ -47,9 +47,13 @@ class CHAssets {
   
   class func localized(_ key: String) -> String {
     let rootBundle = CHAssets.getBundle()
-    if let settings = ChannelIO.settings, let locale = settings.appLocale?.rawValue {
-      guard let path = rootBundle.path(forResource: locale, ofType: "lproj") else { return "" }
-      guard let bundle = Bundle.init(path: path) else { return "" }
+    if let config = ChannelIO.bootConfig, let locale = config.appLocale?.rawValue {
+      guard
+        let path = rootBundle.path(forResource: locale, ofType: "lproj"),
+        let bundle = Bundle.init(path: path)
+      else {
+        return ""
+      }
       return NSLocalizedString(key, tableName: nil, bundle: bundle, value: "", comment: "").replace("%s", withString: "%@")
     } else {
       return NSLocalizedString(key, tableName: nil, bundle: rootBundle, value: "", comment: "").replace("%s", withString: "%@")
@@ -81,7 +85,7 @@ class CHAssets {
     tagAttributes: [StringTagType: [NSAttributedString.Key: Any]]? = nil) -> NSAttributedString {
     
     var locale = "en"
-    if let settings = ChannelIO.settings, let settingLocale = settings.appLocale?.rawValue {
+    if let config = ChannelIO.bootConfig, let settingLocale = config.appLocale?.rawValue {
       locale = settingLocale
     }
     

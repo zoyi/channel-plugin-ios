@@ -5,7 +5,7 @@
 /// 
 
 
-public class DecisionState: ATNState {
-    public var decision: Int = -1
-    public var nonGreedy: Bool = false
+class DecisionState: ATNState {
+    var decision: Int = -1
+    var nonGreedy: Bool = false
 }

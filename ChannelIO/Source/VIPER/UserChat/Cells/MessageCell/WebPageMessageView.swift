@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import SDWebImage
-import SnapKit
 
 final class WebPageMessageView: BaseView {
   private struct Metrics {
@@ -214,7 +212,7 @@ final class WebPageMessageView: BaseView {
       self.videoView.isHidden = false
       self.imageView.isHidden = true
     } else if let url = webPage.thumbUrl {
-      self.imageView.sd_setImage(with: url)
+      self.imageView._ChannelIO_sd_setImage(with: url)
       self.imageView.isHidden = false
       self.videoView.isHidden = true
     }

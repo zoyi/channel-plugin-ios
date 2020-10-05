@@ -5,17 +5,14 @@
 //  Created by Jam on 2019/12/04.
 //
 
-import Alamofire
-import ObjectMapper
-import RxSwift
-import SwiftyJSON
+//import RxSwift
 
 struct FilePromise {
   static func uploadFile(
     channelId: String,
     filename: String,
-    data: Data) -> Observable<([String:Any]?, Double)> {
-    return Observable.create { subscriber in
+    data: Data) -> _RXSwift_Observable<([String:Any]?, Double)> {
+    return _RXSwift_Observable.create { subscriber in
       let url = CDNService.UploadFile(channelId, filename)
       let req = AF
         .upload(data, to: url, method: url.method, headers: url.authHeaders)
@@ -26,7 +23,7 @@ struct FilePromise {
         .asyncResponse { response in
           switch response.result {
           case .success(let data):
-            let result = SwiftyJSON.JSON(data).dictionaryObject
+            let result = SwiftyJSON_JSON(data).dictionaryObject
             subscriber.onNext((result, 1))
             subscriber.onCompleted()
           case .failure(let error):
@@ -35,7 +32,7 @@ struct FilePromise {
             ))
           }
         }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

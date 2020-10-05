@@ -8,7 +8,7 @@ import Foundation
 
 
 extension UUID {
-    public init(mostSigBits: Int64, leastSigBits: Int64) {
+    init(mostSigBits: Int64, leastSigBits: Int64) {
         let bytes = UnsafeMutablePointer<UInt8>.allocate(capacity: 16)
         defer {
             bytes.deallocate()

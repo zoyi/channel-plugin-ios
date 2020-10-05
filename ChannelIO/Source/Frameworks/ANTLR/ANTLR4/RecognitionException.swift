@@ -11,7 +11,7 @@
 /// and what kind of problem occurred.
 /// 
 
-public class RecognitionException {
+class RecognitionException {
     /// 
     /// The _org.antlr.v4.runtime.Recognizer_ where this exception originated.
     /// 
@@ -30,9 +30,9 @@ public class RecognitionException {
 
     private var offendingState = -1
 
-    public var message: String?
+    var message: String?
 
-    public init(_ recognizer: RecognizerProtocol?,
+    init(_ recognizer: RecognizerProtocol?,
                 _ input: IntStream,
                 _ ctx: ParserRuleContext? = nil,
                 _ message: String? = nil) {
@@ -54,7 +54,7 @@ public class RecognitionException {
     /// 
     /// If the state number is not known, this method returns -1.
     /// 
-    public func getOffendingState() -> Int {
+    func getOffendingState() -> Int {
         return offendingState
     }
 
@@ -72,7 +72,7 @@ public class RecognitionException {
     /// - Returns: The set of token types that could potentially follow the current
     /// state in the ATN, or `null` if the information is not available.
     /// 
-    public func getExpectedTokens() -> IntervalSet? {
+    func getExpectedTokens() -> IntervalSet? {
         if let recognizer = recognizer {
             return try? recognizer.getATN().getExpectedTokens(offendingState, ctx!)
         }
@@ -87,7 +87,7 @@ public class RecognitionException {
     /// - Returns: The _org.antlr.v4.runtime.RuleContext_ at the time this exception was thrown.
     /// If the context is not available, this method returns `null`.
     /// 
-    public func getCtx() -> RuleContext? {
+    func getCtx() -> RuleContext? {
         return ctx
     }
 
@@ -101,15 +101,15 @@ public class RecognitionException {
     /// where this exception was thrown, or `null` if the stream is not
     /// available.
     /// 
-    public func getInputStream() -> IntStream? {
+    func getInputStream() -> IntStream? {
         return input
     }
 
-    public func clearInputStream() {
+    func clearInputStream() {
         input = nil
     }
 
-    public func getOffendingToken() -> Token {
+    func getOffendingToken() -> Token {
         return offendingToken
     }
 
@@ -125,11 +125,11 @@ public class RecognitionException {
     /// - Returns: The recognizer where this exception occurred, or `null` if
     /// the recognizer is not available.
     /// 
-    public func getRecognizer() -> RecognizerProtocol? {
+    func getRecognizer() -> RecognizerProtocol? {
         return recognizer
     }
 
-    public func clearRecognizer() {
+    func clearRecognizer() {
         self.recognizer = nil
     }
 }

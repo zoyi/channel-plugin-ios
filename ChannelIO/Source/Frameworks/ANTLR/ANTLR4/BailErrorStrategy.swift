@@ -32,8 +32,8 @@
 /// - seealso: org.antlr.v4.runtime.Parser#setErrorHandler(org.antlr.v4.runtime.ANTLRErrorStrategy)
 /// 
 /// 
-open class BailErrorStrategy: DefaultErrorStrategy {
-    public override init() {
+class BailErrorStrategy: DefaultErrorStrategy {
+    override init() {
     }
 
     /// 
@@ -42,7 +42,7 @@ open class BailErrorStrategy: DefaultErrorStrategy {
     /// rule function catches.  Use _Exception#getCause()_ to get the
     /// original _org.antlr.v4.runtime.RecognitionException_.
     /// 
-    override open func recover(_ recognizer: Parser, _ e: RecognitionException) throws {
+    override func recover(_ recognizer: Parser, _ e: RecognitionException) throws {
         var context = recognizer.getContext()
         while let contextWrap = context {
             contextWrap.exception = e
@@ -57,7 +57,7 @@ open class BailErrorStrategy: DefaultErrorStrategy {
     /// successfully recovers, it won't throw an exception.
     /// 
     override
-    open func recoverInline(_ recognizer: Parser) throws -> Token {
+    func recoverInline(_ recognizer: Parser) throws -> Token {
         let e = InputMismatchException(recognizer)
         var context = recognizer.getContext()
         while let contextWrap = context {
@@ -72,7 +72,7 @@ open class BailErrorStrategy: DefaultErrorStrategy {
     /// Make sure we don't attempt to recover from problems in subrules.
     /// 
     override
-    open func sync(_ recognizer: Parser) {
+    func sync(_ recognizer: Parser) {
     }
 
 }

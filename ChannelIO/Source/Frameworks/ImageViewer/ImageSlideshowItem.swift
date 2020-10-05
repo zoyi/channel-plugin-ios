@@ -31,25 +31,25 @@ import UIKit
 class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     /// Image view to hold the image
-    public let imageView = UIImageView()
+    let imageView = UIImageView()
 
     /// Activity indicator shown during image loading, when nil there won't be shown any
-    public let activityIndicator: ActivityIndicatorView?
+    let activityIndicator: ActivityIndicatorView?
 
     /// Input Source for the item
-    public let image: InputSource
+    let image: InputSource
 
     /// Guesture recognizer to detect double tap to zoom
-    open var gestureRecognizer: UITapGestureRecognizer?
+    var gestureRecognizer: UITapGestureRecognizer?
 
     /// Holds if the zoom feature is enabled
-    public let zoomEnabled: Bool
+    let zoomEnabled: Bool
 
     /// If set to true image is initially zoomed in
-    open var zoomInInitially = false
+    var zoomInInitially = false
     
     /// Maximum zoom scale
-    open var maximumScale: CGFloat = 2.0
+    var maximumScale: CGFloat = 2.0
 
     fileprivate var lastFrame = CGRect.zero
     fileprivate var imageReleased = false
@@ -106,11 +106,11 @@ class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         imageView.addGestureRecognizer(singleTapGestureRecognizer!)
     }
 
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override open func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
 
         if !zoomEnabled {
@@ -139,7 +139,7 @@ class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     /// Request to load Image Source to Image View
-    public func loadImage() {
+    func loadImage() {
         if self.imageView.image == nil && !isLoading {
             isLoading = true
             imageReleased = false
@@ -164,7 +164,7 @@ class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         self.imageView.image = nil
     }
     
-    public func cancelPendingLoad() {
+    func cancelPendingLoad() {
         image.cancelLoad?(on: imageView)
     }
 
@@ -251,11 +251,11 @@ class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     // MARK: UIScrollViewDelegate
 
-    open func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
         setPictoCenter()
     }
 
-    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return zoomEnabled ? imageView : nil
     }
 

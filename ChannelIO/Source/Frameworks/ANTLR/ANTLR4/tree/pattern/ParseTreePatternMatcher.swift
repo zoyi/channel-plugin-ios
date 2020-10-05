@@ -63,7 +63,7 @@
 /// `\<` and `\>`.
 /// 
 
-public class ParseTreePatternMatcher {
+class ParseTreePatternMatcher {
 
     /// 
     /// This is the backing field for _#getLexer()_.
@@ -85,7 +85,7 @@ public class ParseTreePatternMatcher {
     /// the tree patterns. The parser is used as a convenient mechanism to get
     /// the grammar name, plus token, rule names.
     /// 
-    public init(_ lexer: Lexer, _ parser: Parser) {
+    init(_ lexer: Lexer, _ parser: Parser) {
         self.lexer = lexer
         self.parser = parser
     }
@@ -101,7 +101,7 @@ public class ParseTreePatternMatcher {
     /// - Throws: ANTLRError.ilegalArgument if `start` is `null` or empty.
     /// - Throws: ANTLRError.ilegalArgument if `stop` is `null` or empty.
     /// 
-    public func setDelimiters(_ start: String, _ stop: String, _ escapeLeft: String) throws {
+    func setDelimiters(_ start: String, _ stop: String, _ escapeLeft: String) throws {
         if start.isEmpty {
             throw ANTLRError.illegalArgument(msg: "start cannot be null or empty")
         }
@@ -117,7 +117,7 @@ public class ParseTreePatternMatcher {
     /// 
     /// Does `pattern` matched as rule `patternRuleIndex` match `tree`?
     /// 
-    public func matches(_ tree: ParseTree, _ pattern: String, _ patternRuleIndex: Int) throws -> Bool {
+    func matches(_ tree: ParseTree, _ pattern: String, _ patternRuleIndex: Int) throws -> Bool {
         let p: ParseTreePattern = try compile(pattern, patternRuleIndex)
         return try matches(tree, p)
     }
@@ -126,7 +126,7 @@ public class ParseTreePatternMatcher {
     /// Does `pattern` matched as rule patternRuleIndex match tree? Pass in a
     /// compiled pattern instead of a string representation of a tree pattern.
     /// 
-    public func matches(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> Bool {
+    func matches(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> Bool {
         let labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
         let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), labels)
         return mismatchedNode == nil
@@ -137,7 +137,7 @@ public class ParseTreePatternMatcher {
     /// `tree` and return a _org.antlr.v4.runtime.tree.pattern.ParseTreeMatch_ object that contains the
     /// matched elements, or the node at which the match failed.
     /// 
-    public func match(_ tree: ParseTree, _ pattern: String, _ patternRuleIndex: Int) throws -> ParseTreeMatch {
+    func match(_ tree: ParseTree, _ pattern: String, _ patternRuleIndex: Int) throws -> ParseTreeMatch {
         let p: ParseTreePattern = try compile(pattern, patternRuleIndex)
         return try match(tree, p)
     }
@@ -148,7 +148,7 @@ public class ParseTreePatternMatcher {
     /// node at which the match failed. Pass in a compiled pattern instead of a
     /// string representation of a tree pattern.
     /// 
-    public func match(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> ParseTreeMatch {
+    func match(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> ParseTreeMatch {
         let labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
         let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), labels)
         return ParseTreeMatch(tree, pattern, labels, mismatchedNode)
@@ -158,7 +158,7 @@ public class ParseTreePatternMatcher {
     /// For repeated use of a tree pattern, compile it to a
     /// _org.antlr.v4.runtime.tree.pattern.ParseTreePattern_ using this method.
     /// 
-    public func compile(_ pattern: String, _ patternRuleIndex: Int) throws -> ParseTreePattern {
+    func compile(_ pattern: String, _ patternRuleIndex: Int) throws -> ParseTreePattern {
         let tokenList = try tokenize(pattern)
         let tokenSrc = ListTokenSource(tokenList)
         let tokens = CommonTokenStream(tokenSrc)
@@ -184,7 +184,7 @@ public class ParseTreePatternMatcher {
     /// Used to convert the tree pattern string into a series of tokens. The
     /// input stream is reset.
     /// 
-    public func getLexer() -> Lexer {
+    func getLexer() -> Lexer {
         return lexer
     }
 
@@ -192,7 +192,7 @@ public class ParseTreePatternMatcher {
     /// Used to collect to the grammar file name, token names, rule names for
     /// used to parse the pattern into a parse tree.
     /// 
-    public func getParser() -> Parser {
+    func getParser() -> Parser {
         return parser
     }
 
@@ -300,7 +300,7 @@ public class ParseTreePatternMatcher {
         return nil
     }
 
-    public func tokenize(_ pattern: String) throws -> Array<Token> {
+    func tokenize(_ pattern: String) throws -> Array<Token> {
         // split pattern into chunks: sea (raw input) and islands (<ID>, <expr>)
         let chunks = try split(pattern)
 
@@ -348,7 +348,7 @@ public class ParseTreePatternMatcher {
     /// 
     /// Split `<ID> = <e:expr> ;` into 4 chunks for tokenizing by _#tokenize_.
     /// 
-    public func split(_ pattern: String) throws -> [Chunk] {
+    func split(_ pattern: String) throws -> [Chunk] {
         var p = pattern.startIndex
         let n = pattern.endIndex
         var chunks = [Chunk]()

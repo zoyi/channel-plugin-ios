@@ -8,8 +8,7 @@
 
 import Foundation
 import UIKit
-import RxSwift
-import SnapKit
+//import RxSwift
 
 class SettingHeaderView: BaseView {
   let bgLayer = CAGradientLayer().then {

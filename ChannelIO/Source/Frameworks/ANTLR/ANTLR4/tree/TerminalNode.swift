@@ -4,6 +4,6 @@
  */
 
 
-public protocol TerminalNode: ParseTree {
+protocol TerminalNode: ParseTree {
     func getSymbol() -> Token?
 }

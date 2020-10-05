@@ -7,18 +7,17 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct CHLog {
   var action = ""
   var values: [String] = []
 }
 
-extension CHLog: Mappable {
-  init?(map: Map) {
+extension CHLog: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {
 
   }
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     action       <- map["action"]
     values       <- map["values"]
   }

@@ -6,16 +6,14 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func appReducer(action: Action, state: AppState?) -> AppState {
+func appReducer(action: ReSwift_Action, state: AppState?) -> AppState {
   return AppState(
     bootState: bootReducer(action: action, state: state?.bootState),
     plugin: pluginReducer(action: action, plugin: state?.plugin),
     channel: channelReducer(action: action, channel: state?.channel),
     user: userReducer(action: action, user: state?.user),
     userChatsState: userChatsReducer(action: action, state: state?.userChatsState),
-    push: pushReducer(action: action, push: state?.push),
+    popup: pushReducer(action: action, popup: state?.popup),
     managersState: managersReducer(action: action, state: state?.managersState),
     botsState: botsReducer(action: action, state: state?.botsState),
     sessionsState: sessionsReducer(action: action, state: state?.sessionsState),

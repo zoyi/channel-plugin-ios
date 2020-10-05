@@ -37,8 +37,42 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     }
   }
   
+  func onClickChatLink(url: URL) -> Bool {
+    print("url 1")
+    print(url.absoluteString)
+    return false
+  }
+  
+  func onUrlClicked(url: URL) -> Bool {
+    print("url 2")
+    print(url.absoluteString)
+    return false
+  }
+  
+  func onChangeProfile(key: String, value: Any?) {
+    print("profile 1")
+    print("\(key) is \(value)")
+  }
+  
+  func onProfileChanged(key: String, value: Any?) {
+    print("profile 2")
+    print("\(key) is \(value)")
+  }
+  
+  func onShowMessenger() {
+    print("on show")
+  }
+  
   func willShowMessenger() {
     print("will show")
+  }
+  
+  func onHideMessenger() {
+    print("on hide")
+  }
+  
+  func onChatCreated(chatId: String) {
+    print("create chat : \(chatId)")
   }
   
   func willHideMessenger() {
@@ -46,23 +80,26 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   func onReceivePush(event: PushEvent) {
-//    self.customPushView.isHidden = false
-//    self.avatarView.sd_setImage(with: URL(string: event.senderAvatarUrl)!)
-//    self.pushMessageLabel.text  = event.message
-//    self.chatId = event.chatId
-//
-//    let gesture = UITapGestureRecognizer(target: self, action: #selector(didClickOnPush))
-//    gesture.numberOfTapsRequired = 1
-//    self.customPushView.addGestureRecognizer(gesture)
+    print("event 1: ")
+    print(event.toJson())
+  }
+  
+  func onPopupDataReceived(event: PopupData) {
+    print("event 2: ")
+    print(event.toJson())
   }
   
   func onChangeBadge(count: Int) {
     print("badge called \(count)")
   }
   
+  func onBadgeChanged(count: Int) {
+    print("badge called \(count)")
+  }
+  
   @objc func didClickOnPush() {
     if let chatId = self.chatId {
-      ChannelIO.openChat(with: chatId, animated: true)
+      ChannelIO.openChat(with: chatId, message: nil)
     }
   }
   
@@ -79,10 +116,16 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     guard var pluginKey = self.pluginKeyField.text else { return }
     if pluginKey == "" {
-      pluginKey = "06ccfc12-a9fd-4c68-b364-5d19f81a60dd"
+      pluginKey = "d788f832-1e59-457c-a3ed-32ac8200bec1"
     }
-    let settings = ChannelPluginSettings(pluginKey: pluginKey)
-    settings.debugMode = true
+//    let settings = ChannelPluginSettings(pluginKey: pluginKey)
+//    settings.debugMode = true
+    let bootConfig = BootConfig(pluginKey: pluginKey)
+    bootConfig.stage = .development
+//    bootConfig.hidePopup = true
+//    bootConfig.trackDefaultEvent = false
+//    bootConfig.language = .english
+//    bootConfig.set(unsubscribed: true)
 //    settings.stage = .development
 //    settings.launcherConfig = LauncherConfig(
 //      position: .left, xMargin: 100, yMargin: 200
@@ -90,10 +133,14 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
     
     let profile = Profile()
     profile.set(name: "TESTER")
-    
-    ChannelIO.boot(with: settings, profile: profile) { (completion, user) in
-      
+    bootConfig.profile = profile
+    ChannelIO.setDebugMode(with: true)
+    ChannelIO.boot(with: bootConfig) { (completion, user) in
+//      ChannelIO.openChat(with: "5f51c00bca88425e6d72123123", message: nil)
     }
+//    ChannelIO.boot(with: settings, profile: profile) { (completion, user) in
+//
+//    }
   }
 
   @IBAction func onClickShutdown() {
@@ -106,10 +153,10 @@ class VeilViewController : UIViewController, ChannelPluginDelegate {
   }
   
   @IBAction func onClickShowLauncher(_ sender: Any) {
-    ChannelIO.show(animated: true)
+    ChannelIO.showChannelButton()
   }
   
   @IBAction func onClickHideLauncher(_ sender: Any) {
-    ChannelIO.hide(animated: true)
+    ChannelIO.hideChannelButton()
   }
 }

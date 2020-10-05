@@ -5,37 +5,37 @@
 /// 
 
 
-public class ATN {
-    public static let INVALID_ALT_NUMBER = 0
+class ATN {
+    static let INVALID_ALT_NUMBER = 0
 
-    public private(set) final var states = [ATNState?]()
+    private(set) final var states = [ATNState?]()
 
     /// 
     /// Each subrule/rule is a decision point and we must track them so we
     /// can go back later and build DFA predictors for them.  This includes
     /// all the rules, subrules, optional blocks, ()+, ()* etc...
     /// 
-    public private(set) final var decisionToState = [DecisionState]()
+    private(set) final var decisionToState = [DecisionState]()
 
     /// 
     /// Maps from rule index to starting state number.
     /// 
-    public internal(set) final var ruleToStartState: [RuleStartState]!
+  final var ruleToStartState: [RuleStartState]!
 
     /// 
     /// Maps from rule index to stop state number.
     /// 
-    public internal(set) final var ruleToStopState: [RuleStopState]!
+  final var ruleToStopState: [RuleStopState]!
 
     /// 
     /// The type of the ATN.
     /// 
-    public let grammarType: ATNType
+    let grammarType: ATNType
 
     /// 
     /// The maximum value for any symbol recognized by a transition in the ATN.
     /// 
-    public let maxTokenType: Int
+    let maxTokenType: Int
 
     /// 
     /// For lexer ATNs, this maps the rule index to the resulting token type.
@@ -43,20 +43,20 @@ public class ATN {
     /// type if the `ATNDeserializationOptions.generateRuleBypassTransitions`
     /// deserialization option was specified; otherwise, this is `null`.
     /// 
-    public internal(set) final var ruleToTokenType: [Int]!
+  final var ruleToTokenType: [Int]!
 
     /// 
     /// For lexer ATNs, this is an array of _org.antlr.v4.runtime.atn.LexerAction_ objects which may
     /// be referenced by action transitions in the ATN.
     /// 
-    public internal(set) final var lexerActions: [LexerAction]!
+  final var lexerActions: [LexerAction]!
 
-    public internal(set) final var modeToStartState = [TokensStartState]()
+  final var modeToStartState = [TokensStartState]()
 
     /// 
     /// Used for runtime deserialization of ATNs from strings
     /// 
-    public init(_ grammarType: ATNType, _ maxTokenType: Int) {
+    init(_ grammarType: ATNType, _ maxTokenType: Int) {
         self.grammarType = grammarType
         self.maxTokenType = maxTokenType
     }
@@ -67,7 +67,7 @@ public class ATN {
     /// the rule surrounding `s`. In other words, the set will be
     /// restricted to tokens reachable staying within `s`'s rule.
     /// 
-    public func nextTokens(_ s: ATNState, _ ctx: RuleContext?) -> IntervalSet {
+    func nextTokens(_ s: ATNState, _ ctx: RuleContext?) -> IntervalSet {
         let anal = LL1Analyzer(self)
         let next = anal.LOOK(s, ctx)
         return next
@@ -78,7 +78,7 @@ public class ATN {
     /// staying in same rule. _org.antlr.v4.runtime.Token#EPSILON_ is in set if we reach end of
     /// rule.
     /// 
-    public func nextTokens(_ s: ATNState) -> IntervalSet {
+    func nextTokens(_ s: ATNState) -> IntervalSet {
         if let nextTokenWithinRule = s.nextTokenWithinRule {
             return nextTokenWithinRule
         }
@@ -88,7 +88,7 @@ public class ATN {
         return intervalSet
     }
 
-    public func addState(_ state: ATNState?) {
+    func addState(_ state: ATNState?) {
         if let state = state {
             state.atn = self
             state.stateNumber = states.count
@@ -97,25 +97,25 @@ public class ATN {
         states.append(state)
     }
 
-    public func removeState(_ state: ATNState) {
+    func removeState(_ state: ATNState) {
         states[state.stateNumber] = nil
         //states.set(state.stateNumber, nil); // just free mem, don't shift states in list
     }
     @discardableResult
-    public func defineDecisionState(_ s: DecisionState) -> Int {
+    func defineDecisionState(_ s: DecisionState) -> Int {
         decisionToState.append(s)
         s.decision = decisionToState.count-1
         return s.decision
     }
 
-    public func getDecisionState(_ decision: Int) -> DecisionState? {
+    func getDecisionState(_ decision: Int) -> DecisionState? {
         if  !decisionToState.isEmpty  {
             return decisionToState[decision]
         }
         return nil
     }
 
-    public func getNumberOfDecisions() -> Int {
+    func getNumberOfDecisions() -> Int {
         return decisionToState.count
     }
 
@@ -138,7 +138,7 @@ public class ATN {
     /// - throws: _ANTLRError.illegalArgument_ if the ATN does not contain a state with
     /// number `stateNumber`
     /// 
-    public func getExpectedTokens(_ stateNumber: Int, _ context: RuleContext) throws -> IntervalSet {
+    func getExpectedTokens(_ stateNumber: Int, _ context: RuleContext) throws -> IntervalSet {
         if stateNumber < 0 || stateNumber >= states.count {
             throw ANTLRError.illegalArgument(msg: "Invalid state number.")
         }
@@ -170,10 +170,10 @@ public class ATN {
         return expected
     }
 
-    public final func appendDecisionToState(_ state: DecisionState) {
+    final func appendDecisionToState(_ state: DecisionState) {
         decisionToState.append(state)
     }
-    public final func appendModeToStartState(_ state: TokensStartState) {
+    final func appendModeToStartState(_ state: TokensStartState) {
         modeToStartState.append(state)
     }
 

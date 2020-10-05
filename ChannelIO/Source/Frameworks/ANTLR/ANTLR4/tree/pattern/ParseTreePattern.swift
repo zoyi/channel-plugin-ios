@@ -9,7 +9,7 @@
 /// _org.antlr.v4.runtime.tree.pattern.ParseTreePatternMatcher#compile(String, int)_.
 /// 
 
-public class ParseTreePattern {
+class ParseTreePattern {
     /// 
     /// This is the backing field for _#getPatternRuleIndex()_.
     /// 
@@ -43,7 +43,7 @@ public class ParseTreePattern {
     /// tree pattern.
     /// - Parameter patternTree: The tree pattern in _org.antlr.v4.runtime.tree.ParseTree_ form.
     /// 
-    public init(_ matcher: ParseTreePatternMatcher,
+    init(_ matcher: ParseTreePatternMatcher,
                 _ pattern: String, _ patternRuleIndex: Int, _ patternTree: ParseTree) {
         self.matcher = matcher
         self.patternRuleIndex = patternRuleIndex
@@ -60,7 +60,7 @@ public class ParseTreePattern {
     /// used to determine whether or not the match was successful.
     /// 
 
-    public func match(_ tree: ParseTree) throws -> ParseTreeMatch {
+    func match(_ tree: ParseTree) throws -> ParseTreeMatch {
         return try matcher.match(tree, self)
     }
 
@@ -71,7 +71,7 @@ public class ParseTreePattern {
     /// - Returns: `true` if `tree` is a match for the current tree
     /// pattern; otherwise, `false`.
     /// 
-    public func matches(_ tree: ParseTree) throws -> Bool {
+    func matches(_ tree: ParseTree) throws -> Bool {
         return try matcher.match(tree, self).succeeded()
     }
 
@@ -87,7 +87,7 @@ public class ParseTreePattern {
     /// regardless of the reason for the failure.
     /// 
 
-    /*public func findAll(tree : ParseTree, _ xpath : String) -> Array<ParseTreeMatch> {
+    /*func findAll(tree : ParseTree, _ xpath : String) -> Array<ParseTreeMatch> {
         var subtrees : Array<ParseTree> = XPath.findAll(tree, xpath, matcher.getParser());
         var matches : Array<ParseTreeMatch> = Array<ParseTreeMatch>();
         for t : ParseTree in subtrees {
@@ -106,7 +106,7 @@ public class ParseTreePattern {
     /// pattern.
     /// 
 
-    public func getMatcher() -> ParseTreePatternMatcher {
+    func getMatcher() -> ParseTreePatternMatcher {
         return matcher
     }
 
@@ -116,7 +116,7 @@ public class ParseTreePattern {
     /// - Returns: The tree pattern in concrete syntax form.
     /// 
 
-    public func getPattern() -> String {
+    func getPattern() -> String {
         return pattern
     }
 
@@ -127,7 +127,7 @@ public class ParseTreePattern {
     /// - Returns: The parser rule which serves as the outermost rule for the tree
     /// pattern.
     /// 
-    public func getPatternRuleIndex() -> Int {
+    func getPatternRuleIndex() -> Int {
         return patternRuleIndex
     }
 
@@ -139,7 +139,7 @@ public class ParseTreePattern {
     /// - Returns: The tree pattern as a _org.antlr.v4.runtime.tree.ParseTree_.
     /// 
 
-    public func getPatternTree() -> ParseTree {
+    func getPatternTree() -> ParseTree {
         return patternTree
     }
 }

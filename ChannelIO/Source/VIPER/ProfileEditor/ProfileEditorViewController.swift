@@ -1,4 +1,4 @@
-//
+
 //  ProfileEditorViewController.swift
 //  ChannelIO
 //
@@ -7,9 +7,7 @@
 //
 
 import Foundation
-import RxSwift
-import JGProgressHUD
-import SnapKit
+//import RxSwift
 
 class ProfileEditorViewController: BaseViewController {
   private enum Metrics {
@@ -33,8 +31,8 @@ class ProfileEditorViewController: BaseViewController {
   
   private var isBoolean: Bool = false
   
-  private var submitSubject = PublishSubject<String>()
-  private var disposeBag = DisposeBag()
+  private var submitSubject = _RXSwift_PublishSubject<String>()
+  private var disposeBag = _RXSwift_DisposeBag()
   
   convenience init(type: EditFieldType, user: CHUser, schema: CHProfileSchema? = nil) {
     self.init()
@@ -180,7 +178,7 @@ class ProfileEditorViewController: BaseViewController {
   }
   
   func updateUserInfo() {
-    let hud = JGProgressHUD(style: .dark)
+    let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
     hud.textLabel.text = CHAssets.localized("ch.loader.updating")
     hud.show(in: self.view)
     
@@ -198,11 +196,12 @@ class ProfileEditorViewController: BaseViewController {
     }
       
     self.user?.updateProfile(key: key, value: value)
-      .debounce(.seconds(1), scheduler: MainScheduler.instance)
-      .observeOn(MainScheduler.instance)
+      .debounce(.seconds(1), scheduler: _RXSwift_MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user, error) in
         defer { hud.dismiss() }
         ChannelIO.delegate?.onChangeProfile?(key: key, value: user?.profile?[key])
+        ChannelIO.delegate?.onProfileChanged?(key: key, value: user?.profile?[key])
         mainStore.dispatch(UpdateUser(payload: user))
         if let error = error {
           CHNotification.shared.display(

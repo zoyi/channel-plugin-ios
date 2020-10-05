@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import SnapKit
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class LoungeMainHeaderView: BaseView {
   private let recentLabel = UILabel().then {
@@ -28,8 +27,8 @@ class LoungeMainHeaderView: BaseView {
     $0.tintColor = .grey900
   }
   
-  private var newSignal = PublishRelay<Any?>()
-  private var disposeBag = DisposeBag()
+  private var newSignal = _RXRelay_PublishRelay<Any?>()
+  private var disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -51,8 +50,8 @@ class LoungeMainHeaderView: BaseView {
     }
   }
 
-  func newChatSignal() -> Observable<Any?> {
-    self.newSignal = PublishRelay<Any?>()
+  func newChatSignal() -> _RXSwift_Observable<Any?> {
+    self.newSignal = _RXRelay_PublishRelay<Any?>()
     self.newChatButton.signalForClick()
       .bind(to: self.newSignal)
       .disposed(by: self.disposeBag)

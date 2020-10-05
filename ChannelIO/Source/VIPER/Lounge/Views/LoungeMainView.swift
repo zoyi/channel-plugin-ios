@@ -7,10 +7,8 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
-import SnapKit
-import MGSwipeTableCell
+//import RxSwift
+//import RxCocoa
 
 class LoungeMainView: BaseView {
   private struct Constants {
@@ -49,7 +47,7 @@ class LoungeMainView: BaseView {
   
   private var activeChats: [UserChatCellModel] = []
   private var inactiveChats: [UserChatCellModel] = []
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
   
   private var shouldShowWelcome: Bool {
     return self.activeChats.count == 0 && welcomeModel != nil
@@ -74,10 +72,10 @@ class LoungeMainView: BaseView {
   
   private var tableViewBottomConstraint: Constraint? = nil
   
-  var chatSignal = PublishRelay<UserChatCellModel>()
-  var newSignal = PublishRelay<Any?>()
-  var moreSignal = PublishRelay<Any?>()
-  var refreshSignal = PublishRelay<Any?>()
+  var chatSignal = _RXRelay_PublishRelay<UserChatCellModel>()
+  var newSignal = _RXRelay_PublishRelay<Any?>()
+  var moreSignal = _RXRelay_PublishRelay<Any?>()
+  var refreshSignal = _RXRelay_PublishRelay<Any?>()
   
   var viewHeight: CGFloat {
     if let model = self.welcomeModel, self.shouldShowWelcome {
@@ -195,15 +193,15 @@ class LoungeMainView: BaseView {
 }
 
 extension LoungeMainView {
-  func signalForMore() -> Observable<Any?> {
+  func signalForMore() -> _RXSwift_Observable<Any?> {
     return self.moreSignal.asObservable()
   }
   
-  func signalForChat() -> Observable<UserChatCellModel> {
+  func signalForChat() -> _RXSwift_Observable<UserChatCellModel> {
     return self.chatSignal.asObservable()
   }
   
-  func signalForNew() -> Observable<Any?> {
+  func signalForNew() -> _RXSwift_Observable<Any?> {
     return self.newSignal.asObservable()
   }
 }
@@ -272,7 +270,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       let model = self.activeChats[indexPath.row]
       cell.configure(model)
       
-      let button = MGSwipeButton(
+      let button = _ChannelIO_MGSwipeButton(
         title: CHAssets.localized("ch.chat.delete"),
         backgroundColor: .red300,
         insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10)
@@ -283,7 +281,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       cell.rightButtons = [
         button
       ]
-      cell.rightSwipeSettings.transition = .drag
+      cell.rightSwipeSettings.transition = .MGSwipeTransitionDrag
       cell.tintColor = .red300
       cell.delegate = self
       return cell
@@ -311,11 +309,11 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
   }
 }
 
-extension LoungeMainView: MGSwipeTableCellDelegate {
+extension LoungeMainView: _ChannelIO_MGSwipeTableCellDelegate {
   func swipeTableCell(
-    _ cell: MGSwipeTableCell,
+    _ cell: _ChannelIO_MGSwipeTableCell,
     tappedButtonAt index: Int,
-    direction: MGSwipeDirection,
+    direction: _ChannelIO_MGSwipeDirection,
     fromExpansion: Bool) -> Bool {
     
     guard let indexPath = self.tableView.indexPath(for: cell) else { return true }

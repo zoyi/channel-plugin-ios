@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import PhoneNumberKit
 
 class KeyValueCell: BaseTableViewCell {
  let titleLabel = UILabel()
@@ -61,7 +60,7 @@ class KeyValueCell: BaseTableViewCell {
     
     if let value = profile.profileValue {
       if profile.rawData.key == "mobileNumber" {
-        self.valueLabel.text = PartialFormatter().formatPartial("\(value)")
+        self.valueLabel.text = PhoneNumberKit_PartialFormatter().formatPartial("\(value)")
       } else if profile.rawData.type == .date, let value = profile.profileValue as? Date {
         self.valueLabel.text = value.fullDateString()
       } else if profile.rawData.type == .date, let value = profile.profileValue as? Double {

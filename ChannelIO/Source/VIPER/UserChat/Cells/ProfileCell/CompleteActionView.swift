@@ -7,11 +7,11 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 final class CompleteActionView: BaseView, Actionable {
-  private let submitSubject = PublishSubject<Any?>()
-  private let textSubject = PublishSubject<String?>()
+  private let submitSubject = _RXSwift_PublishSubject<Any?>()
+  private let textSubject = _RXSwift_PublishSubject<String?>()
   
   let contentLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 18)
@@ -47,11 +47,11 @@ final class CompleteActionView: BaseView, Actionable {
     }
   }
   
-  func signalForText() -> Observable<String?>? {
+  func signalForText() -> _RXSwift_Observable<String?>? {
     return self.textSubject.asObserver()
   }
   
-  func signalForAction() -> Observable<Any?> {
+  func signalForAction() -> _RXSwift_Observable<Any?> {
     return self.submitSubject.asObserver()
   }
   
@@ -59,7 +59,7 @@ final class CompleteActionView: BaseView, Actionable {
   func setFocus() {}
   func setOutFocus() {}
   func setInvalid() {}
-  func signalForFocus() -> Observable<Bool> {
-    return Observable.just(false);
+  func signalForFocus() -> _RXSwift_Observable<Bool> {
+    return _RXSwift_Observable.just(false);
   }
 }

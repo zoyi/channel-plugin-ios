@@ -6,7 +6,7 @@
 import Foundation
 
 
-public protocol RecognizerProtocol {
+protocol RecognizerProtocol {
     func getATN() -> ATN
     func getGrammarFileName() -> String
     func getParseInfo() -> ParseInfo?
@@ -18,14 +18,14 @@ public protocol RecognizerProtocol {
 }
 
 
-open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
+class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     private var _listeners: [ANTLRErrorListener] = [ConsoleErrorListener.INSTANCE]
 
-    public var _interp: ATNInterpreter!
+    var _interp: ATNInterpreter!
 
     private var _stateNumber = -1
 
-    open func getRuleNames() -> [String] {
+    func getRuleNames() -> [String] {
         fatalError(#function + " must be overridden")
     }
 
@@ -35,7 +35,7 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// - Returns: A _org.antlr.v4.runtime.Vocabulary_ instance providing information about the
     /// vocabulary used by the grammar.
     /// 
-    open func getVocabulary() -> Vocabulary {
+    func getVocabulary() -> Vocabulary {
         fatalError(#function + " must be overridden")
     }
 
@@ -44,11 +44,11 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// 
     /// Used for XPath and tree pattern compilation.
     /// 
-    public func getTokenTypeMap() -> [String: Int] {
+    func getTokenTypeMap() -> [String: Int] {
         return tokenTypeMap
     }
 
-    public lazy var tokenTypeMap: [String: Int] = {
+    lazy var tokenTypeMap: [String: Int] = {
         let vocabulary = getVocabulary()
 
         var result = [String: Int]()
@@ -74,17 +74,17 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// 
     /// Used for XPath and tree pattern compilation.
     /// 
-    public func getRuleIndexMap() -> [String : Int] {
+    func getRuleIndexMap() -> [String : Int] {
         return ruleIndexMap
     }
 
-    public lazy var ruleIndexMap: [String: Int] = {
+    lazy var ruleIndexMap: [String: Int] = {
         let ruleNames = getRuleNames()
         return Utils.toMap(ruleNames)
     }()
 
 
-    public func getTokenType(_ tokenName: String) -> Int {
+    func getTokenType(_ tokenName: String) -> Int {
         return getTokenTypeMap()[tokenName] ?? CommonToken.INVALID_TYPE
     }
 
@@ -95,14 +95,14 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// For interpreters, we don't know their serialized ATN despite having
     /// created the interpreter from it.
     /// 
-    open func getSerializedATN() -> String {
+    func getSerializedATN() -> String {
         fatalError("there is no serialized ATN")
     }
 
     /// For debugging and other purposes, might want the grammar name.
     /// Have ANTLR generate an implementation for this method.
     /// 
-    open func getGrammarFileName() -> String {
+    func getGrammarFileName() -> String {
         fatalError(#function + " must be overridden")
     }
 
@@ -111,7 +111,7 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// 
     /// - Returns: The _org.antlr.v4.runtime.atn.ATN_ used by the recognizer for prediction.
     /// 
-    open func getATN() -> ATN {
+    func getATN() -> ATN {
         fatalError(#function + " must be overridden")
     }
 
@@ -120,7 +120,7 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// 
     /// - Returns: The ATN interpreter used by the recognizer for prediction.
     /// 
-    open func getInterpreter() -> ATNInterpreter {
+    func getInterpreter() -> ATNInterpreter {
         return _interp
     }
 
@@ -129,7 +129,7 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// 
     /// - Since: 4.3
     /// 
-    open func getParseInfo() -> ParseInfo? {
+    func getParseInfo() -> ParseInfo? {
         return nil
     }
 
@@ -139,56 +139,56 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// - Parameter interpreter: The ATN interpreter used by the recognizer for
     /// prediction.
     /// 
-    open func setInterpreter(_ interpreter: ATNInterpreter) {
+    func setInterpreter(_ interpreter: ATNInterpreter) {
         _interp = interpreter
     }
 
     /// 
     /// What is the error header, normally line/character position information?
     /// 
-    open func getErrorHeader(_ e: RecognitionException) -> String {
+    func getErrorHeader(_ e: RecognitionException) -> String {
         let offending = e.getOffendingToken()
         let line = offending.getLine()
         let charPositionInLine = offending.getCharPositionInLine()
         return "line \(line):\(charPositionInLine)"
     }
 
-    open func addErrorListener(_ listener: ANTLRErrorListener) {
+    func addErrorListener(_ listener: ANTLRErrorListener) {
         _listeners.append(listener)
     }
 
-    open func removeErrorListener(_ listener: ANTLRErrorListener) {
+    func removeErrorListener(_ listener: ANTLRErrorListener) {
         _listeners = _listeners.filter() {
             $0 !== listener
         }
     }
 
-    open func removeErrorListeners() {
+    func removeErrorListeners() {
         _listeners.removeAll()
     }
 
-    open func getErrorListeners() -> [ANTLRErrorListener] {
+    func getErrorListeners() -> [ANTLRErrorListener] {
         return _listeners
     }
 
-    open func getErrorListenerDispatch() -> ANTLRErrorListener {
+    func getErrorListenerDispatch() -> ANTLRErrorListener {
         return ProxyErrorListener(getErrorListeners())
     }
 
     // subclass needs to override these if there are sempreds or actions
     // that the ATN interp needs to execute
-    open func sempred(_ _localctx: RuleContext?, _ ruleIndex: Int, _ actionIndex: Int) throws -> Bool {
+    func sempred(_ _localctx: RuleContext?, _ ruleIndex: Int, _ actionIndex: Int) throws -> Bool {
         return true
     }
 
-    open func precpred(_ localctx: RuleContext?, _ precedence: Int) -> Bool {
+    func precpred(_ localctx: RuleContext?, _ precedence: Int) -> Bool {
         return true
     }
 
-    open func action(_ _localctx: RuleContext?, _ ruleIndex: Int, _ actionIndex: Int) throws {
+    func action(_ _localctx: RuleContext?, _ ruleIndex: Int, _ actionIndex: Int) throws {
     }
 
-    public final func getState() -> Int {
+    final func getState() -> Int {
         return _stateNumber
     }
 
@@ -199,25 +199,25 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     /// invoking rules. Combine this and we have complete ATN
     /// configuration information.
     /// 
-    public final func setState(_ atnState: Int) {
+    final func setState(_ atnState: Int) {
 //		System.err.println("setState "+atnState);
         _stateNumber = atnState
 //		if ( traceATNStates ) _ctx.trace(atnState);
     }
 
-    open func getInputStream() -> IntStream? {
+    func getInputStream() -> IntStream? {
         fatalError(#function + " must be overridden")
     }
 
-    open func setInputStream(_ input: IntStream) throws {
+    func setInputStream(_ input: IntStream) throws {
         fatalError(#function + " must be overridden")
     }
 
-    open func getTokenFactory() -> TokenFactory {
+    func getTokenFactory() -> TokenFactory {
         fatalError(#function + " must be overridden")
     }
 
-    open func setTokenFactory(_ input: TokenFactory) {
+    func setTokenFactory(_ input: TokenFactory) {
         fatalError(#function + " must be overridden")
     }
 }

@@ -6,8 +6,6 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import SnapKit
-
 final class NewMessageDividerCell: BaseTableViewCell {
   // MARK: constant
   

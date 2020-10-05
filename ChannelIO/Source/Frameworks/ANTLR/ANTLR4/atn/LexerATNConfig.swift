@@ -5,7 +5,7 @@
 /// 
 
 
-public class LexerATNConfig: ATNConfig {
+class LexerATNConfig: ATNConfig {
     /// 
     /// This is the backing field for _#getLexerActionExecutor_.
     /// 
@@ -13,7 +13,7 @@ public class LexerATNConfig: ATNConfig {
 
     fileprivate let passedThroughNonGreedyDecision: Bool
 
-    public init(_ state: ATNState,
+    init(_ state: ATNState,
                 _ alt: Int,
                 _ context: PredictionContext) {
 
@@ -22,7 +22,7 @@ public class LexerATNConfig: ATNConfig {
         super.init(state, alt, context, SemanticContext.NONE)
     }
 
-    public init(_ state: ATNState,
+    init(_ state: ATNState,
                 _ alt: Int,
                 _ context: PredictionContext,
                 _ lexerActionExecutor: LexerActionExecutor?) {
@@ -32,14 +32,14 @@ public class LexerATNConfig: ATNConfig {
         super.init(state, alt, context, SemanticContext.NONE)
     }
 
-    public init(_ c: LexerATNConfig, _ state: ATNState) {
+    init(_ c: LexerATNConfig, _ state: ATNState) {
         self.lexerActionExecutor = c.lexerActionExecutor
         self.passedThroughNonGreedyDecision = LexerATNConfig.checkNonGreedyDecision(c, state)
         super.init(c, state, c.context, c.semanticContext)
 
     }
 
-    public init(_ c: LexerATNConfig, _ state: ATNState,
+    init(_ c: LexerATNConfig, _ state: ATNState,
                 _ lexerActionExecutor: LexerActionExecutor?) {
 
         self.lexerActionExecutor = lexerActionExecutor
@@ -47,7 +47,7 @@ public class LexerATNConfig: ATNConfig {
         super.init(c, state, c.context, c.semanticContext)
     }
 
-    public init(_ c: LexerATNConfig, _ state: ATNState,
+    init(_ c: LexerATNConfig, _ state: ATNState,
                 _ context: PredictionContext) {
 
         self.lexerActionExecutor = c.lexerActionExecutor
@@ -64,15 +64,15 @@ public class LexerATNConfig: ATNConfig {
     /// Gets the _org.antlr.v4.runtime.atn.LexerActionExecutor_ capable of executing the embedded
     /// action(s) for the current configuration.
     /// 
-    public final func getLexerActionExecutor() -> LexerActionExecutor? {
+    final func getLexerActionExecutor() -> LexerActionExecutor? {
         return lexerActionExecutor
     }
 
-    public final func hasPassedThroughNonGreedyDecision() -> Bool {
+    final func hasPassedThroughNonGreedyDecision() -> Bool {
         return passedThroughNonGreedyDecision
     }
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(state.stateNumber)
         hasher.combine(alt)
         hasher.combine(context)
@@ -83,7 +83,7 @@ public class LexerATNConfig: ATNConfig {
 }
 
 //useless
-public func ==(lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
+func ==(lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
 
     if lhs === rhs {
         return true

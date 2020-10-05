@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import RxSwift
-import SnapKit
+//import RxSwift
 
 class PopupInAppNotificationView: BaseView, InAppNotification {
   private struct Metric {
@@ -129,10 +128,10 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
   }
   
   let notiType : InAppNotificationType = .fullScreen
-  private var chatSignal = PublishSubject<Any?>()
-  private var closeSignal = PublishSubject<Any?>()
+  private var chatSignal = _RXSwift_PublishSubject<Any?>()
+  private var closeSignal = _RXSwift_PublishSubject<Any?>()
   private var mkInfo: MarketingInfo?
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -331,13 +330,13 @@ class PopupInAppNotificationView: BaseView, InAppNotification {
     }
   }
 
-  func signalForChat() -> Observable<Any?> {
-    self.chatSignal = PublishSubject<Any?>()
+  func signalForChat() -> _RXSwift_Observable<Any?> {
+    self.chatSignal = _RXSwift_PublishSubject<Any?>()
     return self.chatSignal.asObservable()
   }
   
-  func signalForClose() -> Observable<Any?> {
-    self.closeSignal = PublishSubject<Any?>()
+  func signalForClose() -> _RXSwift_Observable<Any?> {
+    self.closeSignal = _RXSwift_PublishSubject<Any?>()
     return self.closeSignal.asObservable()
   }
   
@@ -387,8 +386,9 @@ extension PopupInAppNotificationView : UITextViewDelegate {
     in characterRange: NSRange,
     interaction: UITextItemInteraction) -> Bool {
     if interaction == .invokeDefaultAction {
-      let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
-      if handled == false || handled == nil {
+      let handled = (ChannelIO.delegate?.onUrlClicked?(url: URL) ?? false)
+        || (ChannelIO.delegate?.onClickChatLink?(url: URL) ?? false)
+      if !handled {
         URL.openWithUniversal()
       }
       if let mkInfo = self.mkInfo {

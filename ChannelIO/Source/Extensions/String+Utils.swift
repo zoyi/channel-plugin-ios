@@ -301,3 +301,10 @@ func unwrap(any: Any) -> Any {
   let (_, some) = mi.children.first!
   return some
 }
+
+extension Optional where Wrapped == String {
+  var nilOrEmpty: Bool {
+    guard let self = self else { return true }
+    return self.isEmpty
+  }
+}

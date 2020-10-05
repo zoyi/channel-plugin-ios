@@ -6,8 +6,8 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import RxCocoa
-import RxSwift
+//import RxCocoa
+//import RxSwift
 
 class LoungeMainErrorView: BaseView {
   let contentView = UIView().then {
@@ -24,8 +24,8 @@ class LoungeMainErrorView: BaseView {
   }
   let refreshButton = CHButtonFactory.errorRefresh()
   
-  var refreshSignal = PublishRelay<Any?>()
-  var disposeBag = DisposeBag()
+  var refreshSignal = _RXRelay_PublishRelay<Any?>()
+  var disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()

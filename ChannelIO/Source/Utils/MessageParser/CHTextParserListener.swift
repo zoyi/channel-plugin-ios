@@ -9,11 +9,11 @@
 import UIKit
 
 extension ParserRuleContext: Hashable, Equatable {
-  public func hash(into hasher: inout Hasher) {
+  func hash(into hasher: inout Hasher) {
     hasher.combine("\(type(of: self))")
   }
 
-  public static func == (lhs: ParserRuleContext, rhs: ParserRuleContext) -> Bool {
+  static func == (lhs: ParserRuleContext, rhs: ParserRuleContext) -> Bool {
     return type(of: lhs) == type(of: rhs)
   }
 }

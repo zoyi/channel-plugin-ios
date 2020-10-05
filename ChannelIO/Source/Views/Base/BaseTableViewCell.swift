@@ -7,14 +7,12 @@
 //
 
 import UIKit
-import Reusable
-import MGSwipeTableCell
-import RxSwift
+//import RxSwift
 
-class BaseTableViewCell: MGSwipeTableCell, Reusable  {
+class BaseTableViewCell: _ChannelIO_MGSwipeTableCell, Reusable  {
 
   // MARK: Initializing
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)

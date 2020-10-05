@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
-import SnapKit
+//import RxSwift
+//import RxCocoa
 
 struct CHNotificationConfiguration {
   var textColor: UIColor
@@ -86,8 +85,8 @@ class CHNotification {
   private var timer: Timer?
   private init(){}
   
-  var refreshSignal = PublishRelay<Any?>()
-  var disposeBag = DisposeBag()
+  var refreshSignal = _RXRelay_PublishRelay<Any?>()
+  var disposeBag = _RXSwift_DisposeBag()
   
   func display(message: String, config: CHNotificationConfiguration = CHNotificationConfiguration.succeedConfig) {
     guard let vc = CHUtils.getTopController(), mainStore.state.uiState.isChannelVisible else { return }
@@ -145,7 +144,7 @@ private class CHNotificationView: BaseView {
   
   let refreshView = UIImageView()
   
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()

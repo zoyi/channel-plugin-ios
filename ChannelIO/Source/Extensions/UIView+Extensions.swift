@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 enum ShimmerDirection: Int {
   case leftToRight

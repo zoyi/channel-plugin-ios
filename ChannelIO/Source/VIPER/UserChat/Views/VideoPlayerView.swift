@@ -6,8 +6,7 @@
 //
 
 import AVKit
-import RxSwift
-import SDWebImage
+//import RxSwift
 import UIKit
 
 protocol VideoPlayerDelegate: class {
@@ -20,7 +19,7 @@ class VideoPlayerView: BaseView {
   }
   
   private let containerView = UIView()
-  private let imageView = SDAnimatedImageView().then {
+  private let imageView = _ChannelIO_SDAnimatedImageView().then {
     $0.clipsToBounds = true
     $0.layer.cornerRadius = 6.f
     $0.layer.borderColor = UIColor.grey300.cgColor
@@ -28,7 +27,7 @@ class VideoPlayerView: BaseView {
     $0.backgroundColor = .white
     $0.contentMode = .scaleAspectFit
 
-    $0.sd_imageIndicator = SDWebImageActivityIndicator.white
+    $0._ChannelIO_sd_imageIndicator = _ChannelIO_SDWebImageActivityIndicator.white
   }
   private let playButton = UIImageView().then {
     $0.image = CHAssets.getImage(named: "buttonPlay")
@@ -52,13 +51,13 @@ class VideoPlayerView: BaseView {
     "autoplay": 0
   ]
   
-  private var playSignal = PublishSubject<(Bool, Double)>()
+  private var playSignal = _RXSwift_PublishSubject<(Bool, Double)>()
   private var url: URL?
   private var currSeconds: Double? = 0.0
 
   var mkInfo: MarketingInfo?
-  var disposeBag = DisposeBag()
-  var disposable: Disposable?
+  var disposeBag = _RXSwift_DisposeBag()
+  var disposable: _RXSwift_Disposable?
   
   weak var delegate: VideoPlayerDelegate?
 
@@ -204,8 +203,8 @@ class VideoPlayerView: BaseView {
     self.disposable?.dispose()
   }
 
-  func signalForPlay() -> Observable<(Bool, Double)> {
-    self.playSignal = PublishSubject<(Bool, Double)>()
+  func signalForPlay() -> _RXSwift_Observable<(Bool, Double)> {
+    self.playSignal = _RXSwift_PublishSubject<(Bool, Double)>()
     return self.playSignal.asObservable()
   }
 

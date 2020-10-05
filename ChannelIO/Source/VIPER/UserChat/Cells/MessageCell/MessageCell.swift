@@ -7,9 +7,7 @@
 //
 
 import UIKit
-import RxSwift
-import ReSwift
-import SnapKit
+//import RxSwift
 
 class MessageCell: BaseTableViewCell {
   weak var presenter: UserChatPresenterProtocol?
@@ -60,6 +58,7 @@ class MessageCell: BaseTableViewCell {
   let timestampLabel = UILabel().then {
     $0.font = Font.timestampLabel
     $0.textColor = Color.timestamp
+    $0.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
   }
   
   let textView = TextMessageView()
@@ -88,7 +87,7 @@ class MessageCell: BaseTableViewCell {
     self.contentView.addSubview(self.resendButton)
     
     self.resendButton.signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.presenter?.didClickOnRetry(
           for: self?.viewModel?.message,
@@ -98,7 +97,7 @@ class MessageCell: BaseTableViewCell {
       }).disposed(by :self.disposeBag)
     
     self.translateView.signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.presenter?.didClickOnTranslate(for: self?.viewModel?.message)
       }).disposed(by: self.disposeBag)
@@ -152,6 +151,7 @@ class MessageCell: BaseTableViewCell {
     
     self.timestampLabel.snp.makeConstraints { make in
       make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.cellRightPadding)
       make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }
@@ -263,6 +263,7 @@ extension MessageCell {
     
     self.timestampLabel.snp.remakeConstraints { make in
       make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.cellRightPadding)
       make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }
@@ -289,6 +290,7 @@ extension MessageCell {
     
     self.timestampLabel.snp.remakeConstraints { make in
       make.left.equalTo(self.usernameLabel.snp.right).offset(Metric.timestampLeading)
+      make.right.lessThanOrEqualToSuperview().inset(Metric.cellRightPadding)
       make.height.equalTo(Metric.timestampHeight)
       make.centerY.equalTo(self.usernameLabel)
     }

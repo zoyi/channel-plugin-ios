@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 enum LoungeSectionType {
   case header
@@ -53,7 +53,7 @@ protocol LoungePresenterProtocol: class {
   func didClickOnExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   func didClickOnWatermark()
   
-  func isReadyToPresentChat(chatId: String?) -> Single<Any?>
+  func isReadyToPresentChat(chatId: String?) -> _RXSwift_Single<Any?>
 }
 
 protocol LoungeInteractorProtocol: class {
@@ -62,23 +62,23 @@ protocol LoungeInteractorProtocol: class {
   func subscribeDataSource()
   func unsubscribeDataSource()
   
-  func updateChats() -> Observable<[CHUserChat]>
-  func updateGeneralInfo() -> Observable<(CHChannel, CHPlugin)>
-  func updateExternalSource() -> Observable<[Any]>
+  func updateChats() -> _RXSwift_Observable<[CHUserChat]>
+  func updateGeneralInfo() -> _RXSwift_Observable<(CHChannel, CHPlugin)>
+  func updateExternalSource() -> _RXSwift_Observable<[Any]>
   
-  func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat>
-  func getLounge() -> Observable<LoungeResponse>
-  func getChannel() -> Observable<CHChannel>
-  func getChats() -> Observable<UserChatsResponse>
+  func deleteChat(userChat: CHUserChat) -> _RXSwift_Observable<CHUserChat>
+  func getLounge() -> _RXSwift_Observable<LoungeResponse>
+  func getChannel() -> _RXSwift_Observable<CHChannel>
+  func getChats() -> _RXSwift_Observable<UserChatsResponse>
 }
 
 protocol LoungeRouterProtocol: class {
   func pushChatList(from view: UIViewController?)
-  func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?)
+  func pushChat(with chatId: String?, text: String?, isOpenChat: Bool, animated: Bool, from view: UIViewController?)
   func pushSettings(from view: UIViewController?)
   
   func presentBusinessHours(from view: UIViewController?)
   func presentExternalSource(with source: LoungeExternalSourceModel, from view: UIViewController?)
   
-  static func createModule(with chatId: String?) -> LoungeView
+  static func createModule(with chatId: String?, text: String?, isOpenChat: Bool) -> LoungeView
 }

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RxSwift
+//import RxSwift
 import Photos
 
 enum ChatProcessState {
@@ -47,6 +47,7 @@ protocol UserChatViewProtocol: class {
   func display(errorFiles: [ChatFileQueueItem])
   func hideLodingFile()
   func dismissKeyboard(_ animated: Bool)
+  func popViewController(_ animated: Bool)
   
   func updateNavigation(userChat: CHUserChat?)
   func updateInputBar(state: MessageViewState)
@@ -65,6 +66,7 @@ protocol UserChatPresenterProtocol: class {
   var userChatId: String? { get set }
   var shouldRedrawProfileBot: Bool { get set }
   var isProfileFocus: Bool { get set }
+  var isOpenChat: Bool { get set }
   
   func viewDidLoad()
   func prepareDataSource()
@@ -81,7 +83,7 @@ protocol UserChatPresenterProtocol: class {
     with message: CHMessage?,
     key: String?,
     type: ProfileSchemaType,
-    value: Any?) -> Observable<Bool>
+    value: Any?) -> _RXSwift_Observable<Bool>
   func didClickOnRightNaviItem(from view: UIViewController?)
   func didClickOnClipButton(from view: UIViewController?)
   func didClickOnSendButton(text: String)
@@ -109,7 +111,7 @@ protocol UserChatInteractorProtocol: class {
   
   var photoUrls: [URL] { get }
   
-  func readyToPresent() -> Observable<Bool>
+  func readyToPresent() -> _RXSwift_Observable<Bool>
   func subscribeDataSource()
   func unsunbscribeDataSource()
   func updateProfileItem(
@@ -117,27 +119,28 @@ protocol UserChatInteractorProtocol: class {
     key: String,
     type: ProfileSchemaType,
     value: Any
-  ) -> Observable<CHMessage>
+  ) -> _RXSwift_Observable<CHMessage>
   func joinSocket()
   func leaveSocket()
-  func getChannel() -> Observable<CHChannel>
+  func getChannel() -> _RXSwift_Observable<CHChannel>
   func canLoadMore() -> Bool
-  func createChatIfNeeded() -> Observable<CHUserChat?>
+  func createChatIfNeeded() -> _RXSwift_Observable<CHUserChat?>
   func createSupportBotChatIfNeeded(
-    originId: String?) -> Observable<(CHUserChat?, CHMessage?)>
-  func startMarketingToSupportBot() -> Observable<CHMessage>
-  func fetchChat() -> Observable<CHUserChat?>
-  func fetchMessages() -> Observable<ChatProcessState>
-  func translate(for message: CHMessage) -> Observable<[CHMessageBlock]>
-  func send(message: CHMessage?) -> Observable<CHMessage?>
+    originId: String?) -> _RXSwift_Observable<(CHUserChat?, CHMessage?)>
+  func fetchMarketingSupportBot() -> _RXSwift_Observable<String?>
+  func startMarketingToSupportBot(with supportBotId: String?) -> _RXSwift_Observable<CHMessage>
+  func fetchChat() -> _RXSwift_Observable<CHUserChat?>
+  func fetchMessages() -> _RXSwift_Observable<ChatProcessState>
+  func translate(for message: CHMessage) -> _RXSwift_Observable<[CHMessageBlock]>
+  func send(message: CHMessage?) -> _RXSwift_Observable<CHMessage?>
   func sendTyping(isStop: Bool)
   func delete(message: CHMessage?)
   
-  func upload(files: [CHFile]) -> Observable<ChatQueueKey>
+  func upload(files: [CHFile]) -> _RXSwift_Observable<ChatQueueKey>
 }
 
 protocol UserChatRouterProtocol: class {
-  static func createModule(userChatId: String?, text: String) -> UserChatView
+  static func createModule(userChatId: String?, text: String?, isOpenChat: Bool) -> UserChatView
   
   func presentVideoPlayer(with url: URL?, from view: UIViewController?)
   func presentImageViewer(
@@ -147,7 +150,7 @@ protocol UserChatRouterProtocol: class {
     from view: UIViewController?)
   func pushFileView(with url: URL?, from view: UIViewController?)
   func showNewChat(with text: String, from view: UINavigationController?)
-  func showRetryActionSheet(from view: UIView?) -> Observable<Bool?>
-  func showOptionActionSheet(from view: UIViewController?) -> PublishSubject<[PHAsset]>
+  func showRetryActionSheet(from view: UIView?) -> _RXSwift_Observable<Bool?>
+  func showOptionActionSheet(from view: UIViewController?) -> _RXSwift_PublishSubject<[PHAsset]>
   
 }

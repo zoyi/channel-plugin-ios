@@ -6,9 +6,7 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct ChatState: StateType {
+struct ChatState: ReSwift_StateType {
   var userChat: CHUserChat?
   var messageDictionary: [String:CHMessage] = [:]
   var actionQueue: [String:CHMessage] = [:]

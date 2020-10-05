@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import SnapKit
-import RxSwift
+//import RxSwift
 
 class TextMessageView : BaseView {
   private struct Metric {
@@ -94,7 +93,7 @@ class TextMessageView : BaseView {
   private var buttonTopMessageConstraint: Constraint?
   private var buttonBottomConstraint: Constraint?
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -266,7 +265,8 @@ extension TextMessageView : UITextViewDelegate {
       mainStore.dispatch(ClickMarketing(type: mkInfo.type, id: mkInfo.id))
     }
     
-    let shouldhandle = ChannelIO.delegate?.onClickChatLink?(url: URL)
+    let shouldhandle = (ChannelIO.delegate?.onUrlClicked?(url: URL) ?? false)
+      || (ChannelIO.delegate?.onClickChatLink?(url: URL) ?? false)
     let scheme = URL.scheme ?? ""
     switch scheme {
     case "tel":
@@ -274,7 +274,7 @@ extension TextMessageView : UITextViewDelegate {
     case "mailto":
       return true
     default:
-      return shouldhandle == false || shouldhandle == nil
+      return !shouldhandle
     }
   }
   
@@ -294,8 +294,9 @@ extension TextMessageView : UITextViewDelegate {
       case "mailto":
         return true
       default:
-        let handled = ChannelIO.delegate?.onClickChatLink?(url: URL)
-        if handled == false || handled == nil {
+        let handled = (ChannelIO.delegate?.onUrlClicked?(url: URL) ?? false)
+          || (ChannelIO.delegate?.onClickChatLink?(url: URL) ?? false)
+        if !handled {
           URL.openWithUniversal()
         }
         return false

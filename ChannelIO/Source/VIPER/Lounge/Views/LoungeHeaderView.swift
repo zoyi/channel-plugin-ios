@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import SnapKit
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class LoungeHeaderView: BaseView {
   let contentView = UIView().then {
@@ -110,14 +109,14 @@ class LoungeHeaderView: BaseView {
   
   let triggerPoint:CGFloat = 0.7
   
-  var settingSignal = PublishRelay<Any?>()
-  var dismissSignal = PublishRelay<Any?>()
-  var helpSignal = PublishRelay<Any?>()
+  var settingSignal = _RXRelay_PublishRelay<Any?>()
+  var dismissSignal = _RXRelay_PublishRelay<Any?>()
+  var helpSignal = _RXRelay_PublishRelay<Any?>()
   
   var responseDescConstraint: Constraint?
   var opertionTopConstraint: Constraint?
   
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()

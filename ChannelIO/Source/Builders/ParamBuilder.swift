@@ -158,7 +158,7 @@ public class UpdateUserParamBuilder: ParamBuilder {
   }
   
   @discardableResult
-  public func with(language: CHLocale) -> UpdateUserParamBuilder {
+  public func with(language: LanguageOption) -> UpdateUserParamBuilder {
     guard language != .device else { return self }
     
     var locale: CHLocaleString = .english
@@ -234,7 +234,7 @@ public class UpdateUserParamObjcBuilder: NSObject, ParamBuilder {
   
   @discardableResult
   @objc
-  public func with(language: CHLocale) -> UpdateUserParamObjcBuilder {
+  public func with(language: LanguageOption) -> UpdateUserParamObjcBuilder {
     guard language != .device else { return self }
     
     var locale: CHLocaleString = .english

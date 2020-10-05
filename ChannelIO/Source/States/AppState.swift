@@ -6,15 +6,13 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct AppState: StateType {
+struct AppState: ReSwift_StateType {
   var bootState: BootState
   var plugin: CHPlugin
   var channel: CHChannel
   var user: CHUser
   var userChatsState: UserChatsState
-  var push: CHPushDisplayable?
+  var popup: CHPopupDisplayable?
   var managersState: ManagersState
   var botsState: BotsState
   var sessionsState: SessionsState
@@ -24,8 +22,16 @@ struct AppState: StateType {
   var countryCodeState: CountryCodeState
   var chatState: ChatState
 }
-
+// TODO: Will deprecated
 @objc public enum CHLocale: Int {
+  case english
+  case korean
+  case japanese
+  // it need becase Objective c can't use optional
+  case device
+}
+
+@objc public enum LanguageOption: Int {
   case english
   case korean
   case japanese

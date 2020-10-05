@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import RxSwift
-import ObjectMapper
+//import RxSwift
 
 struct CHManager: CHEntity {
   // ModelType
@@ -35,11 +34,11 @@ struct CHManager: CHEntity {
   }
 }
 
-extension CHManager: Mappable {
-  init?(map: Map) {
+extension CHManager: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {
 
   }
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id              <- map["id"]
     name            <- map["name"]
     username        <- map["username"]

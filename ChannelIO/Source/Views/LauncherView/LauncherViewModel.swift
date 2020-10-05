@@ -24,7 +24,7 @@ struct LauncherViewModel: LauncherViewModelType {
   var position = LauncherPosition.right
   var launchIcon: UIImage?
   
-  init(plugin: CHPlugin, user: CHUser? = nil, push: CHPushDisplayable? = nil) {
+  init(plugin: CHPlugin, user: CHUser? = nil, push: CHPopupDisplayable? = nil) {
     self.bgColor = UIColor(plugin.color) ?? UIColor.white
     let gradientColor = UIColor(plugin.gradientColor) ?? UIColor.white
     

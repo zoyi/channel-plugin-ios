@@ -4,7 +4,7 @@
 /// can be found in the LICENSE.txt file in the project root.
 /// 
 
-public struct ATNDeserializationOptions {
-    public var verifyATN = true
-    public var generateRuleBypassTransitions = false
+struct ATNDeserializationOptions {
+    var verifyATN = true
+    var generateRuleBypassTransitions = false
 }

@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func botsReducer(action: Action, state: BotsState?) -> BotsState {
+func botsReducer(action: ReSwift_Action, state: BotsState?) -> BotsState {
   var state = state
   switch action {
   case let action as GetBot:
@@ -24,9 +22,9 @@ func botsReducer(action: Action, state: BotsState?) -> BotsState {
   case let action as GetUserChat:
     return state?.upsert(bot: action.payload.bot) ?? BotsState()
     
-  case let action as GetPush:
-    if let push = action.payload as? CHPush {
-      return state?.upsert(bot: push.bot) ?? BotsState()
+  case let action as GetPopup:
+    if let popup = action.payload as? CHPopup {
+      return state?.upsert(bot: popup.bot) ?? BotsState()
     }
     return state ?? BotsState()
     

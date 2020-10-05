@@ -22,8 +22,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     registerForRemoteNotification(application)
     ChannelIO.initialize(application)
     
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(self.aa),
+      name: UIApplication.didBecomeActiveNotification,
+      object: nil
+    )
+    
     return true
   }
+  
+  @objc func aa() {
+     ChannelIO.openStoredPushNotification()
+   }
 
   func applicationWillResignActive(_ application: UIApplication) {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -77,7 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
     let userInfo = response.notification.request.content.userInfo
-    ChannelIO.handlePushNotification(userInfo)
+    ChannelIO.storePushNotification(userInfo)
     completionHandler()
   }
   
@@ -97,7 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                    didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
     print("aa \(userInfo)")
-    ChannelIO.handlePushNotification(userInfo) {
+    ChannelIO.receivePushNotification(userInfo) {
       completionHandler(.noData)
     }
   }

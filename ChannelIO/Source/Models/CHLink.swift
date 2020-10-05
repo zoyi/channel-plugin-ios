@@ -7,17 +7,16 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct CHLink {
   var title: String = ""
   var url: String = ""
 }
 
-extension CHLink: Mappable {
-  init?(map: Map) { }
+extension CHLink: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     title           <- map["title"]
     url             <- map["url"]
   }

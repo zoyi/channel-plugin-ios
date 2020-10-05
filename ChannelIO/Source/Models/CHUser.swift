@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
-import RxSwift
+//import RxSwift
 
 struct CHUser: CHEntity {
   var id = ""
@@ -34,8 +33,8 @@ struct CHUser: CHEntity {
   var unsubscribed: Bool = false
   }
 
-extension CHUser: Mappable {
-  init?(map: Map) { }
+extension CHUser: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
 
   init(id: String,
        name: String,
@@ -49,7 +48,7 @@ extension CHUser: Mappable {
     self.profile = profile
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id              <- map["id"]
     memberId        <- map["memberId"]
     veilId          <- map["veilId"]
@@ -108,19 +107,19 @@ extension CHUser {
     return mainStore.state.plugin.welcomeI18n?.getMessageBlock()
   }
   
-  func updateProfile(key: String, value: Any?) -> Observable<(CHUser?, ChannelError?)> {
+  func updateProfile(key: String, value: Any?) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(profile: [key: value])
   }
   
-  static func updateLanguage(with language: String) -> Observable<(CHUser?, ChannelError?)> {
+  static func updateLanguage(with language: String) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(language: language)
   }
   
-  static func updateUser(param: UpdateUserParam) -> Observable<(CHUser?, ChannelError?)> {
+  static func updateUser(param: UpdateUserParam) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(param: param)
   }
 
-  static func updateUnsubscribed(with unsubscribed: Bool) -> Observable<(CHUser?, ChannelError?)> {
+  static func updateUnsubscribed(with unsubscribed: Bool) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(unsubscribed: unsubscribed)
   }
   
@@ -129,7 +128,7 @@ extension CHUser {
     profileOnce: [String: Any?]? = nil,
     tags: [String]? = nil,
     unsubscribed: Bool? = nil,
-    language: String? = nil) -> Observable<(CHUser?, ChannelError?)> {
+    language: String? = nil) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
     return UserPromise.updateUser(
       profile: profile,
       profileOnce: profileOnce,
@@ -139,15 +138,15 @@ extension CHUser {
     )
   }
   
-  static func addTags(tags: [String]?) -> Observable<(CHUser?, ChannelError?)> {
+  static func addTags(tags: [String]?) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
     return UserPromise.addTags(tags: tags)
   }
   
-  static func removeTags(tags: [String]?) -> Observable<(CHUser?, ChannelError?)> {
+  static func removeTags(tags: [String]?) -> _RXSwift_Observable<(CHUser?, ChannelError?)> {
     return UserPromise.removeTags(tags: tags)
   }
   
-  static func closePopup() -> Observable<Any?> {
+  static func closePopup() -> _RXSwift_Observable<Any?> {
     return UserPromise.closePopup()
   }
   

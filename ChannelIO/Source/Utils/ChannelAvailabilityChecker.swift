@@ -7,14 +7,14 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class ChannelAvailabilityChecker {
   static var shared = ChannelAvailabilityChecker()
   
   var timer: Timer?
-  var updateSignal = PublishRelay<Any?>()
+  var updateSignal = _RXRelay_PublishRelay<Any?>()
   
   private init() {}
   

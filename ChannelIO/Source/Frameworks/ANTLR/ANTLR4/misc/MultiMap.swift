@@ -3,9 +3,9 @@
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
 ///
-public class MultiMap<K:Hashable, V> {
+class MultiMap<K:Hashable, V> {
     private var mapping = [K: Array < V>]()
-    public func map(_ key: K, _ value: V) {
+    func map(_ key: K, _ value: V) {
         var elementsForKey: Array<V>? = mapping[key]
         if elementsForKey == nil {
             elementsForKey = Array<V>()
@@ -14,7 +14,7 @@ public class MultiMap<K:Hashable, V> {
         elementsForKey?.append(value)
     }
 
-    public func getPairs() -> Array<(K, V)> {
+    func getPairs() -> Array<(K, V)> {
         var pairs: Array<(K, V)> = Array<(K, V)>()
         for key: K in mapping.keys {
             for value: V in mapping[key]! {
@@ -24,11 +24,11 @@ public class MultiMap<K:Hashable, V> {
         return pairs
     }
 
-    public func get(_ key: K) -> Array<(V)>? {
+    func get(_ key: K) -> Array<(V)>? {
         return mapping[key]
     }
 
-    public func size() -> Int {
+    func size() -> Int {
         return mapping.count
     }
 

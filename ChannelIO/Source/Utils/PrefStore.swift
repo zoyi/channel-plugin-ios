@@ -14,11 +14,13 @@ class PrefStore {
   static let PUSH_OPTION_KEY = "CHPlugin_PushOption"
   static let VISIBLE_CLOSED_USERCHAT_KEY = "CHPlugin_show_closed_userchat"
   static let CHANNEL_PLUGIN_SETTINGS_KEY = "CHPlugin_settings"
+  static let BOOT_CONFIG = "CHBoot_Config"
   static let VISIBLE_TRANSLATION = "CHPlugin_visible_translation"
   static let SESSION_JWT_KEY = "CHPlugin_session_jwt"
   static let VEIL_ID_KEY = "CHPlugin_veil_id"
   static let MEMBER_ID_KEY = "CHPlugin_member_id"
   static let PUSH_DATA = "CHPlugin_push_data"
+  static let PLUGIN_ID = "CHPlugin_plugin_id"
   
   static var userDefaults: UserDefaults? = nil
   
@@ -81,6 +83,20 @@ class PrefStore {
     PrefStore.getStorage().synchronize()
   }
   
+  static func getCurrentPluginId() -> String? {
+    return PrefStore.getStorage().string(forKey: PLUGIN_ID)
+  }
+  
+  static func setCurrentPluginId(pluginId: String) {
+    PrefStore.getStorage().set(pluginId, forKey: PLUGIN_ID)
+    PrefStore.getStorage().synchronize()
+  }
+
+  static func clearCurrentPluginId() {
+    PrefStore.getStorage().removeObject(forKey: PLUGIN_ID)
+    PrefStore.getStorage().synchronize()
+  }
+  
   static func setVisibilityOfClosedUserChat(on: Bool) {
     PrefStore.getStorage().set(on, forKey: VISIBLE_CLOSED_USERCHAT_KEY)
     PrefStore.getStorage().synchronize()
@@ -104,22 +120,40 @@ class PrefStore {
     }
     return true
   }
-  
+  // TODO: Will deprecated
   static func setChannelPluginSettings(pluginSetting: ChannelPluginSettings) {
     let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: pluginSetting)
     PrefStore.getStorage().set(encodedData, forKey: CHANNEL_PLUGIN_SETTINGS_KEY)
     PrefStore.getStorage().synchronize()
   }
-  
+  // TODO: Will deprecated
   static func getChannelPluginSettings() -> ChannelPluginSettings? {
     if let data = PrefStore.getStorage().object(forKey: CHANNEL_PLUGIN_SETTINGS_KEY) as? Data {
       return NSKeyedUnarchiver.unarchiveObject(with: data) as? ChannelPluginSettings
     }
     return nil
   }
-  
+  // TODO: Will deprecated
   static func clearCurrentChannelPluginSettings() {
     PrefStore.getStorage().removeObject(forKey: CHANNEL_PLUGIN_SETTINGS_KEY)
+    PrefStore.getStorage().synchronize()
+  }
+  
+  static func setBootConfig(bootConfig: BootConfig) {
+    let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: bootConfig)
+    PrefStore.getStorage().set(encodedData, forKey: BOOT_CONFIG)
+    PrefStore.getStorage().synchronize()
+  }
+
+  static func getBootConfig() -> BootConfig? {
+    if let data = PrefStore.getStorage().object(forKey: BOOT_CONFIG) as? Data {
+      return NSKeyedUnarchiver.unarchiveObject(with: data) as? BootConfig
+    }
+    return nil
+  }
+
+  static func clearBootConfig() {
+    PrefStore.getStorage().removeObject(forKey: BOOT_CONFIG)
     PrefStore.getStorage().synchronize()
   }
   
@@ -173,12 +207,15 @@ class PrefStore {
     PrefStore.getStorage().synchronize()
   }
   
-  static func clearAllLocalData() {
-    PrefStore.clearCurrentUserId()
+  static func clearAllLocalData(isSleeping: Bool) {
     PrefStore.clearCurrentMemberId()
     PrefStore.clearCurrentChannelId()
     PrefStore.clearCurrentChannelPluginSettings()
-    PrefStore.clearSessionJWT()
+    if !isSleeping {
+      PrefStore.clearCurrentUserId()
+      PrefStore.clearBootConfig()
+      PrefStore.clearSessionJWT()
+    }
   }
 }
 

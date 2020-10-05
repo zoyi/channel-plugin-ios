@@ -7,20 +7,25 @@
 //
 
 import Foundation
-import RxSwift
-import RxSwiftExt
-import JGProgressHUD
+//import RxSwift
+//import RxSwiftExt
 import MessageUI
 
 class LoungeRouter: NSObject, LoungeRouterProtocol {
   weak var view: LoungeViewProtocol?
   private var isPushing = false
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
-  func pushChat(with chatId: String?, animated: Bool, from view: UIViewController?) {
+  func pushChat(
+    with chatId: String?,
+    text: String? = nil,
+    isOpenChat: Bool = false,
+    animated: Bool,
+    from view: UIViewController?
+  ) {
     guard !isPushing else { return }
     self.isPushing = true
-    let controller = UserChatRouter.createModule(userChatId: chatId)
+    let controller = UserChatRouter.createModule(userChatId: chatId, text: text ?? "", isOpenChat: isOpenChat)
     view?.navigationController?
       .pushViewController(viewController: controller, animated: animated) { [weak self] in
       self?.isPushing = false
@@ -87,7 +92,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       CHAppMessenger
         .getUri(with: source.value)
         .retry(.delayed(maxCount: 3, time: 3.0))
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (result) in
           defer {
             self.view?.dismissHUD()
@@ -110,7 +115,11 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     }
   }
   
-  static func createModule(with chatId: String? = nil) -> LoungeView {
+  static func createModule(
+    with chatId: String? = nil,
+    text: String? = nil,
+    isOpenChat: Bool = false
+  ) -> LoungeView {
     let view = LoungeView()
     let presenter = LoungePresenter()
     let interactor = LoungeInteractor()
@@ -123,6 +132,8 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
     presenter.interactor = interactor
     presenter.router = router
     presenter.chatId = chatId
+    presenter.preloadText = text
+    presenter.isOpenChat = isOpenChat
     
     router.view = view
     

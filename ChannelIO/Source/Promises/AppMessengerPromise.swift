@@ -6,22 +6,19 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import Alamofire
-import RxSwift
-import SwiftyJSON
-import ObjectMapper
+//import RxSwift
 
 struct AppMessengerPromise {
-  static func getUri(with name: String) -> Observable<UriResponse> {
-    return Observable.create { subscriber in
+  static func getUri(with name: String) -> _RXSwift_Observable<UriResponse> {
+    return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.GetAppMessengerUri(name))
         .validate(statusCode: 200..<300)
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
-            guard let uri = Mapper<UriResponse>().map(JSONObject: json.object) else {
+            let json = SwiftyJSON_JSON(data)
+            guard let uri = ObjectMapper_Mapper<UriResponse>().map(JSONObject: json.object) else {
               subscriber.onError(ChannelError.parseError)
               return
             }
@@ -34,9 +31,9 @@ struct AppMessengerPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos: .background))
   }
 }

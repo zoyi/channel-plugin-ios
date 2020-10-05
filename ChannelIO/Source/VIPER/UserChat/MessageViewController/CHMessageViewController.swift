@@ -8,21 +8,21 @@
 
 import UIKit
 
-@objc public protocol CHMessageViewControllerDelegate: class {
+@objc protocol CHMessageViewControllerDelegate: class {
 //  @objc optional func textDidChange(text: String)
 //  @objc optional func didPressSend(text: String)
 }
 
 class CHMessageViewController: UIViewController {
-  public let messageView = CHMessageView()
-  public var accessoryView: UIView?
+  let messageView = CHMessageView()
+  var accessoryView: UIView?
 
-  public var cacheKey: String?
-  public var isAccessoryViewVisible: Bool = false
+  var cacheKey: String?
+  var isAccessoryViewVisible: Bool = false
 
   private var keyboardWasVisible = false
 
-  override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     commonInit()
   }
@@ -56,7 +56,7 @@ class CHMessageViewController: UIViewController {
     super.viewWillAppear(animated)
   }
 
-  // MARK: Public API
+  // MARK: API
 
   final func setup(scrollView: UIScrollView) {
     self.scrollView = scrollView
@@ -154,7 +154,7 @@ class CHMessageViewController: UIViewController {
     }
   }
 
-  open func didLayout() { }
+  func didLayout() { }
 
   // MARK: Private API
 
@@ -312,11 +312,11 @@ class CHMessageViewController: UIViewController {
     }
   }
 
-  public func forceTextInputbarAdjustment(for responder: UIResponder?) -> Bool {
+  func forceTextInputbarAdjustment(for responder: UIResponder?) -> Bool {
     return false
   }
 
-  public func setBottomMargin(point: CGFloat) {
+  func setBottomMargin(point: CGFloat) {
     self.bottomMargin = point
   }
 

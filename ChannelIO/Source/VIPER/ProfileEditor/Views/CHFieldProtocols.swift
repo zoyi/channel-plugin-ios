@@ -7,13 +7,13 @@
 //
 
 import Foundation
-import RxSwift
+//import RxSwift
 
 protocol CHFieldDelegate: class {
   func getText() -> String
   func setText(_ value: String)
-  func isValid() -> Observable<Bool>
-  func hasChanged() -> Observable<String>
+  func isValid() -> _RXSwift_Observable<Bool>
+  func hasChanged() -> _RXSwift_Observable<String>
 }
 
 enum EditFieldType {

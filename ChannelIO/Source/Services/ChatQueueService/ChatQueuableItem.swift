@@ -5,7 +5,7 @@
 //  Created by Jam on 2019/12/05.
 //
 
-import RxSwift
+//import RxSwift
 
 enum ChatQueueItemStatus: String {
   case initial
@@ -22,5 +22,5 @@ protocol ChatQueuable {
   var progress: Double { get set }
   var status: ChatQueueItemStatus { get set }
 
-  func request() -> Observable<ChatQueuable>
+  func request() -> _RXSwift_Observable<ChatQueuable>
 }

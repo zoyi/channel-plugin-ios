@@ -7,17 +7,16 @@
 //
 
 import Foundation
-import ObjectMapper
 
-struct CHError: Mappable {
+struct CHError: ObjectMapper_Mappable {
   var message: String = ""
   var field: String?
 
-  init?(map: Map) {
+  init?(map: ObjectMapper_Map) {
     // initialize CHError
   }
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     message <- map["message"]
     field <- map["field"]
   }
@@ -28,7 +27,7 @@ enum ChannelError: Error {
   case networkError
   case parseError
   case serverError(msg: String)
-  case unknownError
+  case unknownError(msg: String = "Unknown error")
   case notFoundError
   case parameterError
   case pathError
@@ -39,6 +38,14 @@ enum ChannelError: Error {
   init(msg: String) {
     self = .serverError(msg: msg)
   }
+
+  init(data: Data? = nil, error: Error) {
+    if let error = CHUtils.getServerErrorMessage(data: data)?.first {
+      self = .serverError(msg: error)
+    } else {
+      self = .unknownError(msg: error.localizedDescription)
+    }
+  }
 }
 
 extension ChannelError: LocalizedError {
@@ -47,7 +54,7 @@ extension ChannelError: LocalizedError {
     case .entityError: return "Entity error"
     case .networkError: return "Network error"
     case .parseError: return "Parse error"
-    case .unknownError: return "Unknown error"
+    case .unknownError(let msg): return "\(msg)"
     case .serverError(let msg): return "\(msg)"
     case .notFoundError: return "Not found"
     case .parameterError: return "Parameter invalid"
@@ -58,5 +65,3 @@ extension ChannelError: LocalizedError {
     }
   }
 }
-
-

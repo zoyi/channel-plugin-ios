@@ -6,36 +6,36 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct GetTouchSuccess: Action {
-  public let payload: BootResponse
+struct GetTouchSuccess: ReSwift_Action {
+  let payload: BootResponse
 }
 
-struct BootSuccess: Action {
-  public let payload: BootResponse
+struct BootSuccess: ReSwift_Action {
+  let payload: BootResponse
 }
 
-struct ShutdownSuccess: Action {}
-
-struct UpdateLoungeInfo: Action {
-  public let channel: CHChannel
-  public let plugin: CHPlugin
-  public let bot: CHBot?
-  public let operators: [CHManager]
-  public let supportBotEntryInfo: CHSupportBotEntryInfo?
-  public let userChats: UserChatsResponse
+struct ShutdownSuccess: ReSwift_Action {
+  let isSleeping: Bool
 }
 
-struct GetPlugin: Action {
-  public let plugin: CHPlugin
-  public let bot: CHBot?
+struct UpdateLoungeInfo: ReSwift_Action {
+  let channel: CHChannel
+  let plugin: CHPlugin
+  let bot: CHBot?
+  let operators: [CHManager]
+  let supportBotEntryInfo: CHSupportBotEntryInfo?
+  let userChats: UserChatsResponse
 }
 
-struct UpdateChannel: Action {
-  public let payload: CHChannel
+struct GetPlugin: ReSwift_Action {
+  let plugin: CHPlugin
+  let bot: CHBot?
 }
 
-struct UpdateLocale: Action {
-  public let payload: CHLocaleString
+struct UpdateChannel: ReSwift_Action {
+  let payload: CHChannel
+}
+
+struct UpdateLocale: ReSwift_Action {
+  let payload: CHLocaleString
 }

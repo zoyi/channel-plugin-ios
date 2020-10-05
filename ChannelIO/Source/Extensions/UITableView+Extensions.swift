@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import NVActivityIndicatorView
 
 enum IndicatorPosition {
   case header, footer, content
