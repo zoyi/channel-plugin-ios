@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct SessionsState: StateType {
+struct SessionsState: ReSwift_StateType {
   var sessions: [String:CHSession] = [:]
 
   func findBy(userChatId: String) -> CHSession? {

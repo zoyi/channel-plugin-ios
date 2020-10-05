@@ -15,13 +15,13 @@
 /// -  4.2
 /// 
 
-public class LexerAction: Hashable {
+class LexerAction: Hashable {
     /// 
     /// Gets the serialization type of the lexer action.
     /// 
     /// - returns: The serialization type of the lexer action.
     /// 
-    public func getActionType() -> LexerActionType {
+    func getActionType() -> LexerActionType {
         fatalError(#function + " must be overridden")
     }
 
@@ -40,7 +40,7 @@ public class LexerAction: Hashable {
     /// position of the input _org.antlr.v4.runtime.CharStream_ at the time it is executed;
     /// otherwise, `false`.
     /// 
-    public func isPositionDependent() -> Bool {
+    func isPositionDependent() -> Bool {
         fatalError(#function + " must be overridden")
     }
 
@@ -52,17 +52,17 @@ public class LexerAction: Hashable {
     /// 
     /// - parameter lexer: The lexer instance.
     /// 
-    public func execute(_ lexer: Lexer) throws {
+    func execute(_ lexer: Lexer) throws {
         fatalError(#function + " must be overridden")
     }
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         fatalError(#function + " must be overridden")
     }
 
 }
 
-public func ==(lhs: LexerAction, rhs: LexerAction) -> Bool {
+func ==(lhs: LexerAction, rhs: LexerAction) -> Bool {
 
     if lhs === rhs {
         return true

@@ -6,12 +6,10 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
+struct SocketConnected : ReSwift_Action {}
 
-struct SocketConnected : Action {}
+struct SocketReady : ReSwift_Action {}
 
-struct SocketReady : Action {}
+struct SocketDisconnected: ReSwift_Action {}
 
-struct SocketDisconnected: Action {}
-
-struct SocketReconnecting: Action {}
+struct SocketReconnecting: ReSwift_Action {}

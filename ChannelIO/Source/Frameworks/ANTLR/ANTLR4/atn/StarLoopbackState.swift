@@ -5,13 +5,13 @@
 /// 
 
 
-public final class StarLoopbackState: ATNState {
-    public func getLoopEntryState() -> StarLoopEntryState {
+final class StarLoopbackState: ATNState {
+    func getLoopEntryState() -> StarLoopEntryState {
         return transition(0).target as! StarLoopEntryState
     }
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.STAR_LOOP_BACK
     }
 }

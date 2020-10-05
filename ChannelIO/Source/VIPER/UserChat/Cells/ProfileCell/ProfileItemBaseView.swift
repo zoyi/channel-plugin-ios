@@ -8,8 +8,7 @@
 
 import Foundation
 import UIKit
-import SnapKit
-import RxSwift
+//import RxSwift
 
 class ProfileItemBaseView: BaseView {
   struct Metric {
@@ -45,7 +44,7 @@ class ProfileItemBaseView: BaseView {
   var item: CHProfileItem?
   var fieldType: ProfileInputType = .text
   
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   weak var presenter: UserChatPresenterProtocol? = nil
   
   override func initialize() {

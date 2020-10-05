@@ -5,23 +5,22 @@
 //  Created by Jam on 2019/12/16.
 //
 
-import RxSwift
-import SDWebImage
+//import RxSwift
 import UIKit
 
 class MediaCollectionViewCell: BaseCollectionViewCell {
   let containerView = UIView()
-  let imageView = SDAnimatedImageView().then {
+  let imageView = _ChannelIO_SDAnimatedImageView().then {
     $0.backgroundColor = .white
     $0.contentMode = .scaleAspectFit
-    $0.sd_imageIndicator = SDWebImageActivityIndicator.white
+    $0._ChannelIO_sd_imageIndicator = _ChannelIO_SDWebImageActivityIndicator.white
   }
 
   let videoView = VideoPlayerView().then {
     $0.isHidden = true
   }
 
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
   private var model: FileCellModel?
 
   override func initialize() {

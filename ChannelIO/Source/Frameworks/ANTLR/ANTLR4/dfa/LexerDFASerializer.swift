@@ -5,8 +5,8 @@
 /// 
 
 
-public class LexerDFASerializer: DFASerializer {
-    public init(_ dfa: DFA) {
+class LexerDFASerializer: DFASerializer {
+    init(_ dfa: DFA) {
         super.init(dfa, Vocabulary.EMPTY_VOCABULARY)
     }
 

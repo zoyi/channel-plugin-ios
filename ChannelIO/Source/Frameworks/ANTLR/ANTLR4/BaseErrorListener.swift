@@ -13,11 +13,11 @@
 /// -  Sam Harwell
 /// 
 
-open class BaseErrorListener: ANTLRErrorListener {
-    public init() {
+class BaseErrorListener: ANTLRErrorListener {
+    init() {
     }
 
-    open func syntaxError<T>(_ recognizer: Recognizer<T>,
+    func syntaxError<T>(_ recognizer: Recognizer<T>,
                              _ offendingSymbol: AnyObject?,
                              _ line: Int,
                              _ charPositionInLine: Int,
@@ -27,7 +27,7 @@ open class BaseErrorListener: ANTLRErrorListener {
     }
 
 
-    open func reportAmbiguity(_ recognizer: Parser,
+    func reportAmbiguity(_ recognizer: Parser,
                                 _ dfa: DFA,
                                 _ startIndex: Int,
                                 _ stopIndex: Int,
@@ -37,7 +37,7 @@ open class BaseErrorListener: ANTLRErrorListener {
     }
 
 
-    open func reportAttemptingFullContext(_ recognizer: Parser,
+    func reportAttemptingFullContext(_ recognizer: Parser,
                                             _ dfa: DFA,
                                             _ startIndex: Int,
                                             _ stopIndex: Int,
@@ -46,7 +46,7 @@ open class BaseErrorListener: ANTLRErrorListener {
     }
 
 
-    open func reportContextSensitivity(_ recognizer: Parser,
+    func reportContextSensitivity(_ recognizer: Parser,
                                          _ dfa: DFA,
                                          _ startIndex: Int,
                                          _ stopIndex: Int,

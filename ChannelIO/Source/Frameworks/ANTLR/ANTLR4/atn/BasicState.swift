@@ -11,10 +11,10 @@
 /// -  Sam Harwell
 /// 
 
-public final class BasicState: ATNState {
+final class BasicState: ATNState {
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.BASIC
     }
 

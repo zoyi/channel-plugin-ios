@@ -6,76 +6,74 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct FetchedUserChatPrep: Action {
-  public let followers: [CHManager]
-  public let plugin: CHPlugin
-  public let bot: CHBot?
-  public let supportBotEntry: CHSupportBotEntryInfo
+struct FetchedUserChatPrep: ReSwift_Action {
+  let followers: [CHManager]
+  let plugin: CHPlugin
+  let bot: CHBot?
+  let supportBotEntry: CHSupportBotEntryInfo
 }
 
-struct GetUserChats: Action {
-  public let payload: UserChatsResponse
+struct GetUserChats: ReSwift_Action {
+  let payload: UserChatsResponse
 }
 
-struct FailedGetUserChats: Action {
-  public let error: Error
+struct FailedGetUserChats: ReSwift_Action {
+  let error: Error
 }
 
-struct GetMessages: Action {
-  public let payload: [String: Any]
+struct GetMessages: ReSwift_Action {
+  let payload: [String: Any]
 }
 
 //struct FailedGetMessages: Action {
-//  public let error: Error
+//  let error: Error
 //}
 
-struct RemoveMessages: Action {
-  public let payload: String?
+struct RemoveMessages: ReSwift_Action {
+  let payload: String?
 }
 
-struct GetUserChat: Action {
-  public let payload: ChatResponse
+struct GetUserChat: ReSwift_Action {
+  let payload: ChatResponse
 }
 
-struct CreateUserChat: Action {
-  public let payload: CHUserChat
+struct CreateUserChat: ReSwift_Action {
+  let payload: CHUserChat
 }
 
-struct UpdateUserChat: Action {
-  public let payload: CHUserChat
+struct UpdateUserChat: ReSwift_Action {
+  let payload: CHUserChat
 }
 
-struct DeleteUserChat: Action {
-  public let payload: CHUserChat
+struct DeleteUserChat: ReSwift_Action {
+  let payload: CHUserChat
 }
 
-struct DeleteUserChats: Action {
-  public let payload: [CHUserChat]
+struct DeleteUserChats: ReSwift_Action {
+  let payload: [CHUserChat]
 }
 
-struct DeleteUserChatsAll: Action {}
+struct DeleteUserChatsAll: ReSwift_Action {}
 
-struct JoinedUserChat: Action {
-  public let payload: String
+struct JoinedUserChat: ReSwift_Action {
+  let payload: String
 }
 
-struct LeavedUserChat: Action {
-  public let payload: String
+struct LeavedUserChat: ReSwift_Action {
+  let payload: String
 }
 
 //Update user
-struct UpdateUser: Action {
-  public let payload: CHUser?
+struct UpdateUser: ReSwift_Action {
+  let payload: CHUser?
 }
 
-struct UpdateVisibilityOfCompletedChats: Action {
-  public let show: Bool? 
+struct UpdateVisibilityOfCompletedChats: ReSwift_Action {
+  let show: Bool?
 }
 
-struct UpdateVisibilityOfTranslation: Action {
-  public let show: Bool?
+struct UpdateVisibilityOfTranslation: ReSwift_Action {
+  let show: Bool?
 }
 
 struct UserChatActions {

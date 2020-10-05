@@ -16,19 +16,19 @@ func errPrint(_ msg: String) {
     fputs(msg + "\n", stderr)
 }
 
-public func +(lhs: String, rhs: Int) -> String {
+func +(lhs: String, rhs: Int) -> String {
     return lhs + String(rhs)
 }
 
-public func +(lhs: Int, rhs: String) -> String {
+func +(lhs: Int, rhs: String) -> String {
     return String(lhs) + rhs
 }
 
-public func +(lhs: String, rhs: Token) -> String {
+func +(lhs: String, rhs: Token) -> String {
     return lhs + rhs.description
 }
 
-public func +(lhs: Token, rhs: String) -> String {
+func +(lhs: Token, rhs: String) -> String {
     return lhs.description + rhs
 }
 

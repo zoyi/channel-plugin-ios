@@ -19,7 +19,7 @@
 /// -  4.2
 /// 
 
-public final class LexerCustomAction: LexerAction {
+final class LexerCustomAction: LexerAction {
     fileprivate let ruleIndex: Int
     fileprivate let actionIndex: Int
 
@@ -32,7 +32,7 @@ public final class LexerCustomAction: LexerAction {
     /// - parameter actionIndex: The action index to use for calls to
     /// _org.antlr.v4.runtime.Recognizer#action_.
     /// 
-    public init(_ ruleIndex: Int, _ actionIndex: Int) {
+    init(_ ruleIndex: Int, _ actionIndex: Int) {
         self.ruleIndex = ruleIndex
         self.actionIndex = actionIndex
     }
@@ -42,7 +42,7 @@ public final class LexerCustomAction: LexerAction {
     /// 
     /// - returns: The rule index for the custom action.
     /// 
-    public func getRuleIndex() -> Int {
+    func getRuleIndex() -> Int {
         return ruleIndex
     }
 
@@ -51,7 +51,7 @@ public final class LexerCustomAction: LexerAction {
     /// 
     /// - returns: The action index for the custom action.
     /// 
-    public func getActionIndex() -> Int {
+    func getActionIndex() -> Int {
         return actionIndex
     }
 
@@ -61,7 +61,7 @@ public final class LexerCustomAction: LexerAction {
     /// - returns: This method returns _org.antlr.v4.runtime.atn.LexerActionType#CUSTOM_.
     /// 
 
-    public override func getActionType() -> LexerActionType {
+    override func getActionType() -> LexerActionType {
         return LexerActionType.custom
     }
 
@@ -77,7 +77,7 @@ public final class LexerCustomAction: LexerAction {
     /// - returns: This method returns `true`.
     /// 
     override
-    public func isPositionDependent() -> Bool {
+    func isPositionDependent() -> Bool {
         return true
     }
 
@@ -88,17 +88,17 @@ public final class LexerCustomAction: LexerAction {
     /// appropriate rule and action indexes.
     /// 
     override
-    public func execute(_ lexer: Lexer) throws {
+    func execute(_ lexer: Lexer) throws {
         try lexer.action(nil, ruleIndex, actionIndex)
     }
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(ruleIndex)
         hasher.combine(actionIndex)
     }
 }
 
-public func ==(lhs: LexerCustomAction, rhs: LexerCustomAction) -> Bool {
+func ==(lhs: LexerCustomAction, rhs: LexerCustomAction) -> Bool {
     if lhs === rhs {
         return true
     }

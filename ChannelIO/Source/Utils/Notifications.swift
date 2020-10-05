@@ -11,11 +11,11 @@ import UIKit
 
 extension Notification.Name {
   struct Channel {
-    public static let dismissKeyboard = Notification.Name(rawValue: "com.zoyi.channel.userchat.keyboard.dismiss")
-    public static let presentKeyboard = Notification.Name(rawValue: "com.zoyi.channel.userchat.keyboard.present")
-    public static let updateBadge = Notification.Name(rawValue: "com.zoyi.channel.plugin.update_badge")
-    public static let dismissLaunchers = Notification.Name(rawValue: "com.zoyi.channel.plugin.dismiss_launchers")
-    public static let enterForeground = Notification.Name(rawValue: "com.zoyi.channel.plugin.foreground")
-    public static let enterBackground = Notification.Name(rawValue: "com.zoyi.channel.plugin.background")
+    static let dismissKeyboard = Notification.Name(rawValue: "com.zoyi.channel.userchat.keyboard.dismiss")
+    static let presentKeyboard = Notification.Name(rawValue: "com.zoyi.channel.userchat.keyboard.present")
+    static let updateBadge = Notification.Name(rawValue: "com.zoyi.channel.plugin.update_badge")
+    static let dismissLaunchers = Notification.Name(rawValue: "com.zoyi.channel.plugin.dismiss_launchers")
+    static let enterForeground = Notification.Name(rawValue: "com.zoyi.channel.plugin.foreground")
+    static let enterBackground = Notification.Name(rawValue: "com.zoyi.channel.plugin.background")
   }
 }

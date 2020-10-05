@@ -7,14 +7,11 @@
 //
 
 import Foundation
-import Alamofire
-import RxSwift
-import ObjectMapper
-import SwiftyJSON
+//import RxSwift
 
 struct PluginPromise {
-  static func registerPushToken(token: String) -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func registerPushToken(token: String) -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let params = [
         "body": [
@@ -29,8 +26,8 @@ struct PluginPromise {
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
-            let json = JSON(data)
-            if json["pushToken"] == JSON.null {
+            let json = SwiftyJSON_JSON(data)
+            if json["pushToken"] == SwiftyJSON_JSON.null {
               subscriber.onError(ChannelError.parseError)
               return
             }
@@ -44,14 +41,14 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func unregisterPushToken() -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func unregisterPushToken() -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
 
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let req = AF
@@ -65,14 +62,14 @@ struct PluginPromise {
             subscriber.onCompleted()
           }
         }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func deletePushToken(with userId: String) -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func deletePushToken(with userId: String) -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let key = UIDevice.current.identifierForVendor?.uuidString ?? ""
       let params = [
         "query": [
@@ -92,21 +89,21 @@ struct PluginPromise {
             subscriber.onError(ChannelError.init(data: response.data, error: error))
           }
         }
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func checkVersion() -> Observable<Any?> {
-    return Observable.create { subscriber in
+  static func checkVersion() -> _RXSwift_Observable<Any?> {
+    return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.CheckVersion)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
-            let json = JSON(data)
+            let json = SwiftyJSON_JSON(data)
             let minVersion = json["minCompatibleVersion"].string ?? ""
             
             guard let version = CHUtils.getSdkVersion() else {
@@ -128,27 +125,27 @@ struct PluginPromise {
           }
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
 
-  static func getPlugin(pluginKey: String) -> Observable<(CHPlugin, CHBot?)> {
-    return Observable.create { (subscriber) in
+  static func getPlugin(pluginKey: String) -> _RXSwift_Observable<(CHPlugin, CHBot?)> {
+    return _RXSwift_Observable.create { (subscriber) in
       let req = AF
         .request(RestRouter.GetPlugin(pluginKey))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result{
           case .success(let data):
-            let json = JSON(data)
-            guard let plugin = Mapper<CHPlugin>()
+            let json = SwiftyJSON_JSON(data)
+            guard let plugin = ObjectMapper_Mapper<CHPlugin>()
               .map(JSONObject: json["plugin"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 return
               }
-            let bot = Mapper<CHBot>()
+            let bot = ObjectMapper_Mapper<CHBot>()
               .map(JSONObject: json["bot"].object)
             subscriber.onNext((plugin, bot))
             subscriber.onCompleted()
@@ -158,45 +155,43 @@ struct PluginPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func boot(pluginKey: String, params: CHParam) -> Observable<BootResponse?> {
-    return Observable.create { (subscriber) in
+  static func boot(pluginKey: String, params: CHParam) -> _RXSwift_Observable<BootResponse?> {
+    return _RXSwift_Observable.create { (subscriber) in
       let req = AF
         .request(RestRouter.Boot(pluginKey, params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON { response in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
-            let result = Mapper<BootResponse>().map(JSONObject: json.object)
+            let json = SwiftyJSON_JSON(data)
+            let result = ObjectMapper_Mapper<BootResponse>().map(JSONObject: json.object)
             
             subscriber.onNext(result)
             subscriber.onCompleted()
           case .failure(let error):
-            let json = SwiftyJSON.JSON(response.data)
-            print(json)
             subscriber.onError(ChannelError.serverError(
               msg: error.localizedDescription
             ))
           }
         }
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
-    }.subscribeOn(ConcurrentDispatchQueueScheduler(qos:.background))
+    }.subscribeOn(_RXSwift_ConcurrentDispatchQueueScheduler(qos:.background))
   }
   
-  static func sendPushAck(chatId: String?) -> Observable<Bool?> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func sendPushAck(chatId: String?) -> _RXSwift_Observable<Bool?> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       guard let chatId = chatId else {
         subscriber.onNext(nil)
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       let req = AF
@@ -213,22 +208,22 @@ struct PluginPromise {
           }
         }
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }
   }
   
-  static func getProfileSchemas(pluginId: String) -> Observable<[CHProfileSchema]> {
-    return Observable.create { (subscriber) -> Disposable in
+  static func getProfileSchemas(pluginId: String) -> _RXSwift_Observable<[CHProfileSchema]> {
+    return _RXSwift_Observable.create { (subscriber) -> _RXSwift_Disposable in
       let req = AF
         .request(RestRouter.GetProfileBotSchemas(pluginId))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
-            let profiles = Mapper<CHProfileSchema>()
+            let json = SwiftyJSON_JSON(data)
+            let profiles = ObjectMapper_Mapper<CHProfileSchema>()
               .mapArray(JSONObject: json["profileBotSchemas"].object) ?? []
             subscriber.onNext(profiles)
             subscriber.onCompleted()
@@ -238,7 +233,7 @@ struct PluginPromise {
             ))
           }
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         req.cancel()
       }
     }

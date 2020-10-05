@@ -6,8 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import SnapKit
-
 class ProfileBooleanView: ProfileItemBaseView, ProfileContentProtocol {
   let booleanView = BooleanActionView()
   var responder: UIView {

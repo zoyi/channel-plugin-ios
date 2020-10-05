@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct CountryCodeState: StateType {
+struct CountryCodeState: ReSwift_StateType {
   var codes: [CHCountry] = []
   
   mutating func insert(codes: [CHCountry]) -> CountryCodeState {

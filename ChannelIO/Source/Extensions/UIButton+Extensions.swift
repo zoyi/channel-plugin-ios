@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import RxSwift
+//import RxSwift
 
 extension UIButton {
   func alignVertical(spacing: CGFloat = 6.0) {
@@ -70,28 +70,28 @@ extension UIButton {
   }
 }
 
-extension Reactive where Base: UIControl {
-  var isHighlighted: Observable<Bool> {
+extension _RXSwift_Reactive where Base: UIButton {
+  var isHighlighted: _RXSwift_Observable<Bool> {
     let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isHighlighted))
-    
+
     let boolObservable = anyObservable
-      .flatMap { Observable.from(optional: $0.first as? Bool) }
+      .flatMap { _RXSwift_Observable.from(optional: $0.first as? Bool) }
       .startWith(self.base.isHighlighted)
       .distinctUntilChanged()
       .share()
-    
+
     return boolObservable
   }
   
-  var isEnabled: Observable<Bool> {
+  var isEnabled: _RXSwift_Observable<Bool> {
     let anyObservable = self.base.rx.methodInvoked(#selector(setter: self.base.isEnabled))
-    
+
     let boolObservable = anyObservable
-      .flatMap { Observable.from(optional: $0.first as? Bool) }
+      .flatMap { _RXSwift_Observable.from(optional: $0.first as? Bool) }
       .startWith(self.base.isEnabled)
       .distinctUntilChanged()
       .share()
-    
+
     return boolObservable
   }
 }

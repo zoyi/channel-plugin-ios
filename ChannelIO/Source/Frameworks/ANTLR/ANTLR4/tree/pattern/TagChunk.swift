@@ -16,7 +16,7 @@
 /// This class does not perform any validation on the tag or label names aside
 /// from ensuring that the tag is a non-null, non-empty string.
 /// 
-public class TagChunk: Chunk, CustomStringConvertible {
+class TagChunk: Chunk, CustomStringConvertible {
     /// 
     /// This is the backing field for _#getTag_.
     /// 
@@ -36,7 +36,7 @@ public class TagChunk: Chunk, CustomStringConvertible {
     /// - Throws: ANTLRError.illegalArgument if `tag` is `null` or
     /// empty.
     /// 
-    public convenience init(_ tag: String) throws {
+    convenience init(_ tag: String) throws {
         try self.init(nil, tag)
     }
 
@@ -52,7 +52,7 @@ public class TagChunk: Chunk, CustomStringConvertible {
     /// - Throws: ANTLRError.illegalArgument if `tag` is `null` or
     /// empty.
     /// 
-    public init(_ label: String?, _ tag: String) throws {
+    init(_ label: String?, _ tag: String) throws {
 
         self.label = label
         self.tag = tag
@@ -67,7 +67,7 @@ public class TagChunk: Chunk, CustomStringConvertible {
     /// 
     /// - Returns: The tag for the chunk.
     /// 
-    public final func getTag() -> String {
+    final func getTag() -> String {
         return tag
     }
 
@@ -77,7 +77,7 @@ public class TagChunk: Chunk, CustomStringConvertible {
     /// - Returns: The label assigned to this chunk, or `null` if no label is
     /// assigned to the chunk.
     /// 
-    public final func getLabel() -> String? {
+    final func getLabel() -> String? {
         return label
     }
 
@@ -86,7 +86,7 @@ public class TagChunk: Chunk, CustomStringConvertible {
     /// are returned in the form `label:tag`, and unlabeled tags are
     /// returned as just the tag name.
     /// 
-    public var description: String {
+    var description: String {
         if let label = label {
             return "\(label):\(tag)"
         }
@@ -96,7 +96,7 @@ public class TagChunk: Chunk, CustomStringConvertible {
     }
 
 
-    override public func isEqual(_ other: Chunk) -> Bool {
+    override func isEqual(_ other: Chunk) -> Bool {
         guard let other = other as? TagChunk else {
             return false
         }

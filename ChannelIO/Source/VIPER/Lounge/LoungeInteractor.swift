@@ -7,15 +7,14 @@
 //
 
 import Foundation
-import ReSwift
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
 
 class LoungeInteractor: NSObject, LoungeInteractorProtocol {  
   var presenter: LoungePresenterProtocol?
   
-  var chatSignal = PublishRelay<[CHUserChat]>()
-  var infoSignal = PublishRelay<(CHChannel, CHPlugin)>()
+  var chatSignal = _RXRelay_PublishRelay<[CHUserChat]>()
+  var infoSignal = _RXRelay_PublishRelay<(CHChannel, CHPlugin)>()
   
   var chats: [CHUserChat] = []
   var plugin: CHPlugin? = nil
@@ -34,14 +33,14 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     mainStore.unsubscribe(self)
   }
   
-  func getLounge() -> Observable<LoungeResponse> {
+  func getLounge() -> _RXSwift_Observable<LoungeResponse> {
     return LoungePromise.getLounge(
       pluginId: mainStore.state.plugin.id,
       url: ChannelIO.hostTopControllerName ?? ""
     )
   }
   
-  func getChats() -> Observable<UserChatsResponse> {
+  func getChats() -> _RXSwift_Observable<UserChatsResponse> {
     return CHUserChat.getChats(
       since: nil,
       limit: 50,
@@ -49,12 +48,12 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
     )
   }
 
-  func getChannel() -> Observable<CHChannel> {
+  func getChannel() -> _RXSwift_Observable<CHChannel> {
     return CHChannel.get()
   }
   
-  func deleteChat(userChat: CHUserChat) -> Observable<CHUserChat> {
-    return Observable.create { subscribe in
+  func deleteChat(userChat: CHUserChat) -> _RXSwift_Observable<CHUserChat> {
+    return _RXSwift_Observable.create { subscribe in
       
       let observe = userChat.remove()
         .subscribe(onNext: { (_) in
@@ -64,26 +63,26 @@ class LoungeInteractor: NSObject, LoungeInteractorProtocol {
           subscribe.onError(error)
         })
       
-      return Disposables.create() {
+      return _RXSwift_Disposables.create() {
         observe.dispose()
       }
     }
   }
   
-  func updateChats() -> Observable<[CHUserChat]> {
+  func updateChats() -> _RXSwift_Observable<[CHUserChat]> {
     return self.chatSignal.asObservable()
   }
   
-  func updateExternalSource() -> Observable<[Any]> {
+  func updateExternalSource() -> _RXSwift_Observable<[Any]> {
     return .just([])
   }
 
-  func updateGeneralInfo() -> Observable<(CHChannel, CHPlugin)> {
+  func updateGeneralInfo() -> _RXSwift_Observable<(CHChannel, CHPlugin)> {
     return self.infoSignal.asObservable()
   }
 }
 
-extension LoungeInteractor: StoreSubscriber {
+extension LoungeInteractor: ReSwift_StoreSubscriber {
   func newState(state: AppState) {
     let userChats = userChatsSelector(
       state: mainStore.state,

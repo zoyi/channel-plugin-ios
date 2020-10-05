@@ -19,7 +19,7 @@
 /// SContext) and makes it the root of a parse tree, recorded by field
 /// Parser._ctx.
 /// 
-/// public final SContext s() throws RecognitionException {
+/// final SContext s() throws RecognitionException {
 /// SContext _localctx = new SContext(_ctx, getState()); <-- create new node
 /// enterRule(_localctx, 0, RULE_s);                     <-- push it
 /// ...
@@ -55,29 +55,29 @@
 /// - SeeAlso: org.antlr.v4.runtime.ParserRuleContext
 /// 
 
-open class RuleContext: RuleNode {
-    public static let EMPTY = ParserRuleContext()
+class RuleContext: RuleNode {
+    static let EMPTY = ParserRuleContext()
 
     /// What context invoked this rule?
-    public weak var parent: RuleContext?
+    weak var parent: RuleContext?
 
     /// What state invoked the rule associated with this context?
     /// The "return address" is the followState of invokingState
     /// If parent is null, this should be -1 this context object represents
     /// the start rule.
     /// 
-    public var invokingState = -1
+    var invokingState = -1
 
-    public init() {
+    init() {
     }
 
-    public init(_ parent: RuleContext?, _ invokingState: Int) {
+    init(_ parent: RuleContext?, _ invokingState: Int) {
         self.parent = parent
         //if ( parent!=null ) { print("invoke "+stateNumber+" from "+parent)}
         self.invokingState = invokingState
     }
 
-    open func depth() -> Int {
+    func depth() -> Int {
         var n = 0
         var p: RuleContext? = self
         while let pWrap = p {
@@ -90,29 +90,29 @@ open class RuleContext: RuleNode {
     /// A context is empty if there is no invoking state; meaning nobody called
     /// current context.
     /// 
-    open func isEmpty() -> Bool {
+    func isEmpty() -> Bool {
         return invokingState == -1
     }
 
     // satisfy the ParseTree / SyntaxTree interface
 
-    open func getSourceInterval() -> Interval {
+    func getSourceInterval() -> Interval {
         return Interval.INVALID
     }
 
-    open func getRuleContext() -> RuleContext {
+    func getRuleContext() -> RuleContext {
         return self
     }
 
-    open func getParent() -> Tree? {
+    func getParent() -> Tree? {
         return parent
     }
 
-    open func setParent(_ parent: RuleContext) {
+    func setParent(_ parent: RuleContext) {
         self.parent = parent
     }
 
-    open func getPayload() -> AnyObject {
+    func getPayload() -> AnyObject {
         return self
     }
 
@@ -124,7 +124,7 @@ open class RuleContext: RuleNode {
     /// method.
     /// 
 
-    open func getText() -> String {
+    func getText() -> String {
         let length = getChildCount()
         if length == 0 {
             return ""
@@ -138,29 +138,29 @@ open class RuleContext: RuleNode {
         return builder
     }
 
-    open func getRuleIndex() -> Int {
+    func getRuleIndex() -> Int {
         return -1
     }
 
-    open func getAltNumber() -> Int { return ATN.INVALID_ALT_NUMBER }
-    open func setAltNumber(_ altNumber: Int) { }
+    func getAltNumber() -> Int { return ATN.INVALID_ALT_NUMBER }
+    func setAltNumber(_ altNumber: Int) { }
 
-    open func getChild(_ i: Int) -> Tree? {
+    func getChild(_ i: Int) -> Tree? {
         return nil
     }
 
 
-    open func getChildCount() -> Int {
+    func getChildCount() -> Int {
         return 0
     }
 
 
-    open subscript(index: Int) -> ParseTree {
+    subscript(index: Int) -> ParseTree {
         preconditionFailure("Index out of range (RuleContext never has children, though its subclasses may).")
     }
 
 
-    open func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+    func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
         return visitor.visitChildren(self)
     }
 
@@ -168,44 +168,44 @@ open class RuleContext: RuleNode {
     /// (root child1 .. childN). Print just a node if this is a leaf.
     /// We have to know the recognizer so we can get rule names.
     ///
-    open func toStringTree(_ recog: Parser) -> String {
+    func toStringTree(_ recog: Parser) -> String {
         return Trees.toStringTree(self, recog)
     }
 
     /// Print out a whole tree, not just a node, in LISP format
     /// (root child1 .. childN). Print just a node if this is a leaf.
     /// 
-    public func toStringTree(_ ruleNames: [String]?) -> String {
+    func toStringTree(_ ruleNames: [String]?) -> String {
         return Trees.toStringTree(self, ruleNames)
     }
 
-    open func toStringTree() -> String {
+    func toStringTree() -> String {
         return toStringTree(nil)
     }
 
-    open var description: String {
+    var description: String {
         return toString(nil, nil)
     }
 
-     open var debugDescription: String {
+     var debugDescription: String {
          return description
     }
 
-    public final func toString<T>(_ recog: Recognizer<T>) -> String {
+    final func toString<T>(_ recog: Recognizer<T>) -> String {
         return toString(recog, ParserRuleContext.EMPTY)
     }
 
-    public final func toString(_ ruleNames: [String]) -> String {
+    final func toString(_ ruleNames: [String]) -> String {
         return toString(ruleNames, nil)
     }
 
     // recog null unless ParserRuleContext, in which case we use subclass toString(...)
-    open func toString<T>(_ recog: Recognizer<T>?, _ stop: RuleContext) -> String {
+    func toString<T>(_ recog: Recognizer<T>?, _ stop: RuleContext) -> String {
         let ruleNames = recog?.getRuleNames()
         return toString(ruleNames, stop)
     }
 
-    open func toString(_ ruleNames: [String]?, _ stop: RuleContext?) -> String {
+    func toString(_ ruleNames: [String]?, _ stop: RuleContext?) -> String {
         var buf = ""
         var p: RuleContext? = self
         buf += "["
@@ -233,7 +233,7 @@ open class RuleContext: RuleNode {
         return buf
     }
 
-    open func castdown<T>(_ subType: T.Type) -> T {
+    func castdown<T>(_ subType: T.Type) -> T {
         return self as! T
     }
 

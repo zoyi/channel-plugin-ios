@@ -13,16 +13,16 @@
 
 import Foundation
 
-public enum LookupDictionaryType: Int {
+enum LookupDictionaryType: Int {
     case lookup = 0
     case ordered
 }
 
-public struct LookupDictionary {
+struct LookupDictionary {
     private let type: LookupDictionaryType
     private var cache = [Int: ATNConfig]()
 
-    public init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
+    init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
         self.type = type
     }
 
@@ -58,7 +58,7 @@ public struct LookupDictionary {
         }
     }
 
-    public mutating func getOrAdd(_ config: ATNConfig) -> ATNConfig {
+    mutating func getOrAdd(_ config: ATNConfig) -> ATNConfig {
         let h = hash(config)
 
         if let configList = cache[h] {
@@ -71,16 +71,16 @@ public struct LookupDictionary {
         return config
     }
 
-    public var isEmpty: Bool {
+    var isEmpty: Bool {
         return cache.isEmpty
     }
 
-    public func contains(_ config: ATNConfig) -> Bool {
+    func contains(_ config: ATNConfig) -> Bool {
         let h = hash(config)
         return cache[h] != nil
     }
 
-    public mutating func removeAll() {
+    mutating func removeAll() {
         cache.removeAll()
     }
 

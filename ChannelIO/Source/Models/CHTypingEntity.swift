@@ -7,10 +7,8 @@
 //
 
 import Foundation
-import SocketIO
-import ObjectMapper
 
-struct CHTypingEntity: SocketData {
+struct CHTypingEntity: SocketIO_SocketData {
   var action = ""
   var chatId = ""
   var chatType: ChatType?
@@ -26,7 +24,7 @@ struct CHTypingEntity: SocketData {
     self.personType = personType
   }
   
-  func socketRepresentation() -> SocketData {
+  func socketRepresentation() -> SocketIO_SocketData {
     return [
       "action": self.action,
       "chatId": self.chatId,
@@ -45,10 +43,10 @@ struct CHTypingEntity: SocketData {
   }
 }
 
-extension CHTypingEntity: Mappable {
-  init?(map: Map) { }
+extension CHTypingEntity: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     action          <- map["action"]
     chatId          <- map["channelId"]
     chatType        <- map["chatType"]

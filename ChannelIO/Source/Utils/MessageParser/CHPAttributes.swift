@@ -29,7 +29,7 @@ enum CHPAttributeKeyType: String {
   case value
   case unknown
 
-  public init?(rawValue: String) {
+  init?(rawValue: String) {
     switch rawValue {
     case "type": self = .type
     case "value": self = .value
@@ -39,7 +39,7 @@ enum CHPAttributeKeyType: String {
 }
 
 enum CHPAttributeValueType {
-  public init?(rawValue: String) {
+  init?(rawValue: String) {
     switch rawValue {
     case "url": self = .url
     case "email": self = .email

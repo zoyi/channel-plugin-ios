@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct ManagersState: StateType {
+struct ManagersState: ReSwift_StateType {
   var managerDictionary: [String: CHManager] = [:]
   var followingManagers: [CHManager] = []
   

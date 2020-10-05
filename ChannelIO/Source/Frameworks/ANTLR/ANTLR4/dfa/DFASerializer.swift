@@ -9,16 +9,16 @@
 /// A DFA walker that knows how to dump them to serialized strings.
 /// 
 
-public class DFASerializer: CustomStringConvertible {
+class DFASerializer: CustomStringConvertible {
     private let dfa: DFA
     private let vocabulary: Vocabulary
 
-    public init(_ dfa: DFA, _ vocabulary: Vocabulary) {
+    init(_ dfa: DFA, _ vocabulary: Vocabulary) {
         self.dfa = dfa
         self.vocabulary = vocabulary
     }
 
-    public var description: String {
+    var description: String {
         if dfa.s0 == nil {
             return ""
         }

@@ -6,8 +6,6 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct GetCountryCodes: Action {
-  public let payload: [CHCountry]
+struct GetCountryCodes: ReSwift_Action {
+  let payload: [CHCountry]
 }

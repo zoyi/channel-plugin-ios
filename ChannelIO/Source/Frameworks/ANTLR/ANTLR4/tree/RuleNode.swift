@@ -4,6 +4,6 @@
  */
 
 
-public protocol RuleNode: ParseTree {
+protocol RuleNode: ParseTree {
     func getRuleContext() -> RuleContext
 }

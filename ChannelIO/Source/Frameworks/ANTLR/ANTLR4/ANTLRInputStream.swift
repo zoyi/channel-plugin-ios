@@ -11,7 +11,7 @@
 /// 
 /// If you need encoding, pass in stream/reader with correct encoding.
 ///
-public class ANTLRInputStream: CharStream {
+class ANTLRInputStream: CharStream {
     ///
     /// The data being scanned
     /// 
@@ -30,9 +30,9 @@ public class ANTLRInputStream: CharStream {
     /// 
     /// What is name or source of this char stream?
     /// 
-    public var name: String?
+    var name: String?
 
-    public init() {
+    init() {
         n = 0
         data = [Character]()
     }
@@ -40,7 +40,7 @@ public class ANTLRInputStream: CharStream {
     /// 
     /// Copy data in string to a local char array
     /// 
-    public init(_ input: String) {
+    init(_ input: String) {
         self.data = Array(input)
         self.n = data.count
     }
@@ -48,16 +48,16 @@ public class ANTLRInputStream: CharStream {
     /// 
     /// This is the preferred constructor for strings as no data is copied
     /// 
-    public init(_ data: [Character], _ numberOfActualCharsInArray: Int) {
+    init(_ data: [Character], _ numberOfActualCharsInArray: Int) {
         self.data = data
         self.n = numberOfActualCharsInArray
     }
 
-    public func reset() {
+    func reset() {
         p = 0
     }
 
-    public func consume() throws {
+    func consume() throws {
         if p >= n {
             assert(LA(1) == ANTLRInputStream.EOF, "Expected: LA(1)==IntStream.EOF")
 
@@ -72,7 +72,7 @@ public class ANTLRInputStream: CharStream {
         }
     }
 
-    public func LA(_ i: Int) -> Int {
+    func LA(_ i: Int) -> Int {
         var i = i
         if i == 0 {
             return 0 // undefined
@@ -93,7 +93,7 @@ public class ANTLRInputStream: CharStream {
         return data[p + i - 1].unicodeValue
     }
 
-    public func LT(_ i: Int) -> Int {
+    func LT(_ i: Int) -> Int {
         return LA(i)
     }
 
@@ -102,11 +102,11 @@ public class ANTLRInputStream: CharStream {
     /// last symbol has been read.  The index is the index of char to
     /// be returned from LA(1).
     /// 
-    public func index() -> Int {
+    func index() -> Int {
         return p
     }
 
-    public func size() -> Int {
+    func size() -> Int {
         return n
     }
 
@@ -114,11 +114,11 @@ public class ANTLRInputStream: CharStream {
     /// mark/release do nothing; we have entire buffer
     /// 
 
-    public func mark() -> Int {
+    func mark() -> Int {
         return -1
     }
 
-    public func release(_ marker: Int) {
+    func release(_ marker: Int) {
     }
 
     /// 
@@ -126,7 +126,7 @@ public class ANTLRInputStream: CharStream {
     /// update line and charPositionInLine. If we seek backwards, just set p
     /// 
 
-    public func seek(_ index: Int) throws {
+    func seek(_ index: Int) throws {
         var index = index
         if index <= p {
             p = index // just jump; don't update stream state (line, ...)
@@ -139,7 +139,7 @@ public class ANTLRInputStream: CharStream {
         }
     }
 
-    public func getText(_ interval: Interval) -> String {
+    func getText(_ interval: Interval) -> String {
         let start = interval.a
         if start >= n {
             return ""
@@ -148,11 +148,11 @@ public class ANTLRInputStream: CharStream {
         return String(data[start ..< stop])
     }
 
-    public func getSourceName() -> String {
+    func getSourceName() -> String {
         return name ?? ANTLRInputStream.UNKNOWN_SOURCE_NAME
     }
 
-    public func toString() -> String {
+    func toString() -> String {
         return String(data)
     }
 }

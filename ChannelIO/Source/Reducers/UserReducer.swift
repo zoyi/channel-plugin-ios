@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func userReducer(action: Action, user: CHUser?) -> CHUser {
+func userReducer(action: ReSwift_Action, user: CHUser?) -> CHUser {
   switch action {
   case let action as BootSuccess:
     if let jwt = action.payload.sessionJWT {

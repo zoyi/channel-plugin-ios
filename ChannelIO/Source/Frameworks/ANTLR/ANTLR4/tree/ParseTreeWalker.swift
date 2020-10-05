@@ -4,13 +4,13 @@
  */
 
 
-public class ParseTreeWalker {
-    public static let DEFAULT = ParseTreeWalker()
+class ParseTreeWalker {
+    static let DEFAULT = ParseTreeWalker()
 
-    public init() {
+    init() {
     }
 
-    public func walk(_ listener: ParseTreeListener, _ t: ParseTree) throws {
+    func walk(_ listener: ParseTreeListener, _ t: ParseTree) throws {
         if let errNode = t as? ErrorNode {
             listener.visitErrorNode(errNode)
         }

@@ -9,6 +9,6 @@
 /// The start of a regular `(...)` block.
 /// 
 
-public class BlockStartState: DecisionState {
-    public var endState: BlockEndState?
+class BlockStartState: DecisionState {
+    var endState: BlockEndState?
 }

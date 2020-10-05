@@ -18,7 +18,7 @@ import Foundation
  *  As of 4.7, the class uses UTF-8 by default, and the buffer holds Unicode
  *  code points in the buffer as ints.
  */
-open class UnbufferedCharStream: CharStream {
+class UnbufferedCharStream: CharStream {
     private let bufferSize: Int
 
     /**
@@ -75,9 +75,9 @@ open class UnbufferedCharStream: CharStream {
 
 
     /** The name or source of this char stream. */
-    public var name: String = ""
+    var name: String = ""
 
-    public init(_ input: InputStream, _ bufferSize: Int = 256) {
+    init(_ input: InputStream, _ bufferSize: Int = 256) {
         self.input = input
         self.bufferSize = bufferSize
         self.data = [Int](repeating: 0, count: bufferSize)
@@ -85,7 +85,7 @@ open class UnbufferedCharStream: CharStream {
         self.unicodeIterator = UnicodeScalarStreamIterator(si)
     }
 
-    public func consume() throws {
+    func consume() throws {
         if try LA(1) == CommonToken.EOF {
             throw ANTLRError.illegalState(msg: "cannot consume EOF")
         }
@@ -161,7 +161,7 @@ open class UnbufferedCharStream: CharStream {
         n += 1
     }
 
-    public func LA(_ i: Int) throws -> Int {
+    func LA(_ i: Int) throws -> Int {
         if i == -1 {
             return lastChar // special case
         }
@@ -183,7 +183,7 @@ open class UnbufferedCharStream: CharStream {
      * protection against misuse where {@code seek()} is called on a mark or
      * {@code release()} is called in the wrong order.</p>
      */
-    public func mark() -> Int {
+    func mark() -> Int {
         if numMarkers == 0 {
             lastCharBufferStart = lastChar
         }
@@ -196,7 +196,7 @@ open class UnbufferedCharStream: CharStream {
     /** Decrement number of markers, resetting buffer if we hit 0.
      * @param marker
      */
-    public func release(_ marker: Int) throws {
+    func release(_ marker: Int) throws {
         let expectedMark = -numMarkers
         if marker != expectedMark {
             preconditionFailure("release() called with an invalid marker.")
@@ -223,14 +223,14 @@ open class UnbufferedCharStream: CharStream {
         }
     }
 
-    public func index() -> Int {
+    func index() -> Int {
         return currentCharIndex
     }
 
     /** Seek to absolute character index, which might not be in the current
      *  sliding window.  Move {@code p} to {@code index-bufferStartIndex}.
      */
-    public func seek(_ index_: Int) throws {
+    func seek(_ index_: Int) throws {
         var index = index_
 
         if index == currentCharIndex {
@@ -264,15 +264,15 @@ open class UnbufferedCharStream: CharStream {
         }
     }
 
-    public func size() -> Int {
+    func size() -> Int {
         preconditionFailure("Unbuffered stream cannot know its size")
     }
 
-    public func getSourceName() -> String {
+    func getSourceName() -> String {
         return name
     }
 
-    public func getText(_ interval: Interval) throws -> String {
+    func getText(_ interval: Interval) throws -> String {
         if interval.a < 0 || interval.b < interval.a - 1 {
             throw ANTLRError.illegalArgument(msg: "invalid interval")
         }

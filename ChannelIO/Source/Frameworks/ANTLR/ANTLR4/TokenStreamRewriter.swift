@@ -83,13 +83,13 @@
 
 import Foundation
 
-public class TokenStreamRewriter {
-    public let DEFAULT_PROGRAM_NAME = "default"
-    public static let PROGRAM_INIT_SIZE = 100
-    public static let MIN_TOKEN_INDEX = 0
+class TokenStreamRewriter {
+    let DEFAULT_PROGRAM_NAME = "default"
+    static let PROGRAM_INIT_SIZE = 100
+    static let MIN_TOKEN_INDEX = 0
 
     // Define the rewrite operation hierarchy
-    public class RewriteOperation: CustomStringConvertible {
+    class RewriteOperation: CustomStringConvertible {
         /// What index into rewrites List are we?
         internal var instructionIndex = 0
         /// Token buffer index.
@@ -112,18 +112,18 @@ public class TokenStreamRewriter {
         /// Execute the rewrite operation by possibly adding to the buffer.
         /// Return the index of the next token to operate on.
         /// 
-        public func execute(_ buf: inout String) throws -> Int {
+        func execute(_ buf: inout String) throws -> Int {
             return index
         }
 
-        public var description: String {
+        var description: String {
             let opName = String(describing: type(of: self))
             return "<\(opName)@\(try! tokens.get(index)):\"\(text!)\">"
         }
     }
 
-    public class InsertBeforeOp: RewriteOperation {
-        override public func execute(_ buf: inout String) throws -> Int {
+    class InsertBeforeOp: RewriteOperation {
+        override func execute(_ buf: inout String) throws -> Int {
             if let text = text {
                 buf.append(text)
             }
@@ -135,8 +135,8 @@ public class TokenStreamRewriter {
         }
     }
 
-    public class InsertAfterOp: InsertBeforeOp {
-        public override init(_ index: Int, _ text: String?, _ tokens: TokenStream) {
+    class InsertAfterOp: InsertBeforeOp {
+        override init(_ index: Int, _ text: String?, _ tokens: TokenStream) {
             super.init(index + 1, text, tokens)
         }
     }
@@ -145,15 +145,15 @@ public class TokenStreamRewriter {
     /// instructions.
     ///
 
-    public class ReplaceOp: RewriteOperation {
+    class ReplaceOp: RewriteOperation {
 
-        public init(_ from: Int, _ to: Int, _ text: String?, _ tokens: TokenStream) {
+        init(_ from: Int, _ to: Int, _ text: String?, _ tokens: TokenStream) {
             super.init(from, text, tokens)
             lastIndex = to
         }
 
         override
-        public func execute(_ buf: inout String) -> Int {
+        func execute(_ buf: inout String) -> Int {
             if let text = text {
                 buf += text
             }
@@ -161,7 +161,7 @@ public class TokenStreamRewriter {
         }
 
         override
-        public var description: String {
+        var description: String {
             let token = try! tokens.get(index)
             let lastToken = try! tokens.get(lastIndex)
             if let text = text {
@@ -171,10 +171,10 @@ public class TokenStreamRewriter {
         }
     }
 
-    public class RewriteOperationArray{
+    class RewriteOperationArray{
         private final var rewrites = [RewriteOperation?]()
 
-        public init() {
+        init() {
             rewrites.reserveCapacity(TokenStreamRewriter.PROGRAM_INIT_SIZE)
         }
 
@@ -389,17 +389,17 @@ public class TokenStreamRewriter {
     /// Map String (program name) &rarr; Integer index
     internal final var lastRewriteTokenIndexes: [String: Int]
 
-    public init(_ tokens: TokenStream) {
+    init(_ tokens: TokenStream) {
         self.tokens = tokens
         programs[DEFAULT_PROGRAM_NAME] = RewriteOperationArray()
         lastRewriteTokenIndexes = Dictionary<String, Int>()
     }
 
-    public final func getTokenStream() -> TokenStream {
+    final func getTokenStream() -> TokenStream {
         return tokens
     }
 
-    public func rollback(_ instructionIndex: Int) {
+    func rollback(_ instructionIndex: Int) {
         rollback(DEFAULT_PROGRAM_NAME, instructionIndex)
     }
 
@@ -407,75 +407,75 @@ public class TokenStreamRewriter {
     /// the indicated instruction (via instructionIndex) is no
     /// longer in the stream. UNTESTED!
     /// 
-    public func rollback(_ programName: String, _ instructionIndex: Int) {
+    func rollback(_ programName: String, _ instructionIndex: Int) {
         if let program = programs[programName] {
             program.rollback(instructionIndex)
         }
     }
 
-    public func deleteProgram() {
+    func deleteProgram() {
         deleteProgram(DEFAULT_PROGRAM_NAME)
     }
 
     /// Reset the program so that no instructions exist
-    public func deleteProgram(_ programName: String) {
+    func deleteProgram(_ programName: String) {
         rollback(programName, TokenStreamRewriter.MIN_TOKEN_INDEX)
     }
 
-    public func insertAfter(_ t: Token, _ text: String) {
+    func insertAfter(_ t: Token, _ text: String) {
         insertAfter(DEFAULT_PROGRAM_NAME, t, text)
     }
 
-    public func insertAfter(_ index: Int, _ text: String) {
+    func insertAfter(_ index: Int, _ text: String) {
         insertAfter(DEFAULT_PROGRAM_NAME, index, text)
     }
 
-    public func insertAfter(_ programName: String, _ t: Token, _ text: String) {
+    func insertAfter(_ programName: String, _ t: Token, _ text: String) {
         insertAfter(programName, t.getTokenIndex(), text)
     }
 
-    public func insertAfter(_ programName: String, _ index: Int, _ text: String) {
+    func insertAfter(_ programName: String, _ index: Int, _ text: String) {
         // to insert after, just insert before next index (even if past end)
         let op = InsertAfterOp(index, text, tokens)
         let rewrites = getProgram(programName)
         rewrites.append(op)
     }
 
-    public func insertBefore(_ t: Token, _ text: String) {
+    func insertBefore(_ t: Token, _ text: String) {
         insertBefore(DEFAULT_PROGRAM_NAME, t, text)
     }
 
-    public func insertBefore(_ index: Int, _ text: String) {
+    func insertBefore(_ index: Int, _ text: String) {
         insertBefore(DEFAULT_PROGRAM_NAME, index, text)
     }
 
-    public func insertBefore(_ programName: String, _ t: Token, _ text: String) {
+    func insertBefore(_ programName: String, _ t: Token, _ text: String) {
         insertBefore(programName, t.getTokenIndex(), text)
     }
 
-    public func insertBefore(_ programName: String, _ index: Int, _ text: String) {
+    func insertBefore(_ programName: String, _ index: Int, _ text: String) {
         let op = InsertBeforeOp(index, text, tokens)
         let rewrites = getProgram(programName)
         rewrites.append(op)
     }
 
-    public func replace(_ index: Int, _ text: String) throws {
+    func replace(_ index: Int, _ text: String) throws {
         try replace(DEFAULT_PROGRAM_NAME, index, index, text)
     }
 
-    public func replace(_ from: Int, _ to: Int, _ text: String) throws {
+    func replace(_ from: Int, _ to: Int, _ text: String) throws {
         try replace(DEFAULT_PROGRAM_NAME, from, to, text)
     }
 
-    public func replace(_ indexT: Token, _ text: String) throws {
+    func replace(_ indexT: Token, _ text: String) throws {
         try replace(DEFAULT_PROGRAM_NAME, indexT, indexT, text)
     }
 
-    public func replace(_ from: Token, _ to: Token, _ text: String) throws {
+    func replace(_ from: Token, _ to: Token, _ text: String) throws {
         try  replace(DEFAULT_PROGRAM_NAME, from, to, text)
     }
 
-    public func replace(_ programName: String, _ from: Int, _ to: Int, _ text: String?) throws {
+    func replace(_ programName: String, _ from: Int, _ to: Int, _ text: String?) throws {
         if from > to || from < 0 || to < 0 || to >= tokens.size() {
             throw ANTLRError.illegalArgument(msg: "replace: range invalid: \(from)..\(to)(size=\(tokens.size()))")
         }
@@ -484,38 +484,38 @@ public class TokenStreamRewriter {
         rewritesArray.append(op)
     }
 
-    public func replace(_ programName: String, _ from: Token, _ to: Token, _ text: String?) throws {
+    func replace(_ programName: String, _ from: Token, _ to: Token, _ text: String?) throws {
         try replace(programName,
             from.getTokenIndex(),
             to.getTokenIndex(),
             text)
     }
 
-    public func delete(_ index: Int) throws {
+    func delete(_ index: Int) throws {
         try delete(DEFAULT_PROGRAM_NAME, index, index)
     }
 
-    public func delete(_ from: Int, _ to: Int) throws {
+    func delete(_ from: Int, _ to: Int) throws {
         try delete(DEFAULT_PROGRAM_NAME, from, to)
     }
 
-    public func delete(_ indexT: Token) throws {
+    func delete(_ indexT: Token) throws {
         try delete(DEFAULT_PROGRAM_NAME, indexT, indexT)
     }
 
-    public func delete(_ from: Token, _ to: Token) throws {
+    func delete(_ from: Token, _ to: Token) throws {
         try delete(DEFAULT_PROGRAM_NAME, from, to)
     }
 
-    public func delete(_ programName: String, _ from: Int, _ to: Int) throws {
+    func delete(_ programName: String, _ from: Int, _ to: Int) throws {
         try replace(programName, from, to, nil)
     }
 
-    public func delete(_ programName: String, _ from: Token, _ to: Token) throws {
+    func delete(_ programName: String, _ from: Token, _ to: Token) throws {
         try replace(programName, from, to, nil)
     }
 
-    public func getLastRewriteTokenIndex() -> Int {
+    func getLastRewriteTokenIndex() -> Int {
         return getLastRewriteTokenIndex(DEFAULT_PROGRAM_NAME)
     }
 
@@ -545,14 +545,14 @@ public class TokenStreamRewriter {
     /// Return the text from the original tokens altered per the
     /// instructions given to this rewriter.
     /// 
-    public func getText() throws -> String {
+    func getText() throws -> String {
         return try getText(DEFAULT_PROGRAM_NAME, Interval.of(0, tokens.size() - 1))
     }
 
     /// Return the text from the original tokens altered per the
     /// instructions given to this rewriter in programName.
     /// 
-    public func getText(_ programName: String) throws -> String {
+    func getText(_ programName: String) throws -> String {
         return try getText(programName, Interval.of(0, tokens.size() - 1))
     }
 
@@ -565,11 +565,11 @@ public class TokenStreamRewriter {
     /// insertBefore on the first token, you would get that insertion.
     /// The same is true if you do an insertAfter the stop token.
     /// 
-    public func getText(_ interval: Interval) throws -> String {
+    func getText(_ interval: Interval) throws -> String {
         return try getText(DEFAULT_PROGRAM_NAME, interval)
     }
 
-    public func getText(_ programName: String, _ interval: Interval) throws -> String {
+    func getText(_ programName: String, _ interval: Interval) throws -> String {
         var start = interval.a
         var stop = interval.b
 

@@ -18,7 +18,7 @@
 /// -  4.3
 /// 
 
-public class ErrorInfo: DecisionEventInfo {
+class ErrorInfo: DecisionEventInfo {
     /// 
     /// Constructs a new instance of the _org.antlr.v4.runtime.atn.ErrorInfo_ class with the
     /// specified detailed syntax error information.
@@ -33,7 +33,7 @@ public class ErrorInfo: DecisionEventInfo {
     /// prediction; otherwise, `false` if the syntax error was identified
     /// during SLL prediction
     /// 
-    public init(_ decision: Int,
+    init(_ decision: Int,
                 _ configs: ATNConfigSet,
                 _ input: TokenStream, _ startIndex: Int, _ stopIndex: Int,
                 _ fullCtx: Bool) {

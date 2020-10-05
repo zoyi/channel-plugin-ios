@@ -13,7 +13,7 @@
 
 import Foundation
 
-public enum ANTLRError: Error {
+enum ANTLRError: Error {
     case unsupportedOperation(msg:String)
     case indexOutOfBounds(msg:String)
     case illegalState(msg:String)

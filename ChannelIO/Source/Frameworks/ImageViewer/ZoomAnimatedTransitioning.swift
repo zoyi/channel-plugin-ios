@@ -30,9 +30,9 @@ import UIKit
 
 class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate {
     /// parent image view used for animated transition
-    open var referenceImageView: UIImageView?
+    var referenceImageView: UIImageView?
     /// parent slideshow view used for animated transition
-    open weak var referenceSlideshowView: ImageSlideshow?
+    weak var referenceSlideshowView: ImageSlideshow?
 
     // must be weak because FullScreenSlideshowViewController has strong reference to its transitioning delegate
     weak var referenceSlideshowController: FullScreenSlideshowViewController?
@@ -42,14 +42,14 @@ class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioning
     fileprivate var interactionController: UIPercentDrivenInteractiveTransition?
 
     /// Enables or disables swipe-to-dismiss interactive transition
-    open var slideToDismissEnabled: Bool = true
+    var slideToDismissEnabled: Bool = true
 
     /**
         Init the transitioning delegate with a source ImageSlideshow
         - parameter slideshowView: ImageSlideshow instance to animate the transition from
         - parameter slideshowController: FullScreenViewController instance to animate the transition to
      */
-    public init(slideshowView: ImageSlideshow, slideshowController: FullScreenSlideshowViewController) {
+    init(slideshowView: ImageSlideshow, slideshowController: FullScreenSlideshowViewController) {
         self.referenceSlideshowView = slideshowView
         self.referenceSlideshowController = slideshowController
 
@@ -63,7 +63,7 @@ class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioning
         - parameter imageView: UIImageView instance to animate the transition from
         - parameter slideshowController: FullScreenViewController instance to animate the transition to
      */
-    public init(imageView: UIImageView, slideshowController: FullScreenSlideshowViewController) {
+    init(imageView: UIImageView, slideshowController: FullScreenSlideshowViewController) {
         self.referenceImageView = imageView
         self.referenceSlideshowController = slideshowController
 
@@ -115,7 +115,7 @@ class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioning
         }
     }
 
-    open func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if let reference = referenceSlideshowView {
             return ZoomInAnimator(referenceSlideshowView: reference, parent: self)
         } else if let reference = referenceImageView {
@@ -125,7 +125,7 @@ class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioning
         }
     }
 
-    open func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if let reference = referenceSlideshowView {
             return ZoomOutAnimator(referenceSlideshowView: reference, parent: self)
         } else if let reference = referenceImageView {
@@ -135,17 +135,17 @@ class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransitioning
         }
     }
 
-    open func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         return interactionController
     }
 
-    open func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         return interactionController
     }
 }
 
 extension ZoomAnimatedTransitioningDelegate: UIGestureRecognizerDelegate {
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer else {
             return false
         }

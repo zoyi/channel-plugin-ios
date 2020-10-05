@@ -6,7 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import SnapKit
 import UIKit
 
 class AlertView: BaseView {

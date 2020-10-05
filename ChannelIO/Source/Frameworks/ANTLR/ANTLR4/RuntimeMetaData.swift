@@ -34,7 +34,7 @@
 /// - Since: 4.3
 /// 
 
-public class RuntimeMetaData {
+class RuntimeMetaData {
     /// 
     /// A compile-time constant containing the current version of the ANTLR 4
     /// runtime library.
@@ -63,7 +63,7 @@ public class RuntimeMetaData {
     /// omitted, the `-` (hyphen-minus) appearing before it is also
     /// omitted.
     /// 
-    public static let VERSION: String = "4.7.2"
+    static let VERSION: String = "4.7.2"
 
     /// 
     /// Gets the currently executing version of the ANTLR 4 runtime library.
@@ -75,7 +75,7 @@ public class RuntimeMetaData {
     /// - Returns: The currently executing version of the ANTLR 4 library
     /// 
 
-    public static func getRuntimeVersion() -> String {
+    static func getRuntimeVersion() -> String {
         return RuntimeMetaData.VERSION
     }
 
@@ -130,7 +130,7 @@ public class RuntimeMetaData {
     /// compiled against. This should always be passed using a direct reference
     /// to _#VERSION_.
     /// 
-    public static func checkVersion(_ generatingToolVersion: String, _ compileTimeVersion: String) {
+    static func checkVersion(_ generatingToolVersion: String, _ compileTimeVersion: String) {
         let runtimeVersion: String = RuntimeMetaData.VERSION
         var runtimeConflictsWithGeneratingTool: Bool = false
         var runtimeConflictsWithCompileTimeTool: Bool = false
@@ -162,7 +162,7 @@ public class RuntimeMetaData {
     /// - Returns: A string of the form __major__.__minor__ containing
     /// only the major and minor components of the version string.
     /// 
-    public static func getMajorMinorVersion(_ version: String) -> String {
+    static func getMajorMinorVersion(_ version: String) -> String {
         var result = version
 
         let dotBits = version.split(separator: ".", maxSplits: 2, omittingEmptySubsequences: false)

@@ -12,7 +12,7 @@
 /// -  Sam Harwell
 /// 
 
-public enum ATNType: Int {
+enum ATNType: Int {
 
     /// 
     /// A lexer grammar.

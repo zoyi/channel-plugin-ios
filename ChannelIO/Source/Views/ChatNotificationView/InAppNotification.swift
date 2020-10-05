@@ -1,6 +1,5 @@
 import Foundation
-import RxSwift
-import SnapKit
+//import RxSwift
 
 enum InAppNotificationType: String {
   case fullScreen
@@ -12,7 +11,7 @@ protocol InAppNotification: class {
   
   func configure(with viewModel: InAppNotificationViewModel)
   func insertView(on view: UIView?)
-  func signalForChat() -> Observable<Any?>
-  func signalForClose() -> Observable<Any?>
+  func signalForChat() -> _RXSwift_Observable<Any?>
+  func signalForClose() -> _RXSwift_Observable<Any?>
   func removeView(animated: Bool)
 }

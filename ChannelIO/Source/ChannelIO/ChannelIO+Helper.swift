@@ -6,8 +6,8 @@
 //  Copyright © 2018 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import RxSwiftExt
+//import RxSwift
+//import RxSwiftExt
 
 extension ChannelIO {
   internal class func reset(isSleeping: Bool) {
@@ -18,7 +18,7 @@ extension ChannelIO {
     ChannelIO.lastPush = nil
     mainStore.dispatch(ShutdownSuccess(isSleeping: isSleeping))
     WsService.shared.disconnect()
-    disposeBag = DisposeBag()
+    disposeBag = _RXSwift_DisposeBag()
   }
   
   internal class func prepare() {
@@ -33,16 +33,16 @@ extension ChannelIO {
     ChannelIO.subscriber = subscriber
   }
   
-  internal class func bootChannel() -> Observable<BootResponse> {
-    return Observable.create { subscriber in
+  internal class func bootChannel() -> _RXSwift_Observable<BootResponse> {
+    return _RXSwift_Observable.create { subscriber in
       guard let config = ChannelIO.bootConfig else {
         subscriber.onError(ChannelError.unknownError())
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       guard config.pluginKey != "" else {
         subscriber.onError(ChannelError.parameterError)
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       if let memberId = config.memberId, memberId != "" {
@@ -64,7 +64,7 @@ extension ChannelIO {
           dlog("Error while booting channelSDK. Attempting to boot again")
           return true
         }
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { result in
           guard let result = result else {
             subscriber.onError(ChannelError.unknownError())
@@ -92,7 +92,7 @@ extension ChannelIO {
           dlog("Check in complete")
         }).disposed(by: disposeBag)
       
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
   
@@ -192,7 +192,7 @@ extension ChannelIO {
     
     notificationView?
       .signalForChat()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { (event) in
         ChannelIO.hideNotification()
         ChannelIO.showUserChat(userChatId: popup.chatId)
@@ -200,7 +200,7 @@ extension ChannelIO {
     
     notificationView?
       .signalForClose()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe { event in
         ChannelIO.hideNotification()
         if ChannelIO.launcherVisible {
@@ -239,7 +239,7 @@ extension ChannelIO {
   internal class func deregisterPushToken() {
     AppManager.shared
       .unregisterToken()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe()
       .disposed(by: self.disposeBag)
   }
@@ -251,7 +251,7 @@ extension ChannelIO {
       personId != userId {
       AppManager.shared
         .deleteTokenIfNeeded(with: personId)
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe()
         .disposed(by: self.disposeBag)
       return true
@@ -314,7 +314,7 @@ extension ChannelIO {
     guard self.isValidStatus else { return }
     _ = WsService.shared.ready()
       .take(1)
-      .flatMap { _ -> Observable<BootResponse> in
+      .flatMap { _ -> _RXSwift_Observable<BootResponse> in
         return AppManager.shared.touch()
       }
       .subscribe(onNext: { result in

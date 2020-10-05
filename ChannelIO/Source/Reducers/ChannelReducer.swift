@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func channelReducer(action: Action, channel: CHChannel?) -> CHChannel {
+func channelReducer(action: ReSwift_Action, channel: CHChannel?) -> CHChannel {
   switch action {
     
   case let action as BootSuccess:

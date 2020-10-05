@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
-import ReSwift
+//import RxSwift
+//import RxCocoa
 import Photos
 
 class UserChatInteractor: NSObject, UserChatInteractorProtocol {
@@ -34,7 +33,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
   private var isFetching = false
   private var nextSeq: String?
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   private var queueKey: ChatQueueKey {
     return ChatQueueKey(chatType: self.chatType, chatId: self.userChatId)
   }
@@ -49,17 +48,17 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
     mainStore.unsubscribe(self)
   }
 
-  func readyToPresent() -> Observable<Bool> {
+  func readyToPresent() -> _RXSwift_Observable<Bool> {
     guard
       let pluginKey = ChannelIO.bootConfig?.pluginKey,
       pluginKey != "" else {
       return .just(false)
     }
     
-    return Observable.create { subscriber in
+    return _RXSwift_Observable.create { subscriber in
       let signal = CHPlugin
         .get(with: pluginKey)
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (info) in
           mainStore.dispatch(GetPlugin(plugin: info.0, bot: info.1))
           dlog("ready to present")
@@ -69,7 +68,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
@@ -83,7 +82,7 @@ class UserChatInteractor: NSObject, UserChatInteractorProtocol {
     WsService.shared.leave(chatId: self.userChatId)
   }
   
-  func getChannel() -> Observable<CHChannel> {
+  func getChannel() -> _RXSwift_Observable<CHChannel> {
     return CHChannel.get()
   }
 }
@@ -93,8 +92,8 @@ extension UserChatInteractor {
     return self.nextSeq != nil
   }
   
-  func upload(files: [CHFile]) -> Observable<ChatQueueKey> {
-    return Observable
+  func upload(files: [CHFile]) -> _RXSwift_Observable<ChatQueueKey> {
+    return _RXSwift_Observable
       .just(files.map {
         ChatFileQueueItem(
           channelId: mainStore.state.channel.id,
@@ -105,9 +104,9 @@ extension UserChatInteractor {
         )
       })
       .flatMap { items in
-        return Observable.combineLatest(items.map { $0.prepare() })
+        return _RXSwift_Observable.combineLatest(items.map { $0.prepare() })
       }
-      .flatMap { [weak self] items -> Observable<ChatQueueKey> in
+      .flatMap { [weak self] items -> _RXSwift_Observable<ChatQueueKey> in
         guard let self = self else {
           return .error(ChannelError.unknownError())
         }
@@ -117,12 +116,12 @@ extension UserChatInteractor {
       }
   }
   
-  func fetchMessages() -> Observable<ChatProcessState> {
+  func fetchMessages() -> _RXSwift_Observable<ChatProcessState> {
     guard !self.isFetching else {
       return .just(.messageLoading)
     }
     
-    return Observable.create { subscribe in
+    return _RXSwift_Observable.create { subscribe in
       self.isFetching = true
       let signal = CHUserChat
         .getMessages(
@@ -130,7 +129,7 @@ extension UserChatInteractor {
           since: self.nextSeq,
           limit: 30,
           sortOrder: "DESC")
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] (data) in
           self?.nextSeq = data["next"] as? String
           subscribe.onNext(.messageLoaded)
@@ -143,18 +142,18 @@ extension UserChatInteractor {
           subscribe.onCompleted()
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
   }
   
-  func fetchChat() -> Observable<CHUserChat?> {
-    return Observable.create { [weak self] subscriber in
+  func fetchChat() -> _RXSwift_Observable<CHUserChat?> {
+    return _RXSwift_Observable.create { [weak self] subscriber in
       self?.nextSeq = nil
       let signal = CHUserChat
         .get(userChatId: self?.userChatId ?? "")
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (chatResponse) in
           mainStore.dispatch(GetUserChat(payload: chatResponse))
           self?.userChat = userChatSelector(
@@ -167,25 +166,25 @@ extension UserChatInteractor {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
   }
   
-  func send(message: CHMessage?) -> Observable<CHMessage?> {
+  func send(message: CHMessage?) -> _RXSwift_Observable<CHMessage?> {
     guard var message = message else {
       return .error(ChannelError.parameterError)
     }
     
-    return Observable.create { [weak self] subscriber in
+    return _RXSwift_Observable.create { [weak self] subscriber in
       let signal = message
         .send()
         .retry(.delayed(maxCount: 3, time: 3.0), shouldRetry: { error in
           dlog("Error while sending message. Attempting to send again")
           return true
         })
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (updated) in
           dlog("Message has been sent successfully")
           self?.sendTyping(isStop: true)
@@ -199,7 +198,7 @@ extension UserChatInteractor {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
@@ -210,12 +209,12 @@ extension UserChatInteractor {
     mainStore.dispatch(DeleteMessage(payload: message))
   }
   
-  func translate(for message: CHMessage) -> Observable<[CHMessageBlock]> {
+  func translate(for message: CHMessage) -> _RXSwift_Observable<[CHMessageBlock]> {
     guard let language = CHUtils.getLocale()?.rawValue else {
       return .just([])
     }
     
-    return Observable.create { (subscriber) in
+    return _RXSwift_Observable.create { (subscriber) in
       let signal =  message
         .translate(to: language)
         .subscribe(onNext: { blocks in
@@ -224,7 +223,7 @@ extension UserChatInteractor {
         }, onError: { (error) in
           subscriber.onError(error)
         })
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
@@ -235,7 +234,7 @@ extension UserChatInteractor {
     key: String,
     type: ProfileSchemaType,
     value: Any
-  ) -> Observable<CHMessage> {
+  ) -> _RXSwift_Observable<CHMessage> {
     let numberFormatter = NumberFormatter()
     numberFormatter.numberStyle = .decimal
     
@@ -247,10 +246,10 @@ extension UserChatInteractor {
     default: break
     }
     
-    return Observable.create { (subscriber) in
+    return _RXSwift_Observable.create { (subscriber) in
       let signal = message
         .updateProfile(with: key, value: param)
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (message) in
           subscriber.onNext(message)
           subscriber.onCompleted()
@@ -258,7 +257,7 @@ extension UserChatInteractor {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
@@ -269,7 +268,7 @@ extension UserChatInteractor {
   }
 }
 
-extension UserChatInteractor: StoreSubscriber {
+extension UserChatInteractor: ReSwift_StoreSubscriber {
   func newState(state: ChatState) {
     let messages = messagesSelector(state: mainStore.state, userChatId: self.userChatId)
     self.userChat = userChatSelector(state: mainStore.state, userChatId: self.userChatId)
@@ -300,9 +299,9 @@ extension UserChatInteractor: StoreSubscriber {
 }
 
 extension UserChatInteractor {
-  func createSupportBotChatIfNeeded(originId: String? = nil) -> Observable<(CHUserChat?, CHMessage?)> {
-    return Observable.create { [weak self] subscriber in
-      var disposable: Disposable?
+  func createSupportBotChatIfNeeded(originId: String? = nil) -> _RXSwift_Observable<(CHUserChat?, CHMessage?)> {
+    return _RXSwift_Observable.create { [weak self] subscriber in
+      var disposable: _RXSwift_Disposable?
       if let chat = self?.userChat, let message = messageSelector(state: mainStore.state, id: originId) {
         subscriber.onNext((chat, message))
         subscriber.onCompleted()
@@ -313,7 +312,7 @@ extension UserChatInteractor {
             dlog("Error while creating a chat. Attempting to create again")
             return true
           })
-          .observeOn(MainScheduler.instance)
+          .observeOn(_RXSwift_MainScheduler.instance)
           .subscribe(onNext: { chatResponse in
             guard let chatId = chatResponse.userChat?.id else { return }
             mainStore.dispatch(GetUserChat(payload: chatResponse))
@@ -327,42 +326,43 @@ extension UserChatInteractor {
         subscriber.onError(ChannelError.unknownError())
       }
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         disposable?.dispose()
       }
     }
   }
   
-  func fetchMarketingSupportBot() -> Observable<String?> {
-    return Observable.create { [weak self] subscriber in
+  func fetchMarketingSupportBot() -> _RXSwift_Observable<String?> {
+    return _RXSwift_Observable.create { [weak self] subscriber in
       let signal = self?
         .userChat?
         .lastMessage?
         .marketing?
         .fetchSupportBot()
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { supportBot in
           subscriber.onNext(supportBot?.id ?? mainStore.state.botsState.findSupportBot()?.id)
+
           subscriber.onCompleted()
         }, onError: { error in
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal?.dispose()
       }
     }
   }
   
-  func startMarketingToSupportBot(with supportBotId: String?) -> Observable<CHMessage> {
-    return Observable.create { [weak self] subscriber in
+  func startMarketingToSupportBot(with supportBotId: String?) -> _RXSwift_Observable<CHMessage> {
+    return _RXSwift_Observable.create { [weak self] subscriber in
       let signal = CHSupportBot
         .startFromMarketing(
           userChatId: self?.userChat?.id,
           supportBotId: supportBotId
         )
         .retry(.delayed(maxCount: 3, time: 3.0))
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (message) in
           mainStore.dispatch(CreateMessage(payload: message))
           subscriber.onNext(message)
@@ -371,21 +371,21 @@ extension UserChatInteractor {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
   }
   
-  func createChatIfNeeded() -> Observable<CHUserChat?> {
+  func createChatIfNeeded() -> _RXSwift_Observable<CHUserChat?> {
     guard self.userChat == nil || self.userChat?.isActive == false else {
       return .just(self.userChat)
     }
     
-    return Observable.create { [weak self] subscriber in
+    return _RXSwift_Observable.create { [weak self] subscriber in
       if let userChat = self?.userChat {
         subscriber.onNext(userChat)
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
 
       let signal = CHUserChat
@@ -394,7 +394,7 @@ extension UserChatInteractor {
           dlog("Error while creating a chat. Attempting to create again")
           return true
         })
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chatResponse) in
           mainStore.dispatch(GetUserChat(payload: chatResponse))
           self?.userChat = userChatSelector(
@@ -407,7 +407,7 @@ extension UserChatInteractor {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }

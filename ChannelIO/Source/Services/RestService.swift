@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import Alamofire
 
-enum RestRouter: URLRequestConvertible {
+enum RestRouter: AF_URLRequestConvertible {
   case AddTags(ParametersType)
   case Boot(String, ParametersType)
   case CreateUserChat(String, ParametersType)
@@ -57,12 +56,12 @@ enum RestRouter: URLRequestConvertible {
     }
   }
 
-  typealias ParametersType = Parameters
+  typealias ParametersType = AF_Parameters
   static let queue = DispatchQueue(label: "com.zoyi.channel.restapi", qos: .background, attributes: .concurrent)
   static let packageName = "com.zoyi.channel.plugin.ios"
   static var channelId = ""
   
-  var method: HTTPMethod {
+  var method: AF_HTTPMethod {
     switch self {
     case .Boot,
          .CreateMessage,
@@ -253,15 +252,15 @@ enum RestRouter: URLRequestConvertible {
   }
   
   // MARK: Encoding
-  func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
+  func encode(_ urlRequest: AF_URLRequestConvertible, with parameters: AF_Parameters?) throws -> URLRequest {
     var request = urlRequest
     
     if let body = parameters?["body"] as? ParametersType {
-      request = try JSONEncoding.default.encode(urlRequest, with: body)
+      request = try AF_JSONEncoding.default.encode(urlRequest, with: body)
     }
     
     if let url = parameters?["url"] as? ParametersType {
-      request = try URLEncoding.init(boolEncoding: .literal).encode(request, with: url)
+      request = try AF_URLEncoding.init(boolEncoding: .literal).encode(request, with: url)
     }
     
     if let query = parameters?["query"] as? ParametersType {
@@ -270,7 +269,7 @@ enum RestRouter: URLRequestConvertible {
     
     if let paths = parameters?["paths"] as? [String] {
       for path in paths {
-        request = request.urlRequest?.url?.absoluteString.appending(path) as! URLRequestConvertible
+        request = request.urlRequest?.url?.absoluteString.appending(path) as! AF_URLRequestConvertible
       }
     }
     

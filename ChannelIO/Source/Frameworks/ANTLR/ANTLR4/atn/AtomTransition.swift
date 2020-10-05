@@ -9,35 +9,35 @@
 /// TODO: make all transitions sets? no, should remove set edges
 /// 
 
-public final class AtomTransition: Transition, CustomStringConvertible {
+final class AtomTransition: Transition, CustomStringConvertible {
     /// 
     /// The token type or character value; or, signifies special label.
     /// 
-    public let label: Int
+    let label: Int
 
-    public init(_ target: ATNState, _ label: Int) {
+    init(_ target: ATNState, _ label: Int) {
 
         self.label = label
         super.init(target)
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.ATOM
     }
 
     override
-    public func labelIntervalSet() -> IntervalSet? {
+    func labelIntervalSet() -> IntervalSet? {
         return IntervalSet(label)
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return label == symbol
     }
 
 
-    public var description: String {
+    var description: String {
         return String(label)
     }
 }

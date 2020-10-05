@@ -6,8 +6,7 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
-import RxSwift
+//import RxSwift
 
 typealias MarketingInfo = (type: CHMarketingType?, id: String?)
 
@@ -24,10 +23,10 @@ struct CHMarketing {
   var exposureType: InAppNotificationType = .banner
 }
 
-extension CHMarketing: Mappable {
-  init?(map: Map) { }
+extension CHMarketing: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     type              <- map["type"]
     id                <- map["id"]
     enableSupportBot  <- map["enableSupportBot"]
@@ -47,7 +46,7 @@ extension CHMarketing: Equatable {
 }
 
 extension CHMarketing {
-  func fetchSupportBot() -> Observable<CHSupportBot?> {
+  func fetchSupportBot() -> _RXSwift_Observable<CHSupportBot?> {
     if self.type == .campaign {
       return MarketingPromise.getCampaignSupportBot(with: id)
     } else {

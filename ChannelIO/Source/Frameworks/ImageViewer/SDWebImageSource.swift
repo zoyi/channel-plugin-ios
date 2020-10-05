@@ -7,19 +7,18 @@
 //
 
 import Foundation
-import SDWebImage
 
 class SDWebImageSource: NSObject, InputSource {
-  public var url: URL
-  public var placeholder: UIImage?
+  var url: URL
+  var placeholder: UIImage?
   
-  public init(url: URL, placeholder: UIImage? = nil) {
+  init(url: URL, placeholder: UIImage? = nil) {
     self.url = url
     self.placeholder = placeholder
     super.init()
   }
   
-  public init?(urlString: String, placeholder: UIImage? = nil) {
+  init?(urlString: String, placeholder: UIImage? = nil) {
     if let validUrl = URL(string: urlString) {
       self.url = validUrl
       self.placeholder = placeholder
@@ -29,8 +28,8 @@ class SDWebImageSource: NSObject, InputSource {
     }
   }
   
-  public func load(to imageView: UIImageView, with callback: @escaping (UIImage?) -> Void) {
-    imageView.sd_setImage(with: self.url, completed: { [weak self] (image, error, cacheType, url) in
+  func load(to imageView: UIImageView, with callback: @escaping (UIImage?) -> Void) {
+    imageView._ChannelIO_sd_setImage(with: self.url, completed: { [weak self] (image, error, cacheType, url) in
       if let image = image {
         callback(image)
       } else {

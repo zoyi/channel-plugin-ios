@@ -13,10 +13,10 @@
 /// error handling.
 /// 
 
-public final class RuleStopState: ATNState {
+final class RuleStopState: ATNState {
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.RULE_STOP
     }
 

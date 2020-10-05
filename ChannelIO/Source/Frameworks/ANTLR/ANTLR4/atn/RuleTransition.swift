@@ -8,21 +8,21 @@
 
 
 
-public final class RuleTransition: Transition {
+final class RuleTransition: Transition {
     /// 
     /// Ptr to the rule definition object for this rule ref
     /// 
-    public let ruleIndex: Int
+    let ruleIndex: Int
     // no Rule object at runtime
 
-    public let precedence: Int
+    let precedence: Int
 
     /// 
     /// What node to begin computations following ref to rule
     /// 
-    public let followState: ATNState
+    let followState: ATNState
 
-    public init(_ ruleStart: RuleStartState,
+    init(_ ruleStart: RuleStartState,
                 _ ruleIndex: Int,
                 _ precedence: Int,
                 _ followState: ATNState) {
@@ -35,17 +35,17 @@ public final class RuleTransition: Transition {
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.RULE
     }
 
     override
-    public func isEpsilon() -> Bool {
+    func isEpsilon() -> Bool {
         return true
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return false
     }
 }

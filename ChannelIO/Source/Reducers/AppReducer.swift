@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func appReducer(action: Action, state: AppState?) -> AppState {
+func appReducer(action: ReSwift_Action, state: AppState?) -> AppState {
   return AppState(
     bootState: bootReducer(action: action, state: state?.bootState),
     plugin: pluginReducer(action: action, plugin: state?.plugin),

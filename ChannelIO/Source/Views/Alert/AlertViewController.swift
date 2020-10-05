@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import RxSwift
-import SnapKit
+//import RxSwift
 import UIKit
 
 enum AlertType {
@@ -73,7 +72,7 @@ class AlertViewController: BaseViewController {
   var bottomConstraint: Constraint?
   var animated = false
   
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
 
   init(message: String, imageName: String) {
     super.init()
@@ -157,7 +156,7 @@ class AlertViewController: BaseViewController {
 
     switch self.type {
     case .completion:
-      Observable<Int>.timer(.seconds(1), scheduler: MainScheduler.instance)
+      _RXSwift_Observable<Int>.timer(.seconds(1), scheduler: _RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] _ in
         self?.dismiss(animated: true, completion: nil)
       }).disposed(by: self.disposeBag)
@@ -222,7 +221,7 @@ class AlertViewController: BaseViewController {
     }
   }
 
-  public func addAction(_ actionModel: AlertAction) {
+  func addAction(_ actionModel: AlertAction) {
     self.alertView.addAction(
       actionTitle: actionModel.title,
       type: actionModel.type,

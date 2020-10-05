@@ -20,7 +20,7 @@
 /// -  4.2
 /// 
 
-public class LexerActionExecutor: Hashable {
+class LexerActionExecutor: Hashable {
 
     fileprivate final var lexerActions: [LexerAction]
     /// 
@@ -33,7 +33,7 @@ public class LexerActionExecutor: Hashable {
     /// Constructs an executor for a sequence of _org.antlr.v4.runtime.atn.LexerAction_ actions.
     /// - parameter lexerActions: The lexer actions to execute.
     /// 
-    public init(_ lexerActions: [LexerAction]) {
+    init(_ lexerActions: [LexerAction]) {
         self.lexerActions = lexerActions
 
         var hash = MurmurHash.initialize()
@@ -59,7 +59,7 @@ public class LexerActionExecutor: Hashable {
     /// - returns: A _org.antlr.v4.runtime.atn.LexerActionExecutor_ for executing the combine actions
     /// of `lexerActionExecutor` and `lexerAction`.
     /// 
-    public static func append(_ lexerActionExecutor: LexerActionExecutor?, _ lexerAction: LexerAction) -> LexerActionExecutor {
+    static func append(_ lexerActionExecutor: LexerActionExecutor?, _ lexerAction: LexerAction) -> LexerActionExecutor {
         if lexerActionExecutor == nil {
             return LexerActionExecutor([lexerAction])
         }
@@ -100,7 +100,7 @@ public class LexerActionExecutor: Hashable {
     /// - returns: A _org.antlr.v4.runtime.atn.LexerActionExecutor_ which stores input stream offsets
     /// for all position-dependent lexer actions.
     /// 
-    public func fixOffsetBeforeMatch(_ offset: Int) -> LexerActionExecutor {
+    func fixOffsetBeforeMatch(_ offset: Int) -> LexerActionExecutor {
         var updatedLexerActions: [LexerAction]? = nil
         let length = lexerActions.count
         for i in 0..<length {
@@ -124,7 +124,7 @@ public class LexerActionExecutor: Hashable {
     /// Gets the lexer actions to be executed by this executor.
     /// - returns: The lexer actions to be executed by this executor.
     /// 
-    public func getLexerActions() -> [LexerAction] {
+    func getLexerActions() -> [LexerAction] {
         return lexerActions
     }
 
@@ -147,9 +147,9 @@ public class LexerActionExecutor: Hashable {
     /// _org.antlr.v4.runtime.IntStream#seek_ to set the `input` position to the beginning
     /// of the token.
     /// 
-    public func execute(_ lexer: Lexer, _ input: CharStream, _ startIndex: Int) throws {
+    func execute(_ lexer: Lexer, _ input: CharStream, _ startIndex: Int) throws {
         var requiresSeek: Bool = false
-        var stopIndex: Int = input.index()
+      let stopIndex: Int = input.index()
         defer {
             if requiresSeek {
                 try! input.seek(stopIndex)
@@ -176,12 +176,12 @@ public class LexerActionExecutor: Hashable {
     }
 
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(hashCode)
     }
 }
 
-public func ==(lhs: LexerActionExecutor, rhs: LexerActionExecutor) -> Bool {
+func ==(lhs: LexerActionExecutor, rhs: LexerActionExecutor) -> Bool {
     if lhs === rhs {
         return true
     }

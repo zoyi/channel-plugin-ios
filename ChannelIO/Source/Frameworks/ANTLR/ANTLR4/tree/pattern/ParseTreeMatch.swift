@@ -8,7 +8,7 @@
 /// Represents the result of matching a _org.antlr.v4.runtime.tree.ParseTree_ against a tree pattern.
 /// 
 
-public class ParseTreeMatch: CustomStringConvertible {
+class ParseTreeMatch: CustomStringConvertible {
     /// 
     /// This is the backing field for _#getTree()_.
     /// 
@@ -44,7 +44,7 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// - Throws: ANTLRError.ilegalArgument if `pattern` is `null`
     /// - Throws: ANTLRError.ilegalArgument if `labels` is `null`
     /// 
-    public init(_ tree: ParseTree, _ pattern: ParseTreePattern, _ labels: MultiMap<String, ParseTree>, _ mismatchedNode: ParseTree?) {
+    init(_ tree: ParseTree, _ pattern: ParseTreePattern, _ labels: MultiMap<String, ParseTree>, _ mismatchedNode: ParseTree?) {
 
         self.tree = tree
         self.pattern = pattern
@@ -69,7 +69,7 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// label, or `null` if no parse tree matched a tag with the label.
     /// 
 
-    public func get(_ label: String) -> ParseTree? {
+    func get(_ label: String) -> ParseTree? {
         if let parseTrees = labels.get(label) , parseTrees.count > 0 {
             return parseTrees[parseTrees.count - 1]   // return last if multiple
         } else {
@@ -99,7 +99,7 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// the specified `label`. If no nodes matched the label, an empty list
     /// is returned.
     /// 
-    public func getAll(_ label: String) -> Array<ParseTree> {
+    func getAll(_ label: String) -> Array<ParseTree> {
         let nodes: Array<ParseTree>? = labels.get(label)
         if nodes == nil {
             return Array<ParseTree>()
@@ -118,7 +118,7 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// - Returns: A mapping from labels to parse tree nodes. If the parse tree
     /// pattern did not contain any rule or token tags, this map will be empty.
     /// 
-    public func getLabels() -> MultiMap<String, ParseTree> {
+    func getLabels() -> MultiMap<String, ParseTree> {
         return labels
     }
 
@@ -128,7 +128,7 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// - Returns: the node at which we first detected a mismatch, or `null`
     /// if the match was successful.
     /// 
-    public func getMismatchedNode() -> ParseTree? {
+    func getMismatchedNode() -> ParseTree? {
         return mismatchedNode
     }
 
@@ -138,7 +138,7 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// - Returns: `true` if the match operation succeeded; otherwise,
     /// `false`.
     /// 
-    public func succeeded() -> Bool {
+    func succeeded() -> Bool {
         return mismatchedNode == nil
     }
 
@@ -147,7 +147,7 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// 
     /// - Returns: The tree pattern we are matching against.
     /// 
-    public func getPattern() -> ParseTreePattern {
+    func getPattern() -> ParseTreePattern {
         return pattern
     }
 
@@ -156,11 +156,11 @@ public class ParseTreeMatch: CustomStringConvertible {
     /// 
     /// - Returns: The _org.antlr.v4.runtime.tree.ParseTree_ we are trying to match to a pattern.
     /// 
-    public func getTree() -> ParseTree {
+    func getTree() -> ParseTree {
         return tree
     }
 
-    public var description: String {
+    var description: String {
         let info = succeeded() ? "succeeded" : "failed"
         return "Match \(info); found \(getLabels().size()) labels"
     }

@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func managersReducer(action: Action, state: ManagersState?) -> ManagersState {
+func managersReducer(action: ReSwift_Action, state: ManagersState?) -> ManagersState {
   var state = state
   switch action {
   case let action as GetUserChats:

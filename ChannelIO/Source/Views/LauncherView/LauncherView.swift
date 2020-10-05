@@ -7,9 +7,7 @@
 //
 
 import Foundation
-import RxSwift
-import ReSwift
-import SnapKit
+//import RxSwift
 
 final class LauncherView : BaseView {
   // MARK: Constant
@@ -30,7 +28,7 @@ final class LauncherView : BaseView {
     $0.layer.shadowOffset = CGSize(width: 0, height: 1)
     $0.layer.shadowRadius = 2
   }
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   let buttonView = CHButtonFactory.launcher()
   
   //refactor this as general button
@@ -57,6 +55,8 @@ final class LauncherView : BaseView {
     self.addSubview(self.buttonLayerView)
     self.addSubview(self.badgeView)
     self.buttonView.layer.insertSublayer(self.buttonGradientLayer, at: 0)
+    
+    
     
     self.buttonView.rx.isHighlighted
       .subscribe(onNext: { [weak self] (selected) in

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct CHWebPage: ThumbDisplayable, VideoPlayable {
   var id = ""
@@ -46,10 +45,10 @@ struct CHWebPage: ThumbDisplayable, VideoPlayable {
   }
 }
 
-extension CHWebPage: Mappable {
-  init?(map: Map) {}
+extension CHWebPage: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id <- map["id"]
     url <- (map["url"], CustomURLTransform())
     title <- map["title"]

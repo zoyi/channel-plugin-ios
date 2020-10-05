@@ -11,7 +11,7 @@
 /// tag corresponds to a lexer rule or token type.
 /// 
 
-public class TokenTagToken: CommonToken {
+class TokenTagToken: CommonToken {
     /// 
     /// This is the backing field for _#getTokenName_.
     /// 
@@ -30,7 +30,7 @@ public class TokenTagToken: CommonToken {
     /// - Parameter tokenName: The token name.
     /// - Parameter type: The token type.
     /// 
-    public convenience init(_ tokenName: String, _ type: Int) {
+    convenience init(_ tokenName: String, _ type: Int) {
         self.init(tokenName, type, nil)
     }
 
@@ -43,7 +43,7 @@ public class TokenTagToken: CommonToken {
     /// - Parameter label: The label associated with the token tag, or `null` if
     /// the token tag is unlabeled.
     /// 
-    public init(_ tokenName: String, _ type: Int, _ label: String?) {
+    init(_ tokenName: String, _ type: Int, _ label: String?) {
 
         self.tokenName = tokenName
         self.label = label
@@ -55,7 +55,7 @@ public class TokenTagToken: CommonToken {
     /// - Returns: The token name.
     /// 
 
-    public final func getTokenName() -> String {
+    final func getTokenName() -> String {
         return tokenName
     }
 
@@ -66,7 +66,7 @@ public class TokenTagToken: CommonToken {
     /// `null` if this is an unlabeled rule tag.
     /// 
 
-    public final func getLabel() -> String? {
+    final func getLabel() -> String? {
         return label
     }
 
@@ -77,7 +77,7 @@ public class TokenTagToken: CommonToken {
     /// formatted with `<` and `>` delimiters.
     /// 
     override
-    public func getText() -> String {
+    func getText() -> String {
         if label != nil {
             return "<" + label! + ":" + tokenName + ">"
         }
@@ -93,7 +93,7 @@ public class TokenTagToken: CommonToken {
     /// 
 
     override
-    public var description: String {
+    var description: String {
         return tokenName + ":" + String(type)
     }
 }

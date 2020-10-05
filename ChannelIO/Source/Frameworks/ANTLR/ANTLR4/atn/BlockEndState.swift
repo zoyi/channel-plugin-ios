@@ -10,11 +10,11 @@
 /// Terminal node of a simple `(a|b|c)` block.
 /// 
 
-public final class BlockEndState: ATNState {
-    public var startState: BlockStartState?
+final class BlockEndState: ATNState {
+    var startState: BlockStartState?
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.BLOCK_END
     }
 }

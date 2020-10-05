@@ -7,26 +7,26 @@
 
 import UIKit
 
-public protocol MessageTextViewListener: class {
+protocol MessageTextViewListener: class {
   func didChange(textView: CHMessageTextView)
   func didChangeSelection(textView: CHMessageTextView)
   func willChangeRange(textView: CHMessageTextView, to range: NSRange)
   func didStartEditing(textView: CHMessageTextView)
 }
 
-open class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegate {
+class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegate {
   internal let placeholderLabel = UILabel()
   internal var listeners: NSHashTable<AnyObject> = NSHashTable.weakObjects()
 
-  open var shouldResignResponder: Bool = true
+  var shouldResignResponder: Bool = true
 
-  open var defaultFont = UIFont.systemFont(ofSize: 15) {
+  var defaultFont = UIFont.systemFont(ofSize: 15) {
     didSet {
       defaultTextAttributes[.font] = defaultFont
     }
   }
 
-  open var defaultTextColor = UIColor.black {
+  var defaultTextColor = UIColor.black {
     didSet {
       defaultTextAttributes[NSAttributedString.Key.foregroundColor] = defaultTextColor
     }
@@ -43,7 +43,7 @@ open class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegat
     }
   }
 
-  override open var font: UIFont? {
+  override var font: UIFont? {
     didSet {
       defaultFont = font ?? .preferredFont(forTextStyle: .body)
       placeholderLabel.font = font
@@ -51,20 +51,20 @@ open class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegat
     }
   }
 
-  override open var textColor: UIColor? {
+  override var textColor: UIColor? {
     didSet {
       defaultTextColor = textColor ?? .black
     }
   }
 
-  override open var textAlignment: NSTextAlignment {
+  override var textAlignment: NSTextAlignment {
     didSet {
       placeholderLabel.textAlignment = textAlignment
       placeholderLayoutDidChange()
     }
   }
 
-  override open var attributedText: NSAttributedString! {
+  override var attributedText: NSAttributedString! {
     get { return super.attributedText }
     set {
       let didChange = super.attributedText != newValue
@@ -75,7 +75,7 @@ open class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegat
     }
   }
 
-  override public init(frame: CGRect, textContainer: NSTextContainer?) {
+  override init(frame: CGRect, textContainer: NSTextContainer?) {
     super.init(frame: frame, textContainer: textContainer)
     self.delegate = self
 
@@ -85,20 +85,20 @@ open class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegat
     commonInit()
   }
 
-  public required init?(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     self.delegate = self
     commonInit()
   }
 
-  // MARK: Public API
+  // MARK: API
 
-  public func add(listener: MessageTextViewListener) {
+  func add(listener: MessageTextViewListener) {
     assert(Thread.isMainThread)
     listeners.add(listener)
   }
 
-  public var placeholderText: String {
+  var placeholderText: String {
     get { return placeholderLabel.text ?? "" }
     set {
       placeholderLabel.text = newValue
@@ -106,14 +106,14 @@ open class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegat
     }
   }
 
-  public var placeholderTextColor: UIColor {
+  var placeholderTextColor: UIColor {
     get { return placeholderLabel.textColor }
     set { placeholderLabel.textColor = newValue }
   }
 
   // MARK: Overrides
 
-  override open func layoutSubviews() {
+  override func layoutSubviews() {
     super.layoutSubviews()
 
     let placeholderSize = self.placeholderLabel.bounds.size
@@ -158,34 +158,34 @@ open class CHMessageTextView: UITextView, UITextViewDelegate, UITextPasteDelegat
 
   // MARK: UITextViewDelegate
 
-  public func textViewDidChange(_ textView: UITextView) {
+  func textViewDidChange(_ textView: UITextView) {
     typingAttributes = defaultTextAttributes
     updatePlaceholderVisibility()
     enumerateListeners { $0.didChange(textView: self) }
   }
 
-  public func textViewDidChangeSelection(_ textView: UITextView) {
+  func textViewDidChangeSelection(_ textView: UITextView) {
     enumerateListeners { $0.didChangeSelection(textView: self) }
   }
 
-  public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+  func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
     enumerateListeners { $0.willChangeRange(textView: self, to: range) }
     return true
   }
 
-  public func textViewDidBeginEditing(_ textView: UITextView) {
+  func textViewDidBeginEditing(_ textView: UITextView) {
     enumerateListeners { $0.didStartEditing(textView: self) }
   }
 
-  public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+  func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
     return self.shouldResignResponder
   }
 
-  public func textViewDidEndEditing(_ textView: UITextView) { }
+  func textViewDidEndEditing(_ textView: UITextView) { }
 
   //Weird paste bug in UIKit
   @available(iOS 11.0, *)
-  public func textPasteConfigurationSupporting(_ textPasteConfigurationSupporting: UITextPasteConfigurationSupporting, shouldAnimatePasteOf attributedString: NSAttributedString, to textRange: UITextRange) -> Bool {
+  func textPasteConfigurationSupporting(_ textPasteConfigurationSupporting: UITextPasteConfigurationSupporting, shouldAnimatePasteOf attributedString: NSAttributedString, to textRange: UITextRange) -> Bool {
     return false
   }
 }

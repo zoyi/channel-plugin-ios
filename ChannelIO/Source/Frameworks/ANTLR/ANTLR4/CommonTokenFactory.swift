@@ -11,7 +11,7 @@
 /// _org.antlr.v4.runtime.CommonToken_ objects.
 /// 
 
-public class CommonTokenFactory: TokenFactory {
+class CommonTokenFactory: TokenFactory {
     /// 
     /// The default _org.antlr.v4.runtime.CommonTokenFactory_ instance.
     /// 
@@ -19,7 +19,7 @@ public class CommonTokenFactory: TokenFactory {
     /// This token factory does not explicitly copy token text when constructing
     /// tokens.
     /// 
-    public static let DEFAULT: TokenFactory = CommonTokenFactory()
+    static let DEFAULT: TokenFactory = CommonTokenFactory()
 
     /// 
     /// Indicates whether _org.antlr.v4.runtime.CommonToken#setText_ should be called after
@@ -48,7 +48,7 @@ public class CommonTokenFactory: TokenFactory {
     /// 
     /// - parameter copyText: The value for _#copyText_.
     /// 
-    public init(_ copyText: Bool) {
+    init(_ copyText: Bool) {
         self.copyText = copyText
     }
 
@@ -60,12 +60,12 @@ public class CommonTokenFactory: TokenFactory {
     /// The _#DEFAULT_ instance should be used instead of calling this
     /// directly.
     /// 
-    public convenience init() {
+    convenience init() {
         self.init(false)
     }
 
 
-    public func create(_ source: TokenSourceAndStream, _ type: Int, _ text: String?,
+    func create(_ source: TokenSourceAndStream, _ type: Int, _ text: String?,
                        _ channel: Int, _ start: Int, _ stop: Int,
                        _ line: Int, _ charPositionInLine: Int) -> Token {
         let t = CommonToken(source, type, channel, start, stop)
@@ -82,7 +82,7 @@ public class CommonTokenFactory: TokenFactory {
     }
 
 
-    public func create(_ type: Int, _ text: String) -> Token {
+    func create(_ type: Int, _ text: String) -> Token {
         return CommonToken(type, text)
     }
 }

@@ -27,7 +27,7 @@
 
 import Foundation
 
-public class DiagnosticErrorListener: BaseErrorListener {
+class DiagnosticErrorListener: BaseErrorListener {
     /// 
     /// When `true`, only exactly known ambiguities are reported.
     /// 
@@ -37,7 +37,7 @@ public class DiagnosticErrorListener: BaseErrorListener {
     /// Initializes a new instance of _org.antlr.v4.runtime.DiagnosticErrorListener_ which only
     /// reports exact ambiguities.
     /// 
-    public convenience override init() {
+    convenience override init() {
         self.init(true)
     }
 
@@ -48,12 +48,12 @@ public class DiagnosticErrorListener: BaseErrorListener {
     /// - parameter exactOnly: `true` to report only exact ambiguities, otherwise
     /// `false` to report all ambiguities.
     /// 
-    public init(_ exactOnly: Bool) {
+    init(_ exactOnly: Bool) {
         self.exactOnly = exactOnly
     }
 
     override
-    public func reportAmbiguity(_ recognizer: Parser,
+    func reportAmbiguity(_ recognizer: Parser,
         _ dfa: DFA,
         _ startIndex: Int,
         _ stopIndex: Int,
@@ -72,7 +72,7 @@ public class DiagnosticErrorListener: BaseErrorListener {
     }
 
     override
-    public func reportAttemptingFullContext(_ recognizer: Parser,
+    func reportAttemptingFullContext(_ recognizer: Parser,
         _ dfa: DFA,
         _ startIndex: Int,
         _ stopIndex: Int,
@@ -85,7 +85,7 @@ public class DiagnosticErrorListener: BaseErrorListener {
     }
 
     override
-    public func reportContextSensitivity(_ recognizer: Parser,
+    func reportContextSensitivity(_ recognizer: Parser,
         _ dfa: DFA,
         _ startIndex: Int,
         _ stopIndex: Int,

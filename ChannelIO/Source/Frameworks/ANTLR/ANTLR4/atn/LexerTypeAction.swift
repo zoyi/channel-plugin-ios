@@ -13,14 +13,14 @@
 /// -  4.2
 /// 
 
-public class LexerTypeAction: LexerAction, CustomStringConvertible {
+class LexerTypeAction: LexerAction, CustomStringConvertible {
     fileprivate let type: Int
 
     /// 
     /// Constructs a new `type` action with the specified token type value.
     /// - parameter type: The type to assign to the token using _org.antlr.v4.runtime.Lexer#setType_.
     /// 
-    public init(_ type: Int) {
+    init(_ type: Int) {
         self.type = type
     }
 
@@ -28,7 +28,7 @@ public class LexerTypeAction: LexerAction, CustomStringConvertible {
     /// Gets the type to assign to a token created by the lexer.
     /// - returns: The type to assign to a token created by the lexer.
     /// 
-    public func getType() -> Int {
+    func getType() -> Int {
         return type
     }
 
@@ -37,7 +37,7 @@ public class LexerTypeAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns _org.antlr.v4.runtime.atn.LexerActionType#TYPE_.
     /// 
 
-    public override func getActionType() -> LexerActionType {
+    override func getActionType() -> LexerActionType {
         return LexerActionType.type
     }
 
@@ -46,7 +46,7 @@ public class LexerTypeAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns `false`.
     /// 
     override
-    public func isPositionDependent() -> Bool {
+    func isPositionDependent() -> Bool {
         return false
     }
 
@@ -57,21 +57,21 @@ public class LexerTypeAction: LexerAction, CustomStringConvertible {
     /// value provided by _#getType_.
     /// 
 
-    public override func execute(_ lexer: Lexer) {
+    override func execute(_ lexer: Lexer) {
         lexer.setType(type)
     }
 
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(type)
     }
 
-    public var description: String {
+    var description: String {
         return "type(\(type))"
     }
 }
 
-public func ==(lhs: LexerTypeAction, rhs: LexerTypeAction) -> Bool {
+func ==(lhs: LexerTypeAction, rhs: LexerTypeAction) -> Bool {
     if lhs === rhs {
         return true
     }

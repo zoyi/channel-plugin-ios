@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct CHi18n {
   var text: String = ""
@@ -45,10 +44,10 @@ struct CHi18n {
   }
 }
 
-extension CHi18n: Mappable {
-  init?(map: Map) { }
+extension CHi18n: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     text    <- map["text"]
     en      <- map["en"]
     ja      <- map["ja"]

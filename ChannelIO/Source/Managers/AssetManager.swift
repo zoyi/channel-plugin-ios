@@ -83,11 +83,11 @@ class AssetManager {
     }
   }
 
-  public func cancelRequest(requestID: ImageRequestId) {
+  func cancelRequest(requestID: ImageRequestId) {
     self.cancelRequests(requestIDs: [requestID])
   }
 
-  public func cancelRequests(requestIDs: [ImageRequestId]) {
+  func cancelRequests(requestIDs: [ImageRequestId]) {
     dispatch {
       while self.cancelledRequestIDs.count > 100 {
         _ = self.cancelledRequestIDs.popFirst()
@@ -105,7 +105,7 @@ class AssetManager {
   }
 
   @discardableResult
-  public func fetchImageData(
+  func fetchImageData(
     for asset: PHAsset,
     options: PHImageRequestOptions? = nil,
     completeBlock: @escaping DataCompletion) -> ImageRequestId {
@@ -178,7 +178,7 @@ class AssetManager {
   }
 
   @discardableResult
-  public func fetchAVAsset(
+  func fetchAVAsset(
     for asset: PHAsset,
     options: PHVideoRequestOptions? = nil,
     completeBlock: @escaping AVAssetCompletion) -> ImageRequestId {
@@ -250,7 +250,7 @@ class AssetManager {
     return requestID
   }
 
-  public func startCachingAssets(
+  func startCachingAssets(
     for assets: [PHAsset],
     targetSize: CGSize,
     contentMode: PHImageContentMode,
@@ -263,7 +263,7 @@ class AssetManager {
     )
   }
 
-  public func stopCachingAssets(
+  func stopCachingAssets(
     for assets: [PHAsset],
     targetSize: CGSize,
     contentMode: PHImageContentMode,
@@ -276,7 +276,7 @@ class AssetManager {
     )
   }
 
-  public func stopCachingForAllAssets() {
+  func stopCachingForAllAssets() {
     self.manager.stopCachingImagesForAllAssets()
   }
 }

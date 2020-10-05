@@ -6,8 +6,6 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
-
 struct BootResponse {
   var channel: CHChannel?
   var plugin: CHPlugin?
@@ -16,10 +14,10 @@ struct BootResponse {
   var veilId: String?
 }
 
-extension BootResponse: Mappable {
-  init?(map: Map) {}
+extension BootResponse: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     channel <- map["channel"]
     plugin <- map["plugin"]
     user <- map["user"]

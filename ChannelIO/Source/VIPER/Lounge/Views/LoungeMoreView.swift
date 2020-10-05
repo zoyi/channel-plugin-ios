@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import SnapKit
-import RxSwift
+//import RxSwift
 
 class LoungeMoreView: BaseView {
   private let moreLabel = UILabel().then {

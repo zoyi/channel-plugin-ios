@@ -8,19 +8,19 @@
 
 import UIKit
 
-public enum MessageViewState {
+enum MessageViewState {
   case normal
   case highlight
   case disabled
 }
 
-public final class CHMessageView: UIView, MessageTextViewListener {
-  public let textContainerView = UIView()
-  @objc public let textView = CHMessageTextView().then {
+final class CHMessageView: UIView, MessageTextViewListener {
+  let textContainerView = UIView()
+  @objc let textView = CHMessageTextView().then {
     $0.isUserInteractionEnabled = false
   }
 
-  public var animatedTargetY: CGFloat {
+  var animatedTargetY: CGFloat {
     let toolbarHeight = self.toolbarView?.frame.height ?? 0
     let topAccessoryHeight = self.topAccessoryView?.frame.height ?? 0
     return self.textContainerView.frame.height
@@ -29,7 +29,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
       - topAccessoryHeight
   }
 
-  public var emptyTextDisabledRightButton = true
+  var emptyTextDisabledRightButton = true
 
   internal weak var delegate: CHMessageViewDelegate?
   internal var observation: NSKeyValueObservation?
@@ -54,18 +54,18 @@ public final class CHMessageView: UIView, MessageTextViewListener {
 
   internal var placeholders: [MessageViewState: String] = [:]
 
-  public enum ButtonPosition {
+  enum ButtonPosition {
     case left
     case right
   }
 
-  public enum ButtonVerticalPosition {
+  enum ButtonVerticalPosition {
     case top
     case middle
     case bottom
   }
 
-  public var textViewBecomeActive: ((CHMessageView) -> Void)?
+  var textViewBecomeActive: ((CHMessageView) -> Void)?
 
   internal var heightOffset: CGFloat = 0
 
@@ -121,7 +121,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  public required init?(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
@@ -132,9 +132,9 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  // MARK: Public API
+  // MARK: API
 
-  override public var isHidden: Bool {
+  override var isHidden: Bool {
     willSet {
       if newValue {
         self.resignResponder(animated: false)
@@ -142,13 +142,13 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  public var showLeftButton: Bool = true {
+  var showLeftButton: Bool = true {
     didSet {
       delegate?.wantsLayout(messageView: self)
     }
   }
 
-  public var font: UIFont? {
+  var font: UIFont? {
     get { return textView.font }
     set {
       textView.font = newValue
@@ -156,7 +156,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  public var text: String {
+  var text: String {
     get { return textView.text ?? "" }
     set {
       textView.text = newValue
@@ -164,7 +164,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  public var textViewInset: UIEdgeInsets {
+  var textViewInset: UIEdgeInsets {
     set {
       textView.textContainerInset = newValue
       setNeedsLayout()
@@ -173,7 +173,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     get { return textView.textContainerInset }
   }
 
-  public var contentInset: UIEdgeInsets {
+  var contentInset: UIEdgeInsets {
     set {
       textView.contentInset = newValue
       setNeedsLayout()
@@ -182,13 +182,13 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     get { return textView.contentInset }
   }
 
-  public func setPlaceholder(mode: MessageViewState, text: String) {
+  func setPlaceholder(mode: MessageViewState, text: String) {
     self.placeholders[mode] = text
   }
 
   /// - Parameter accessibilityLabel: A custom `accessibilityLabel` to set on the button.
   /// If none is supplied, it will default to the icon's `accessibilityLabel`.
-  public func setButton(
+  func setButton(
     icon: UIImage?,
     for state: UIControl.State,
     position: ButtonPosition,
@@ -214,7 +214,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
 
   /// - Parameter accessibilityLabel: A custom `accessibilityLabel` to set on the button.
   /// If none is supplied, it will default to the the supplied `title`.
-  public func setButton(title: String, for state: UIControl.State, position: ButtonPosition, accessibilityLabel: String? = nil) {
+  func setButton(title: String, for state: UIControl.State, position: ButtonPosition, accessibilityLabel: String? = nil) {
     let button: UIButton
     switch position {
     case .left:
@@ -227,7 +227,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     buttonLayoutDidChange(button: button)
   }
 
-  public var leftButtonTint: UIColor {
+  var leftButtonTint: UIColor {
     get { return leftButton.tintColor }
     set {
       leftButton.tintColor = newValue
@@ -236,7 +236,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  public var rightButtonTint: UIColor {
+  var rightButtonTint: UIColor {
     get { return rightButton.tintColor }
     set {
       rightButton.tintColor = newValue
@@ -245,7 +245,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
   
-  public var rightButtonIsEnable: Bool {
+  var rightButtonIsEnable: Bool {
     get { return rightButton.isEnabled }
     set {
       rightButton.isEnabled = newValue
@@ -253,13 +253,13 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  public var rightButtonVerticalPosition: ButtonVerticalPosition = .top
+  var rightButtonVerticalPosition: ButtonVerticalPosition = .top
 
-  public var shouldEnabledSend: Bool {
+  var shouldEnabledSend: Bool {
     return self.text.trimmingCharacters(in: .whitespacesAndNewlines) != ""
   }
 
-  public var cursorBottomFrame: CGRect {
+  var cursorBottomFrame: CGRect {
     if let selectedRange = self.textView.selectedTextRange {
       let endRect = self.textView.caretRect(for: selectedRange.end)
       return endRect
@@ -267,13 +267,13 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     return CGRect.zero
   }
 
-  public var maxHeight = CGFloat.greatestFiniteMagnitude {
+  var maxHeight = CGFloat.greatestFiniteMagnitude {
     didSet {
       delegate?.wantsLayout(messageView: self)
     }
   }
 
-  public var maxLineCount: Int = 10 {
+  var maxLineCount: Int = 10 {
     didSet {
       ignoreLineHeight = maxLineHeight == 0
       self.textView.textContainer.maximumNumberOfLines = maxLineCount
@@ -281,14 +281,14 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     }
   }
 
-  public var maxScreenRatio: CGFloat = 1 {
+  var maxScreenRatio: CGFloat = 1 {
     didSet {
       maxScreenRatio = 0...1 ~= maxScreenRatio ? maxScreenRatio : 0
       delegate?.wantsLayout(messageView: self)
     }
   }
 
-  public func add(accessoryView: UIView) {
+  func add(accessoryView: UIView) {
     self.topAccessoryView?.removeFromSuperview()
     assert(accessoryView.bounds.height > 0, "Must have a non-zero content height")
     self.topAccessoryView = accessoryView
@@ -297,7 +297,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     delegate?.wantsLayout(messageView: self)
   }
 
-  public func add(toolbarView: UIView) {
+  func add(toolbarView: UIView) {
     self.toolbarView?.removeFromSuperview()
     assert(toolbarView.bounds.height > 0, "Must have a non-zero content height")
     self.toolbarView = toolbarView
@@ -306,7 +306,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     delegate?.wantsLayout(messageView: self)
   }
 
-  public func add(bottomView: UIView) {
+  func add(bottomView: UIView) {
     self.bottomView?.removeFromSuperview()
     self.bottomView = bottomView
     addSubview(bottomView)
@@ -314,24 +314,24 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     delegate?.wantsLayout(messageView: self)
   }
 
-  public var keyboardType: UIKeyboardType {
+  var keyboardType: UIKeyboardType {
     get { return textView.keyboardType }
     set { textView.keyboardType = newValue }
   }
 
-  public func setVisibleTopAccessoryView(show: Bool) {
+  func setVisibleTopAccessoryView(show: Bool) {
     self.topAccessoryView?.isHidden = !show
     setNeedsLayout()
     delegate?.wantsLayout(messageView: self)
   }
 
-  public func setVisibleBottomView(show: Bool) {
+  func setVisibleBottomView(show: Bool) {
     self.bottomView?.isHidden = !show
     setNeedsLayout()
     delegate?.wantsLayout(messageView: self)
   }
 
-  public func addButton(target: Any, action: Selector, position: ButtonPosition) {
+  func addButton(target: Any, action: Selector, position: ButtonPosition) {
     let button: UIButton
     switch position {
     case .left:
@@ -344,12 +344,12 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     button.addTarget(target, action: action, for: .touchUpInside)
   }
 
-  override public var keyCommands: [UIKeyCommand]? {
+  override var keyCommands: [UIKeyCommand]? {
     guard let action = rightButtonAction else { return nil }
     return [UIKeyCommand(input: "\r", modifierFlags: .command, action: action)]
   }
 
-  public func setButton(inset: CGFloat, position: ButtonPosition) {
+  func setButton(inset: CGFloat, position: ButtonPosition) {
     switch position {
     case .left:
       leftButtonInset = inset
@@ -359,7 +359,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     setNeedsLayout()
   }
 
-  public func setButton(font: UIFont, position: ButtonPosition) {
+  func setButton(font: UIFont, position: ButtonPosition) {
     let button: UIButton
     switch position {
     case .left:
@@ -371,41 +371,41 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     buttonLayoutDidChange(button: button)
   }
 
-  public var isKeyboardActive: Bool {
+  var isKeyboardActive: Bool {
     return self.textView.isFirstResponder
   }
 
-  public var topInset: CGFloat = 0 {
+  var topInset: CGFloat = 0 {
     didSet {
       delegate?.wantsLayout(messageView: self)
     }
   }
 
-  public var leftInset: CGFloat = 0 {
+  var leftInset: CGFloat = 0 {
     didSet {
       delegate?.wantsLayout(messageView: self)
     }
   }
 
-  public var rightInset: CGFloat = 0 {
+  var rightInset: CGFloat = 0 {
     didSet {
       delegate?.wantsLayout(messageView: self)
     }
   }
 
-  public var bottomInset: CGFloat = 0 {
+  var bottomInset: CGFloat = 0 {
     didSet {
       delegate?.wantsLayout(messageView: self)
     }
   }
 
-  public var hideTopBorder: Bool {
+  var hideTopBorder: Bool {
     set { self.topBorderLayer.isHidden = newValue }
     get { return self.topBorderLayer.isHidden }
   }
 
   //factor out to implementer..
-  public var mode: MessageViewState {
+  var mode: MessageViewState {
     get { return self.state }
     set {
       switch newValue {
@@ -435,7 +435,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
 
   // MARK: Overrides
 
-  override public func layoutSubviews() {
+  override func layoutSubviews() {
     super.layoutSubviews()
 
     topBorderLayer.frame = CGRect(
@@ -539,7 +539,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
   }
 
   @discardableResult
-  public func resignResponder(animated: Bool = true) -> Bool {
+  func resignResponder(animated: Bool = true) -> Bool {
     UIView.setAnimationsEnabled(animated)
     let ret = textView.resignFirstResponder()
     textView.isUserInteractionEnabled = false
@@ -548,7 +548,7 @@ public final class CHMessageView: UIView, MessageTextViewListener {
   }
 
   @discardableResult
-  public func becomeResponder(mode: MessageViewState? = nil, animated: Bool = true) -> Bool {
+  func becomeResponder(mode: MessageViewState? = nil, animated: Bool = true) -> Bool {
     UIView.setAnimationsEnabled(animated)
     if let mode = mode {
       self.mode = mode
@@ -559,11 +559,11 @@ public final class CHMessageView: UIView, MessageTextViewListener {
     return ret
   }
 
-  public func setShouldResignResponder(_ value: Bool) {
+  func setShouldResignResponder(_ value: Bool) {
     self.textView.shouldResignResponder = value
   }
 
-  public var viewHeight: CGFloat {
+  var viewHeight: CGFloat {
     return self.height
   }
 
@@ -619,18 +619,18 @@ public final class CHMessageView: UIView, MessageTextViewListener {
 
   // MARK: MessageTextViewListener
 
-  public func didChange(textView: CHMessageTextView) {
+  func didChange(textView: CHMessageTextView) {
     delegate?.textDidChange(text: textView.text)
   }
 
-  public func didChangeSelection(textView: CHMessageTextView) {
+  func didChangeSelection(textView: CHMessageTextView) {
     delegate?.selectionDidChange(messageView: self)
   }
 
-  public func didStartEditing(textView: CHMessageTextView) {
+  func didStartEditing(textView: CHMessageTextView) {
     self.textViewBecomeActive?(self)
     delegate?.textViewDidStartEditing(messageView: self)
   }
 
-  public func willChangeRange(textView: CHMessageTextView, to range: NSRange) {}
+  func willChangeRange(textView: CHMessageTextView, to range: NSRange) {}
 }

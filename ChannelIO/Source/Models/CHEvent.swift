@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
-import RxSwift
+//import RxSwift
 
 enum CHDefaultEvent: String {
   case boot = "Boot"
@@ -30,7 +29,7 @@ extension CHEvent {
   static func send(
     pluginId: String,
     name: String,
-    property: [String: Any?]? = nil) -> Observable<CHEvent> {
+    property: [String: Any?]? = nil) -> _RXSwift_Observable<CHEvent> {
     return EventPromise.sendEvent(
       pluginId: pluginId,
       name: name,
@@ -39,13 +38,13 @@ extension CHEvent {
   }
 }
 
-extension CHEvent: Mappable {
-  init?(map: Map) {
+extension CHEvent: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {
     self.createdAt = Date()
     self.expireAt = Date()
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id              <- map["id"]
     channelId       <- map["channelId"]
     userId          <- map["userId"]

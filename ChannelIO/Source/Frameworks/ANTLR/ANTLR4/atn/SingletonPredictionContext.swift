@@ -6,9 +6,9 @@
 
 
 
-public class SingletonPredictionContext: PredictionContext {
-    public final let parent: PredictionContext?
-    public final let returnState: Int
+class SingletonPredictionContext: PredictionContext {
+    final let parent: PredictionContext?
+    final let returnState: Int
 
     init(_ parent: PredictionContext?, _ returnState: Int) {
 
@@ -21,7 +21,7 @@ public class SingletonPredictionContext: PredictionContext {
         super.init(parent != nil ? PredictionContext.calculateHashCode(parent!, returnState) : PredictionContext.calculateEmptyHashCode())
     }
 
-    public static func create(_ parent: PredictionContext?, _ returnState: Int) -> SingletonPredictionContext {
+    static func create(_ parent: PredictionContext?, _ returnState: Int) -> SingletonPredictionContext {
         if returnState == PredictionContext.EMPTY_RETURN_STATE && parent == nil {
             // someone can pass in the bits of an array ctx that mean $
             return PredictionContext.EMPTY
@@ -30,25 +30,25 @@ public class SingletonPredictionContext: PredictionContext {
     }
 
     override
-    public func size() -> Int {
+    func size() -> Int {
         return 1
     }
 
     override
-    public func getParent(_ index: Int) -> PredictionContext? {
+    func getParent(_ index: Int) -> PredictionContext? {
         assert(index == 0, "Expected: index==0")
         return parent
     }
 
     override
-    public func getReturnState(_ index: Int) -> Int {
+    func getReturnState(_ index: Int) -> Int {
         assert(index == 0, "Expected: index==0")
         return returnState
     }
 
 
     override
-    public var description: String {
+    var description: String {
         let up = parent?.description ?? ""
         if up.isEmpty {
             if returnState == PredictionContext.EMPTY_RETURN_STATE {
@@ -61,7 +61,7 @@ public class SingletonPredictionContext: PredictionContext {
 }
 
 
-public func ==(lhs: SingletonPredictionContext, rhs: SingletonPredictionContext) -> Bool {
+func ==(lhs: SingletonPredictionContext, rhs: SingletonPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }

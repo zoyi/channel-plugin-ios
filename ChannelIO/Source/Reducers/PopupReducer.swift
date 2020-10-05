@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func pushReducer(action:Action, popup: CHPopupDisplayable?) -> CHPopupDisplayable? {
+func pushReducer(action: ReSwift_Action, popup: CHPopupDisplayable?) -> CHPopupDisplayable? {
   switch action {
   case let action as GetPopup:
     //return push only if messenger is not visible

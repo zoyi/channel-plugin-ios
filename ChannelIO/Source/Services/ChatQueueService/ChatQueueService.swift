@@ -6,7 +6,7 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 
 protocol ChatQueueServiceProtocol {
   var maxItemsPerQueue: Int { get set }
@@ -19,12 +19,12 @@ protocol ChatQueueServiceProtocol {
   func removeAllItems(key: ChatQueueKey)
   func find(key: ChatQueueKey) -> ChatQueue?
 
-  func progress() -> Observable<ChatQueuable>
-  func completed() -> Observable<ChatQueuable>
-  func progress(key: ChatQueueKey) -> Observable<ChatQueuable>
-  func completed(key: ChatQueueKey) -> Observable<ChatQueuable>
-  func error(key: ChatQueueKey) -> Observable<ChatQueuable>
-  func status(key: ChatQueueKey) -> Observable<ChatQueueStatus>
+  func progress() -> _RXSwift_Observable<ChatQueuable>
+  func completed() -> _RXSwift_Observable<ChatQueuable>
+  func progress(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueuable>
+  func completed(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueuable>
+  func error(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueuable>
+  func status(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueueStatus>
 
   func clearAll()
 }
@@ -38,11 +38,11 @@ class ChatQueueService: ChatQueueServiceProtocol {
 
   private init() {}
 
-  private var progressSignal = PublishSubject<ChatQueuable>()
-  private var completionSignal = PublishSubject<ChatQueuable>()
+  private var progressSignal = _RXSwift_PublishSubject<ChatQueuable>()
+  private var completionSignal = _RXSwift_PublishSubject<ChatQueuable>()
 
   private var chatQueues: [ChatQueueKey: ChatQueue] = [:]
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
 
   /**
    Find a queue object
@@ -167,7 +167,7 @@ class ChatQueueService: ChatQueueServiceProtocol {
    - Parameter key: a `ChatQueueKey`
    - Returns: Observable with `ChatQueuable`
    */
-  func status(key: ChatQueueKey) -> Observable<ChatQueueStatus> {
+  func status(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueueStatus> {
     guard let queue = self.find(key: key) else {
       return .error(ChannelError.parameterError)
     }
@@ -179,7 +179,7 @@ class ChatQueueService: ChatQueueServiceProtocol {
    -
    - Returns: Observable with `ChatQueuable`
    */
-  func progress() -> Observable<ChatQueuable> {
+  func progress() -> _RXSwift_Observable<ChatQueuable> {
     return self.progressSignal.asObservable()
   }
 
@@ -188,7 +188,7 @@ class ChatQueueService: ChatQueueServiceProtocol {
    -
    - Returns: Observable with `ChatQueuable`
    */
-  func completed() -> Observable<ChatQueuable> {
+  func completed() -> _RXSwift_Observable<ChatQueuable> {
     return self.completionSignal.asObservable()
   }
 
@@ -198,7 +198,7 @@ class ChatQueueService: ChatQueueServiceProtocol {
    - Parameter key: a `ChatQueueKey`
    - Returns: Observable with `ChatQueuable`
    */
-  func progress(key: ChatQueueKey) -> Observable<ChatQueuable> {
+  func progress(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueuable> {
     //observe all reqId
     //once it all ends return
     guard let queue = self.find(key: key) else {
@@ -214,7 +214,7 @@ class ChatQueueService: ChatQueueServiceProtocol {
    - Parameter key: a `ChatQueueKey`
    - Returns: Observable with `ChatQueuable`
    */
-  func completed(key: ChatQueueKey) -> Observable<ChatQueuable> {
+  func completed(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueuable> {
     guard let queue = self.find(key: key) else {
       return .error(ChannelError.parameterError)
     }
@@ -222,7 +222,7 @@ class ChatQueueService: ChatQueueServiceProtocol {
     return queue.signalForCompletion()
   }
 
-  func error(key: ChatQueueKey) -> Observable<ChatQueuable> {
+  func error(key: ChatQueueKey) -> _RXSwift_Observable<ChatQueuable> {
     guard let queue = self.find(key: key) else {
       return .error(ChannelError.parameterError)
     }
@@ -244,6 +244,6 @@ class ChatQueueService: ChatQueueServiceProtocol {
   func clearAll() {
     self.cancelAll()
     self.chatQueues = [:]
-    self.disposeBag = DisposeBag()
+    self.disposeBag = _RXSwift_DisposeBag()
   }
 }
