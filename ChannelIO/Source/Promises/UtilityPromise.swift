@@ -7,22 +7,19 @@
 //
 
 import Foundation
-import Alamofire
-import SwiftyJSON
-import RxSwift
-import ObjectMapper
+//import RxSwift
 
 struct UtilityPromise {
-  static func getGeoIP() -> Observable<GeoIPInfo> {
-    return Observable.create { subscriber in
+  static func getGeoIP() -> _RXSwift_Observable<GeoIPInfo> {
+    return _RXSwift_Observable.create { subscriber in
       AF
         .request(RestRouter.GetGeoIP)
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
-            guard let geoData: GeoIPInfo = Mapper<GeoIPInfo>()
+            let json = SwiftyJSON_JSON(data)
+            guard let geoData: GeoIPInfo = ObjectMapper_Mapper<GeoIPInfo>()
               .map(JSONObject: json["geoIp"].object) else {
                 subscriber.onError(ChannelError.parseError)
                 break
@@ -37,17 +34,17 @@ struct UtilityPromise {
           }
           
         })
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
   
-  static func getCountryCodes() -> Observable<[CHCountry]> {
-    return Observable.create { subscriber in
+  static func getCountryCodes() -> _RXSwift_Observable<[CHCountry]> {
+    return _RXSwift_Observable.create { subscriber in
       if mainStore.state.countryCodeState.codes.count != 0 {
         let countries = mainStore.state.countryCodeState.codes
         subscriber.onNext(countries)
         subscriber.onCompleted()
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
       
       AF
@@ -56,8 +53,8 @@ struct UtilityPromise {
         .responseData(completionHandler: { (response) in
           switch response.result {
           case .success(let data):
-            let json:JSON = JSON(data)
-            guard let countries =  Mapper<CHCountry>()
+            let json:SwiftyJSON_JSON = SwiftyJSON_JSON(data)
+            guard let countries =  ObjectMapper_Mapper<CHCountry>()
               .mapArray(JSONObject: json.object) else {
                 subscriber.onNext([])
                 subscriber.onCompleted()
@@ -71,7 +68,7 @@ struct UtilityPromise {
           }
           
         })
-      return Disposables.create()
+      return _RXSwift_Disposables.create()
     }
   }
 }

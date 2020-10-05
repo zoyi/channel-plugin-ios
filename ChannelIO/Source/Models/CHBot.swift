@@ -6,8 +6,6 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
-
 struct CHBot : CHEntity {
   var id = ""
   var channelId = ""
@@ -20,10 +18,10 @@ struct CHBot : CHEntity {
   var isDefaultBot: Bool = false
 }
 
-extension CHBot : Mappable {
-  init?(map: Map) { }
+extension CHBot : ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id               <- map["id"]
     channelId        <- map["channelId"]
     name             <- map["name"]

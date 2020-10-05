@@ -15,8 +15,8 @@
 /// 
 
 
-open class ParseTreeVisitor<T> {
-    public init() {
+class ParseTreeVisitor<T> {
+    init() {
 
     }
     // typealias T
@@ -26,7 +26,7 @@ open class ParseTreeVisitor<T> {
     /// - Parameter tree: The _org.antlr.v4.runtime.tree.ParseTree_ to visit.
     /// - Returns: The result of visiting the parse tree.
     /// 
-    open func visit(_ tree: ParseTree) -> T? {
+    func visit(_ tree: ParseTree) -> T? {
         fatalError(#function + " must be overridden")
     }
 
@@ -37,7 +37,7 @@ open class ParseTreeVisitor<T> {
     /// - Parameter node: The _org.antlr.v4.runtime.tree.RuleNode_ whose children should be visited.
     /// - Returns: The result of visiting the children of the node.
     /// 
-    open func visitChildren(_ node: RuleNode) -> T? {
+    func visitChildren(_ node: RuleNode) -> T? {
         fatalError(#function + " must be overridden")
     }
 
@@ -47,7 +47,7 @@ open class ParseTreeVisitor<T> {
     /// - Parameter node: The _org.antlr.v4.runtime.tree.TerminalNode_ to visit.
     /// - Returns: The result of visiting the node.
     /// 
-    open func visitTerminal(_ node: TerminalNode) -> T? {
+    func visitTerminal(_ node: TerminalNode) -> T? {
         fatalError(#function + " must be overridden")
     }
 
@@ -57,7 +57,7 @@ open class ParseTreeVisitor<T> {
     /// - Parameter node: The _org.antlr.v4.runtime.tree.ErrorNode_ to visit.
     /// - Returns: The result of visiting the node.
     /// 
-    open func visitErrorNode(_ node: ErrorNode) -> T? {
+    func visitErrorNode(_ node: ErrorNode) -> T? {
         fatalError(#function + " must be overridden")
     }
 }

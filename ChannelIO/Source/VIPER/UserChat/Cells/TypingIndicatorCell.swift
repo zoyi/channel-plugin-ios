@@ -7,8 +7,6 @@
 
 import Foundation
 import UIKit
-import SnapKit
-import SDWebImage
 
 final class TypingIndicatorCell: BaseTableViewCell {  
   let multiAvatarView = LiveTypingAvatarsView(avatarSize: 22, coverMargin: 4)
@@ -17,7 +15,7 @@ final class TypingIndicatorCell: BaseTableViewCell {
     $0.font = UIFont.systemFont(ofSize: 12)
     $0.textColor = CHColors.blueyGrey
   }
-  let typingImageView = SDAnimatedImageView().then {
+  let typingImageView = _ChannelIO_SDAnimatedImageView().then {
     $0.contentMode = .scaleAspectFit
   }
   
@@ -27,7 +25,7 @@ final class TypingIndicatorCell: BaseTableViewCell {
     super.initialize()
     
     if let data = CHAssets.getData(named: "typing", type: "gif") {
-      self.typingImageView.image = SDAnimatedImage(data: data)
+      self.typingImageView.image = _ChannelIO_SDAnimatedImage(data: data)
     }
     
     self.backgroundColor = UIColor.clear

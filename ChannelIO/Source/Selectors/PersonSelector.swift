@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ReSwift
 
 func personSelector(state: AppState, personType: PersonType?, personId: String?) -> CHEntity? {
   guard let personType = personType, let personId = personId else { return nil }

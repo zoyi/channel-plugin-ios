@@ -9,10 +9,10 @@
 /// The Tokens rule start state linking to each lexer rule start state
 /// 
 
-public final class TokensStartState: DecisionState {
+final class TokensStartState: DecisionState {
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.TOKEN_START
     }
 }

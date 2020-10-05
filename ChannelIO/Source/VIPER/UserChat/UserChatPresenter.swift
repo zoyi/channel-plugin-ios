@@ -1,4 +1,4 @@
-//
+
 //  UserChatPresenter.swift
 //  CHPlugin
 //
@@ -6,10 +6,8 @@
 //  Copyright © 2018 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import ReSwift
+//import RxSwift
 import UIKit
-import JGProgressHUD
 import Photos
 import AVKit
 
@@ -22,7 +20,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   private var chatType: ChatType = .userChat
   private var state: ChatProcessState = .idle
   
-  private var navigationUpdateSubject = PublishSubject<CHUserChat?>()
+  private var navigationUpdateSubject = _RXSwift_PublishSubject<CHUserChat?>()
   
   private var didChatLoaded: Bool = false
   private var didMessageLoaded: Bool = false
@@ -43,8 +41,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   var preloadText: String?
   var isOpenChat: Bool = false
   
-  private var disposeBag = DisposeBag()
-  private var fileDisposable: Disposable?
+  private var disposeBag = _RXSwift_DisposeBag()
+  private var fileDisposable: _RXSwift_Disposable?
   
   deinit {
     self.leaveSocket()
@@ -62,7 +60,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     
     self.interactor?
       .readyToPresent()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         guard let self = self else { return }
         if self.isOpenChat, self.userChat == nil {
@@ -108,7 +106,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   private func observeActiveNotification() {
     NotificationCenter.default
       .rx.notification(UIApplication.didBecomeActiveNotification)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.didChatLoaded = false
         self?.didMessageLoaded = false
@@ -117,7 +115,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     
     NotificationCenter.default
       .rx.notification(UIApplication.willResignActiveNotification)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe { [weak self] _ in
         self?.prepareLeave()
         self?.leaveSocket()
@@ -127,7 +125,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   private func observeNavigation() {
     self.navigationUpdateSubject
       .takeUntil(self.rx.deallocated)
-      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .debounce(.milliseconds(500), scheduler: _RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (chat) in
         self?.view?.updateNavigation(userChat: chat)
       }).disposed(by: self.disposeBag)
@@ -135,7 +133,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   private func observeTypingEvents() {
     WsService.shared.typingSubject
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (typingEntity) in
         if typingEntity.action == "stop" {
           if let index = self?.getTypingIndex(of: typingEntity) {
@@ -157,7 +155,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       }).disposed(by: self.disposeBag)
     
     WsService.shared.mOnCreate()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (message) in
         let typing = CHTypingEntity.transform(from: message)
         if let index = self?.getTypingIndex(of: typing) {
@@ -175,7 +173,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.fileDisposable?.dispose()
     self.fileDisposable = ChatQueueService.shared
       .status(key: queueKey)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (status) in
         guard let self = self else { return }
         switch status {
@@ -197,8 +195,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   
   private func prepareChat() {
     WsService.shared.observeJoin()
-      .observeOn(MainScheduler.instance)
-      .flatMap { [weak self] (_) -> Observable<CHUserChat?> in
+      .observeOn(_RXSwift_MainScheduler.instance)
+      .flatMap { [weak self] (_) -> _RXSwift_Observable<CHUserChat?> in
         guard let self = self else { return .empty() }
         self.state = .chatJoined
         return self.fetchChatIfNeeded()
@@ -245,16 +243,16 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     return true
   }
   
-  private func fetchChatIfNeeded() -> Observable<CHUserChat?> {
+  private func fetchChatIfNeeded() -> _RXSwift_Observable<CHUserChat?> {
     guard self.needToFetchChat() else {
       return .just(nil)
     }
     
-    return Observable.create { subscriber in
+    return _RXSwift_Observable.create { subscriber in
       self.state = .chatLoading
       let signal = self.interactor?
         .fetchChat()
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] (chat) in
           self?.didChatLoaded = true
           self?.state = .chatLoaded
@@ -268,7 +266,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal?.dispose()
       }
     }
@@ -282,7 +280,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     
     self.interactor?
       .fetchMessages()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (state) in
         self?.state = state
       }, onError: { [weak self] (error) in
@@ -366,7 +364,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.interactor?
       .fetchMarketingSupportBot()
       .retry(.delayed(maxCount: 3, time: 3.0))
-      .flatMap { [weak self] supportBotId -> Observable<CHMessage> in
+      .flatMap { [weak self] supportBotId -> _RXSwift_Observable<CHMessage> in
         guard
           let self = self,
           let interactor = self.interactor
@@ -375,7 +373,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         }
         return interactor.startMarketingToSupportBot(with: supportBotId)
       }
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         self?.view?.dismissHUD()
       }, onError: { [weak self] error in
@@ -388,15 +386,15 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     with message: CHMessage?,
     key: String?,
     type: ProfileSchemaType,
-    value: Any?) -> Observable<Bool> {
+    value: Any?) -> _RXSwift_Observable<Bool> {
     guard let message = message, let key = key, let value = value else {
       return .just(false)
     }
     
-    return Observable.create { subscriber in
+    return _RXSwift_Observable.create { subscriber in
       let signal = self.interactor?
         .updateProfileItem(with: message, key: key, type: type, value: value)
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] message in
           self?.shouldRedrawProfileBot = true
           let updatedValue = message.profileBot?.filter { $0.key == key }.first?.value
@@ -410,7 +408,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           subscriber.onError(error)
         })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal?.dispose()
       }
     }
@@ -419,8 +417,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   func didClickOnRetry(for message: CHMessage?, from view: UIView?) {
     self.router?
       .showRetryActionSheet(from: view)
-      .observeOn(MainScheduler.instance)
-      .flatMap { [weak self] (retry) -> Observable<CHMessage?> in
+      .observeOn(_RXSwift_MainScheduler.instance)
+      .flatMap { [weak self] (retry) -> _RXSwift_Observable<CHMessage?> in
         guard let interactor = self?.interactor else {
           return .empty()
         }
@@ -432,7 +430,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         
         return interactor.send(message: message)
       }
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe()
       .disposed(by: self.disposeBag)
   }
@@ -472,7 +470,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
       self.view?.showProgressHUD(progress: 0)
       file
         .download()
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] (fileURL, progress) in
           if let fileURL = fileURL {
             self?.view?.dismissHUD()
@@ -551,7 +549,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         guard let self = self else { return }
         interactor
         .createChatIfNeeded()
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { [weak self] chat in
           guard let self = self, let chat = chat else { return }
           self.userChatId = chat.id
@@ -569,7 +567,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   func didClickOnSendButton(text: String) {
     self.interactor?
     .createChatIfNeeded()
-    .observeOn(MainScheduler.instance)
+    .observeOn(_RXSwift_MainScheduler.instance)
     .subscribe(onNext: { [weak self] chat in
       guard let chat = chat else { return }
       self?.userChatId = chat.id
@@ -615,7 +613,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
   private func sendMessage(with message: CHMessage) {
     self.interactor?
       .send(message: message)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { message in
         mainStore.dispatch(CreateMessage(payload: message))
       }, onError: { [weak self] error in
@@ -707,8 +705,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     self.isRequestingReadAll = true
     chat
       .read()
-      .debounce(.seconds(shouldDebounce ? 1 : 0), scheduler: MainScheduler.instance)
-      .observeOn(MainScheduler.instance)
+      .debounce(.seconds(shouldDebounce ? 1 : 0), scheduler: _RXSwift_MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (completed) in
         self?.isRequestingReadAll = false
       }, onError: { [weak self] (error) in
@@ -730,8 +728,8 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
      
     self.interactor?
       .createSupportBotChatIfNeeded(originId: originId)
-      .observeOn(MainScheduler.instance)
-      .flatMap { [weak self] (chat, message) -> Observable<CHMessage> in
+      .observeOn(_RXSwift_MainScheduler.instance)
+      .flatMap { [weak self] (chat, message) -> _RXSwift_Observable<CHMessage> in
         guard let chat = chat else { return .empty() }
         self?.userChatId = chat.id
         self?.userChat = chat
@@ -747,7 +745,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
         dlog("Error while replying supportBot. Attempting to reply again")
         return true
       })
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (updated) in
         self?.isRequestingAction = false
         mainStore.dispatch(CreateMessage(payload: updated))
@@ -776,7 +774,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
     if type == .solve && key == "close" {
       self.userChat?
         .close(actionId: origin.id, requestId: message?.requestId ?? "")
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (chat) in
           mainStore.dispatch(UpdateUserChat(payload:chat))
         }, onError: { [weak self] (error) in
@@ -795,7 +793,7 @@ class UserChatPresenter: NSObject, UserChatPresenterProtocol {
           actionId: origin.id,
           rating: review,
           requestId: message?.requestId ?? "")
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (chat) in
           mainStore.dispatch(UpdateUserChat(payload:chat))
         }, onError: { [weak self] (error) in

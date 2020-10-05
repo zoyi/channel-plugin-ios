@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct BotsState: StateType {
+struct BotsState: ReSwift_StateType {
   var botDictionary: [String: CHBot] = [:]
   var supportBot: CHSupportBot?
   

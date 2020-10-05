@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func messagesReducer(action: Action, state: MessagesState?) -> MessagesState {
+func messagesReducer(action: ReSwift_Action, state: MessagesState?) -> MessagesState {
   var state = state
   switch action {
   case let action as GetUserChats:

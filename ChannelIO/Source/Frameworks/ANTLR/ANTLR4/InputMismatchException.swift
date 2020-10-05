@@ -10,8 +10,8 @@
 /// when the current input does not match the expected token.
 /// 
 
-public class InputMismatchException: RecognitionException {
-    public init(_ recognizer: Parser, state: Int = ATNState.INVALID_STATE_NUMBER, ctx: ParserRuleContext? = nil) {
+class InputMismatchException: RecognitionException {
+    init(_ recognizer: Parser, state: Int = ATNState.INVALID_STATE_NUMBER, ctx: ParserRuleContext? = nil) {
         let bestCtx = ctx ?? recognizer._ctx
 
         super.init(recognizer, recognizer.getInputStream()!, bestCtx)

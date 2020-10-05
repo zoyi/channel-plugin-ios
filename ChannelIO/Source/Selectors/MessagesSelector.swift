@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ReSwift
 
 func messagesSelector(state: AppState, userChatId: String?) -> [CHMessage] {
   guard let userChatId = userChatId else { return [] }

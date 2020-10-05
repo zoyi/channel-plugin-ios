@@ -9,7 +9,7 @@
 /// between parse trees and other kinds of syntax trees we might want to create.
 /// 
 
-public protocol SyntaxTree: Tree {
+protocol SyntaxTree: Tree {
     /// 
     /// Return an _org.antlr.v4.runtime.misc.Interval_ indicating the index in the
     /// _org.antlr.v4.runtime.TokenStream_ of the first and last token associated with this

@@ -13,7 +13,7 @@
 /// -  4.2
 /// 
 
-public enum LexerActionType: Int {
+enum LexerActionType: Int {
     /// 
     /// The type of a _org.antlr.v4.runtime.atn.LexerChannelAction_ action.
     /// 

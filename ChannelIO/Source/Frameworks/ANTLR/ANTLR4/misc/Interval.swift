@@ -9,24 +9,24 @@
 /// An immutable inclusive interval a..b
 /// 
 
-public class Interval: Hashable {
-    public static let INTERVAL_POOL_MAX_VALUE: Int = 1000
+class Interval: Hashable {
+    static let INTERVAL_POOL_MAX_VALUE: Int = 1000
 
-    public static let INVALID: Interval = Interval(-1, -2)
+    static let INVALID: Interval = Interval(-1, -2)
 
     //static var cache: Dictionary<Int, Interval> = Dictionary<Int, Interval>()
     static var cache: Array<Interval?> = Array<Interval?>(repeating: nil, count: INTERVAL_POOL_MAX_VALUE + 1)
     // new; Interval[INTERVAL_POOL_MAX_VALUE+1];
 
-    public var a: Int
-    public var b: Int
+    var a: Int
+    var b: Int
 
-    public static var creates: Int = 0
-    public static var misses: Int = 0
-    public static var hits: Int = 0
-    public static var outOfRange: Int = 0
+    static var creates: Int = 0
+    static var misses: Int = 0
+    static var hits: Int = 0
+    static var outOfRange: Int = 0
 
-    public init(_ a: Int, _ b: Int) {
+    init(_ a: Int, _ b: Int) {
         self.a = a
         self.b = b
     }
@@ -38,7 +38,7 @@ public class Interval: Hashable {
     /// Interval object with a..a in it.  On Java.g4, 218623 IntervalSets
     /// have a..a (set with 1 element).
     /// 
-    public static func of(_ a: Int, _ b: Int) -> Interval {
+    static func of(_ a: Int, _ b: Int) -> Interval {
         // cache just a..a
         if a != b || a < 0 || a > INTERVAL_POOL_MAX_VALUE {
             return Interval(a, b)
@@ -54,7 +54,7 @@ public class Interval: Hashable {
     /// return number of elements between a and b inclusively. x..x is length 1.
     /// if b &lt; a, then length is 0.  9..10 has length 2.
     /// 
-    public func length() -> Int {
+    func length() -> Int {
         if b < a {
             return 0
         }
@@ -62,7 +62,7 @@ public class Interval: Hashable {
     }
 
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(a)
         hasher.combine(b)
     }
@@ -70,67 +70,67 @@ public class Interval: Hashable {
     ///
     /// Does this start completely before other? Disjoint
     /// 
-    public func startsBeforeDisjoint(_ other: Interval) -> Bool {
+    func startsBeforeDisjoint(_ other: Interval) -> Bool {
         return self.a < other.a && self.b < other.a
     }
 
     /// 
     /// Does this start at or before other? Nondisjoint
     /// 
-    public func startsBeforeNonDisjoint(_ other: Interval) -> Bool {
+    func startsBeforeNonDisjoint(_ other: Interval) -> Bool {
         return self.a <= other.a && self.b >= other.a
     }
 
     /// 
     /// Does this.a start after other.b? May or may not be disjoint
     /// 
-    public func startsAfter(_ other: Interval) -> Bool {
+    func startsAfter(_ other: Interval) -> Bool {
         return self.a > other.a
     }
 
     /// 
     /// Does this start completely after other? Disjoint
     /// 
-    public func startsAfterDisjoint(_ other: Interval) -> Bool {
+    func startsAfterDisjoint(_ other: Interval) -> Bool {
         return self.a > other.b
     }
 
     /// 
     /// Does this start after other? NonDisjoint
     /// 
-    public func startsAfterNonDisjoint(_ other: Interval) -> Bool {
+    func startsAfterNonDisjoint(_ other: Interval) -> Bool {
         return self.a > other.a && self.a <= other.b // this.b>=other.b implied
     }
 
     /// 
     /// Are both ranges disjoint? I.e., no overlap?
     /// 
-    public func disjoint(_ other: Interval) -> Bool {
+    func disjoint(_ other: Interval) -> Bool {
         return startsBeforeDisjoint(other) || startsAfterDisjoint(other)
     }
 
     /// 
     /// Are two intervals adjacent such as 0..41 and 42..42?
     /// 
-    public func adjacent(_ other: Interval) -> Bool {
+    func adjacent(_ other: Interval) -> Bool {
         return self.a == other.b + 1 || self.b == other.a - 1
     }
 
-    public func properlyContains(_ other: Interval) -> Bool {
+    func properlyContains(_ other: Interval) -> Bool {
         return other.a >= self.a && other.b <= self.b
     }
 
     /// 
     /// Return the interval computed from combining this and other
     /// 
-    public func union(_ other: Interval) -> Interval {
+    func union(_ other: Interval) -> Interval {
         return Interval.of(min(a, other.a), max(b, other.b))
     }
 
     /// 
     /// Return the interval in common between this and o
     /// 
-    public func intersection(_ other: Interval) -> Interval {
+    func intersection(_ other: Interval) -> Interval {
         return Interval.of(max(a, other.a), min(b, other.b))
     }
 
@@ -140,7 +140,7 @@ public class Interval: Hashable {
     /// within this, which would result in two disjoint intervals
     /// instead of the single one returned by this method.
     /// 
-    public func differenceNotProperlyContained(_ other: Interval) -> Interval? {
+    func differenceNotProperlyContained(_ other: Interval) -> Interval? {
         var diff: Interval? = nil
         // other.a to left of this.a (or same)
         if other.startsBeforeNonDisjoint(self) {
@@ -158,11 +158,11 @@ public class Interval: Hashable {
     }
 
 
-   public var description: String {
+   var description: String {
         return "\(a)..\(b)"
     }
 }
 
-public func ==(lhs: Interval, rhs: Interval) -> Bool {
+func ==(lhs: Interval, rhs: Interval) -> Bool {
     return lhs.a == rhs.a && lhs.b == rhs.b
 }

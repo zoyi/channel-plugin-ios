@@ -7,14 +7,12 @@
 //
 
 import Foundation
-import RxSwift
-import SnapKit
-import RxCocoa
-import NVActivityIndicatorView
+//import RxSwift
+//import RxCocoa
 
 final class TextActionView: BaseView, Actionable {
-  private let submitSubject = PublishSubject<Any?>()
-  private let focusSubject = PublishSubject<Bool>()
+  private let submitSubject = _RXSwift_PublishSubject<Any?>()
+  private let focusSubject = _RXSwift_PublishSubject<Bool>()
   
   private let confirmButton = UIButton().then {
     $0.setImage(CHAssets.getImage(named: "sendActive")?.withRenderingMode(.alwaysOriginal), for: .normal)
@@ -33,7 +31,7 @@ final class TextActionView: BaseView, Actionable {
     $0.placeholder = CHAssets.localized("ch.profile_form.placeholder")
   }
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   var didFocus = false
   
   override func initialize() {
@@ -102,11 +100,11 @@ final class TextActionView: BaseView, Actionable {
   
   //MARK: UserActionView Protocol
   
-  func signalForAction() -> Observable<Any?> {
+  func signalForAction() -> _RXSwift_Observable<Any?> {
     return self.submitSubject.asObserver()
   }
   
-  func signalForText() -> Observable<String?>? {
+  func signalForText() -> _RXSwift_Observable<String?>? {
     return self.textField.rx.text.asObservable()
   }
 }
@@ -143,7 +141,7 @@ extension TextActionView {
     self.loadIndicator.isHidden = true
   }
   
-  func signalForFocus() -> Observable<Bool> {
+  func signalForFocus() -> _RXSwift_Observable<Bool> {
     return self.focusSubject
   }
 }

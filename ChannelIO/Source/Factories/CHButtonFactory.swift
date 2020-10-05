@@ -43,7 +43,7 @@ struct CHButtonFactory {
         button.backgroundColor = !enabled ? CHColors.paleGrey20 : backgroundColor
         button.clipsToBounds = !enabled
       })
-    
+
     _ = button.rx.isHighlighted
       .subscribe(onNext: { (highlight) in
         if highlight {

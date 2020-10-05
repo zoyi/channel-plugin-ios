@@ -15,11 +15,11 @@
 /// -  4.2
 /// 
 
-public final class LexerSkipAction: LexerAction, CustomStringConvertible {
+final class LexerSkipAction: LexerAction, CustomStringConvertible {
     /// 
     /// Provides a singleton instance of this parameterless lexer action.
     /// 
-    public static let INSTANCE: LexerSkipAction = LexerSkipAction()
+    static let INSTANCE: LexerSkipAction = LexerSkipAction()
 
     /// 
     /// Constructs the singleton instance of the lexer `skip` command.
@@ -32,7 +32,7 @@ public final class LexerSkipAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns _org.antlr.v4.runtime.atn.LexerActionType#SKIP_.
     /// 
     override
-    public func getActionType() -> LexerActionType {
+    func getActionType() -> LexerActionType {
         return LexerActionType.skip
     }
 
@@ -41,7 +41,7 @@ public final class LexerSkipAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns `false`.
     /// 
     override
-    public func isPositionDependent() -> Bool {
+    func isPositionDependent() -> Bool {
         return false
     }
 
@@ -51,20 +51,20 @@ public final class LexerSkipAction: LexerAction, CustomStringConvertible {
     /// This action is implemented by calling _org.antlr.v4.runtime.Lexer#skip_.
     /// 
     override
-    public func execute(_ lexer: Lexer) {
+    func execute(_ lexer: Lexer) {
         lexer.skip()
     }
 
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
 
-    public var description: String {
+    var description: String {
         return "skip"
     }
 }
 
-public func ==(lhs: LexerSkipAction, rhs: LexerSkipAction) -> Bool {
+func ==(lhs: LexerSkipAction, rhs: LexerSkipAction) -> Bool {
     return lhs === rhs
 }

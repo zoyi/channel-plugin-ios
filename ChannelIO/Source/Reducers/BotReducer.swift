@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func botsReducer(action: Action, state: BotsState?) -> BotsState {
+func botsReducer(action: ReSwift_Action, state: BotsState?) -> BotsState {
   var state = state
   switch action {
   case let action as GetBot:

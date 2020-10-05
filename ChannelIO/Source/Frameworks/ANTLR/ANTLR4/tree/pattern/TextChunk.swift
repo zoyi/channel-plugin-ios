@@ -9,7 +9,7 @@
 /// pattern string.
 /// 
 
-public class TextChunk: Chunk, CustomStringConvertible {
+class TextChunk: Chunk, CustomStringConvertible {
     /// 
     /// This is the backing field for _#getText_.
     /// 
@@ -22,7 +22,7 @@ public class TextChunk: Chunk, CustomStringConvertible {
     /// - Parameter text: The text of this chunk.
     /// - Throws: ANTLRError.illegalArgument if `text` is `null`.
     /// 
-    public init(_ text: String) {
+    init(_ text: String) {
         self.text = text
     }
 
@@ -32,7 +32,7 @@ public class TextChunk: Chunk, CustomStringConvertible {
     /// - Returns: The text of the chunk.
     /// 
 
-    public final func getText() -> String {
+    final func getText() -> String {
         return text
     }
 
@@ -40,12 +40,12 @@ public class TextChunk: Chunk, CustomStringConvertible {
     /// The implementation for _org.antlr.v4.runtime.tree.pattern.TextChunk_ returns the result of
     /// _#getText()_ in single quotes.
     ///
-    public var description: String {
+    var description: String {
         return "'\(text)'"
     }
 
 
-    override public func isEqual(_ other: Chunk) -> Bool {
+    override func isEqual(_ other: Chunk) -> Bool {
         guard let other = other as? TextChunk else {
             return false
         }

@@ -6,8 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import SnapKit
+//import RxSwift
 
 final class CountryCodePickerView : BaseView {
   private enum Metric {
@@ -17,7 +16,7 @@ final class CountryCodePickerView : BaseView {
   }
 
   var countries: [CHCountry] = []
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   var bottomContraint: Constraint?
   var pickedCode = "" {
     didSet {
@@ -32,8 +31,8 @@ final class CountryCodePickerView : BaseView {
   
   var selectedIndex = 0
   
-  var submitSubject = PublishSubject<(String, String)>()
-  var cancelSubject = PublishSubject<Any?>()
+  var submitSubject = _RXSwift_PublishSubject<(String, String)>()
+  var cancelSubject = _RXSwift_PublishSubject<Any?>()
   
   let actionView = UIView()
   let closeButton = UIButton().then {
@@ -58,9 +57,9 @@ final class CountryCodePickerView : BaseView {
     $0.backgroundColor = CHColors.gray.withAlphaComponent(0.5)
   }
   
-  static func presentCodePicker(with code: String) -> Observable<(String?, String?)> {
-    return Observable.create { subscriber in
-      guard var controller = CHUtils.getTopController() else { return Disposables.create() }
+  static func presentCodePicker(with code: String) -> _RXSwift_Observable<(String?, String?)> {
+    return _RXSwift_Observable.create { subscriber in
+      guard var controller = CHUtils.getTopController() else { return _RXSwift_Disposables.create() }
       if let navigation = controller.navigationController {
         controller = navigation
       }
@@ -79,7 +78,7 @@ final class CountryCodePickerView : BaseView {
         subscriber.onCompleted()
       })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         submitSignal.dispose()
         cancelSignal.dispose()
       }
@@ -186,11 +185,11 @@ final class CountryCodePickerView : BaseView {
     }
   }
   
-  func signalForSubmit() -> Observable<(String, String)> {
+  func signalForSubmit() -> _RXSwift_Observable<(String, String)> {
     return self.submitSubject.asObservable()
   }
   
-  func signalForCancel() -> Observable<Any?> {
+  func signalForCancel() -> _RXSwift_Observable<Any?> {
     return self.cancelSubject.asObservable()
   }
 }

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct CHImageMeta {
   var width = 0.f
@@ -15,11 +14,11 @@ struct CHImageMeta {
   var url = ""
 }
 
-extension CHImageMeta: Mappable {
-  init?(map: Map) {
+extension CHImageMeta: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {
 
   }
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     width   <- map["width"]
     height  <- map["height"]
     url     <- map["url"]

@@ -8,8 +8,7 @@
 
 import Foundation
 import UIKit
-import RxSwift
-import SnapKit
+//import RxSwift
 
 enum ActionAlignment {
   case left
@@ -126,7 +125,7 @@ class ActionView: BaseView {
   var buttons: [ActionButton] = []
   var contentView = UIView()
   var alignment: ActionAlignment = .right
-  var actionSubject = PublishSubject<SubmitForm>()
+  var actionSubject = _RXSwift_PublishSubject<SubmitForm>()
   
   struct Metrics {
     static let itemBetweenMargin = 4.f
@@ -223,7 +222,7 @@ class ActionView: BaseView {
     }
   }
 
-  func observeAction() -> Observable<SubmitForm> {
+  func observeAction() -> _RXSwift_Observable<SubmitForm> {
     return self.actionSubject.asObservable()
   }
   

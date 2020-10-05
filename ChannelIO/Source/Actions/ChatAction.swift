@@ -6,6 +6,4 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct ClearChat: Action {}
+struct ClearChat: ReSwift_Action {}

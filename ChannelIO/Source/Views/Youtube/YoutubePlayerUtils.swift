@@ -102,7 +102,7 @@ enum YoutubePlayerUtils {
   }
 }
 
-public enum YoutubePlayerState: String {
+enum YoutubePlayerState: String {
   case unstarted = "-1"
   case ended = "0"
   case playing = "1"
@@ -112,7 +112,7 @@ public enum YoutubePlayerState: String {
   case unknown
 }
 
-public enum YoutubePlaybackQuality: String {
+enum YoutubePlaybackQuality: String {
   case small
   case medium
   case large
@@ -124,7 +124,7 @@ public enum YoutubePlaybackQuality: String {
   case unknown /** This should never be returned. It is here for future proofing. */
 }
 
-public enum YoutubePlayerError: String, Error {
+enum YoutubePlayerError: String, Error {
   case invalidParam = "2"
   case HTML5Error = "5"
   case videoNotFound = "100" // Functionally equivalent error codes 100 and

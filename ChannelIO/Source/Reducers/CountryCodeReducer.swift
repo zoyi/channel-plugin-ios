@@ -6,9 +6,7 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func countryCodeReducer(action: Action, state: CountryCodeState?) -> CountryCodeState {
+func countryCodeReducer(action: ReSwift_Action, state: CountryCodeState?) -> CountryCodeState {
   var state = state
   switch action {
   case let action as GetCountryCodes:

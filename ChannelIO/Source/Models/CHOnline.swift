@@ -6,8 +6,6 @@
 //  Copyright © 2019 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
-
 struct CHOnline {
   var channelId = ""
   var personType: PersonType!
@@ -16,10 +14,10 @@ struct CHOnline {
   var updatedAt = Date()
 }
 
-extension CHOnline: Mappable {
-  init?(map: Map) { }
+extension CHOnline: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     channelId <- map["channelId"]
     personType <- map["personType"]
     personId <- map["personId"]

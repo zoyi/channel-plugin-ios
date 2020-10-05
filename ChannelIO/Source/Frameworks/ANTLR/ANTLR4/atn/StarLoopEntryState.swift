@@ -5,8 +5,8 @@
 /// 
 
 
-public final class StarLoopEntryState: DecisionState {
-    public var loopBackState: StarLoopbackState?
+final class StarLoopEntryState: DecisionState {
+    var loopBackState: StarLoopbackState?
 
     /// 
     /// Indicates whether this state can benefit from a precedence DFA during SLL
@@ -18,10 +18,10 @@ public final class StarLoopEntryState: DecisionState {
     /// 
     /// - seealso: org.antlr.v4.runtime.dfa.DFA#isPrecedenceDfa()
     /// 
-    public var precedenceRuleDecision: Bool = false
+    var precedenceRuleDecision: Bool = false
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.STAR_LOOP_ENTRY
     }
 }

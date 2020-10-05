@@ -6,10 +6,8 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct GetBot: Action {
-  public let payload: CHBot?
+struct GetBot: ReSwift_Action {
+  let payload: CHBot?
 }
 
 struct BotRequest {

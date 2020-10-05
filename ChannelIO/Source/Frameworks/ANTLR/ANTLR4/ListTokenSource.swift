@@ -13,7 +13,7 @@
 /// list is reached. Otherwise, an EOF token will be created.
 /// 
 
-public class ListTokenSource: TokenSource {
+class ListTokenSource: TokenSource {
     /// 
     /// The wrapped collection of _org.antlr.v4.runtime.Token_ objects to return.
     /// 
@@ -52,7 +52,7 @@ public class ListTokenSource: TokenSource {
     /// - parameter tokens: The collection of _org.antlr.v4.runtime.Token_ objects to provide as a
     /// _org.antlr.v4.runtime.TokenSource_.
     /// 
-    public convenience init(_ tokens: [Token]) {
+    convenience init(_ tokens: [Token]) {
         self.init(tokens, nil)
     }
 
@@ -67,12 +67,12 @@ public class ListTokenSource: TokenSource {
     /// the next _org.antlr.v4.runtime.Token_ (or the previous token if the end of the input has
     /// been reached).
     /// 
-    public init(_ tokens: [Token], _ sourceName: String?) {
+    init(_ tokens: [Token], _ sourceName: String?) {
         self.tokens = tokens
         self.sourceName = sourceName
     }
 
-    public func getCharPositionInLine() -> Int {
+    func getCharPositionInLine() -> Int {
         if i < tokens.count {
             return tokens[i].getCharPositionInLine()
         }
@@ -100,7 +100,7 @@ public class ListTokenSource: TokenSource {
         }
     }
 
-    public func nextToken() -> Token {
+    func nextToken() -> Token {
         if i >= tokens.count {
             if eofToken == nil {
                 var start = -1
@@ -128,7 +128,7 @@ public class ListTokenSource: TokenSource {
         return t
     }
 
-    public func getLine() -> Int {
+    func getLine() -> Int {
         if i < tokens.count {
             return tokens[i].getLine()
         }
@@ -159,7 +159,7 @@ public class ListTokenSource: TokenSource {
         }
     }
 
-    public func getInputStream() -> CharStream? {
+    func getInputStream() -> CharStream? {
         if i < tokens.count {
             return tokens[i].getInputStream()
         }
@@ -174,7 +174,7 @@ public class ListTokenSource: TokenSource {
         return nil
     }
 
-    public func getSourceName() -> String {
+    func getSourceName() -> String {
         if let sourceName = sourceName {
             return sourceName
         }
@@ -186,11 +186,11 @@ public class ListTokenSource: TokenSource {
         return "List"
     }
 
-    public func setTokenFactory(_ factory: TokenFactory) {
+    func setTokenFactory(_ factory: TokenFactory) {
         self._factory = factory
     }
 
-    public func getTokenFactory() -> TokenFactory {
+    func getTokenFactory() -> TokenFactory {
         return _factory
     }
 }

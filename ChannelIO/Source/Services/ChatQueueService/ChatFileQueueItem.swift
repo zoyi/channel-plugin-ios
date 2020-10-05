@@ -5,9 +5,8 @@
 //  Created by Jam on 2019/12/05.
 //
 
-import Alamofire
 import Photos
-import RxSwift
+//import RxSwift
 
 class ChatFileQueueItem: ChatQueueBaseItem {
   var name: String = ""
@@ -24,7 +23,7 @@ class ChatFileQueueItem: ChatQueueBaseItem {
   var jsonString: [String:Any]?
   var completion: (([String:Any]?) -> ())?
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
 
   convenience init(
     channelId: String,
@@ -48,11 +47,11 @@ class ChatFileQueueItem: ChatQueueBaseItem {
     self.completion = completion
   }
 
-  func prepare() -> Observable<ChatFileQueueItem> {
-    return Observable.create { [weak self] subscriber in
+  func prepare() -> _RXSwift_Observable<ChatFileQueueItem> {
+    return _RXSwift_Observable.create { [weak self] subscriber in
       guard let self = self else {
         subscriber.onError(ChannelError.unknownError())
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
 
       let signal = self.file
@@ -66,21 +65,21 @@ class ChatFileQueueItem: ChatQueueBaseItem {
           subscriber.onCompleted()
         })
 
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }
   }
 
-  override func request() -> Observable<ChatQueuable> {
+  override func request() -> _RXSwift_Observable<ChatQueuable> {
     guard let data = self.data else {
       return .error(ChannelError.entityError)
     }
 
-    return Observable.create { [weak self] subscriber in
+    return _RXSwift_Observable.create { [weak self] subscriber in
       guard let self = self else {
         subscriber.onError(ChannelError.unknownError())
-        return Disposables.create()
+        return _RXSwift_Disposables.create()
       }
 
       let signal = CHFile
@@ -89,10 +88,10 @@ class ChatFileQueueItem: ChatQueueBaseItem {
           filename: self.name,
           data: data
         )
-        .observeOn(MainScheduler.asyncInstance)
+        .observeOn(_RXSwift_MainScheduler.asyncInstance)
         .throttle(
           .milliseconds(400),
-          scheduler: ConcurrentDispatchQueueScheduler(qos: .background)
+          scheduler: _RXSwift_ConcurrentDispatchQueueScheduler(qos: .background)
         )
         .subscribe(onNext: { string, progress in
           self.progress = progress
@@ -112,7 +111,7 @@ class ChatFileQueueItem: ChatQueueBaseItem {
           }
         })
 
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         signal.dispose()
       }
     }

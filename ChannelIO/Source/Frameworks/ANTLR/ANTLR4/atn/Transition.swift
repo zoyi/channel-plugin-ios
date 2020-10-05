@@ -21,23 +21,23 @@
 
 import Foundation
 
-public class Transition {
+class Transition {
     // constants for serialization
-    public static let EPSILON: Int = 1
-    public static let RANGE: Int = 2
-    public static let RULE: Int = 3
-    public static let PREDICATE: Int = 4
+    static let EPSILON: Int = 1
+    static let RANGE: Int = 2
+    static let RULE: Int = 3
+    static let PREDICATE: Int = 4
     // e.g., {isType(input.LT(1))}?
-    public static let ATOM: Int = 5
-    public static let ACTION: Int = 6
-    public static let SET: Int = 7
+    static let ATOM: Int = 5
+    static let ACTION: Int = 6
+    static let SET: Int = 7
     // ~(A|B) or ~atom, wildcard, which convert to next 2
-    public static let NOT_SET: Int = 8
-    public static let WILDCARD: Int = 9
-    public static let PRECEDENCE: Int = 10
+    static let NOT_SET: Int = 8
+    static let WILDCARD: Int = 9
+    static let PRECEDENCE: Int = 10
 
 
-    public let serializationNames: Array<String> =
+    let serializationNames: Array<String> =
 
     ["INVALID",
      "EPSILON",
@@ -52,7 +52,7 @@ public class Transition {
      "PRECEDENCE"]
 
 
-    public static let serializationTypes: Dictionary<String, Int> = [
+    static let serializationTypes: Dictionary<String, Int> = [
 
             String(describing: EpsilonTransition.self): EPSILON,
             String(describing: RangeTransition.self): RANGE,
@@ -73,7 +73,7 @@ public class Transition {
     /// The target of this transition.
     /// 
 
-    public internal(set) final var target: ATNState
+  final var target: ATNState
 
     init(_ target: ATNState) {
 
@@ -81,7 +81,7 @@ public class Transition {
         self.target = target
     }
 
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         fatalError(#function + " must be overridden")
     }
 
@@ -94,16 +94,16 @@ public class Transition {
     /// consume an input symbol; otherwise, `false` if traversing this
     /// transition consumes (matches) an input symbol.
     /// 
-    public func isEpsilon() -> Bool {
+    func isEpsilon() -> Bool {
         return false
     }
 
 
-    public func labelIntervalSet() -> IntervalSet? {
+    func labelIntervalSet() -> IntervalSet? {
         return nil
     }
 
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         fatalError(#function + " must be overridden")
     }
 }

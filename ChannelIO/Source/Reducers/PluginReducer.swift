@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-func pluginReducer(action: Action, plugin: CHPlugin?) -> CHPlugin {
+func pluginReducer(action: ReSwift_Action, plugin: CHPlugin?) -> CHPlugin {
   switch action {
   case let action as GetPlugin:
     PrefStore.setCurrentPluginId(pluginId: action.plugin.id)

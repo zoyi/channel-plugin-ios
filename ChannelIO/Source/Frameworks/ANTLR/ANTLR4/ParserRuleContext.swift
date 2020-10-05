@@ -26,8 +26,8 @@
 /// group values such as this aggregate.  The getters/setters are there to
 /// satisfy the superclass interface.
 /// 
-open class ParserRuleContext: RuleContext {
-    public var visited = false
+class ParserRuleContext: RuleContext {
+    var visited = false
 
     /// If we are debugging or building a parse tree for a visitor,
     /// we need to track all of the tokens and rule invocations associated
@@ -35,7 +35,7 @@ open class ParserRuleContext: RuleContext {
     /// operation because we don't the need to track the details about
     /// how we parse this rule.
     /// 
-    public var children: [ParseTree]?
+    var children: [ParseTree]?
 
     /// For debugging/tracing purposes, we want to track all of the nodes in
     /// the ATN traversed by the parser for a particular rule.
@@ -55,19 +55,19 @@ open class ParserRuleContext: RuleContext {
     /// 
     /// This does not trace states visited during prediction.
     /// 
-    public var start: Token?, stop: Token?
+    var start: Token?, stop: Token?
 
     /// 
     /// The exception that forced this rule to return. If the rule successfully
     /// completed, this is `null`.
     /// 
-    public var exception: RecognitionException?
+    var exception: RecognitionException?
 
-    public override init() {
+    override init() {
         super.init()
     }
 
-    public init(_ parent: ParserRuleContext?, _ invokingStateNumber: Int) {
+    init(_ parent: ParserRuleContext?, _ invokingStateNumber: Int) {
         super.init(parent, invokingStateNumber)
     }
 
@@ -82,7 +82,7 @@ open class ParserRuleContext: RuleContext {
     /// to the generic XContext so this function must copy those nodes to
     /// the YContext as well else they are lost!
     /// 
-    open func copyFrom(_ ctx: ParserRuleContext) {
+    func copyFrom(_ ctx: ParserRuleContext) {
         self.parent = ctx.parent
         self.invokingState = ctx.invokingState
         self.start = ctx.start
@@ -102,10 +102,10 @@ open class ParserRuleContext: RuleContext {
 
     // Double dispatch methods for listeners
 
-    open func enterRule(_ listener: ParseTreeListener) {
+    func enterRule(_ listener: ParseTreeListener) {
     }
 
-    open func exitRule(_ listener: ParseTreeListener) {
+    func exitRule(_ listener: ParseTreeListener) {
     }
 
     /// Add a parse tree node to this as a child.  Works for
@@ -119,25 +119,25 @@ open class ParserRuleContext: RuleContext {
     /// 
     /// - Since: 4.7
     /// 
-    open func addAnyChild(_ t: ParseTree) {
+    func addAnyChild(_ t: ParseTree) {
         if children == nil {
             children = [ParseTree]()
         }
         children!.append(t)
     }
 
-    open func addChild(_ ruleInvocation: RuleContext) {
+    func addChild(_ ruleInvocation: RuleContext) {
         addAnyChild(ruleInvocation)
     }
 
     /// Add a token leaf node child and force its parent to be this node.
-    open func addChild(_ t: TerminalNode) {
+    func addChild(_ t: TerminalNode) {
         t.setParent(self)
         addAnyChild(t)
     }
 
     /// Add an error node child and force its parent to be this node.
-    open func addErrorNode(_ errorNode: ErrorNode) {
+    func addErrorNode(_ errorNode: ErrorNode) {
         errorNode.setParent(self)
         addAnyChild(errorNode)
     }
@@ -147,20 +147,20 @@ open class ParserRuleContext: RuleContext {
     /// we entered a rule. If we have # label, we will need to remove
     /// generic ruleContext object.
     /// 
-    open func removeLastChild() {
+    func removeLastChild() {
         children?.removeLast()
     }
 
 
     override
-    open func getChild(_ i: Int) -> Tree? {
+    func getChild(_ i: Int) -> Tree? {
         guard let children = children, i >= 0 && i < children.count else {
             return nil
         }
         return children[i]
     }
 
-    open func getChild<T: ParseTree>(_ ctxType: T.Type, i: Int) -> T? {
+    func getChild<T: ParseTree>(_ ctxType: T.Type, i: Int) -> T? {
         guard let children = children, i >= 0 && i < children.count else {
             return nil
         }
@@ -177,7 +177,7 @@ open class ParserRuleContext: RuleContext {
         return nil
     }
 
-    open func getToken(_ ttype: Int, _ i: Int) -> TerminalNode? {
+    func getToken(_ ttype: Int, _ i: Int) -> TerminalNode? {
         guard let children = children, i >= 0 && i < children.count else {
             return nil
         }
@@ -197,7 +197,7 @@ open class ParserRuleContext: RuleContext {
         return nil
     }
 
-    open func getTokens(_ ttype: Int) -> [TerminalNode] {
+    func getTokens(_ ttype: Int) -> [TerminalNode] {
         guard let children = children else {
             return [TerminalNode]()
         }
@@ -212,11 +212,11 @@ open class ParserRuleContext: RuleContext {
         }
     }
 
-    open func getRuleContext<T: ParserRuleContext>(_ ctxType: T.Type, _ i: Int) -> T? {
+    func getRuleContext<T: ParserRuleContext>(_ ctxType: T.Type, _ i: Int) -> T? {
         return getChild(ctxType, i: i)
     }
 
-    open func getRuleContexts<T: ParserRuleContext>(_ ctxType: T.Type) -> [T] {
+    func getRuleContexts<T: ParserRuleContext>(_ ctxType: T.Type) -> [T] {
         guard let children = children else {
             return [T]()
         }
@@ -224,17 +224,17 @@ open class ParserRuleContext: RuleContext {
     }
 
     override
-    open func getChildCount() -> Int {
+    func getChildCount() -> Int {
         return children?.count ?? 0
     }
 
     override
-    open subscript(index: Int) -> ParseTree {
+    subscript(index: Int) -> ParseTree {
         return children![index]
     }
 
     override
-    open func getSourceInterval() -> Interval {
+    func getSourceInterval() -> Interval {
         guard let start = start, let stop = stop else {
              return Interval.INVALID
         }
@@ -246,7 +246,7 @@ open class ParserRuleContext: RuleContext {
     /// Note that the range from start to stop is inclusive, so for rules that do not consume anything
     /// (for example, zero length or error productions) this token may exceed stop.
     /// 
-    open func getStart() -> Token? {
+    func getStart() -> Token? {
         return start
     }
     /// 
@@ -254,12 +254,12 @@ open class ParserRuleContext: RuleContext {
     /// Note that the range from start to stop is inclusive, so for rules that do not consume anything
     /// (for example, zero length or error productions) this token may precede start.
     /// 
-    open func getStop() -> Token? {
+    func getStop() -> Token? {
         return stop
     }
 
     /// Used for rule context info debugging during parse-time, not so much for ATN debugging
-    open func toInfoString(_ recognizer: Parser) -> String {
+    func toInfoString(_ recognizer: Parser) -> String {
         let rules = Array(recognizer.getRuleInvocationStack(self).reversed())
         let startStr = start == nil ? "<unknown>" : start!.description
         let stopStr = stop == nil ? "<unknown>" : stop!.description

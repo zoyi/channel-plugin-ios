@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SnapKit
 
 final class TextInputCell: BaseTableViewCell {
   

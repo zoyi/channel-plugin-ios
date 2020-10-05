@@ -18,13 +18,13 @@
 /// provide equivalent functionality.
 /// 
 
-public class InterpreterRuleContext: ParserRuleContext {
+class InterpreterRuleContext: ParserRuleContext {
     /// 
     /// This is the backing field for _#getRuleIndex_.
     /// 
     private var ruleIndex: Int = -1
 
-    public override init() {
+    override init() {
         super.init()
     }
 
@@ -36,7 +36,7 @@ public class InterpreterRuleContext: ParserRuleContext {
     /// - parameter invokingStateNumber: The invoking state number.
     /// - parameter ruleIndex: The rule index for the current context.
     /// 
-    public init(_ parent: ParserRuleContext?,
+    init(_ parent: ParserRuleContext?,
                 _ invokingStateNumber: Int,
                 _ ruleIndex: Int) {
         self.ruleIndex = ruleIndex
@@ -45,7 +45,7 @@ public class InterpreterRuleContext: ParserRuleContext {
     }
 
     override
-    public func getRuleIndex() -> Int {
+    func getRuleIndex() -> Int {
         return ruleIndex
     }
 
@@ -54,7 +54,7 @@ public class InterpreterRuleContext: ParserRuleContext {
     /// stack to a _org.antlr.v4.runtime.InterpreterRuleContext_ tree.
     /// Return _null_ if `ctx` is null.
     /// 
-    public static func fromParserRuleContext(_ ctx: ParserRuleContext?) -> InterpreterRuleContext? {
+    static func fromParserRuleContext(_ ctx: ParserRuleContext?) -> InterpreterRuleContext? {
         guard let ctx = ctx else {
              return nil
         }

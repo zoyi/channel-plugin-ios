@@ -7,10 +7,7 @@
 //
 
 import UIKit
-import SnapKit
-import Reusable
-import RxSwift
-import JGProgressHUD
+//import RxSwift
 
 class LanguageOptionViewController: BaseViewController {
   private let tableView = UITableView(frame: CGRect.zero, style: .grouped).then {
@@ -24,7 +21,7 @@ class LanguageOptionViewController: BaseViewController {
   ]
   
   let currentLocale: CHLocaleString? = CHUtils.getLocale()
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -139,12 +136,12 @@ extension LanguageOptionViewController: UITableViewDataSource, UITableViewDelega
     let locale = self.locales[indexPath.row]
     ChannelIO.bootConfig?.language = CHUtils.stringToLanguageOption(locale.rawValue)
     
-    let hud = JGProgressHUD(style: .dark)
+    let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
     hud.show(in: self.view)
     
     CHUser
       .updateLanguage(with: locale.rawValue)
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (user, error) in
         defer { hud.dismiss() }
         

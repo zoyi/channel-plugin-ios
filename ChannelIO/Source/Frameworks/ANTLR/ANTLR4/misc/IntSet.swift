@@ -11,7 +11,7 @@
 /// - seealso: org.antlr.v4.runtime.misc.IntervalSet
 /// 
 
-public protocol IntSet {
+protocol IntSet {
     /// 
     /// Adds the specified value to the current set.
     /// 

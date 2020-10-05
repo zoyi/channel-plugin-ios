@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 struct CHSession: ModelType {
   // ModelType
@@ -23,8 +22,8 @@ struct CHSession: ModelType {
   var postedAt: Date? = nil
 }
 
-extension CHSession: Mappable {
-  init?(map: Map) { }
+extension CHSession: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
   init(id: String, chatId: String, user: CHUser, alert: Int, type: ChatType = .userChat) {
     self.id = id
@@ -35,7 +34,7 @@ extension CHSession: Mappable {
     self.chatType = type
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id          <- map["id"]
     chatType    <- map["chatType"]
     chatId      <- map["chatId"]

@@ -12,24 +12,24 @@
 
 import Foundation
 
-public struct Stack<T> {
+struct Stack<T> {
     var items = [T]()
-    public mutating func push(_ item: T) {
+    mutating func push(_ item: T) {
         items.append(item)
     }
     @discardableResult
-    public mutating func pop() -> T {
+    mutating func pop() -> T {
         return items.removeLast()
     }
 
-    public mutating func clear() {
+    mutating func clear() {
         return items.removeAll()
     }
 
-    public func peek() -> T? {
+    func peek() -> T? {
         return items.last
     }
-    public var isEmpty: Bool {
+    var isEmpty: Bool {
         return items.isEmpty
     }
 

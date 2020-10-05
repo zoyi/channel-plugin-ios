@@ -5,7 +5,7 @@
 /// 
 
 
-public class LexerNoViableAltException: RecognitionException, CustomStringConvertible {
+class LexerNoViableAltException: RecognitionException, CustomStringConvertible {
     /// 
     /// Matching attempted at what input index?
     /// 
@@ -16,7 +16,7 @@ public class LexerNoViableAltException: RecognitionException, CustomStringConver
     /// 
     private let deadEndConfigs: ATNConfigSet
 
-    public init(_ lexer: Lexer?,
+    init(_ lexer: Lexer?,
                 _ input: CharStream,
                 _ startIndex: Int,
                 _ deadEndConfigs: ATNConfigSet) {
@@ -27,15 +27,15 @@ public class LexerNoViableAltException: RecognitionException, CustomStringConver
 
     }
 
-    public func getStartIndex() -> Int {
+    func getStartIndex() -> Int {
         return startIndex
     }
 
-    public func getDeadEndConfigs() -> ATNConfigSet {
+    func getDeadEndConfigs() -> ATNConfigSet {
         return deadEndConfigs
     }
 
-    public var description: String {
+    var description: String {
         var symbol = ""
         if let charStream = getInputStream() as? CharStream, startIndex >= 0 && startIndex < charStream.size() {
             let interval = Interval.of(startIndex, startIndex)

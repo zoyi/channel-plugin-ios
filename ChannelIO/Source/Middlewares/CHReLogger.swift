@@ -6,8 +6,6 @@
 //  Copyright © 2017 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
 //let loggingMiddleware: Middleware<Any> = { dispatch, getState in
 //  return { next in
 //    return { action in

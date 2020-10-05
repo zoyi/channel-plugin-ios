@@ -12,7 +12,7 @@
 /// -  4.3
 /// 
 
-public class LookaheadEventInfo: DecisionEventInfo {
+class LookaheadEventInfo: DecisionEventInfo {
     /// 
     /// Constructs a new instance of the _org.antlr.v4.runtime.atn.LookaheadEventInfo_ class with
     /// the specified detailed lookahead information.
@@ -28,7 +28,7 @@ public class LookaheadEventInfo: DecisionEventInfo {
     /// prediction; otherwise, `false` if the current lookahead is part of
     /// an SLL prediction
     /// 
-    public override init(_ decision: Int,
+    override init(_ decision: Int,
                          _ configs: ATNConfigSet?,
                          _ input: TokenStream, _ startIndex: Int, _ stopIndex: Int,
                          _ fullCtx: Bool) {

@@ -66,7 +66,7 @@ class NavigationRoundLabelBackItem: UIBarButtonItem {
 }
 
 class NavigationItem: UIBarButtonItem {
-  public var actionHandler: (() -> Void)?
+  var actionHandler: (() -> Void)?
   
   convenience init(
     image: UIImage?,

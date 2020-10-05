@@ -10,10 +10,10 @@
 /// The block that begins a closure loop.
 /// 
 
-public final class StarBlockStartState: BlockStartState {
+final class StarBlockStartState: BlockStartState {
 
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return ATNState.STAR_BLOCK_START
     }
 }

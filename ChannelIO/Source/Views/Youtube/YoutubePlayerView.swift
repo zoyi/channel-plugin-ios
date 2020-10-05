@@ -25,7 +25,7 @@
 import UIKit
 import WebKit
 
-public protocol YoutubePlayerViewDelegate: NSObject {
+protocol YoutubePlayerViewDelegate: NSObject {
   /// Invoked when the player view is ready to receive API calls.
   ///
   /// - Parameter playerView: The `YoutubePlayerView` instance that has become ready.
@@ -78,7 +78,7 @@ public protocol YoutubePlayerViewDelegate: NSObject {
   func playerViewPreferredInitialLoadingView(_ playerView: YoutubePlayerView) -> UIView?
 }
 
-public extension YoutubePlayerViewDelegate {
+extension YoutubePlayerViewDelegate {
   func playerViewDidBecomeReady(_ playerView: YoutubePlayerView) { }
   func playerView(_ playerView: YoutubePlayerView, didChangedToState state: YoutubePlayerState) { }
   func playerView(_ playerView: YoutubePlayerView, didChangeToQuality quality: YoutubePlaybackQuality) { }
@@ -88,12 +88,12 @@ public extension YoutubePlayerViewDelegate {
   func playerViewPreferredInitialLoadingView(_ playerView: YoutubePlayerView) -> UIView? { return nil }
 }
 
-open class YoutubePlayerView: UIView {
+class YoutubePlayerView: UIView {
   var webView: WKWebView!
   fileprivate weak var loadingView: UIView?
   private var autoplay = false
 
-  public weak var delegate: YoutubePlayerViewDelegate?
+  weak var delegate: YoutubePlayerViewDelegate?
 
   private var configuration: WKWebViewConfiguration {
     let preferences = WKPreferences()
@@ -112,12 +112,12 @@ open class YoutubePlayerView: UIView {
     return webConfiguration
   }
 
-  override public init(frame: CGRect) {
+  override init(frame: CGRect) {
     super.init(frame: frame)
     initializeView()
   }
 
-  public required init?(coder: NSCoder) {
+  required init?(coder: NSCoder) {
     super.init(coder: coder)
     initializeView()
   }
@@ -220,7 +220,7 @@ open class YoutubePlayerView: UIView {
   /// - Parameters:
   ///   - videoId: The YouTube video ID of the video to load in the player view.
   ///   - parArgs: A `Dictionary` of player parameters.
-  public func loadWithVideoId(_ videoId: String, with parArgs: [String: Any]? = nil) {
+  func loadWithVideoId(_ videoId: String, with parArgs: [String: Any]? = nil) {
     let link = createVideoUrlString(videoId, from: parArgs)
     loadPlayer(with: link)
   }
@@ -243,7 +243,7 @@ open class YoutubePlayerView: UIView {
   /// - Parameters:
   ///   - playlistId: The YouTube playlist ID of the playlist to load in the player view.
   ///   - parArgs: A `Dictionary` of player parameters.
-  public func loadWithPlaylistId(_ playlistId: String, with parArgs: [String: Any]? = nil) {
+  func loadWithPlaylistId(_ playlistId: String, with parArgs: [String: Any]? = nil) {
     let link = createPlaylistUrlString(playlistId, from: parArgs)
     loadPlayer(with: link)
   }
@@ -253,14 +253,14 @@ extension YoutubePlayerView {
   /// Starts or resumes playback on the loaded video. Corresponds to this method from
   /// the JavaScript API:
   ///   `https://developers.google.com/youtube/iframe_api_reference#playVideo`
-  public func play() {
+  func play() {
     webView.evaluateJavaScript("player.playVideo();", completionHandler: nil)
   }
 
   /// Pauses playback on a playing video. Corresponds to this method from
   /// the JavaScript API:
   ///   `https://developers.google.com/youtube/iframe_api_reference#pauseVideo`
-  public func pause() {
+  func pause() {
     notifyDelegate(for: URL(string: "ytplayer://onStateChange?data=\(YoutubePlayerState.paused.rawValue)")!)
     webView.evaluateJavaScript("player.pauseVideo();", completionHandler: nil)
   }
@@ -268,7 +268,7 @@ extension YoutubePlayerView {
   /// Stops playback on a playing video. Corresponds to this method from
   /// the JavaScript API:
   ///   `https://developers.google.com/youtube/iframe_api_reference#stopVideo`
-  public func stop() {
+  func stop() {
     webView.evaluateJavaScript("player.stopVideo();", completionHandler: nil)
   }
 
@@ -279,20 +279,20 @@ extension YoutubePlayerView {
   /// - Parameters:
   ///   - seconds: The time in seconds to seek to in the loaded video.
   ///   - allowSeekAhead: Whether to make a new request to the server if the time is outside what is currently buffered. Recommended to set to YES.
-  public func seek(to seconds: Float, allowSeekAhead: Bool) {
+  func seek(to seconds: Float, allowSeekAhead: Bool) {
     let command = "player.seekTo(\(seconds), \(allowSeekAhead));"
     webView.evaluateJavaScript(command, completionHandler: nil)
   }
   
-  public func mute() {
+  func mute() {
     webView.evaluateJavaScript("player.mute();", completionHandler: nil)
   }
   
-  public func toggleMute() {
+  func toggleMute() {
     webView.evaluateJavaScript("if (player.isMuted()) {player.unMute()} else {player.mute()};", completionHandler: nil)
   }
   
-  public func isMuted(_ handler: @escaping (Bool?) -> Void) {
+  func isMuted(_ handler: @escaping (Bool?) -> Void) {
     webView.evaluateJavaScript("player.isMuted();") { result, _ in
       handler(result as? Bool)
     }
@@ -310,7 +310,7 @@ extension YoutubePlayerView {
   ///   - videoId: A video ID to load and begin playing.
   ///   - startSeconds: Time in seconds to start the video when `play` is called.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func loadVideoById(
+  func loadVideoById(
     _ videoId: String,
     startSeconds: Float,
     suggestedQuality quality: YoutubePlaybackQuality) {
@@ -328,7 +328,7 @@ extension YoutubePlayerView {
   ///   - startSeconds: Time in seconds to start the video when `play` is called.
   ///   - endSeconds: Time in seconds to end the video after it begins playing.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func loadVideoById(
+  func loadVideoById(
     _ videoId: String,
     startSeconds: Float,
     endSeconds: Float,
@@ -351,7 +351,7 @@ extension YoutubePlayerView {
   ///   - videoId: A video ID to cue.
   ///   - startSeconds: Time in seconds to start the video when `play` is called.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func cueVideoById(
+  func cueVideoById(
     _ videoId: String,
     startSeconds: Float,
     suggestedQuality quality: YoutubePlaybackQuality) {
@@ -369,7 +369,7 @@ extension YoutubePlayerView {
   ///   - startSeconds: Time in seconds to start the video when `play` is called.
   ///   - endSeconds: Time in seconds to end the video after it begins playing.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func cueVideoById(_ videoId: String, startSeconds: Float, endSeconds: Float, suggestedQuality quality: YoutubePlaybackQuality) {
+  func cueVideoById(_ videoId: String, startSeconds: Float, endSeconds: Float, suggestedQuality quality: YoutubePlaybackQuality) {
     let command = """
     player.cueVideoById({'videoId': '\(videoId)',
     'startSeconds': \(startSeconds),
@@ -389,7 +389,7 @@ extension YoutubePlayerView {
   ///   - startSeconds: Time in seconds to start the video when `play` is called.
   ///   - endSeconds: Time in seconds to end the video after it begins playing.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func loadVideoByUrl(_ videoUrl: String, startSeconds: Float, endSeconds: Float? = nil, suggestedQuality quality: YoutubePlaybackQuality) {
+  func loadVideoByUrl(_ videoUrl: String, startSeconds: Float, endSeconds: Float? = nil, suggestedQuality quality: YoutubePlaybackQuality) {
     let command: String
     if let endSeconds = endSeconds {
       command = "player.loadVideoByUrl('\(videoUrl)', \(startSeconds), \(endSeconds), '\(quality.rawValue)');"
@@ -410,7 +410,7 @@ extension YoutubePlayerView {
   ///   - startSeconds: Time in seconds to start the video when `play` is called.
   ///   - endSeconds: Time in seconds to end the video after it begins playing.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func cueVideoByUrl(_ videoUrl: String, startSeconds: Float, endSeconds: Float? = nil, suggestedQuality quality: YoutubePlaybackQuality) {
+  func cueVideoByUrl(_ videoUrl: String, startSeconds: Float, endSeconds: Float? = nil, suggestedQuality quality: YoutubePlaybackQuality) {
     let command: String
     if let endSeconds = endSeconds {
       command = "player.cueVideoByUrl('\(videoUrl)', \(startSeconds), \(endSeconds), '\(quality.rawValue)');"
@@ -435,7 +435,7 @@ extension YoutubePlayerView {
   ///   - index: A 0-indexed position specifying the first video to play.
   ///   - startSeconds: Time in seconds to start the video when YTPlayerView::playVideo is called.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func cuePlaylistByPlaylistId(
+  func cuePlaylistByPlaylistId(
     _ playlistId: String,
     index: Int = 0,
     startSeconds: Float,
@@ -454,7 +454,7 @@ extension YoutubePlayerView {
   ///   - index: A 0-indexed position specifying the first video to play.
   ///   - startSeconds: Time in seconds to start the video when YTPlayerView::playVideo is called.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func cuePlaylistByVideos(
+  func cuePlaylistByVideos(
     _ videoIds: [String],
     index: Int = 0,
     startSeconds: Float,
@@ -482,7 +482,7 @@ extension YoutubePlayerView {
   ///   - index: A 0-indexed position specifying the first video to play.
   ///   - startSeconds: Time in seconds to start the video when YTPlayerView::playVideo is called.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func loadPlaylistPlaylistId(_ playlistId: String, index: Int = 0, startSeconds: Float, suggestedQuality quality: YoutubePlaybackQuality) {
+  func loadPlaylistPlaylistId(_ playlistId: String, index: Int = 0, startSeconds: Float, suggestedQuality quality: YoutubePlaybackQuality) {
     loadPlaylist("'\(playlistId)'", index: index, startSeconds: startSeconds, suggestedQuality: quality)
   }
 
@@ -497,7 +497,7 @@ extension YoutubePlayerView {
   ///   - index: A 0-indexed position specifying the first video to play.
   ///   - startSeconds: Time in seconds to start the video when YTPlayerView::playVideo is called.
   ///   - quality: `YoutubePlaybackQuality` value suggesting a playback quality.
-  public func loadPlaylistByVideos(_ videoIds: [String], index: Int = 0, startSeconds: Float, suggestedQuality quality: YoutubePlaybackQuality) {
+  func loadPlaylistByVideos(_ videoIds: [String], index: Int = 0, startSeconds: Float, suggestedQuality quality: YoutubePlaybackQuality) {
     loadPlaylist("'\(videoIds.description)'", index: index, startSeconds: startSeconds, suggestedQuality: quality)
   }
 
@@ -514,7 +514,7 @@ extension YoutubePlayerView {
   /// speeds, and 1.5 or 2.0 for faster speeds. This method corresponds to the
   /// JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getPlaybackRate`
-  public func fetchPlaybackRate(_ handler: @escaping (Float?) -> Void) {
+  func fetchPlaybackRate(_ handler: @escaping (Float?) -> Void) {
     webView.evaluateJavaScript("player.getPlaybackRate();") { data, _ in
       handler(data as? Float)
     }
@@ -529,7 +529,7 @@ extension YoutubePlayerView {
   ///   `https://developers.google.com/youtube/iframe_api_reference#setPlaybackRate`
   ///
   /// - Parameter rate: A playback rate to suggest for the player.
-  public func setPlaybackRate(_ rate: Float) {
+  func setPlaybackRate(_ rate: Float) {
     webView.evaluateJavaScript("player.setPlaybackRate(\(rate));", completionHandler: nil)
   }
 
@@ -538,7 +538,7 @@ extension YoutubePlayerView {
   /// JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getPlaybackRate`
   ///
-  public func fetchAvailablePlaybackRates(_ handler: @escaping ([Float]?) -> Void) {
+  func fetchAvailablePlaybackRates(_ handler: @escaping ([Float]?) -> Void) {
       webView.evaluateJavaScript("player.getPlaybackRate();") { data, _ in
         if let stringValue = (data as? String)?.data(using: .utf8) {
           if let rates = ((try? JSONSerialization.jsonObject(with: stringValue, options: []) as? [Float]) as [Float]??) {
@@ -559,7 +559,7 @@ extension YoutubePlayerView {
   ///   `https://developers.google.com/youtube/iframe_api_reference#loopPlaylist`
   ///
   /// - Parameter isLoop: A boolean representing whether the player should loop.
-  public func setLoop(_ isLoop: Bool) {
+  func setLoop(_ isLoop: Bool) {
     let command = "player.setLoop(\(isLoop));"
     webView.evaluateJavaScript(command, completionHandler: nil)
   }
@@ -569,7 +569,7 @@ extension YoutubePlayerView {
   ///   `https://developers.google.com/youtube/iframe_api_reference#shufflePlaylist`
   ///
   /// - Parameter isShuffle: A boolean representing whether the player should shuffle through the playlist.
-  public func setShuffle(_ isShuffle: Bool) {
+  func setShuffle(_ isShuffle: Bool) {
     let command = "player.setShuffle(\(isShuffle));"
     webView.evaluateJavaScript(command, completionHandler: nil)
   }
@@ -582,7 +582,7 @@ extension YoutubePlayerView {
   /// JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getVideoLoadedFraction`
   ///
-  public func fetchVideoLoadedFraction(_ completionHandler: @escaping (Float?) -> Void) {
+  func fetchVideoLoadedFraction(_ completionHandler: @escaping (Float?) -> Void) {
     webView.evaluateJavaScript("player.getVideoLoadedFraction();") { data, _ in
       completionHandler(data as? Float)
     }
@@ -592,7 +592,7 @@ extension YoutubePlayerView {
   /// JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getPlayerState`
   ///
-  public func fetchPlayerState(_ completionHandler: @escaping (YoutubePlayerState) -> Void) {
+  func fetchPlayerState(_ completionHandler: @escaping (YoutubePlayerState) -> Void) {
     webView.evaluateJavaScript("player.getPlayerState().toString();") { data, _ in
       if let stringValue = data as? String, let state = YoutubePlayerState(rawValue: stringValue) {
         completionHandler(state)
@@ -606,7 +606,7 @@ extension YoutubePlayerView {
   /// method corresponds to the JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getCurrentTime`
   ///
-  public func fetchCurrentTime(_ completionHandler: @escaping (Float?) -> Void) {
+  func fetchCurrentTime(_ completionHandler: @escaping (Float?) -> Void) {
     webView.evaluateJavaScript("player.getCurrentTime();") { data, _ in
       completionHandler(data as? Float)
     }
@@ -619,7 +619,7 @@ extension YoutubePlayerView {
   /// JavaScript API defined here:
   ///   https://developers.google.com/youtube/iframe_api_reference#getPlaybackQuality
   ///
-  public func fetchPlaybackQuality(_ completionHandler: @escaping (YoutubePlaybackQuality) -> Void) {
+  func fetchPlaybackQuality(_ completionHandler: @escaping (YoutubePlaybackQuality) -> Void) {
     webView.evaluateJavaScript("player.getPlaybackQuality();") { data, _ in
       if let stringValue = data as? String, let state = YoutubePlaybackQuality(rawValue: stringValue) {
         completionHandler(state)
@@ -634,7 +634,7 @@ extension YoutubePlayerView {
   ///   `https://developers.google.com/youtube/iframe_api_reference#setPlaybackQuality`
   ///
   /// - Parameter quality: `YoutubePlaybackQuality` value to suggest for the player.
-  public func setPlaybackQuality(_ quality: YoutubePlaybackQuality) {
+  func setPlaybackQuality(_ quality: YoutubePlaybackQuality) {
     let command = "player.setPlaybackQuality('\(quality.rawValue)');"
     webView.evaluateJavaScript(command, completionHandler: nil)
   }
@@ -644,7 +644,7 @@ extension YoutubePlayerView {
   /// JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getAvailableQualityLevels`
   ///
-  public func fetchAvailableQualities(_ completionHandler: @escaping ([YoutubePlaybackQuality]?) -> Void) {
+  func fetchAvailableQualities(_ completionHandler: @escaping ([YoutubePlaybackQuality]?) -> Void) {
       webView.evaluateJavaScript("player.getAvailableQualityLevels().toString();") { data, _ in
         if let qualities = (data as? String)?.components(separatedBy: ",").compactMap(YoutubePlaybackQuality.init) {
           completionHandler(qualities)
@@ -661,7 +661,7 @@ extension YoutubePlayerView {
   /// method corresponds to the JavaScript API defined here:
   ///   https://developers.google.com/youtube/iframe_api_reference#getDuration
   ///
-  public func fetchDuration(_ completionHandler: @escaping (TimeInterval?) -> Void) {
+  func fetchDuration(_ completionHandler: @escaping (TimeInterval?) -> Void) {
     webView.evaluateJavaScript("player.getDuration();") { data, _ in
       completionHandler(data as? Double)
     }
@@ -671,7 +671,7 @@ extension YoutubePlayerView {
   /// to the JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getVideoUrl`
   ///
-  public func fetchVideoUrl(_ completionHandler: @escaping (String?) -> Void) {
+  func fetchVideoUrl(_ completionHandler: @escaping (String?) -> Void) {
     webView.evaluateJavaScript("player.getVideoUrl();") { data, _ in
       completionHandler(data as? String)
     }
@@ -681,7 +681,7 @@ extension YoutubePlayerView {
   /// to the JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getVideoEmbedCode`
   ///
-  public func fetchVideoEmbedCode(_ completionHandler: @escaping (String?) -> Void) {
+  func fetchVideoEmbedCode(_ completionHandler: @escaping (String?) -> Void) {
     webView.evaluateJavaScript("player.getVideoEmbedCode();") { data, _ in
       completionHandler(data as? String)
     }
@@ -694,7 +694,7 @@ extension YoutubePlayerView {
   /// to the JavaScript API defined here:
   ///   `https://developers.google.com/youtube/iframe_api_reference#getPlaylist`
   ///
-  public func fetchPlaylist(_ handler: @escaping ([String]?) -> Void) {
+  func fetchPlaylist(_ handler: @escaping ([String]?) -> Void) {
     webView.evaluateJavaScript("player.getPlaylist();") { data, _ in
       if let stringValue = (data as? String)?.data(using: .utf8) {
         if let rates = ((try? JSONSerialization.jsonObject(with: stringValue, options: []) as? [String]) as [String]??) {
@@ -710,7 +710,7 @@ extension YoutubePlayerView {
   /// This method corresponds to the JavaScript API defined here:
   ///   https://developers.google.com/youtube/iframe_api_reference#getPlaylistIndex
   ///
-  public func fetchPlaylistIndex(_ completionHandler: @escaping (Int?) -> Void) {
+  func fetchPlaylistIndex(_ completionHandler: @escaping (Int?) -> Void) {
     webView.evaluateJavaScript("player.getPlaylistIndex();") { data, _ in
       completionHandler(data as? Int)
     }
@@ -722,14 +722,14 @@ extension YoutubePlayerView {
   /// Loads and plays the next video in the playlist. Corresponds to this method from
   /// the JavaScript API:
   ///   `https://developers.google.com/youtube/iframe_api_reference#nextVideo`
-  public func nextVideo() {
+  func nextVideo() {
     webView.evaluateJavaScript("player.nextVideo();", completionHandler: nil)
   }
 
   /// Loads and plays the previous video in the playlist. Corresponds to this method from
   /// the JavaScript API:
   ///   `https://developers.google.com/youtube/iframe_api_reference#previousVideo`
-  public func previousVideo() {
+  func previousVideo() {
     webView.evaluateJavaScript("player.previousVideo();", completionHandler: nil)
   }
 
@@ -737,13 +737,13 @@ extension YoutubePlayerView {
   /// Corresponds to this method from the JavaScript API:
   ///
   /// - Parameter index: The 0-indexed position of the video in the playlist to load and play.
-  public func playVideo(at index: Int) {
+  func playVideo(at index: Int) {
     webView.evaluateJavaScript("player.playVideoAt(\(index));", completionHandler: nil)
   }
 }
 
 extension YoutubePlayerView: WKNavigationDelegate {
-  public func webView(
+  func webView(
     _ webView: WKWebView,
     decidePolicyFor navigationAction: WKNavigationAction,
     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -755,7 +755,7 @@ extension YoutubePlayerView: WKNavigationDelegate {
     }
   }
 
-  public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+  func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
     loadingView?.removeFromSuperview()
   }
 }

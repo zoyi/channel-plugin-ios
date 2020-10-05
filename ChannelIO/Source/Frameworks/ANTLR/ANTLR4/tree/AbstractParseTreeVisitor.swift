@@ -4,8 +4,8 @@
  */
 
 
-open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
-    public override init() {
+class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
+    override init() {
         super.init()
     }
 
@@ -13,7 +13,7 @@ open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
     /// The default implementation calls _org.antlr.v4.runtime.tree.ParseTree#accept_ on the
     /// specified tree.
     /// 
-    open override func visit(_ tree: ParseTree) -> T? {
+    override func visit(_ tree: ParseTree) -> T? {
         return tree.accept(self)
     }
 
@@ -30,7 +30,7 @@ open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
     /// the tree structure. Visitors that modify the tree should override this
     /// method to behave properly in respect to the specific algorithm in use.
     /// 
-    open override func visitChildren(_ node: RuleNode) -> T? {
+    override func visitChildren(_ node: RuleNode) -> T? {
         var result: T? = defaultResult()
         let n = node.getChildCount()
 
@@ -51,7 +51,7 @@ open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
     /// The default implementation returns the result of
     /// _#defaultResult defaultResult_.
     /// 
-    open override func visitTerminal(_ node: TerminalNode) -> T? {
+    override func visitTerminal(_ node: TerminalNode) -> T? {
         return defaultResult()
     }
 
@@ -60,7 +60,7 @@ open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
     /// _#defaultResult defaultResult_.
     /// 
     override
-    open func visitErrorNode(_ node: ErrorNode) -> T? {
+    func visitErrorNode(_ node: ErrorNode) -> T? {
         return defaultResult()
     }
 
@@ -75,7 +75,7 @@ open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
     /// 
     /// - Returns: The default value returned by visitor methods.
     /// 
-    open func defaultResult() -> T? {
+    func defaultResult() -> T? {
         return nil
     }
 
@@ -98,7 +98,7 @@ open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
     /// 
     /// - Returns: The updated aggregate result.
     /// 
-    open func aggregateResult(_ aggregate: T?, _ nextResult: T?) -> T? {
+    func aggregateResult(_ aggregate: T?, _ nextResult: T?) -> T? {
         return nextResult
     }
 
@@ -126,7 +126,7 @@ open class AbstractParseTreeVisitor<T>: ParseTreeVisitor<T> {
     /// `false` to stop visiting children and immediately return the
     /// current aggregate result from _#visitChildren_.
     /// 
-    open func shouldVisitNextChild(_ node: RuleNode, _ currentResult: T?) -> Bool {
+    func shouldVisitNextChild(_ node: RuleNode, _ currentResult: T?) -> Bool {
         return true
     }
 

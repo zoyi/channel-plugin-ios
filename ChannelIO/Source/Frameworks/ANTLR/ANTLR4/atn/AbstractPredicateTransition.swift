@@ -11,9 +11,9 @@
 /// -  Sam Harwell
 /// 
 
-public class AbstractPredicateTransition: Transition {
+class AbstractPredicateTransition: Transition {
 
-    /*public  override init(_ target : ATNState) {
+    /*override init(_ target : ATNState) {
         super.init(target);
     }*/
 

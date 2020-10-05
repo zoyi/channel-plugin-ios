@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
-import RxSwift
+//import RxSwift
 
 enum ReviewType: String {
   case like
@@ -101,8 +100,8 @@ struct CHUserChat: ModelType {
   }
 }
 
-extension CHUserChat: Mappable {
-  init?(map: Map) {}
+extension CHUserChat: ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) {}
   
   init(chatId: String, lastMessageId: String) {
     self.id = chatId
@@ -112,7 +111,7 @@ extension CHUserChat: Mappable {
     self.updatedAt = Date()
   }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     id                <- map["id"]
     userId            <- map["userId"]
     name              <- map["name"]
@@ -139,14 +138,14 @@ extension CHUserChat: Mappable {
 
 //TODO: Refactor to AsyncActionCreator
 extension CHUserChat {
-  static func get(userChatId: String) -> Observable<ChatResponse> {
+  static func get(userChatId: String) -> _RXSwift_Observable<ChatResponse> {
     return UserChatPromise.getChat(userChatId: userChatId)
   }
   
   static func getChats(
     since: String? = nil,
     limit: Int,
-    showCompleted: Bool = false) -> Observable<UserChatsResponse> {
+    showCompleted: Bool = false) -> _RXSwift_Observable<UserChatsResponse> {
     return UserChatPromise.getChats(
       since: since,
       limit: limit,
@@ -158,7 +157,7 @@ extension CHUserChat {
     userChatId: String,
     since: String?,
     limit: Int,
-    sortOrder:String) -> Observable<[String: Any]> {
+    sortOrder:String) -> _RXSwift_Observable<[String: Any]> {
     
     return UserChatPromise.getMessages(
       userChatId: userChatId,
@@ -167,18 +166,18 @@ extension CHUserChat {
       sortOrder: sortOrder)
   }
   
-  static func create() -> Observable<ChatResponse>{
+  static func create() -> _RXSwift_Observable<ChatResponse>{
     return UserChatPromise.createChat(
       pluginId: mainStore.state.plugin.id,
       url: ChannelIO.hostTopControllerName ?? ""
     )
   }
 
-  func remove() -> Observable<Any?> {
+  func remove() -> _RXSwift_Observable<Any?> {
     return UserChatPromise.remove(userChatId: self.id)
   }
   
-  func close(actionId: String, requestId: String = "") -> Observable<CHUserChat> {
+  func close(actionId: String, requestId: String = "") -> _RXSwift_Observable<CHUserChat> {
     return UserChatPromise.close(
       userChatId: self.id,
       actionId: actionId,
@@ -189,7 +188,7 @@ extension CHUserChat {
   func review(
     actionId: String,
     rating: ReviewType,
-    requestId: String) -> Observable<CHUserChat> {
+    requestId: String) -> _RXSwift_Observable<CHUserChat> {
     return UserChatPromise.review(
       userChatId: self.id,
       actionId: actionId,
@@ -215,8 +214,8 @@ extension CHUserChat {
       })
   }
   
-  func read() -> Observable<Bool> {
-    return Observable.create({ (subscriber) in
+  func read() -> _RXSwift_Observable<Bool> {
+    return _RXSwift_Observable.create({ (subscriber) in
       let signal = UserChatPromise.setMessageRead(userChatId: self.id)
           
       let dispose = signal.subscribe(onNext: { (_) in
@@ -228,7 +227,7 @@ extension CHUserChat {
         subscriber.onCompleted()
       })
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         dispose.dispose()
       }
     })

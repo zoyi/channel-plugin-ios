@@ -11,7 +11,7 @@
 /// - Author: Sam Harwell
 /// 
 
-public class Vocabulary: Hashable {
+class Vocabulary: Hashable {
     private static let EMPTY_NAMES: [String?] = [String?](repeating: "", count: 1)
 
     /// 
@@ -22,7 +22,7 @@ public class Vocabulary: Hashable {
     /// _#getDisplayName(int)_ returns the numeric value for all tokens
     /// except _org.antlr.v4.runtime.Token#EOF_.
     /// 
-    public static let EMPTY_VOCABULARY: Vocabulary = Vocabulary(EMPTY_NAMES, EMPTY_NAMES, EMPTY_NAMES)
+    static let EMPTY_VOCABULARY: Vocabulary = Vocabulary(EMPTY_NAMES, EMPTY_NAMES, EMPTY_NAMES)
 
 
     private let literalNames: [String?]
@@ -43,7 +43,7 @@ public class Vocabulary: Hashable {
     /// `null` if no symbolic names are assigned.
     /// 
     /// 
-    public convenience init(_ literalNames: [String?], _ symbolicNames: [String?]) {
+    convenience init(_ literalNames: [String?], _ symbolicNames: [String?]) {
         self.init(literalNames, symbolicNames, nil)
     }
 
@@ -64,7 +64,7 @@ public class Vocabulary: Hashable {
     /// _#getDisplayName(int)_.
     /// 
     /// 
-    public init(_ literalNames: [String?]?, _ symbolicNames: [String?]?, _ displayNames: [String?]?) {
+    init(_ literalNames: [String?]?, _ symbolicNames: [String?]?, _ displayNames: [String?]?) {
         self.literalNames = literalNames != nil ? literalNames! : Vocabulary.EMPTY_NAMES
         self.symbolicNames = symbolicNames != nil ? symbolicNames! : Vocabulary.EMPTY_NAMES
         self.displayNames = displayNames != nil ? displayNames! : Vocabulary.EMPTY_NAMES
@@ -84,7 +84,7 @@ public class Vocabulary: Hashable {
     /// - Returns: A _org.antlr.v4.runtime.Vocabulary_ instance which uses `tokenNames` for
     /// the display names of tokens.
     /// 
-    public static func fromTokenNames(_ tokenNames: [String?]?) -> Vocabulary {
+    static func fromTokenNames(_ tokenNames: [String?]?) -> Vocabulary {
         guard let tokenNames = tokenNames, tokenNames.count > 0 else {
             return EMPTY_VOCABULARY
         }
@@ -116,7 +116,7 @@ public class Vocabulary: Hashable {
     }
 
 
-    public func getLiteralName(_ tokenType: Int) -> String? {
+    func getLiteralName(_ tokenType: Int) -> String? {
         if tokenType >= 0 && tokenType < literalNames.count {
             return literalNames[tokenType]
         }
@@ -125,7 +125,7 @@ public class Vocabulary: Hashable {
     }
 
 
-    public func getSymbolicName(_ tokenType: Int) -> String? {
+    func getSymbolicName(_ tokenType: Int) -> String? {
         if tokenType >= 0 && tokenType < symbolicNames.count {
             return symbolicNames[tokenType]
         }
@@ -137,7 +137,7 @@ public class Vocabulary: Hashable {
     }
 
 
-    public func getDisplayName(_ tokenType: Int) -> String {
+    func getDisplayName(_ tokenType: Int) -> String {
         if tokenType >= 0 && tokenType < displayNames.count {
             if let displayName = displayNames[tokenType] {
                 return displayName
@@ -155,11 +155,11 @@ public class Vocabulary: Hashable {
         return String(tokenType)
     }
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
 }
 
-public func ==(lhs: Vocabulary, rhs: Vocabulary) -> Bool {
+func ==(lhs: Vocabulary, rhs: Vocabulary) -> Bool {
     return lhs === rhs
 }

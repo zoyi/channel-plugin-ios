@@ -8,10 +8,10 @@
 
 import Foundation
 
-public class ANTLRFileStream: ANTLRInputStream {
+class ANTLRFileStream: ANTLRInputStream {
     private let fileName: String
 
-    public init(_ fileName: String, _ encoding: String.Encoding? = nil) throws {
+    init(_ fileName: String, _ encoding: String.Encoding? = nil) throws {
         self.fileName = fileName
         super.init()
         let fileContents = try String(contentsOfFile: fileName, encoding: encoding ?? .utf8)
@@ -20,7 +20,7 @@ public class ANTLRFileStream: ANTLRInputStream {
     }
 
     override
-    public func getSourceName() -> String {
+    func getSourceName() -> String {
         return fileName
     }
 }

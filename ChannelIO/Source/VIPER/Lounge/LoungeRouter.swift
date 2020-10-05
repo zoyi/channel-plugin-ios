@@ -7,15 +7,14 @@
 //
 
 import Foundation
-import RxSwift
-import RxSwiftExt
-import JGProgressHUD
+//import RxSwift
+//import RxSwiftExt
 import MessageUI
 
 class LoungeRouter: NSObject, LoungeRouterProtocol {
   weak var view: LoungeViewProtocol?
   private var isPushing = false
-  var disposeBag = DisposeBag()
+  var disposeBag = _RXSwift_DisposeBag()
   
   func pushChat(
     with chatId: String?,
@@ -93,7 +92,7 @@ class LoungeRouter: NSObject, LoungeRouterProtocol {
       CHAppMessenger
         .getUri(with: source.value)
         .retry(.delayed(maxCount: 3, time: 3.0))
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { (result) in
           defer {
             self.view?.dismissHUD()

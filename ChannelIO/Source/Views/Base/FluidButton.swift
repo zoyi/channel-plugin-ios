@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import SnapKit
-import RxSwift
+//import RxSwift
 
 class RoundLabelBackButton: UIControl {
   
@@ -28,7 +27,7 @@ class RoundLabelBackButton: UIControl {
     return label
   }()
   
-  private var disposeBag = DisposeBag()
+  private var disposeBag = _RXSwift_DisposeBag()
   
   private var normalColor: UIColor?
   private var highlightColor: UIColor?

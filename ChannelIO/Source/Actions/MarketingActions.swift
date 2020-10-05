@@ -7,14 +7,13 @@
 //
 
 import Foundation
-import ReSwift
 
-struct ViewMarketing: Action {
-  public let type: CHMarketingType?
-  public let id: String?
+struct ViewMarketing: ReSwift_Action {
+  let type: CHMarketingType?
+  let id: String?
 }
 
-struct ClickMarketing: Action {
-  public let type: CHMarketingType?
-  public let id: String?
+struct ClickMarketing: ReSwift_Action {
+  let type: CHMarketingType?
+  let id: String?
 }

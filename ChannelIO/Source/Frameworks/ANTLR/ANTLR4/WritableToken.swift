@@ -4,7 +4,7 @@
  */
 
 
-public protocol WritableToken: Token {
+protocol WritableToken: Token {
     func setText(_ text: String)
 
     func setType(_ ttype: Int)

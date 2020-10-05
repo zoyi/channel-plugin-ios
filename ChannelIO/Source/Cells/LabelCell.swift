@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SnapKit
 
 final class LabelCell : BaseTableViewCell {  
   let titleLabel = UILabel().then {

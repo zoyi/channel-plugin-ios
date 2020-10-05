@@ -13,22 +13,22 @@
 
 import Foundation
 
-public class LookupATNConfig: Hashable {
+class LookupATNConfig: Hashable {
 
-    public let config: ATNConfig
-    public init(_ old: ATNConfig) {
+    let config: ATNConfig
+    init(_ old: ATNConfig) {
         // dup
         config = old
     }
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(config.state.stateNumber)
         hasher.combine(config.alt)
         hasher.combine(config.semanticContext)
     }
 }
 
-public func ==(lhs: LookupATNConfig, rhs: LookupATNConfig) -> Bool {
+func ==(lhs: LookupATNConfig, rhs: LookupATNConfig) -> Bool {
     if lhs.config === rhs.config {
         return true
     }

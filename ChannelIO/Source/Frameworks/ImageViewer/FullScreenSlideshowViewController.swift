@@ -29,7 +29,7 @@ import UIKit
 
 internal class FullScreenSlideshowViewController: UIViewController {
 
-    open var slideshow: ImageSlideshow = {
+    var slideshow: ImageSlideshow = {
         let slideshow = ImageSlideshow()
         slideshow.zoomEnabled = true
         slideshow.contentScaleMode = UIViewContentMode.scaleAspectFit
@@ -75,7 +75,7 @@ internal class FullScreenSlideshowViewController: UIViewController {
 
     fileprivate var isInit = true
 
-    override open func viewDidLoad() {
+    override func viewDidLoad() {
       super.viewDidLoad()
 
       view.backgroundColor = backgroundColor
@@ -98,11 +98,11 @@ internal class FullScreenSlideshowViewController: UIViewController {
       view.addSubview(downloadButton)
     }
 
-    override open var prefersStatusBarHidden: Bool {
+    override var prefersStatusBarHidden: Bool {
         return true
     }
 
-    override open func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         if isInit {
@@ -111,7 +111,7 @@ internal class FullScreenSlideshowViewController: UIViewController {
         }
     }
 
-    override open func viewWillDisappear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         slideshow.slideshowItems.forEach { $0.cancelPendingLoad() }

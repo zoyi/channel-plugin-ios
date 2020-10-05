@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import Reusable
-import SnapKit
 
 class WebPageMessageCell: MessageCell {
   private struct WebMetrics {

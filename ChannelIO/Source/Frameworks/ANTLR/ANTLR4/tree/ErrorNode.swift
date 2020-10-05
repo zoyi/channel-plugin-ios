@@ -10,14 +10,14 @@
 /// and deletion as well as during "consume until error recovery set"
 /// upon no viable alternative exceptions.
 /// 
-public class ErrorNode: TerminalNodeImpl {
-    public override init(_ token: Token) {
+class ErrorNode: TerminalNodeImpl {
+    override init(_ token: Token) {
         super.init(token)
     }
 
 
     override
-    public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+    func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
         return visitor.visitErrorNode(self)
     }
 

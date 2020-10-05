@@ -11,9 +11,9 @@
 /// -  Sam Harwell
 /// 
 
-public final class BasicBlockStartState: BlockStartState {
+final class BasicBlockStartState: BlockStartState {
     override
-    public func getStateType() -> Int {
+    func getStateType() -> Int {
         return BlockStartState.BLOCK_START
     }
 }

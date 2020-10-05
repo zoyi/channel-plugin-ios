@@ -13,14 +13,14 @@
 /// -  4.2
 /// 
 
-public final class LexerChannelAction: LexerAction, CustomStringConvertible {
+final class LexerChannelAction: LexerAction, CustomStringConvertible {
     fileprivate let channel: Int
 
     /// 
     /// Constructs a new `channel` action with the specified channel value.
     /// - parameter channel: The channel value to pass to _org.antlr.v4.runtime.Lexer#setChannel_.
     /// 
-    public init(_ channel: Int) {
+    init(_ channel: Int) {
         self.channel = channel
     }
 
@@ -29,7 +29,7 @@ public final class LexerChannelAction: LexerAction, CustomStringConvertible {
     /// 
     /// - returns: The channel to use for the _org.antlr.v4.runtime.Token_ created by the lexer.
     /// 
-    public func getChannel() -> Int {
+    func getChannel() -> Int {
         return channel
     }
 
@@ -38,7 +38,7 @@ public final class LexerChannelAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns _org.antlr.v4.runtime.atn.LexerActionType#CHANNEL_.
     /// 
 
-    public override func getActionType() -> LexerActionType {
+    override func getActionType() -> LexerActionType {
         return LexerActionType.channel
     }
 
@@ -47,7 +47,7 @@ public final class LexerChannelAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns `false`.
     /// 
 
-    public override func isPositionDependent() -> Bool {
+    override func isPositionDependent() -> Bool {
         return false
     }
 
@@ -58,24 +58,24 @@ public final class LexerChannelAction: LexerAction, CustomStringConvertible {
     /// value provided by _#getChannel_.
     /// 
 
-    public override func execute(_ lexer: Lexer) {
+    override func execute(_ lexer: Lexer) {
         lexer.setChannel(channel)
     }
 
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(getActionType())
         hasher.combine(channel)
     }
 
-    public var description: String {
+    var description: String {
         return "channel\(channel)"
     }
 
 }
 
 
-public func ==(lhs: LexerChannelAction, rhs: LexerChannelAction) -> Bool {
+func ==(lhs: LexerChannelAction, rhs: LexerChannelAction) -> Bool {
 
     if lhs === rhs {
         return true

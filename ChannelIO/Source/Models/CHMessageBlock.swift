@@ -6,7 +6,6 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import ObjectMapper
 import UIKit
 
 enum MessageBlockType: String {
@@ -25,10 +24,10 @@ struct CHMessageBlock {
   var isOnlyEmoji: Bool = false
 }
 
-extension CHMessageBlock: Mappable, Equatable {
-  init?(map: Map) { }
+extension CHMessageBlock: ObjectMapper_Mappable, Equatable {
+  init?(map: ObjectMapper_Map) { }
 
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     type <- map["type"]
     blocks <- map["blocks"]
     value <- map["value"]

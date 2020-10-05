@@ -5,7 +5,7 @@
 /// 
 
 
-public class LexerInterpreter: Lexer {
+class LexerInterpreter: Lexer {
     internal let grammarFileName: String
     internal let atn: ATN
 
@@ -18,7 +18,7 @@ public class LexerInterpreter: Lexer {
     internal final var _decisionToDFA: [DFA]
     internal let _sharedContextCache = PredictionContextCache()
 
-    public init(_ grammarFileName: String, _ vocabulary: Vocabulary, _ ruleNames: Array<String>, _ channelNames: Array<String>, _ modeNames: Array<String>, _ atn: ATN, _ input: CharStream) throws {
+    init(_ grammarFileName: String, _ vocabulary: Vocabulary, _ ruleNames: Array<String>, _ channelNames: Array<String>, _ modeNames: Array<String>, _ atn: ATN, _ input: CharStream) throws {
 
         self.grammarFileName = grammarFileName
         self.atn = atn
@@ -40,37 +40,37 @@ public class LexerInterpreter: Lexer {
         }
     }
 
-    public required init(_ input: CharStream) {
+    required init(_ input: CharStream) {
         fatalError("Use the other initializer")
     }
 
     override
-    public func getATN() -> ATN {
+    func getATN() -> ATN {
         return atn
     }
 
     override
-    public func getGrammarFileName() -> String {
+    func getGrammarFileName() -> String {
         return grammarFileName
     }
 
     override
-    public func getRuleNames() -> [String] {
+    func getRuleNames() -> [String] {
         return ruleNames
     }
 
     override
-    public func getChannelNames() -> [String] {
+    func getChannelNames() -> [String] {
         return channelNames
     }
 
     override
-    public func getModeNames() -> [String] {
+    func getModeNames() -> [String] {
         return modeNames
     }
 
     override
-    public func getVocabulary() -> Vocabulary {
+    func getVocabulary() -> Vocabulary {
         if vocabulary != nil {
             return vocabulary!
         }

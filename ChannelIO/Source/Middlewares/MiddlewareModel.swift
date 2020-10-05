@@ -7,20 +7,19 @@
 //
 
 import Foundation
-import ReSwift
 
-typealias SimpleMiddleware<State: StateType> = (Action, MiddlewareContext<State>) -> Action?
+typealias SimpleMiddleware<State: ReSwift_StateType> = (ReSwift_Action, MiddlewareContext<State>) -> ReSwift_Action?
 
-struct MiddlewareContext<State: StateType> {
-  let dispatch: DispatchFunction
+struct MiddlewareContext<State: ReSwift_StateType> {
+  let dispatch: ReSwift_DispatchFunction
   let getState: () -> State?
-  let next: DispatchFunction
+  let next: ReSwift_DispatchFunction
   var state: State? {
     return getState()
   }
 }
 
-func createMiddleware<State: StateType>(_ middleware: @escaping SimpleMiddleware<State>) -> ReSwift.Middleware<State> {
+func createMiddleware<State: ReSwift_StateType>(_ middleware: @escaping SimpleMiddleware<State>) -> ReSwift_Middleware<State> {
   return { dispatch, getState in
     return { next in
       return { action in

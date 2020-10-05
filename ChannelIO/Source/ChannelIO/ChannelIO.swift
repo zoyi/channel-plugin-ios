@@ -6,14 +6,10 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import SnapKit
-import ReSwift
-import RxSwift
+//import RxSwift
 import UserNotifications
-import SDWebImageWebPCoder
-import Alamofire
 
-internal let mainStore = Store<AppState>(
+internal let mainStore = ReSwift_Store<AppState>(
   reducer: appReducer,
   state: nil,
   middleware: [
@@ -93,7 +89,7 @@ public final class ChannelIO: NSObject {
   }
   internal static var subscriber : CHPluginSubscriber?
 
-  internal static var disposeBag = DisposeBag()
+  internal static var disposeBag = _RXSwift_DisposeBag()
   internal static var pushToken: String?
   internal static var currentAlertCount: Int?
 
@@ -121,7 +117,7 @@ public final class ChannelIO: NSObject {
   internal static var isDebugMode: Bool = false
   
   // MARK: StoreSubscriber
-  class CHPluginSubscriber : StoreSubscriber {
+  class CHPluginSubscriber : ReSwift_StoreSubscriber {
     //refactor into two selectors
     func newState(state: AppState) {
       dispatch {
@@ -174,8 +170,8 @@ public final class ChannelIO: NSObject {
   @objc
   public class func initialize(_ application: UIApplication) {
     ChannelIO.addNotificationObservers()
-    let coder = SDImageWebPCoder.shared
-    SDImageCodersManager.shared.addCoder(coder)
+    let coder = _ChannelIO_SDImageWebPCoder.shared
+    _ChannelIO_SDImageCodersManager.shared.addCoder(coder)
   }
   
   @available(iOS 13.0, *)
@@ -249,7 +245,7 @@ public final class ChannelIO: NSObject {
         .flatMap { event in
           return ChannelIO.bootChannel()
         }
-        .observeOn(MainScheduler.instance)
+        .observeOn(_RXSwift_MainScheduler.instance)
         .subscribe(onNext: { _ in
           PrefStore.setBootConfig(bootConfig: config)
           ChannelIO.registerPushToken()
@@ -333,7 +329,7 @@ public final class ChannelIO: NSObject {
   public class func shutdown() {
     AppManager.shared
     .unregisterToken()
-    .observeOn(MainScheduler.instance)
+    .observeOn(_RXSwift_MainScheduler.instance)
     .subscribe(onNext: { _ in
       dlog("shutdown success")
       ChannelIO.reset(isSleeping: false)

@@ -6,9 +6,7 @@
 //  Copyright © 2017년 ZOYI. All rights reserved.
 //
 
-import ReSwift
-
-struct UIState: StateType {
+struct UIState: ReSwift_StateType {
   var isChannelVisible: Bool = false
   var launcherIsHidden: Bool = true
   var profileIsHidden: Bool = true
@@ -54,6 +52,6 @@ public enum BootStatus : Int {
   case unknown
 }
 
-struct BootState: StateType {
+struct BootState: ReSwift_StateType {
   var status: BootStatus = .notInitialized
 }

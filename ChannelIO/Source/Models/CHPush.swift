@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 
 protocol CHPopupDisplayable {
   var writer: CHEntity? { get }
@@ -96,10 +95,10 @@ struct CHPopup: CHPopupDisplayable {
   }
 }
 
-extension CHPopup : Mappable {
-  init?(map: Map) { }
+extension CHPopup : ObjectMapper_Mappable {
+  init?(map: ObjectMapper_Map) { }
   
-  mutating func mapping(map: Map) {
+  mutating func mapping(map: ObjectMapper_Map) {
     message   <- map["entity"]
     manager   <- map["refers.manager"]
     bot       <- map["refers.bot"]

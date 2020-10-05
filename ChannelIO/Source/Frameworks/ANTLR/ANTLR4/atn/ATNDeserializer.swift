@@ -13,8 +13,8 @@
 
 import Foundation
 
-public class ATNDeserializer {
-    public static let SERIALIZED_VERSION = 3
+class ATNDeserializer {
+    static let SERIALIZED_VERSION = 3
 
     ///
     /// This is the earliest supported serialized UUID.
@@ -54,12 +54,12 @@ public class ATNDeserializer {
     /// 
     /// This is the current serialized UUID.
     /// 
-    public static let SERIALIZED_UUID = ADDED_UNICODE_SMP
+    static let SERIALIZED_UUID = ADDED_UNICODE_SMP
 
 
     private let deserializationOptions: ATNDeserializationOptions
 
-    public init(_ deserializationOptions: ATNDeserializationOptions? = nil) {
+    init(_ deserializationOptions: ATNDeserializationOptions? = nil) {
         self.deserializationOptions = deserializationOptions ?? ATNDeserializationOptions()
     }
 
@@ -86,7 +86,7 @@ public class ATNDeserializer {
     }
 
 
-    public func deserialize(_ inData: [Character]) throws -> ATN {
+    func deserialize(_ inData: [Character]) throws -> ATN {
         // don't adjust the first value since that's the version number
         let data = [inData[0]] + inData[1...].map { Character(integerLiteral: $0.unicodeValue - 2) }
 
@@ -350,7 +350,7 @@ public class ATNDeserializer {
         }
     }
 
-    public func deserializeFromJson(_ jsonStr: String) -> ATN {
+    func deserializeFromJson(_ jsonStr: String) -> ATN {
         guard !jsonStr.isEmpty else {
             fatalError("ATN Serialization is empty,Please include *LexerATN.json and  *ParserATN.json in TARGETS-Build Phases-Copy Bundle Resources")
         }
@@ -371,7 +371,7 @@ public class ATNDeserializer {
         fatalError("Could not deserialize ATN ")
     }
 
-    public func dictToJson(_ dict: [String: Any]) throws -> ATN {
+    func dictToJson(_ dict: [String: Any]) throws -> ATN {
         let version = dict["version"] as! Int
         if version != ATNDeserializer.SERIALIZED_VERSION {
             let reason = "Could not deserialize ATN with version \(version) (expected \(ATNDeserializer.SERIALIZED_VERSION))."

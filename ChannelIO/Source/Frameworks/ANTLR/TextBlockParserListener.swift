@@ -4,7 +4,7 @@
  * This interface defines a complete listener for a parse tree produced by
  * {@link TextBlockParser}.
  */
-public protocol TextBlockParserListener: ParseTreeListener {
+protocol TextBlockParserListener: ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link TextBlockParser#block}.
 	 - Parameters:

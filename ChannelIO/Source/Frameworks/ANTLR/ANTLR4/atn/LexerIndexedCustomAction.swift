@@ -20,7 +20,7 @@
 /// -  4.2
 /// 
 
-public final class LexerIndexedCustomAction: LexerAction {
+final class LexerIndexedCustomAction: LexerAction {
     fileprivate let offset: Int
     fileprivate let action: LexerAction
 
@@ -37,7 +37,7 @@ public final class LexerIndexedCustomAction: LexerAction {
     /// - parameter action: The lexer action to execute at a particular offset in the
     /// input _org.antlr.v4.runtime.CharStream_.
     /// 
-    public init(_ offset: Int, _ action: LexerAction) {
+    init(_ offset: Int, _ action: LexerAction) {
         self.offset = offset
         self.action = action
     }
@@ -50,7 +50,7 @@ public final class LexerIndexedCustomAction: LexerAction {
     /// - returns: The location in the input _org.antlr.v4.runtime.CharStream_ at which the lexer
     /// action should be executed.
     /// 
-    public func getOffset() -> Int {
+    func getOffset() -> Int {
         return offset
     }
 
@@ -59,7 +59,7 @@ public final class LexerIndexedCustomAction: LexerAction {
     /// 
     /// - returns: A _org.antlr.v4.runtime.atn.LexerAction_ object which executes the lexer action.
     /// 
-    public func getAction() -> LexerAction {
+    func getAction() -> LexerAction {
         return action
     }
 
@@ -70,7 +70,7 @@ public final class LexerIndexedCustomAction: LexerAction {
     /// on the _org.antlr.v4.runtime.atn.LexerAction_ returned by _#getAction_.
     /// 
 
-    public override func getActionType() -> LexerActionType {
+    override func getActionType() -> LexerActionType {
         return action.getActionType()
     }
 
@@ -79,7 +79,7 @@ public final class LexerIndexedCustomAction: LexerAction {
     /// - returns: This method returns `true`.
     /// 
 
-    public override func isPositionDependent() -> Bool {
+    override func isPositionDependent() -> Bool {
         return true
     }
 
@@ -90,19 +90,19 @@ public final class LexerIndexedCustomAction: LexerAction {
     /// using the provided `lexer`.
     /// 
 
-    public override func execute(_ lexer: Lexer) throws {
+    override func execute(_ lexer: Lexer) throws {
         // assume the input stream position was properly set by the calling code
         try action.execute(lexer)
     }
 
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(offset)
         hasher.combine(action)
     }
 }
 
-public func ==(lhs: LexerIndexedCustomAction, rhs: LexerIndexedCustomAction) -> Bool {
+func ==(lhs: LexerIndexedCustomAction, rhs: LexerIndexedCustomAction) -> Bool {
     if lhs === rhs {
         return true
     }

@@ -5,26 +5,26 @@
 /// 
 
 
-public class ArrayPredictionContext: PredictionContext {
+class ArrayPredictionContext: PredictionContext {
     /// 
     /// Parent can be null only if full ctx mode and we make an array
     /// from _#EMPTY_ and non-empty. We merge _#EMPTY_ by using null parent and
     /// returnState == _#EMPTY_RETURN_STATE_.
     /// 
-    public private(set) final var parents: [PredictionContext?]
+    private(set) final var parents: [PredictionContext?]
 
     /// 
     /// Sorted for merge, no duplicates; if present,
     /// _#EMPTY_RETURN_STATE_ is always last.
     /// 
-    public final let returnStates: [Int]
+    final let returnStates: [Int]
 
-    public convenience init(_ a: SingletonPredictionContext) {
+    convenience init(_ a: SingletonPredictionContext) {
         let parents = [a.parent]
         self.init(parents, [a.returnState])
     }
 
-    public init(_ parents: [PredictionContext?], _ returnStates: [Int]) {
+    init(_ parents: [PredictionContext?], _ returnStates: [Int]) {
 
         self.parents = parents
         self.returnStates = returnStates
@@ -32,29 +32,29 @@ public class ArrayPredictionContext: PredictionContext {
     }
 
     override
-    final public func isEmpty() -> Bool {
+    final func isEmpty() -> Bool {
         // since EMPTY_RETURN_STATE can only appear in the last position, we
         // don't need to verify that size==1
         return returnStates[0] == PredictionContext.EMPTY_RETURN_STATE
     }
 
     override
-    final public func size() -> Int {
+    final func size() -> Int {
         return returnStates.count
     }
 
     override
-    final public func getParent(_ index: Int) -> PredictionContext? {
+    final func getParent(_ index: Int) -> PredictionContext? {
         return parents[index]
     }
 
     override
-    final public func getReturnState(_ index: Int) -> Int {
+    final func getReturnState(_ index: Int) -> Int {
         return returnStates[index]
     }
 
     override
-    public var description: String {
+    var description: String {
         if isEmpty() {
             return "[]"
         }
@@ -103,7 +103,7 @@ public class ArrayPredictionContext: PredictionContext {
 }
 
 
-public func ==(lhs: ArrayPredictionContext, rhs: ArrayPredictionContext) -> Bool {
+func ==(lhs: ArrayPredictionContext, rhs: ArrayPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }

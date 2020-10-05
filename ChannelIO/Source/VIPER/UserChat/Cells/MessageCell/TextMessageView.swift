@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import SnapKit
-import RxSwift
+//import RxSwift
 
 class TextMessageView : BaseView {
   private struct Metric {
@@ -94,7 +93,7 @@ class TextMessageView : BaseView {
   private var buttonTopMessageConstraint: Constraint?
   private var buttonBottomConstraint: Constraint?
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()

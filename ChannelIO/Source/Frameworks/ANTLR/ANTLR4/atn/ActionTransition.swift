@@ -5,18 +5,18 @@
 /// 
 
 
-public final class ActionTransition: Transition, CustomStringConvertible {
-    public let ruleIndex: Int
-    public let actionIndex: Int
-    public let isCtxDependent: Bool
+final class ActionTransition: Transition, CustomStringConvertible {
+    let ruleIndex: Int
+    let actionIndex: Int
+    let isCtxDependent: Bool
     // e.g., $i ref in action
 
 
-    public convenience init(_ target: ATNState, _ ruleIndex: Int) {
+    convenience init(_ target: ATNState, _ ruleIndex: Int) {
         self.init(target, ruleIndex, -1, false)
     }
 
-    public init(_ target: ATNState, _ ruleIndex: Int, _ actionIndex: Int, _ isCtxDependent: Bool) {
+    init(_ target: ATNState, _ ruleIndex: Int, _ actionIndex: Int, _ isCtxDependent: Bool) {
 
         self.ruleIndex = ruleIndex
         self.actionIndex = actionIndex
@@ -25,21 +25,21 @@ public final class ActionTransition: Transition, CustomStringConvertible {
     }
 
     override
-    public func getSerializationType() -> Int {
+    func getSerializationType() -> Int {
         return Transition.ACTION
     }
 
     override
-    public func isEpsilon() -> Bool {
+    func isEpsilon() -> Bool {
         return true // we are to be ignored by analysis 'cept for predicates
     }
 
     override
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+    func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         return false
     }
 
-    public var description: String {
+    var description: String {
         return "action_\(ruleIndex):\(actionIndex)"
     }
 

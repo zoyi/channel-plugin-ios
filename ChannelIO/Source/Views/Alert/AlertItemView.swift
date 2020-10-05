@@ -6,7 +6,7 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
+//import RxSwift
 import UIKit
 
 protocol AlertMainContentProtoocl {

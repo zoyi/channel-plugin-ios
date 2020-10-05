@@ -41,7 +41,7 @@ import Foundation
 /// - note: JDK1.0
 /// 
 
-public class BitSet: Hashable, CustomStringConvertible {
+class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// BitSets are packed into arrays of "words."  Currently a word is
     /// a long, which consists of 64 bits, requiring 6 address bits.
@@ -99,7 +99,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     }
 
     /// 
-    /// Every public method must preserve these invariants.
+    /// Every method must preserve these invariants.
     /// 
     fileprivate func checkInvariants() {
         assert((wordsInUse == 0 || words[wordsInUse - 1] != 0), "Expected: (wordsInUse==0||words[wordsInUse-1]!=0)")
@@ -129,7 +129,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// Creates a new bit set. All bits are initially `false`.
     /// 
-    public init() {
+    init() {
         sizeIsSticky = false
         words = [Int64](repeating: Int64(0), count: BitSet.wordIndex(BitSet.BITS_PER_WORD - 1) + 1)
         //initWords(BitSet.BITS_PER_WORD);
@@ -145,7 +145,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - throws: _ANTLRError.negativeArraySize_ if the specified initial size
     /// is negative
     /// 
-    public init(_ nbits: Int) throws {
+    init(_ nbits: Int) throws {
         // nbits can't be negative; size 0 is OK
 
         // words = [BitSet.wordIndex(nbits-1) + 1];
@@ -186,7 +186,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - returns: a long array containing a little-endian representation
     /// of all the bits in this bit set
     /// 
-    public func toLongArray() -> [Int64] {
+    func toLongArray() -> [Int64] {
         return copyOf(words, wordsInUse)
     }
 
@@ -250,7 +250,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - parameter  bitIndex: the index of the bit to flip
     /// - throws: _ANTLRError.IndexOutOfBounds_ if the specified index is negative
     /// 
-    public func flip(_ bitIndex: Int) throws {
+    func flip(_ bitIndex: Int) throws {
         if bitIndex < 0 {
             throw ANTLRError.indexOutOfBounds(msg: "bitIndex < 0: \(bitIndex)")
 
@@ -276,7 +276,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// or `toIndex` is negative, or `fromIndex` is
     /// larger than `toIndex`
     /// 
-    public func flip(_ fromIndex: Int, _ toIndex: Int) throws {
+    func flip(_ fromIndex: Int, _ toIndex: Int) throws {
         try BitSet.checkRange(fromIndex, toIndex)
 
         if fromIndex == toIndex {
@@ -318,7 +318,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - parameter  bitIndex: a bit index
     /// - throws: _ANTLRError.IndexOutOfBounds_ if the specified index is negative
     /// 
-    public func set(_ bitIndex: Int) throws {
+    func set(_ bitIndex: Int) throws {
         if bitIndex < 0 {
             throw ANTLRError.indexOutOfBounds(msg: "bitIndex < 0: \(bitIndex)")
 
@@ -339,7 +339,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - parameter  value: a boolean value to set
     /// - throws: _ANTLRError.IndexOutOfBounds_ if the specified index is negative
     /// 
-    public func set(_ bitIndex: Int, _ value: Bool) throws {
+    func set(_ bitIndex: Int, _ value: Bool) throws {
         if value {
             try set(bitIndex)
         } else {
@@ -357,7 +357,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// or `toIndex` is negative, or `fromIndex` is
     /// larger than `toIndex`
     /// 
-    public func set(_ fromIndex: Int, _ toIndex: Int) throws {
+    func set(_ fromIndex: Int, _ toIndex: Int) throws {
         try BitSet.checkRange(fromIndex, toIndex)
 
         if fromIndex == toIndex {
@@ -404,7 +404,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// or `toIndex` is negative, or `fromIndex` is
     /// larger than `toIndex`
     /// 
-    public func set(_ fromIndex: Int, _ toIndex: Int, _ value: Bool) throws {
+    func set(_ fromIndex: Int, _ toIndex: Int, _ value: Bool) throws {
         if value {
             try set(fromIndex, toIndex)
         } else {
@@ -419,7 +419,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - throws: _ANTLRError.IndexOutOfBounds_ if the specified index is negative
     /// -   JDK1.0
     /// 
-    public func clear(_ bitIndex: Int) throws {
+    func clear(_ bitIndex: Int) throws {
         if bitIndex < 0 {
             throw ANTLRError.indexOutOfBounds(msg: "bitIndex < 0: \(bitIndex)")
         }
@@ -444,7 +444,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// or `toIndex` is negative, or `fromIndex` is
     /// larger than `toIndex`
     /// 
-    public func clear(_ fromIndex: Int,  _ toIndex: Int) throws {
+    func clear(_ fromIndex: Int,  _ toIndex: Int) throws {
         var toIndex = toIndex
         try BitSet.checkRange(fromIndex, toIndex)
 
@@ -491,7 +491,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// Sets all of the bits in this BitSet to `false`.
     /// 
-    public func clear() {
+    func clear() {
         while wordsInUse > 0 {
             wordsInUse -= 1
             words[wordsInUse] = 0
@@ -508,7 +508,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - returns: the value of the bit with the specified index
     /// - throws: _ANTLRError.IndexOutOfBounds_ if the specified index is negative
     /// 
-    public func get(_ bitIndex: Int) throws -> Bool {
+    func get(_ bitIndex: Int) throws -> Bool {
         if bitIndex < 0 {
             throw ANTLRError.indexOutOfBounds(msg: "bitIndex < 0: \(bitIndex)")
 
@@ -532,7 +532,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// or `toIndex` is negative, or `fromIndex` is
     /// larger than `toIndex`
     /// 
-    public func get(_ fromIndex: Int, _ toIndex: Int) throws -> BitSet {
+    func get(_ fromIndex: Int, _ toIndex: Int) throws -> BitSet {
         var toIndex = toIndex
         try  BitSet.checkRange(fromIndex, toIndex)
 
@@ -595,7 +595,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     ///
     /// Equivalent to nextSetBit(0), but guaranteed not to throw an exception.
     ///
-    public func firstSetBit() -> Int {
+    func firstSetBit() -> Int {
         return try! nextSetBit(0)
     }
 
@@ -617,7 +617,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// is no such bit
     /// - throws: _ANTLRError.IndexOutOfBounds_ if the specified index is negative
     /// 
-    public func nextSetBit(_ fromIndex: Int) throws -> Int {
+    func nextSetBit(_ fromIndex: Int) throws -> Int {
         if fromIndex < 0 {
             throw ANTLRError.indexOutOfBounds(msg: "fromIndex < 0: \(fromIndex)")
 
@@ -644,7 +644,7 @@ public class BitSet: Hashable, CustomStringConvertible {
         }
     }
 
-    public static func numberOfTrailingZeros(_ i: Int64) -> Int {
+    static func numberOfTrailingZeros(_ i: Int64) -> Int {
         // HD, Figure 5-14
         var x: Int32, y: Int32
         if i == 0 {
@@ -690,7 +690,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - returns: the index of the next clear bit
     /// - throws: _ANTLRError.IndexOutOfBounds if the specified index is negative
     /// 
-    public func nextClearBit(_ fromIndex: Int) throws -> Int {
+    func nextClearBit(_ fromIndex: Int) throws -> Int {
         // Neither spec nor implementation handle bitsets of maximal length.
         // See 4816253.
         if fromIndex < 0 {
@@ -740,7 +740,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// than `-1`
     /// - note: 1.7
     /// 
-    public func previousSetBit(_ fromIndex: Int) throws -> Int {
+    func previousSetBit(_ fromIndex: Int) throws -> Int {
         if fromIndex < 0 {
             if fromIndex == -1 {
                 return -1
@@ -782,7 +782,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// than `-1`
     /// - note: 1.7
     /// 
-    public func previousClearBit(_ fromIndex: Int) throws -> Int {
+    func previousClearBit(_ fromIndex: Int) throws -> Int {
         if fromIndex < 0 {
             if fromIndex == -1 {
                 return -1
@@ -813,7 +813,7 @@ public class BitSet: Hashable, CustomStringConvertible {
         }
     }
 
-    public static func numberOfLeadingZeros(_ i: Int64) -> Int {
+    static func numberOfLeadingZeros(_ i: Int64) -> Int {
         // HD, Figure 5-6
         if i == 0 {
             return 64
@@ -851,7 +851,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - returns: the logical size of this `BitSet`
     /// 
-    public func length() -> Int {
+    func length() -> Int {
         if wordsInUse == 0 {
             return 0
         }
@@ -866,7 +866,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - returns: boolean indicating whether this `BitSet` is empty
     /// 
-    public func isEmpty() -> Bool {
+    func isEmpty() -> Bool {
         return wordsInUse == 0
     }
 
@@ -878,7 +878,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - returns: boolean indicating whether this `BitSet` intersects
     /// the specified `BitSet`
     /// 
-    public func intersects(_ set: BitSet) -> Bool {
+    func intersects(_ set: BitSet) -> Bool {
         var i: Int = min(wordsInUse, set.wordsInUse) - 1
         while i >= 0 {
             if (words[i] & set.words[i]) != 0 {
@@ -894,7 +894,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - returns: the number of bits set to `true` in this `BitSet`
     /// 
-    public func cardinality() -> Int {
+    func cardinality() -> Int {
         var sum: Int = 0
         for i in 0..<wordsInUse {
             sum += BitSet.bitCount(words[i])
@@ -902,7 +902,7 @@ public class BitSet: Hashable, CustomStringConvertible {
         return sum
     }
 
-    public static func bitCount(_ i: Int64) -> Int {
+    static func bitCount(_ i: Int64) -> Int {
         var i = i
         // HD, Figure 5-14
         i = i - ((i >>> 1) & 0x5555555555555555)
@@ -924,7 +924,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - parameter set: a bit set
     /// 
-    public func and(_ set: BitSet) {
+    func and(_ set: BitSet) {
         if self == set {
             return
         }
@@ -952,7 +952,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - parameter set: a bit set
     /// 
-    public func or(_ set: BitSet) {
+    func or(_ set: BitSet) {
         if self == set {
             return
         }
@@ -992,7 +992,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - parameter  set: a bit set
     /// 
-    public func xor(_ set: BitSet) {
+    func xor(_ set: BitSet) {
         let wordsInCommon: Int = min(wordsInUse, set.wordsInUse)
 
         if wordsInUse < set.wordsInUse {
@@ -1023,7 +1023,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// - parameter  set: the `BitSet` with which to mask this
     /// `BitSet`
     /// 
-    public func andNot(_ set: BitSet) {
+    func andNot(_ set: BitSet) {
         // Perform logical (a & !b) on words in common
         var i: Int = min(wordsInUse, set.wordsInUse) - 1
         while i >= 0 {
@@ -1042,7 +1042,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// The hash code is defined to be the result of the following
     /// calculation:
     /// `
-    /// public int hashCode() {
+    /// int hashCode() {
     /// long h = 1234;
     /// long[] words = toLongArray();
     /// for (int i = words.length; --i >= 0; )
@@ -1065,7 +1065,7 @@ public class BitSet: Hashable, CustomStringConvertible {
         return Int(Int32((h >> 32) ^ h))
     }
 
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(hashCode)
     }
 
@@ -1076,7 +1076,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - returns: the number of bits currently in this bit set
     /// 
-    public func size() -> Int {
+    func size() -> Int {
         return words.count * BitSet.BITS_PER_WORD
     }
 
@@ -1120,7 +1120,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// - returns: a string representation of this bit set
     /// 
-    public var description: String {
+    var description: String {
         checkInvariants()
 
         //let numBits: Int = (wordsInUse > 128) ?
@@ -1145,7 +1145,7 @@ public class BitSet: Hashable, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: BitSet, rhs: BitSet) -> Bool {
+func ==(lhs: BitSet, rhs: BitSet) -> Bool {
 
     if lhs === rhs {
         return true

@@ -7,11 +7,7 @@
 //
 
 import UIKit
-import ReSwift
-import RxSwift
-import JGProgressHUD
-import SnapKit
-import Alamofire
+//import RxSwift
 
 class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal struct Constants {
@@ -102,14 +98,14 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   internal var loadingFile: ChatFileQueueItem?
   internal var waitingFileCount: Int = 0
   
-  let progressHud = JGProgressHUD(style: .dark).then {
-    $0.indicatorView = JGProgressHUDPieIndicatorView()
+  let progressHud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark).then {
+    $0.indicatorView = _ChannelIO_JGProgressHUDPieIndicatorView()
     $0.progress = 0
   }
   
-  private let hud = JGProgressHUD(style: .dark)
+  private let hud = _ChannelIO_JGProgressHUD(style: .JGProgressHUDStyleDark)
 
-  let disposeBag = DisposeBag()
+  let disposeBag = _RXSwift_DisposeBag()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -275,7 +271,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     self.messageView.maxHeight = 184
     self.messageView.textContainerView
       .signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         guard let self = self else { return }
         self.messageView.becomeResponder(
@@ -287,7 +283,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
   private func initActionButtons() {
     self.view.addSubview(self.newChatButton)
     self.newChatButton.signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         self?.presenter?.didClickOnNewChat(with: "", from: self?.navigationController)
     }).disposed(by: self.disposeBag)
@@ -321,7 +317,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
     }
     
     self.newMessageView.signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (event) in
         self?.scrollToBottom(false)
       }).disposed(by: self.disposeBag)
@@ -351,7 +347,7 @@ class UserChatView: CHMessageViewController, UserChatViewProtocol {
       make.height.equalTo(Constants.chatBotStartViewHeight)
     }
     self.chatBotStartView.signalForClick()
-      .observeOn(MainScheduler.instance)
+      .observeOn(_RXSwift_MainScheduler.instance)
       .subscribe(onNext: { [weak self] (_) in
         self?.presenter?.didClickOnMarketingToSupportBotButton()
       }).disposed(by: self.disposeBag)

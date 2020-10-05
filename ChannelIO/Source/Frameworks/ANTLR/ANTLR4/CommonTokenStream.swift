@@ -31,7 +31,7 @@
 /// channel.
 /// 
 
-public class CommonTokenStream: BufferedTokenStream {
+class CommonTokenStream: BufferedTokenStream {
     /// 
     /// Specifies the channel to use for filtering tokens.
     /// 
@@ -47,7 +47,7 @@ public class CommonTokenStream: BufferedTokenStream {
     /// 
     /// - parameter tokenSource: The token source.
     /// 
-    public override init(_ tokenSource: TokenSource) {
+    override init(_ tokenSource: TokenSource) {
         super.init(tokenSource)
     }
 
@@ -61,7 +61,7 @@ public class CommonTokenStream: BufferedTokenStream {
     /// - parameter tokenSource: The token source.
     /// - parameter channel: The channel to use for filtering tokens.
     /// 
-    public convenience init(_ tokenSource: TokenSource, _ channel: Int) {
+    convenience init(_ tokenSource: TokenSource, _ channel: Int) {
         self.init(tokenSource)
         self.channel = channel
     }
@@ -92,7 +92,7 @@ public class CommonTokenStream: BufferedTokenStream {
     }
 
     override
-    public func LT(_ k: Int) throws -> Token? {
+    func LT(_ k: Int) throws -> Token? {
         //System.out.println("enter LT("+k+")");
         try lazyInit()
         if k == 0 {
@@ -118,7 +118,7 @@ public class CommonTokenStream: BufferedTokenStream {
     /// 
     /// Count EOF just once.
     /// 
-    public func getNumberOfOnChannelTokens() throws -> Int {
+    func getNumberOfOnChannelTokens() throws -> Int {
         var n = 0
         try fill()
         let length = tokens.count

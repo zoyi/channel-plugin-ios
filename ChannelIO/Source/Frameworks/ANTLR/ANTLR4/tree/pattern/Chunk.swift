@@ -17,12 +17,12 @@
 /// regular tokens of the text surrounding the tags.
 /// 
 
-public class Chunk: Equatable {
-    public static func ==(lhs: Chunk, rhs: Chunk) -> Bool {
+class Chunk: Equatable {
+    static func ==(lhs: Chunk, rhs: Chunk) -> Bool {
         return lhs.isEqual(rhs)
     }
 
-    public func isEqual(_ other: Chunk) -> Bool {
+    func isEqual(_ other: Chunk) -> Bool {
         return false
     }
 }

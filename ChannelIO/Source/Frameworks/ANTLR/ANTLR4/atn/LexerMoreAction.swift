@@ -15,11 +15,11 @@
 /// -  4.2
 /// 
 
-public final class LexerMoreAction: LexerAction, CustomStringConvertible {
+final class LexerMoreAction: LexerAction, CustomStringConvertible {
     /// 
     /// Provides a singleton instance of this parameterless lexer action.
     /// 
-    public static let INSTANCE: LexerMoreAction = LexerMoreAction()
+    static let INSTANCE: LexerMoreAction = LexerMoreAction()
 
     /// 
     /// Constructs the singleton instance of the lexer `more` command.
@@ -32,7 +32,7 @@ public final class LexerMoreAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns _org.antlr.v4.runtime.atn.LexerActionType#MORE_.
     /// 
     override
-    public func getActionType() -> LexerActionType {
+    func getActionType() -> LexerActionType {
         return LexerActionType.more
     }
 
@@ -41,7 +41,7 @@ public final class LexerMoreAction: LexerAction, CustomStringConvertible {
     /// - returns: This method returns `false`.
     /// 
     override
-    public func isPositionDependent() -> Bool {
+    func isPositionDependent() -> Bool {
         return false
     }
 
@@ -51,20 +51,20 @@ public final class LexerMoreAction: LexerAction, CustomStringConvertible {
     /// This action is implemented by calling _org.antlr.v4.runtime.Lexer#more_.
     /// 
     override
-    public func execute(_ lexer: Lexer) {
+    func execute(_ lexer: Lexer) {
         lexer.more()
     }
 
 
-    public override func hash(into hasher: inout Hasher) {
+    override func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
 
-    public var description: String {
+    var description: String {
         return "more"
     }
 }
 
-public func ==(lhs: LexerMoreAction, rhs: LexerMoreAction) -> Bool {
+func ==(lhs: LexerMoreAction, rhs: LexerMoreAction) -> Bool {
     return lhs === rhs
 }

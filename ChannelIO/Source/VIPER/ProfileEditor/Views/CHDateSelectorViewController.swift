@@ -6,8 +6,7 @@
 //  Copyright © 2020 ZOYI. All rights reserved.
 //
 
-import RxSwift
-import SnapKit
+//import RxSwift
 
 class CHDateSelectorView: BaseView {
   private enum Metrics {
@@ -51,10 +50,10 @@ class CHDateSelectorView: BaseView {
     }
   }
   
-  private var submitSubject = PublishSubject<Date>()
-  private var cancelSubject = PublishSubject<Any?>()
+  private var submitSubject = _RXSwift_PublishSubject<Date>()
+  private var cancelSubject = _RXSwift_PublishSubject<Any?>()
   
-  private let disposeBag = DisposeBag()
+  private let disposeBag = _RXSwift_DisposeBag()
   
   override func initialize() {
     super.initialize()
@@ -127,17 +126,17 @@ class CHDateSelectorView: BaseView {
     }
   }
   
-  func signalForSubmit() -> Observable<Date> {
+  func signalForSubmit() -> _RXSwift_Observable<Date> {
     return self.submitSubject
   }
   
-  func signalForCancel() -> Observable<Any?> {
+  func signalForCancel() -> _RXSwift_Observable<Any?> {
     return self.cancelSubject
   }
 
-  static func create(with date: Date?) -> Observable<(Date?)> {
-    return Observable.create { subscriber in
-      guard var controller = CHUtils.getTopController() else { return Disposables.create() }
+  static func create(with date: Date?) -> _RXSwift_Observable<(Date?)> {
+    return _RXSwift_Observable.create { subscriber in
+      guard var controller = CHUtils.getTopController() else { return _RXSwift_Disposables.create() }
       if let navigation = controller.navigationController {
         controller = navigation
       }
@@ -160,7 +159,7 @@ class CHDateSelectorView: BaseView {
           subscriber.onCompleted()
         }
       
-      return Disposables.create {
+      return _RXSwift_Disposables.create {
         submitSignal.dispose()
         cancelSignal.dispose()
       }

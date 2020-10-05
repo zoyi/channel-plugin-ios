@@ -235,16 +235,16 @@
 /// 
 import Foundation
 
-open class ParserATNSimulator: ATNSimulator {
-    public let debug = false
-    public let debug_list_atn_decisions = false
-    public let dfa_debug = false
-    public let retry_debug = false
+class ParserATNSimulator: ATNSimulator {
+    let debug = false
+    let debug_list_atn_decisions = false
+    let dfa_debug = false
+    let retry_debug = false
 
     /// 
     /// Just in case this optimization is bad, add an ENV variable to turn it off
     /// 
-    public static let TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT: Bool = {
+    static let TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT: Bool = {
         if let value = ProcessInfo.processInfo.environment["TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT"] {
             return NSString(string: value).boolValue
         }
@@ -253,7 +253,7 @@ open class ParserATNSimulator: ATNSimulator {
 
     internal final unowned let parser: Parser
 
-    public private(set) final var decisionToDFA: [DFA]
+    private(set) final var decisionToDFA: [DFA]
 
     ///
     /// SLL, LL, or LL + exact ambig detection?
@@ -289,12 +289,12 @@ open class ParserATNSimulator: ATNSimulator {
     private let dfaStatesMutex = Mutex()
 
 //    /// Testing only!
-//    public convenience init(_ atn : ATN, _ decisionToDFA : [DFA],
+//    convenience init(_ atn : ATN, _ decisionToDFA : [DFA],
 //                              _ sharedContextCache : PredictionContextCache) {
 //        self.init(nil, atn, decisionToDFA, sharedContextCache);
 //    }
 
-    public init(_ parser: Parser, _ atn: ATN,
+    init(_ parser: Parser, _ atn: ATN,
         _ decisionToDFA: [DFA],
         _ sharedContextCache: PredictionContextCache) {
 
@@ -307,17 +307,17 @@ open class ParserATNSimulator: ATNSimulator {
     }
 
     override
-    open func reset() {
+    func reset() {
     }
 
     override
-    open func clearDFA() {
+    func clearDFA() {
         for d in 0..<decisionToDFA.count {
             decisionToDFA[d] = DFA(atn.getDecisionState(d)!, d)
         }
     }
 
-    open func adaptivePredict(_ input: TokenStream, _ decision: Int,
+    func adaptivePredict(_ input: TokenStream, _ decision: Int,
         _ outerContext: ParserRuleContext?) throws -> Int {
         var outerContext = outerContext
         if debug || debug_list_atn_decisions {
@@ -1653,7 +1653,7 @@ open class ParserATNSimulator: ATNSimulator {
         return true
     }
 
-    open func getRuleName(_ index: Int) -> String {
+    func getRuleName(_ index: Int) -> String {
         if index >= 0  {
             return parser.getRuleNames()[index]
         }
@@ -1873,7 +1873,7 @@ open class ParserATNSimulator: ATNSimulator {
     }
 
 
-    public final func getTokenName(_ t: Int) -> String {
+    final func getTokenName(_ t: Int) -> String {
         if t == CommonToken.EOF {
             return "EOF"
         }
@@ -1886,7 +1886,7 @@ open class ParserATNSimulator: ATNSimulator {
         return "\(displayName) <\(t)>"
     }
 
-    public final func getLookaheadName(_ input: TokenStream) throws -> String {
+    final func getLookaheadName(_ input: TokenStream) throws -> String {
         return try getTokenName(input.LA(1))
     }
 
@@ -1895,7 +1895,7 @@ open class ParserATNSimulator: ATNSimulator {
     /// it out for clarity now that alg. works well. We can leave this
     /// "dead" code for a bit.
     /// 
-    public final func dumpDeadEndConfigs(_ nvae: NoViableAltException) {
+    final func dumpDeadEndConfigs(_ nvae: NoViableAltException) {
         errPrint("dead end configs: ")
         for c in nvae.getDeadEndConfigs()!.configs {
             var trans = "no edges"
@@ -2067,16 +2067,16 @@ open class ParserATNSimulator: ATNSimulator {
         }
     }
 
-    public final func setPredictionMode(_ mode: PredictionMode) {
+    final func setPredictionMode(_ mode: PredictionMode) {
         self.mode = mode
     }
 
 
-    public final func getPredictionMode() -> PredictionMode {
+    final func getPredictionMode() -> PredictionMode {
         return mode
     }
 
-    public final func getParser() -> Parser {
+    final func getParser() -> Parser {
         return parser
     }
 }
