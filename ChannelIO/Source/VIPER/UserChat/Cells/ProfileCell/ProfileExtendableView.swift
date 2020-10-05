@@ -32,7 +32,7 @@ class ProfileExtendableView: BaseView {
     let font = UIFont.systemFont(ofSize: 11)
     let attributes: [NSAttributedString.Key: Any] = [
       .font: font,
-      .foregroundColor: CHColors.blueyGrey,
+      .foregroundColor: UIColor.grey500,
       .paragraphStyle: paragraph,
       .baselineOffset: (paragraph.minimumLineHeight - font.lineHeight)/4
     ]
@@ -40,7 +40,7 @@ class ProfileExtendableView: BaseView {
     let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
       .bold:[
         .font: UIFont.boldSystemFont(ofSize: 11),
-        .foregroundColor: CHColors.blueyGrey,
+        .foregroundColor: UIColor.grey500,
         .paragraphStyle: paragraph
       ]
     ]
@@ -61,15 +61,15 @@ class ProfileExtendableView: BaseView {
       UserChatActions.openAgreement()
     }
     
-    self.layer.borderColor = CHColors.dark10.cgColor
+    self.layer.borderColor = UIColor.black5.cgColor
     self.layer.borderWidth = 1.f
     self.layer.cornerRadius = 6.f
     
-    self.layer.shadowColor = CHColors.dark.cgColor
+    self.layer.shadowColor = UIColor.grey900.cgColor
     self.layer.shadowOpacity = 0.2
     self.layer.shadowOffset = CGSize(width: 0, height: Metric.shadowHeight)
     self.layer.shadowRadius = 2
-    self.backgroundColor = CHColors.white
+    self.backgroundColor = .white
   }
   
   override func setLayouts() {
@@ -195,7 +195,7 @@ class ProfileExtendableView: BaseView {
       let font = UIFont.systemFont(ofSize: 11)
       let attributes: [NSAttributedString.Key: Any] = [
         .font: font,
-        .foregroundColor: CHColors.blueyGrey,
+        .foregroundColor: UIColor.grey500,
         .paragraphStyle: paragraph,
         .baselineOffset: (paragraph.minimumLineHeight - font.lineHeight)/4
       ]
@@ -203,7 +203,7 @@ class ProfileExtendableView: BaseView {
       let tagAttributes: [StringTagType: [NSAttributedString.Key: Any]] = [
         StringTagType.bold:[
           .font: font,
-          .foregroundColor: CHColors.blueyGrey,
+          .foregroundColor: UIColor.grey500,
           .paragraphStyle: paragraph,
           .baselineOffset: (paragraph.minimumLineHeight - font.lineHeight)/4
         ]

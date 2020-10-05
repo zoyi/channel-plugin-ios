@@ -29,7 +29,7 @@ final class DateActionView: BaseView {
     frame: CGRect(x: 0, y: 0, width: Metric.indicatorSize, height: Metric.indicatorSize)
   ).then {
     $0.type = .circleStrokeSpin
-    $0.color = CHColors.light
+    $0.color = .grey500
     $0.isHidden = true
   }
   
@@ -54,7 +54,7 @@ final class DateActionView: BaseView {
     
     self.layer.cornerRadius = Metric.cornerRadius
     self.layer.borderWidth = Metric.borderWidth
-    self.layer.borderColor = CHColors.paleGrey20.cgColor
+    self.layer.borderColor = UIColor.grey200.cgColor
     
     self.addSubview(self.selectButton)
     self.addSubview(self.textField)
@@ -140,17 +140,17 @@ extension DateActionView: Actionable {
   }
   
   func setFocus() {
-    self.layer.borderColor = CHColors.brightSkyBlue.cgColor
+    self.layer.borderColor = UIColor.cobalt400.cgColor
     self.focusSubject.onNext(true)
   }
   
   func setOutFocus() {
-    self.layer.borderColor = CHColors.paleGrey20.cgColor
+    self.layer.borderColor = UIColor.grey200.cgColor
     self.focusSubject.onNext(false)
   }
   
   func setInvalid() {
-    self.layer.borderColor = CHColors.yellowishOrange.cgColor
+    self.layer.borderColor = UIColor.orange400.cgColor
     self.selectButton.isHidden = false
     self.loadIndicator.isHidden = true
   }

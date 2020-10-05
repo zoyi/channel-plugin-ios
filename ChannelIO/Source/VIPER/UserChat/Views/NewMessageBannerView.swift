@@ -17,7 +17,7 @@ final class NewMessageBannerView : BaseView {
   
   let newMessageLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.cobalt
+    $0.textColor = .cobalt400
     $0.numberOfLines = 1
     $0.text = CHAssets.localized("ch.new_message")
   }
@@ -28,7 +28,7 @@ final class NewMessageBannerView : BaseView {
     self.backgroundColor = UIColor.white
     
     self.layer.cornerRadius = 24.f
-    self.layer.shadowColor = CHColors.dark.cgColor
+    self.layer.shadowColor = UIColor.grey900.cgColor
     self.layer.shadowOffset = CGSize(width: 0.f, height: 3.f)
     self.layer.shadowRadius = 3.f
     self.layer.shadowOpacity = 0.3

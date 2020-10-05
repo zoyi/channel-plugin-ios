@@ -106,7 +106,7 @@ class LoungeMainView: BaseView {
   override func initialize() {
     super.initialize()
     
-    self.layer.shadowColor = CHColors.dark.cgColor
+    self.layer.shadowColor = UIColor.grey900.cgColor
     self.layer.shadowOffset = CGSize(width: 0.f, height: 0.f)
     self.layer.shadowRadius = 4.f
     self.layer.shadowOpacity = 0.2
@@ -272,7 +272,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
       
       let button = _ChannelIO_MGSwipeButton(
         title: CHAssets.localized("ch.chat.delete"),
-        backgroundColor: CHColors.warmPink,
+        backgroundColor: .red300,
         insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10)
       )
       
@@ -282,7 +282,7 @@ extension LoungeMainView: UITableViewDataSource, UITableViewDelegate {
         button
       ]
       cell.rightSwipeSettings.transition = .MGSwipeTransitionDrag
-      cell.tintColor = CHColors.warmPink
+      cell.tintColor = .red300
       cell.delegate = self
       return cell
     }

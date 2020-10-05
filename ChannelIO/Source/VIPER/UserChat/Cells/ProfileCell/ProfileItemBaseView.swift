@@ -25,7 +25,7 @@ class ProfileItemBaseView: BaseView {
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
   }
   let indexLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
@@ -118,12 +118,12 @@ class ProfileItemBaseView: BaseView {
     let current = "\(index + 1)"
     let currentText = current.addFont(
       UIFont.systemFont(ofSize: 13),
-      color: CHColors.dark,
+      color: .grey900,
       on: NSRange(location: 0, length: current.count))
     let total = "/\(model.profileItems.count)"
     let totalText = total.addFont(
       UIFont.systemFont(ofSize: 13),
-      color: CHColors.silver,
+      color: .grey300,
       on: NSRange(location: 0, length: total.count))
     self.indexLabel.isHidden = false
     self.indexLabel.attributedText = currentText.combine(totalText)
@@ -131,12 +131,12 @@ class ProfileItemBaseView: BaseView {
   
   func setInvalidTitle(with text: String?) {
     self.titleLabel.text = text
-    self.titleLabel.textColor = CHColors.yellowishOrange
+    self.titleLabel.textColor = .orange400
   }
   
   func setTitle(with text: String?) {
     self.titleLabel.text = text
-    self.titleLabel.textColor = CHColors.blueyGrey
+    self.titleLabel.textColor = .grey500
   }
   
   class func viewHeight() -> CGFloat {

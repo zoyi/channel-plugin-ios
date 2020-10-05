@@ -17,7 +17,7 @@ class UserChatsEmptyView: BaseView {
   }
 
   struct Color {
-    static let description = CHColors.blueyGrey
+    static let description = UIColor.grey500
   }
 
   // MARK: Properties

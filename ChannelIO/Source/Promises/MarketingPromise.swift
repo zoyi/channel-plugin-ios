@@ -20,6 +20,7 @@ struct MarketingPromise {
     return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.CampaignClick(id, userId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):
@@ -41,6 +42,7 @@ struct MarketingPromise {
     return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.CampaignView(id))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):
@@ -66,7 +68,7 @@ struct MarketingPromise {
         .responseData { response in
           switch response.result {
           case .success(let data):
-            let json = SwiftyJSON.JSON(data)
+            let json = SwiftyJSON_JSON(data)
             guard
               let supportBot = ObjectMapper_Mapper<CHSupportBot>().map(JSONObject: json["supportBot"].object)
             else {
@@ -97,6 +99,7 @@ struct MarketingPromise {
     return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.OneTimeMsgClick(id, userId, params as RestRouter.ParametersType))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):
@@ -118,6 +121,7 @@ struct MarketingPromise {
     return _RXSwift_Observable.create { subscriber in
       let req = AF
         .request(RestRouter.OneTimeMsgView(id))
+        .validate(statusCode: 200..<300)
         .responseData { response in
           switch response.result {
           case .success(_):

@@ -14,17 +14,17 @@ import UIKit
 
 final class CHEditTextField : BaseView {
   let topDivider = UIView().then {
-    $0.backgroundColor = CHColors.dark20
+    $0.backgroundColor = .grey300
   }
   
   let field = UITextField().then {
     $0.font = UIFont.systemFont(ofSize: 17)
-    $0.textColor = CHColors.dark
+    $0.textColor = UIColor.grey900
     $0.clearButtonMode = .whileEditing
   }
   
   let botDivider = UIView().then {
-    $0.backgroundColor = CHColors.dark20
+    $0.backgroundColor = .grey300
   }
   
   private let changeSubject = _RXRelay_PublishRelay<String>()

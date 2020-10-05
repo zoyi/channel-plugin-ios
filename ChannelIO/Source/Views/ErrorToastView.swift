@@ -17,8 +17,8 @@ final class ErrorToastView: BaseView {
   }
 
   struct Color {
-    static let background = CHColors.yellow
-    static let title = CHColors.white
+    static let background = UIColor.orange400
+    static let title = UIColor.white
   }
 
   struct Metric {

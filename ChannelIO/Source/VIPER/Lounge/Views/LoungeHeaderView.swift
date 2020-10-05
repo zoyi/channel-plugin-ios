@@ -75,13 +75,13 @@ class LoungeHeaderView: BaseView {
   let offlineImageView = CHView.gradientImageView(
     named: "moon",
     colors: [
-      CHColors.yellowishOrange,
-      CHColors.yellowishOrange.withAlphaComponent(0.8)
+      .orange400,
+      UIColor.orange400.withAlphaComponent(0.8)
     ],
     startPoint: .top,
     endPoint: .bottom).then {
       $0.dropShadow(
-        with: CHColors.black10,
+        with: .black10,
         opacity: 1,
         offset: CGSize(width: 0, height: 2),
         radius: 6)
@@ -99,7 +99,10 @@ class LoungeHeaderView: BaseView {
     $0.startPoint = CAGradientLayer.Point.bottom.value
     $0.endPoint = CAGradientLayer.Point.top.value
     $0.frame = CGRect(x: 0, y: 150 + statusBarHeight, width: UIScreen.main.bounds.width, height: 100)
-    $0.colors = [CHColors.paleGreyFour.cgColor, CHColors.paleGreyFour0.cgColor]
+    $0.colors = [
+      UIColor.grey100.cgColor,
+      UIColor.grey100.withAlphaComponent(0.0).cgColor
+    ]
   }
   
   var model: LoungeHeaderViewModel? = nil

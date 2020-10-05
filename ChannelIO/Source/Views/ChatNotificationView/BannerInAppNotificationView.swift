@@ -108,7 +108,7 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     
     $0.linkTextAttributes = [
-      .foregroundColor: CHColors.cobalt,
+      .foregroundColor: UIColor.cobalt400,
       .underlineStyle: 0
     ]
   }
@@ -202,7 +202,6 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
       .signalForClick()
       .bind { [weak self] _ in
         guard let self = self else { return }
-        CHUser.closePopup().subscribe().disposed(by: self.disposeBag)
         self.closeSignal.onNext(nil)
         self.closeSignal.onCompleted()
       }.disposed(by: self.disposeBag)
@@ -329,39 +328,18 @@ class BannerInAppNotificationView: BaseView, InAppNotification {
     self.fileInfoView.configure(with: viewModel.files, isInAppPush: true)
     
     self.buttonContainerView.isHidden = viewModel.buttons.count == 0
-    self.firstButtonView.isHidden = true
-    self.secondButtonView.isHidden = true
-    if let first = viewModel.buttons.get(index: 0) {
-      self.firstButtonView.isHidden = false
-      self.firstButtonView.text = first.title
-      self.firstButtonView.textColor = first.theme == nil ? .grey900 : .white
-      self.firstButtonView.backgroundColor = first.theme?.color ?? .black5
-      self.firstButtonView
-        .signalForClick()
-        .bind { _ in
-          if let url = first.linkURL {
-            self.closeSignal.onNext(nil)
-            self.closeSignal.onCompleted()
-            url.openWithUniversal()
-          }
-        }.disposed(by: self.disposeBag)
-    }
     
-    if let second = viewModel.buttons.get(index: 1) {
-      self.secondButtonView.isHidden = false
-      self.secondButtonView.text = second.title
-      self.secondButtonView.textColor = second.theme == nil ? .grey900 : .white
-      self.secondButtonView.backgroundColor = second.theme?.color ?? .black5
-      self.secondButtonView
-        .signalForClick()
-        .bind { _ in
-          if let url = second.linkURL {
-            self.closeSignal.onNext(nil)
-            self.closeSignal.onCompleted()
-            url.openWithUniversal()
-          }
-        }.disposed(by: self.disposeBag)
-    }
+    self.configureButtonView(
+      with: viewModel.buttons.get(index: 0),
+      mkInfo: viewModel.mkInfo,
+      view: self.firstButtonView
+    )
+    
+    self.configureButtonView(
+      with: viewModel.buttons.get(index: 1),
+      mkInfo: viewModel.mkInfo,
+      view: self.secondButtonView
+    )
   }
   
   func insertView(on view: UIView?) {
@@ -434,5 +412,39 @@ extension BannerInAppNotificationView : UITextViewDelegate {
     }
     
     return true
+  }
+  
+  func configureButtonView(
+    with button: CHLinkButton?,
+    mkInfo: MarketingInfo?,
+    view: UILabel
+  ) {
+    guard let button = button else {
+      view.isHidden = true
+      return
+    }
+    
+    view.isHidden = false
+    view.text = button.title
+    view.textColor = button.theme == nil ? .grey900 : .white
+    view.backgroundColor = button.theme?.color ?? .black5
+    view
+      .signalForClick()
+      .bind { _ in
+        if let mkInfo = mkInfo {
+          AppManager.shared.sendClickMarketing(
+            type: mkInfo.type,
+            id: mkInfo.id,
+            userId: PrefStore.getCurrentUserId(),
+            url: button.linkURL?.absoluteString
+          )
+        }
+        
+        if let url = button.linkURL {
+          self.closeSignal.onNext(nil)
+          self.closeSignal.onCompleted()
+          url.openWithUniversal()
+        }
+      }.disposed(by: self.disposeBag)
   }
 }

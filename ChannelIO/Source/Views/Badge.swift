@@ -26,9 +26,9 @@ final class Badge: NeverClearView {
   }
 
   struct Color {
-    static let text = CHColors.white
-    static let background = CHColors.neonRed
-    static let border = CHColors.warmPink
+    static let text = UIColor.white
+    static let background = UIColor.red400
+    static let border = UIColor.red300
   }
 
   // MARK: Properties

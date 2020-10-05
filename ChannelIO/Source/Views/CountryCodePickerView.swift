@@ -36,13 +36,13 @@ final class CountryCodePickerView : BaseView {
   
   let actionView = UIView()
   let closeButton = UIButton().then {
-    $0.setTitleColor(CHColors.dark, for: .normal)
+    $0.setTitleColor(.grey900, for: .normal)
     $0.setTitle(CHAssets.localized("ch.common.cancel"), for: .normal)
     $0.titleLabel?.font = UIFont.systemFont(ofSize: 17.f)
     
   }
   let submitButton = UIButton().then {
-    $0.setTitleColor(CHColors.dark, for: .normal)
+    $0.setTitleColor(.grey900, for: .normal)
     $0.setTitle(CHAssets.localized("ch.button_confirm"), for: .normal)
     $0.titleLabel?.font = UIFont.systemFont(ofSize: 17.f)
   }
@@ -50,11 +50,11 @@ final class CountryCodePickerView : BaseView {
     $0.setValue(UIColor.grey900, forKeyPath: "textColor")
   }
   let pickerContainerView = UIView().then {
-    $0.backgroundColor = CHColors.white
+    $0.backgroundColor = .white
   }
   
   let backgroundView = UIView().then {
-    $0.backgroundColor = CHColors.gray.withAlphaComponent(0.5)
+    $0.backgroundColor = UIColor.grey700.withAlphaComponent(0.5)
   }
   
   static func presentCodePicker(with code: String) -> _RXSwift_Observable<(String?, String?)> {

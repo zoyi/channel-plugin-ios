@@ -34,7 +34,7 @@ extension UITableView {
       width: INDICATOR_SIZE,
       height: INDICATOR_SIZE))
     indicator.type = .ballRotateChase
-    indicator.color = CHColors.light
+    indicator.color = .grey500
     indicator.startAnimating()
     
     view.addSubview(indicator)

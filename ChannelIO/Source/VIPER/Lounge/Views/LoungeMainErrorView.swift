@@ -20,7 +20,7 @@ class LoungeMainErrorView: BaseView {
   let descLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 14)
     $0.text = CHAssets.localized("ch.error.common.description")
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
   }
   let refreshButton = CHButtonFactory.errorRefresh()
   

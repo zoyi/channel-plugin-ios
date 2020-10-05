@@ -17,7 +17,7 @@ class ProfileEditorViewController: BaseViewController {
   
   private let footerLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 13)
-    $0.textColor = CHColors.blueyGrey
+    $0.textColor = .grey500
     $0.numberOfLines = 0
   }
   

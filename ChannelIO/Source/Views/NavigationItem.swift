@@ -121,7 +121,7 @@ class NavigationItem: UIBarButtonItem {
   convenience init(
     title: String?,
     style: UIBarButtonItem.Style,
-    textColor: UIColor = CHColors.defaultTint,
+    textColor: UIColor = .cobalt400,
     actionHandler: (() -> Void)?) {
     
     self.init(title: title, style: style, target: nil, action: #selector(barButtonItemPressed))

@@ -100,7 +100,7 @@ class LoungeExternalAppView: BaseView {
     super.initialize()
     
     self.clipsToBounds = true
-    self.backgroundColor = CHColors.dark10
+    self.backgroundColor = .black5
     self.addSubview(self.button)
   }
   

@@ -19,12 +19,12 @@ class WatermarkView : BaseView {
     $0.attributedText = CHAssets.localized(
       "ch.watermark",
       attributes: [
-        .foregroundColor: CHColors.dark,
+        .foregroundColor: UIColor.grey900,
         .font: UIFont.systemFont(ofSize: 11)
       ],
       tagAttributes: [
         StringTagType.bold:[
-          .foregroundColor: CHColors.dark,
+          .foregroundColor: UIColor.grey900,
           .font: UIFont.boldSystemFont(ofSize: 11)
         ]
       ])
@@ -32,7 +32,7 @@ class WatermarkView : BaseView {
   
   override func initialize() {
     super.initialize()
-    self.backgroundColor = CHColors.paleGreyFour
+    self.backgroundColor = .grey100
     self.contentView.backgroundColor = UIColor.clear
     
     self.contentView.addSubview(self.brandImageview)
@@ -65,12 +65,12 @@ class WatermarkView : BaseView {
     self.descLabel.attributedText = CHAssets.localized(
       "ch.watermark",
       attributes: [
-        .foregroundColor: CHColors.dark,
+        .foregroundColor: UIColor.grey900,
         .font: UIFont.systemFont(ofSize: 11)
       ],
       tagAttributes: [
         StringTagType.bold:[
-          .foregroundColor: CHColors.dark,
+          .foregroundColor: UIColor.grey900,
           .font: UIFont.boldSystemFont(ofSize: 11)
         ]
       ])

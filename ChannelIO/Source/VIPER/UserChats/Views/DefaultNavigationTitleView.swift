@@ -23,7 +23,7 @@ class DefaultNavigationTitleView: BaseView {
   }
   let operationLabel = UILabel().then {
     $0.font = UIFont.systemFont(ofSize: 11)
-    $0.textColor = CHColors.white70
+    $0.textColor = .white70
     $0.alpha = 0.7
   }
   

@@ -11,12 +11,12 @@ final class NewMessageDividerCell: BaseTableViewCell {
   
   // MARK: properties
   let containerView = UIView().then {
-    $0.backgroundColor = CHColors.lightAzure
+    $0.backgroundColor = .cobalt100
   }
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 13)
-    $0.textColor = CHColors.azure
+    $0.textColor = .cobalt400
   }
   
   override func initialize() {

@@ -334,7 +334,7 @@ extension UserChatsViewController: UITableViewDataSource {
     cell.configure(viewModel)
     let button = _ChannelIO_MGSwipeButton(
       title: CHAssets.localized("ch.chat.delete"),
-      backgroundColor: CHColors.warmPink,
+      backgroundColor: .red300,
       insets: UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 10)
     )
     
@@ -344,7 +344,7 @@ extension UserChatsViewController: UITableViewDataSource {
       button
     ]
     cell.rightSwipeSettings.transition = .MGSwipeTransitionDrag
-    cell.tintColor = CHColors.warmPink
+    cell.tintColor = .red300
     cell.delegate = self
     return cell
   }

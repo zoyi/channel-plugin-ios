@@ -12,7 +12,7 @@ final class CheckableLabelCell : BaseTableViewCell {
   
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 16)
-    $0.textColor = CHColors.dark
+    $0.textColor = .grey900
     $0.numberOfLines = 1
   }
   
@@ -24,8 +24,7 @@ final class CheckableLabelCell : BaseTableViewCell {
   
   var checked = false {
     didSet {
-      self.titleLabel.textColor = self.checked ?
-        CHColors.dark : CHColors.blueyGrey60
+      self.titleLabel.textColor = self.checked ? .grey900 : .black20
       self.checkImageView.isHidden = !self.checked
     }
   }

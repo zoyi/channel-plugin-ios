@@ -36,7 +36,7 @@ class TextMessageView : BaseView {
   }
 
  private struct Color {
-    static let actionLabel = CHColors.blueyGrey
+    static let actionLabel = UIColor.grey500
     static let message = UIColor.grey900
   }
 
@@ -161,39 +161,20 @@ class TextMessageView : BaseView {
     
     if viewModel.buttons.count > 0 {
       self.buttonStack.isHidden = false
+      hasContents = true
+        
       self.backgroundColor = viewModel.bubbleBackgroundColor
-            
-      if let button = viewModel.buttons.get(index: 0) {
-        hasContents = true
-        self.firstButtonView.isHidden = false
-        self.firstButtonView.text = button.title
-        self.firstButtonView.textColor = button.theme?.color ?? .grey900
-        self.firstButtonView
-          .signalForClick()
-          .bind { _ in
-            if let url = button.linkURL {
-              url.openWithUniversal()
-            }
-          }.disposed(by: self.disposeBag)
-      } else {
-        self.firstButtonView.isHidden = true
-      }
+      self.configureButtonView(
+        with: viewModel.buttons.get(index: 0),
+        mkInfo: viewModel.message.mkInfo,
+        view: self.firstButtonView
+      )
       
-      if let button = viewModel.buttons.get(index: 1) {
-        hasContents = true
-        self.secondButtonView.isHidden = false
-        self.secondButtonView.text = button.title
-        self.secondButtonView.textColor = button.theme?.color ?? .grey900
-        self.secondButtonView
-          .signalForClick()
-          .bind { _ in
-            if let url = button.linkURL {
-              url.openWithUniversal()
-            }
-          }.disposed(by: self.disposeBag)
-      } else {
-        self.secondButtonView.isHidden = true
-      }
+      self.configureButtonView(
+        with: viewModel.buttons.get(index: 1),
+        mkInfo: viewModel.message.mkInfo,
+        view: self.secondButtonView
+      )
     } else {
       self.buttonStack.isHidden = true
       self.firstButtonView.isHidden = true
@@ -323,5 +304,36 @@ extension TextMessageView : UITextViewDelegate {
     }
     
     return true
+  }
+  
+  func configureButtonView(
+    with button: CHLinkButton?,
+    mkInfo: MarketingInfo?,
+    view: UILabel
+  ) {
+    guard let button = button else {
+      view.isHidden = true
+      return
+    }
+    view.isHidden = false
+    
+    view.text = button.title
+    view.textColor = button.theme?.color ?? .grey900
+    view
+      .signalForClick()
+      .bind { _ in
+        if let mkInfo = mkInfo {
+          AppManager.shared.sendClickMarketing(
+            type: mkInfo.type,
+            id: mkInfo.id,
+            userId: PrefStore.getCurrentUserId(),
+            url: button.linkURL?.absoluteString
+          )
+        }
+        
+        if let url = button.linkURL {
+          url.openWithUniversal()
+        }
+      }.disposed(by: self.disposeBag)
   }
 }

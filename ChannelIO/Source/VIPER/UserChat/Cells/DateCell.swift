@@ -9,8 +9,8 @@
 final class DateCell : BaseTableViewCell {
   let titleLabel = UILabel().then {
     $0.font = UIFont.boldSystemFont(ofSize: 12)
-    $0.textColor = CHColors.blueyGrey
-    $0.backgroundColor = CHColors.white
+    $0.textColor = .grey500
+    $0.backgroundColor = .white
   }
 
   override func initialize() {
