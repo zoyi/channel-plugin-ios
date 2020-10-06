@@ -27,8 +27,6 @@ struct CHChannel: CHEntity {
   var workingTimeRanges: [TimeRange]?
   var phoneNumber: String?
   var requestUserInfo = true
-  var messengerPlan: ChannelPlanType = .none
-  var supportBotPlan: ChannelPlanType = .none
   var blocked = false
   var homepageUrl = ""
   var expectedResponseDelay = ""
@@ -39,21 +37,17 @@ struct CHChannel: CHEntity {
   var trial = true
   var trialEndDate: Date? = nil
   var state: ChannelState?
+  var servicePlan: ChannelPlanType = .none
+  var operationFeature = false
+  var mktFeature = false
+  var whiteLabelFeature = true
 }
 
 extension CHChannel {
   var defaultPluginLink: String {
     return "https://\(self.domain).channel.io"
   }
-  
-  var canUseSDK: Bool {
-    return !self.blocked && (self.messengerPlan == .pro || self.trial)
-  }
 
-  var canUseSupportBot: Bool {
-    return !self.blocked && (self.supportBotPlan != .none || self.trial)
-  }
-  
   var shouldHideLauncher: Bool {
     return self.awayOption == .hidden && !self.working
   }
@@ -182,11 +176,14 @@ extension CHChannel: Equatable {
       lhs.working == rhs.working &&
       lhs.textColor == rhs.textColor &&
       lhs.expectedResponseDelay == rhs.expectedResponseDelay &&
-      lhs.messengerPlan == lhs.messengerPlan &&
       lhs.trial == rhs.trial &&
       lhs.awayOption == rhs.awayOption &&
       lhs.workingType == rhs.workingType &&
-      lhs.allowNewChat == rhs.allowNewChat
+      lhs.allowNewChat == rhs.allowNewChat &&
+      lhs.servicePlan == rhs.servicePlan &&
+      lhs.operationFeature == rhs.operationFeature &&
+      lhs.mktFeature == rhs.mktFeature &&
+      lhs.whiteLabelFeature == rhs.whiteLabelFeature
   }
 }
 
@@ -213,13 +210,15 @@ extension CHChannel: ObjectMapper_Mappable {
     expectedResponseDelay   <- map["expectedResponseDelay"] //delayed
     timeZone                <- map["timeZone"]
     utcOffset               <- map["utcOffset"]
-    messengerPlan           <- map["messengerPlan"]
-    supportBotPlan          <- map["supportBotPlan"]
     blocked                 <- map["blocked"]
     workingType             <- map["workingType"] //always, never, custom
     awayOption              <- map["awayOption"] //active, disabled, hidden
     trial                   <- map["trial"]
     trialEndDate            <- (map["trialEndDate"], CustomDateTransform())
+    servicePlan             <- map["servicePlan"]
+    operationFeature        <- map["operationFeature"]
+    mktFeature              <- map["mktFeature"]
+    whiteLabelFeature       <- map["whiteLabelFeature"]
   }
 }
 
@@ -255,8 +254,12 @@ extension TimeRange : ObjectMapper_Mappable, Equatable {
 
 enum ChannelPlanType: String {
   case none
-  case standard
-  case pro
+  case xsmall
+  case small
+  case medium
+  case large
+  case entA
+  case entAA
 }
 
 enum ChannelWorkingType: String {
@@ -274,8 +277,9 @@ enum ChannelAwayOptionType: String {
 enum ChannelState: String {
   case waiting
   case active
-  case unpaid
+  case indebted
   case banned
+  case limited
   case removed
 }
 

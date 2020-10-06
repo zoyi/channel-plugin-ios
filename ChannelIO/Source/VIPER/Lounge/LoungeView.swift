@@ -234,9 +234,9 @@ extension LoungeView {
   
   func displayHeader(with model: LoungeHeaderViewModel) {
     self.headerView.configure(model: model)
-    self.watermarkView.isHidden = model.plugin.showPoweredBy == false &&
-      model.chanenl.messengerPlan == .pro &&
-      model.chanenl.state != .unpaid
+    self.watermarkView.isHidden = model.chanenl.whiteLabelFeature
+      && model.chanenl.servicePlan != .none
+      && model.chanenl.state != .indebted
   }
   
   func displayMainContent(activeChats: [UserChatCellModel], inactiveChats: [UserChatCellModel], welcomeModel: UserChatCellModel?) {

@@ -71,11 +71,6 @@ extension ChannelIO {
             return
           }
           
-          if result.channel?.canUseSDK == false {
-            subscriber.onError(ChannelError.serviceBlockedError)
-            return
-          }
-          
           mainStore.dispatch(BootSuccess(payload: result))
 
           WsService.shared.connect()

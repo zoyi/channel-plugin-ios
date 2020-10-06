@@ -20,8 +20,7 @@ struct CHPlugin: ModelType {
   
   var mobilePosition = "right"
   var welcomeI18n: CHi18n?
-  var showPoweredBy: Bool?
-  
+
   var name: String {
     return mainStore.state.channel.name
   }
@@ -61,7 +60,6 @@ extension CHPlugin: ObjectMapper_Mappable {
     textColor             <- map["textColor"]
     botName               <- map["botName"]
     welcomeI18n           <- map["welcomeI18n"]
-    showPoweredBy         <- map["showPoweredBy"]
     profileBotSchemaIds   <- map["profileBotSchemaIds"]
   }
 }
