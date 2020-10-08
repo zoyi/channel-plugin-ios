@@ -1,4 +1,5 @@
-# This repo was deprecated already. Please install new version of ChannelIO. show this [Link](https://developers.channel.io/docs/ios-installation)
+# This repo was deprecated.
+Please install new version of ChannelIO(>=8.0.0). show this [Link](https://developers.channel.io/docs/ios-installation)
 
 
 # [Channel io](https://www.channel.io) - Talk with your online customers and increase conversions.
