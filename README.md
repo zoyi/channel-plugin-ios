@@ -1,3 +1,6 @@
+# This repo was deprecated already. Please install new version of ChannelIO. show this [Link](https://developers.channel.io/docs/ios-installation)
+
+
 # [Channel io](https://www.channel.io) - Talk with your online customers and increase conversions.
 [Channel](https://www.channel.io) is a conversational customer relationship management solution (CRM) for web businesses. Designed to capture potential customers before they leave your site and increase conversions, the web-based SaaS lets you see who’s on your site, what they’re looking at, how long/frequent they’re visiting and finally, drop in and give a little “hello” to online customers in real time.
 
