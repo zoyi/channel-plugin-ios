@@ -73,29 +73,32 @@ struct PluginPromise {
   
   static func checkVersion() -> Observable<Any?> {
     return Observable.create { subscriber in
+      let version = CHUtils.getSdkVersion()
+      var params: [String: Any] = [:]
+      if let version = version {
+        params = ["query": ["from": version]]
+      }
+      
       let req = AF
-        .request(RestRouter.CheckVersion)
+        .request(RestRouter.CheckVersion(params as RestRouter.ParametersType))
         .validate(statusCode: 200..<300)
         .responseJSON(completionHandler: { response in
           switch response.result {
           case .success(let data):
             let json = JSON(data)
             
-            guard
-              let version = CHUtils.getSdkVersion(),
-              let minVersion = json["packageVersion"]["minCompatibleVersion"].string
-            else {
+            if let needToUpgrade = json["needToUpgrade"].bool, needToUpgrade {
+              subscriber.onNext(nil)
+              subscriber.onCompleted()
+            } else if let minVersion = json["packageVersion"]["minCompatibleVersion"].string,
+                      let version = version,
+                      version.versionToInt().lexicographicallyPrecedes(minVersion.versionToInt()) {
+              subscriber.onNext(nil)
+              subscriber.onCompleted()
+            } else {
               subscriber.onError(ChannelError.versionError)
               return
             }
-            
-            if version.versionToInt().lexicographicallyPrecedes(minVersion.versionToInt()) {
-              subscriber.onError(ChannelError.versionError)
-              return
-            }
-            
-            subscriber.onNext(nil)
-            subscriber.onCompleted()
           case .failure(let error):
             subscriber.onError(ChannelError.serverError(
               msg: error.localizedDescription

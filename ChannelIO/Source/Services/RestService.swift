@@ -16,7 +16,7 @@ enum RestRouter: URLRequestConvertible {
   case ClosePopup
   case CloseUserChat(String, ParametersType)
   case CreateMessage(String, ParametersType)
-  case CheckVersion
+  case CheckVersion(ParametersType)
   case CreateSupportBotChat(String, ParametersType)
   case CampaignClick(String, String, ParametersType)
   case CampaignView(String)
@@ -125,7 +125,7 @@ enum RestRouter: URLRequestConvertible {
       return "/front/support-bots/\(supportBotId)/user-chats"
     case .CreateMessage(let userChatId, _):
       return "/front/user-chats/\(userChatId)/messages"
-    case .CheckVersion:
+    case .CheckVersion(_):
       return "/packages/com.zoyi.channel.plugin.ios/versions/latest"
     case .ClosePopup:
       return "/front/users/me/pop-up"
@@ -286,6 +286,7 @@ enum RestRouter: URLRequestConvertible {
     switch self {
     case .GetMessages(_, let params),
          .CampaignClick(_, _, let params),
+         .CheckVersion(let params),
          .OneTimeMsgClick(_, _, let params),
          .CreateMessage(_, let params),
          .CreateUserChat(_, let params),
