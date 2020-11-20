@@ -87,12 +87,12 @@ struct PluginPromise {
           case .success(let data):
             let json = JSON(data)
             
-            if let needToUpgrade = json["needToUpgrade"].bool, needToUpgrade {
+            if let needToUpgrade = json["needToUpgrade"].bool, !needToUpgrade {
               subscriber.onNext(nil)
               subscriber.onCompleted()
             } else if let minVersion = json["packageVersion"]["minCompatibleVersion"].string,
                       let version = version,
-                      version.versionToInt().lexicographicallyPrecedes(minVersion.versionToInt()) {
+                      !version.versionToInt().lexicographicallyPrecedes(minVersion.versionToInt()) {
               subscriber.onNext(nil)
               subscriber.onCompleted()
             } else {
