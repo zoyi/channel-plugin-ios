@@ -304,9 +304,16 @@ class CHUtils {
   }
   
   static func getSdkVersion() -> String? {
-    let version = Bundle(for: ChannelIO.self)
-      .infoDictionary?["CFBundleShortVersionString"] as? String
-    return version
+    let bundle = Bundle(for: ChannelIO.self)
+    if bundle != Bundle.main {
+      return bundle.infoDictionary?["CFBundleShortVersionString"] as? String
+    } else if let podBundleUrl = Bundle(for: ChannelIO.self).url(forResource: "ChannelIO", withExtension: "bundle") {
+      let version = Bundle(url: podBundleUrl)?
+        .infoDictionary?["CFBundleShortVersionString"] as? String
+      return version
+    }
+    
+    return nil
   }
   
   class func jsonStringify(data: Any?) -> String? {

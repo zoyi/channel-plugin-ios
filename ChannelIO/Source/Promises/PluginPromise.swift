@@ -80,9 +80,11 @@ struct PluginPromise {
           switch response.result {
           case .success(let data):
             let json = JSON(data)
-            let minVersion = json["minCompatibleVersion"].string ?? ""
             
-            guard let version = CHUtils.getSdkVersion() else {
+            guard
+              let version = CHUtils.getSdkVersion(),
+              let minVersion = json["packageVersion"]["minCompatibleVersion"].string
+            else {
               subscriber.onError(ChannelError.versionError)
               return
             }
