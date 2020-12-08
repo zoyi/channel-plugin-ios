@@ -29,12 +29,12 @@ Pod::Spec.new do |s|
   #  :execution_position => :before_compile
   #}
   s.source_files = 'ChannelIO/Source/**/*.{swift, h, m}'
-  # s.resources = 'ChannelIO/Assets/*'
-  s.resource_bundles = {		
-     'ChannelIO' => [		
-       'ChannelIO/Assets/*'		
-     ]		
-   }
+  s.resources = 'ChannelIO/Assets/*'
+  # s.resource_bundles = {		
+  #    'ChannelIO' => [		
+  #      'ChannelIO/Assets/*'		
+  #    ]		
+  #  }
   s.swift_version = '5.0'
 
   s.frameworks = 'CoreTelephony'

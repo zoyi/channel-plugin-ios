@@ -76,12 +76,12 @@ class ProfileItemBaseView: BaseView {
             key: item.key,
             type: item.type,
             value: value
-          ).bind { completed in
+          ).subscribe(onNext: { (completed) in
             if !completed {
               self?.fieldView?.setInvalid()
               self?.setInvalidTitle(with: CHAssets.localized("ch.profile_form.error"))
             }
-          }.disposed(by: self!.disposeBag)
+          }).disposed(by: self!.disposeBag)
         }
       }.disposed(by: self.disposeBag)
   }
